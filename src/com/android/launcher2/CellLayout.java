@@ -31,7 +31,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -426,7 +425,7 @@ public class CellLayout extends ViewGroup {
         if (DEBUG_VISUALIZE_OCCUPIED) {
             int[] pt = new int[2];
             ColorDrawable cd = new ColorDrawable(Color.RED);
-            cd.setBounds(0, 0, 80, 80);
+            cd.setBounds(0, 0,  mCellWidth, mCellHeight);
             for (int i = 0; i < mCountX; i++) {
                 for (int j = 0; j < mCountY; j++) {
                     if (mOccupied[i][j]) {
@@ -1926,7 +1925,7 @@ public class CellLayout extends ViewGroup {
         float finalScale;
         float initScale;
         private static final int DURATION = 300;
-        ValueAnimator va;
+        Animator a;
 
         public ReorderHintAnimation(View child, int cellX0, int cellY0, int cellX1, int cellY1,
                 int spanX, int spanY) {
@@ -1969,11 +1968,16 @@ public class CellLayout extends ViewGroup {
                 ReorderHintAnimation oldAnimation = mShakeAnimators.get(child);
                 oldAnimation.cancel();
                 mShakeAnimators.remove(child);
+                if (finalDeltaX == 0 && finalDeltaY == 0) {
+                    completeAnimationImmediately();
+                    return;
+                }
             }
             if (finalDeltaX == 0 && finalDeltaY == 0) {
                 return;
             }
-            va = ValueAnimator.ofFloat(0f, 1f);
+            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+            a = va;
             va.setRepeatMode(ValueAnimator.REVERSE);
             va.setRepeatCount(ValueAnimator.INFINITE);
             va.setDuration(DURATION);
@@ -2004,12 +2008,18 @@ public class CellLayout extends ViewGroup {
         }
 
         private void cancel() {
-            va.cancel();
+            if (a != null) {
+                a.cancel();
+            }
         }
+
         private void completeAnimationImmediately() {
-            va.cancel();
+            if (a != null) {
+                a.cancel();
+            }
 
             AnimatorSet s = new AnimatorSet();
+            a = s;
             s.playTogether(
                 ObjectAnimator.ofFloat(child, "scaleX", 1f),
                 ObjectAnimator.ofFloat(child, "scaleY", 1f),
