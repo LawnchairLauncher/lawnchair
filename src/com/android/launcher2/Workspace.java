@@ -2839,7 +2839,6 @@ public class Workspace extends SmoothPagedView
 
         if (willAddToFolder && mDragMode == DRAG_MODE_NONE) {
             mDragOverFolderIcon = ((FolderIcon) dragOverView);
-            mAddToExistingFolderOnDrop = true;
             mDragOverFolderIcon.onDragEnter(info);
             if (targetLayout != null) {
                 targetLayout.clearDragOutlines();
