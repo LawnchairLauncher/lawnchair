@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -62,7 +63,6 @@ public class DragController {
     static final int SCROLL_RIGHT = 1;
 
     private static final float MAX_FLING_DEGREES = 35f;
-    private static final int FLING_TO_DELETE_THRESHOLD_Y_VELOCITY = -1500;
 
     private Launcher mLauncher;
     private Handler mHandler;
@@ -146,14 +146,16 @@ public class DragController {
      * @param context The application's context.
      */
     public DragController(Launcher launcher) {
+        Resources r = launcher.getResources();
         mLauncher = launcher;
         mHandler = new Handler();
-        mScrollZone = launcher.getResources().getDimensionPixelSize(R.dimen.scroll_zone);
+        mScrollZone = r.getDimensionPixelSize(R.dimen.scroll_zone);
         mVelocityTracker = VelocityTracker.obtain();
-        mVibrator = (Vibrator)launcher.getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator) launcher.getSystemService(Context.VIBRATOR_SERVICE);
 
-        float density = launcher.getResources().getDisplayMetrics().density;
-        mFlingToDeleteThresholdVelocity = (int) (FLING_TO_DELETE_THRESHOLD_Y_VELOCITY * density);
+        float density = r.getDisplayMetrics().density;
+        mFlingToDeleteThresholdVelocity =
+                (int) (r.getInteger(R.integer.config_flingToDeleteMinVelocity) * density);
     }
 
     public boolean dragging() {
