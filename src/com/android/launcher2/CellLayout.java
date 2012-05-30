@@ -1704,6 +1704,102 @@ public class CellLayout extends ViewGroup {
         markCellsForView(r.left, r.top, r.width(), r.height(), occupied, value);
     }
 
+    // This method tries to find a reordering solution which satisfies the push mechanic by trying
+    // to push items in each of the cardinal directions, in an order based on the direction vector
+    // passed.
+    private boolean attemptPushInDirection(ArrayList<View> intersectingViews, Rect occupied,
+            int[] direction, View ignoreView, ItemConfiguration solution) {
+        if ((Math.abs(direction[0]) + Math.abs(direction[1])) > 1) {
+            // If the direction vector has two non-zero components, we try pushing 
+            // separately in each of the components.
+            int temp = direction[1];
+            direction[1] = 0;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+            direction[1] = temp;
+            temp = direction[0];
+            direction[0] = 0;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Revert the direction
+            direction[0] = temp;
+
+            // Now we try pushing in each component of the opposite direction
+            direction[0] *= -1;
+            direction[1] *= -1;
+            temp = direction[1];
+            direction[1] = 0;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+
+            direction[1] = temp;
+            temp = direction[0];
+            direction[0] = 0;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // revert the direction
+            direction[0] = temp;
+            direction[0] *= -1;
+            direction[1] *= -1;
+            
+        } else {
+            // If the direction vector has a single non-zero component, we push first in the
+            // direction of the vector
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+
+            // Then we try the opposite direction
+            direction[0] *= -1;
+            direction[1] *= -1;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Switch the direction back
+            direction[0] *= -1;
+            direction[1] *= -1;
+            
+            // If we have failed to find a push solution with the above, then we try 
+            // to find a solution by pushing along the perpendicular axis.
+
+            // Swap the components
+            int temp = direction[1];
+            direction[1] = direction[0];
+            direction[0] = temp;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+
+            // Then we try the opposite direction
+            direction[0] *= -1;
+            direction[1] *= -1;
+            if (addViewsToTempLocation(intersectingViews, occupied, direction, true,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Switch the direction back
+            direction[0] *= -1;
+            direction[1] *= -1;
+
+            // Swap the components back
+            temp = direction[1];
+            direction[1] = direction[0];
+            direction[0] = temp;
+        }
+        return false;
+    }
+
     private boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
             View ignoreView, ItemConfiguration solution) {
         // Return early if get invalid cell positions
@@ -1735,23 +1831,15 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        // We try to move the intersecting views as a block using the push mechanic
-        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, true, ignoreView,
+        // First we try to find a solution which respects the push mechanic. That is, 
+        // we try to find a solution such that no displaced item travels through another item
+        // without also displacing that item.
+        if (attemptPushInDirection(mIntersectingViews, mOccupiedRect, direction, ignoreView,
                 solution)) {
             return true;
         }
-        // Try the opposite direction
-        direction[0] *= -1;
-        direction[1] *= -1;
-        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, true, ignoreView,
-                solution)) {
-            return true;
-        }
-        // Switch the direction back
-        direction[0] *= -1;
-        direction[1] *= -1;
 
-        // Next we try moving the views as a block , but without requiring the push mechanic
+        // Next we try moving the views as a block, but without requiring the push mechanic.
         if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, false, ignoreView,
                 solution)) {
             return true;
