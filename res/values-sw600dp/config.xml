@@ -4,6 +4,9 @@
     <integer name="hotseat_cell_count">7</integer>
     <integer name="hotseat_all_apps_index">3</integer>
 
+<!-- DragController -->
+    <integer name="config_flingToDeleteMinVelocity">-1000</integer>
+
 <!-- Folders -->
     <!-- Folder max bounds and max number of items. Note: folder_max_count_x * folder_max_count_y
         >= folder_max_num_items. When these are set to -1, they are automatically determined. -->
