@@ -299,8 +299,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private Runnable mInflateWidgetRunnable = null;
     private Runnable mBindWidgetRunnable = null;
     static final int WIDGET_NO_CLEANUP_REQUIRED = -1;
-    static final int WIDGET_BOUND = 0;
-    static final int WIDGET_INFLATED = 1;
+    static final int WIDGET_PRELOAD_PENDING = 0;
+    static final int WIDGET_BOUND = 1;
+    static final int WIDGET_INFLATED = 2;
     int mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
     int mWidgetLoadingId = -1;
     PendingAddWidgetInfo mCreateWidgetInfo = null;
@@ -654,6 +655,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             return;
         }
 
+        mWidgetCleanupState = WIDGET_PRELOAD_PENDING;
         mBindWidgetRunnable = new Runnable() {
             @Override
             public void run() {
@@ -716,17 +718,29 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // If the widget was not added, we may need to do further cleanup.
             PendingAddWidgetInfo info = mCreateWidgetInfo;
             mCreateWidgetInfo = null;
-            // First step was to allocate a widget id, revert that.
-            if ((mWidgetCleanupState == WIDGET_BOUND || mWidgetCleanupState == WIDGET_INFLATED) &&
-                    mWidgetLoadingId != -1) {
-                Log.d(TAG, "    6557954 Cleaning up widget, delete widget id");
-                mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
-            }
-            if (mWidgetCleanupState == WIDGET_BOUND) {
-                // We never actually inflated the widget, so remove the callback to do so.
+
+            if (mWidgetCleanupState == WIDGET_PRELOAD_PENDING) {
+                Log.d(TAG, "    6557954 Cleaning up widget, remove preload callbacks");
+                // We never did any preloading, so just remove pending callbacks to do so
+                removeCallbacks(mBindWidgetRunnable);
+                removeCallbacks(mInflateWidgetRunnable);
+            } else if (mWidgetCleanupState == WIDGET_BOUND) {
+                 // Delete the widget id which was allocated
+                if (mWidgetLoadingId != -1) {
+                    Log.d(TAG, "    6557954 Cleaning up widget, delete widget id");
+                    mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
+                }
+
+                // We never got around to inflating the widget, so remove the callback to do so.
                 Log.d(TAG, "    6557954 Cleaning up widget, remove callbacks");
                 removeCallbacks(mInflateWidgetRunnable);
             } else if (mWidgetCleanupState == WIDGET_INFLATED) {
+                // Delete the widget id which was allocated
+                if (mWidgetLoadingId != -1) {
+                    Log.d(TAG, "    6557954 Cleaning up widget, delete widget id");
+                    mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
+                }
+
                 // The widget was inflated and added to the DragLayer -- remove it.
                 Log.d(TAG, "    6557954 Cleaning up widget, remove inflated widget from draglayer");
                 AppWidgetHostView widget = info.boundWidget;
