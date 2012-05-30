@@ -39,7 +39,8 @@ import com.android.launcher.R;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
-    private static int FLIND_DELETE_ANIMATION_DURATION = 350;
+    private static int FLING_DELETE_ANIMATION_DURATION = 350;
+    private static float FLING_TO_DELETE_FRICTION = 0.035f;
     private static int MODE_FLING_DELETE_TO_TRASH = 0;
     private static int MODE_FLING_DELETE_ALONG_VECTOR = 1;
 
@@ -311,22 +312,22 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * progressively.
      */
     private static class FlingAlongVectorAnimatorUpdateListener implements AnimatorUpdateListener {
-        private static float FRICTION = 0.93f;
-
         private DragLayer mDragLayer;
         private PointF mVelocity;
         private Rect mFrom;
         private long mPrevTime;
         private boolean mHasOffsetForScale;
+        private float mFriction;
 
         private final TimeInterpolator mAlphaInterpolator = new DecelerateInterpolator(0.75f);
 
         public FlingAlongVectorAnimatorUpdateListener(DragLayer dragLayer, PointF vel, Rect from,
-                long startTime) {
+                long startTime, float friction) {
             mDragLayer = dragLayer;
             mVelocity = vel;
             mFrom = from;
             mPrevTime = startTime;
+            mFriction = 1f - (dragLayer.getResources().getDisplayMetrics().density * friction);
         }
 
         @Override
@@ -352,8 +353,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
             dragView.setTranslationY(mFrom.top);
             dragView.setAlpha(1f - mAlphaInterpolator.getInterpolation(t));
 
-            mVelocity.x *= FRICTION;
-            mVelocity.y *= FRICTION;
+            mVelocity.x *= mFriction;
+            mVelocity.y *= mFriction;
             mPrevTime = curTime;
         }
     };
@@ -363,7 +364,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
 
-        return new FlingAlongVectorAnimatorUpdateListener(dragLayer, vel, from, startTime);
+        return new FlingAlongVectorAnimatorUpdateListener(dragLayer, vel, from, startTime,
+                FLING_TO_DELETE_FRICTION);
     }
 
     public void onFlingToDelete(final DragObject d, int x, int y, PointF vel) {
@@ -385,7 +387,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         final ViewConfiguration config = ViewConfiguration.get(mLauncher);
         final DragLayer dragLayer = mLauncher.getDragLayer();
-        final int duration = FLIND_DELETE_ANIMATION_DURATION;
+        final int duration = FLING_DELETE_ANIMATION_DURATION;
         final long startTime = AnimationUtils.currentAnimationTimeMillis();
 
         // NOTE: Because it takes time for the first frame of animation to actually be
