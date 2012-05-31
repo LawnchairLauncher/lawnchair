@@ -106,6 +106,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private static String sDefaultFolderName;
     private static String sHintText;
+    private ObjectAnimator mOpenCloseAnimator;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -417,7 +418,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+        final ObjectAnimator oa = mOpenCloseAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -430,7 +432,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
-
+                setLayerType(LAYER_TYPE_NONE, null);
                 Cling cling = mLauncher.showFirstRunFoldersCling();
                 if (cling != null) {
                     cling.bringToFront();
@@ -439,7 +441,16 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         });
         oa.setDuration(mExpandDuration);
-        oa.start();
+        setLayerType(LAYER_TYPE_HARDWARE, null);
+        buildLayer();
+        post(new Runnable() {
+            public void run() {
+                // Check if the animator changed in the meantime
+                if (oa != mOpenCloseAnimator)
+                    return;
+                oa.start();
+            }
+        });
     }
 
     private void sendCustomAccessibilityEvent(int type, String text) {
@@ -465,12 +476,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.9f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+        final ObjectAnimator oa = mOpenCloseAnimator =
+                ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 onCloseComplete();
+                setLayerType(LAYER_TYPE_NONE, null);
                 mState = STATE_SMALL;
             }
             @Override
@@ -481,7 +494,16 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         });
         oa.setDuration(mExpandDuration);
-        oa.start();
+        setLayerType(LAYER_TYPE_HARDWARE, null);
+        buildLayer();
+        post(new Runnable() {
+            public void run() {
+                // Check if the animator changed in the meantime
+                if (oa != mOpenCloseAnimator)
+                    return;
+                oa.start();
+            }
+        });
     }
 
     void notifyDataSetChanged() {
