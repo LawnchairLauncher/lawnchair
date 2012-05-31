@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
@@ -26,7 +25,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.android.launcher.R;
@@ -40,10 +38,10 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private static final int sTransitionInDuration = 200;
     private static final int sTransitionOutDuration = 175;
 
-    private ObjectAnimator mDropTargetBarFadeInAnim;
-    private ObjectAnimator mDropTargetBarFadeOutAnim;
-    private ObjectAnimator mQSBSearchBarFadeInAnim;
-    private ObjectAnimator mQSBSearchBarFadeOutAnim;
+    private ObjectAnimator mDropTargetBarAnim;
+    private ObjectAnimator mQSBSearchBarAnim;
+    private static final AccelerateInterpolator sAccelerateInterpolator =
+            new AccelerateInterpolator();
 
     private boolean mIsSearchBarHidden;
     private View mQSBSearchBar;
@@ -75,28 +73,19 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDeleteDropTarget.setLauncher(launcher);
     }
 
-    // This sets up the view for the animation
     private void prepareStartAnimation(View v) {
-        // Enable the hw layers (which will be disabled in the onAnimationEnd callback below
+        // Enable the hw layers before the animation starts (will be disabled in the onAnimationEnd
+        // callback below)
         v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         v.buildLayer();
     }
 
-    private void prepareAnimation(ObjectAnimator in, ObjectAnimator out, final View v) {
-        in.setInterpolator(new AccelerateInterpolator());
-        in.setDuration(sTransitionInDuration);
-        in.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                v.setVisibility(View.VISIBLE);
-            }
-        });
-        out.setInterpolator(new AccelerateInterpolator());
-        out.setDuration(sTransitionOutDuration);
-        out.addListener(new AnimatorListenerAdapter() {
+    private void setupAnimation(ObjectAnimator anim, final View v) {
+        anim.setInterpolator(sAccelerateInterpolator);
+        anim.setDuration(sTransitionInDuration);
+        anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                v.setVisibility(View.INVISIBLE);
                 v.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
@@ -122,64 +111,55 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         // Create the various fade animations
         if (mEnableDropDownDropTargets) {
             mDropTargetBar.setTranslationY(-mBarHeight);
-            mDropTargetBarFadeInAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY", 0f);
-            mDropTargetBarFadeOutAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
-                    -mBarHeight);
-            mQSBSearchBarFadeInAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY", 0);
-            mQSBSearchBarFadeOutAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY",
+            mDropTargetBarAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
+                    -mBarHeight, 0f);
+            mQSBSearchBarAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY", 0,
                     -mBarHeight);
         } else {
             mDropTargetBar.setAlpha(0f);
-            mDropTargetBarFadeInAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 1f);
-            mDropTargetBarFadeOutAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f);
-            mQSBSearchBarFadeInAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f);
-            mQSBSearchBarFadeOutAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 0f);
+            mDropTargetBarAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
+            mQSBSearchBarAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
         }
-        prepareAnimation(mDropTargetBarFadeInAnim, mDropTargetBarFadeOutAnim, mDropTargetBar);
-        prepareAnimation(mQSBSearchBarFadeInAnim, mQSBSearchBarFadeOutAnim, mQSBSearchBar);
+        setupAnimation(mDropTargetBarAnim, mDropTargetBar);
+        setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
     }
 
     public void finishAnimations() {
-        mDropTargetBarFadeInAnim.end();
-        mDropTargetBarFadeOutAnim.end();
-        mQSBSearchBarFadeInAnim.end();
-        mQSBSearchBarFadeOutAnim.end();
-    }
-
-    private void cancelSearchBarAnimations() {
-        mQSBSearchBarFadeInAnim.cancel();
-        mQSBSearchBarFadeOutAnim.cancel();
+        prepareStartAnimation(mDropTargetBar);
+        mDropTargetBarAnim.reverse();
+        prepareStartAnimation(mQSBSearchBar);
+        mQSBSearchBarAnim.reverse();
     }
 
     /*
      * Shows and hides the search bar.
      */
     public void showSearchBar(boolean animated) {
-        cancelSearchBarAnimations();
+        if (!mIsSearchBarHidden) return;
         if (animated) {
             prepareStartAnimation(mQSBSearchBar);
-            mQSBSearchBarFadeInAnim.start();
+            mQSBSearchBarAnim.reverse();
         } else {
-            mQSBSearchBar.setVisibility(View.VISIBLE);
+            mQSBSearchBarAnim.cancel();
             if (mEnableDropDownDropTargets) {
                 mQSBSearchBar.setTranslationY(0);
             } else {
-                mQSBSearchBar.setAlpha(1f);
+                mDropTargetBar.setAlpha(1f);
             }
         }
         mIsSearchBarHidden = false;
     }
     public void hideSearchBar(boolean animated) {
-        cancelSearchBarAnimations();
+        if (mIsSearchBarHidden) return;
         if (animated) {
             prepareStartAnimation(mQSBSearchBar);
-            mQSBSearchBarFadeOutAnim.start();
+            mQSBSearchBarAnim.start();
         } else {
-            mQSBSearchBar.setVisibility(View.INVISIBLE);
+            mQSBSearchBarAnim.cancel();
             if (mEnableDropDownDropTargets) {
-                mQSBSearchBar.setTranslationY(0);
+                mQSBSearchBar.setTranslationY(-mBarHeight);
             } else {
-                mQSBSearchBar.setAlpha(0f);
+                mDropTargetBar.setAlpha(0f);
             }
         }
         mIsSearchBarHidden = true;
@@ -202,12 +182,10 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     public void onDragStart(DragSource source, Object info, int dragAction) {
         // Animate out the QSB search bar, and animate in the drop target bar
         prepareStartAnimation(mDropTargetBar);
-        mDropTargetBarFadeOutAnim.cancel();
-        mDropTargetBarFadeInAnim.start();
+        mDropTargetBarAnim.start();
         if (!mIsSearchBarHidden) {
             prepareStartAnimation(mQSBSearchBar);
-            mQSBSearchBarFadeInAnim.cancel();
-            mQSBSearchBarFadeOutAnim.start();
+            mQSBSearchBarAnim.start();
         }
     }
 
@@ -220,12 +198,10 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         if (!mDeferOnDragEnd) {
             // Restore the QSB search bar, and animate out the drop target bar
             prepareStartAnimation(mDropTargetBar);
-            mDropTargetBarFadeInAnim.cancel();
-            mDropTargetBarFadeOutAnim.start();
+            mDropTargetBarAnim.reverse();
             if (!mIsSearchBarHidden) {
                 prepareStartAnimation(mQSBSearchBar);
-                mQSBSearchBarFadeOutAnim.cancel();
-                mQSBSearchBarFadeInAnim.start();
+                mQSBSearchBarAnim.reverse();
             }
         } else {
             mDeferOnDragEnd = false;
