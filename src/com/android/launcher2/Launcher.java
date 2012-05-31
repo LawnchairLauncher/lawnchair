@@ -2403,32 +2403,37 @@ public final class Launcher extends Activity
                 observer = null;
             }
 
+            final AnimatorSet stateAnimation = mStateAnimation;
+            final Runnable startAnimRunnable = new Runnable() {
+                public void run() {
+                    // Check that mStateAnimation hasn't changed while
+                    // we waited for a layout/draw pass
+                    if (mStateAnimation != stateAnimation)
+                        return;
+                    setPivotsForZoom(toView, scale);
+                    dispatchOnLauncherTransitionStart(fromView, animated, false);
+                    dispatchOnLauncherTransitionStart(toView, animated, false);
+                    mWorkspace.post(new Runnable() {
+                        public void run() {
+                            // Check that mStateAnimation hasn't changed while
+                            // we waited for a layout/draw pass
+                            if (mStateAnimation != stateAnimation)
+                                return;
+                            mStateAnimation.start();
+                        }
+                    });
+                }
+            };
             if (delayAnim) {
-                final AnimatorSet stateAnimation = mStateAnimation;
                 final OnGlobalLayoutListener delayedStart = new OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
-                        mWorkspace.post(new Runnable() {
-                            public void run() {
-                                // Check that mStateAnimation hasn't changed while
-                                // we waited for a layout pass
-                                if (mStateAnimation == stateAnimation) {
-                                    // Need to update pivots for zoom if layout changed
-                                    setPivotsForZoom(toView, scale);
-                                    dispatchOnLauncherTransitionStart(fromView, animated, false);
-                                    dispatchOnLauncherTransitionStart(toView, animated, false);
-                                    mStateAnimation.start();
-                                }
-                            }
-                        });
+                        mWorkspace.post(startAnimRunnable);
                         observer.removeOnGlobalLayoutListener(this);
                     }
                 };
                 observer.addOnGlobalLayoutListener(delayedStart);
             } else {
-                setPivotsForZoom(toView, scale);
-                dispatchOnLauncherTransitionStart(fromView, animated, false);
-                dispatchOnLauncherTransitionStart(toView, animated, false);
-                mStateAnimation.start();
+                startAnimRunnable.run();
             }
         } else {
             toView.setTranslationX(0.0f);
@@ -2539,7 +2544,14 @@ public final class Launcher extends Activity
             }
             dispatchOnLauncherTransitionStart(fromView, animated, true);
             dispatchOnLauncherTransitionStart(toView, animated, true);
-            mStateAnimation.start();
+            final Animator stateAnimation = mStateAnimation;
+            mWorkspace.post(new Runnable() {
+                public void run() {
+                    if (stateAnimation != mStateAnimation)
+                        return;
+                    mStateAnimation.start();
+                }
+            });
         } else {
             fromView.setVisibility(View.GONE);
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
