@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -36,6 +37,7 @@ public class DrawableStateProxyView extends LinearLayout {
     public DrawableStateProxyView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
+
 
     public DrawableStateProxyView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -58,5 +60,10 @@ public class DrawableStateProxyView extends LinearLayout {
         }
         mView.setPressed(isPressed());
         mView.setHovered(isHovered());
+    }
+
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        return false;
     }
 }
