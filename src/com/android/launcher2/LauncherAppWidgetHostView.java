@@ -18,10 +18,14 @@ package com.android.launcher2;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RemoteViews;
 
 import com.android.launcher.R;
 
@@ -31,9 +35,12 @@ import com.android.launcher.R;
 public class LauncherAppWidgetHostView extends AppWidgetHostView {
     private CheckLongPressHelper mLongPressHelper;
     private LayoutInflater mInflater;
+    private Context mContext;
+    private int mPreviousOrientation;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
+        mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -41,6 +48,21 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     @Override
     protected View getErrorView() {
         return mInflater.inflate(R.layout.appwidget_error, this, false);
+    }
+
+    @Override
+    public void updateAppWidget(RemoteViews remoteViews) {
+        // Store the orientation in which the widget was inflated
+        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
+        super.updateAppWidget(remoteViews);
+    }
+
+    public boolean orientationChangedSincedInflation() {
+        int orientation = mContext.getResources().getConfiguration().orientation;
+        if (mPreviousOrientation != orientation) {
+           return true;
+       }
+       return false;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
