@@ -654,7 +654,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     private void preloadWidget(final PendingAddWidgetInfo info) {
-        Log.d(TAG, "6557954 Preload widget: " + info.info);
         final AppWidgetProviderInfo pInfo = info.info;
         if (pInfo.configure != null) {
             return;
@@ -664,7 +663,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mBindWidgetRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "    6557954 Preload, bind widget: " + info.info);
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
                 if (AppWidgetManager.getInstance(mLauncher)
                             .bindAppWidgetIdIfAllowed(mWidgetLoadingId, info.componentName)) {
@@ -680,7 +678,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 AppWidgetHostView hostView = mLauncher.
                         getAppWidgetHost().createView(getContext(), mWidgetLoadingId, pInfo);
                 info.boundWidget = hostView;
-                Log.d(TAG, "    6557954 Preload, inflate widget: " + info.info);
                 mWidgetCleanupState = WIDGET_INFLATED;
                 hostView.setVisibility(INVISIBLE);
                 int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(info.spanX,
@@ -705,49 +702,37 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // the widget. This will need to be cleaned up if it turns out no long press occurs.
         if (mCreateWidgetInfo != null) {
             // Just in case the cleanup process wasn't properly executed. This shouldn't happen.
-            Log.d(TAG, "**** 6557954 Previous shortpress not cleaned up, cleaning up now: " + mCreateWidgetInfo.info);
             cleanupWidgetPreloading(false);
         }
         mCreateWidgetInfo = new PendingAddWidgetInfo((PendingAddWidgetInfo) v.getTag());
-        Log.d(TAG, "6557954 Short press triggered for view: " + v + ", widget info: " + mCreateWidgetInfo.info);
         preloadWidget(mCreateWidgetInfo);
     }
 
     private void cleanupWidgetPreloading(boolean widgetWasAdded) {
-        Log.d(TAG, "6557954 Cleaning up widget, was added: " + widgetWasAdded);
-        if (mCreateWidgetInfo != null) {
-            Log.d(TAG, "    6557954 Cleaning up widget, widget info: " + mCreateWidgetInfo.info);
-        }
-
         if (!widgetWasAdded) {
             // If the widget was not added, we may need to do further cleanup.
             PendingAddWidgetInfo info = mCreateWidgetInfo;
             mCreateWidgetInfo = null;
 
             if (mWidgetCleanupState == WIDGET_PRELOAD_PENDING) {
-                Log.d(TAG, "    6557954 Cleaning up widget, remove preload callbacks");
                 // We never did any preloading, so just remove pending callbacks to do so
                 removeCallbacks(mBindWidgetRunnable);
                 removeCallbacks(mInflateWidgetRunnable);
             } else if (mWidgetCleanupState == WIDGET_BOUND) {
                  // Delete the widget id which was allocated
                 if (mWidgetLoadingId != -1) {
-                    Log.d(TAG, "    6557954 Cleaning up widget, delete widget id");
                     mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
                 }
 
                 // We never got around to inflating the widget, so remove the callback to do so.
-                Log.d(TAG, "    6557954 Cleaning up widget, remove callbacks");
                 removeCallbacks(mInflateWidgetRunnable);
             } else if (mWidgetCleanupState == WIDGET_INFLATED) {
                 // Delete the widget id which was allocated
                 if (mWidgetLoadingId != -1) {
-                    Log.d(TAG, "    6557954 Cleaning up widget, delete widget id");
                     mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
                 }
 
                 // The widget was inflated and added to the DragLayer -- remove it.
-                Log.d(TAG, "    6557954 Cleaning up widget, remove inflated widget from draglayer");
                 AppWidgetHostView widget = info.boundWidget;
                 mLauncher.getDragLayer().removeView(widget);
             }
@@ -760,9 +745,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void cleanUpShortPress(View v) {
-        Log.d(TAG, "6557954 Cleanup shortpress");
         if (!mDraggingWidget) {
-            Log.d(TAG, "    6557954 Cleanup shortpress, cleanup cleanup preloading");
             cleanupWidgetPreloading(false);
         }
     }
@@ -773,15 +756,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
         PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
-        if (createItemInfo instanceof PendingAddWidgetInfo) {
-            PendingAddWidgetInfo createWidgetInfo = mCreateWidgetInfo;
-            Log.d(TAG, "6557954 Begin dragging widget, view: " + v + ", widget info: " + createWidgetInfo.info);
-        }
-
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
         if (image.getDrawable() == null) {
-            Log.d(TAG, "    6557954 Begin dragging widget, abort, no drawable set");
             mDraggingWidget = false;
             return false;
         }
