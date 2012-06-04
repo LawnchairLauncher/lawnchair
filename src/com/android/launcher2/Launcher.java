@@ -682,6 +682,31 @@ public final class Launcher extends Activity
             // Resets the previous all apps icon press state
             mAppsCustomizeContent.resetDrawableState();
         }
+        // It is possible that widgets can receive updates while launcher is not in the foreground.
+        // Consequently, the widgets will be inflated in the orientation of the foreground activity
+        // (framework issue). On resuming, we ensure that any widgets are inflated for the current
+        // orientation.
+        reinflateWidgetsIfNecessary();
+    }
+
+    void reinflateWidgetsIfNecessary() {
+        for (LauncherAppWidgetInfo info: LauncherModel.getWidgets()) {
+            LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) info.hostView;
+            if (lahv != null && lahv.orientationChangedSincedInflation()) {
+                AppWidgetProviderInfo pInfo = lahv.getAppWidgetInfo();
+
+                // Remove the current widget which is inflated with the wrong orientation
+                getWorkspace().getParentCellLayoutForView(lahv).removeView(lahv);
+                // Re-inflate the widget using the correct orientation
+                AppWidgetHostView widget = mAppWidgetHost.createView(this, info.appWidgetId, pInfo);
+
+                // Add the new widget back
+                widget.setTag(info);
+                info.hostView = widget;
+                getWorkspace().addInScreen(widget, info.container, info.screen,
+                        info.cellX, info.cellY, info.spanX, info.spanY);
+            }
+        }
     }
 
     @Override
