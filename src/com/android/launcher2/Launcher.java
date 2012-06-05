@@ -704,7 +704,8 @@ public final class Launcher extends Activity
                 AppWidgetProviderInfo pInfo = lahv.getAppWidgetInfo();
 
                 // Remove the current widget which is inflated with the wrong orientation
-                getWorkspace().getParentCellLayoutForView(lahv).removeView(lahv);
+                CellLayout cl = getWorkspace().getParentCellLayoutForView(lahv);
+                if (cl != null) cl.removeView(lahv);
                 // Re-inflate the widget using the correct orientation
                 AppWidgetHostView widget = mAppWidgetHost.createView(this, info.appWidgetId, pInfo);
 
