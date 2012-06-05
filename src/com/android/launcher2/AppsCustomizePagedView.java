@@ -547,13 +547,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // TODO: this isn't ideal, but we actually need to delay here. This call is triggered
         // by a broadcast receiver, and in order for it to work correctly, we need to know that
         // the AppWidgetService has already received and processed the same broadcast. Since there
-        // is no guarantee about ordering of broadcast receipt, we just delay here. Ideally,
-        // we should have a more precise way of ensuring the AppWidgetService is up to date.
+        // is no guarantee about ordering of broadcast receipt, we just delay here. This is a
+        // workaround until we add a callback from AppWidgetService to AppWidgetHost when widget
+        // packages are added, updated or removed.
         postDelayed(new Runnable() {
            public void run() {
                updatePackages();
            }
-        }, 500);
+        }, 1500);
     }
 
     public void updatePackages() {
@@ -574,6 +575,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (minSpanX <= LauncherModel.getCellCountX() &&
                         minSpanY <= LauncherModel.getCellCountY()) {
                     mWidgets.add(widget);
+                } else {
+                    Log.e(TAG, "Widget " + widget.provider + " can not fit on this device (" +
+                            widget.minWidth + ", " + widget.minHeight + ")");
                 }
             } else {
                 Log.e(TAG, "Widget " + widget.provider + " has invalid dimensions (" +
