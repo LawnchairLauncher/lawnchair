@@ -42,8 +42,6 @@
     <Button
         style="@style/ClingButton"
         android:id="@+id/cling_dismiss"
-        android:layout_width="118dp"
-        android:layout_height="54dp"
         android:textSize="24sp"
         android:layout_marginBottom="27dp"
         android:layout_marginRight="36dp"
