@@ -374,6 +374,13 @@ public final class Launcher extends Activity
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
+        updateGlobalIcons();
+
+        // On large interfaces, we want the screen to auto-rotate based on the current orientation
+        unlockScreenOrientation(true);
+    }
+
+    private void updateGlobalIcons() {
         boolean searchVisible = false;
         boolean voiceVisible = false;
         // If we have a saved version of these external icons, we load them up immediately
@@ -396,9 +403,6 @@ public final class Launcher extends Activity
             updateAppMarketIcon(sAppMarketIcon[coi]);
         }
         mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
-
-        // On large interfaces, we want the screen to auto-rotate based on the current orientation
-        unlockScreenOrientation(true);
     }
 
     private void checkForLocaleChange() {
@@ -687,6 +691,10 @@ public final class Launcher extends Activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
         reinflateWidgetsIfNecessary();
+
+        // Again, as with the above scenario, it's possible that one or more of the global icons
+        // were updated in the wrong orientation.
+        updateGlobalIcons();
     }
 
     void reinflateWidgetsIfNecessary() {
