@@ -703,17 +703,24 @@ public final class Launcher extends Activity
             if (lahv != null && lahv.orientationChangedSincedInflation()) {
                 AppWidgetProviderInfo pInfo = lahv.getAppWidgetInfo();
 
-                // Remove the current widget which is inflated with the wrong orientation
-                CellLayout cl = getWorkspace().getParentCellLayoutForView(lahv);
-                if (cl != null) cl.removeView(lahv);
-                // Re-inflate the widget using the correct orientation
-                AppWidgetHostView widget = mAppWidgetHost.createView(this, info.appWidgetId, pInfo);
+                Workspace workspace = getWorkspace();
+                CellLayout parent = workspace.getParentCellLayoutForView(lahv);
 
-                // Add the new widget back
-                widget.setTag(info);
-                info.hostView = widget;
-                getWorkspace().addInScreen(widget, info.container, info.screen,
-                        info.cellX, info.cellY, info.spanX, info.spanY);
+                // It's possible this AppWidgetHostView is associated with a prior Launcher instance
+                // in which case it will not have a parent in the current hierarchy (ie. after rotation).
+                //  In this case we will be re-inflating the widgets anyhow, so it's not a problem.
+                if (parent != null) {
+                    // Remove the current widget which is inflated with the wrong orientation
+                    parent.removeView(lahv);
+                    // Re-inflate the widget using the correct orientation
+                    AppWidgetHostView widget = mAppWidgetHost.createView(this, info.appWidgetId, pInfo);
+
+                    // Add the new widget back
+                    widget.setTag(info);
+                    info.hostView = widget;
+                    getWorkspace().addInScreen(widget, info.container, info.screen,
+                            info.cellX, info.cellY, info.spanX, info.spanY);
+                }
             }
         }
     }
