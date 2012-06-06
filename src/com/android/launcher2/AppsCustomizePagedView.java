@@ -310,6 +310,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private boolean mInTransition;
     private ArrayList<AsyncTaskPageData> mDeferredSyncWidgetPageItems =
         new ArrayList<AsyncTaskPageData>();
+    private ArrayList<Runnable> mDeferredPrepareLoadWidgetPreviewsTasks =
+        new ArrayList<Runnable>();
 
     // Used for drawing shortcut previews
     BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
@@ -940,6 +942,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             onSyncWidgetPageItems(d);
         }
         mDeferredSyncWidgetPageItems.clear();
+        for (Runnable r : mDeferredPrepareLoadWidgetPreviewsTasks) {
+            r.run();
+        }
+        mDeferredPrepareLoadWidgetPreviewsTasks.clear();
         mForceDrawAllChildrenNextFrame = !toWorkspace;
     }
 
@@ -1023,6 +1029,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
         mDeferredSyncWidgetPageItems.clear();
+        mDeferredPrepareLoadWidgetPreviewsTasks.clear();
     }
 
     public void setContentType(ContentType type) {
@@ -1511,8 +1518,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     loadWidgetPreviewsInBackground(null, data);
                     onSyncWidgetPageItems(data);
                 } else {
-                    prepareLoadWidgetPreviewsTask(page, items,
-                            maxPreviewWidth, maxPreviewHeight, mWidgetCountX);
+                    if (mInTransition) {
+                        mDeferredPrepareLoadWidgetPreviewsTasks.add(this);
+                    } else {
+                        prepareLoadWidgetPreviewsTask(page, items,
+                                maxPreviewWidth, maxPreviewHeight, mWidgetCountX);
+                    }
                 }
             }
         });
