@@ -234,6 +234,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mDirtyPageContent.ensureCapacity(32);
         mScroller = new Scroller(getContext(), new ScrollInterpolator());
         mCurrentPage = 0;
+        if (this instanceof AppsCustomizePagedView) Log.d(TAG, "6549598 init() mCurrentPage: " + mCurrentPage);
         mCenterPagesVertically = true;
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
@@ -317,7 +318,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             return;
         }
 
+
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
+        if (this instanceof AppsCustomizePagedView) Log.d(TAG, "6549598 setCurrentPage mCurrentPage: " + mCurrentPage);
         updateCurrentPageScroll();
         updateScrollingIndicator();
         notifyPageSwitchListener();

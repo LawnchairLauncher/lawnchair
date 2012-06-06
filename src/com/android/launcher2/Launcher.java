@@ -3165,9 +3165,13 @@ public final class Launcher extends Activity
                     View shortcut = createShortcut(info);
                     workspace.addInScreen(shortcut, item.container, item.screen, item.cellX,
                             item.cellY, 1, 1, false);
-                    if (newApps.contains(uri)) {
-                        newApps.remove(uri);
-
+                    boolean animateIconUp = false;
+                    synchronized (newApps) {
+                        if (newApps.contains(uri)) {
+                            animateIconUp = newApps.remove(uri);
+                        }
+                    }
+                    if (animateIconUp) {
                         // Prepare the view to be animated up
                         shortcut.setAlpha(0f);
                         shortcut.setScaleX(0f);

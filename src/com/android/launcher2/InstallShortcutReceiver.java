@@ -185,7 +185,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     if (newAppsScreen == screen) {
                         newApps = sharedPrefs.getStringSet(NEW_APPS_LIST_KEY, newApps);
                     }
-                    newApps.add(intent.toUri(0).toString());
+                    synchronized (newApps) {
+                        newApps.add(intent.toUri(0).toString());
+                    }
                     final Set<String> savedNewApps = newApps;
                     new Thread("setNewAppsThread") {
                         public void run() {
