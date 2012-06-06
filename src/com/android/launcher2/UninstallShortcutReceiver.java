@@ -139,9 +139,11 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
             boolean appRemoved;
             Set<String> newApps = new HashSet<String>();
             newApps = sharedPrefs.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, newApps);
-            do {
-                appRemoved = newApps.remove(intent.toUri(0).toString());
-            } while (appRemoved);
+            synchronized (newApps) {
+                do {
+                    appRemoved = newApps.remove(intent.toUri(0).toString());
+                } while (appRemoved);
+            }
             if (appRemoved) {
                 final Set<String> savedNewApps = newApps;
                 new Thread("setNewAppsThread-remove") {

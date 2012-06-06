@@ -18,12 +18,6 @@
 -->
 
 <resources>
-<!-- QSB -->
-    <style name="SearchButton.Voice">
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
-    </style>
-
 <!-- AppsCustomize -->
     <style name="TabIndicator.AppsCustomize">
         <item name="android:maxWidth">130dp</item>

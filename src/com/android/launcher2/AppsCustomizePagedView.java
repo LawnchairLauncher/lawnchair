@@ -940,7 +940,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        Log.d(TAG, "6549598 onLauncherTransitionEnd");
+        Log.d(TAG, "6549598 onLauncherTransitionEnd mDeferredSyncWidgetPageItems.size(): " + mDeferredSyncWidgetPageItems.size());
         mInTransition = false;
         for (AsyncTaskPageData d : mDeferredSyncWidgetPageItems) {
             onSyncWidgetPageItems(d);
@@ -1108,7 +1108,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void syncAppsPageItems(int page, boolean immediate) {
-        Log.d(TAG, "6549598 syncAppsPageItems page: " + page);
+        Log.d(TAG, "6549598 syncAppsPageItems page: " + page + " mNumAppsPages: " + mNumAppsPages);
         // ensure that we have the right number of items on the pages
         int numCells = mCellCountX * mCellCountY;
         int startIndex = page * numCells;
