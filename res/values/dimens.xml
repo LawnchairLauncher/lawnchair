@@ -30,8 +30,6 @@
     <dimen name="qsb_bar_height">40dp</dimen>
     <dimen name="qsb_padding_left">0dp</dimen>
     <dimen name="qsb_padding_right">0dp</dimen>
-    <dimen name="search_bar_padding_left">8dp</dimen>
-    <dimen name="search_bar_padding_right">8dp</dimen>
     <dimen name="search_bar_height">40dp</dimen>
     <dimen name="workspace_max_gap">16dp</dimen>
     <dimen name="folder_cell_width">74dp</dimen>

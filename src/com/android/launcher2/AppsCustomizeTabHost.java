@@ -23,6 +23,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -392,6 +393,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
             // Make sure the current page is loaded (we start loading the side pages after the
             // transition to prevent slowing down the animation)
+            Log.d(LOG_TAG, "6549598 onLauncherTransitionPrepare currentPage: " + mAppsCustomizePane.getCurrentPage());
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
 
             if (!LauncherApplication.isScreenLarge()) {
@@ -434,6 +436,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             mAppsCustomizePane.showAllAppsCling();
             // Make sure adjacent pages are loaded (we wait until after the transition to
             // prevent slowing down the animation)
+            Log.d(LOG_TAG, "6549598 onLauncherTransitionEnd currentPage: " + mAppsCustomizePane.getCurrentPage());
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
 
             if (!LauncherApplication.isScreenLarge()) {
