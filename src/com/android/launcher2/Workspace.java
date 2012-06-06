@@ -3682,14 +3682,16 @@ public class Workspace extends SmoothPagedView
                     }
                     // Remove all queued items that match the same package
                     if (newApps != null) {
-                        for (String intentStr : newApps) {
-                            try {
-                                Intent intent = Intent.parseUri(intentStr, 0);
-                                String pn = ItemInfo.getPackageName(intent);
-                                if (packageNames.contains(pn)) {
-                                    newApps.remove(intentStr);
-                                }
-                            } catch (URISyntaxException e) {}
+                        synchronized (newApps) {
+                            for (String intentStr : newApps) {
+                                try {
+                                    Intent intent = Intent.parseUri(intentStr, 0);
+                                    String pn = ItemInfo.getPackageName(intent);
+                                    if (packageNames.contains(pn)) {
+                                        newApps.remove(intentStr);
+                                    }
+                                } catch (URISyntaxException e) {}
+                            }
                         }
                     }
                 }
