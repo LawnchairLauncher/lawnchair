@@ -377,10 +377,6 @@ public class LauncherModel extends BroadcastReceiver {
         return items;
     }
 
-    static ArrayList<LauncherAppWidgetInfo> getWidgets() {
-        return sAppWidgets;
-    }
-
     /**
      * Find a folder in the db, creating the FolderInfo if necessary, and adding it to folderList.
      */

@@ -670,6 +670,29 @@ public class Workspace extends SmoothPagedView
         return super.onInterceptTouchEvent(ev);
     }
 
+    protected void reinflateWidgetsIfNecessary() {
+        final int clCount = getChildCount();
+        for (int i = 0; i < clCount; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            ShortcutAndWidgetContainer swc = cl.getShortcutsAndWidgets();
+            final int itemCount = swc.getChildCount();
+            for (int j = 0; j < itemCount; j++) {
+                View v = swc.getChildAt(j);
+
+                if (v.getTag() instanceof LauncherAppWidgetInfo) {
+                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
+                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) info.hostView;
+                    if (lahv != null && lahv.orientationChangedSincedInflation()) {
+                        mLauncher.removeAppWidget(info);
+                        // Remove the current widget which is inflated with the wrong orientation
+                        cl.removeView(lahv);
+                        mLauncher.bindAppWidget(info);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
         if (isSmall()) return;

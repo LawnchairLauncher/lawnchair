@@ -690,39 +690,11 @@ public final class Launcher extends Activity
         // Consequently, the widgets will be inflated in the orientation of the foreground activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
-        reinflateWidgetsIfNecessary();
+        getWorkspace().reinflateWidgetsIfNecessary();
 
         // Again, as with the above scenario, it's possible that one or more of the global icons
         // were updated in the wrong orientation.
         updateGlobalIcons();
-    }
-
-    void reinflateWidgetsIfNecessary() {
-        for (LauncherAppWidgetInfo info: LauncherModel.getWidgets()) {
-            LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) info.hostView;
-            if (lahv != null && lahv.orientationChangedSincedInflation()) {
-                AppWidgetProviderInfo pInfo = lahv.getAppWidgetInfo();
-
-                Workspace workspace = getWorkspace();
-                CellLayout parent = workspace.getParentCellLayoutForView(lahv);
-
-                // It's possible this AppWidgetHostView is associated with a prior Launcher instance
-                // in which case it will not have a parent in the current hierarchy (ie. after rotation).
-                //  In this case we will be re-inflating the widgets anyhow, so it's not a problem.
-                if (parent != null) {
-                    // Remove the current widget which is inflated with the wrong orientation
-                    parent.removeView(lahv);
-                    // Re-inflate the widget using the correct orientation
-                    AppWidgetHostView widget = mAppWidgetHost.createView(this, info.appWidgetId, pInfo);
-
-                    // Add the new widget back
-                    widget.setTag(info);
-                    info.hostView = widget;
-                    getWorkspace().addInScreen(widget, info.container, info.screen,
-                            info.cellX, info.cellY, info.spanX, info.spanY);
-                }
-            }
-        }
     }
 
     @Override
@@ -3230,7 +3202,6 @@ public final class Launcher extends Activity
 
         item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
 
-        item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
         item.hostView.setTag(item);
         item.onBindAppWidget(this);
 
