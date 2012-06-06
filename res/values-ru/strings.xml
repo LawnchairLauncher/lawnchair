@@ -75,13 +75,13 @@
     <string name="cab_widget_selection_text" msgid="962527270506951955">"Выбран 1 виджет"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Выбрана 1 папка"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Выбран 1 ярлык"</string>
-    <string name="permlab_install_shortcut" msgid="1201690825493376489">"устанавливать ярлыки"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"Установка ярлыков"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Приложение сможет самостоятельно добавлять ярлыки."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"удалять ярлыки"</string>
     <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Приложение сможет самостоятельно удалять ярлыки."</string>
-    <string name="permlab_read_settings" msgid="3452408290738106747">"считывать настройки и ярлыки главного экрана"</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"Просмотр настроек и ярлыков главного экрана"</string>
     <string name="permdesc_read_settings" msgid="5788109303585403679">"Приложение получит доступ к данным о настройках и ярлыках на главном экране."</string>
-    <string name="permlab_write_settings" msgid="1360567537236705628">"изменять настройки и ярлыки главного экрана"</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"Изменение настроек и ярлыков главного экрана"</string>
     <string name="permdesc_write_settings" msgid="8530105489115785531">"Приложение сможет изменять настройки и ярлыки на главном экране."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Не удалось загрузить виджет"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Это системное приложение, его нельзя удалить."</string>
