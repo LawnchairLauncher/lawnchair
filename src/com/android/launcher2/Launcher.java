@@ -1226,17 +1226,6 @@ public final class Launcher extends Activity
                         // some communication back with the app.
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
 
-                        // We had to enable the wallpaper visibility when launching apps from all
-                        // apps (so that the transitions would be the same as when launching from
-                        // workspace) so take this time to see if we need to re-disable the
-                        // wallpaper visibility to ensure performance.
-                        mWorkspace.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                disableWallpaperIfInAllApps();
-                            }
-                        });
-
                         observer.removeOnPreDrawListener(this);
                         return true;
                     }
@@ -2604,7 +2593,12 @@ public final class Launcher extends Activity
             updateWallpaperVisibility(true);
         } else {
             // When launcher has focus again, disable the wallpaper if we are in AllApps
-            disableWallpaperIfInAllApps();
+            mWorkspace.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    disableWallpaperIfInAllApps();
+                }
+            }, 500);
         }
     }
 
