@@ -48,6 +48,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -278,6 +281,10 @@ public final class Launcher extends Activity
     // when we scroll to that page on resume.
     private int mNewShortcutAnimatePage = -1;
     private ArrayList<View> mNewShortcutAnimateViews = new ArrayList<View>();
+    private ImageView mFolderIconImageView;
+    private Bitmap mFolderIconBitmap;
+    private Canvas mFolderIconCanvas;
+    private Rect mRectForFolderAnimation = new Rect();
 
     private BubbleTextView mWaitingForResume;
 
@@ -2028,8 +2035,53 @@ public final class Launcher extends Activity
         }
     }
 
+    /**
+     * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
+     * in the DragLayer in the exact absolute location of the original FolderIcon.
+     */
+    private void copyFolderIconToImage(FolderIcon fi) {
+        final int width = fi.getMeasuredWidth();
+        final int height = fi.getMeasuredHeight();
+
+        // Lazy load ImageView, Bitmap and Canvas
+        if (mFolderIconImageView == null) {
+            mFolderIconImageView = new ImageView(this);
+        }
+        if (mFolderIconBitmap == null || mFolderIconBitmap.getWidth() != width ||
+                mFolderIconBitmap.getHeight() != height) {
+            mFolderIconBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            mFolderIconCanvas = new Canvas(mFolderIconBitmap);
+        }
+
+        DragLayer.LayoutParams lp;
+        if (mFolderIconImageView.getLayoutParams() instanceof DragLayer.LayoutParams) {
+            lp = (DragLayer.LayoutParams) mFolderIconImageView.getLayoutParams();
+        } else {
+            lp = new DragLayer.LayoutParams(width, height);
+        }
+
+        mDragLayer.getViewRectRelativeToSelf(fi, mRectForFolderAnimation);
+        lp.customPosition = true;
+        lp.x = mRectForFolderAnimation.left;
+        lp.y = mRectForFolderAnimation.top;
+
+        mFolderIconCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        fi.draw(mFolderIconCanvas);
+        mFolderIconImageView.setImageBitmap(mFolderIconBitmap);
+        mFolderIconImageView.setPivotX(fi.mFolder.getPivotXForIconAnimation());
+        mFolderIconImageView.setPivotY(fi.mFolder.getPivotYForIconAnimation());
+
+        // Just in case this image view is still in the drag layer from a previous animation,
+        // we remove it and re-add it.
+        if (mDragLayer.indexOfChild(mFolderIconImageView) != -1) {
+            mDragLayer.removeView(mFolderIconImageView);
+        }
+        mDragLayer.addView(mFolderIconImageView, lp);
+    }
+
     private void growAndFadeOutFolderIcon(FolderIcon fi) {
         if (fi == null) return;
+
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.5f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
@@ -2041,31 +2093,40 @@ public final class Launcher extends Activity
             cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
         }
 
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
+        // Push an ImageView copy of the FolderIcon into the DragLayer and hide the original
+        copyFolderIconToImage(fi);
+        fi.setVisibility(View.INVISIBLE);
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
+                scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.start();
     }
 
-    private void shrinkAndFadeInFolderIcon(FolderIcon fi) {
+    private void shrinkAndFadeInFolderIcon(final FolderIcon fi) {
         if (fi == null) return;
+
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
 
-        FolderInfo info = (FolderInfo) fi.getTag();
-        CellLayout cl = null;
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            cl = (CellLayout) fi.getParent().getParent();
-        }
+        final CellLayout cl = (CellLayout) fi.getParent().getParent();
 
-        final CellLayout layout = cl;
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
+        // We remove and re-draw the FolderIcon in-case it has changed
+        mDragLayer.removeView(mFolderIconImageView);
+        copyFolderIconToImage(fi);
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
+                scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (layout != null) {
-                    layout.clearFolderLeaveBehind();
+                if (cl != null) {
+                    cl.clearFolderLeaveBehind();
+                    // Remove the ImageView copy of the FolderIcon and make the original visible.
+                    mDragLayer.removeView(mFolderIconImageView);
+                    fi.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -2083,7 +2144,6 @@ public final class Launcher extends Activity
         Folder folder = folderIcon.mFolder;
         FolderInfo info = folder.mInfo;
 
-        growAndFadeOutFolderIcon(folderIcon);
         info.opened = true;
 
         // Just verify that the folder hasn't already been added to the DragLayer.
@@ -2096,6 +2156,7 @@ public final class Launcher extends Activity
                     folder.getParent() + ").");
         }
         folder.animateOpen();
+        growAndFadeOutFolderIcon(folderIcon);
     }
 
     public void closeFolder() {

@@ -321,12 +321,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
         animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION);
-
-        postDelayed(new Runnable() {
-            public void run() {
-                addItem(destInfo);
-            }
-        }, INITIAL_ITEM_ANIMATION_DURATION);
+        addItem(destInfo);
     }
 
     public void onDragExit(Object dragInfo) {
