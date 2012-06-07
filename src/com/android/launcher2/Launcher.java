@@ -1880,8 +1880,7 @@ public final class Launcher extends Activity
                     (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             ComponentName activityName = searchManager.getGlobalSearchActivity();
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (activityName != null) {
                 intent.setPackage(activityName.getPackageName());
             }
@@ -1889,8 +1888,7 @@ public final class Launcher extends Activity
             overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
         } catch (ActivityNotFoundException e) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivitySafely(null, intent, "onClickVoiceButton");
         }
     }
