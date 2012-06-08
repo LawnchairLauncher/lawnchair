@@ -100,6 +100,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mSuppressFolderDeletion = false;
     private boolean mItemAddedBackToSelfViaIcon = false;
     FolderEditText mFolderName;
+    private float mFolderIconPivotX;
+    private float mFolderIconPivotY;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -839,18 +841,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int folderPivotY = height / 2 + (centeredTop - top);
         setPivotX(folderPivotX);
         setPivotY(folderPivotY);
-        int folderIconPivotX = (int) (mFolderIcon.getMeasuredWidth() *
+        mFolderIconPivotX = (int) (mFolderIcon.getMeasuredWidth() *
                 (1.0f * folderPivotX / width));
-        int folderIconPivotY = (int) (mFolderIcon.getMeasuredHeight() *
+        mFolderIconPivotY = (int) (mFolderIcon.getMeasuredHeight() *
                 (1.0f * folderPivotY / height));
-
-        mFolderIcon.setPivotX(folderIconPivotX);
-        mFolderIcon.setPivotY(folderIconPivotY);
 
         lp.width = width;
         lp.height = height;
         lp.x = left;
         lp.y = top;
+    }
+
+    float getPivotXForIconAnimation() {
+        return mFolderIconPivotX;
+    }
+    float getPivotYForIconAnimation() {
+        return mFolderIconPivotY;
     }
 
     private void setupContentForNumItems(int count) {
