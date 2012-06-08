@@ -2062,24 +2062,29 @@ public final class Launcher extends Activity
         lp.customPosition = true;
         lp.x = mRectForFolderAnimation.left;
         lp.y = mRectForFolderAnimation.top;
+        lp.width = width;
+        lp.height = height;
 
         mFolderIconCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         fi.draw(mFolderIconCanvas);
         mFolderIconImageView.setImageBitmap(mFolderIconBitmap);
-        mFolderIconImageView.setPivotX(fi.mFolder.getPivotXForIconAnimation());
-        mFolderIconImageView.setPivotY(fi.mFolder.getPivotYForIconAnimation());
-
+        if (fi.mFolder != null) {
+            mFolderIconImageView.setPivotX(fi.mFolder.getPivotXForIconAnimation());
+            mFolderIconImageView.setPivotY(fi.mFolder.getPivotYForIconAnimation());
+        }
         // Just in case this image view is still in the drag layer from a previous animation,
         // we remove it and re-add it.
         if (mDragLayer.indexOfChild(mFolderIconImageView) != -1) {
             mDragLayer.removeView(mFolderIconImageView);
         }
         mDragLayer.addView(mFolderIconImageView, lp);
+        if (fi.mFolder != null) {
+            fi.mFolder.bringToFront();
+        }
     }
 
     private void growAndFadeOutFolderIcon(FolderIcon fi) {
         if (fi == null) return;
-
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.5f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
@@ -2103,7 +2108,6 @@ public final class Launcher extends Activity
 
     private void shrinkAndFadeInFolderIcon(final FolderIcon fi) {
         if (fi == null) return;
-
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
@@ -2113,7 +2117,6 @@ public final class Launcher extends Activity
         // We remove and re-draw the FolderIcon in-case it has changed
         mDragLayer.removeView(mFolderIconImageView);
         copyFolderIconToImage(fi);
-
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
