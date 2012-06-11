@@ -110,6 +110,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private static String sHintText;
     private ObjectAnimator mOpenCloseAnimator;
 
+    private boolean mDestroyed;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -943,34 +945,45 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void replaceFolderWithFinalItem() {
-        ItemInfo finalItem = null;
-
-        if (getItemCount() == 1) {
-            finalItem = mInfo.contents.get(0);
-        }
-
-        // Remove the folder completely
-        CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
-        cellLayout.removeView(mFolderIcon);
-        if (mFolderIcon instanceof DropTarget) {
-            mDragController.removeDropTarget((DropTarget) mFolderIcon);
-        }
-        mLauncher.removeFolder(mInfo);
-
-        if (finalItem != null) {
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                    mInfo.screen, mInfo.cellX, mInfo.cellY);
-        }
-        LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
-
         // Add the last remaining child to the workspace in place of the folder
-        if (finalItem != null) {
-            View child = mLauncher.createShortcut(R.layout.application, cellLayout,
-                    (ShortcutInfo) finalItem);
+        Runnable onCompleteRunnable = new Runnable() {
+            @Override
+            public void run() {
+                CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
 
-            mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen, mInfo.cellX,
-                    mInfo.cellY, mInfo.spanX, mInfo.spanY);
+                if (getItemCount() <= 1) {
+                    // Remove the folder
+                    LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
+                    cellLayout.removeView(mFolderIcon);
+                    if (mFolderIcon instanceof DropTarget) {
+                        mDragController.removeDropTarget((DropTarget) mFolderIcon);
+                    }
+                    mLauncher.removeFolder(mInfo);
+                }
+
+                // Move the item from the folder to the workspace, in the position of the folder
+                if (getItemCount() == 1) {
+                    ShortcutInfo finalItem = mInfo.contents.get(0);
+
+                    final View child = mLauncher.createShortcut(R.layout.application, cellLayout,
+                            finalItem);
+                    LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
+                            mInfo.screen, mInfo.cellX, mInfo.cellY);
+                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen,
+                            mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
+                }
+
+            }
+        };
+        View finalChild = getItemAt(0);
+        if (finalChild != null) {
+            mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
         }
+        mDestroyed = true;
+    }
+
+    boolean isDestroyed() {
+        return mDestroyed;
     }
 
     // This method keeps track of the last item in the folder for the purposes

@@ -1989,7 +1989,7 @@ public final class Launcher extends Activity
     }
 
     private void handleFolderClick(FolderIcon folderIcon) {
-        final FolderInfo info = folderIcon.mInfo;
+        final FolderInfo info = folderIcon.getFolderInfo();
         Folder openFolder = mWorkspace.getFolderForTag(info);
 
         // If the folder info reports that the associated folder is open, then verify that
@@ -2000,7 +2000,7 @@ public final class Launcher extends Activity
             info.opened = false;
         }
 
-        if (!info.opened) {
+        if (!info.opened && !folderIcon.getFolder().isDestroyed()) {
             // Close any open folder
             closeFolder();
             // Open the requested folder
@@ -2057,9 +2057,9 @@ public final class Launcher extends Activity
         mFolderIconCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         fi.draw(mFolderIconCanvas);
         mFolderIconImageView.setImageBitmap(mFolderIconBitmap);
-        if (fi.mFolder != null) {
-            mFolderIconImageView.setPivotX(fi.mFolder.getPivotXForIconAnimation());
-            mFolderIconImageView.setPivotY(fi.mFolder.getPivotYForIconAnimation());
+        if (fi.getFolder() != null) {
+            mFolderIconImageView.setPivotX(fi.getFolder().getPivotXForIconAnimation());
+            mFolderIconImageView.setPivotY(fi.getFolder().getPivotYForIconAnimation());
         }
         // Just in case this image view is still in the drag layer from a previous animation,
         // we remove it and re-add it.
@@ -2067,8 +2067,8 @@ public final class Launcher extends Activity
             mDragLayer.removeView(mFolderIconImageView);
         }
         mDragLayer.addView(mFolderIconImageView, lp);
-        if (fi.mFolder != null) {
-            fi.mFolder.bringToFront();
+        if (fi.getFolder() != null) {
+            fi.getFolder().bringToFront();
         }
     }
 
@@ -2131,7 +2131,7 @@ public final class Launcher extends Activity
      * @param folderInfo The FolderInfo describing the folder to open.
      */
     public void openFolder(FolderIcon folderIcon) {
-        Folder folder = folderIcon.mFolder;
+        Folder folder = folderIcon.getFolder();
         FolderInfo info = folder.mInfo;
 
         info.opened = true;
