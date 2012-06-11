@@ -361,8 +361,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
-
-        Log.d(TAG, "6549598 ctor mNumWidgetPages: " + mNumWidgetPages + " mNumAppsPages: " + mNumAppsPages);
     }
 
     @Override
@@ -373,7 +371,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Context context = getContext();
         Resources r = context.getResources();
         setDragSlopeThreshold(r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold)/100f);
-        Log.d(TAG, "6549598 init mNumWidgetPages: " + mNumWidgetPages + " mNumAppsPages: " + mNumAppsPages);
     }
 
     @Override
@@ -444,12 +441,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mNumWidgetPages = (int) Math.ceil(mWidgets.size() /
                 (float) (mWidgetCountX * mWidgetCountY));
         mNumAppsPages = (int) Math.ceil((float) mApps.size() / (mCellCountX * mCellCountY));
-        Log.d(TAG, "6549598 updatePageCounts mNumWidgetPages: " + mNumWidgetPages + " mNumAppsPages: " + mNumAppsPages);
-        Log.d(TAG, "6549598 mApps.size(): " + mApps.size() + " mWidgets.size(): " + mWidgets.size() + " mCellCountX: " + mCellCountX + " mCellCountY: " + mCellCountY);
     }
 
     protected void onDataReady(int width, int height) {
-        Log.d(TAG, "6549598 onDataReady");
         // Note that we transpose the counts in portrait so that we get a similar layout
         boolean isLandscape = getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
@@ -535,7 +529,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void onPackagesUpdated() {
-        Log.d(TAG, "6549598 onPackagesUpdated");
         // TODO: this isn't ideal, but we actually need to delay here. This call is triggered
         // by a broadcast receiver, and in order for it to work correctly, we need to know that
         // the AppWidgetService has already received and processed the same broadcast. Since there
@@ -578,7 +571,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgets.addAll(shortcuts);
         Collections.sort(mWidgets,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
-        Log.d(TAG, "6549598 updatePackages mWidgets.size(): " + mWidgets.size());
         updatePageCounts();
         invalidateOnDataChange();
     }
@@ -898,7 +890,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        Log.d(TAG, "6549598 onLauncherTransitionEnd mDeferredSyncWidgetPageItems.size(): " + mDeferredSyncWidgetPageItems.size());
         mInTransition = false;
         for (AsyncTaskPageData d : mDeferredSyncWidgetPageItems) {
             onSyncWidgetPageItems(d);
@@ -995,7 +986,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void setContentType(ContentType type) {
-        Log.d(TAG, "6549598 setContentType mNumAppsPages: " + mNumAppsPages);
         if (type == ContentType.Widgets) {
             invalidatePageData(mNumAppsPages, true);
         } else if (type == ContentType.Applications) {
@@ -1022,7 +1012,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     private void updateCurrentTab(int currentPage) {
-        Log.d(TAG, "6549598 updateCurrentTab mNumAppsPages: " + mNumAppsPages);
         AppsCustomizeTabHost tabHost = getTabHost();
         if (tabHost != null) {
             String tag = tabHost.getCurrentTabTag();
@@ -1066,7 +1055,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void syncAppsPageItems(int page, boolean immediate) {
-        Log.d(TAG, "6549598 syncAppsPageItems page: " + page + " mNumAppsPages: " + mNumAppsPages);
         // ensure that we have the right number of items on the pages
         int numCells = mCellCountX * mCellCountY;
         int startIndex = page * numCells;
@@ -1389,7 +1377,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void syncWidgetPageItems(final int page, final boolean immediate) {
-        Log.d(TAG, "6549598 syncWidgetPageItems page: " + page);
         int numItemsPerPage = mWidgetCountX * mWidgetCountY;
 
         // Calculate the dimensions of each cell we are giving to each widget
@@ -1585,13 +1572,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             setupPage(layout);
             addView(layout);
         }
-
-        Log.d(TAG, "6549598 syncPages mNumAppsPages: " + mNumAppsPages + " mNumWidgetPages: " + mNumWidgetPages);
     }
 
     @Override
     public void syncPageItems(int page, boolean immediate) {
-        Log.d(TAG, "6549598 syncPageItems page: " + page + " immediate: " + immediate);
         if (page < mNumAppsPages) {
             syncAppsPageItems(page, immediate);
         } else {
@@ -1743,7 +1727,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
-        Log.d(TAG, "6549598 setApps mApps.size(): " + mApps.size());
         updatePageCounts();
         invalidateOnDataChange();
     }
@@ -1761,10 +1744,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void addApps(ArrayList<ApplicationInfo> list) {
         addAppsWithoutInvalidate(list);
-        Log.d(TAG, "6549598 addApps mApps.size(): " + mApps.size() + " list.size(): " + list.size());
         updatePageCounts();
         invalidateOnDataChange();
-        Log.d(TAG, "6549598 addApps mNumAppsPages: " + mNumAppsPages);
     }
     private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {
         ComponentName removeComponent = item.intent.getComponent();
@@ -1791,10 +1772,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void removeApps(ArrayList<ApplicationInfo> list) {
         removeAppsWithoutInvalidate(list);
-        Log.d(TAG, "6549598 removeApps mApps.size(): " + mApps.size() + " list.size(): " + list.size());
         updatePageCounts();
         invalidateOnDataChange();
-        Log.d(TAG, "6549598 removeApps mNumAppsPages: " + mNumAppsPages);
     }
     @Override
     public void updateApps(ArrayList<ApplicationInfo> list) {
@@ -1803,15 +1782,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // place in the list.
         removeAppsWithoutInvalidate(list);
         addAppsWithoutInvalidate(list);
-        Log.d(TAG, "6549598 updateApps mApps.size(): " + mApps.size() + " list.size(): " + list.size());
         updatePageCounts();
         invalidateOnDataChange();
-        Log.d(TAG, "6549598 updateApps mNumAppsPages: " + mNumAppsPages);
     }
 
     @Override
     public void reset() {
-        Log.d(TAG, "6549598 reset");
         // If we have reset, then we should not continue to restore the previous state
         mSaveInstanceStateItemIndex = -1;
 
