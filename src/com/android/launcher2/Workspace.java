@@ -77,7 +77,6 @@ public class Workspace extends SmoothPagedView
 
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_OVERSCROLL_ROTATION = 24f;
-    private static float CAMERA_DISTANCE = 6500;
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
     private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
@@ -196,6 +195,7 @@ public class Workspace extends SmoothPagedView
     private boolean mIsStaticWallpaper;
     private int mWallpaperTravelWidth;
     private int mSpringLoadedPageSpacing;
+    private int mCameraDistance;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
@@ -321,6 +321,7 @@ public class Workspace extends SmoothPagedView
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mSpringLoadedPageSpacing =
                 res.getDimensionPixelSize(R.dimen.workspace_spring_loaded_page_spacing);
+        mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
 
         // if the value is manually specified, use that instead
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
@@ -1273,7 +1274,7 @@ public class Workspace extends SmoothPagedView
             setFadeForOverScroll(Math.abs(scrollProgress));
             if (!mOverscrollTransformsSet) {
                 mOverscrollTransformsSet = true;
-                cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                cl.setCameraDistance(mDensity * mCameraDistance);
                 cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
                 cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
                 cl.setOverscrollTransformsDirty(true);
