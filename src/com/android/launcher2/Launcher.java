@@ -2502,7 +2502,7 @@ public final class Launcher extends Activity
                     setPivotsForZoom(toView, scale);
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
-                    mWorkspace.post(new Runnable() {
+                    toView.post(new Runnable() {
                         public void run() {
                             // Check that mStateAnimation hasn't changed while
                             // we waited for a layout/draw pass
@@ -2516,7 +2516,7 @@ public final class Launcher extends Activity
             if (delayAnim) {
                 final OnGlobalLayoutListener delayedStart = new OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
-                        mWorkspace.post(startAnimRunnable);
+                        toView.post(startAnimRunnable);
                         observer.removeOnGlobalLayoutListener(this);
                     }
                 };
