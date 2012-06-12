@@ -430,16 +430,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    /**
-     * This differs from isDataReady as this is the test done if isDataReady is not set.
-     */
-    private boolean testDataReady() {
-        // We only do this test once, and we default to the Applications page, so we only really
-        // have to wait for there to be apps.
-        // TODO: What if one of them is validly empty
-        return !mApps.isEmpty() && !mWidgets.isEmpty();
-    }
-
     /** Restores the page for an item at the specified index */
     void restorePageForIndex(int index) {
         if (index < 0) return;
@@ -511,7 +501,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     void showAllAppsCling() {
-        if (!mHasShownAllAppsCling && isDataReady() && testDataReady()) {
+        if (!mHasShownAllAppsCling && isDataReady()) {
             mHasShownAllAppsCling = true;
             // Calculate the position for the cling punch through
             int[] offset = new int[2];
@@ -530,7 +520,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         if (!isDataReady()) {
-            if (testDataReady()) {
+            if (!mApps.isEmpty() && !mWidgets.isEmpty()) {
                 setDataIsReady();
                 setMeasuredDimension(width, height);
                 onDataReady(width, height);
@@ -557,7 +547,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void updatePackages() {
         // Get the list of widgets and shortcuts
-        boolean wasEmpty = mWidgets.isEmpty();
         mWidgets.clear();
         List<AppWidgetProviderInfo> widgets =
             AppWidgetManager.getInstance(mLauncher).getInstalledProviders();
@@ -585,17 +574,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgets.addAll(shortcuts);
         Collections.sort(mWidgets,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
-        Log.d(TAG, "6549598 updatePackages mWidgets.size(): " + mWidgets.size() + " wasEmpty: " + wasEmpty);
+        Log.d(TAG, "6549598 updatePackages mWidgets.size(): " + mWidgets.size());
         updatePageCounts();
-
-        if (wasEmpty) {
-            // The next layout pass will trigger data-ready if both widgets and apps are set, so request
-            // a layout to do this test and invalidate the page data when ready.
-            if (testDataReady()) requestLayout();
-        } else {
-            cancelAllTasks();
-            invalidatePageData();
-        }
+        invalidateOnDataChange();
     }
 
     @Override
@@ -1734,16 +1715,31 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public boolean isAnimating() {
         return false;
     }
+
+    /**
+     * We should call thise method whenever the core data changes (mApps, mWidgets) so that we can
+     * appropriately determine when to invalidate the PagedView page data.  In cases where the data
+     * has yet to be set, we can requestLayout() and wait for onDataReady() to be called in the
+     * next onMeasure() pass, which will trigger an invalidatePageData() itself.
+     */
+    private void invalidateOnDataChange() {
+        if (!isDataReady()) {
+            // The next layout pass will trigger data-ready if both widgets and apps are set, so
+            // request a layout to trigger the page data when ready.
+            requestLayout();
+        } else {
+            cancelAllTasks();
+            invalidatePageData();
+        }
+    }
+
     @Override
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
         Log.d(TAG, "6549598 setApps mApps.size(): " + mApps.size());
         updatePageCounts();
-
-        // The next layout pass will trigger data-ready if both widgets and apps are set, so 
-        // request a layout to do this test and invalidate the page data when ready.
-        if (testDataReady()) requestLayout();
+        invalidateOnDataChange();
     }
     private void addAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
         // We add it in place, in alphabetical order
@@ -1761,7 +1757,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         addAppsWithoutInvalidate(list);
         Log.d(TAG, "6549598 addApps mApps.size(): " + mApps.size() + " list.size(): " + list.size());
         updatePageCounts();
-        invalidatePageData();
+        invalidateOnDataChange();
         Log.d(TAG, "6549598 addApps mNumAppsPages: " + mNumAppsPages);
     }
     private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {
@@ -1791,7 +1787,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         removeAppsWithoutInvalidate(list);
         Log.d(TAG, "6549598 removeApps mApps.size(): " + mApps.size() + " list.size(): " + list.size());
         updatePageCounts();
-        invalidatePageData();
+        invalidateOnDataChange();
         Log.d(TAG, "6549598 removeApps mNumAppsPages: " + mNumAppsPages);
     }
     @Override
@@ -1803,7 +1799,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         addAppsWithoutInvalidate(list);
         Log.d(TAG, "6549598 updateApps mApps.size(): " + mApps.size() + " list.size(): " + list.size());
         updatePageCounts();
-        invalidatePageData();
+        invalidateOnDataChange();
         Log.d(TAG, "6549598 updateApps mNumAppsPages: " + mNumAppsPages);
     }
 
