@@ -148,14 +148,16 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
                 final Set<String> savedNewApps = newApps;
                 new Thread("setNewAppsThread-remove") {
                     public void run() {
-                        SharedPreferences.Editor editor = sharedPrefs.edit();
-                        editor.putStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
-                                savedNewApps);
-                        if (savedNewApps.isEmpty()) {
-                            // Reset the page index if there are no more items
-                            editor.putInt(InstallShortcutReceiver.NEW_APPS_PAGE_KEY, -1);
+                        synchronized (savedNewApps) {
+                            SharedPreferences.Editor editor = sharedPrefs.edit();
+                            editor.putStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
+                                    savedNewApps);
+                            if (savedNewApps.isEmpty()) {
+                                // Reset the page index if there are no more items
+                                editor.putInt(InstallShortcutReceiver.NEW_APPS_PAGE_KEY, -1);
+                            }
+                            editor.commit();
                         }
-                        editor.commit();
                     }
                 }.start();
             }
