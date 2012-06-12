@@ -190,10 +190,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     final Set<String> savedNewApps = newApps;
                     new Thread("setNewAppsThread") {
                         public void run() {
-                            sharedPrefs.edit()
-                                       .putInt(NEW_APPS_PAGE_KEY, screen)
-                                       .putStringSet(NEW_APPS_LIST_KEY, savedNewApps)
-                                       .commit();
+                            synchronized (savedNewApps) {
+                                sharedPrefs.edit()
+                                           .putInt(NEW_APPS_PAGE_KEY, screen)
+                                           .putStringSet(NEW_APPS_LIST_KEY, savedNewApps)
+                                           .commit();
+                            }
                         }
                     }.start();
 
