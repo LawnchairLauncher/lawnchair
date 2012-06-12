@@ -145,8 +145,8 @@ public final class Launcher extends Activity
     static final int DEFAULT_SCREEN = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
-    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher.force_enable_rotation";
-    static final String DUMP_STATE_PROPERTY = "debug.launcher2.dumpstate";
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "debug.force_enable_rotation";
+    static final String DUMP_STATE_PROPERTY = "debug.dumpstate";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
