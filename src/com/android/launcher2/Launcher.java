@@ -2923,9 +2923,9 @@ public final class Launcher extends Activity
 
     }
 
-    private void updateTextButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
+    private void updateTextButtonWithDrawable(int buttonId, Drawable d) {
         TextView button = (TextView) findViewById(buttonId);
-        button.setCompoundDrawables(d.newDrawable(getResources()), null, null, null);
+        button.setCompoundDrawables(d, null, null, null);
     }
 
     private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
@@ -3077,7 +3077,14 @@ public final class Launcher extends Activity
     }
 
     private void updateAppMarketIcon(Drawable.ConstantState d) {
-        updateTextButtonWithDrawable(R.id.market_button, d);
+        // Ensure that the new drawable we are creating has the approprate toolbar icon bounds
+        Resources r = getResources();
+        Drawable marketIconDrawable = d.newDrawable(r);
+        int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
+        int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
+        marketIconDrawable.setBounds(0, 0, w, h);
+
+        updateTextButtonWithDrawable(R.id.market_button, marketIconDrawable);
     }
 
     @Override
