@@ -372,7 +372,6 @@ public final class Launcher extends Activity
 
         // Update customization drawer _after_ restoring the states
         if (mAppsCustomizeContent != null) {
-            Log.d(TAG, "6549598 Launcher.onCreate()");
             mAppsCustomizeContent.onPackagesUpdated();
         }
 
@@ -2306,11 +2305,6 @@ public final class Launcher extends Activity
     }
 
     private void dispatchOnLauncherTransitionStart(View v, boolean animated, boolean toWorkspace) {
-        if (toWorkspace) {
-            Log.d(TAG, "6549598 Start animation to workspace");
-        } else {
-            Log.d(TAG, "6549598 Start animation to all apps");
-        }
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionStart(this, animated, toWorkspace);
         }
@@ -2326,11 +2320,6 @@ public final class Launcher extends Activity
     }
 
     private void dispatchOnLauncherTransitionEnd(View v, boolean animated, boolean toWorkspace) {
-        if (toWorkspace) {
-            Log.d(TAG, "6549598 End animation to workspace");
-        } else {
-            Log.d(TAG, "6549598 End animation to all apps");
-        }
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionEnd(this, animated, toWorkspace);
         }

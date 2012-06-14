@@ -234,7 +234,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mDirtyPageContent.ensureCapacity(32);
         mScroller = new Scroller(getContext(), new ScrollInterpolator());
         mCurrentPage = 0;
-        if (this instanceof AppsCustomizePagedView) Log.d(TAG, "6549598 init() mCurrentPage: " + mCurrentPage);
         mCenterPagesVertically = true;
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
@@ -320,7 +319,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
-        if (this instanceof AppsCustomizePagedView) Log.d(TAG, "6549598 setCurrentPage mCurrentPage: " + mCurrentPage);
         updateCurrentPageScroll();
         updateScrollingIndicator();
         notifyPageSwitchListener();
@@ -1676,7 +1674,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
     protected void invalidatePageData(int currentPage, boolean immediateAndOnly) {
         if (!mIsDataReady) {
-            if (this instanceof AppsCustomizePagedView) Log.d(TAG, "6549598 invalidatePageData page: " + currentPage + " not data ready");
             return;
         }
 
@@ -1708,8 +1705,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             // Load any pages that are necessary for the current window of views
             loadAssociatedPages(mCurrentPage, immediateAndOnly);
             requestLayout();
-
-            if (this instanceof AppsCustomizePagedView) Log.d(TAG, "6549598 invalidatePageData page: " + currentPage);
         }
     }
 
