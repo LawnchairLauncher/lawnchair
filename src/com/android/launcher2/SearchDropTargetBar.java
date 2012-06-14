@@ -224,16 +224,14 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
 
     public Rect getSearchBarBounds() {
         if (mQSBSearchBar != null) {
-            final float appScale = mQSBSearchBar.getContext().getResources()
-                    .getCompatibilityInfo().applicationScale;
             final int[] pos = new int[2];
             mQSBSearchBar.getLocationOnScreen(pos);
 
             final Rect rect = new Rect();
-            rect.left = (int) (pos[0] * appScale + 0.5f);
-            rect.top = (int) (pos[1] * appScale + 0.5f);
-            rect.right = (int) ((pos[0] + mQSBSearchBar.getWidth()) * appScale + 0.5f);
-            rect.bottom = (int) ((pos[1] + mQSBSearchBar.getHeight()) * appScale + 0.5f);
+            rect.left = pos[0];
+            rect.top = pos[1];
+            rect.right = pos[0] + mQSBSearchBar.getWidth();
+            rect.bottom = pos[1] + mQSBSearchBar.getHeight();
             return rect;
         } else {
             return null;
