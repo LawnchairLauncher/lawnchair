@@ -41,7 +41,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.TableMaskFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -774,24 +773,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
 
-        // We use a custom alpha clip table for the default widget previews
-        Paint alphaClipPaint = null;
-        if (createItemInfo instanceof PendingAddWidgetInfo) {
-            if (((PendingAddWidgetInfo) createItemInfo).previewImage != 0) {
-                MaskFilter alphaClipTable = TableMaskFilter.CreateClipTable(0, 255);
-                alphaClipPaint = new Paint();
-                alphaClipPaint.setMaskFilter(alphaClipTable);
-            }
-        }
+        // Don't clip alpha values for the drag outline if we're using the default widget preview
+        boolean clipAlpha = !(createItemInfo instanceof PendingAddWidgetInfo &&
+                (((PendingAddWidgetInfo) createItemInfo).previewImage == 0));
 
         // Save the preview for the outline generation, then dim the preview
         outline = Bitmap.createScaledBitmap(preview, preview.getWidth(), preview.getHeight(),
                 false);
 
         // Start the drag
-        alphaClipPaint = null;
         mLauncher.lockScreenOrientation();
-        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, outline, alphaClipPaint);
+        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, outline, clipAlpha);
         mDragController.startDrag(image, preview, this, createItemInfo,
                 DragController.DRAG_ACTION_COPY, null, scale);
         outline.recycle();

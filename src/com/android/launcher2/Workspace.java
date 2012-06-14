@@ -1478,14 +1478,14 @@ public class Workspace extends SmoothPagedView
         mDragOutline = createDragOutline(v, canvas, DRAG_BITMAP_PADDING);
     }
 
-    public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, Paint alphaClipPaint) {
+    public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, boolean clipAlpha) {
         final Canvas canvas = new Canvas();
 
         int[] size = estimateItemSize(info.spanX, info.spanY, info, false);
 
         // The outline is used to visualize where the item will land if dropped
         mDragOutline = createDragOutline(b, canvas, DRAG_BITMAP_PADDING, size[0],
-                size[1], alphaClipPaint);
+                size[1], clipAlpha);
     }
 
     public void exitWidgetResizeMode() {
@@ -1798,7 +1798,7 @@ public class Workspace extends SmoothPagedView
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h,
-            Paint alphaClipPaint) {
+            boolean clipAlpha) {
         final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
         final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
@@ -1815,7 +1815,7 @@ public class Workspace extends SmoothPagedView
 
         canvas.drawBitmap(orig, src, dst, null);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor,
-                alphaClipPaint);
+                clipAlpha);
         canvas.setBitmap(null);
 
         return b;
