@@ -65,6 +65,7 @@ import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Display;
@@ -1498,10 +1499,48 @@ public final class Launcher extends Activity
         }
         Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
 
+        startGlobalSearch(initialQuery, selectInitialQuery,
+            appSearchData, sourceBounds);
+    }
+
+    /**
+     * Starts the global search activity. This code is a copied from SearchManager
+     */
+    public void startGlobalSearch(String initialQuery,
+            boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         final SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
-            appSearchData, globalSearch, sourceBounds);
+            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
+        if (globalSearchActivity == null) {
+            Log.w(TAG, "No global search activity found.");
+            return;
+        }
+        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setComponent(globalSearchActivity);
+        // Make sure that we have a Bundle to put source in
+        if (appSearchData == null) {
+            appSearchData = new Bundle();
+        } else {
+            appSearchData = new Bundle(appSearchData);
+        }
+        // Set source to package name of app that starts global search, if not set already.
+        if (!appSearchData.containsKey("source")) {
+            appSearchData.putString("source", getPackageName());
+        }
+        intent.putExtra(SearchManager.APP_DATA, appSearchData);
+        if (!TextUtils.isEmpty(initialQuery)) {
+            intent.putExtra(SearchManager.QUERY, initialQuery);
+        }
+        if (selectInitialQuery) {
+            intent.putExtra(SearchManager.EXTRA_SELECT_QUERY, selectInitialQuery);
+        }
+        intent.setSourceBounds(sourceBounds);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException ex) {
+            Log.e(TAG, "Global search activity not found: " + globalSearchActivity);
+        }
     }
 
     @Override
