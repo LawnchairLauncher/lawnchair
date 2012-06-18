@@ -150,8 +150,8 @@
     <dimen name="workspace_cell_width_port">80dp</dimen>
     <dimen name="workspace_cell_height_land">74dp</dimen>
     <dimen name="workspace_cell_height_port">100dp</dimen>
-    <dimen name="workspace_width_gap_land">-1dp</dimen>
-    <dimen name="workspace_width_gap_port">-1dp</dimen>
-    <dimen name="workspace_height_gap_land">-1dp</dimen>
-    <dimen name="workspace_height_gap_port">-1dp</dimen>
+    <dimen name="workspace_width_gap_land">0dp</dimen>
+    <dimen name="workspace_width_gap_port">0dp</dimen>
+    <dimen name="workspace_height_gap_land">0dp</dimen>
+    <dimen name="workspace_height_gap_port">0dp</dimen>
 </resources>
