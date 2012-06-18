@@ -23,9 +23,9 @@
     <string name="home" msgid="5921706419368316758">"Startbildschirm"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="6063168087625352235">"Hintergrund auswählen von"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Hintergrund auswählen"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Hintergrund festlegen"</string>
-    <string name="pick_wallpaper" msgid="5630222540525626723">"Hintergrundbilder"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Hintergrund-Bilder"</string>
     <string name="activity_not_found" msgid="217823393239365967">"App ist nicht installiert."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Zum Hinzufügen Widget berühren und halten"</string>
