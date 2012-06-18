@@ -923,7 +923,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private void onCloseComplete() {
         DragLayer parent = (DragLayer) getParent();
-        parent.removeView(this);
+        if (parent != null) {
+            parent.removeView(this);
+        }
         mDragController.removeDropTarget((DropTarget) this);
         clearFocus();
         mFolderIcon.requestFocus();
