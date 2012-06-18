@@ -144,7 +144,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             if (mEnableDropDownDropTargets) {
                 mQSBSearchBar.setTranslationY(0);
             } else {
-                mDropTargetBar.setAlpha(1f);
+                mQSBSearchBar.setAlpha(1f);
             }
         }
         mIsSearchBarHidden = false;
@@ -159,7 +159,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             if (mEnableDropDownDropTargets) {
                 mQSBSearchBar.setTranslationY(-mBarHeight);
             } else {
-                mDropTargetBar.setAlpha(0f);
+                mQSBSearchBar.setAlpha(0f);
             }
         }
         mIsSearchBarHidden = true;
