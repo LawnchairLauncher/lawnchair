@@ -76,7 +76,7 @@ public class DragView extends View {
         final float scale = (width + scaleDps) / width;
 
         // Animate the view into the correct position
-        mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mAnim = LauncherAnimUtils.ofFloat(0.0f, 1.0f);
         mAnim.setDuration(150);
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
@@ -199,7 +199,7 @@ public class DragView extends View {
     }
 
     public void crossFade(int duration) {
-        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+        ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(new DecelerateInterpolator(1.5f));
         va.addUpdateListener(new AnimatorUpdateListener() {

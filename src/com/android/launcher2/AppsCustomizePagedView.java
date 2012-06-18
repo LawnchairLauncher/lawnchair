@@ -17,7 +17,6 @@
 package com.android.launcher2;
 
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -586,10 +585,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // Create a little animation to show that the widget can move
             float offsetY = getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
             final ImageView p = (ImageView) v.findViewById(R.id.widget_preview);
-            AnimatorSet bounce = new AnimatorSet();
-            ValueAnimator tyuAnim = ObjectAnimator.ofFloat(p, "translationY", offsetY);
+            AnimatorSet bounce = LauncherAnimUtils.createAnimatorSet();
+            ValueAnimator tyuAnim = LauncherAnimUtils.ofFloat(p, "translationY", offsetY);
             tyuAnim.setDuration(125);
-            ValueAnimator tydAnim = ObjectAnimator.ofFloat(p, "translationY", 0f);
+            ValueAnimator tydAnim = LauncherAnimUtils.ofFloat(p, "translationY", 0f);
             tydAnim.setDuration(100);
             bounce.play(tyuAnim).before(tydAnim);
             bounce.setInterpolator(new AccelerateInterpolator());

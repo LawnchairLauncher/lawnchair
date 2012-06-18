@@ -1090,7 +1090,7 @@ public class Workspace extends SmoothPagedView
         if (!isSmall() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
-            mChildrenOutlineFadeInAnimation = ObjectAnimator.ofFloat(this, "childrenOutlineAlpha", 1.0f);
+            mChildrenOutlineFadeInAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 1.0f);
             mChildrenOutlineFadeInAnimation.setDuration(CHILDREN_OUTLINE_FADE_IN_DURATION);
             mChildrenOutlineFadeInAnimation.start();
         }
@@ -1100,7 +1100,7 @@ public class Workspace extends SmoothPagedView
         if (!isSmall() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
-            mChildrenOutlineFadeOutAnimation = ObjectAnimator.ofFloat(this, "childrenOutlineAlpha", 0.0f);
+            mChildrenOutlineFadeOutAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 0.0f);
             mChildrenOutlineFadeOutAnimation.setDuration(CHILDREN_OUTLINE_FADE_OUT_DURATION);
             mChildrenOutlineFadeOutAnimation.setStartDelay(CHILDREN_OUTLINE_FADE_OUT_DELAY);
             mChildrenOutlineFadeOutAnimation.start();
@@ -1145,7 +1145,7 @@ public class Workspace extends SmoothPagedView
         float startAlpha = getBackgroundAlpha();
         if (finalAlpha != startAlpha) {
             if (animated) {
-                mBackgroundFadeOutAnimation = ValueAnimator.ofFloat(startAlpha, finalAlpha);
+                mBackgroundFadeOutAnimation = LauncherAnimUtils.ofFloat(startAlpha, finalAlpha);
                 mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
                     public void onAnimationUpdate(ValueAnimator animation) {
                         setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
@@ -1515,7 +1515,7 @@ public class Workspace extends SmoothPagedView
         // Initialize animation arrays for the first time if necessary
         initAnimationArrays();
 
-        AnimatorSet anim = animated ? new AnimatorSet() : null;
+        AnimatorSet anim = animated ? LauncherAnimUtils.createAnimatorSet() : null;
 
         // Stop any scrolling, move to the current page right away
         setCurrentPage(getNextPage());
@@ -1631,7 +1631,7 @@ public class Workspace extends SmoothPagedView
                     }
                     if (mOldBackgroundAlphas[i] != 0 ||
                         mNewBackgroundAlphas[i] != 0) {
-                        ValueAnimator bgAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+                        ValueAnimator bgAnim = LauncherAnimUtils.ofFloat(0f, 1f).setDuration(duration);
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                                 public void onAnimationUpdate(float a, float b) {

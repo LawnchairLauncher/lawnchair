@@ -1082,7 +1082,7 @@ public class CellLayout extends ViewGroup {
                 return true;
             }
 
-            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
@@ -2064,7 +2064,7 @@ public class CellLayout extends ViewGroup {
             if (finalDeltaX == 0 && finalDeltaY == 0) {
                 return;
             }
-            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             a = va;
             va.setRepeatMode(ValueAnimator.REVERSE);
             va.setRepeatCount(ValueAnimator.INFINITE);
@@ -2106,13 +2106,13 @@ public class CellLayout extends ViewGroup {
                 a.cancel();
             }
 
-            AnimatorSet s = new AnimatorSet();
+            AnimatorSet s = LauncherAnimUtils.createAnimatorSet();
             a = s;
             s.playTogether(
-                ObjectAnimator.ofFloat(child, "scaleX", 1f),
-                ObjectAnimator.ofFloat(child, "scaleY", 1f),
-                ObjectAnimator.ofFloat(child, "translationX", 0f),
-                ObjectAnimator.ofFloat(child, "translationY", 0f)
+                LauncherAnimUtils.ofFloat(child, "scaleX", 1f),
+                LauncherAnimUtils.ofFloat(child, "scaleY", 1f),
+                LauncherAnimUtils.ofFloat(child, "translationX", 0f),
+                LauncherAnimUtils.ofFloat(child, "translationY", 0f)
             );
             s.setDuration(REORDER_ANIMATION_DURATION);
             s.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));

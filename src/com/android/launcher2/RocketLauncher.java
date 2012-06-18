@@ -21,7 +21,6 @@
 package com.android.launcher2;
 
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
 import android.content.ComponentName;
 import android.content.Context;
@@ -150,11 +149,11 @@ public class RocketLauncher extends BasicDream {
                                 }
                             }, LAUNCH_ZOOM_TIME);
                             endscale = 0;
-                            AnimatorSet s = new AnimatorSet();
+                            AnimatorSet s = LauncherAnimUtils.createAnimatorSet();
                             s.playTogether(
-                                ObjectAnimator.ofFloat(this, "scaleX", 15f),
-                                ObjectAnimator.ofFloat(this, "scaleY", 15f),
-                                ObjectAnimator.ofFloat(this, "alpha", 0f)
+                                LauncherAnimUtils.ofFloat(this, "scaleX", 15f),
+                                LauncherAnimUtils.ofFloat(this, "scaleY", 15f),
+                                LauncherAnimUtils.ofFloat(this, "alpha", 0f)
                             );
 
                             // make sure things are still moving until the very last instant the

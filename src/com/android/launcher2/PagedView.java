@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -1756,7 +1755,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             if (immediately) {
                 mScrollIndicator.setAlpha(1f);
             } else {
-                mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 1f);
+                mScrollIndicatorAnimator = LauncherAnimUtils.ofFloat(mScrollIndicator, "alpha", 1f);
                 mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
                 mScrollIndicatorAnimator.start();
             }
@@ -1782,7 +1781,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 mScrollIndicator.setVisibility(View.INVISIBLE);
                 mScrollIndicator.setAlpha(0f);
             } else {
-                mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 0f);
+                mScrollIndicatorAnimator = LauncherAnimUtils.ofFloat(mScrollIndicator, "alpha", 0f);
                 mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeOutDuration);
                 mScrollIndicatorAnimator.addListener(new AnimatorListenerAdapter() {
                     private boolean cancelled = false;

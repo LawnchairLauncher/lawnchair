@@ -265,7 +265,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 onTabChangedEnd(type);
 
                 // Animate the transition
-                ObjectAnimator outAnim = ObjectAnimator.ofFloat(mAnimationBuffer, "alpha", 0f);
+                ObjectAnimator outAnim = LauncherAnimUtils.ofFloat(mAnimationBuffer, "alpha", 0f);
                 outAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -278,14 +278,14 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                         mAnimationBuffer.removeAllViews();
                     }
                 });
-                ObjectAnimator inAnim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
+                ObjectAnimator inAnim = LauncherAnimUtils.ofFloat(mAppsCustomizePane, "alpha", 1f);
                 inAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         reloadCurrentPage();
                     }
                 });
-                AnimatorSet animSet = new AnimatorSet();
+                AnimatorSet animSet = LauncherAnimUtils.createAnimatorSet();
                 animSet.playTogether(outAnim, inAnim);
                 animSet.setDuration(duration);
                 animSet.start();

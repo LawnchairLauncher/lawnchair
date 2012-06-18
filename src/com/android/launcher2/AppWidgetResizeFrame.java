@@ -403,17 +403,17 @@ public class AppWidgetResizeFrame extends FrameLayout {
                     newHeight);
             PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", lp.x, newX);
             PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", lp.y, newY);
-            ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
-            ObjectAnimator leftOa = ObjectAnimator.ofFloat(mLeftHandle, "alpha", 1.0f);
-            ObjectAnimator rightOa = ObjectAnimator.ofFloat(mRightHandle, "alpha", 1.0f);
-            ObjectAnimator topOa = ObjectAnimator.ofFloat(mTopHandle, "alpha", 1.0f);
-            ObjectAnimator bottomOa = ObjectAnimator.ofFloat(mBottomHandle, "alpha", 1.0f);
+            ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(lp, width, height, x, y);
+            ObjectAnimator leftOa = LauncherAnimUtils.ofFloat(mLeftHandle, "alpha", 1.0f);
+            ObjectAnimator rightOa = LauncherAnimUtils.ofFloat(mRightHandle, "alpha", 1.0f);
+            ObjectAnimator topOa = LauncherAnimUtils.ofFloat(mTopHandle, "alpha", 1.0f);
+            ObjectAnimator bottomOa = LauncherAnimUtils.ofFloat(mBottomHandle, "alpha", 1.0f);
             oa.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     requestLayout();
                 }
             });
-            AnimatorSet set = new AnimatorSet();
+            AnimatorSet set = LauncherAnimUtils.createAnimatorSet();
             if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
                 set.playTogether(oa, topOa, bottomOa);
             } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {

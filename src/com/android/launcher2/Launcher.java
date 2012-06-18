@@ -1466,7 +1466,7 @@ public final class Launcher extends Activity
         mWorkspace = null;
         mDragController = null;
 
-        ValueAnimator.clearAllAnimations();
+        LauncherAnimUtils.onDestroyActivity();
     }
 
     public DragController getDragController() {
@@ -2141,7 +2141,7 @@ public final class Launcher extends Activity
         copyFolderIconToImage(fi);
         fi.setVisibility(View.INVISIBLE);
 
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
+        ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.start();
@@ -2158,7 +2158,7 @@ public final class Launcher extends Activity
         // We remove and re-draw the FolderIcon in-case it has changed
         mDragLayer.removeView(mFolderIconImageView);
         copyFolderIconToImage(fi);
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
+        ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.addListener(new AnimatorListenerAdapter() {
@@ -2459,7 +2459,7 @@ public final class Launcher extends Activity
 
             // toView should appear right at the end of the workspace shrink
             // animation
-            mStateAnimation = new AnimatorSet();
+            mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             mStateAnimation.play(scaleAnim).after(startDelay);
             mStateAnimation.play(alphaAnim).after(startDelay);
 
@@ -2634,7 +2634,7 @@ public final class Launcher extends Activity
                 }
             });
 
-            mStateAnimation = new AnimatorSet();
+            mStateAnimation = LauncherAnimUtils.createAnimatorSet();
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionPrepare(toView, animated, true);
@@ -2818,9 +2818,9 @@ public final class Launcher extends Activity
                 mDividerAnimator = null;
             }
             if (animated) {
-                mDividerAnimator = new AnimatorSet();
-                mDividerAnimator.playTogether(ObjectAnimator.ofFloat(mQsbDivider, "alpha", 1f),
-                        ObjectAnimator.ofFloat(mDockDivider, "alpha", 1f));
+                mDividerAnimator = LauncherAnimUtils.createAnimatorSet();
+                mDividerAnimator.playTogether(LauncherAnimUtils.ofFloat(mQsbDivider, "alpha", 1f),
+                        LauncherAnimUtils.ofFloat(mDockDivider, "alpha", 1f));
                 mDividerAnimator.setDuration(mSearchDropTargetBar.getTransitionInDuration());
                 mDividerAnimator.start();
             }
@@ -3398,7 +3398,7 @@ public final class Launcher extends Activity
      * @param immediate whether to run the animation or show the results immediately
      */
     private void runNewAppsAnimation(boolean immediate) {
-        AnimatorSet anim = new AnimatorSet();
+        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         Collection<Animator> bounceAnims = new ArrayList<Animator>();
 
         // Order these new views spatially so that they animate in order
@@ -3422,7 +3422,7 @@ public final class Launcher extends Activity
         } else {
             for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
                 View v = mNewShortcutAnimateViews.get(i);
-                ValueAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(v,
+                ValueAnimator bounceAnim = LauncherAnimUtils.ofPropertyValuesHolder(v,
                         PropertyValuesHolder.ofFloat("alpha", 1f),
                         PropertyValuesHolder.ofFloat("scaleX", 1f),
                         PropertyValuesHolder.ofFloat("scaleY", 1f));
@@ -3630,7 +3630,7 @@ public final class Launcher extends Activity
     }
     private void dismissCling(final Cling cling, final String flag, int duration) {
         if (cling != null) {
-            ObjectAnimator anim = ObjectAnimator.ofFloat(cling, "alpha", 0f);
+            ObjectAnimator anim = LauncherAnimUtils.ofFloat(cling, "alpha", 0f);
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
