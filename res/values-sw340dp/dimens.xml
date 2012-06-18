@@ -39,10 +39,4 @@
     <dimen name="cell_layout_top_padding_land">8dp</dimen>
     <dimen name="cell_layout_bottom_padding_port">8dp</dimen>
     <dimen name="cell_layout_bottom_padding_land">8dp</dimen>
-
-<!-- Workspace cell size -->
-    <dimen name="workspace_width_gap_land">0dp</dimen>
-    <dimen name="workspace_width_gap_port">0dp</dimen>
-    <dimen name="workspace_height_gap_land">0dp</dimen>
-    <dimen name="workspace_height_gap_port">0dp</dimen>
 </resources>
