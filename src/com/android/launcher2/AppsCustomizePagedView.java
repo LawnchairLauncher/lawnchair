@@ -231,7 +231,7 @@ class RectCache extends WeakReferenceThreadLocal<Rect> {
  * The Apps/Customize page that displays all the applications, widgets, and shortcuts.
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
-        AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource,
+        View.OnClickListener, View.OnKeyListener, DragSource,
         PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener,
         LauncherTransitionable {
     static final String TAG = "AppsCustomizePagedView";
@@ -1668,22 +1668,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     /*
      * AllAppsView implementation
      */
-    @Override
     public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
         mDragController = dragController;
-    }
-    @Override
-    public void zoom(float zoom, boolean animate) {
-        // TODO-APPS_CUSTOMIZE: Call back to mLauncher.zoomed()
-    }
-    @Override
-    public boolean isVisible() {
-        return (getVisibility() == VISIBLE);
-    }
-    @Override
-    public boolean isAnimating() {
-        return false;
     }
 
     /**
@@ -1703,7 +1690,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    @Override
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
@@ -1721,7 +1707,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
-    @Override
     public void addApps(ArrayList<ApplicationInfo> list) {
         addAppsWithoutInvalidate(list);
         updatePageCounts();
@@ -1738,6 +1723,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
         return -1;
     }
+    private int findAppByPackage(List<ApplicationInfo> list, String packageName) {
+        int length = list.size();
+        for (int i = 0; i < length; ++i) {
+            ApplicationInfo info = list.get(i);
+            if (ItemInfo.getPackageName(info.intent).equals(packageName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
     private void removeAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
         // loop through all the apps and remove apps that have the same component
         int length = list.size();
@@ -1749,13 +1744,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
-    @Override
-    public void removeApps(ArrayList<ApplicationInfo> list) {
-        removeAppsWithoutInvalidate(list);
+    private void removeAppsWithPackageNameWithoutInvalidate(ArrayList<String> packageNames) {
+        // loop through all the package names and remove apps that have the same package name
+        for (String pn : packageNames) {
+            int removeIndex = findAppByPackage(mApps, pn);
+            while (removeIndex > -1) {
+                mApps.remove(removeIndex);
+                removeIndex = findAppByPackage(mApps, pn);
+            }
+        }
+    }
+    public void removeApps(ArrayList<String> packageNames) {
+        removeAppsWithPackageNameWithoutInvalidate(packageNames);
         updatePageCounts();
         invalidateOnDataChange();
     }
-    @Override
     public void updateApps(ArrayList<ApplicationInfo> list) {
         // We remove and re-add the updated applications list because it's properties may have
         // changed (ie. the title), and this will ensure that the items will be in their proper
@@ -1766,7 +1769,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         invalidateOnDataChange();
     }
 
-    @Override
     public void reset() {
         // If we have reset, then we should not continue to restore the previous state
         mSaveInstanceStateItemIndex = -1;
@@ -1788,7 +1790,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return (AppsCustomizeTabHost) mLauncher.findViewById(R.id.apps_customize_pane);
     }
 
-    @Override
     public void dumpState() {
         // TODO: Dump information related to current list of Applications, Widgets, etc.
         ApplicationInfo.dumpApplicationInfoList(TAG, "mApps", mApps);
@@ -1813,7 +1814,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    @Override
     public void surrender() {
         // TODO: If we are in the middle of any process (ie. for holographic outlines, etc) we
         // should stop this now.

@@ -135,7 +135,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
-        public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent);
+        public void bindAppsRemoved(ArrayList<String> packageNames, boolean permanent);
         public void bindPackagesUpdated();
         public boolean isAllAppsVisible();
         public boolean isAllAppsButtonRank(int rank);
@@ -1623,23 +1623,23 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             ArrayList<ApplicationInfo> added = null;
-            ArrayList<ApplicationInfo> removed = null;
             ArrayList<ApplicationInfo> modified = null;
 
             if (mAllAppsList.added.size() > 0) {
                 added = mAllAppsList.added;
                 mAllAppsList.added = new ArrayList<ApplicationInfo>();
             }
-            if (mAllAppsList.removed.size() > 0) {
-                removed = mAllAppsList.removed;
-                mAllAppsList.removed = new ArrayList<ApplicationInfo>();
-                for (ApplicationInfo info: removed) {
-                    mIconCache.remove(info.intent.getComponent());
-                }
-            }
             if (mAllAppsList.modified.size() > 0) {
                 modified = mAllAppsList.modified;
                 mAllAppsList.modified = new ArrayList<ApplicationInfo>();
+            }
+
+            // We may be removing packages that have no associated launcher application, so we
+            // pass through the removed package names directly.
+            // NOTE: We flush the icon cache aggressively in removePackage() above.
+            final ArrayList<String> removedPackageNames = new ArrayList<String>();
+            for (int i = 0; i < N; ++i) {
+                removedPackageNames.add(packages[i]);
             }
 
             final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
@@ -1670,14 +1670,13 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
             }
-            if (removed != null) {
+            if (!removedPackageNames.isEmpty()) {
                 final boolean permanent = mOp != OP_UNAVAILABLE;
-                final ArrayList<ApplicationInfo> removedFinal = removed;
                 mHandler.post(new Runnable() {
                     public void run() {
                         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindAppsRemoved(removedFinal, permanent);
+                            callbacks.bindAppsRemoved(removedPackageNames, permanent);
                         }
                     }
                 });
