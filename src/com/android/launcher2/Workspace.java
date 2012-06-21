@@ -3553,12 +3553,9 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    void removeItems(final ArrayList<ApplicationInfo> apps) {
+    void removeItems(final ArrayList<String> packages) {
         final HashSet<String> packageNames = new HashSet<String>();
-        final int appCount = apps.size();
-        for (int i = 0; i < appCount; i++) {
-            packageNames.add(apps.get(i).componentName.getPackageName());
-        }
+        packageNames.addAll(packages);
 
         ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
         for (final CellLayout layoutParent: cellLayouts) {

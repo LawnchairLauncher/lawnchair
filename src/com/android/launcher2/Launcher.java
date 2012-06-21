@@ -117,7 +117,7 @@ import java.util.Set;
  */
 public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   AllAppsView.Watcher, View.OnTouchListener {
+                   View.OnTouchListener {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -2300,13 +2300,6 @@ public final class Launcher extends Activity
         return mHotseat.isAllAppsButtonRank(rank);
     }
 
-    // AllAppsView.Watcher
-    public void zoomed(float zoom) {
-        if (zoom == 1.0f) {
-            mWorkspace.setVisibility(View.GONE);
-        }
-    }
-
     /**
      * Helper method for the cameraZoomIn/cameraZoomOut animations
      * @param view The view being animated
@@ -3520,17 +3513,17 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent) {
+    public void bindAppsRemoved(ArrayList<String> packageNames, boolean permanent) {
         if (permanent) {
-            mWorkspace.removeItems(apps);
+            mWorkspace.removeItems(packageNames);
         }
 
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.removeApps(apps);
+            mAppsCustomizeContent.removeApps(packageNames);
         }
 
         // Notify the drag controller
-        mDragController.onAppsRemoved(apps, this);
+        mDragController.onAppsRemoved(packageNames, this);
     }
 
     /**
