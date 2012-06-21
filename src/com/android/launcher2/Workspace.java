@@ -366,19 +366,9 @@ public class Workspace extends SmoothPagedView
         return r;
     }
 
-    public void buildPageHardwareLayers() {
-        if (getWindowToken() != null) {
-            final int childCount = getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                CellLayout cl = (CellLayout) getChildAt(i);
-                cl.getShortcutsAndWidgets().buildLayer();
-            }
-        }
-    }
-
     public void onDragStart(DragSource source, Object info, int dragAction) {
         mIsDragOccuring = true;
-        updateChildrenLayersEnabled();
+        updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
         setChildrenBackgroundAlphaMultipliers(1f);
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
@@ -388,7 +378,7 @@ public class Workspace extends SmoothPagedView
 
     public void onDragEnd() {
         mIsDragOccuring = false;
-        updateChildrenLayersEnabled();
+        updateChildrenLayersEnabled(false);
         mLauncher.unlockScreenOrientation(false);
 
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
@@ -730,7 +720,7 @@ public class Workspace extends SmoothPagedView
         super.onPageBeginMoving();
 
         if (isHardwareAccelerated()) {
-            updateChildrenLayersEnabled();
+            updateChildrenLayersEnabled(false);
         } else {
             if (mNextPage != INVALID_PAGE) {
                 // we're snapping to a particular screen
@@ -764,7 +754,7 @@ public class Workspace extends SmoothPagedView
         super.onPageEndMoving();
 
         if (isHardwareAccelerated()) {
-            updateChildrenLayersEnabled();
+            updateChildrenLayersEnabled(false);
         } else {
             clearChildrenCache();
         }
@@ -1372,16 +1362,32 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private void updateChildrenLayersEnabled() {
+
+    private void updateChildrenLayersEnabled(boolean force) {
         boolean small = mState == State.SMALL || mIsSwitchingState;
-        boolean enableChildrenLayers = small || mAnimatingViewIntoPlace || isPageMoving();
+        boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageMoving();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
             for (int i = 0; i < getPageCount(); i++) {
-                ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(mChildrenLayersEnabled);
+                CellLayout cl = (CellLayout) getChildAt(i);
+                cl.getShortcutsAndWidgets().setLayerType(
+                        mChildrenLayersEnabled ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, null);
             }
         }
+    }
+
+    public void buildPageHardwareLayers() {
+        // force layers to be enabled just for the call to buildLayer
+        updateChildrenLayersEnabled(true);
+        if (getWindowToken() != null) {
+            final int childCount = getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                CellLayout cl = (CellLayout) getChildAt(i);
+                cl.getShortcutsAndWidgets().buildLayer();
+            }
+        }
+        updateChildrenLayersEnabled(false);
     }
 
     protected void onWallpaperTap(MotionEvent ev) {
@@ -1542,7 +1548,7 @@ public class Workspace extends SmoothPagedView
             if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
                 setLayoutScale(finalScaleFactor);
-                updateChildrenLayersEnabled();
+                updateChildrenLayersEnabled(false);
             } else {
                 finalBackgroundAlpha = 1.0f;
                 setLayoutScale(finalScaleFactor);
@@ -1682,7 +1688,7 @@ public class Workspace extends SmoothPagedView
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = false;
         mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
-        updateChildrenLayersEnabled();
+        updateChildrenLayersEnabled(false);
         // The code in getChangeStateAnimation to determine initialAlpha and finalAlpha will ensure
         // ensure that only the current page is visible during (and subsequently, after) the
         // transition animation.  If fade adjacent pages is disabled, then re-enable the page
@@ -2264,7 +2270,7 @@ public class Workspace extends SmoothPagedView
                 @Override
                 public void run() {
                     mAnimatingViewIntoPlace = false;
-                    updateChildrenLayersEnabled();
+                    updateChildrenLayersEnabled(false);
                     if (finalResizeRunnable != null) {
                         finalResizeRunnable.run();
                     }
@@ -3293,7 +3299,7 @@ public class Workspace extends SmoothPagedView
 
         // hardware layers on children are enabled on startup, but should be disabled until
         // needed
-        updateChildrenLayersEnabled();
+        updateChildrenLayersEnabled(false);
         setWallpaperDimension();
     }
 
