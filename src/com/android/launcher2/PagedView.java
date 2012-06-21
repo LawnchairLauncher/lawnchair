@@ -790,20 +790,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 canvas.clipRect(getScrollX(), getScrollY(), getScrollX() + getRight() - getLeft(),
                         getScrollY() + getBottom() - getTop());
 
-                // On certain graphics drivers, if you draw to a off-screen buffer that's not
-                // used, it can lead to poor performance. We were running into this when
-                // setChildrenLayersEnabled was called on a CellLayout; that triggered a re-draw
-                // of that CellLayout's hardware layer, even if that CellLayout wasn't visible.
-                // As a fix, below we set pages that aren't going to be rendered are to be
-                // View.INVISIBLE, preventing re-drawing of their hardware layer
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     final View v = getPageAt(i);
                     if (mForceDrawAllChildrenNextFrame ||
                                (leftScreen <= i && i <= rightScreen && shouldDrawChild(v))) {
-                        v.setVisibility(VISIBLE);
                         drawChild(canvas, v, drawingTime);
-                    } else {
-                        v.setVisibility(INVISIBLE);
                     }
                 }
                 mForceDrawAllChildrenNextFrame = false;
