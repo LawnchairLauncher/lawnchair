@@ -273,6 +273,7 @@ public class Workspace extends SmoothPagedView
         // With workspace, data is available straight from the get-go
         setDataIsReady();
 
+        mLauncher = (Launcher) context;
         final Resources res = getResources();
         mWorkspaceFadeInAdjacentScreens = res.getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
         mFadeInAdjacentScreens = false;
@@ -291,20 +292,20 @@ public class Workspace extends SmoothPagedView
             // landscape
             TypedArray actionBarSizeTypedArray =
                 context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
-            DisplayMetrics displayMetrics = res.getDisplayMetrics();
             final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
-            final float systemBarHeight = res.getDimension(R.dimen.status_bar_height);
-            final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp *
-                    displayMetrics.density;
+
+            Point minDims = new Point();
+            Point maxDims = new Point();
+            mLauncher.getWindowManager().getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
 
             cellCountX = 1;
-            while (CellLayout.widthInPortrait(res, cellCountX + 1) <= smallestScreenDim) {
+            while (CellLayout.widthInPortrait(res, cellCountX + 1) <= minDims.x) {
                 cellCountX++;
             }
 
             cellCountY = 1;
             while (actionBarHeight + CellLayout.heightInLandscape(res, cellCountY + 1)
-                <= smallestScreenDim - systemBarHeight) {
+                <= minDims.y) {
                 cellCountY++;
             }
         }
@@ -326,7 +327,6 @@ public class Workspace extends SmoothPagedView
         LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
 
-        mLauncher = (Launcher) context;
         initWorkspace();
 
         // Disable multitouch across the workspace/all apps/customize tray
