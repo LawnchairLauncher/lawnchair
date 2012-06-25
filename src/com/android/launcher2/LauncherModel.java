@@ -208,6 +208,33 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    static void checkItemInfo(final ItemInfo item) {
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        final long itemId = item.id;
+        Runnable r = new Runnable() {
+                public void run() {
+                    ItemInfo modelItem = sItemsIdMap.get(itemId);
+                    if (item != modelItem) {
+                        // the modelItem needs to match up perfectly with item if our model is to be
+                        // consistent with the database-- for now, just require modelItem == item
+                        String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                            "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                            "Error: ItemInfo passed to checkItemInfo doesn't match original";
+                        RuntimeException e = new RuntimeException(msg);
+                        e.setStackTrace(stackTrace);
+                        throw e;
+                    }
+                }
+            };
+
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            sWorker.post(r);
+        }
+
+    }
+
     static void updateItemInDatabaseHelper(Context context, final ContentValues values,
             final ItemInfo item, final String callingFunction) {
         final long itemId = item.id;
@@ -304,7 +331,7 @@ public class LauncherModel extends BroadcastReceiver {
         values.put(LauncherSettings.Favorites.SPANY, item.spanY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
-        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
+        updateItemInDatabaseHelper(context, values, item, "modifyItemInDatabase");
     }
 
     /**
