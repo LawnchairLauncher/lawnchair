@@ -187,9 +187,6 @@ public class Cling extends FrameLayout {
                     return false;
                 }
             }
-        } else if (mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
-            // Let all touch events fall through
-            return false;
         }
         return true;
     };
