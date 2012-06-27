@@ -214,7 +214,7 @@ public class LauncherModel extends BroadcastReceiver {
         Runnable r = new Runnable() {
                 public void run() {
                     ItemInfo modelItem = sItemsIdMap.get(itemId);
-                    if (item != modelItem) {
+                    if (modelItem != null && item != modelItem) {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
                         String msg = "item: " + ((item != null) ? item.toString() : "null") +
