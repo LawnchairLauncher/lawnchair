@@ -170,6 +170,7 @@ public class Workspace extends SmoothPagedView
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
+    private int[] mTempVisiblePagesRange = new int[2];
     private float mOverscrollFade = 0;
     private boolean mOverscrollTransformsSet;
     public static final int DRAG_BITMAP_PADDING = 2;
@@ -427,7 +428,6 @@ public class Workspace extends SmoothPagedView
         CellLayout cl = ((CellLayout) child);
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
-        cl.enableHardwareLayers();
         cl.setContentDescription(getContext().getString(
                 R.string.workspace_description_format, getChildCount()));
     }
@@ -1221,6 +1221,7 @@ public class Workspace extends SmoothPagedView
         super.screenScrolled(screenCenter);
 
         updatePageAlphaValues(screenCenter);
+        enableHwLayersOnVisiblePages();
 
         if (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) {
             int index = mOverScrollX < 0 ? 0 : getChildCount() - 1;
@@ -1368,10 +1369,42 @@ public class Workspace extends SmoothPagedView
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
-            for (int i = 0; i < getPageCount(); i++) {
-                CellLayout cl = (CellLayout) getChildAt(i);
-                cl.getShortcutsAndWidgets().setLayerType(
-                        mChildrenLayersEnabled ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, null);
+            if (mChildrenLayersEnabled) {
+                enableHwLayersOnVisiblePages();
+            } else {
+                for (int i = 0; i < getPageCount(); i++) {
+                    final CellLayout cl = (CellLayout) getChildAt(i);
+                    cl.disableHardwareLayers();
+                }
+            }
+        }
+    }
+
+    private void enableHwLayersOnVisiblePages() {
+        if (mChildrenLayersEnabled) {
+            final int screenCount = getChildCount();
+            getVisiblePages(mTempVisiblePagesRange);
+            int leftScreen = mTempVisiblePagesRange[0];
+            int rightScreen = mTempVisiblePagesRange[1];
+            if (leftScreen == rightScreen) {
+                // make sure we're caching at least two pages always
+                if (rightScreen < screenCount - 1) {
+                    rightScreen++;
+                } else if (leftScreen > 0) {
+                    leftScreen--;
+                }
+            }
+            for (int i = 0; i < screenCount; i++) {
+                final CellLayout layout = (CellLayout) getChildAt(i);
+                if (!(leftScreen <= i && i <= rightScreen && shouldDrawChild(layout))) {
+                    layout.disableHardwareLayers();
+                }
+            }
+            for (int i = 0; i < screenCount; i++) {
+                final CellLayout layout = (CellLayout) getChildAt(i);
+                if (leftScreen <= i && i <= rightScreen && shouldDrawChild(layout)) {
+                    layout.enableHardwareLayers();
+                }
             }
         }
     }
@@ -1383,7 +1416,7 @@ public class Workspace extends SmoothPagedView
             final int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 CellLayout cl = (CellLayout) getChildAt(i);
-                cl.getShortcutsAndWidgets().buildLayer();
+                cl.buildHardwareLayer();
             }
         }
         updateChildrenLayersEnabled(false);

@@ -302,7 +302,15 @@ public class CellLayout extends ViewGroup {
     }
 
     public void enableHardwareLayers() {
-        mShortcutsAndWidgets.enableHardwareLayers();
+        mShortcutsAndWidgets.setLayerType(LAYER_TYPE_HARDWARE, null);
+    }
+
+    public void disableHardwareLayers() {
+        mShortcutsAndWidgets.setLayerType(LAYER_TYPE_NONE, null);
+    }
+
+    public void buildHardwareLayer() {
+        mShortcutsAndWidgets.buildLayer();
     }
 
     public void setGridSize(int x, int y) {
