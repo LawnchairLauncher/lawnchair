@@ -1722,24 +1722,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Returns all the Workspace ShortcutInfos associated with a particular package.
-     * @param intent
-     * @return
-     */
-    ArrayList<ShortcutInfo> getShortcutInfosForPackage(String packageName) {
-        ArrayList<ShortcutInfo> infos = new ArrayList<ShortcutInfo>();
-        for (ItemInfo i : sWorkspaceItems) {
-            if (i instanceof ShortcutInfo) {
-                ShortcutInfo info = (ShortcutInfo) i;
-                if (packageName.equals(info.getPackageName())) {
-                    infos.add(info);
-                }
-            }
-        }
-        return infos;
-    }
-
-    /**
      * This is called from the code that adds shortcuts from the intent receiver.  This
      * doesn't have a Cursor, but
      */

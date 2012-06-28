@@ -3635,11 +3635,7 @@ public class Workspace extends SmoothPagedView
             });
         }
 
-        // It is no longer the case the BubbleTextViews correspond 1:1 with the workspace items in
-        // the database (and LauncherModel) since shortcuts are not added and animated in until
-        // the user returns to launcher.  As a result, we really should be cleaning up the Db
-        // regardless of whether the item was added or not (unlike the logic above).  This is only
-        // relevant for direct workspace items.
+        // Clean up new-apps animation list
         post(new Runnable() {
             @Override
             public void run() {
@@ -3649,26 +3645,18 @@ public class Workspace extends SmoothPagedView
                 Set<String> newApps = sp.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
                         null);
 
-                for (String packageName: packageNames) {
-                    // Remove all items that have the same package, but were not removed above
-                    ArrayList<ShortcutInfo> infos =
-                            mLauncher.getModel().getShortcutInfosForPackage(packageName);
-                    for (ShortcutInfo info : infos) {
-                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                    }
-                    // Remove all queued items that match the same package
-                    if (newApps != null) {
-                        synchronized (newApps) {
-                            Iterator<String> iter = newApps.iterator();
-                            while (iter.hasNext()) {
-                                try {
-                                    Intent intent = Intent.parseUri(iter.next(), 0);
-                                    String pn = ItemInfo.getPackageName(intent);
-                                    if (packageNames.contains(pn)) {
-                                        iter.remove();
-                                    }
-                                } catch (URISyntaxException e) {}
-                            }
+                // Remove all queued items that match the same package
+                if (newApps != null) {
+                    synchronized (newApps) {
+                        Iterator<String> iter = newApps.iterator();
+                        while (iter.hasNext()) {
+                            try {
+                                Intent intent = Intent.parseUri(iter.next(), 0);
+                                String pn = ItemInfo.getPackageName(intent);
+                                if (packageNames.contains(pn)) {
+                                    iter.remove();
+                                }
+                            } catch (URISyntaxException e) {}
                         }
                     }
                 }
