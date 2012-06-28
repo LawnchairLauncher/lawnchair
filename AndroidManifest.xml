@@ -65,7 +65,7 @@
         android:name="com.android.launcher2.LauncherApplication"
         android:label="@string/application_name"
         android:icon="@drawable/ic_launcher_home"
-        android:hardwareAccelerated="@bool/config_hardwareAccelerated"
+        android:hardwareAccelerated="true"
         android:largeHeap="@bool/config_largeHeap">
         <activity
             android:name="com.android.launcher2.Launcher"
