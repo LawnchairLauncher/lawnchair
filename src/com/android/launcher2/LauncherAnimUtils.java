@@ -26,7 +26,7 @@ import java.util.HashSet;
 
 public class LauncherAnimUtils {
     static HashSet<Animator> sAnimators = new HashSet<Animator>();
-    Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
+    static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
         }
 
@@ -44,6 +44,7 @@ public class LauncherAnimUtils {
 
     public static void cancelOnDestroyActivity(Animator a) {
         sAnimators.add(a);
+        a.addListener(sEndAnimListener);
     }
 
     public static void onDestroyActivity() {
