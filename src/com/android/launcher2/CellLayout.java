@@ -159,6 +159,7 @@ public class CellLayout extends ViewGroup {
 
     private final static PorterDuffXfermode sAddBlendMode =
             new PorterDuffXfermode(PorterDuff.Mode.ADD);
+    private final static Paint sPaint = new Paint();
 
     public CellLayout(Context context) {
         this(context, null);
@@ -302,11 +303,11 @@ public class CellLayout extends ViewGroup {
     }
 
     public void enableHardwareLayers() {
-        mShortcutsAndWidgets.setLayerType(LAYER_TYPE_HARDWARE, null);
+        mShortcutsAndWidgets.setLayerType(LAYER_TYPE_HARDWARE, sPaint);
     }
 
     public void disableHardwareLayers() {
-        mShortcutsAndWidgets.setLayerType(LAYER_TYPE_NONE, null);
+        mShortcutsAndWidgets.setLayerType(LAYER_TYPE_NONE, sPaint);
     }
 
     public void buildHardwareLayer() {
