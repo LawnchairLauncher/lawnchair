@@ -86,10 +86,16 @@ class ItemInfo {
      * Indicates the minimum Y cell span.
      */
     int minSpanY = 1;
+
     /**
-     * Indicates whether the item is a gesture.
+     * Indicates that this item needs to be updated in the db
      */
-    boolean isGesture = false;
+    boolean requiresDbUpdate = false;
+
+    /**
+     * Title of the item
+     */
+    CharSequence title;
 
     /**
      * The position of the item in a drag-and-drop operation.
@@ -132,14 +138,12 @@ class ItemInfo {
      */
     void onAddToDatabase(ContentValues values) { 
         values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
-        if (!isGesture) {
-            values.put(LauncherSettings.Favorites.CONTAINER, container);
-            values.put(LauncherSettings.Favorites.SCREEN, screen);
-            values.put(LauncherSettings.Favorites.CELLX, cellX);
-            values.put(LauncherSettings.Favorites.CELLY, cellY);
-            values.put(LauncherSettings.Favorites.SPANX, spanX);
-            values.put(LauncherSettings.Favorites.SPANY, spanY);
-        }
+        values.put(LauncherSettings.Favorites.CONTAINER, container);
+        values.put(LauncherSettings.Favorites.SCREEN, screen);
+        values.put(LauncherSettings.Favorites.CELLX, cellX);
+        values.put(LauncherSettings.Favorites.CELLY, cellY);
+        values.put(LauncherSettings.Favorites.SPANX, spanX);
+        values.put(LauncherSettings.Favorites.SPANY, spanY);
     }
 
     void updateValuesWithCoordinates(ContentValues values, int cellX, int cellY) {
@@ -183,6 +187,6 @@ class ItemInfo {
     public String toString() {
         return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
             + " screen=" + screen + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-            + " spanY=" + spanY + " isGesture=" + isGesture + " dropPos=" + dropPos + ")";
+            + " spanY=" + spanY + " dropPos=" + dropPos + ")";
     }
 }

@@ -951,16 +951,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void run() {
                 CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
 
-                if (getItemCount() <= 1) {
-                    // Remove the folder
-                    LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
-                    cellLayout.removeView(mFolderIcon);
-                    if (mFolderIcon instanceof DropTarget) {
-                        mDragController.removeDropTarget((DropTarget) mFolderIcon);
-                    }
-                    mLauncher.removeFolder(mInfo);
-                }
-
                 // Move the item from the folder to the workspace, in the position of the folder
                 if (getItemCount() == 1) {
                     ShortcutInfo finalItem = mInfo.contents.get(0);
@@ -973,6 +963,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                             mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
                 }
 
+                if (getItemCount() <= 1) {
+                    // Remove the folder
+                    LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
+                    cellLayout.removeView(mFolderIcon);
+                    if (mFolderIcon instanceof DropTarget) {
+                        mDragController.removeDropTarget((DropTarget) mFolderIcon);
+                    }
+                    mLauncher.removeFolder(mInfo);
+                }
             }
         };
         View finalChild = getItemAt(0);

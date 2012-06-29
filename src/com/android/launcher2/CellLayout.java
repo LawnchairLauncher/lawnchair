@@ -2148,6 +2148,10 @@ public class CellLayout extends ViewGroup {
             // We do a null check here because the item info can be null in the case of the
             // AllApps button in the hotseat.
             if (info != null) {
+                if (info.cellX != lp.tmpCellX || info.cellY != lp.tmpCellY ||
+                        info.spanX != lp.cellHSpan || info.spanY != lp.cellVSpan) {
+                    info.requiresDbUpdate = true;
+                }
                 info.cellX = lp.cellX = lp.tmpCellX;
                 info.cellY = lp.cellY = lp.tmpCellY;
                 info.spanX = lp.cellHSpan;
