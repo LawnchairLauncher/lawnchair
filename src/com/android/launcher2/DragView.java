@@ -244,9 +244,6 @@ public class DragView extends View {
     public void show(int touchX, int touchY) {
         mDragLayer.addView(this);
 
-        // Enable hw-layers on this view
-        setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
         // Start the pick-up animation
         DragLayer.LayoutParams lp = new DragLayer.LayoutParams(0, 0);
         lp.width = mBitmap.getWidth();
@@ -255,7 +252,12 @@ public class DragView extends View {
         setLayoutParams(lp);
         setTranslationX(touchX - mRegistrationX);
         setTranslationY(touchY - mRegistrationY);
-        mAnim.start();
+        // Post the animation to skip other expensive work happening on the first frame
+        post(new Runnable() {
+                public void run() {
+                    mAnim.start();
+                }
+            });
     }
 
     public void cancelAnimation() {
@@ -282,9 +284,6 @@ public class DragView extends View {
 
     void remove() {
         if (getParent() != null) {
-            // Disable hw-layers on this view
-            setLayerType(View.LAYER_TYPE_NONE, null);
-
             mDragLayer.removeView(DragView.this);
         }
     }
