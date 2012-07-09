@@ -3743,6 +3743,17 @@ public final class Launcher extends Activity
             writer.println("  " + sDumpLogs.get(i));
         }
     }
+
+    public static void dumpDebugLogsToConsole() {
+        Log.d(TAG, "");
+        Log.d(TAG, "*********************");
+        Log.d(TAG, "Launcher debug logs: ");
+        for (int i = 0; i < sDumpLogs.size(); i++) {
+            Log.d(TAG, "  " + sDumpLogs.get(i));
+        }
+        Log.d(TAG, "*********************");
+        Log.d(TAG, "");
+    }
 }
 
 interface LauncherTransitionable {
