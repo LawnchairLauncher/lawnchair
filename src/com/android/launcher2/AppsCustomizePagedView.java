@@ -300,6 +300,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     PendingAddWidgetInfo mCreateWidgetInfo = null;
     private boolean mDraggingWidget = false;
 
+    private Toast mWidgetInstructionToast;
+
     // Deferral of loading widget previews during launcher transitions
     private boolean mInTransition;
     private ArrayList<AsyncTaskPageData> mDeferredSyncWidgetPageItems =
@@ -577,8 +579,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         } else if (v instanceof PagedViewWidget) {
             // Let the user know that they have to long press to add a widget
-            Toast.makeText(getContext(), R.string.long_press_widget_to_add,
-                    Toast.LENGTH_SHORT).show();
+            if (mWidgetInstructionToast != null) {
+                mWidgetInstructionToast.cancel();
+            }
+            mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
+                Toast.LENGTH_SHORT);
+            mWidgetInstructionToast.show();
 
             // Create a little animation to show that the widget can move
             float offsetY = getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
