@@ -1736,6 +1736,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             ApplicationInfo info = list.get(i);
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
+                Log.d(TAG, "Removing app in removeAppsWithoutInvalidate: " + info);
                 mApps.remove(removeIndex);
             }
         }
@@ -1745,6 +1746,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         for (String pn : packageNames) {
             int removeIndex = findAppByPackage(mApps, pn);
             while (removeIndex > -1) {
+                Log.d(TAG, "Removing app in removeAppsWithPackageNameWithoutInvalidate: "
+                        + mApps.get(removeIndex));
                 mApps.remove(removeIndex);
                 removeIndex = findAppByPackage(mApps, pn);
             }
