@@ -48,7 +48,8 @@ public class LauncherAnimUtils {
     }
 
     public static void onDestroyActivity() {
-        for (Animator a : sAnimators) {
+        HashSet<Animator> animators = new HashSet<Animator>(sAnimators);
+        for (Animator a : animators) {
             if (a.isRunning()) {
                 a.cancel();
             }
