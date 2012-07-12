@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"راه انداز"</string>
-    <string name="home" msgid="5921706419368316758">"صفحه اصلی"</string>
+    <string name="home" msgid="5921706419368316758">"صفحهٔ اصلی"</string>
     <string name="uid_name" msgid="3371120195364560632">"برنامه های Android Core"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"انتخاب تصویر زمینه از"</string>
@@ -30,19 +30,19 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"ابزارک ها"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"برای انتخاب یک ابزارک لمس کنید و نگه دارید."</string>
     <string name="market" msgid="2652226429823445833">"فروشگاه"</string>
-    <string name="external_drop_widget_error" msgid="2285187188524172774">"این مورد را نمی‌توان در این صفحه اصلی رها کرد."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"این مورد را نمی‌توان در این صفحهٔ اصلی رها کرد."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"انتخاب ابزارک برای ایجاد"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"نام پوشه"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"تغییر نام پوشه"</string>
     <string name="rename_action" msgid="6016003384693240896">"تأیید"</string>
     <string name="cancel_action" msgid="3811860427489435048">"لغو"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"افزودن به صفحه اصلی"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"افزودن به صفحهٔ اصلی"</string>
     <string name="group_applications" msgid="2103752818818161976">"برنامه‌ها"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"میانبرها"</string>
     <string name="group_widgets" msgid="6704978494073105844">"ابزارک ها"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"تصاویر زمینه"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"فضای بیشتری در صفحات نمایش اصلی شما موجود نیست."</string>
-    <string name="out_of_space" msgid="8365249326091984698">"اتاق دیگری در این صفحه اصلی موجود نیست."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"اتاق دیگری در این صفحهٔ اصلی موجود نیست."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"فضای بیشتری در صندلی داغ نیست."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"این ابزارک بیش از حد برای صندلی داغ بزرگ است."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"میانبر \"<xliff:g id="NAME">%s</xliff:g>\" ایجاد شد."</string>
@@ -51,7 +51,7 @@
     <string name="title_select_shortcut" msgid="1873670208166882222">"انتخاب میانبر"</string>
     <string name="title_select_application" msgid="1793455815754848652">"انتخاب برنامه"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"برنامه های کاربردی"</string>
-    <string name="all_apps_home_button_label" msgid="1022222300329398558">"صفحه اصلی"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"صفحهٔ اصلی"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"حذف"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"حذف نصب"</string>
     <string name="delete_target_label" msgid="665300185123139530">"حذف"</string>
@@ -79,27 +79,27 @@
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"به یک برنامه اجازه می‌دهد میانبرها را بدون دخالت کاربر اضافه کند."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"حذف نصب میانبرها"</string>
     <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"به یک برنامه اجازه می‌دهد میانبرها را بدون دخالت کاربر حذف کند."</string>
-    <string name="permlab_read_settings" msgid="3452408290738106747">"خواندن تنظیمات صفحه اصلی و میانبرها"</string>
-    <string name="permdesc_read_settings" msgid="5788109303585403679">"به برنامه اجازه خواندن تنظیمات و میانبرها را در صفحه اصلی می‌دهد."</string>
-    <string name="permlab_write_settings" msgid="1360567537236705628">"نوشتن تنظیمات صفحه اصلی و میانبرها"</string>
-    <string name="permdesc_write_settings" msgid="8530105489115785531">"به برنامه اجازه تغییر تنظیمات و میانبرها را در صفحه اصلی می‌دهد."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"خواندن تنظیمات صفحهٔ اصلی و میانبرها"</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"به برنامه اجازه خواندن تنظیمات و میانبرها را در صفحهٔ اصلی می‌دهد."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"نوشتن تنظیمات صفحهٔ اصلی و میانبرها"</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"به برنامه اجازه تغییر تنظیمات و میانبرها را در صفحهٔ اصلی می‌دهد."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"مشکل در بارگیری ابزارک"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"این یک برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="dream_name" msgid="2847171357608437154">"پرتاب کننده موشک"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"پوشه بی‌نام"</string>
-    <string name="workspace_description_format" msgid="2968608205939373034">"صفحه اصلی %1$d"</string>
+    <string name="workspace_description_format" msgid="2968608205939373034">"صفحهٔ اصلی %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"صفحه %1$d از %2$d"</string>
-    <string name="workspace_scroll_format" msgid="1704767047951143301">"صفحه اصلی %1$d از %2$d"</string>
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"صفحهٔ اصلی %1$d از %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"صفحه برنامه‌ها %1$d از %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"صفحه ابزارک‌ها %1$d از %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"احساس کنید در خانه هستید"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"برنامه‌های مورد دلخواه خود را می‌توانید در اینجا قرار دهید."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"برای مشاهده تمام برنامه‌های خود، حلقه را لمس کنید."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"انتخاب چند برنامه‌"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"برای افزودن یک برنامه به صفحه اصلی خود، آن را لمس کرده و نگه دارید."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"برای افزودن یک برنامه به صفحهٔ اصلی خود، آن را لمس کرده و نگه دارید."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"برنامه‌های خود را با پوشه‌ها سازماندهی کنید"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"برای جابجا کردن یک برنامه، آن را لمس کرده و نگهدارید."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحه اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحهٔ اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"تأیید"</string>
     <string name="folder_opened" msgid="1262064100943801533">"پوشه باز شده، <xliff:g id="WIDTH">%1$d</xliff:g> در <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"برای بستن پوشه لمس کنید"</string>
