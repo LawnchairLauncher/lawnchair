@@ -1538,7 +1538,6 @@ public class CellLayout extends ViewGroup {
         int x = cellX + direction[0];
         int y = cellY + direction[1];
         while (x >= 0 && x + spanX <= mCountX && y >= 0 && y + spanY <= mCountY) {
-
             boolean fail = false;
             for (int i = 0; i < spanX; i++) {
                 for (int j = 0; j < spanY; j++) {
@@ -1581,8 +1580,9 @@ public class CellLayout extends ViewGroup {
         return success;
     }
 
-    // This method looks in the specified direction to see if there is an additional view
-    // immediately adjecent in that direction
+    // This method looks in the specified direction to see if there are additional views adjacent
+    // to the current set of views in the. If there is, then these views are added to the current
+    // set of views. This is performed iteratively, giving a cascading push behaviour.
     private boolean addViewInDirection(ArrayList<View> views, Rect boundingRect, int[] direction,
             boolean[][] occupied, View dragView, ItemConfiguration currentState) {
         boolean found = false;
@@ -1591,23 +1591,27 @@ public class CellLayout extends ViewGroup {
         Rect r0 = new Rect(boundingRect);
         Rect r1 = new Rect();
 
+        // First, we consider the rect of the views that we are trying to translate
         int deltaX = 0;
         int deltaY = 0;
         if (direction[1] < 0) {
-            r0.set(r0.left, r0.top - 1, r0.right, r0.bottom);
+            r0.set(r0.left, r0.top - 1, r0.right, r0.bottom - 1);
             deltaY = -1;
         } else if (direction[1] > 0) {
-            r0.set(r0.left, r0.top, r0.right, r0.bottom + 1);
+            r0.set(r0.left, r0.top + 1, r0.right, r0.bottom + 1);
             deltaY = 1;
         } else if (direction[0] < 0) {
-            r0.set(r0.left - 1, r0.top, r0.right, r0.bottom);
+            r0.set(r0.left - 1, r0.top, r0.right - 1, r0.bottom);
             deltaX = -1;
         } else if (direction[0] > 0) {
-            r0.set(r0.left, r0.top, r0.right + 1, r0.bottom);
+            r0.set(r0.left + 1, r0.top, r0.right + 1, r0.bottom);
             deltaX = 1;
         }
 
+        // Now we see which views, if any, are being overlapped by shifting the current group
+        // of views in the desired direction.
         for (int i = 0; i < childCount; i++) {
+            // We don't need to worry about views already in our group, or the current drag view.
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (views.contains(child) || child == dragView) continue;
             CellAndSpan c = currentState.map.get(child);
@@ -1618,20 +1622,30 @@ public class CellLayout extends ViewGroup {
                 if (!lp.canReorder) {
                     return false;
                 }
-                boolean pushed = false;
-                for (int x = c.x; x < c.x + c.spanX; x++) {
-                    for (int y = c.y; y < c.y + c.spanY; y++) {
-                        boolean inBounds = x - deltaX >= 0 && x -deltaX < mCountX
-                                && y - deltaY >= 0 && y - deltaY < mCountY;
-                        if (inBounds && occupied[x - deltaX][y - deltaY]) {
-                            pushed = true;
+                // First we verify that the view in question is at the border of the extents
+                // of the block of items we are pushing
+                if ((direction[0] < 0 && c.x == r0.left) ||
+                        (direction[0] > 0 && c.x == r0.right - 1) ||
+                        (direction[1] < 0 && c.y == r0.top) ||
+                        (direction[1] > 0 && c.y == r0.bottom - 1)) {
+                    boolean pushed = false;
+                    // Since the bounding rect is a course description of the region (there can
+                    // be holes at the edge of the block), we need to check to verify that a solid
+                    // piece is intersecting. This ensures that interlocking is possible.
+                    for (int x = c.x; x < c.x + c.spanX; x++) {
+                        for (int y = c.y; y < c.y + c.spanY; y++) {
+                            if (occupied[x - deltaX][y - deltaY]) {
+                                pushed = true;
+                                break;
+                            }
+                            if (pushed) break;
                         }
                     }
-                }
-                if (pushed) {
-                    views.add(child);
-                    boundingRect.union(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
-                    found = true;
+                    if (pushed) {
+                        views.add(child);
+                        boundingRect.union(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
+                        found = true;
+                    }
                 }
             }
         }
@@ -1672,7 +1686,7 @@ public class CellLayout extends ViewGroup {
         int top = boundingRect.top;
         int left = boundingRect.left;
         // We mark more precisely which parts of the bounding rect are truly occupied, allowing
-        // for tetris-style interlocking.
+        // for interlocking.
         for (View v: dup) {
             CellAndSpan c = currentState.map.get(v);
             markCellsForView(c.x - left, c.y - top, c.spanX, c.spanY, blockOccupied, true);
