@@ -354,6 +354,11 @@ public final class Launcher extends Activity
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
 
+        // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
+        // this also ensures that any synchronous binding below doesn't re-trigger another
+        // LauncherModel load.
+        mPaused = false;
+
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
                     Environment.getExternalStorageDirectory() + "/launcher");
@@ -381,7 +386,7 @@ public final class Launcher extends Activity
         }
 
         if (!mRestoring) {
-            mModel.startLoader(true);
+            mModel.startLoader(true, mWorkspace.getCurrentPage());
         }
 
         if (!mModel.isAllAppsLoaded()) {
@@ -693,7 +698,7 @@ public final class Launcher extends Activity
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
-            mModel.startLoader(true);
+            mModel.startLoader(true, -1);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }

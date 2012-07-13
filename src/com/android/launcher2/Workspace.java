@@ -1283,6 +1283,14 @@ public class Workspace extends SmoothPagedView
         }
 
         super.onDraw(canvas);
+
+        // Call back to LauncherModel to finish binding after the first draw
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mLauncher.getModel().bindRemainingSynchronousPages();
+            }
+        });
     }
 
     boolean isDrawingBackgroundGradient() {
