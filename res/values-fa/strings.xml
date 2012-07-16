@@ -21,13 +21,13 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"راه انداز"</string>
     <string name="home" msgid="5921706419368316758">"صفحهٔ اصلی"</string>
-    <string name="uid_name" msgid="3371120195364560632">"برنامه های Android Core"</string>
+    <string name="uid_name" msgid="3371120195364560632">"برنامه‌های Android Core"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"انتخاب تصویر زمینه از"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"تنظیم تصویر زمینه"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"تصاویر زمینه"</string>
     <string name="activity_not_found" msgid="217823393239365967">"برنامه نصب نشده است."</string>
-    <string name="widgets_tab_label" msgid="9145860100000983599">"ابزارک ها"</string>
+    <string name="widgets_tab_label" msgid="9145860100000983599">"ابزارک‌ها"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"برای انتخاب یک ابزارک لمس کنید و نگه دارید."</string>
     <string name="market" msgid="2652226429823445833">"فروشگاه"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"این مورد را نمی‌توان در این صفحهٔ اصلی رها کرد."</string>
@@ -39,7 +39,7 @@
     <string name="menu_item_add_item" msgid="6233177331075781114">"افزودن به صفحهٔ اصلی"</string>
     <string name="group_applications" msgid="2103752818818161976">"برنامه‌ها"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"میانبرها"</string>
-    <string name="group_widgets" msgid="6704978494073105844">"ابزارک ها"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"ابزارک‌ها"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"تصاویر زمینه"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"فضای بیشتری در صفحات نمایش اصلی شما موجود نیست."</string>
     <string name="out_of_space" msgid="8365249326091984698">"اتاق دیگری در این صفحهٔ اصلی موجود نیست."</string>
@@ -50,7 +50,7 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"میانبر \"<xliff:g id="NAME">%s</xliff:g>\" در حال حاضر وجود دارد."</string>
     <string name="title_select_shortcut" msgid="1873670208166882222">"انتخاب میانبر"</string>
     <string name="title_select_application" msgid="1793455815754848652">"انتخاب برنامه"</string>
-    <string name="all_apps_button_label" msgid="2578400570124163469">"برنامه های کاربردی"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"برنامه‌های کاربردی"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"صفحهٔ اصلی"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"حذف"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"حذف نصب"</string>
@@ -63,7 +63,7 @@
     <string name="accessibility_delete_button" msgid="3628162007991023603">"حذف"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"حذف نصب به‌روزرسانی"</string>
     <string name="menu_add" msgid="3065046628354640854">"افزودن"</string>
-    <string name="menu_manage_apps" msgid="2308685199463588895">"مدیریت برنامه ها"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"مدیریت برنامه‌ها"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"تصویر زمینه"</string>
     <string name="menu_search" msgid="4826514464423239041">"جستجو"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"اعلان‌ها"</string>
