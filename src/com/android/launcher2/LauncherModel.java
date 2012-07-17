@@ -1715,20 +1715,23 @@ public class LauncherModel extends BroadcastReceiver {
             ArrayList<ApplicationInfo> modified = null;
 
             if (mBgAllAppsList.added.size() > 0) {
-                added = mBgAllAppsList.added;
-                mBgAllAppsList.added = new ArrayList<ApplicationInfo>();
+                added = new ArrayList<ApplicationInfo>(mBgAllAppsList.added);
+                mBgAllAppsList.added.clear();
             }
             if (mBgAllAppsList.modified.size() > 0) {
-                modified = mBgAllAppsList.modified;
-                mBgAllAppsList.modified = new ArrayList<ApplicationInfo>();
+                modified = new ArrayList<ApplicationInfo>(mBgAllAppsList.modified);
+                mBgAllAppsList.modified.clear();
             }
-
             // We may be removing packages that have no associated launcher application, so we
             // pass through the removed package names directly.
             // NOTE: We flush the icon cache aggressively in removePackage() above.
             final ArrayList<String> removedPackageNames = new ArrayList<String>();
-            for (int i = 0; i < N; ++i) {
-                removedPackageNames.add(packages[i]);
+            if (mBgAllAppsList.removed.size() > 0) {
+                mBgAllAppsList.removed.clear();
+
+                for (int i = 0; i < N; ++i) {
+                    removedPackageNames.add(packages[i]);
+                }
             }
 
             final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
