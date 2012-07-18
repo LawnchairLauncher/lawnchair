@@ -1,7 +1,6 @@
 <resources>
     <bool name="config_largeHeap">true</bool>
     <bool name="is_large_screen">true</bool>
-    <bool name="allow_rotation">true</bool>
 
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
