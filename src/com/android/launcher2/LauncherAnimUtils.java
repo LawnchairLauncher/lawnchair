@@ -52,6 +52,8 @@ public class LauncherAnimUtils {
         for (Animator a : animators) {
             if (a.isRunning()) {
                 a.cancel();
+            } else {
+                sAnimators.remove(a);
             }
         }
     }
