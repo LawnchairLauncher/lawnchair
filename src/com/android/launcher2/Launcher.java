@@ -181,7 +181,7 @@ public final class Launcher extends Activity
             "com.android.launcher.toolbar_voice_search_icon";
 
     /** The different states that Launcher can be in. */
-    private enum State { WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
+    private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
     private AnimatorSet mDividerAnimator;
@@ -229,6 +229,10 @@ public final class Launcher extends Activity
     private boolean mAutoAdvanceRunning = false;
 
     private Bundle mSavedState;
+    // We set the state in both onCreate and then onNewIntent in some cases, which causes both
+    // scroll issues (because the workspace may not have been measured yet) and extra work.
+    // Instead, just save the state that we need to restore Launcher to, and commit it in onResume.
+    private State mOnResumeState = State.NONE;
 
     private SpannableStringBuilder mDefaultKeySsb = null;
 
@@ -238,6 +242,9 @@ public final class Launcher extends Activity
     private boolean mRestoring;
     private boolean mWaitingForResult;
     private boolean mOnResumeNeedsLoad;
+
+    // Keep track of whether the user has left launcher
+    private static boolean sPausedFromUserAction = false;
 
     private Bundle mSavedInstanceState;
 
@@ -370,7 +377,15 @@ public final class Launcher extends Activity
         }
 
         if (!mRestoring) {
-            mModel.startLoader(true, mWorkspace.getCurrentPage());
+            if (sPausedFromUserAction) {
+                // If the user leaves launcher, then we should just load items asynchronously when
+                // they return.
+                mModel.startLoader(true, -1);
+            } else {
+                // We only load the page synchronously if the user rotates (or triggers a
+                // configuration change) while launcher is in the foreground
+                mModel.startLoader(true, mWorkspace.getCurrentPage());
+            }
         }
 
         if (!mModel.isAllAppsLoaded()) {
@@ -389,6 +404,11 @@ public final class Launcher extends Activity
 
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
+    }
+
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        sPausedFromUserAction = true;
     }
 
     private void updateGlobalIcons() {
@@ -676,10 +696,19 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
+        // Restore the previous launcher state
+        if (mOnResumeState == State.WORKSPACE) {
+            showWorkspace(false);
+        } else if (mOnResumeState == State.APPS_CUSTOMIZE) {
+            showAllApps(false);
+        }
+        mOnResumeState = State.NONE;
+
         // Process any items that were added while Launcher was away
         InstallShortcutReceiver.flushInstallQueue(this);
 
         mPaused = false;
+        sPausedFromUserAction = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
             mModel.startLoader(true, -1);
@@ -823,7 +852,7 @@ public final class Launcher extends Activity
 
         State state = intToState(savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal()));
         if (state == State.APPS_CUSTOMIZE) {
-            showAllApps(false);
+            mOnResumeState = State.APPS_CUSTOMIZE;
         }
 
         int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
@@ -1360,7 +1389,14 @@ public final class Launcher extends Activity
 
             closeFolder();
             exitSpringLoadedDragMode();
-            showWorkspace(alreadyOnHome);
+
+            // If we are already on home, then just animate back to the workspace, otherwise, just
+            // wait until onResume to set the state back to Workspace
+            if (alreadyOnHome) {
+                showWorkspace(true);
+            } else {
+                mOnResumeState = State.WORKSPACE;
+            }
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
