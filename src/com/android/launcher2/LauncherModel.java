@@ -58,8 +58,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -109,7 +109,7 @@ public class LauncherModel extends BroadcastReceiver {
     // other locks, this one can generally be held long-term because we never expect any of these
     // static data structures to be referenced outside of the worker thread except on the first
     // load after configuration change.
-    static final Object mBgLock = new Object();
+    static final Object sBgLock = new Object();
 
     // sBgItemsIdMap maps *all* the ItemInfos (shortcuts, folders, and widgets) created by
     // LauncherModel to their ids
@@ -214,7 +214,7 @@ public class LauncherModel extends BroadcastReceiver {
         // by making a copy of workspace items first.
         final ArrayList<ItemInfo> tmpWorkspaceItems = new ArrayList<ItemInfo>();
         final ArrayList<ItemInfo> tmpAppWidgets = new ArrayList<ItemInfo>();
-        synchronized (mBgLock) {
+        synchronized (sBgLock) {
             tmpWorkspaceItems.addAll(sBgWorkspaceItems);
             tmpAppWidgets.addAll(sBgAppWidgets);
         }
@@ -252,7 +252,7 @@ public class LauncherModel extends BroadcastReceiver {
         final long itemId = item.id;
         Runnable r = new Runnable() {
                 public void run() {
-                    synchronized (mBgLock) {
+                    synchronized (sBgLock) {
                         ItemInfo modelItem = sBgItemsIdMap.get(itemId);
                         if (modelItem != null && item != modelItem) {
                             // the modelItem needs to match up perfectly with item if our model is
@@ -284,7 +284,7 @@ public class LauncherModel extends BroadcastReceiver {
                 cr.update(uri, values, null, null);
 
                 // Lock on mBgLock *after* the db operation
-                synchronized (mBgLock) {
+                synchronized (sBgLock) {
                     ItemInfo modelItem = sBgItemsIdMap.get(itemId);
                     if (item != modelItem) {
                         // the modelItem needs to match up perfectly with item if our model is to be
@@ -556,7 +556,7 @@ public class LauncherModel extends BroadcastReceiver {
                         LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
                 // Lock on mBgLock *after* the db operation
-                synchronized (mBgLock) {
+                synchronized (sBgLock) {
                     if (sBgItemsIdMap.containsKey(item.id)) {
                         // we should not be adding new items in the db with the same id
                         throw new RuntimeException("Error: ItemInfo id (" + item.id + ") passed to " +
@@ -641,7 +641,7 @@ public class LauncherModel extends BroadcastReceiver {
                 cr.delete(uriToDelete, null, null);
 
                 // Lock on mBgLock *after* the db operation
-                synchronized (mBgLock) {
+                synchronized (sBgLock) {
                     switch (item.itemType) {
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                             sBgFolders.remove(item.id);
@@ -685,7 +685,7 @@ public class LauncherModel extends BroadcastReceiver {
             public void run() {
                 cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
                 // Lock on mBgLock *after* the db operation
-                synchronized (mBgLock) {
+                synchronized (sBgLock) {
                     sBgItemsIdMap.remove(info.id);
                     sBgFolders.remove(info.id);
                     sBgDbIconCache.remove(info);
@@ -695,7 +695,7 @@ public class LauncherModel extends BroadcastReceiver {
                 cr.delete(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
                         LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
                 // Lock on mBgLock *after* the db operation
-                synchronized (mBgLock) {
+                synchronized (sBgLock) {
                     for (ItemInfo childInfo : info.contents) {
                         sBgItemsIdMap.remove(childInfo.id);
                         sBgDbIconCache.remove(childInfo);
@@ -1081,7 +1081,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Update the saved icons if necessary
             if (DEBUG_LOADERS) Log.d(TAG, "Comparing loaded icons to database icons");
-            synchronized (mBgLock) {
+            synchronized (sBgLock) {
                 for (Object key : sBgDbIconCache.keySet()) {
                     updateSavedIcon(mContext, (ShortcutInfo) key, sBgDbIconCache.get(key));
                 }
@@ -1197,7 +1197,7 @@ public class LauncherModel extends BroadcastReceiver {
             // Make sure the default workspace is loaded, if needed
             mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary();
 
-            synchronized (mBgLock) {
+            synchronized (sBgLock) {
                 sBgWorkspaceItems.clear();
                 sBgAppWidgets.clear();
                 sBgFolders.clear();
@@ -1457,6 +1457,15 @@ public class LauncherModel extends BroadcastReceiver {
                 ArrayList<ItemInfo> allWorkspaceItems,
                 ArrayList<ItemInfo> currentScreenItems,
                 ArrayList<ItemInfo> otherScreenItems) {
+            // Purge any null ItemInfos
+            Iterator<ItemInfo> iter = allWorkspaceItems.iterator();
+            while (iter.hasNext()) {
+                ItemInfo i = iter.next();
+                if (i == null) {
+                    iter.remove();
+                }
+            }
+
             // If we aren't filtering on a screen, then the set of items to load is the full set of
             // items given.
             if (currentScreen < 0) {
@@ -1507,6 +1516,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             for (LauncherAppWidgetInfo widget : appWidgets) {
+                if (widget == null) continue;
                 if (widget.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                         widget.screen == currentScreen) {
                     currentScreenWidgets.add(widget);
@@ -1531,6 +1541,7 @@ public class LauncherModel extends BroadcastReceiver {
             for (long id : folders.keySet()) {
                 ItemInfo info = itemsIdMap.get(id);
                 FolderInfo folder = folders.get(id);
+                if (info == null || folder == null) continue;
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                         info.screen == currentScreen) {
                     currentScreenFolders.put(id, folder);
@@ -1653,7 +1664,7 @@ public class LauncherModel extends BroadcastReceiver {
                     new ArrayList<LauncherAppWidgetInfo>();
             HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
             HashMap<Long, ItemInfo> itemsIdMap = new HashMap<Long, ItemInfo>();
-            synchronized (mBgLock) {
+            synchronized (sBgLock) {
                 workspaceItems.addAll(sBgWorkspaceItems);
                 appWidgets.addAll(sBgAppWidgets);
                 folders.putAll(sBgFolders);
@@ -1878,7 +1889,7 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         public void dumpState() {
-            synchronized (mBgLock) {
+            synchronized (sBgLock) {
                 Log.d(TAG, "mLoaderTask.mContext=" + mContext);
                 Log.d(TAG, "mLoaderTask.mIsLaunching=" + mIsLaunching);
                 Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
