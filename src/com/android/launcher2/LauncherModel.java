@@ -1557,7 +1557,8 @@ public class LauncherModel extends BroadcastReceiver {
                 return;
             }
 
-            final int currentScreen = (synchronizeBindPage > -1) ? synchronizeBindPage :
+            final boolean isLoadingSynchronously = (synchronizeBindPage > -1);
+            final int currentScreen = isLoadingSynchronously ? synchronizeBindPage :
                 oldCallbacks.getCurrentWorkspaceScreen();
 
             // Load all the items that are on the current page first (and in the process, unbind
@@ -1609,10 +1610,11 @@ public class LauncherModel extends BroadcastReceiver {
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets,
                     currentFolders, null);
 
-            // Load all the remaining pages
+            // Load all the remaining pages (if we are loading synchronously, we want to defer this
+            // work until after the first render)
             mDeferredBindRunnables.clear();
             bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, otherFolders,
-                    mDeferredBindRunnables);
+                    (isLoadingSynchronously ? mDeferredBindRunnables : null));
 
             // Tell the workspace that we're done binding items
             r = new Runnable() {
@@ -1631,7 +1633,11 @@ public class LauncherModel extends BroadcastReceiver {
                     mIsLoadingAndBindingWorkspace = false;
                 }
             };
-            mDeferredBindRunnables.add(r);
+            if (isLoadingSynchronously) {
+                mDeferredBindRunnables.add(r);
+            } else {
+                runOnMainThread(r);
+            }
         }
 
         private void loadAndBindAllApps() {
