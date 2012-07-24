@@ -98,6 +98,18 @@ public class DeferredHandler {
         }
     }
 
+    /** Runs all queued Runnables from the calling thread. */
+    public void flush() {
+        LinkedList<Runnable> queue = new LinkedList<Runnable>();
+        synchronized (mQueue) {
+            queue.addAll(mQueue);
+            mQueue.clear();
+        }
+        for (Runnable r : queue) {
+            r.run();
+        }
+    }
+
     void scheduleNextLocked() {
         if (mQueue.size() > 0) {
             Runnable peek = mQueue.getFirst();

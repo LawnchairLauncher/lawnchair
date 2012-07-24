@@ -1014,6 +1014,11 @@ public class LauncherModel extends BroadcastReceiver {
             //      data structures, we can't allow any other thread to touch that data, but because
             //      this call is synchronous, we can get away with not locking).
 
+            // The LauncherModel is static in the LauncherApplication and mHandler may have queued
+            // operations from the previous activity.  We need to ensure that all queued operations
+            // are executed before any synchronous binding work is done.
+            mHandler.flush();
+
             // Divide the set of loaded items into those that we are binding synchronously, and
             // everything else that is to be bound normally (asynchronously).
             bindWorkspace(synchronousBindPage);
