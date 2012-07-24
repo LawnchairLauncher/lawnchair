@@ -1686,7 +1686,7 @@ public class LauncherModel extends BroadcastReceiver {
             @SuppressWarnings("unchecked")
             final ArrayList<ApplicationInfo> list
                     = (ArrayList<ApplicationInfo>) mAllAppsList.data.clone();
-            mHandler.post(new Runnable() {
+            Runnable r = new Runnable() {
                 public void run() {
                     final long t = SystemClock.uptimeMillis();
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
@@ -1698,7 +1698,13 @@ public class LauncherModel extends BroadcastReceiver {
                                 + (SystemClock.uptimeMillis()-t) + "ms");
                     }
                 }
-            });
+            };
+            boolean isRunningOnMainThread = !(sWorkerThread.getThreadId() == Process.myTid());
+            if (oldCallbacks.isAllAppsVisible() && isRunningOnMainThread) {
+                r.run();
+            } else {
+                mHandler.post(r);
+            }
         }
 
         private void loadAllAppsByBatch() {

@@ -81,7 +81,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
      * reflects the new content (but doesn't do the animation and logic associated with changing
      * tabs manually).
      */
-    private void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
+    void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
         onTabChangedStart();
         onTabChangedEnd(type);
     }
@@ -158,10 +158,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             if (contentWidth > 0 && mTabs.getLayoutParams().width != contentWidth) {
                 // Set the width and show the tab bar
                 mTabs.getLayoutParams().width = contentWidth;
-                post(mRelayoutAndMakeVisible);
+                mRelayoutAndMakeVisible.run();
             }
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
      public boolean onInterceptTouchEvent(MotionEvent ev) {

@@ -528,18 +528,22 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    public void onPackagesUpdated() {
-        // TODO: this isn't ideal, but we actually need to delay here. This call is triggered
-        // by a broadcast receiver, and in order for it to work correctly, we need to know that
-        // the AppWidgetService has already received and processed the same broadcast. Since there
-        // is no guarantee about ordering of broadcast receipt, we just delay here. This is a
-        // workaround until we add a callback from AppWidgetService to AppWidgetHost when widget
-        // packages are added, updated or removed.
-        postDelayed(new Runnable() {
-           public void run() {
-               updatePackages();
-           }
-        }, 1500);
+    public void onPackagesUpdated(boolean immediate) {
+        if (immediate) {
+            updatePackages();
+        } else {
+            // TODO: this isn't ideal, but we actually need to delay here. This call is triggered
+            // by a broadcast receiver, and in order for it to work correctly, we need to know that
+            // the AppWidgetService has already received and processed the same broadcast. Since there
+            // is no guarantee about ordering of broadcast receipt, we just delay here. This is a
+            // workaround until we add a callback from AppWidgetService to AppWidgetHost when widget
+            // packages are added, updated or removed.
+            postDelayed(new Runnable() {
+               public void run() {
+                   updatePackages();
+               }
+            }, 1500);
+        }
     }
 
     public void updatePackages() {
@@ -578,7 +582,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void onClick(View v) {
         // When we have exited all apps or are in transition, disregard clicks
-        if (!mLauncher.isAllAppsCustomizeOpen() ||
+        if (!mLauncher.isAllAppsVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return;
 
         if (v instanceof PagedViewIcon) {
