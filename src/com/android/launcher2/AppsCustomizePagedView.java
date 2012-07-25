@@ -559,7 +559,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void onClick(View v) {
         // When we have exited all apps or are in transition, disregard clicks
-        if (!mLauncher.isAllAppsCustomizeOpen() ||
+        if (!mLauncher.isAllAppsVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return;
 
         if (v instanceof PagedViewIcon) {
