@@ -156,6 +156,7 @@ public class LauncherModel extends BroadcastReceiver {
         public boolean isAllAppsVisible();
         public boolean isAllAppsButtonRank(int rank);
         public void bindSearchablesChanged();
+        public void onPageBoundSynchronously(int page);
     }
 
     LauncherModel(LauncherApplication app, IconCache iconCache) {
@@ -1614,6 +1615,17 @@ public class LauncherModel extends BroadcastReceiver {
             // Load items on the current page
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets,
                     currentFolders, null);
+            if (isLoadingSynchronously) {
+                r = new Runnable() {
+                    public void run() {
+                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                        if (callbacks != null) {
+                            callbacks.onPageBoundSynchronously(currentScreen);
+                        }
+                    }
+                };
+                runOnMainThread(r);
+            }
 
             // Load all the remaining pages (if we are loading synchronously, we want to defer this
             // work until after the first render)

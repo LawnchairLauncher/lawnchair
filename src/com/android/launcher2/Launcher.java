@@ -278,6 +278,8 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState[] sVoiceSearchIcon = new Drawable.ConstantState[2];
     private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
 
+    private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
+
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
@@ -1413,9 +1415,11 @@ public final class Launcher extends Activity
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        // Do not call super here
-        mSavedInstanceState = savedInstanceState;
+    public void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        for (int page: mSynchronouslyBoundPages) {
+            mWorkspace.restoreInstanceStateForChild(page);
+        }
     }
 
     @Override
@@ -3314,6 +3318,10 @@ public final class Launcher extends Activity
         }
     }
 
+    public void onPageBoundSynchronously(int page) {
+        mSynchronouslyBoundPages.add(page);
+    }
+
     /**
      * Callback saying that there aren't any more items to bind.
      *
@@ -3329,10 +3337,7 @@ public final class Launcher extends Activity
             mSavedState = null;
         }
 
-        if (mSavedInstanceState != null) {
-            super.onRestoreInstanceState(mSavedInstanceState);
-            mSavedInstanceState = null;
-        }
+        mWorkspace.restoreInstanceStateForRemainingPages();
 
         // If we received the result of any pending adds while the loader was running (e.g. the
         // widget configuration forced an orientation change), process them now.

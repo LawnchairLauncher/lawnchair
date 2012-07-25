@@ -47,6 +47,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -231,6 +232,9 @@ public class Workspace extends SmoothPagedView
     private int mDragMode = DRAG_MODE_NONE;
     private int mLastReorderX = -1;
     private int mLastReorderY = -1;
+
+    private SparseArray<Parcelable> mSavedStates;
+    private final ArrayList<Integer> mRestoredPages = new ArrayList<Integer>();
 
     // These variables are used for storing the initial and final values during workspace animations
     private int mSavedScrollX;
@@ -3408,6 +3412,32 @@ public class Workspace extends SmoothPagedView
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
         Launcher.setScreen(mCurrentPage);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        // We don't dispatch restoreInstanceState to our children using this code path.
+        // Some pages will be restored immediately as their items are bound immediately, and 
+        // others we will need to wait until after their items are bound.
+        mSavedStates = container;
+    }
+
+    public void restoreInstanceStateForChild(int child) {
+        if (mSavedStates != null) {
+            mRestoredPages.add(child);
+            CellLayout cl = (CellLayout) getChildAt(child);
+            cl.restoreInstanceState(mSavedStates);
+        }
+    }
+
+    public void restoreInstanceStateForRemainingPages() {
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            if (!mRestoredPages.contains(i)) {
+                restoreInstanceStateForChild(i);
+            }
+        }
+        mRestoredPages.clear();
     }
 
     @Override
