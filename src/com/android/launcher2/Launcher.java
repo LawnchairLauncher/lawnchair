@@ -906,10 +906,8 @@ public final class Launcher extends Activity
         if (mAppsCustomizeTabHost != null) {
             String curTab = savedState.getString("apps_customize_currentTab");
             if (curTab != null) {
-                // We set this directly so that there is no delay before the tab is set
-                mAppsCustomizeContent.setContentType(
+                mAppsCustomizeTabHost.setContentTypeImmediate(
                         mAppsCustomizeTabHost.getContentTypeForTabTag(curTab));
-                mAppsCustomizeTabHost.setCurrentTabByTag(curTab);
                 mAppsCustomizeContent.loadAssociatedPages(
                         mAppsCustomizeContent.getCurrentPage());
             }
@@ -1439,7 +1437,7 @@ public final class Launcher extends Activity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentPage());
+        outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
@@ -1861,7 +1859,7 @@ public final class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
-        if (mState == State.APPS_CUSTOMIZE) {
+        if (isAllAppsVisible()) {
             showWorkspace(true);
         } else if (mWorkspace.getOpenFolder() != null) {
             Folder openFolder = mWorkspace.getOpenFolder();
@@ -1934,7 +1932,7 @@ public final class Launcher extends Activity
                 handleFolderClick(fi);
             }
         } else if (v == mAllAppsButton) {
-            if (mState == State.APPS_CUSTOMIZE) {
+            if (isAllAppsVisible()) {
                 showWorkspace(true);
             } else {
                 onClickAllAppsButton(v);
@@ -2338,7 +2336,7 @@ public final class Launcher extends Activity
 
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
-        return (mState == State.APPS_CUSTOMIZE);
+        return (mState == State.APPS_CUSTOMIZE) || (mOnResumeState == State.APPS_CUSTOMIZE);
     }
 
     public boolean isAllAppsButtonRank(int rank) {
@@ -2358,7 +2356,7 @@ public final class Launcher extends Activity
 
     void disableWallpaperIfInAllApps() {
         // Only disable it if we are in all apps
-        if (mState == State.APPS_CUSTOMIZE) {
+        if (isAllAppsVisible()) {
             if (mAppsCustomizeTabHost != null &&
                     !mAppsCustomizeTabHost.isTransitioning()) {
                 updateWallpaperVisibility(false);
@@ -2799,7 +2797,7 @@ public final class Launcher extends Activity
     }
 
     void enterSpringLoadedDragMode() {
-        if (mState == State.APPS_CUSTOMIZE) {
+        if (isAllAppsVisible()) {
             hideAppsCustomizeHelper(State.APPS_CUSTOMIZE_SPRING_LOADED, true, true, null);
             hideDockDivider();
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
@@ -2871,10 +2869,6 @@ public final class Launcher extends Activity
 
     void unlockAllApps() {
         // TODO
-    }
-
-    public boolean isAllAppsCustomizeOpen() {
-        return mState == State.APPS_CUSTOMIZE;
     }
 
     /**
@@ -3506,23 +3500,30 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<ApplicationInfo> apps) {
+        Runnable setAllAppsRunnable = new Runnable() {
+            public void run() {
+                if (mAppsCustomizeContent != null) {
+                    mAppsCustomizeContent.setApps(apps);
+                }
+            }
+        };
+
         // Remove the progress bar entirely; we could also make it GONE
         // but better to remove it since we know it's not going to be used
         View progressBar = mAppsCustomizeTabHost.
             findViewById(R.id.apps_customize_progress_bar);
         if (progressBar != null) {
             ((ViewGroup)progressBar.getParent()).removeView(progressBar);
+
+            // We just post the call to setApps so the user sees the progress bar
+            // disappear-- otherwise, it just looks like the progress bar froze
+            // which doesn't look great
+            mAppsCustomizeTabHost.post(setAllAppsRunnable);
+        } else {
+            // If we did not initialize the spinner in onCreate, then we can directly set the
+            // list of applications without waiting for any progress bars views to be hidden.
+            setAllAppsRunnable.run();
         }
-        // We just post the call to setApps so the user sees the progress bar
-        // disappear-- otherwise, it just looks like the progress bar froze
-        // which doesn't look great
-        mAppsCustomizeTabHost.post(new Runnable() {
-            public void run() {
-                if (mAppsCustomizeContent != null) {
-                    mAppsCustomizeContent.setApps(apps);
-                }
-            }
-        });
     }
 
     /**
