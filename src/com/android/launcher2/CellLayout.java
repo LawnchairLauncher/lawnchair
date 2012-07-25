@@ -17,9 +17,9 @@
 package com.android.launcher2;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -37,8 +37,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -530,6 +532,10 @@ public class CellLayout extends ViewGroup {
     @Override
     public boolean shouldDelayChildPressedState() {
         return false;
+    }
+
+    public void restoreInstanceState(SparseArray<Parcelable> states) {
+        dispatchRestoreInstanceState(states);
     }
 
     @Override
