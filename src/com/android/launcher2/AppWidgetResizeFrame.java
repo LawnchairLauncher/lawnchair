@@ -53,6 +53,9 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private int mBackgroundPadding;
     private int mTouchTargetWidth;
 
+    private int mTopTouchRegionAdjustment = 0;
+    private int mBottomTouchRegionAdjustment = 0;
+
     int[] mDirectionVector = new int[2];
 
     final int SNAP_DURATION = 150;
@@ -139,10 +142,12 @@ public class AppWidgetResizeFrame extends FrameLayout {
     public boolean beginResizeIfPointInRegion(int x, int y) {
         boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
         boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
+
         mLeftBorderActive = (x < mTouchTargetWidth) && horizontalActive;
         mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
-        mTopBorderActive = (y < mTouchTargetWidth) && verticalActive;
-        mBottomBorderActive = (y > getHeight() - mTouchTargetWidth) && verticalActive;
+        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment) && verticalActive;
+        mBottomBorderActive = (y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment)
+                && verticalActive;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
                 || mTopBorderActive || mBottomBorderActive;
@@ -378,13 +383,20 @@ public class AppWidgetResizeFrame extends FrameLayout {
         int newX = mWidgetView.getLeft() - mBackgroundPadding + xOffset + mWidgetPaddingLeft;
         int newY = mWidgetView.getTop() - mBackgroundPadding + yOffset + mWidgetPaddingTop;
 
-        // We need to make sure the frame stays within the bounds of the CellLayout
+        // We need to make sure the frame's touchable regions lie fully within the bounds of the 
+        // DragLayer. We allow the actual handles to be clipped, but we shift the touch regions
+        // down accordingly to provide a proper touch target.
         if (newY < 0) {
-            newHeight -= -newY;
-            newY = 0;
+            // In this case we shift the touch region down to start at the top of the DragLayer
+            mTopTouchRegionAdjustment = -newY;
+        } else {
+            mTopTouchRegionAdjustment = 0;
         }
         if (newY + newHeight > mDragLayer.getHeight()) {
-            newHeight -= newY + newHeight - mDragLayer.getHeight();
+            // In this case we shift the touch region up to end at the bottom of the DragLayer
+            mBottomTouchRegionAdjustment = -(newY + newHeight - mDragLayer.getHeight());
+        } else {
+            mBottomTouchRegionAdjustment = 0;
         }
 
         if (!animate) {
