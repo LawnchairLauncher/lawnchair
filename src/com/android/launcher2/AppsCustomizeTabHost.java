@@ -48,7 +48,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private ViewGroup mTabs;
     private ViewGroup mTabsContainer;
     private AppsCustomizePagedView mAppsCustomizePane;
-    private boolean mSuppressContentCallback = false;
     private FrameLayout mAnimationBuffer;
     private LinearLayout mContent;
 
@@ -75,16 +74,17 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
      * tabs manually).
      */
     void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
+        setOnTabChangedListener(null);
         onTabChangedStart();
         onTabChangedEnd(type);
+        setCurrentTabByTag(getTabTagForContentType(type));
+        setOnTabChangedListener(this);
     }
     void selectAppsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Applications);
-        setCurrentTabByTag(APPS_TAB_TAG);
     }
     void selectWidgetsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
-        setCurrentTabByTag(WIDGETS_TAB_TAG);
     }
 
     /**
@@ -201,10 +201,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     @Override
     public void onTabChanged(String tabId) {
         final AppsCustomizePagedView.ContentType type = getContentTypeForTabTag(tabId);
-        if (mSuppressContentCallback) {
-            mSuppressContentCallback = false;
-            return;
-        }
 
         // Animate the changing of the tab content by fading pages in and out
         final Resources res = getResources();
@@ -295,8 +291,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     public void setCurrentTabFromContent(AppsCustomizePagedView.ContentType type) {
-        mSuppressContentCallback = true;
+        setOnTabChangedListener(null);
         setCurrentTabByTag(getTabTagForContentType(type));
+        setOnTabChangedListener(this);
     }
 
     /**
