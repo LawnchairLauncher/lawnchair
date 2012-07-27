@@ -31,6 +31,7 @@
 
 <!-- QSB -->
     <dimen name="qsb_bar_height">82dp</dimen>
+    <dimen name="toolbar_button_horizontal_padding">20dip</dimen>
 
 <!-- Workspace -->
     <dimen name="workspace_divider_padding_top">12dp</dimen>
