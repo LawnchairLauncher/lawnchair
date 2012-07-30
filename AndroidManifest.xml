@@ -139,6 +139,7 @@
         <provider
             android:name="com.android.launcher2.LauncherProvider"
             android:authorities="com.android.launcher2.settings"
+            android:exported="true"
             android:writePermission="com.android.launcher.permission.WRITE_SETTINGS"
             android:readPermission="com.android.launcher.permission.READ_SETTINGS" />
 
