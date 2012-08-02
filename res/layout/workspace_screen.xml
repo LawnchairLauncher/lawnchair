@@ -14,9 +14,9 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.CellLayout
+<com.cyanogenmod.trebuchet.CellLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

@@ -13,12 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher2.Hotseat
+<com.cyanogenmod.trebuchet.Hotseat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     launcher:cellCountX="1"
     launcher:cellCountY="@integer/hotseat_cell_count">
-    <com.android.launcher2.CellLayout
+    <com.cyanogenmod.trebuchet.CellLayout
         android:id="@+id/layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,4 +33,4 @@
         launcher:widthGap="@dimen/hotseat_width_gap"
         launcher:heightGap="@dimen/hotseat_height_gap"
         launcher:maxGap="@dimen/workspace_max_gap" />
-</com.android.launcher2.Hotseat>
+</com.cyanogenmod.trebuchet.Hotseat>

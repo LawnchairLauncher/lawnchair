@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher">
+<favorites xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet">
     <!-- Update the db with new hotseat items.  Note that we reference the browser's original
          package name. -->
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
