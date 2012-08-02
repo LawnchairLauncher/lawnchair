@@ -13,9 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher2.AppsCustomizeTabHost
+<com.cyanogenmod.trebuchet.AppsCustomizeTabHost
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     android:background="#FF000000">
     <LinearLayout
         android:id="@+id/apps_customize_content"
@@ -31,7 +31,7 @@
             android:layout_height="@dimen/apps_customize_tab_bar_height"
             android:layout_marginTop="@dimen/apps_customize_tab_bar_margin_top"
             android:layout_gravity="center_horizontal">
-            <com.android.launcher2.FocusOnlyTabWidget
+            <com.cyanogenmod.trebuchet.FocusOnlyTabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <com.android.launcher2.AppsCustomizePagedView
+            <com.cyanogenmod.trebuchet.AppsCustomizePagedView
                 android:id="@+id/apps_customize_pane_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -90,4 +90,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
-</com.android.launcher2.AppsCustomizeTabHost>
+</com.cyanogenmod.trebuchet.AppsCustomizeTabHost>

@@ -16,9 +16,9 @@
 
 <!-- The workspace contains 5 screens of cells -->
 
-<com.android.launcher2.Workspace
+<com.cyanogenmod.trebuchet.Workspace
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     android:paddingLeft="@dimen/workspace_left_padding"
     android:paddingRight="@dimen/workspace_right_padding"
     android:paddingTop="@dimen/workspace_top_padding"
@@ -30,4 +30,4 @@
       <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
       <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
       <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
-</com.android.launcher2.Workspace>
+</com.cyanogenmod.trebuchet.Workspace>

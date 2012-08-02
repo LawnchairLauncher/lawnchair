@@ -14,9 +14,9 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.PagedViewIcon
+<com.cyanogenmod.trebuchet.PagedViewIcon
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
 
     style="@style/WorkspaceIcon.Portrait.AppsCustomize"
 

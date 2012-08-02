@@ -19,34 +19,35 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.launcher">
+    package="com.cyanogenmod.trebuchet"
+    android:versionName="@string/application_version">
 
     <original-package android:name="com.android.launcher2" />
 
     <permission
-        android:name="com.android.launcher.permission.PRELOAD_WORKSPACE"
+        android:name="com.cyanogenmod.trebuchet.permission.PRELOAD_WORKSPACE"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="system|signature" />
     <permission
-        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+        android:name="com.cyanogenmod.trebuchet.permission.INSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
         android:label="@string/permlab_install_shortcut"
         android:description="@string/permdesc_install_shortcut" />
     <permission
-        android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
+        android:name="com.cyanogenmod.trebuchet.permission.UNINSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
         android:label="@string/permlab_uninstall_shortcut"
         android:description="@string/permdesc_uninstall_shortcut"/>
     <permission
-        android:name="com.android.launcher.permission.READ_SETTINGS"
+        android:name="com.cyanogenmod.trebuchet.permission.READ_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
         android:label="@string/permlab_read_settings"
         android:description="@string/permdesc_read_settings"/>
     <permission
-        android:name="com.android.launcher.permission.WRITE_SETTINGS"
+        android:name="com.cyanogenmod.trebuchet.permission.WRITE_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
         android:label="@string/permlab_write_settings"
@@ -58,17 +59,17 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.cyanogenmod.trebuchet.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.cyanogenmod.trebuchet.permission.WRITE_SETTINGS" />
 
     <application
-        android:name="com.android.launcher2.LauncherApplication"
+        android:name="com.cyanogenmod.trebuchet.LauncherApplication"
         android:label="@string/application_name"
         android:icon="@drawable/ic_launcher_home"
         android:hardwareAccelerated="@bool/config_hardwareAccelerated"
         android:largeHeap="@bool/config_largeHeap">
         <activity
-            android:name="com.android.launcher2.Launcher"
+            android:name="com.cyanogenmod.trebuchet.Launcher"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
@@ -84,7 +85,7 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher2.WallpaperChooser"
+            android:name="com.cyanogenmod.trebuchet.WallpaperChooser"
             style="@style/Theme.WallpaperPicker"
             android:label="@string/pick_wallpaper"
             android:icon="@drawable/ic_launcher_wallpaper"
@@ -98,7 +99,7 @@
                 android:resource="@xml/wallpaper_picker_preview" />
         </activity>
 
-        <activity android:name="com.android.launcher2.RocketLauncher"
+        <activity android:name="com.cyanogenmod.trebuchet.RocketLauncher"
             android:label="@string/dream_name"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
@@ -110,37 +111,37 @@
 
         <!-- Intent received used to prepopulate the default workspace. -->
         <receiver
-            android:name="com.android.launcher2.PreloadReceiver"
-            android:permission="com.android.launcher.permission.PRELOAD_WORKSPACE">
+            android:name="com.cyanogenmod.trebuchet.PreloadReceiver"
+            android:permission="com.cyanogenmod.trebuchet.permission.PRELOAD_WORKSPACE">
             <intent-filter>
-                <action android:name="com.android.launcher.action.PRELOAD_WORKSPACE" />
+                <action android:name="com.cyanogenmod.trebuchet.action.PRELOAD_WORKSPACE" />
             </intent-filter>
         </receiver>
 
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
-            android:name="com.android.launcher2.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            android:name="com.cyanogenmod.trebuchet.InstallShortcutReceiver"
+            android:permission="com.cyanogenmod.trebuchet.permission.INSTALL_SHORTCUT">
             <intent-filter>
-                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+                <action android:name="com.cyanogenmod.trebuchet.action.INSTALL_SHORTCUT" />
             </intent-filter>
         </receiver>
 
         <!-- Intent received used to uninstall shortcuts from other applications -->
         <receiver
-            android:name="com.android.launcher2.UninstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.UNINSTALL_SHORTCUT">
+            android:name="com.cyanogenmod.trebuchet.UninstallShortcutReceiver"
+            android:permission="com.cyanogenmod.trebuchet.permission.UNINSTALL_SHORTCUT">
             <intent-filter>
-                <action android:name="com.android.launcher.action.UNINSTALL_SHORTCUT" />
+                <action android:name="com.cyanogenmod.trebuchet.action.UNINSTALL_SHORTCUT" />
             </intent-filter>
         </receiver>
 
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
-            android:name="com.android.launcher2.LauncherProvider"
-            android:authorities="com.android.launcher2.settings"
-            android:writePermission="com.android.launcher.permission.WRITE_SETTINGS"
-            android:readPermission="com.android.launcher.permission.READ_SETTINGS" />
+            android:name="com.cyanogenmod.trebuchet.LauncherProvider"
+            android:authorities="com.cyanogenmod.trebuchet.settings"
+            android:writePermission="com.cyanogenmod.trebuchet.permission.WRITE_SETTINGS"
+            android:readPermission="com.cyanogenmod.trebuchet.permission.READ_SETTINGS" />
 
         <meta-data android:name="android.nfc.disable_beam_default"
                        android:value="true" />

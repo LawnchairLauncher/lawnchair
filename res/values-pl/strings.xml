@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="8424725141379931883">"Program uruchamiający"</string>
     <string name="home" msgid="5921706419368316758">"Strona główna"</string>
     <string name="uid_name" msgid="3371120195364560632">"Aplikacje główne systemu Android"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>

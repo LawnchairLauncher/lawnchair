@@ -15,14 +15,14 @@
 -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     style="@style/SearchDropTargetBar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/search_bar_height"
     android:layout_gravity="bottom|center_horizontal"
     android:background="@drawable/search_frame">
    <!-- Global search icon -->
-   <com.android.launcher2.HolographicLinearLayout
+   <com.cyanogenmod.trebuchet.HolographicLinearLayout
         style="@style/SearchButton"
         launcher:sourceImageViewId="@+id/search_button"
         android:id="@+id/search_button_container"
@@ -43,10 +43,10 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_home_search_normal_holo"
             android:adjustViewBounds="true" />
-    </com.android.launcher2.HolographicLinearLayout>
+    </com.cyanogenmod.trebuchet.HolographicLinearLayout>
 
     <!-- Voice search icon -->
-    <com.android.launcher2.HolographicLinearLayout
+    <com.cyanogenmod.trebuchet.HolographicLinearLayout
         style="@style/SearchButton.Voice"
         launcher:sourceImageViewId="@+id/voice_button"
         android:id="@+id/voice_button_container"
@@ -67,5 +67,5 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_home_voice_search_holo"
             android:adjustViewBounds="true" />
-    </com.android.launcher2.HolographicLinearLayout>
+    </com.cyanogenmod.trebuchet.HolographicLinearLayout>
 </RelativeLayout>

@@ -13,9 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher2.Cling
+<com.cyanogenmod.trebuchet.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     launcher:drawIdentifier="workspace_large">
     <FrameLayout
         android:layout_width="match_parent"
@@ -49,4 +49,4 @@
         android:layout_gravity="right"
         android:gravity="right"
         android:text="@string/workspace_cling_open_all_apps" />
-</com.android.launcher2.Cling>
+</com.cyanogenmod.trebuchet.Cling>

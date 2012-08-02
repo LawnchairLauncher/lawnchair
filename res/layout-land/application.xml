@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.cyanogenmod.trebuchet.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
    style="@style/WorkspaceIcon.Landscape"
    android:focusable="true"
    android:background="@drawable/focusable_view_bg" />

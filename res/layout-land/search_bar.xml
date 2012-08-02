@@ -18,7 +18,7 @@
     android:layout_width="@dimen/qsb_bar_height"
     android:layout_height="match_parent">
    <!-- Global search icon -->
-   <com.android.launcher2.HolographicImageView
+   <com.cyanogenmod.trebuchet.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/search_button"
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:contentDescription="@string/accessibility_search_button" />
 
     <!-- Voice search icon -->
-    <com.android.launcher2.HolographicImageView
+    <com.cyanogenmod.trebuchet.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/voice_button"
         android:layout_width="match_parent"

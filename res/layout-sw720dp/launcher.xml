@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.DragLayer
+<com.cyanogenmod.trebuchet.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:id="@+id/drag_layer"
@@ -50,4 +50,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
-</com.android.launcher2.DragLayer>
+</com.cyanogenmod.trebuchet.DragLayer>

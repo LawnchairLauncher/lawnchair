@@ -24,10 +24,10 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-common android-support-v13
 LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-renderscript-files-under, src)
 
 
-LOCAL_PACKAGE_NAME := Launcher2
+LOCAL_PACKAGE_NAME := Trebuchet
 LOCAL_CERTIFICATE := shared
 
-LOCAL_OVERRIDES_PACKAGES := Home
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 

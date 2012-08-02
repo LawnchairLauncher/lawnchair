@@ -14,15 +14,15 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.Folder
+<com.cyanogenmod.trebuchet.Folder
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/portal_container_holo">
 
-    <com.android.launcher2.CellLayout
+    <com.cyanogenmod.trebuchet.CellLayout
         android:id="@+id/folder_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         launcher:cellWidth="@dimen/folder_cell_width"
         launcher:cellHeight="@dimen/folder_cell_height" />
 
-    <com.android.launcher2.FolderEditText
+    <com.cyanogenmod.trebuchet.FolderEditText
         android:id="@+id/folder_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,4 +52,4 @@
         android:gravity="center_horizontal"
         android:singleLine="true"
         android:imeOptions="flagNoExtractUi"/>
-</com.android.launcher2.Folder>
+</com.cyanogenmod.trebuchet.Folder>

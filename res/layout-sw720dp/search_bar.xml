@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
    <!-- Global search icon -->
-   <com.android.launcher2.HolographicImageView
+   <com.cyanogenmod.trebuchet.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
         android:clickable="true" />
 
     <!-- Voice search icon -->
-    <com.android.launcher2.HolographicImageView
+    <com.cyanogenmod.trebuchet.HolographicImageView
         style="@style/SearchButton.Voice"
         android:id="@+id/voice_button"
         android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
         android:contentDescription="@string/accessibility_voice_search_button" />
 
     <!-- AppsCustomize icon -->
-    <com.android.launcher2.HolographicImageView
+    <com.cyanogenmod.trebuchet.HolographicImageView
         android:id="@+id/all_apps_button"
         android:onClick="onClickAllAppsButton"
         android:layout_width="wrap_content"

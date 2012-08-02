@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher2.SearchDropTargetBar
+<com.cyanogenmod.trebuchet.SearchDropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/QSBBar"
     android:focusable="false">
@@ -30,4 +30,4 @@
         <include
             layout="@layout/drop_target_bar" />
     </LinearLayout>
-</com.android.launcher2.SearchDropTargetBar>
+</com.cyanogenmod.trebuchet.SearchDropTargetBar>

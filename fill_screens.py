@@ -34,7 +34,7 @@ def make_dir():
 def pull_file(fn):
   print "pull_file: " + fn
   rv = os.system("adb pull"
-    + " /data/data/com.android.launcher/databases/launcher.db"
+    + " /data/data/com.cyanogenmod.trebuchet/databases/launcher.db"
     + " " + fn);
   if rv != 0:
     print "adb pull failed"
@@ -44,7 +44,7 @@ def push_file(fn):
   print "push_file: " + fn
   rv = os.system("adb push"
     + " " + fn
-    + " /data/data/com.android.launcher/databases/launcher.db")
+    + " /data/data/com.cyanogenmod.trebuchet/databases/launcher.db")
   if rv != 0:
     print "adb push failed"
     sys.exit(1)
