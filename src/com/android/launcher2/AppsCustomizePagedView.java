@@ -639,6 +639,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mInflateWidgetRunnable = new Runnable() {
             @Override
             public void run() {
+                if (mWidgetCleanupState != WIDGET_BOUND) {
+                    return;
+                }
                 AppWidgetHostView hostView = mLauncher.
                         getAppWidgetHost().createView(getContext(), mWidgetLoadingId, pInfo);
                 info.boundWidget = hostView;
