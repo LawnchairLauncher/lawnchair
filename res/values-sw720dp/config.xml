@@ -1,4 +1,6 @@
 <resources>
+    <integer name="cell_count_x">8</integer>
+    <integer name="cell_count_y">5</integer>
     <bool name="config_largeHeap">true</bool>
     <bool name="is_large_screen">true</bool>
 
@@ -14,4 +16,7 @@
 
     <!-- Camera distance for the overscroll effect -->
     <integer name="config_cameraDistance">6500</integer>
+
+<!-- Hotseat -->
+    <bool name="hotseat_transpose_layout_with_orientation">false</bool>
 </resources>
