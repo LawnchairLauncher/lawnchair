@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -37,6 +38,8 @@ public class Hotseat extends FrameLayout {
     private int mCellCountX;
     private int mCellCountY;
     private int mAllAppsButtonRank;
+    
+    private boolean mTransposeLayoutWithOrientation;
     private boolean mIsLandscape;
 
     public Hotseat(Context context) {
@@ -52,9 +55,12 @@ public class Hotseat extends FrameLayout {
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
+        Resources r = context.getResources();
         mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, -1);
         mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, -1);
-        mAllAppsButtonRank = context.getResources().getInteger(R.integer.hotseat_all_apps_index);
+        mAllAppsButtonRank = r.getInteger(R.integer.hotseat_all_apps_index);
+        mTransposeLayoutWithOrientation = 
+                r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
     }
@@ -67,17 +73,21 @@ public class Hotseat extends FrameLayout {
     CellLayout getLayout() {
         return mContent;
     }
+  
+    private boolean hasVerticalHotseat() {
+        return (mIsLandscape && mTransposeLayoutWithOrientation);
+    }
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
-        return mIsLandscape ? (mContent.getCountY() - y - 1) : x;
+        return hasVerticalHotseat() ? (mContent.getCountY() - y - 1) : x;
     }
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
-        return mIsLandscape ? 0 : rank;
+        return hasVerticalHotseat() ? 0 : rank;
     }
     int getCellYFromOrder(int rank) {
-        return mIsLandscape ? (mContent.getCountY() - (rank + 1)) : 0;
+        return hasVerticalHotseat() ? (mContent.getCountY() - (rank + 1)) : 0;
     }
     public boolean isAllAppsButtonRank(int rank) {
         return rank == mAllAppsButtonRank;

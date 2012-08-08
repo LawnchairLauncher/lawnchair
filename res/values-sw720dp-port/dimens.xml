@@ -33,8 +33,21 @@
     <dimen name="scroll_zone">40dp</dimen>
     <dimen name="workspace_page_spacing">24dp</dimen>
 
+    <dimen name="qsb_bar_height">72dp</dimen>
+    <dimen name="qsb_bar_height_inset">72dp</dimen>
+    <dimen name="qsb_padding_left">112dp</dimen>
+    <dimen name="qsb_padding_right">112dp</dimen>
+    <!-- We offset the proxy to overlap with the voice icon -->
+    <dimen name="qsb_voice_proxy_padding_right">100dp</dimen>
+
     <integer name="apps_customize_cling_focused_x">2</integer>
     <integer name="apps_customize_cling_focused_y">2</integer>
+
+    <!-- Page width set to match a page of icons (96*k) -->
+    <dimen name="workspace_divider_width">768dp</dimen>
+
+<!-- Hotseat -->
+    <dimen name="hotseat_width_gap">16dp</dimen>
 
 <!-- Cling -->
     <!-- The offset for the text in the cling -->
