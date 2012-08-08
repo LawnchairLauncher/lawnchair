@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher2.Hotseat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    launcher:cellCountX="@integer/hotseat_cell_count"
+    launcher:cellCountY="1">
+    <com.android.launcher2.CellLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:paddingTop="@dimen/button_bar_height_top_padding"
+        android:paddingBottom="@dimen/button_bar_height_bottom_padding"
+        android:paddingLeft="@dimen/button_bar_width_left_padding"
+        android:paddingRight="@dimen/button_bar_width_right_padding"
+
+        launcher:cellWidth="@dimen/hotseat_cell_width"
+        launcher:cellHeight="@dimen/hotseat_cell_height"
+        launcher:widthGap="@dimen/hotseat_width_gap"
+        launcher:heightGap="@dimen/hotseat_height_gap"
+        launcher:maxGap="@dimen/hotseat_width_gap" />
+</com.android.launcher2.Hotseat>
