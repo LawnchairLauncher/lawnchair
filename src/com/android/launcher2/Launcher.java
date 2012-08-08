@@ -952,20 +952,7 @@ public final class Launcher extends Activity
         mAppsCustomizeContent = (AppsCustomizePagedView)
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
         mAppsCustomizeContent.setup(this, dragController);
-
-        // Get the all apps button
-        mAllAppsButton = findViewById(R.id.all_apps_button);
-        if (mAllAppsButton != null) {
-            mAllAppsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        onTouchDownAllAppsButton(v);
-                    }
-                    return false;
-                }
-            });
-        }
+        
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
         dragController.setScrollView(mDragLayer);
@@ -3020,7 +3007,6 @@ public final class Launcher extends Activity
     private boolean updateGlobalSearchIcon() {
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
-        final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
@@ -3039,14 +3025,12 @@ public final class Launcher extends Activity
                         TOOLBAR_ICON_METADATA_NAME);
             }
 
-            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
             invalidatePressedFocusedStates(searchButtonContainer, searchButton);
             return true;
         } else {
             // We disable both search and voice search when there is no global search provider
-            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
@@ -3066,7 +3050,6 @@ public final class Launcher extends Activity
     }
 
     private boolean updateVoiceSearchIcon(boolean searchVisible) {
-        final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
@@ -3100,7 +3083,6 @@ public final class Launcher extends Activity
                         R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
                         TOOLBAR_ICON_METADATA_NAME);
             }
-            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
             if (voiceButtonProxy != null) {
@@ -3109,7 +3091,6 @@ public final class Launcher extends Activity
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
-            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
             if (voiceButtonProxy != null) {
