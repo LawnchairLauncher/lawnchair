@@ -298,8 +298,8 @@ public class Workspace extends SmoothPagedView
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
-        int cellCountX = context.getResources().getInteger(R.integer.config_workspaceColumns);
-        int cellCountY = context.getResources().getInteger(R.integer.config_workspaceRows);
+        int cellCountX = context.getResources().getInteger(R.integer.cell_count_x);
+        int cellCountY = context.getResources().getInteger(R.integer.cell_count_y);
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
