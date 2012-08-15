@@ -182,9 +182,9 @@ public final class Launcher extends Activity
 
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
-            "com.cyanogenmod.trebuchet.toolbar_search_icon";
+            "com.android.launcher.toolbar_search_icon";
     private static final String TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME =
-            "com.cyanogenmod.trebuchet.toolbar_voice_search_icon";
+            "com.android.launcher.toolbar_voice_search_icon";
 
     /** The different states that Launcher can be in. */
     private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
