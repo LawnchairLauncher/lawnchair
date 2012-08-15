@@ -41,10 +41,6 @@
     <!-- 44dp high for the optical bounds -->
     <dimen name="search_bar_height">52dp</dimen>
 
-    <dimen name="folder_cell_width">96dp</dimen>
-    <dimen name="folder_cell_height">96dp</dimen>
-    <dimen name="folder_preview_size">75dp</dimen>
-
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">96dp</dimen>
     <dimen name="apps_customize_cell_height">96dp</dimen>
@@ -70,6 +66,15 @@
     <dimen name="cell_layout_top_padding_land">0dp</dimen>
     <dimen name="cell_layout_bottom_padding_port">0dp</dimen>
     <dimen name="cell_layout_bottom_padding_land">0dp</dimen>
+
+<!-- Folders -->
+    <!-- The size of the image which sits behind the preview of the folder contents -->
+    <dimen name="folder_cell_width">96dp</dimen>
+    <dimen name="folder_cell_height">96dp</dimen>
+    <dimen name="folder_preview_size">75dp</dimen>
+    <dimen name="folder_width_gap">2dp</dimen>
+    <dimen name="folder_height_gap">2dp</dimen>
+    <dimen name="folder_padding">4dp</dimen>
 
 <!-- Workspace padding -->
     <dimen name="workspace_left_padding_port">0dp</dimen>
