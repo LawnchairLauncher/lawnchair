@@ -274,10 +274,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         return scale;
     }
 
-    public void getLocationInDragLayer(View child, int[] loc) {
+    public float getLocationInDragLayer(View child, int[] loc) {
         loc[0] = 0;
         loc[1] = 0;
-        getDescendantCoordRelativeToSelf(child, loc);
+        return getDescendantCoordRelativeToSelf(child, loc);
     }
 
     /**
@@ -286,7 +286,9 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
      *
      * @param descendant The descendant to which the passed coordinate is relative.
      * @param coord The coordinate that we want mapped.
-     * @return The factor by which this descendant is scaled relative to this DragLayer.
+     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
+     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
+     *         assumption fails, we will need to return a pair of scale factors.
      */
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
         float scale = 1.0f;
@@ -451,12 +453,16 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         getViewRectRelativeToSelf(dragView, r);
 
         int coord[] = new int[2];
-        coord[0] = lp.x;
-        coord[1] = lp.y;
+        float childScale = child.getScaleX();
+        coord[0] = lp.x + (int) (child.getMeasuredWidth() * (1 - childScale) / 2);
+        coord[1] = lp.y + (int) (child.getMeasuredHeight() * (1 - childScale) / 2);
 
         // Since the child hasn't necessarily been laid out, we force the lp to be updated with
         // the correct coordinates (above) and use these to determine the final location
         float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
+        // We need to account for the scale of the child itself, as the above only accounts for
+        // for the scale in parents.
+        scale *= childScale;
         int toX = coord[0];
         int toY = coord[1];
         if (child instanceof TextView) {
@@ -470,7 +476,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
-            toY -= Workspace.DRAG_BITMAP_PADDING / 2;
+            toY -= scale * Workspace.DRAG_BITMAP_PADDING / 2;
+            toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
             // Center in the x coordinate about the target's drawable
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else {

@@ -138,6 +138,7 @@ public class CellLayout extends ViewGroup {
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     private boolean mIsHotseat = false;
+    private float mHotseatScale = 1f;
 
     public static final int MODE_DRAG_OVER = 0;
     public static final int MODE_ON_DROP = 1;
@@ -200,6 +201,7 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
+        mHotseatScale = (res.getInteger(R.integer.hotseat_item_scale_percentage) / 100f);
 
         mNormalBackground = res.getDrawable(R.drawable.homescreen_blue_normal_holo);
         mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_blue_strong_holo);
@@ -317,6 +319,10 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets.buildLayer();
     }
 
+    public float getChildrenScale() {
+        return mIsHotseat ? mHotseatScale : 1.0f;
+    }
+
     public void setGridSize(int x, int y) {
         mCountX = x;
         mCountY = y;
@@ -387,6 +393,25 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    public void scaleRect(Rect r, float scale) {
+        if (scale != 1.0f) {
+            r.left = (int) (r.left * scale + 0.5f);
+            r.top = (int) (r.top * scale + 0.5f);
+            r.right = (int) (r.right * scale + 0.5f);
+            r.bottom = (int) (r.bottom * scale + 0.5f);
+        }
+    }
+
+    Rect temp = new Rect();
+    void scaleRectAboutCenter(Rect in, Rect out, float scale) {
+        int cx = in.centerX();
+        int cy = in.centerY();
+        out.set(in);
+        out.offset(-cx, -cy);
+        scaleRect(out, scale);
+        out.offset(cx, cy);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
@@ -414,9 +439,10 @@ public class CellLayout extends ViewGroup {
             final float alpha = mDragOutlineAlphas[i];
             if (alpha > 0) {
                 final Rect r = mDragOutlines[i];
+                scaleRectAboutCenter(r, temp, getChildrenScale());
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
                 paint.setAlpha((int)(alpha + .5f));
-                canvas.drawBitmap(b, null, r, paint);
+                canvas.drawBitmap(b, null, temp, paint);
             }
         }
 
@@ -590,6 +616,9 @@ public class CellLayout extends ViewGroup {
                 bubbleChild.setTextColor(res.getColor(R.color.workspace_icon_text_color));
             }
         }
+
+        child.setScaleX(getChildrenScale());
+        child.setScaleY(getChildrenScale());
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
@@ -2072,11 +2101,8 @@ public class CellLayout extends ViewGroup {
             }
             initDeltaX = child.getTranslationX();
             initDeltaY = child.getTranslationY();
-            finalScale = 1.0f - 4.0f / child.getWidth();
+            finalScale = getChildrenScale() - 4.0f / child.getWidth();
             initScale = child.getScaleX();
-
-            child.setPivotY(child.getMeasuredHeight() * 0.5f);
-            child.setPivotX(child.getMeasuredWidth() * 0.5f);
             this.child = child;
         }
 
@@ -2117,7 +2143,7 @@ public class CellLayout extends ViewGroup {
                     // We make sure to end only after a full period
                     initDeltaX = 0;
                     initDeltaY = 0;
-                    initScale = 1.0f;
+                    initScale = getChildrenScale();
                 }
             });
             mShakeAnimators.put(child, this);
@@ -2138,8 +2164,8 @@ public class CellLayout extends ViewGroup {
             AnimatorSet s = LauncherAnimUtils.createAnimatorSet();
             a = s;
             s.playTogether(
-                LauncherAnimUtils.ofFloat(child, "scaleX", 1f),
-                LauncherAnimUtils.ofFloat(child, "scaleY", 1f),
+                LauncherAnimUtils.ofFloat(child, "scaleX", getChildrenScale()),
+                LauncherAnimUtils.ofFloat(child, "scaleY", getChildrenScale()),
                 LauncherAnimUtils.ofFloat(child, "translationX", 0f),
                 LauncherAnimUtils.ofFloat(child, "translationY", 0f)
             );
