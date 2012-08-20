@@ -143,6 +143,9 @@
     <string name="preferences_interface_homescreen_general_search_summary">Включить неисчезающую строку поиска Google</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Изм. разм. любого виджета</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Позволяет изменять размеры виджетов, которые изначально неизменяемые</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Прятать подписи иконок</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Прятать подписи иконок на рабочих столах</string>
+    <string name="preferences_interface_homescreen_scrolling_category">ПРОКРУТКА</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Прокрутка обоев</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Прокручивать обои при прокрутке рабочих столов</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Скрывать индикатор</string>
