@@ -20,7 +20,7 @@ APPLICATION_COMPONENTS = [
   "com.android.settings/com.android.settings.Settings",
   "com.android.mms/com.android.mms.ui.ConversationList",
   "com.android.contacts/com.android.contacts.activities.PeopleActivity",
-  "com.android.contacts/com.android.contacts.activities.DialtactsActivity"
+  "com.android.dialer/com.android.dialer.DialtactsActivity"
 ]
 
 def usage():
