@@ -698,13 +698,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        // We don't want to prioritize the workspace drawing on top of the other children in
-        // landscape for the overscroll event.
-        if (LauncherApplication.isScreenLandscape(getContext())) {
-            return super.getChildDrawingOrder(childCount, i);
-        }
-
-        if (mWorkspaceIndex == -1 || mQsbIndex == -1 || 
+        // TODO: We have turned off this custom drawing order because it now effects touch
+        // dispatch order. We need to sort that issue out and then decide how to go about this.
+        if (true || LauncherApplication.isScreenLandscape(getContext()) ||
+                mWorkspaceIndex == -1 || mQsbIndex == -1 ||
                 mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
             return i;
         }
