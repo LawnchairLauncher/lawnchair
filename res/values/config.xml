@@ -78,6 +78,13 @@
     <integer name="folder_max_count_y">4</integer>
     <integer name="folder_max_num_items">16</integer>
 
+    <!-- Workspace grid size -->
+    <integer name="config_maxWorkspaceRows">7</integer>
+    <integer name="config_maxWorkspaceColumns">7</integer>
+
+    <!-- Allow tablets to set grid size in settings, false disables -->
+    <bool name="config_workspaceTabletGrid">false</bool>
+
     <integer name="cell_count_x">4</integer>
     <integer name="cell_count_y">4</integer>
     <integer name="hotseat_cell_count">5</integer>
