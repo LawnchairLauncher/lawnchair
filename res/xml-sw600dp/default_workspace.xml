@@ -61,8 +61,8 @@
 
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <favorite
-        launcher:packageName="com.android.contacts"
-        launcher:className="com.android.contacts.activities.DialtactsActivity"
+        launcher:packageName="com.android.dialer"
+        launcher:className="com.android.dialer.DialtactsActivity"
         launcher:container="-101"
         launcher:screen="1"
         launcher:x="1"
