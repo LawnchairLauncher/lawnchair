@@ -2129,12 +2129,14 @@ public final class Launcher extends Activity
             lp = new DragLayer.LayoutParams(width, height);
         }
 
-        mDragLayer.getViewRectRelativeToSelf(fi, mRectForFolderAnimation);
+        // The layout from which the folder is being opened may be scaled, adjust the starting
+        // view size by this scale factor.
+        float scale = mDragLayer.getDescendantRectRelativeToSelf(fi, mRectForFolderAnimation);
         lp.customPosition = true;
         lp.x = mRectForFolderAnimation.left;
         lp.y = mRectForFolderAnimation.top;
-        lp.width = width;
-        lp.height = height;
+        lp.width = (int) (scale * width);
+        lp.height = (int) (scale * height);
 
         mFolderIconCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         fi.draw(mFolderIconCanvas);

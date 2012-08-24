@@ -75,6 +75,10 @@ public class DragView extends View {
         final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
         final float scale = (width + scaleDps) / width;
 
+        // Set the initial scale to avoid any jumps
+        setScaleX(initialScale);
+        setScaleY(initialScale);
+
         // Animate the view into the correct position
         mAnim = LauncherAnimUtils.ofFloat(0.0f, 1.0f);
         mAnim.setDuration(150);
