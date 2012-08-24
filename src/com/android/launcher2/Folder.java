@@ -805,10 +805,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 + mFolderNameHeight;
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
-        parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
+        float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
 
-        int centerX = mTempRect.centerX();
-        int centerY = mTempRect.centerY();
+        int centerX = (int) (mTempRect.left + mTempRect.width() * scale / 2);
+        int centerY = (int) (mTempRect.top + mTempRect.height() * scale / 2);
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 

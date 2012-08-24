@@ -82,4 +82,6 @@
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
     <integer name="hotseat_cell_count">5</integer>
     <integer name="hotseat_all_apps_index">2</integer>
+    <!-- must be between 0 and 100 -->
+    <integer name="hotseat_item_scale_percentage">100</integer>
 </resources>

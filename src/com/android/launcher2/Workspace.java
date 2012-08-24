@@ -1892,11 +1892,11 @@ public class Workspace extends SmoothPagedView
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
 
-        mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
+        float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
         int dragLayerX =
-                Math.round(mTempXY[0] - (bmpWidth - child.getScaleX() * child.getWidth()) / 2);
+                Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
         int dragLayerY =
-                Math.round(mTempXY[1] - (bmpHeight - child.getScaleY() * bmpHeight) / 2
+                Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
                         - DRAG_BITMAP_PADDING / 2);
 
         Point dragVisualizeOffset = null;
@@ -1926,7 +1926,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, child.getScaleX());
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
         b.recycle();
 
         // Show the scrolling indicator when you pick up an item
@@ -1966,7 +1966,7 @@ public class Workspace extends SmoothPagedView
 
             // We want the point to be mapped to the dragTarget.
             if (mLauncher.isHotseatLayout(dropTargetLayout)) {
-                mapPointFromSelfToSibling(mLauncher.getHotseat(), mDragViewVisualCenter);
+                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
             } else {
                 mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter, null);
             }
@@ -2577,18 +2577,12 @@ public class Workspace extends SmoothPagedView
        cachedInverseMatrix.mapPoints(xy);
    }
 
-   /*
-    * Maps a point from the Workspace's coordinate system to another sibling view's. (Workspace
-    * covers the full screen)
-    */
-   void mapPointFromSelfToSibling(View v, float[] xy) {
-       xy[0] = xy[0] - v.getLeft();
-       xy[1] = xy[1] - v.getTop();
-   }
 
    void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {
+       hotseat.getLayout().getMatrix().invert(mTempInverseMatrix);
        xy[0] = xy[0] - hotseat.getLeft() - hotseat.getLayout().getLeft();
        xy[1] = xy[1] - hotseat.getTop() - hotseat.getLayout().getTop();
+       mTempInverseMatrix.mapPoints(xy);
    }
 
    /*

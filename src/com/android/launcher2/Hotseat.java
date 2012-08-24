@@ -38,7 +38,7 @@ public class Hotseat extends FrameLayout {
     private int mCellCountX;
     private int mCellCountY;
     private int mAllAppsButtonRank;
-    
+
     private boolean mTransposeLayoutWithOrientation;
     private boolean mIsLandscape;
 

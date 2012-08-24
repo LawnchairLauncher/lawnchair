@@ -18,4 +18,8 @@
     <!-- Camera distance for the overscroll effect. We use a higher value here because the 
          workspace screens run nearly flush to the edge of the screen-->
     <integer name="config_cameraDistance">14000</integer>
+
+<!-- Hotseat -->
+    <!-- must be between 0 and 100 -->
+    <integer name="hotseat_item_scale_percentage">90</integer>
 </resources>
