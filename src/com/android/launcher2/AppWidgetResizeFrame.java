@@ -57,6 +57,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private int mBottomTouchRegionAdjustment = 0;
 
     int[] mDirectionVector = new int[2];
+    int[] mLastDirectionVector = new int[2];
 
     final int SNAP_DURATION = 150;
     final int BACKGROUND_PADDING = 24;
@@ -293,16 +294,30 @@ public class AppWidgetResizeFrame extends FrameLayout {
         if (mLeftBorderActive || mRightBorderActive) {
             spanX += hSpanInc;
             cellX += cellXInc;
-            mDirectionVector[0] = mLeftBorderActive ? -1 : 1;
+            if (hSpanDelta != 0) {
+                mDirectionVector[0] = mLeftBorderActive ? -1 : 1;
+            }
         }
 
         if (mTopBorderActive || mBottomBorderActive) {
             spanY += vSpanInc;
             cellY += cellYInc;
-            mDirectionVector[1] = mTopBorderActive ? -1 : 1;
+            if (vSpanDelta != 0) {
+                mDirectionVector[1] = mTopBorderActive ? -1 : 1;
+            }
         }
 
         if (!onDismiss && vSpanDelta == 0 && hSpanDelta == 0) return;
+
+        // We always want the final commit to match the feedback, so we make sure to use the
+        // last used direction vector when committing the resize / reorder.
+        if (onDismiss) {
+            mDirectionVector[0] = mLastDirectionVector[0];
+            mDirectionVector[1] = mLastDirectionVector[1];
+        } else {
+            mLastDirectionVector[0] = mDirectionVector[0];
+            mLastDirectionVector[1] = mDirectionVector[1];
+        }
 
         if (mCellLayout.createAreaForResize(cellX, cellY, spanX, spanY, mWidgetView,
                 mDirectionVector, onDismiss)) {

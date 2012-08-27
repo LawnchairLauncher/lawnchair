@@ -1616,7 +1616,7 @@ public class CellLayout extends ViewGroup {
     }
 
     // This method looks in the specified direction to see if there are additional views adjacent
-    // to the current set of views in the. If there is, then these views are added to the current
+    // to the current set of views. If there are, then these views are added to the current
     // set of views. This is performed iteratively, giving a cascading push behaviour.
     private boolean addViewInDirection(ArrayList<View> views, Rect boundingRect, int[] direction,
             boolean[][] occupied, View dragView, ItemConfiguration currentState) {
@@ -1664,7 +1664,7 @@ public class CellLayout extends ViewGroup {
                         (direction[1] < 0 && c.y == r0.top) ||
                         (direction[1] > 0 && c.y == r0.bottom - 1)) {
                     boolean pushed = false;
-                    // Since the bounding rect is a course description of the region (there can
+                    // Since the bounding rect is a coarse description of the region (there can
                     // be holes at the edge of the block), we need to check to verify that a solid
                     // piece is intersecting. This ensures that interlocking is possible.
                     for (int x = c.x; x < c.x + c.spanX; x++) {
@@ -1687,6 +1687,38 @@ public class CellLayout extends ViewGroup {
         return found;
     }
 
+    private void completeSetOfViewsToMove(ArrayList<View> views, Rect boundingRect, int[] direction,
+            boolean[][] occupied, View dragView, ItemConfiguration currentState) {
+        Rect r0 = new Rect(boundingRect);
+        int minRuns = 0;
+
+        // The first thing we do is to reduce the bounding rect to first or last row or column,
+        // depending on the direction. Then, we add any necessary views that are already contained
+        // by the bounding rect, but aren't in the list of intersecting views, and will be pushed
+        // by something already in the intersecting views.
+        if (direction[1] < 0) {
+            r0.set(r0.left, r0.bottom - 1, r0.right, r0.bottom);
+        } else if (direction[1] > 0) {
+            r0.set(r0.left, r0.top, r0.right, r0.top + 1);
+        } else if (direction[0] < 0) {
+            r0.set(r0.right - 1, r0.top, r0.right, r0.bottom);
+        } else if (direction[0] > 0) {
+            r0.set(r0.left, r0.top, r0.left + 1, r0.bottom);
+        }
+
+        minRuns = Math.max(Math.abs(boundingRect.width() - r0.width()),
+                Math.abs(boundingRect.height() - r0.height())) + 1;
+
+        // Here the first number of runs (minRuns) accounts for the the comment above, and
+        // further runs execute based on whether the intersecting views / bounding rect need
+        // to be expanded to include other views that will be pushed.
+        while (addViewInDirection(views, r0, direction, mTmpOccupied,
+                dragView, currentState) || minRuns > 0) {
+            minRuns--;
+        }
+        boundingRect.union(r0);
+    }
+
     private boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
             int[] direction, boolean push, View dragView, ItemConfiguration currentState) {
         if (views.size() == 0) return true;
@@ -1705,10 +1737,9 @@ public class CellLayout extends ViewGroup {
 
         @SuppressWarnings("unchecked")
         ArrayList<View> dup = (ArrayList<View>) views.clone();
-        // We try and expand the group of views in the direction vector passed, based on
-        // whether they are physically adjacent, ie. based on "push mechanics".
-        while (push && addViewInDirection(dup, boundingRect, direction, mTmpOccupied, dragView,
-                currentState)) {
+        if (push) {
+            completeSetOfViewsToMove(dup, boundingRect, direction, mTmpOccupied, dragView,
+                    currentState);
         }
 
         // Mark the occupied state as false for the group of views we want to move.
