@@ -82,6 +82,12 @@ public class LauncherModel extends BroadcastReceiver {
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
 
+    // Specific runnable types that are run on the main thread deferred handler, this allows us to
+    // clear all queued binding runnables when the Launcher activity is destroyed.
+    private static final int MAIN_THREAD_NORMAL_RUNNABLE = 0;
+    private static final int MAIN_THREAD_BINDING_RUNNABLE = 1;
+
+
     private static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     static {
         sWorkerThread.start();
@@ -177,6 +183,9 @@ public class LauncherModel extends BroadcastReceiver {
     /** Runs the specified runnable immediately if called from the main thread, otherwise it is
      * posted on the main thread handler. */
     private void runOnMainThread(Runnable r) {
+        runOnMainThread(r, 0);
+    }
+    private void runOnMainThread(Runnable r, int type) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             // If we are on the worker thread, post onto the main handler
             mHandler.post(r);
@@ -200,17 +209,22 @@ public class LauncherModel extends BroadcastReceiver {
         return Bitmap.createBitmap(mDefaultIcon);
     }
 
-    public void unbindWorkspaceItems() {
-        sWorker.post(new Runnable() {
-            @Override
-            public void run() {
-                unbindWorkspaceItemsOnMainThread();
-            }
-        });
+    public void unbindItemInfosAndClearQueuedBindRunnables() {
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            throw new RuntimeException("Expected unbindLauncherItemInfos() to be called from the " +
+                    "main thread");
+        }
+
+        // Clear any deferred bind runnables
+        mDeferredBindRunnables.clear();
+        // Remove any queued bind runnables
+        mHandler.cancelAllRunnablesOfType(MAIN_THREAD_BINDING_RUNNABLE);
+        // Unbind all the workspace items
+        unbindWorkspaceItemsOnMainThread();
     }
 
     /** Unbinds all the sBgWorkspaceItems and sBgAppWidgets on the main thread */
-    private void unbindWorkspaceItemsOnMainThread() {
+    void unbindWorkspaceItemsOnMainThread() {
         // Ensure that we don't use the same workspace items data structure on the main thread
         // by making a copy of workspace items first.
         final ArrayList<ItemInfo> tmpWorkspaceItems = new ArrayList<ItemInfo>();
@@ -880,7 +894,7 @@ public class LauncherModel extends BroadcastReceiver {
         // Post the remaining side pages to be loaded
         if (!mDeferredBindRunnables.isEmpty()) {
             for (final Runnable r : mDeferredBindRunnables) {
-                mHandler.post(r);
+                mHandler.post(r, MAIN_THREAD_BINDING_RUNNABLE);
             }
             mDeferredBindRunnables.clear();
         }
@@ -1602,7 +1616,7 @@ public class LauncherModel extends BroadcastReceiver {
                 if (postOnMainThread) {
                     deferredBindRunnables.add(r);
                 } else {
-                    runOnMainThread(r);
+                    runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                 }
             }
 
@@ -1619,7 +1633,7 @@ public class LauncherModel extends BroadcastReceiver {
                 if (postOnMainThread) {
                     deferredBindRunnables.add(r);
                 } else {
-                    runOnMainThread(r);
+                    runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                 }
             }
 
@@ -1638,7 +1652,7 @@ public class LauncherModel extends BroadcastReceiver {
                 if (postOnMainThread) {
                     deferredBindRunnables.add(r);
                 } else {
-                    runOnMainThread(r);
+                    runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                 }
             }
         }
@@ -1706,7 +1720,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
             };
-            runOnMainThread(r);
+            runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
 
             // Load items on the current page
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets,
@@ -1720,7 +1734,7 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     }
                 };
-                runOnMainThread(r);
+                runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
             }
 
             // Load all the remaining pages (if we are loading synchronously, we want to defer this
@@ -1749,7 +1763,7 @@ public class LauncherModel extends BroadcastReceiver {
             if (isLoadingSynchronously) {
                 mDeferredBindRunnables.add(r);
             } else {
-                runOnMainThread(r);
+                runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
             }
         }
 
