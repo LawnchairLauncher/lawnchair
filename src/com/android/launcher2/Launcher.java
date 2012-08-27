@@ -451,7 +451,9 @@ public final class Launcher extends Activity
         if (sAppMarketIcon[coi] != null) {
             updateAppMarketIcon(sAppMarketIcon[coi]);
         }
-        mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        }
     }
 
     private void checkForLocaleChange() {
@@ -1527,7 +1529,10 @@ public final class Launcher extends Activity
             appSearchData = new Bundle();
             appSearchData.putString(Search.SOURCE, "launcher-search");
         }
-        Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
+        Rect sourceBounds = new Rect();
+        if (mSearchDropTargetBar != null) {
+            sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
+        }
 
         startGlobalSearch(initialQuery, selectInitialQuery,
             appSearchData, sourceBounds);
@@ -2515,7 +2520,9 @@ public final class Launcher extends Activity
                     }
 
                     // Hide the search bar
-                    mSearchDropTargetBar.hideSearchBar(false);
+                    if (mSearchDropTargetBar != null) {
+                        mSearchDropTargetBar.hideSearchBar(false);
+                    }
                 }
 
                 @Override
@@ -2591,7 +2598,9 @@ public final class Launcher extends Activity
                 hideDockDivider();
 
                 // Hide the search bar
-                mSearchDropTargetBar.hideSearchBar(false);
+                if (mSearchDropTargetBar != null) {
+                    mSearchDropTargetBar.hideSearchBar(false);
+                }
             }
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionStart(fromView, animated, false);
@@ -2743,7 +2752,9 @@ public final class Launcher extends Activity
 
             // Show the search bar (only animate if we were showing the drop target bar in spring
             // loaded mode)
-            mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
+            if (mSearchDropTargetBar != null) {
+                mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
+            }
 
             // We only need to animate in the dock divider if we're going from spring loaded mode
             showDockDivider(animated && wasInSpringLoadedMode);
@@ -2846,7 +2857,11 @@ public final class Launcher extends Activity
                 mDividerAnimator = LauncherAnimUtils.createAnimatorSet();
                 mDividerAnimator.playTogether(LauncherAnimUtils.ofFloat(mQsbDivider, "alpha", 1f),
                         LauncherAnimUtils.ofFloat(mDockDivider, "alpha", 1f));
-                mDividerAnimator.setDuration(mSearchDropTargetBar.getTransitionInDuration());
+                int duration = 0;
+                if (mSearchDropTargetBar != null) {
+                    duration = mSearchDropTargetBar.getTransitionInDuration();
+                }
+                mDividerAnimator.setDuration(duration);
                 mDividerAnimator.start();
             }
         }
@@ -2867,7 +2882,10 @@ public final class Launcher extends Activity
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
-                    int duration = mSearchDropTargetBar.getTransitionInDuration();
+                    int duration = 0;
+                    if (mSearchDropTargetBar != null) {
+                        duration = mSearchDropTargetBar.getTransitionInDuration();
+                    }
                     mHotseat.animate().alpha(1f).setDuration(duration);
                 }
             } else {
@@ -2883,7 +2901,10 @@ public final class Launcher extends Activity
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
-                    int duration = mSearchDropTargetBar.getTransitionOutDuration();
+                    int duration = 0;
+                    if (mSearchDropTargetBar != null) {
+                        duration = mSearchDropTargetBar.getTransitionOutDuration();
+                    }
                     mHotseat.animate().alpha(0f).setDuration(duration);
                 }
             } else {
@@ -3474,7 +3495,9 @@ public final class Launcher extends Activity
     public void bindSearchablesChanged() {
         boolean searchVisible = updateGlobalSearchIcon();
         boolean voiceVisible = updateVoiceSearchIcon(searchVisible);
-        mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        }
     }
 
     /**
