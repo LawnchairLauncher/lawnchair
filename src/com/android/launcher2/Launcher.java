@@ -1486,8 +1486,11 @@ public final class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
-
-        unbindWorkspaceAndHotseatItems();
+        // Disconnect any of the callbacks and drawables associated with ItemInfos on the workspace
+        // to prevent leaking Launcher activities on orientation change.
+        if (mModel != null) {
+            mModel.unbindItemInfosAndClearQueuedBindRunnables();
+        }
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mCloseSystemDialogsReceiver);
@@ -1874,16 +1877,6 @@ public final class Launcher extends Activity
     private void onAppWidgetReset() {
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
-        }
-    }
-
-    /**
-     * Go through the and disconnect any of the callbacks in the drawables and the views or we
-     * leak the previous Home screen on orientation change.
-     */
-    private void unbindWorkspaceAndHotseatItems() {
-        if (mModel != null) {
-            mModel.unbindWorkspaceItems();
         }
     }
 
