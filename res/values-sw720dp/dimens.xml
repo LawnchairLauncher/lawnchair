@@ -16,16 +16,17 @@
 
 <resources>
     <dimen name="app_icon_size">72dp</dimen>
+    <dimen name="app_icon_padding_top">0dp</dimen>
     <dimen name="reveal_radius">72dp</dimen>
 
 <!-- Hotseat -->
-    <dimen name="button_bar_height">96dp</dimen>
-    <dimen name="button_bar_height_top_padding">0dp</dimen>
-    <dimen name="button_bar_height_bottom_padding">0dp</dimen>
-    <dimen name="button_bar_width_left_padding">0dp</dimen>
-    <dimen name="button_bar_width_right_padding">0dp</dimen>
-    <dimen name="button_bar_height_plus_padding">96dp</dimen>
-    <dimen name="hotseat_width_gap">48dp</dimen>
+    <dimen name="button_bar_height">82dp</dimen>
+    <dimen name="button_bar_height_top_padding">12dp</dimen>
+    <dimen name="button_bar_height_bottom_padding">12dp</dimen>
+    <dimen name="button_bar_width_left_padding">12dp</dimen>
+    <dimen name="button_bar_width_right_padding">12dp</dimen>
+    <dimen name="button_bar_height_plus_padding">82dp</dimen>
+    <dimen name="hotseat_width_gap">50dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
@@ -58,14 +59,14 @@
     <dimen name="dragViewOffsetY">0dp</dimen>
 
 <!-- CellLayout padding land / port-->
-    <dimen name="cell_layout_left_padding_port">0dp</dimen>
-    <dimen name="cell_layout_left_padding_land">0dp</dimen>
-    <dimen name="cell_layout_right_padding_port">0dp</dimen>
-    <dimen name="cell_layout_right_padding_land">0dp</dimen>
-    <dimen name="cell_layout_top_padding_port">0dp</dimen>
-    <dimen name="cell_layout_top_padding_land">0dp</dimen>
-    <dimen name="cell_layout_bottom_padding_port">0dp</dimen>
-    <dimen name="cell_layout_bottom_padding_land">0dp</dimen>
+    <dimen name="cell_layout_left_padding_port">4dp</dimen>
+    <dimen name="cell_layout_left_padding_land">4dp</dimen>
+    <dimen name="cell_layout_right_padding_port">4dp</dimen>
+    <dimen name="cell_layout_right_padding_land">4dp</dimen>
+    <dimen name="cell_layout_top_padding_port">12dp</dimen>
+    <dimen name="cell_layout_top_padding_land">12dp</dimen>
+    <dimen name="cell_layout_bottom_padding_port">8dp</dimen>
+    <dimen name="cell_layout_bottom_padding_land">8dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
@@ -84,15 +85,13 @@
 
     <dimen name="workspace_top_padding_port">@dimen/qsb_bar_height_inset</dimen>
     <dimen name="workspace_top_padding_land">@dimen/qsb_bar_height_inset</dimen>
-    <!-- XXX: This should be @dimen/button_bar_height + bottom padding, but because we are not using
-              the hotseat with the smaller icons, this is slightly larger than final dimensions. -->
-    <dimen name="workspace_bottom_padding_port">110dp</dimen>
-    <dimen name="workspace_bottom_padding_land">100dp</dimen>
+    <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height_plus_padding</dimen>
+    <dimen name="workspace_bottom_padding_land">@dimen/button_bar_height_plus_padding</dimen>
 
-    <!-- Page width set to match a page of icons (96*k + 46*(k-1) - 2*12[icon padding]) -->
-    <dimen name="workspace_divider_width">1066dp</dimen>
-    <dimen name="workspace_divider_padding_left">0dp</dimen>
-    <dimen name="workspace_divider_padding_right">0dp</dimen>
+    <!-- Divider width set to match the qsb width -->
+    <dimen name="workspace_divider_width">0dp</dimen>
+    <dimen name="workspace_divider_padding_left">249dp</dimen>
+    <dimen name="workspace_divider_padding_right">249dp</dimen>
     <dimen name="workspace_divider_padding_top">0dp</dimen>
     <dimen name="workspace_divider_padding_bottom">0dp</dimen>
 
