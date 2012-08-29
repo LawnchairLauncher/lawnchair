@@ -43,8 +43,9 @@
     <integer name="apps_customize_cling_focused_x">2</integer>
     <integer name="apps_customize_cling_focused_y">2</integer>
 
-    <!-- Page width set to match a page of icons (96*k) -->
-    <dimen name="workspace_divider_width">768dp</dimen>
+    <!-- Divider width set to match the qsb width -->
+    <dimen name="workspace_divider_padding_left">112dp</dimen>
+    <dimen name="workspace_divider_padding_right">112dp</dimen>
 
 <!-- Hotseat -->
     <dimen name="hotseat_width_gap">16dp</dimen>

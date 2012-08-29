@@ -28,9 +28,9 @@
     <include
         android:id="@+id/dock_divider"
         layout="@layout/workspace_divider"
-        android:layout_width="@dimen/workspace_divider_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/button_bar_height"
+        android:layout_marginBottom="@dimen/button_bar_height_plus_padding"
         android:layout_gravity="bottom|center_horizontal" />
     <include
         android:id="@+id/paged_view_indicator"
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/button_bar_height" />
+        android:layout_marginBottom="@dimen/button_bar_height_plus_padding" />
 
     <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher2.Workspace
