@@ -115,7 +115,7 @@
 
     <!-- General -->
     <!-- Application copyright -->
-    <string name="application_copyright">Ophavsretsbeskyttet \u00A9 CyanogenMod 2012</string>
+    <string name="application_copyright">Copyright \u00A9 CyanogenMod 2012</string>
 
     <string name="cancel_target_label">Annuller</string>
 
@@ -126,7 +126,7 @@
     <string name="menu_apps_sort_install_date">Installationsdato</string>
 
     <!-- Clings -->
-    <string name="all_apps_sort_cling_title">Sorter dine apps</string>
+    <string name="all_apps_sort_cling_title">Sortér dine apps</string>
     <string name="all_apps_sort_cling_add_item">Tryk på fanen Apps og hold den nede for at vælge sortering</string>
 
     <!-- Preferences -->
@@ -142,8 +142,8 @@
     <string name="preferences_interface_homescreen_general_category">Generelt</string>
     <string name="preferences_interface_homescreen_general_screens_title">Startskærme</string>
     <string name="preferences_interface_homescreen_general_screens_summary">Antallet af skærme på startskærmen</string>
-    <string name="preferences_interface_homescreen_general_default_screen_title">Standard skærm</string>
-    <string name="preferences_interface_homescreen_general_default_screen_summary">Vælg standard startskærm</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Standardskærm</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Vælg standard-startskærm</string>
     <string name="preferences_interface_homescreen_general_search_title">Søgefelt</string>
     <string name="preferences_interface_homescreen_general_grid_title">Gitterstørrelse</string>
     <string name="preferences_interface_homescreen_general_grid_summary">Vælg antallet af rækker/kolonner på startskærmen</string>
@@ -153,11 +153,11 @@
     <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Ekstra lodret afstand på startskærmen</string>
     <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Vandret fyld</string>
     <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Ekstra vandret afstand på startskærmen</string>
-    <string name="preferences_interface_homescreen_general_search_summary">Aktiver vedvarende søgefelt</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Aktivér vedvarende søgefelt</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Ændre størrelse på enhver widget</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Tillader ændring af størrelsen på widgets der normalt ikke kan ændres</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skjul ikon tekst</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skjul ikon tekster på startskærmene</string>
+    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Tillader ændring af størrelsen på widgets, der normalt ikke kan ændres</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skjul ikontekst</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skjul ikontekster på startskærmene</string>
     <string name="preferences_interface_homescreen_scrolling_category">Bladring</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Rul tapet</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Rul tapetet ved bladring mellem startskærme</string>
@@ -188,7 +188,7 @@
 
     <!-- General -->
     <string name="preferences_interface_general_title">Generelt</string>
-    <string name="preferences_interface_general_orientation_title">Roter skærm automatisk</string>
+    <string name="preferences_interface_general_orientation_title">Rotér skærm automatisk</string>
 
     <!-- Trebuchet additional danish translation end -->
 </resources>
