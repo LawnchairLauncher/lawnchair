@@ -35,7 +35,7 @@ import java.util.Set;
 
 public class UninstallShortcutReceiver extends BroadcastReceiver {
     private static final String ACTION_UNINSTALL_SHORTCUT =
-            "com.cyanogenmod.trebuchet.action.UNINSTALL_SHORTCUT";
+            "com.android.launcher.action.UNINSTALL_SHORTCUT";
 
     // The set of shortcuts that are pending uninstall
     private static ArrayList<PendingUninstallShortcutInfo> mUninstallQueue =
