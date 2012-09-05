@@ -1026,7 +1026,7 @@ public class CellLayout extends ViewGroup {
         super.onSizeChanged(w, h, oldw, oldh);
         mBackgroundRect.set(0, 0, w, h);
         mForegroundRect.set(mForegroundPadding, mForegroundPadding,
-                w - 2 * mForegroundPadding, h - 2 * mForegroundPadding);
+                w - mForegroundPadding, h - mForegroundPadding);
     }
 
     @Override
