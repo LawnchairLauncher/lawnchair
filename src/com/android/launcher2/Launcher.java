@@ -2474,6 +2474,9 @@ public final class Launcher extends Activity
             alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+                    if (animation == null) {
+                        throw new RuntimeException("animation is null");
+                    }
                     float t = (Float) animation.getAnimatedValue();
                     dispatchOnLauncherTransitionStep(fromView, t);
                     dispatchOnLauncherTransitionStep(toView, t);
