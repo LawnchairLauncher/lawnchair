@@ -3697,6 +3697,8 @@ public class Workspace extends SmoothPagedView
         }
 
         // Clean up new-apps animation list
+        final LauncherModel model = mLauncher.getModel();
+        final Context context = getContext();
         post(new Runnable() {
             @Override
             public void run() {
@@ -3716,6 +3718,14 @@ public class Workspace extends SmoothPagedView
                                 String pn = ItemInfo.getPackageName(intent);
                                 if (packageNames.contains(pn)) {
                                     iter.remove();
+                                }
+
+                                // It is possible that we've queued an item to be loaded, yet it has
+                                // not been added to the workspace, so remove those items as well.
+                                ArrayList<ItemInfo> shortcuts =
+                                        model.getWorkspaceShortcutItemInfosWithIntent(intent);
+                                for (ItemInfo info : shortcuts) {
+                                    model.deleteItemFromDatabase(context, info);
                                 }
                             } catch (URISyntaxException e) {}
                         }
