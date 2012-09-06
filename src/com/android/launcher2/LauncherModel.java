@@ -2168,6 +2168,24 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
+     * Returns the set of workspace ShortcutInfos with the specified intent.
+     */
+    static ArrayList<ItemInfo> getWorkspaceShortcutItemInfosWithIntent(Intent intent) {
+        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        synchronized (sBgLock) {
+            for (ItemInfo info : sBgWorkspaceItems) {
+                if (info instanceof ShortcutInfo) {
+                    ShortcutInfo shortcut = (ShortcutInfo) info;
+                    if (shortcut.intent.toUri(0).equals(intent.toUri(0))) {
+                        items.add(shortcut);
+                    }
+                }
+            }
+        }
+        return items;
+    }
+
+    /**
      * Make an ShortcutInfo object for a shortcut that isn't an application.
      */
     private ShortcutInfo getShortcutInfo(Cursor c, Context context,
