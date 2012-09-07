@@ -114,6 +114,8 @@ class ItemInfo {
         screen = info.screen;
         itemType = info.itemType;
         container = info.container;
+        // tempdebug:
+        LauncherModel.checkItemInfo(this);
     }
 
     /** Returns the package name that the intent will resolve to, or an empty string if
