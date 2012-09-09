@@ -139,6 +139,10 @@
     <string name="preferences_interface_homescreen_general_grid_summary">选择主屏幕上的行/列数</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">行</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">列</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">垂直间隔</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">在主屏幕上增加额外的垂直间隔</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">水平间隔</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">在主屏幕上增加额外的水平间隔</string>
     <string name="preferences_interface_homescreen_general_search_summary">启用搜索栏</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">调整任何小部件的大小</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">允许小部件的大小调整</string>
