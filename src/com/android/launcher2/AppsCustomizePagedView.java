@@ -43,6 +43,8 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -308,6 +310,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         new ArrayList<AsyncTaskPageData>();
     private ArrayList<Runnable> mDeferredPrepareLoadWidgetPreviewsTasks =
         new ArrayList<Runnable>();
+
+    private Rect mTmpRect = new Rect();
 
     // Used for drawing shortcut previews
     BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
@@ -617,6 +621,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mLauncher.getWorkspace().beginDragShared(v, this);
     }
 
+    Bundle getDefaultOptionsForWidget(Launcher launcher, PendingAddWidgetInfo info) {
+        Bundle options = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            AppWidgetResizeFrame.getWidgetSizeRanges(mLauncher, info.spanX, info.spanY, mTmpRect);
+            options = new Bundle();
+            options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, mTmpRect.left);
+            options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, mTmpRect.top);
+            options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, mTmpRect.right);
+            options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, mTmpRect.bottom);
+        }
+        return options;
+    }
+
     private void preloadWidget(final PendingAddWidgetInfo info) {
         final AppWidgetProviderInfo pInfo = info.info;
         if (pInfo.configure != null) {
@@ -628,9 +645,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             @Override
             public void run() {
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
-                if (AppWidgetManager.getInstance(mLauncher)
-                            .bindAppWidgetIdIfAllowed(mWidgetLoadingId, info.componentName)) {
-                    mWidgetCleanupState = WIDGET_BOUND;
+
+                Bundle options = getDefaultOptionsForWidget(mLauncher, info);
+                // Options will be null for platforms with JB or lower, so this serves as an
+                // SDK level check.
+                if (options == null) {
+                    if (AppWidgetManager.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
+                            mWidgetLoadingId, info.componentName)) {
+                        mWidgetCleanupState = WIDGET_BOUND;
+                    }
+                } else {
+                    if (AppWidgetManager.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
+                            mWidgetLoadingId, info.componentName, options)) {
+                        mWidgetCleanupState = WIDGET_BOUND;
+                    }
                 }
             }
         };
