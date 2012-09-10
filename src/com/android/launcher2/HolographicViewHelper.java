@@ -42,13 +42,15 @@ public class HolographicViewHelper {
     void generatePressedFocusedStates(ImageView v) {
         if (!mStatesUpdated && v != null) {
             mStatesUpdated = true;
+            Bitmap original = createOriginalImage(v, mTempCanvas);
             Bitmap outline = createPressImage(v, mTempCanvas);
-            FastBitmapDrawable d = new FastBitmapDrawable(outline);
+            FastBitmapDrawable originalD = new FastBitmapDrawable(original);
+            FastBitmapDrawable outlineD = new FastBitmapDrawable(outline);
 
             StateListDrawable states = new StateListDrawable();
-            states.addState(new int[] {android.R.attr.state_pressed}, d);
-            states.addState(new int[] {android.R.attr.state_focused}, d);
-            states.addState(new int[] {}, v.getDrawable());
+            states.addState(new int[] {android.R.attr.state_pressed}, outlineD);
+            states.addState(new int[] {android.R.attr.state_focused}, outlineD);
+            states.addState(new int[] {}, originalD);
             v.setImageDrawable(states);
         }
     }
@@ -64,17 +66,32 @@ public class HolographicViewHelper {
     }
 
     /**
+     * Creates a copy of the original image.
+     */
+    private Bitmap createOriginalImage(ImageView v, Canvas canvas) {
+        final Bitmap b = Bitmap.createBitmap(
+                v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+
+        canvas.setBitmap(b);
+        canvas.save();
+            v.draw(canvas);
+        canvas.restore();
+        canvas.setBitmap(null);
+
+        return b;
+    }
+
+    /**
      * Creates a new press state image which is the old image with a blue overlay.
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createPressImage(ImageView v, Canvas canvas) {
-        final int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
         final Bitmap b = Bitmap.createBitmap(
-                v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
+                v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
         canvas.save();
-            v.getDrawable().draw(canvas);
+            v.draw(canvas);
         canvas.restore();
         canvas.drawColor(mHighlightColor, PorterDuff.Mode.SRC_IN);
         canvas.setBitmap(null);
