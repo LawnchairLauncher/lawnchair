@@ -2437,17 +2437,18 @@ public class LauncherModel extends BroadcastReceiver {
         return folderInfo;
     }
 
-    private static final Collator sCollator = Collator.getInstance();
-    public static final Comparator<ApplicationInfo> APP_NAME_COMPARATOR
-            = new Comparator<ApplicationInfo>() {
-        public final int compare(ApplicationInfo a, ApplicationInfo b) {
-            int result = sCollator.compare(a.title.toString(), b.title.toString());
-            if (result == 0) {
-                result = a.componentName.compareTo(b.componentName);
+    public static final Comparator<ApplicationInfo> getAppNameComparator() {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<ApplicationInfo>() {
+            public final int compare(ApplicationInfo a, ApplicationInfo b) {
+                int result = collator.compare(a.title.toString(), b.title.toString());
+                if (result == 0) {
+                    result = a.componentName.compareTo(b.componentName);
+                }
+                return result;
             }
-            return result;
-        }
-    };
+        };
+    }
     public static final Comparator<ApplicationInfo> APP_INSTALL_TIME_COMPARATOR
             = new Comparator<ApplicationInfo>() {
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
@@ -2456,12 +2457,14 @@ public class LauncherModel extends BroadcastReceiver {
             return 0;
         }
     };
-    public static final Comparator<AppWidgetProviderInfo> WIDGET_NAME_COMPARATOR
-            = new Comparator<AppWidgetProviderInfo>() {
-        public final int compare(AppWidgetProviderInfo a, AppWidgetProviderInfo b) {
-            return sCollator.compare(a.label.toString(), b.label.toString());
-        }
-    };
+    public static final Comparator<AppWidgetProviderInfo> getWidgetNameComparator() {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppWidgetProviderInfo>() {
+            public final int compare(AppWidgetProviderInfo a, AppWidgetProviderInfo b) {
+                return collator.compare(a.label.toString(), b.label.toString());
+            }
+        };
+    }
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {
             return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
@@ -2470,15 +2473,18 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
     public static class ShortcutNameComparator implements Comparator<ResolveInfo> {
+        private Collator mCollator;
         private PackageManager mPackageManager;
         private HashMap<Object, CharSequence> mLabelCache;
         ShortcutNameComparator(PackageManager pm) {
             mPackageManager = pm;
             mLabelCache = new HashMap<Object, CharSequence>();
+            mCollator = Collator.getInstance();
         }
         ShortcutNameComparator(PackageManager pm, HashMap<Object, CharSequence> labelCache) {
             mPackageManager = pm;
             mLabelCache = labelCache;
+            mCollator = Collator.getInstance();
         }
         public final int compare(ResolveInfo a, ResolveInfo b) {
             CharSequence labelA, labelB;
@@ -2498,15 +2504,17 @@ public class LauncherModel extends BroadcastReceiver {
 
                 mLabelCache.put(keyB, labelB);
             }
-            return sCollator.compare(labelA, labelB);
+            return mCollator.compare(labelA, labelB);
         }
     };
     public static class WidgetAndShortcutNameComparator implements Comparator<Object> {
+        private Collator mCollator;
         private PackageManager mPackageManager;
         private HashMap<Object, String> mLabelCache;
         WidgetAndShortcutNameComparator(PackageManager pm) {
             mPackageManager = pm;
             mLabelCache = new HashMap<Object, String>();
+            mCollator = Collator.getInstance();
         }
         public final int compare(Object a, Object b) {
             String labelA, labelB;
@@ -2526,7 +2534,7 @@ public class LauncherModel extends BroadcastReceiver {
                     ((ResolveInfo) b).loadLabel(mPackageManager).toString();
                 mLabelCache.put(b, labelB);
             }
-            return sCollator.compare(labelA, labelB);
+            return mCollator.compare(labelA, labelB);
         }
     };
 
