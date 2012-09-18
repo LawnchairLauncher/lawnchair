@@ -3697,13 +3697,12 @@ public class Workspace extends SmoothPagedView
         }
 
         // Clean up new-apps animation list
-        final LauncherModel model = mLauncher.getModel();
         final Context context = getContext();
         post(new Runnable() {
             @Override
             public void run() {
                 String spKey = LauncherApplication.getSharedPreferencesKey();
-                SharedPreferences sp = getContext().getSharedPreferences(spKey,
+                SharedPreferences sp = context.getSharedPreferences(spKey,
                         Context.MODE_PRIVATE);
                 Set<String> newApps = sp.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
                         null);
@@ -3722,10 +3721,11 @@ public class Workspace extends SmoothPagedView
 
                                 // It is possible that we've queued an item to be loaded, yet it has
                                 // not been added to the workspace, so remove those items as well.
-                                ArrayList<ItemInfo> shortcuts =
-                                        model.getWorkspaceShortcutItemInfosWithIntent(intent);
+                                ArrayList<ItemInfo> shortcuts;
+                                shortcuts = LauncherModel.getWorkspaceShortcutItemInfosWithIntent(
+                                        intent);
                                 for (ItemInfo info : shortcuts) {
-                                    model.deleteItemFromDatabase(context, info);
+                                    LauncherModel.deleteItemFromDatabase(context, info);
                                 }
                             } catch (URISyntaxException e) {}
                         }
