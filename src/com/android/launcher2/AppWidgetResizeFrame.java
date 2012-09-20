@@ -64,6 +64,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
     final float DIMMED_HANDLE_ALPHA = 0f;
     final float RESIZE_THRESHOLD = 0.66f;
 
+    private static Rect mTmpRect = new Rect();
+
     public static final int LEFT = 0;
     public static final int TOP = 1;
     public static final int RIGHT = 2;
@@ -336,6 +338,16 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
             int spanX, int spanY) {
+
+        getWidgetSizeRanges(launcher, spanX, spanY, mTmpRect);
+        widgetView.updateAppWidgetSize(null, mTmpRect.left, mTmpRect.top,
+                mTmpRect.right, mTmpRect.bottom);
+    }
+
+    static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
+        if (rect == null) {
+            rect = new Rect();
+        }
         Rect landMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.LANDSCAPE);
         Rect portMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.PORTRAIT);
         final float density = launcher.getResources().getDisplayMetrics().density;
@@ -355,8 +367,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         heightGap = portMetrics.bottom;
         int portWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
         int portHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
-
-        widgetView.updateAppWidgetSize(null, portWidth, landHeight, landWidth, portHeight);
+        rect.set(portWidth, landHeight, landWidth, portHeight);
+        return rect;
     }
 
     /**
