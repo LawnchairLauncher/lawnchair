@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.os.Build;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -72,7 +73,8 @@ class LauncherAppWidgetInfo extends ItemInfo {
      * done so already (only really for default workspace widgets).
      */
     void onBindAppWidget(Launcher launcher) {
-        if (!mHasNotifiedInitialWidgetSizeChanged) {
+        if (!mHasNotifiedInitialWidgetSizeChanged &&
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             notifyWidgetSizeChanged(launcher);
         }
     }
