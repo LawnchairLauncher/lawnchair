@@ -372,14 +372,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         setDragSlopeThreshold(r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold)/100f);
     }
 
-    @Override
-    protected void onUnhandledTap(MotionEvent ev) {
-        if (LauncherApplication.isScreenLarge()) {
-            // Dismiss AppsCustomize if we tap
-            mLauncher.showWorkspace(true);
-        }
-    }
-
     /** Returns the item index of the center item on this page so that we can restore to this
      *  item index when we rotate. */
     private int getMiddleComponentIndexOnCurrentPage() {
