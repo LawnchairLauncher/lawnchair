@@ -1651,7 +1651,6 @@ public final class Launcher extends Activity
     public boolean onSearchRequested() {
         startSearch(null, false, null, true);
         // Use a custom animation for launching search
-        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
         return true;
     }
 
@@ -1964,7 +1963,6 @@ public final class Launcher extends Activity
                 intent.setPackage(activityName.getPackageName());
             }
             startActivity(null, intent, "onClickVoiceButton");
-            overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
         } catch (ActivityNotFoundException e) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
