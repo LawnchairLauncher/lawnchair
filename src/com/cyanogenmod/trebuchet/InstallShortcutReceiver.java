@@ -142,9 +142,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             final int screenDefault = PreferencesProvider.Interface.Homescreen.getDefaultHomescreen(context, screenCount / 2);
             final int screen = (screenDefault >= screenCount) ? screenCount / 2 : screenDefault;
 
-            for (int i = 0; i < (2 * Launcher.MAX_SCREEN_COUNT) + 1 && !found; ++i) {
+            for (int i = 0; i <= (2 * screenCount) + 1 && !found; ++i) {
                 int si = screen + (int) ((i / 2f) + 0.5f) * ((i % 2 == 1) ? 1 : -1);
-                if (0 <= si && si < Launcher.MAX_SCREEN_COUNT) {
+                if (0 <= si && si < screenCount) {
                     found = installShortcut(context, data, items, name, intent, si, exists, sp,
                             result);
                 }
