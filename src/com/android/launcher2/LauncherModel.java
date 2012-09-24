@@ -262,28 +262,59 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    static void checkItemInfoLocked(
+            final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+        ItemInfo modelItem = sBgItemsIdMap.get(itemId);
+        if (modelItem != null && item != modelItem) {
+            // check all the data is consistent
+            if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
+                ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
+                ShortcutInfo shortcut = (ShortcutInfo) item;
+                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
+                        modelShortcut.intent.filterEquals(shortcut.intent) &&
+                        modelShortcut.id == shortcut.id &&
+                        modelShortcut.itemType == shortcut.itemType &&
+                        modelShortcut.container == shortcut.container &&
+                        modelShortcut.screen == shortcut.screen &&
+                        modelShortcut.cellX == shortcut.cellX &&
+                        modelShortcut.cellY == shortcut.cellY &&
+                        modelShortcut.spanX == shortcut.spanX &&
+                        modelShortcut.spanY == shortcut.spanY &&
+                        ((modelShortcut.dropPos == null && shortcut.dropPos == null) ||
+                        (modelShortcut.dropPos != null &&
+                                shortcut.dropPos != null &&
+                                modelShortcut.dropPos[0] == shortcut.dropPos[0] &&
+                        modelShortcut.dropPos[1] == shortcut.dropPos[1]))) {
+                    // For all intents and purposes, this is the same object
+                    return;
+                }
+            }
+
+            // the modelItem needs to match up perfectly with item if our model is
+            // to be consistent with the database-- for now, just require
+            // modelItem == item or the equality check above
+            String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                    "modelItem: " +
+                    ((modelItem != null) ? modelItem.toString() : "null") +
+                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
+            RuntimeException e = new RuntimeException(msg);
+            if (stackTrace != null) {
+                e.setStackTrace(stackTrace);
+            }
+            throw e;
+        }
+    }
+
     static void checkItemInfo(final ItemInfo item) {
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         final long itemId = item.id;
         Runnable r = new Runnable() {
-                public void run() {
-                    synchronized (sBgLock) {
-                        ItemInfo modelItem = sBgItemsIdMap.get(itemId);
-                        if (modelItem != null && item != modelItem) {
-                            // the modelItem needs to match up perfectly with item if our model is
-                            // to be consistent with the database-- for now, just require
-                            // modelItem == item
-                            String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                                "modelItem: " +
-                                    ((modelItem != null) ? modelItem.toString() : "null") +
-                                "Error: ItemInfo passed to checkItemInfo doesn't match original";
-                            RuntimeException e = new RuntimeException(msg);
-                            e.setStackTrace(stackTrace);
-                            throw e;
-                        }
-                    }
+            public void run() {
+                synchronized (sBgLock) {
+                    checkItemInfoLocked(itemId, item, stackTrace);
                 }
-            };
+            }
+        };
         runOnWorkerThread(r);
     }
 
@@ -300,16 +331,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                 // Lock on mBgLock *after* the db operation
                 synchronized (sBgLock) {
-                    ItemInfo modelItem = sBgItemsIdMap.get(itemId);
-                    if (item != modelItem) {
-                        // the modelItem needs to match up perfectly with item if our model is to be
-                        // consistent with the database-- for now, just require modelItem == item
-                        String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                            "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                            "Error: ItemInfo passed to " + callingFunction + " doesn't match " +
-                            "original";
-                        throw new RuntimeException(msg);
-                    }
+                    checkItemInfoLocked(itemId, item, stackTrace);
 
                     if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                             item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -329,6 +351,7 @@ public class LauncherModel extends BroadcastReceiver {
                     // Items are added/removed from the corresponding FolderInfo elsewhere, such
                     // as in Workspace.onDrop. Here, we just add/remove them from the list of items
                     // that are on the desktop, as appropriate
+                    ItemInfo modelItem = sBgItemsIdMap.get(itemId);
                     if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                             modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                         switch (modelItem.itemType) {
@@ -572,11 +595,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                 // Lock on mBgLock *after* the db operation
                 synchronized (sBgLock) {
-                    if (sBgItemsIdMap.containsKey(item.id)) {
-                        // we should not be adding new items in the db with the same id
-                        throw new RuntimeException("Error: ItemInfo id (" + item.id + ") passed to " +
-                            "addItemToDatabase already exists." + item.toString());
-                    }
+                    checkItemInfoLocked(item.id, item, null);
                     sBgItemsIdMap.put(item.id, item);
                     switch (item.itemType) {
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
