@@ -18,8 +18,7 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperPicker">
-        <item name="android:screenOrientation">nosensor</item>
+    <style name="Theme.WallpaperPicker" parent="@android:style/Theme.Holo.NoActionBar">
     </style>
 
     <style name="Theme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
