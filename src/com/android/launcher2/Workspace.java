@@ -98,6 +98,7 @@ public class Workspace extends SmoothPagedView
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
 
     private float mWallpaperScrollRatio = 1.0f;
+    private int mOriginalPageSpacing;
 
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
@@ -273,6 +274,7 @@ public class Workspace extends SmoothPagedView
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContentIsRefreshable = false;
+        mOriginalPageSpacing = mPageSpacing;
 
         mDragEnforcer = new DropTarget.DragEnforcer(context);
         // With workspace, data is available straight from the get-go
@@ -1594,7 +1596,7 @@ public class Workspace extends SmoothPagedView
                 setLayoutScale(finalScaleFactor);
             }
         } else {
-            setPageSpacing(PagedView.AUTOMATIC_PAGE_SPACING);
+            setPageSpacing(mOriginalPageSpacing);
             setLayoutScale(1.0f);
         }
 
