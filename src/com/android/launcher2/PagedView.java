@@ -1715,7 +1715,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected boolean isScrollingIndicatorEnabled() {
-        return !LauncherApplication.isScreenLarge();
+        return true;
     }
 
     Runnable hideScrollingIndicatorRunnable = new Runnable() {
