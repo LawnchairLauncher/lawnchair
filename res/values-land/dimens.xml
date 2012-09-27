@@ -16,8 +16,8 @@
 
 <resources>
 <!-- QSB -->
-    <dimen name="toolbar_button_vertical_padding">12dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">4dip</dimen>
+    <dimen name="toolbar_button_vertical_padding">8dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">0dip</dimen>
 
 <!-- Workspace -->
     <dimen name="hotseat_cell_width">64dp</dimen>

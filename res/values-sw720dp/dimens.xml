@@ -26,7 +26,7 @@
     <dimen name="button_bar_width_left_padding">12dp</dimen>
     <dimen name="button_bar_width_right_padding">12dp</dimen>
     <dimen name="button_bar_height_plus_padding">82dp</dimen>
-    <dimen name="hotseat_width_gap">50dp</dimen>
+    <dimen name="hotseat_width_gap">58dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
@@ -35,8 +35,8 @@
 <!-- Workspace -->
     <dimen name="qsb_bar_height">60dp</dimen>
     <dimen name="qsb_bar_height_inset">60dp</dimen>
-    <dimen name="qsb_padding_left">249dp</dimen>
-    <dimen name="qsb_padding_right">249dp</dimen>
+    <dimen name="qsb_padding_left">177dp</dimen>
+    <dimen name="qsb_padding_right">177dp</dimen>
     <!-- We offset the proxy to overlap with the voice icon -->
     <dimen name="qsb_voice_proxy_padding_right">230dp</dimen>
     <!-- 44dp high for the optical bounds -->
@@ -90,8 +90,8 @@
 
     <!-- Divider width set to match the qsb width -->
     <dimen name="workspace_divider_width">0dp</dimen>
-    <dimen name="workspace_divider_padding_left">249dp</dimen>
-    <dimen name="workspace_divider_padding_right">249dp</dimen>
+    <dimen name="workspace_divider_padding_left">177dp</dimen>
+    <dimen name="workspace_divider_padding_right">177dp</dimen>
     <dimen name="workspace_divider_padding_top">0dp</dimen>
     <dimen name="workspace_divider_padding_bottom">0dp</dimen>
 
@@ -100,8 +100,8 @@
     <dimen name="workspace_cell_width_port">96dp</dimen>
     <dimen name="workspace_cell_height_land">96dp</dimen>
     <dimen name="workspace_cell_height_port">96dp</dimen>
-    <dimen name="workspace_width_gap_land">46dp</dimen>
+    <dimen name="workspace_width_gap_land">50dp</dimen>
     <dimen name="workspace_width_gap_port">0dp</dimen>
     <dimen name="workspace_height_gap_land">16dp</dimen>
-    <dimen name="workspace_height_gap_port">48dp</dimen>
+    <dimen name="workspace_height_gap_port">70dp</dimen>
 </resources>
