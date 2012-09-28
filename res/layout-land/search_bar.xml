@@ -13,10 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/qsb_bar_height"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
    <!-- Global search icon -->
    <com.android.launcher2.HolographicImageView
         style="@style/SearchButton"
@@ -44,4 +45,4 @@
         android:focusable="true"
         android:clickable="true"
         android:contentDescription="@string/accessibility_voice_search_button" />
-</RelativeLayout>
+</LinearLayout>
