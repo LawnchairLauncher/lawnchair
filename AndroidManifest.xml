@@ -103,9 +103,8 @@
             android:label="@string/dream_name"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.service.dreams.DreamService" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.DREAM" />
             </intent-filter>
         </activity>
 
