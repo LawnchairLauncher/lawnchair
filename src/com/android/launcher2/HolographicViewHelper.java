@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.widget.ImageView;
 
@@ -69,12 +70,13 @@ public class HolographicViewHelper {
      * Creates a copy of the original image.
      */
     private Bitmap createOriginalImage(ImageView v, Canvas canvas) {
+        final Drawable d = v.getDrawable();
         final Bitmap b = Bitmap.createBitmap(
-                v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+                d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
         canvas.save();
-            v.draw(canvas);
+            d.draw(canvas);
         canvas.restore();
         canvas.setBitmap(null);
 
@@ -86,12 +88,13 @@ public class HolographicViewHelper {
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createPressImage(ImageView v, Canvas canvas) {
+        final Drawable d = v.getDrawable();
         final Bitmap b = Bitmap.createBitmap(
-                v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+                d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
         canvas.save();
-            v.draw(canvas);
+            d.draw(canvas);
         canvas.restore();
         canvas.drawColor(mHighlightColor, PorterDuff.Mode.SRC_IN);
         canvas.setBitmap(null);
