@@ -203,14 +203,22 @@ public class LauncherProvider extends ContentProvider {
         return mOpenHelper.generateNewId();
     }
 
-    synchronized public void loadDefaultFavoritesIfNecessary() {
+    /**
+     * @param workspaceResId that can be 0 to use default or non-zero for specific resource
+     */
+    synchronized public void loadDefaultFavoritesIfNecessary(int workspaceResId) {
         String spKey = LauncherApplication.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
         if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
+            // Use default workspace resource if none provided
+            if (workspaceResId == 0) {
+                workspaceResId = R.xml.default_workspace;
+            }
+
             // Populate favorites table with initial favorites
             SharedPreferences.Editor editor = sp.edit();
             editor.remove(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED);
-            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), R.xml.default_workspace);
+            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), workspaceResId);
             editor.commit();
         }
     }

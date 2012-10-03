@@ -379,8 +379,8 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
             final int screen, final int cellX, final int cellY) {
-        String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id + 
-                " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY + 
+        String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
+                " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY +
                 ") --> " + "(" + container + ", " + screen + ", " + cellX + ", " + cellY + ")";
         Launcher.sDumpLogs.add(transaction);
         Log.d(TAG, transaction);
@@ -411,8 +411,8 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
             final int screen, final int cellX, final int cellY, final int spanX, final int spanY) {
-        String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id + 
-                " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY + 
+        String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
+                " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY +
                 ") --> " + "(" + container + ", " + screen + ", " + cellX + ", " + cellY + ")";
         Launcher.sDumpLogs.add(transaction);
         Log.d(TAG, transaction);
@@ -1234,7 +1234,7 @@ public class LauncherModel extends BroadcastReceiver {
             final boolean isSafeMode = manager.isSafeMode();
 
             // Make sure the default workspace is loaded, if needed
-            mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary();
+            mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
 
             synchronized (sBgLock) {
                 sBgWorkspaceItems.clear();
