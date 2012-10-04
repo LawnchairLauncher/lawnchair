@@ -628,7 +628,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     private void preloadWidget(final PendingAddWidgetInfo info) {
         final AppWidgetProviderInfo pInfo = info.info;
+        final Bundle options = getDefaultOptionsForWidget(mLauncher, info);
+
         if (pInfo.configure != null) {
+            info.bindOptions = options;
             return;
         }
 
@@ -637,8 +640,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             @Override
             public void run() {
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
-
-                Bundle options = getDefaultOptionsForWidget(mLauncher, info);
                 // Options will be null for platforms with JB or lower, so this serves as an
                 // SDK level check.
                 if (options == null) {
