@@ -1746,13 +1746,25 @@ public final class Launcher extends Activity
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
             appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-            if (mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.componentName)) {
+            Bundle options = info.bindOptions;
+
+            boolean success = false;
+            if (options != null) {
+                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
+                        info.componentName, options);
+            } else {
+                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
+                        info.componentName);
+            }
+            if (success) {
                 addAppWidgetImpl(appWidgetId, info, null, info.info);
             } else {
                 mPendingAddWidgetInfo = info.info;
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
+                // TODO: we need to make sure that this accounts for the options bundle.
+                // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                 startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
             }
         }
