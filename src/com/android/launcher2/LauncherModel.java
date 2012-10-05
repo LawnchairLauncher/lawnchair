@@ -341,10 +341,8 @@ public class LauncherModel extends BroadcastReceiver {
                             // the list of Folders.
                             String msg = "item: " + item + " container being set to: " +
                                     item.container + ", not in the list of folders";
-                            RuntimeException e = new RuntimeException(msg);
-                            e.setStackTrace(stackTrace);
+                            Log.e(TAG, msg);
                             Launcher.dumpDebugLogsToConsole();
-                            throw e;
                         }
                     }
 
@@ -611,10 +609,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     // Adding an item to a folder that doesn't exist.
                                     String msg = "adding item: " + item + " to a folder that " +
                                             " doesn't exist";
-                                    RuntimeException e = new RuntimeException(msg);
-                                    e.setStackTrace(stackTrace);
+                                    Log.e(TAG, msg);
                                     Launcher.dumpDebugLogsToConsole();
-                                    throw e;
                                 }
                             }
                             break;
@@ -662,7 +658,6 @@ public class LauncherModel extends BroadcastReceiver {
     static void deleteItemFromDatabase(Context context, final ItemInfo item) {
         final ContentResolver cr = context.getContentResolver();
         final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
 
         Runnable r = new Runnable() {
             public void run() {
@@ -685,10 +680,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     // think they are contained by that folder.
                                     String msg = "deleting a folder (" + item + ") which still " +
                                             "contains items (" + info + ")";
-                                    RuntimeException e = new RuntimeException(msg);
-                                    e.setStackTrace(stackTrace);
+                                    Log.e(TAG, msg);
                                     Launcher.dumpDebugLogsToConsole();
-                                    throw e;
                                 }
                             }
                             sBgWorkspaceItems.remove(item);
