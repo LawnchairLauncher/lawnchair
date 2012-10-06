@@ -1191,9 +1191,8 @@ public final class Launcher extends Activity
 
             launcherInfo.hostView.setTag(launcherInfo);
             launcherInfo.hostView.setVisibility(View.VISIBLE);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                launcherInfo.notifyWidgetSizeChanged(this);
-            }
+            launcherInfo.notifyWidgetSizeChanged(this);
+
             mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
