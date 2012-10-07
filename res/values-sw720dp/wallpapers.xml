@@ -17,16 +17,16 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>wallpaper_architecture</item>
-        <item>wallpaper_bubblegum</item>
-        <item>wallpaper_canyon</item>
-        <item>wallpaper_chroma</item>
-        <item>wallpaper_escape</item>
-        <item>wallpaper_fidelity</item>
-        <item>wallpaper_flora</item>
-        <item>wallpaper_kepler</item>
-        <item>wallpaper_leaf</item>
-        <item>wallpaper_noir</item>
-        <item>wallpaper_outofthebox</item>
+        <item>wallpaper_00</item>
+        <item>wallpaper_01</item>
+        <item>wallpaper_02</item>
+        <item>wallpaper_03</item>
+        <item>wallpaper_04</item>
+        <item>wallpaper_05</item>
+        <item>wallpaper_06</item>
+        <item>wallpaper_07</item>
+        <item>wallpaper_08</item>
+        <item>wallpaper_09</item>
+        <item>wallpaper_10</item>
     </string-array>
 </resources>
