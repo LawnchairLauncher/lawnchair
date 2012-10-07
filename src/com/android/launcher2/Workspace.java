@@ -2232,11 +2232,9 @@ public class Workspace extends SmoothPagedView
 
                 boolean foundCell = mTargetCell[0] >= 0 && mTargetCell[1] >= 0;
 
-                // if the widget resizes on drop, or the sdk level is less than JBMR1, then we
-                // need to update the size.
+                // if the widget resizes on drop
                 if (foundCell && (cell instanceof AppWidgetHostView) &&
-                        (resultSpan[0] != item.spanX || resultSpan[1] != item.spanY ||
-                        Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+                        (resultSpan[0] != item.spanX || resultSpan[1] != item.spanY)) {
                     resizeOnDrop = true;
                     item.spanX = resultSpan[0];
                     item.spanY = resultSpan[1];
@@ -3045,7 +3043,7 @@ public class Workspace extends SmoothPagedView
             }
 
             final ItemInfo item = (ItemInfo) d.dragInfo;
-            boolean updateWidgetSize = Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN;
+            boolean updateWidgetSize = false;
             if (findNearestVacantCell) {
                 int minSpanX = item.spanX;
                 int minSpanY = item.spanY;
