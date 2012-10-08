@@ -3749,6 +3749,20 @@ public final class Launcher extends Activity
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false) &&
                 !skipCustomClingIfNoAccounts() ) {
+            // If we're not using the default workspace layout, replace workspace cling
+            // with a custom workspace cling (usually specified in an overlay)
+            // For now, only do this on tablets
+            if (mSharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
+                    LauncherApplication.isScreenLarge()) {
+                // Use a custom cling
+                View cling = findViewById(R.id.workspace_cling);
+                ViewGroup clingParent = (ViewGroup) cling.getParent();
+                int clingIndex = clingParent.indexOfChild(cling);
+                clingParent.removeViewAt(clingIndex);
+                View customCling = mInflater.inflate(R.layout.custom_workspace_cling, clingParent, false);
+                clingParent.addView(customCling, clingIndex);
+                customCling.setId(R.id.workspace_cling);
+            }
             initCling(R.id.workspace_cling, null, false, 0);
         } else {
             removeCling(R.id.workspace_cling);
