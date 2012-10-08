@@ -22,6 +22,9 @@
     <dimen name="cling_text_block_offset_x">0dp</dimen>
     <dimen name="cling_text_block_offset_y">0dp</dimen>
     <dimen name="reveal_radius">48dp</dimen>
+    <!-- entries for custom clings, will be set in overlays -->
+    <add-resource type="dimen" name="custom_cling_margin_top" />
+    <add-resource type="dimen" name="custom_cling_margin_right" />
 
 <!-- Workspace -->
     <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
