@@ -300,6 +300,9 @@ public final class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
+    private HideFromAccessibilityHelper mHideFromAccessibilityHelper
+        = new HideFromAccessibilityHelper();
+
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
@@ -3661,8 +3664,9 @@ public final class Launcher extends Activity
 
         return true;
     }
+
     private Cling initCling(int clingId, int[] positionData, boolean animate, int delay) {
-        Cling cling = (Cling) findViewById(clingId);
+        final Cling cling = (Cling) findViewById(clingId);
         if (cling != null) {
             cling.init(this, positionData);
             cling.setVisibility(View.VISIBLE);
@@ -3679,11 +3683,21 @@ public final class Launcher extends Activity
             } else {
                 cling.setAlpha(1f);
             }
+            cling.setFocusableInTouchMode(true);
+            cling.post(new Runnable() {
+                public void run() {
+                    cling.setFocusable(true);
+                    cling.requestFocus();
+                }
+            });
+            mHideFromAccessibilityHelper.setImportantForAccessibilityToNo(
+                    mDragLayer, clingId == R.id.all_apps_cling);
         }
         return cling;
     }
+
     private void dismissCling(final Cling cling, final String flag, int duration) {
-        if (cling != null) {
+        if (cling != null && cling.getVisibility() == View.VISIBLE) {
             ObjectAnimator anim = LauncherAnimUtils.ofFloat(cling, "alpha", 0f);
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -3701,8 +3715,10 @@ public final class Launcher extends Activity
                 };
             });
             anim.start();
+            mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
         }
     }
+
     private void removeCling(int id) {
         final View cling = findViewById(id);
         if (cling != null) {
@@ -3713,6 +3729,7 @@ public final class Launcher extends Activity
                     parent.removeView(cling);
                 }
             });
+            mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
         }
     }
 
