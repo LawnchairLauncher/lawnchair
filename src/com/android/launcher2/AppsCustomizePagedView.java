@@ -449,8 +449,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (mMaxAppCellCountX > -1) {
             maxCellCountX = Math.min(maxCellCountX, mMaxAppCellCountX);
         }
+        // Temp hack for now: only use the max cell count Y for widget layout
+        int maxWidgetCellCountY = maxCellCountY;
         if (mMaxAppCellCountY > -1) {
-            maxCellCountY = Math.min(maxCellCountY, mMaxAppCellCountY);
+            maxWidgetCellCountY = Math.min(maxWidgetCellCountY, mMaxAppCellCountY);
         }
 
         // Now that the data is ready, we can calculate the content width, the number of cells to
@@ -466,6 +468,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Force a measure to update recalculate the gaps
         int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
+        mWidgetSpacingLayout.calculateCellCount(width, height, maxCellCountX, maxWidgetCellCountY);
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
 
