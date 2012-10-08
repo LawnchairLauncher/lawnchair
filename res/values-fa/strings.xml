@@ -92,11 +92,11 @@
     <string name="workspace_scroll_format" msgid="1704767047951143301">"صفحهٔ اصلی %1$d از %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"صفحه برنامه‌ها %1$d از %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"صفحه ابزارک‌ها %1$d از %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"احساس کنید در خانه هستید"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"برنامه‌های مورد دلخواه خود را می‌توانید در اینجا قرار دهید."</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"منزل خودتان است"</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"می‌توانید برنامه‌های دلخواه خود را اینجا بگذارید."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"برای مشاهدهٔ تمام برنامه‌های خود، حلقه را لمس کنید."</string>
-    <string name="all_apps_cling_title" msgid="2559734712581447107">"انتخاب چند برنامه‌"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"برای افزودن یک برنامه به صفحهٔ اصلی خود، آن را لمس کرده و نگه دارید."</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"چندتا برنامه انتخاب کنید"</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"اگر می‌خواهید برنامه‌ای را به صفحهٔ اصلی خود اضافه کنید، آن را لمس کرده و نگه دارید."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"برنامه‌های خود را با پوشه‌ها سازماندهی کنید"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"برای جابجا کردن یک برنامه، آن را لمس کرده و نگهدارید."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحهٔ اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
