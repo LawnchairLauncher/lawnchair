@@ -24,7 +24,7 @@
     <bool name="config_workspaceFadeAdjacentScreens">true</bool>
 
     <!-- Camera distance for the overscroll effect -->
-    <integer name="config_cameraDistance">6500</integer>
+    <integer name="config_cameraDistance">18000</integer>
 
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">false</bool>
