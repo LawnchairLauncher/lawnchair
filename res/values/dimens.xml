@@ -25,6 +25,7 @@
     <!-- entries for custom clings, will be set in overlays -->
     <add-resource type="dimen" name="custom_cling_margin_top" />
     <add-resource type="dimen" name="custom_cling_margin_right" />
+    <add-resource type="dimen" name="custom_cling_margin_left" />
 
 <!-- Workspace -->
     <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
