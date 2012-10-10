@@ -3753,7 +3753,7 @@ public final class Launcher extends Activity
             // with a custom workspace cling (usually specified in an overlay)
             // For now, only do this on tablets
             if (mSharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
-                    LauncherApplication.isScreenLarge()) {
+                    getResources().getBoolean(R.bool.config_useCustomClings)) {
                 // Use a custom cling
                 View cling = findViewById(R.id.workspace_cling);
                 ViewGroup clingParent = (ViewGroup) cling.getParent();
