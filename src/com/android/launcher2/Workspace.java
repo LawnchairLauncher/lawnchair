@@ -254,6 +254,13 @@ public class Workspace extends SmoothPagedView
     private float[] mNewRotationYs;
     private float mTransitionProgress;
 
+    private final Runnable mBindPages = new Runnable() {
+        @Override
+        public void run() {
+            mLauncher.getModel().bindRemainingSynchronousPages();
+        }
+    };
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -1292,12 +1299,7 @@ public class Workspace extends SmoothPagedView
         super.onDraw(canvas);
 
         // Call back to LauncherModel to finish binding after the first draw
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.getModel().bindRemainingSynchronousPages();
-            }
-        });
+        post(mBindPages);
     }
 
     boolean isDrawingBackgroundGradient() {
