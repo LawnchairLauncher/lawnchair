@@ -261,4 +261,17 @@ s -->
     <string name="folder_renamed">Folder renamed to <xliff:g id="name" example="Games">%1$s</xliff:g></string>
     <!-- Folder name format -->
     <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+
+    <!-- Strings used in device overlays -->
+
+    <!-- Clings -->
+    <!-- Dummy string [CHAR_LIMIT=40] -->
+    <add-resource type="string" name="custom_workspace_cling_title_1"/>
+    <!-- Dummy string [CHAR_LIMIT=60] -->
+    <add-resource type="string" name="custom_workspace_cling_description_1"/>
+    <!-- Dummy string [CHAR_LIMIT=40] -->
+    <add-resource type="string" name="custom_workspace_cling_title_2"/>
+    <!-- Dummy string [CHAR_LIMIT=60] -->
+    <add-resource type="string" name="custom_workspace_cling_description_2"/>
+
 </resources>
