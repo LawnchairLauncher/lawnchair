@@ -28,7 +28,7 @@
         android:maxWidth="32dp"
         android:maxHeight="32dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher_application" />
+        android:src="@mipmap/ic_launcher_application" />
     <TextView
         android:id="@+id/provider"
         android:layout_width="match_parent"
