@@ -16,6 +16,8 @@
 <com.android.launcher2.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     launcher:drawIdentifier="workspace_portrait">
     <FrameLayout
         android:layout_width="match_parent"
@@ -29,6 +31,8 @@
             android:orientation="vertical">
             <TextView
                 style="@style/ClingTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/workspace_cling_title" />
             <TextView
                 style="@style/ClingText"
@@ -49,6 +53,8 @@
         android:text="@string/workspace_cling_open_all_apps" />
     <Button
         style="@style/ClingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:layout_marginRight="10dp"
         android:layout_gravity="bottom|right"
