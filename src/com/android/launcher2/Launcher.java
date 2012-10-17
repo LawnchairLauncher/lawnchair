@@ -2784,8 +2784,9 @@ public final class Launcher extends Activity
         mUserPresent = true;
         updateRunning();
 
-        // send an accessibility event to announce the context change
-        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+        // Send an accessibility event to announce the context change
+        getWindow().getDecorView()
+                .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     void showAllApps(boolean animated) {
@@ -2803,7 +2804,8 @@ public final class Launcher extends Activity
         closeFolder();
 
         // Send an accessibility event to announce the context change
-        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+        getWindow().getDecorView()
+                .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     void enterSpringLoadedDragMode() {
@@ -3177,10 +3179,15 @@ public final class Launcher extends Activity
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        boolean result = super.dispatchPopulateAccessibilityEvent(event);
+        final boolean result = super.dispatchPopulateAccessibilityEvent(event);
         final List<CharSequence> text = event.getText();
         text.clear();
-        text.add(getString(R.string.home));
+        // Populate event with a fake title based on the current state.
+        if (mState == State.APPS_CUSTOMIZE) {
+            text.add(getString(R.string.all_apps_button_label));
+        } else {
+            text.add(getString(R.string.all_apps_home_button_label));
+        }
         return result;
     }
 
