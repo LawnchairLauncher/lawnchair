@@ -172,6 +172,8 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Barre de Dock</string>
+    <string name="preferences_interface_dock_size_title">Icônes du dock</string>
+    <string name="preferences_interface_dock_size_summary">Définir le nombre d\'icône du dock</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Icônes</string>

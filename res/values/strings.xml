@@ -347,6 +347,8 @@ s -->
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_size_title">Dock icons</string>
+    <string name="preferences_interface_dock_size_summary">Choose the number of icons in the dock</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Icons</string>

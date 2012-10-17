@@ -115,10 +115,15 @@
         </PreferenceScreen>
 
         <!-- Dock -->
-        <!-- <PreferenceScreen android:key="ui_dock"
+        <PreferenceScreen android:key="ui_dock"
             android:title="@string/preferences_interface_dock_title">
-
-        </PreferenceScreen> -->
+            <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_dock_hotseat_size"
+                android:title="@string/preferences_interface_dock_size_title"
+                android:summary="@string/preferences_interface_dock_size_summary"
+                android:defaultValue="@integer/hotseat_cell_count"
+                launcher:max="9"
+                launcher:min="1" />
+        </PreferenceScreen>
 
         <!-- Icons -->
         <!-- <PreferenceScreen android:key="ui_icons"

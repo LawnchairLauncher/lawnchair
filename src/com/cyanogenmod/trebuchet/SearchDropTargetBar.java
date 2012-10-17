@@ -188,11 +188,21 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         return sTransitionOutDuration;
     }
 
+    private boolean isAllAppsButton(Object info) {
+        return (info instanceof AllAppsButtonInfo);
+    }
+
     /*
      * DragController.DragListener implementation
      */
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
+        // If it's the AllApps button, from Hotseat, don't do anything.
+        if (isAllAppsButton(info)) {
+            deferOnDragEnd();
+            return;
+        }
+
         // Animate out the QSB search bar, and animate in the drop target bar
         prepareStartAnimation(mDropTargetBar);
         mDropTargetBarAnim.start();
