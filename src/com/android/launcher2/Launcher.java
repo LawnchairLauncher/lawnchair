@@ -3482,7 +3482,9 @@ public final class Launcher extends Activity
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+                    if (mWorkspace != null) {
+                        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+                    }
                 }
             });
             anim.start();
