@@ -161,7 +161,7 @@
     <string name="preferences_interface_drawer_widgets_category">ВИДЖЕТЫ</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Вместе с приложениями</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Пролистывать из меню \"Приложения\" в меню \"Виджеты\" без смены вкладок</string>
-    <string name="preferences_interface_drawer_indicator_category">ИДИКАТОР</string>
+    <string name="preferences_interface_drawer_indicator_category">ИНДИКАТОР</string>
     <string name="preferences_interface_drawer_indicator_enable_title">Отображать индикатор</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">Отображать индикатор выбранной страницы внизу экрана</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Скрывать индикатор</string>
