@@ -1384,39 +1384,54 @@ public final class Launcher extends Activity
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
 
-            boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+            final boolean alreadyOnHome =
+                    ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
-            Folder openFolder = mWorkspace.getOpenFolder();
-            // In all these cases, only animate if we're already on home
-            mWorkspace.exitWidgetResizeMode();
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null) {
-                mWorkspace.moveToDefaultScreen(true);
-            }
+            Runnable processIntent = new Runnable() {
+                public void run() {
+                    Folder openFolder = mWorkspace.getOpenFolder();
+                    // In all these cases, only animate if we're already on home
+                    mWorkspace.exitWidgetResizeMode();
+                    if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+                            openFolder == null) {
+                        mWorkspace.moveToDefaultScreen(true);
+                    }
 
-            closeFolder();
-            exitSpringLoadedDragMode();
+                    closeFolder();
+                    exitSpringLoadedDragMode();
 
-            // If we are already on home, then just animate back to the workspace, otherwise, just
-            // wait until onResume to set the state back to Workspace
-            if (alreadyOnHome) {
-                showWorkspace(true);
+                    // If we are already on home, then just animate back to the workspace,
+                    // otherwise, just wait until onResume to set the state back to Workspace
+                    if (alreadyOnHome) {
+                        showWorkspace(true);
+                    } else {
+                        mOnResumeState = State.WORKSPACE;
+                    }
+
+                    final View v = getWindow().peekDecorView();
+                    if (v != null && v.getWindowToken() != null) {
+                        InputMethodManager imm = (InputMethodManager)getSystemService(
+                                INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+
+                    // Reset AllApps to its initial state
+                    if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
+                        mAppsCustomizeTabHost.reset();
+                    }
+                }
+            };
+
+            if (alreadyOnHome && !mWorkspace.hasWindowFocus()) {
+                // Delay processing of the intent to allow the status bar animation to finish
+                // first in order to avoid janky animations.
+                mWorkspace.postDelayed(processIntent, 350);
             } else {
-                mOnResumeState = State.WORKSPACE;
+                // Process the intent immediately.
+                processIntent.run();
             }
 
-            final View v = getWindow().peekDecorView();
-            if (v != null && v.getWindowToken() != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(
-                        INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            }
-
-            // Reset AllApps to its initial state
-            if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
-                mAppsCustomizeTabHost.reset();
-            }
         }
     }
 
