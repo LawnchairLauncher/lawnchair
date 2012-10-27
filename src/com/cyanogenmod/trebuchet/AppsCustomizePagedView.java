@@ -566,22 +566,25 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     void showAllAppsCling() {
-        Cling allAppsCling = (Cling) getTabHost().findViewById(R.id.all_apps_cling);
-        if (!mHasShownAllAppsCling && isDataReady()) {
-            mHasShownAllAppsCling = true;
-            // Calculate the position for the cling punch through
-            int[] offset = new int[2];
-            int[] pos = mWidgetSpacingLayout.estimateCellPosition(mClingFocusedX, mClingFocusedY);
-            mLauncher.getDragLayer().getLocationInDragLayer(this, offset);
-            // PagedViews are centered horizontally but top aligned
-            pos[0] += (getMeasuredWidth() - mWidgetSpacingLayout.getMeasuredWidth()) / 2 +
-                    offset[0];
-            pos[1] += offset[1];
-            mLauncher.showFirstRunAllAppsCling(pos);
-        } else if (!mHasShownAllAppsSortCling && isDataReady() &&
-                allAppsCling != null && allAppsCling.isDismissed()) {
-            mHasShownAllAppsSortCling = true;
-            mLauncher.showFirstRunAllAppsSortCling();
+        AppsCustomizeTabHost tabHost = getTabHost();
+        if (tabHost != null) {
+            Cling allAppsCling = (Cling) tabHost.findViewById(R.id.all_apps_cling);
+            if (!mHasShownAllAppsCling && isDataReady()) {
+                mHasShownAllAppsCling = true;
+                // Calculate the position for the cling punch through
+                int[] offset = new int[2];
+                int[] pos = mWidgetSpacingLayout.estimateCellPosition(mClingFocusedX, mClingFocusedY);
+                mLauncher.getDragLayer().getLocationInDragLayer(this, offset);
+                // PagedViews are centered horizontally but top aligned
+                pos[0] += (getMeasuredWidth() - mWidgetSpacingLayout.getMeasuredWidth()) / 2 +
+                        offset[0];
+                pos[1] += offset[1];
+                mLauncher.showFirstRunAllAppsCling(pos);
+            } else if (!mHasShownAllAppsSortCling && isDataReady() &&
+                    allAppsCling != null && allAppsCling.isDismissed()) {
+                mHasShownAllAppsSortCling = true;
+                mLauncher.showFirstRunAllAppsSortCling();
+            }
         }
     }
 
