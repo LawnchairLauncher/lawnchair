@@ -181,6 +181,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected static final int sScrollIndicatorFadeInDuration = 150;
     protected static final int sScrollIndicatorFadeOutDuration = 650;
     protected static final int sScrollIndicatorFlashDuration = 650;
+    private boolean mScrollingPaused = false;
 
     // If set, will defer loading associated pages until the scrolling settles
     private boolean mDeferLoadAssociatedPagesUntilScrollCompletes;
@@ -303,6 +304,24 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mScroller.forceFinished(true);
     }
 
+    /**
+     * Called during AllApps/Home transitions to avoid unnecessary work. When that other animation
+     * ends, {@link #resumeScrolling()} should be called, along with
+     * {@link #updateCurrentPageScroll()} to correctly set the final state and re-enable scrolling.
+     */
+    void pauseScrolling() {
+        mScroller.forceFinished(true);
+        cancelScrollingIndicatorAnimations();
+        mScrollingPaused = true;
+    }
+
+    /**
+     * Enables scrolling again.
+     * @see #pauseScrolling()
+     */
+    void resumeScrolling() {
+        mScrollingPaused = false;
+    }
     /**
      * Sets the current page.
      */
@@ -1743,7 +1762,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             updateScrollingIndicatorPosition();
             mScrollIndicator.setVisibility(View.VISIBLE);
             cancelScrollingIndicatorAnimations();
-            if (immediately) {
+            if (immediately || mScrollingPaused) {
                 mScrollIndicator.setAlpha(1f);
             } else {
                 mScrollIndicatorAnimator = LauncherAnimUtils.ofFloat(mScrollIndicator, "alpha", 1f);
@@ -1768,7 +1787,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             // Fade the indicator out
             updateScrollingIndicatorPosition();
             cancelScrollingIndicatorAnimations();
-            if (immediately) {
+            if (immediately || mScrollingPaused) {
                 mScrollIndicator.setVisibility(View.INVISIBLE);
                 mScrollIndicator.setAlpha(0f);
             } else {
