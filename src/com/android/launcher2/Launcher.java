@@ -2697,6 +2697,7 @@ public final class Launcher extends Activity
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionPrepare(toView, animated, true);
+            mAppsCustomizeContent.pauseScrolling();
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2711,6 +2712,8 @@ public final class Launcher extends Activity
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
+                    mAppsCustomizeContent.updateCurrentPageScroll();
+                    mAppsCustomizeContent.resumeScrolling();
                 }
             });
 
