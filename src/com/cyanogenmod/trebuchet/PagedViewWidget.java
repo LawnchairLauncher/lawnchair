@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,7 @@ public class PagedViewWidget extends LinearLayout {
     boolean mShortPressTriggered = false;
     static PagedViewWidget sShortpressTarget = null;
     boolean mIsAppWidget;
+    private final Rect mOriginalImagePadding = new Rect();
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -63,6 +65,17 @@ public class PagedViewWidget extends LinearLayout {
         setClipToPadding(false);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        mOriginalImagePadding.left = image.getPaddingLeft();
+        mOriginalImagePadding.top = image.getPaddingTop();
+        mOriginalImagePadding.right = image.getPaddingRight();
+        mOriginalImagePadding.bottom = image.getPaddingBottom();
+    }
+
     public static void setDeletePreviewsWhenDetachedFromWindow(boolean value) {
         sDeletePreviewsWhenDetachedFromWindow = value;
     }
@@ -79,7 +92,7 @@ public class PagedViewWidget extends LinearLayout {
                     preview.getBitmap().recycle();
                 }
                 image.setImageDrawable(null);
-                }
+            }
         }
     }
 
@@ -117,8 +130,8 @@ public class PagedViewWidget extends LinearLayout {
     public int[] getPreviewSize() {
         final ImageView i = (ImageView) findViewById(R.id.widget_preview);
         int[] maxSize = new int[2];
-        maxSize[0] = i.getWidth() - i.getPaddingLeft() - i.getPaddingRight();
-        maxSize[1] = i.getHeight() - i.getPaddingTop();
+        maxSize[0] = i.getWidth() - mOriginalImagePadding.left - mOriginalImagePadding.right;
+        maxSize[1] = i.getHeight() - mOriginalImagePadding.top;
         return maxSize;
     }
 
@@ -132,10 +145,10 @@ public class PagedViewWidget extends LinearLayout {
                 // center horizontally
                 int[] imageSize = getPreviewSize();
                 int centerAmount = (imageSize[0] - preview.getIntrinsicWidth()) / 2;
-                image.setPadding(image.getPaddingLeft() + centerAmount,
-                        image.getPaddingTop(),
-                        image.getPaddingRight(),
-                        image.getPaddingBottom());
+                image.setPadding(mOriginalImagePadding.left + centerAmount,
+                        mOriginalImagePadding.top,
+                        mOriginalImagePadding.right,
+                        mOriginalImagePadding.bottom);
             }
             image.setAlpha(1f);
             image.mAllowRequestLayout = true;

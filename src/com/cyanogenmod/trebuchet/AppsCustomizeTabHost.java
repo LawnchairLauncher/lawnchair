@@ -50,7 +50,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private ViewGroup mTabs;
     private ViewGroup mTabsContainer;
     private AppsCustomizePagedView mAppsCustomizePane;
-    private boolean mSuppressContentCallback = false;
     private FrameLayout mAnimationBuffer;
     private LinearLayout mContent;
 
@@ -92,13 +91,15 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
      * reflects the new content (but doesn't do the animation and logic associated with changing
      * tabs manually).
      */
-    private void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
+    void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
+        setOnTabChangedListener(null);
         onTabChangedStart();
         onTabChangedEnd(type);
+        setCurrentTabByTag(getTabTagForContentType(type));
+        setOnTabChangedListener(this);
     }
     void selectAppsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Applications);
-        setCurrentTabByTag(APPS_TAB_TAG);
     }
     void selectWidgetsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
@@ -177,10 +178,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             if (contentWidth > 0 && mTabs.getLayoutParams().width != contentWidth) {
                 // Set the width and show the tab bar
                 mTabs.getLayoutParams().width = contentWidth;
-                post(mRelayoutAndMakeVisible);
+                mRelayoutAndMakeVisible.run();
             }
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
      public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -226,10 +228,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     @Override
     public void onTabChanged(String tabId) {
         final AppsCustomizePagedView.ContentType type = getContentTypeForTabTag(tabId);
-        if (mSuppressContentCallback) {
-            mSuppressContentCallback = false;
-            return;
-        }
 
         if (!mAppsCustomizePane.isContentType(type) || mJoinWidgetsApps) {
 
@@ -321,8 +319,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     public void setCurrentTabFromContent(AppsCustomizePagedView.ContentType type) {
-        mSuppressContentCallback = true;
+        setOnTabChangedListener(null);
         setCurrentTabByTag(getTabTagForContentType(type));
+        setOnTabChangedListener(this);
     }
 
     /**
