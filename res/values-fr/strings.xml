@@ -28,7 +28,7 @@
     <string name="activity_not_found" msgid="217823393239365967">"L\'application n\'est pas installée."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Appuyez de manière prolongée pour ajouter widget."</string>
-    <string name="market" msgid="2652226429823445833">"Acheter"</string>
+    <string name="market" msgid="2652226429823445833">"Google Play Store"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Impossible de déposer élément sur écran d\'accueil."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Sélectionnez le widget à créer"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nom du dossier"</string>
@@ -54,6 +54,7 @@
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Supprimer"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Désinstaller"</string>
     <string name="delete_target_label" msgid="665300185123139530">"Supprimer"</string>
+    <string name="cancel_target_label">"Annuler"</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Désinstaller"</string>
     <string name="info_target_label" msgid="4019495079517426980">"Informations sur l\'application"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Rechercher"</string>
@@ -67,7 +68,10 @@
     <string name="menu_search" msgid="4826514464423239041">"Rechercher"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notifications"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Paramètres système"</string>
+    <string name="menu_preferences">"Paramètres de Trebuchet"</string>
     <string name="menu_help" msgid="4901160661634590633">"Aide"</string>
+    <string name="menu_apps_sort_title">"Nom"</string>
+    <string name="menu_apps_sort_install_date">"Date d\'installation"</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Désinstaller l\'application"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Détails de l\'application"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"1 application sélectionnée."</string>
@@ -96,6 +100,8 @@
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Pour voir toutes vos applications, appuyez sur le cercle."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Sélectionner des applications"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Pour ajouter une application à votre écran d\'accueil, appuyez dessus de manière prolongée."</string>
+    <string name="all_apps_sort_cling_title">"Triez vos applications"</string>
+    <string name="all_apps_sort_cling_add_item">"Appuyez de manière prolongée sur l\'onglet Application pour sélectionner votre méthode de tri"</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Organisez vos applications en dossiers"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Pour déplacer une application, appuyez dessus de manière prolongée."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Pour créer un dossier sur votre écran d\'accueil, superposez les applications les unes sur les autres."</string>
@@ -138,7 +144,7 @@
     <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Marge horizontale</string>
     <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Espacement supplémentaire horizontal</string>
     <string name="preferences_interface_homescreen_general_search_summary">Activer la barre de recherche persistante</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionner tout les widgets</string>
+    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionner tous les widgets</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permet de redimensionner les widgets qui normalement n\'en sont pas capables</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Sans libellés</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Cacher le libellé des icônes de l\'écran d\'accueil</string>
