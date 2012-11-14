@@ -71,7 +71,7 @@ public class AddAdapter extends BaseAdapter {
         Resources res = launcher.getResources();
 
         mItems.add(new ListItem(res, R.string.group_wallpapers,
-                R.drawable.ic_launcher_wallpaper, ITEM_WALLPAPER));
+                R.mipmap.ic_launcher_wallpaper, ITEM_WALLPAPER));
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
