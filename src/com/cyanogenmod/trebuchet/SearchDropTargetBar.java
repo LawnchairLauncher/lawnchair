@@ -120,14 +120,14 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         // Create the various fade animations
         if (mEnableDropDownDropTargets) {
             mDropTargetBar.setTranslationY(-mBarHeight);
-            mDropTargetBarAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
+            mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "translationY",
                     -mBarHeight, 0f);
-            mQSBSearchBarAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY", 0,
+            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "translationY", 0,
                     -mBarHeight);
         } else {
             mDropTargetBar.setAlpha(0f);
-            mDropTargetBarAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
-            mQSBSearchBarAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
+            mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
+            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
         }
         setupAnimation(mDropTargetBarAnim, mDropTargetBar);
         setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
@@ -237,16 +237,14 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
 
     public Rect getSearchBarBounds() {
         if (mQSBSearchBar != null) {
-            final float appScale = mQSBSearchBar.getContext().getResources()
-                    .getCompatibilityInfo().applicationScale;
             final int[] pos = new int[2];
             mQSBSearchBar.getLocationOnScreen(pos);
 
             final Rect rect = new Rect();
-            rect.left = (int) (pos[0] * appScale + 0.5f);
-            rect.top = (int) (pos[1] * appScale + 0.5f);
-            rect.right = (int) ((pos[0] + mQSBSearchBar.getWidth()) * appScale + 0.5f);
-            rect.bottom = (int) ((pos[1] + mQSBSearchBar.getHeight()) * appScale + 0.5f);
+            rect.left = pos[0];
+            rect.top = pos[1];
+            rect.right = pos[0] + mQSBSearchBar.getWidth();
+            rect.bottom = pos[1] + mQSBSearchBar.getHeight();
             return rect;
         } else {
             return null;

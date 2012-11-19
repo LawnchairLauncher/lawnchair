@@ -16,37 +16,47 @@
 <com.cyanogenmod.trebuchet.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
-    launcher:drawIdentifier="workspace_large">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    launcher:drawIdentifier="workspace_portrait">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/cling_text_block_offset_x"
-        android:layout_marginTop="@dimen/cling_text_block_offset_y">
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="90dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
                 style="@style/ClingTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/workspace_cling_title" />
             <TextView
                 style="@style/ClingText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/workspace_cling_move_item" />
-            <Button
-                style="@style/ClingButton"
-                android:layout_marginTop="15dp"
-                android:onClick="dismissWorkspaceCling" />
         </LinearLayout>
     </FrameLayout>
     <TextView
         style="@style/ClingText"
-        android:layout_width="180dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
-        android:layout_marginRight="130dp"
-        android:layout_gravity="right"
-        android:gravity="right"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="130dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
         android:text="@string/workspace_cling_open_all_apps" />
+    <Button
+        style="@style/ClingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="bottom|right"
+        android:onClick="dismissWorkspaceCling" />
 </com.cyanogenmod.trebuchet.Cling>

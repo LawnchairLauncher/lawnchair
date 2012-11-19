@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2010 The Android Open Source Project
+<!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,22 +16,72 @@
 
 <com.cyanogenmod.trebuchet.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
 
     android:id="@+id/drag_layer"
+    android:background="@drawable/workspace_bg"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="false">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/workspace"
+    <!-- Keep these behind the workspace so that they are not visible when
+         we go into AllApps -->
+    <include
+        android:id="@+id/dock_divider"
+        layout="@layout/workspace_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/button_bar_height_plus_padding"
+        android:layout_gravity="bottom|center_horizontal" />
+    <include
+        android:id="@+id/paged_view_indicator"
+        layout="@layout/scroll_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/button_bar_height_plus_padding" />
+
+    <!-- The workspace contains 5 screens of cells -->
+    <com.android.launcher2.Workspace
         android:id="@+id/workspace"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/workspace_left_padding"
+        android:paddingRight="@dimen/workspace_right_padding"
+        android:paddingTop="@dimen/workspace_top_padding"
+        android:paddingBottom="@dimen/workspace_bottom_padding"
+        launcher:cellCountX="@integer/cell_count_x"
+        launcher:cellCountY="@integer/cell_count_y"
+        launcher:pageSpacing="@dimen/workspace_page_spacing"
+        launcher:scrollIndicatorPaddingLeft="@dimen/workspace_divider_padding_left"
+        launcher:scrollIndicatorPaddingRight="@dimen/workspace_divider_padding_right">
 
-    <include layout="@layout/qsb_bar"
-        android:id="@+id/qsb_bar"
+        <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
+    </com.android.launcher2.Workspace>
+
+    <include layout="@layout/hotseat"
+        android:id="@+id/hotseat"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/button_bar_height_plus_padding"
+        android:layout_gravity="bottom" />
+
+    <include
+        android:id="@+id/qsb_bar"
+        layout="@layout/qsb_bar" />
+
+    <com.android.launcher2.DrawableStateProxyView
+        android:id="@+id/voice_button_proxy"
+        android:layout_width="80dp"
         android:layout_height="@dimen/qsb_bar_height"
-        android:layout_gravity="top" />
+        android:layout_marginRight="@dimen/qsb_voice_proxy_padding_right"
+        android:layout_gravity="top|right"
+        android:clickable="true"
+        android:onClick="onClickVoiceButton"
+        android:importantForAccessibility="no"
+        launcher:sourceViewId="@+id/voice_button" />
 
     <include layout="@layout/apps_customize_pane"
         android:id="@+id/apps_customize_pane"

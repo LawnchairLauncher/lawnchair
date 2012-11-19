@@ -62,11 +62,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.os.SystemProperties;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Display;
@@ -102,6 +102,7 @@ import com.cyanogenmod.trebuchet.preference.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -119,7 +120,7 @@ import java.util.Set;
  */
 public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   AllAppsView.Watcher, View.OnTouchListener {
+                   View.OnTouchListener {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -149,7 +150,8 @@ public final class Launcher extends Activity
     static final int DEFAULT_SCREEN = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
-    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher.force_enable_rotation";
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "debug.force_enable_rotation";
+    static final String DUMP_STATE_PROPERTY = "debug.dumpstate";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -301,6 +303,8 @@ public final class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
+    private HideFromAccessibilityHelper mHideFromAccessibilityHelper
+        = new HideFromAccessibilityHelper();
     // Preferences
     private boolean mShowSearchBar;
     private boolean mShowDockDivider;
@@ -325,6 +329,20 @@ public final class Launcher extends Activity
         int screen;
         int cellX;
         int cellY;
+    }
+
+
+    private boolean doesFileExist(String filename) {
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput(filename);
+            fis.close();
+            return true;
+        } catch (java.io.FileNotFoundException e) {
+            return false;
+        } catch (java.io.IOException e) {
+            return true;
+        }
     }
 
     @Override
@@ -357,16 +375,15 @@ public final class Launcher extends Activity
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
 
+        // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
+        // this also ensures that any synchronous binding below doesn't re-trigger another
+        // LauncherModel load.
+        mPaused = false;
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
         mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(this);
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels(this);
         mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
-
-        // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
-        // this also ensures that any synchronous binding below doesn't re-trigger another
-        // LauncherModel load.
-        mPaused = false;
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -387,7 +404,7 @@ public final class Launcher extends Activity
 
         // Update customization drawer _after_ restoring the states
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated(true);
+            mAppsCustomizeContent.onPackagesUpdated();
         }
 
         if (PROFILE_STARTUP) {
@@ -451,7 +468,9 @@ public final class Launcher extends Activity
         if (sAppMarketIcon[coi] != null) {
             updateAppMarketIcon(sAppMarketIcon[coi]);
         }
-        mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        }
     }
 
     private void checkForLocaleChange() {
@@ -726,12 +745,11 @@ public final class Launcher extends Activity
         InstallShortcutReceiver.flushInstallQueue(this);
 
         mPaused = false;
+        sPausedFromUserAction = false;
         // Restart launcher when preferences are changed
         if (preferencesChanged()) {
             android.os.Process.killProcess(android.os.Process.myPid());
         }
-
-        sPausedFromUserAction = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
             mModel.startLoader(true, -1);
@@ -965,22 +983,8 @@ public final class Launcher extends Activity
                 findViewById(R.id.apps_customize_pane);
         mAppsCustomizeContent = (AppsCustomizePagedView)
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
-        mAppsCustomizeTabHost.setup(this);
         mAppsCustomizeContent.setup(this, dragController);
-
-        // Get the all apps button
-        mAllAppsButton = findViewById(R.id.all_apps_button);
-        if (mAllAppsButton != null) {
-            mAllAppsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        onTouchDownAllAppsButton(v);
-                    }
-                    return false;
-                }
-            });
-        }
+        
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
         dragController.setScrollView(mDragLayer);
@@ -1220,6 +1224,7 @@ public final class Launcher extends Activity
             launcherInfo.hostView.setTag(launcherInfo);
             launcherInfo.hostView.setVisibility(View.VISIBLE);
             launcherInfo.notifyWidgetSizeChanged(this);
+
             mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
@@ -1409,39 +1414,54 @@ public final class Launcher extends Activity
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
 
-            boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+            final boolean alreadyOnHome =
+                    ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
-            Folder openFolder = mWorkspace.getOpenFolder();
-            // In all these cases, only animate if we're already on home
-            mWorkspace.exitWidgetResizeMode();
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null) {
-                mWorkspace.moveToDefaultScreen(true);
-            }
+            Runnable processIntent = new Runnable() {
+                public void run() {
+                    Folder openFolder = mWorkspace.getOpenFolder();
+                    // In all these cases, only animate if we're already on home
+                    mWorkspace.exitWidgetResizeMode();
+                    if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+                            openFolder == null) {
+                        mWorkspace.moveToDefaultScreen(true);
+                    }
 
-            closeFolder();
-            exitSpringLoadedDragMode();
+                    closeFolder();
+                    exitSpringLoadedDragMode();
 
-            // If we are already on home, then just animate back to the workspace, otherwise, just
-            // wait until onResume to set the state back to Workspace
-            if (alreadyOnHome) {
-                showWorkspace(true);
+                    // If we are already on home, then just animate back to the workspace,
+                    // otherwise, just wait until onResume to set the state back to Workspace
+                    if (alreadyOnHome) {
+                        showWorkspace(true);
+                    } else {
+                        mOnResumeState = State.WORKSPACE;
+                    }
+
+                    final View v = getWindow().peekDecorView();
+                    if (v != null && v.getWindowToken() != null) {
+                        InputMethodManager imm = (InputMethodManager)getSystemService(
+                                INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+
+                    // Reset AllApps to its initial state
+                    if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
+                        mAppsCustomizeTabHost.reset();
+                    }
+                }
+            };
+
+            if (alreadyOnHome && !mWorkspace.hasWindowFocus()) {
+                // Delay processing of the intent to allow the status bar animation to finish
+                // first in order to avoid janky animations.
+                mWorkspace.postDelayed(processIntent, 350);
             } else {
-                mOnResumeState = State.WORKSPACE;
+                // Process the intent immediately.
+                processIntent.run();
             }
 
-            final View v = getWindow().peekDecorView();
-            if (v != null && v.getWindowToken() != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(
-                        INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            }
-
-            // Reset AllApps to its initial state
-            if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
-                mAppsCustomizeTabHost.reset();
-            }
         }
     }
 
@@ -1515,8 +1535,11 @@ public final class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
-
-        unbindWorkspaceAndHotseatItems();
+        // Disconnect any of the callbacks and drawables associated with ItemInfos on the workspace
+        // to prevent leaking Launcher activities on orientation change.
+        if (mModel != null) {
+            mModel.unbindItemInfosAndClearQueuedBindRunnables();
+        }
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mCloseSystemDialogsReceiver);
@@ -1527,7 +1550,7 @@ public final class Launcher extends Activity
         mWorkspace = null;
         mDragController = null;
 
-        ValueAnimator.clearAllAnimations();
+        LauncherAnimUtils.onDestroyActivity();
     }
 
     public DragController getDragController() {
@@ -1558,12 +1581,53 @@ public final class Launcher extends Activity
             appSearchData = new Bundle();
             appSearchData.putString(Search.SOURCE, "launcher-search");
         }
-        Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
+        Rect sourceBounds = new Rect();
+        if (mSearchDropTargetBar != null) {
+            sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
+        }
 
+        startGlobalSearch(initialQuery, selectInitialQuery,
+            appSearchData, sourceBounds);
+    }
+
+    /**
+     * Starts the global search activity. This code is a copied from SearchManager
+     */
+    public void startGlobalSearch(String initialQuery,
+            boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         final SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
-            appSearchData, globalSearch, sourceBounds);
+            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
+        if (globalSearchActivity == null) {
+            Log.w(TAG, "No global search activity found.");
+            return;
+        }
+        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setComponent(globalSearchActivity);
+        // Make sure that we have a Bundle to put source in
+        if (appSearchData == null) {
+            appSearchData = new Bundle();
+        } else {
+            appSearchData = new Bundle(appSearchData);
+        }
+        // Set source to package name of app that starts global search, if not set already.
+        if (!appSearchData.containsKey("source")) {
+            appSearchData.putString("source", getPackageName());
+        }
+        intent.putExtra(SearchManager.APP_DATA, appSearchData);
+        if (!TextUtils.isEmpty(initialQuery)) {
+            intent.putExtra(SearchManager.QUERY, initialQuery);
+        }
+        if (selectInitialQuery) {
+            intent.putExtra(SearchManager.EXTRA_SELECT_QUERY, selectInitialQuery);
+        }
+        intent.setSourceBounds(sourceBounds);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException ex) {
+            Log.e(TAG, "Global search activity not found: " + globalSearchActivity);
+        }
     }
 
     @Override
@@ -1642,7 +1706,6 @@ public final class Launcher extends Activity
     public boolean onSearchRequested() {
         startSearch(null, false, null, true);
         // Use a custom animation for launching search
-        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
         return true;
     }
 
@@ -1738,13 +1801,25 @@ public final class Launcher extends Activity
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
             appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-            if (mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.componentName)) {
+            Bundle options = info.bindOptions;
+
+            boolean success = false;
+            if (options != null) {
+                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
+                        info.componentName, options);
+            } else {
+                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
+                        info.componentName);
+            }
+            if (success) {
                 addAppWidgetImpl(appWidgetId, info, null, info.info);
             } else {
                 mPendingAddWidgetInfo = info.info;
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
+                // TODO: we need to make sure that this accounts for the options bundle.
+                // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                 startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
             }
         }
@@ -1833,7 +1908,7 @@ public final class Launcher extends Activity
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (SystemProperties.getInt("debug.launcher2.dumpstate", 0) != 0) {
+                    if (doesFileExist(DUMP_STATE_PROPERTY)) {
                         dumpState();
                         return true;
                     }
@@ -1874,16 +1949,6 @@ public final class Launcher extends Activity
     private void onAppWidgetReset() {
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
-        }
-    }
-
-    /**
-     * Go through the and disconnect any of the callbacks in the drawables and the views or we
-     * leak the previous Home screen on orientation change.
-     */
-    private void unbindWorkspaceAndHotseatItems() {
-        if (mModel != null) {
-            mModel.unbindWorkspaceItems();
         }
     }
 
@@ -1968,7 +2033,6 @@ public final class Launcher extends Activity
                 intent.setPackage(activityName.getPackageName());
             }
             startActivity(null, intent, "onClickVoiceButton");
-            overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
         } catch (ActivityNotFoundException e) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -2123,7 +2187,7 @@ public final class Launcher extends Activity
     }
 
     private void handleFolderClick(FolderIcon folderIcon) {
-        final FolderInfo info = folderIcon.mInfo;
+        final FolderInfo info = folderIcon.getFolderInfo();
         Folder openFolder = mWorkspace.getFolderForTag(info);
 
         // If the folder info reports that the associated folder is open, then verify that
@@ -2134,7 +2198,7 @@ public final class Launcher extends Activity
             info.opened = false;
         }
 
-        if (!info.opened) {
+        if (!info.opened && !folderIcon.getFolder().isDestroyed()) {
             // Close any open folder
             closeFolder();
             // Open the requested folder
@@ -2181,19 +2245,21 @@ public final class Launcher extends Activity
             lp = new DragLayer.LayoutParams(width, height);
         }
 
-        mDragLayer.getViewRectRelativeToSelf(fi, mRectForFolderAnimation);
+        // The layout from which the folder is being opened may be scaled, adjust the starting
+        // view size by this scale factor.
+        float scale = mDragLayer.getDescendantRectRelativeToSelf(fi, mRectForFolderAnimation);
         lp.customPosition = true;
         lp.x = mRectForFolderAnimation.left;
         lp.y = mRectForFolderAnimation.top;
-        lp.width = width;
-        lp.height = height;
+        lp.width = (int) (scale * width);
+        lp.height = (int) (scale * height);
 
         mFolderIconCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         fi.draw(mFolderIconCanvas);
         mFolderIconImageView.setImageBitmap(mFolderIconBitmap);
-        if (fi.mFolder != null) {
-            mFolderIconImageView.setPivotX(fi.mFolder.getPivotXForIconAnimation());
-            mFolderIconImageView.setPivotY(fi.mFolder.getPivotYForIconAnimation());
+        if (fi.getFolder() != null) {
+            mFolderIconImageView.setPivotX(fi.getFolder().getPivotXForIconAnimation());
+            mFolderIconImageView.setPivotY(fi.getFolder().getPivotYForIconAnimation());
         }
         // Just in case this image view is still in the drag layer from a previous animation,
         // we remove it and re-add it.
@@ -2201,8 +2267,8 @@ public final class Launcher extends Activity
             mDragLayer.removeView(mFolderIconImageView);
         }
         mDragLayer.addView(mFolderIconImageView, lp);
-        if (fi.mFolder != null) {
-            fi.mFolder.bringToFront();
+        if (fi.getFolder() != null) {
+            fi.getFolder().bringToFront();
         }
     }
 
@@ -2223,7 +2289,7 @@ public final class Launcher extends Activity
         copyFolderIconToImage(fi);
         fi.setVisibility(View.INVISIBLE);
 
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
+        ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.start();
@@ -2240,7 +2306,7 @@ public final class Launcher extends Activity
         // We remove and re-draw the FolderIcon in-case it has changed
         mDragLayer.removeView(mFolderIconImageView);
         copyFolderIconToImage(fi);
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(mFolderIconImageView, alpha,
+        ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.addListener(new AnimatorListenerAdapter() {
@@ -2265,7 +2331,7 @@ public final class Launcher extends Activity
      * @param folderInfo The FolderInfo describing the folder to open.
      */
     public void openFolder(FolderIcon folderIcon) {
-        Folder folder = folderIcon.mFolder;
+        Folder folder = folderIcon.getFolder();
         FolderInfo info = folder.mInfo;
 
         info.opened = true;
@@ -2380,13 +2446,6 @@ public final class Launcher extends Activity
 
     public boolean isAllAppsButtonRank(int rank) {
         return mHotseat.isAllAppsButtonRank(rank);
-    }
-
-    // AllAppsView.Watcher
-    public void zoomed(float zoom) {
-        if (zoom == 1.0f) {
-            mWorkspace.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -2533,6 +2592,9 @@ public final class Launcher extends Activity
             alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+                    if (animation == null) {
+                        throw new RuntimeException("animation is null");
+                    }
                     float t = (Float) animation.getAnimatedValue();
                     dispatchOnLauncherTransitionStep(fromView, t);
                     dispatchOnLauncherTransitionStep(toView, t);
@@ -2541,7 +2603,7 @@ public final class Launcher extends Activity
 
             // toView should appear right at the end of the workspace shrink
             // animation
-            mStateAnimation = new AnimatorSet();
+            mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             mStateAnimation.play(scaleAnim).after(startDelay);
             mStateAnimation.play(alphaAnim).after(startDelay);
 
@@ -2562,7 +2624,7 @@ public final class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
-                    if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                    if (mWorkspace != null && !springLoaded && !LauncherApplication.isScreenLarge()) {
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
                         hideDockDivider();
@@ -2572,7 +2634,9 @@ public final class Launcher extends Activity
                     }
 
                     // Hide the search bar
-                    mSearchDropTargetBar.hideSearchBar(false);
+                    if (mSearchDropTargetBar != null) {
+                        mSearchDropTargetBar.hideSearchBar(false);
+                    }
                 }
 
                 @Override
@@ -2648,7 +2712,9 @@ public final class Launcher extends Activity
                 hideDockDivider();
 
                 // Hide the search bar
-                mSearchDropTargetBar.hideSearchBar(false);
+                if (mSearchDropTargetBar != null) {
+                    mSearchDropTargetBar.hideSearchBar(false);
+                }
             }
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionStart(fromView, animated, false);
@@ -2716,10 +2782,11 @@ public final class Launcher extends Activity
                 }
             });
 
-            mStateAnimation = new AnimatorSet();
+            mStateAnimation = LauncherAnimUtils.createAnimatorSet();
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionPrepare(toView, animated, true);
+            mAppsCustomizeContent.pauseScrolling();
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2734,6 +2801,8 @@ public final class Launcher extends Activity
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
+                    mAppsCustomizeContent.updateCurrentPageScroll();
+                    mAppsCustomizeContent.resumeScrolling();
                 }
             });
 
@@ -2800,7 +2869,9 @@ public final class Launcher extends Activity
 
             // Show the search bar (only animate if we were showing the drop target bar in spring
             // loaded mode)
-            mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
+            if (mSearchDropTargetBar != null) {
+                mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
+            }
 
             // We only need to animate in the dock divider if we're going from spring loaded mode
             showDockDivider(animated && wasInSpringLoadedMode);
@@ -2820,8 +2891,9 @@ public final class Launcher extends Activity
         mUserPresent = true;
         updateRunning();
 
-        // send an accessibility event to announce the context change
-        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+        // Send an accessibility event to announce the context change
+        getWindow().getDecorView()
+                .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     void showAllApps(boolean animated) {
@@ -2839,7 +2911,8 @@ public final class Launcher extends Activity
         closeFolder();
 
         // Send an accessibility event to announce the context change
-        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+        getWindow().getDecorView()
+                .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     void enterSpringLoadedDragMode() {
@@ -2908,12 +2981,16 @@ public final class Launcher extends Activity
                 mDividerAnimator = null;
             }
             if (animated) {
-                mDividerAnimator = new AnimatorSet();
+                mDividerAnimator = LauncherAnimUtils.createAnimatorSet();
                 if (mShowSearchBar && mShowDockDivider) {
-                    mDividerAnimator.playTogether(ObjectAnimator.ofFloat(mQsbDivider, "alpha", 1f),
-                            ObjectAnimator.ofFloat(mDockDivider, "alpha", 1f));
+                    mDividerAnimator.playTogether(LauncherAnimUtils.ofFloat(mQsbDivider, "alpha", 1f),
+                            LauncherAnimUtils.ofFloat(mDockDivider, "alpha", 1f));
                 }
-                mDividerAnimator.setDuration(mSearchDropTargetBar.getTransitionInDuration());
+                int duration = 0;
+                if (mSearchDropTargetBar != null) {
+                    duration = mSearchDropTargetBar.getTransitionInDuration();
+                }
+                mDividerAnimator.setDuration(duration);
                 mDividerAnimator.start();
             }
         }
@@ -2934,7 +3011,10 @@ public final class Launcher extends Activity
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
-                    int duration = mSearchDropTargetBar.getTransitionInDuration();
+                    int duration = 0;
+                    if (mSearchDropTargetBar != null) {
+                        duration = mSearchDropTargetBar.getTransitionInDuration();
+                    }
                     mHotseat.animate().alpha(1f).setDuration(duration);
                 }
             } else {
@@ -2950,7 +3030,10 @@ public final class Launcher extends Activity
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
-                    int duration = mSearchDropTargetBar.getTransitionOutDuration();
+                    int duration = 0;
+                    if (mSearchDropTargetBar != null) {
+                        duration = mSearchDropTargetBar.getTransitionOutDuration();
+                    }
                     mHotseat.animate().alpha(0f).setDuration(duration);
                 }
             } else {
@@ -3080,7 +3163,6 @@ public final class Launcher extends Activity
     private boolean updateGlobalSearchIcon() {
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
-        final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
@@ -3099,14 +3181,12 @@ public final class Launcher extends Activity
                         TOOLBAR_ICON_METADATA_NAME);
             }
 
-            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
             invalidatePressedFocusedStates(searchButtonContainer, searchButton);
             return true;
         } else {
             // We disable both search and voice search when there is no global search provider
-            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
@@ -3126,7 +3206,6 @@ public final class Launcher extends Activity
     }
 
     private boolean updateVoiceSearchIcon(boolean searchVisible) {
-        final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
@@ -3160,7 +3239,6 @@ public final class Launcher extends Activity
                         R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
                         TOOLBAR_ICON_METADATA_NAME);
             }
-            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
             if (voiceButtonProxy != null) {
@@ -3169,7 +3247,6 @@ public final class Launcher extends Activity
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
-            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
             if (voiceButtonProxy != null) {
@@ -3223,10 +3300,15 @@ public final class Launcher extends Activity
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        boolean result = super.dispatchPopulateAccessibilityEvent(event);
+        final boolean result = super.dispatchPopulateAccessibilityEvent(event);
         final List<CharSequence> text = event.getText();
         text.clear();
-        text.add(getString(R.string.home));
+        // Populate event with a fake title based on the current state.
+        if (mState == State.APPS_CUSTOMIZE) {
+            text.add(getString(R.string.all_apps_button_label));
+        } else {
+            text.add(getString(R.string.all_apps_home_button_label));
+        }
         return result;
     }
 
@@ -3494,7 +3576,7 @@ public final class Launcher extends Activity
      * @param immediate whether to run the animation or show the results immediately
      */
     private void runNewAppsAnimation(boolean immediate) {
-        AnimatorSet anim = new AnimatorSet();
+        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         Collection<Animator> bounceAnims = new ArrayList<Animator>();
 
         // Order these new views spatially so that they animate in order
@@ -3518,7 +3600,7 @@ public final class Launcher extends Activity
         } else {
             for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
                 View v = mNewShortcutAnimateViews.get(i);
-                ValueAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(v,
+                ValueAnimator bounceAnim = LauncherAnimUtils.ofPropertyValuesHolder(v,
                         PropertyValuesHolder.ofFloat("alpha", 1f),
                         PropertyValuesHolder.ofFloat("scaleX", 1f),
                         PropertyValuesHolder.ofFloat("scaleY", 1f));
@@ -3531,7 +3613,9 @@ public final class Launcher extends Activity
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+                    if (mWorkspace != null) {
+                        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+                    }
                 }
             });
             anim.start();
@@ -3554,7 +3638,9 @@ public final class Launcher extends Activity
     public void bindSearchablesChanged() {
         boolean searchVisible = updateGlobalSearchIcon();
         boolean voiceVisible = updateVoiceSearchIcon(searchVisible);
-        mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
+        }
     }
 
     /**
@@ -3623,17 +3709,17 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent) {
+    public void bindAppsRemoved(ArrayList<String> packageNames, boolean permanent) {
         if (permanent) {
-            mWorkspace.removeItems(apps);
+            mWorkspace.removeItems(packageNames);
         }
 
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.removeApps(apps);
+            mAppsCustomizeContent.removeApps(packageNames);
         }
 
         // Notify the drag controller
-        mDragController.onAppsRemoved(apps, this);
+        mDragController.onAppsRemoved(packageNames, this);
     }
 
     /**
@@ -3641,7 +3727,7 @@ public final class Launcher extends Activity
      */
     public void bindPackagesUpdated() {
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated(false);
+            mAppsCustomizeContent.onPackagesUpdated();
         }
     }
 
@@ -3678,8 +3764,7 @@ public final class Launcher extends Activity
     }
 
     public boolean isRotationEnabled() {
-        boolean forceEnableRotation = "true".equalsIgnoreCase(SystemProperties.get(
-                FORCE_ENABLE_ROTATION_PROPERTY, "false"));
+        boolean forceEnableRotation = doesFileExist(FORCE_ENABLE_ROTATION_PROPERTY);
         boolean enableRotation = forceEnableRotation ||
                 getResources().getBoolean(R.bool.allow_rotation) || mAutoRotate;
         return enableRotation;
@@ -3713,13 +3798,13 @@ public final class Launcher extends Activity
 
         return true;
     }
+
     private Cling initCling(int clingId, int[] positionData, boolean animate, int delay) {
-        Cling cling = (Cling) findViewById(clingId);
+        final Cling cling = (Cling) findViewById(clingId);
         if (cling != null) {
             cling.init(this, positionData);
             cling.setVisibility(View.VISIBLE);
             cling.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            cling.requestAccessibilityFocus();
             if (animate) {
                 cling.buildLayer();
                 cling.setAlpha(0f);
@@ -3732,13 +3817,23 @@ public final class Launcher extends Activity
             } else {
                 cling.setAlpha(1f);
             }
+            cling.setFocusableInTouchMode(true);
+            cling.post(new Runnable() {
+                public void run() {
+                    cling.setFocusable(true);
+                    cling.requestFocus();
+                }
+            });
+            mHideFromAccessibilityHelper.setImportantForAccessibilityToNo(
+                    mDragLayer, clingId == R.id.all_apps_cling);
         }
         return cling;
     }
+
     private void dismissCling(final Cling cling, final String flag, int duration) {
-        if (cling != null) {
+        if (cling != null && cling.getVisibility() == View.VISIBLE) {
             cling.dismiss();
-            ObjectAnimator anim = ObjectAnimator.ofFloat(cling, "alpha", 0f);
+            ObjectAnimator anim = LauncherAnimUtils.ofFloat(cling, "alpha", 0f);
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
@@ -3755,8 +3850,10 @@ public final class Launcher extends Activity
                 };
             });
             anim.start();
+            mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
         }
     }
+
     private void removeCling(int id) {
         final View cling = findViewById(id);
         if (cling != null) {
@@ -3767,6 +3864,7 @@ public final class Launcher extends Activity
                     parent.removeView(cling);
                 }
             });
+            mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
         }
     }
 
@@ -3786,6 +3884,20 @@ public final class Launcher extends Activity
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false) &&
                 !skipCustomClingIfNoAccounts() ) {
+            // If we're not using the default workspace layout, replace workspace cling
+            // with a custom workspace cling (usually specified in an overlay)
+            // For now, only do this on tablets
+            if (mSharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
+                    getResources().getBoolean(R.bool.config_useCustomClings)) {
+                // Use a custom cling
+                View cling = findViewById(R.id.workspace_cling);
+                ViewGroup clingParent = (ViewGroup) cling.getParent();
+                int clingIndex = clingParent.indexOfChild(cling);
+                clingParent.removeViewAt(clingIndex);
+                View customCling = mInflater.inflate(R.layout.custom_workspace_cling, clingParent, false);
+                clingParent.addView(customCling, clingIndex);
+                customCling.setId(R.id.workspace_cling);
+            }
             initCling(R.id.workspace_cling, null, false, 0);
         } else {
             removeCling(R.id.workspace_cling);
@@ -3883,6 +3995,17 @@ public final class Launcher extends Activity
         for (int i = 0; i < sDumpLogs.size(); i++) {
             writer.println("  " + sDumpLogs.get(i));
         }
+    }
+
+    public static void dumpDebugLogsToConsole() {
+        Log.d(TAG, "");
+        Log.d(TAG, "*********************");
+        Log.d(TAG, "Launcher debug logs: ");
+        for (int i = 0; i < sDumpLogs.size(); i++) {
+            Log.d(TAG, "  " + sDumpLogs.get(i));
+        }
+        Log.d(TAG, "*********************");
+        Log.d(TAG, "");
     }
 }
 

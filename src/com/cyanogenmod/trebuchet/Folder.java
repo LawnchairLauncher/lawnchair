@@ -58,8 +58,6 @@ import java.util.Comparator;
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
         View.OnFocusChangeListener {
-
-    @SuppressWarnings("unused")
     private static final String TAG = "Launcher.Folder";
 
     protected DragController mDragController;
@@ -110,6 +108,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private static String sDefaultFolderName;
     private static String sHintText;
     private ObjectAnimator mOpenCloseAnimator;
+
+    private boolean mDestroyed;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -429,7 +429,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
         final ObjectAnimator oa = mOpenCloseAnimator =
-            ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+            LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -487,7 +487,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.9f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
         final ObjectAnimator oa = mOpenCloseAnimator =
-                ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+                LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -813,10 +813,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 + mFolderNameHeight;
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
-        parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
+        float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
 
-        int centerX = mTempRect.centerX();
-        int centerY = mTempRect.centerY();
+        int centerX = (int) (mTempRect.left + mTempRect.width() * scale / 2);
+        int centerY = (int) (mTempRect.top + mTempRect.height() * scale / 2);
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 
@@ -953,34 +953,47 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void replaceFolderWithFinalItem() {
-        ItemInfo finalItem = null;
-
-        if (getItemCount() == 1) {
-            finalItem = mInfo.contents.get(0);
-        }
-
-        // Remove the folder completely
-        CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
-        cellLayout.removeView(mFolderIcon);
-        if (mFolderIcon instanceof DropTarget) {
-            mDragController.removeDropTarget((DropTarget) mFolderIcon);
-        }
-        mLauncher.removeFolder(mInfo);
-
-        if (finalItem != null) {
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                    mInfo.screen, mInfo.cellX, mInfo.cellY);
-        }
-        LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
-
         // Add the last remaining child to the workspace in place of the folder
-        if (finalItem != null) {
-            View child = mLauncher.createShortcut(R.layout.application, cellLayout,
-                    (ShortcutInfo) finalItem);
+        Runnable onCompleteRunnable = new Runnable() {
+            @Override
+            public void run() {
+                CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
 
-            mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen, mInfo.cellX,
-                    mInfo.cellY, mInfo.spanX, mInfo.spanY);
+               View child = null;
+                // Move the item from the folder to the workspace, in the position of the folder
+                if (getItemCount() == 1) {
+                    ShortcutInfo finalItem = mInfo.contents.get(0);
+                    child = mLauncher.createShortcut(R.layout.application, cellLayout,
+                            finalItem);
+                    LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
+                            mInfo.screen, mInfo.cellX, mInfo.cellY);
+                }
+                if (getItemCount() <= 1) {
+                    // Remove the folder
+                    LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
+                    cellLayout.removeView(mFolderIcon);
+                    if (mFolderIcon instanceof DropTarget) {
+                        mDragController.removeDropTarget((DropTarget) mFolderIcon);
+                    }
+                    mLauncher.removeFolder(mInfo);
+                }
+                // We add the child after removing the folder to prevent both from existing at
+                // the same time in the CellLayout.
+                if (child != null) {
+                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen,
+                            mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
+                }
+            }
+        };
+        View finalChild = getItemAt(0);
+        if (finalChild != null) {
+            mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
         }
+        mDestroyed = true;
+    }
+
+    boolean isDestroyed() {
+        return mDestroyed;
     }
 
     // This method keeps track of the last item in the folder for the purposes

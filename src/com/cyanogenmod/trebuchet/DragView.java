@@ -75,8 +75,12 @@ public class DragView extends View {
         final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
         final float scale = (width + scaleDps) / width;
 
+        // Set the initial scale to avoid any jumps
+        setScaleX(initialScale);
+        setScaleY(initialScale);
+
         // Animate the view into the correct position
-        mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mAnim = LauncherAnimUtils.ofFloat(0.0f, 1.0f);
         mAnim.setDuration(150);
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
@@ -199,7 +203,7 @@ public class DragView extends View {
     }
 
     public void crossFade(int duration) {
-        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+        ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(new DecelerateInterpolator(1.5f));
         va.addUpdateListener(new AnimatorUpdateListener() {
@@ -244,9 +248,6 @@ public class DragView extends View {
     public void show(int touchX, int touchY) {
         mDragLayer.addView(this);
 
-        // Enable hw-layers on this view
-        setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
         // Start the pick-up animation
         DragLayer.LayoutParams lp = new DragLayer.LayoutParams(0, 0);
         lp.width = mBitmap.getWidth();
@@ -255,7 +256,12 @@ public class DragView extends View {
         setLayoutParams(lp);
         setTranslationX(touchX - mRegistrationX);
         setTranslationY(touchY - mRegistrationY);
-        mAnim.start();
+        // Post the animation to skip other expensive work happening on the first frame
+        post(new Runnable() {
+                public void run() {
+                    mAnim.start();
+                }
+            });
     }
 
     public void cancelAnimation() {
@@ -282,9 +288,6 @@ public class DragView extends View {
 
     void remove() {
         if (getParent() != null) {
-            // Disable hw-layers on this view
-            setLayerType(View.LAYER_TYPE_NONE, null);
-
             mDragLayer.removeView(DragView.this);
         }
     }

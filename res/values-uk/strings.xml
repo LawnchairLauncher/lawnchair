@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Віджети"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Фонові мал."</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"На головних екранах більше немає місця."</string>
-    <string name="out_of_space" msgid="8365249326091984698">"Немає більше місця на гол. екрані."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"На цьому екрані немає місця."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"На гарячій панелі більше немає місця."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Цей віджет завеликий для Hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" створено."</string>
@@ -94,7 +94,7 @@
     <string name="workspace_cling_title" msgid="738396473989890567">"Влаштовуйтеся зручніше"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Тут можна розмістити вибрані програми."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Щоб побачити всі свої програми, торкніться кола."</string>
-    <string name="all_apps_cling_title" msgid="2559734712581447107">"Виберіть декілька програм"</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"Виберіть програми"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Щоб додати програму на головний екран, торкніться й утримуйте її."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Організовуйте програми за допомогою папок"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Щоб перемістити програму, торкніться й утримуйте її."</string>

@@ -47,7 +47,7 @@
 
     <!-- Voice search icon -->
     <com.cyanogenmod.trebuchet.HolographicLinearLayout
-        style="@style/SearchButton.Voice"
+        style="@style/SearchButton"
         launcher:sourceImageViewId="@+id/voice_button"
         android:id="@+id/voice_button_container"
         android:layout_width="@dimen/search_bar_height"

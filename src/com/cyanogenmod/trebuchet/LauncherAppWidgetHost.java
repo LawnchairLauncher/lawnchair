@@ -27,8 +27,12 @@ import android.content.Context;
  * always pick up and move widgets.
  */
 public class LauncherAppWidgetHost extends AppWidgetHost {
-    public LauncherAppWidgetHost(Context context, int hostId) {
-        super(context, hostId);
+
+    Launcher mLauncher;
+
+    public LauncherAppWidgetHost(Launcher launcher, int hostId) {
+        super(launcher, hostId);
+        mLauncher = launcher;
     }
 
     @Override
@@ -41,5 +45,11 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     public void stopListening() {
         super.stopListening();
         clearViews();
+    }
+
+    protected void onProvidersChanged() {
+        // Once we get the message that widget packages are updated, we need to rebind items
+        // in AppsCustomize accordingly.
+        mLauncher.bindPackagesUpdated();
     }
 }

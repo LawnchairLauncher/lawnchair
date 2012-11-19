@@ -34,11 +34,6 @@ class ApplicationInfo extends ItemInfo {
     private static final String TAG = "Launcher2.ApplicationInfo";
 
     /**
-     * The application name.
-     */
-    CharSequence title;
-
-    /**
      * The intent used to start the application.
      */
     Intent intent;

@@ -44,10 +44,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mWallpaperManager = WallpaperManager.getInstance(context);
     }
 
-    public void enableHardwareLayers() {
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-    }
-
     public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap ) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;

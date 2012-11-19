@@ -215,6 +215,7 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
         }
         mViewPropertyAnimator.setListener(this);
         mViewPropertyAnimator.start();
+        LauncherAnimUtils.cancelOnDestroyActivity(this);
     }
 
     public LauncherViewPropertyAnimator translationX(float value) {

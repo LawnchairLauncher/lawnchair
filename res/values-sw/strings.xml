@@ -67,7 +67,7 @@
     <string name="menu_search" msgid="4826514464423239041">"Tafuta"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Arifa"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Mipangilio ya mfumo"</string>
-    <string name="menu_help" msgid="4901160661634590633">"Msaada"</string>
+    <string name="menu_help" msgid="4901160661634590633">"Usaidizi"</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Sanidua programu"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Maelezo ya programu"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"Programu 1 imechaguliwa"</string>
@@ -94,7 +94,7 @@
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Ukurasa wa programu %1$d ya %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Ukurasa wa wijeti %1$d ya %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Jisikie huru"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"Unaweza kuweka prog zako uzipendazo hapa."</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"Unaweza kuweka programu zako uzipendazo hapa."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Kutazama programu zako zote, gusa duara."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Chagua programu kadhaa"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Ili kuongeza programu kwa skrini yako ya Nyumbani, iguse na uishikilie."</string>

@@ -42,7 +42,7 @@
     <string name="group_wallpapers" msgid="1568191644272224858">"Hintergründe"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Auf Ihrem Startbildschirm ist kein Platz mehr vorhanden."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>
-    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Auf der App-Leiste ist kein Platz mehr vorhanden."</string>
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Kein Platz mehr auf der App-Leiste"</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Dieses Widget ist zu groß für die App-Leiste."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\"-Verknüpfung wurde erstellt."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\"-Verknüpfung wurde entfernt."</string>

@@ -123,27 +123,19 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/qsb_bar_height</item>
         <item name="android:layout_gravity">top|center_horizontal</item>
+        <item name="android:paddingLeft">@dimen/qsb_padding_left</item>
+        <item name="android:paddingRight">@dimen/qsb_padding_right</item>
     </style>
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
     </style>
     <style name="SearchButton">
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
-    </style>
-    <style name="SearchButton.Voice">
-        <item name="android:paddingLeft">18dp</item>
-        <item name="android:paddingRight">18dp</item>
-    </style>
-    <style name="SearchButtonDivider">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">center_vertical</item>
     </style>
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">0dp</item>

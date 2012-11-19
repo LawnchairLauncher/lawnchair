@@ -58,11 +58,14 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private int mBottomTouchRegionAdjustment = 0;
 
     int[] mDirectionVector = new int[2];
+    int[] mLastDirectionVector = new int[2];
 
     final int SNAP_DURATION = 150;
     final int BACKGROUND_PADDING = 24;
     final float DIMMED_HANDLE_ALPHA = 0f;
     final float RESIZE_THRESHOLD = 0.66f;
+
+    private static Rect mTmpRect = new Rect();
 
     public static final int LEFT = 0;
     public static final int TOP = 1;
@@ -301,16 +304,30 @@ public class AppWidgetResizeFrame extends FrameLayout {
         if (mLeftBorderActive || mRightBorderActive) {
             spanX += hSpanInc;
             cellX += cellXInc;
-            mDirectionVector[0] = mLeftBorderActive ? -1 : 1;
+            if (hSpanDelta != 0) {
+                mDirectionVector[0] = mLeftBorderActive ? -1 : 1;
+            }
         }
 
         if (mTopBorderActive || mBottomBorderActive) {
             spanY += vSpanInc;
             cellY += cellYInc;
-            mDirectionVector[1] = mTopBorderActive ? -1 : 1;
+            if (vSpanDelta != 0) {
+                mDirectionVector[1] = mTopBorderActive ? -1 : 1;
+            }
         }
 
         if (!onDismiss && vSpanDelta == 0 && hSpanDelta == 0) return;
+
+        // We always want the final commit to match the feedback, so we make sure to use the
+        // last used direction vector when committing the resize / reorder.
+        if (onDismiss) {
+            mDirectionVector[0] = mLastDirectionVector[0];
+            mDirectionVector[1] = mLastDirectionVector[1];
+        } else {
+            mLastDirectionVector[0] = mDirectionVector[0];
+            mLastDirectionVector[1] = mDirectionVector[1];
+        }
 
         if (mCellLayout.createAreaForResize(cellX, cellY, spanX, spanY, mWidgetView,
                 mDirectionVector, onDismiss)) {
@@ -329,6 +346,16 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
             int spanX, int spanY) {
+
+        getWidgetSizeRanges(launcher, spanX, spanY, mTmpRect);
+        widgetView.updateAppWidgetSize(null, mTmpRect.left, mTmpRect.top,
+                mTmpRect.right, mTmpRect.bottom);
+    }
+
+    static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
+        if (rect == null) {
+            rect = new Rect();
+        }
         Rect landMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.LANDSCAPE);
         Rect portMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.PORTRAIT);
         final float density = launcher.getResources().getDisplayMetrics().density;
@@ -348,8 +375,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         heightGap = portMetrics.bottom;
         int portWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
         int portHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
-
-        widgetView.updateAppWidgetSize(null, portWidth, landHeight, landWidth, portHeight);
+        rect.set(portWidth, landHeight, landWidth, portHeight);
+        return rect;
     }
 
     /**
@@ -423,17 +450,17 @@ public class AppWidgetResizeFrame extends FrameLayout {
                     newHeight);
             PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", lp.x, newX);
             PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", lp.y, newY);
-            ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
-            ObjectAnimator leftOa = ObjectAnimator.ofFloat(mLeftHandle, "alpha", 1.0f);
-            ObjectAnimator rightOa = ObjectAnimator.ofFloat(mRightHandle, "alpha", 1.0f);
-            ObjectAnimator topOa = ObjectAnimator.ofFloat(mTopHandle, "alpha", 1.0f);
-            ObjectAnimator bottomOa = ObjectAnimator.ofFloat(mBottomHandle, "alpha", 1.0f);
+            ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(lp, width, height, x, y);
+            ObjectAnimator leftOa = LauncherAnimUtils.ofFloat(mLeftHandle, "alpha", 1.0f);
+            ObjectAnimator rightOa = LauncherAnimUtils.ofFloat(mRightHandle, "alpha", 1.0f);
+            ObjectAnimator topOa = LauncherAnimUtils.ofFloat(mTopHandle, "alpha", 1.0f);
+            ObjectAnimator bottomOa = LauncherAnimUtils.ofFloat(mBottomHandle, "alpha", 1.0f);
             oa.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     requestLayout();
                 }
             });
-            AnimatorSet set = new AnimatorSet();
+            AnimatorSet set = LauncherAnimUtils.createAnimatorSet();
             if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
                 set.playTogether(oa, topOa, bottomOa);
             } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {

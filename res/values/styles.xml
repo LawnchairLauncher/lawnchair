@@ -18,8 +18,7 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperPicker">
-        <item name="android:screenOrientation">nosensor</item>
+    <style name="Theme.WallpaperPicker" parent="@android:style/Theme.Holo.NoActionBar">
     </style>
 
     <style name="Theme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
@@ -47,6 +46,8 @@
         <item name="android:shadowRadius">2.0</item>
     </style>
     <style name="ClingText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:shadowColor">#000000</item>
@@ -123,16 +124,12 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
     </style>
     <style name="SearchButton">
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
-    </style>
-    <style name="SearchButtonDivider">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">center_vertical</item>
     </style>
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">0dp</item>

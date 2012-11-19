@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,8 +57,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private boolean mResetAfterTransition;
     private Runnable mRelayoutAndMakeVisible;
 
-    private Launcher mLauncher;
-
     // Preferences
     private boolean mJoinWidgetsApps;
     private boolean mFadeScrollingIndicator;
@@ -74,15 +71,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 }
             };
 
-        mLauncher = (Launcher) context;
-
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
         mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator(context);
-    }
-
-    public void setup(Launcher launcher) {
-        mLauncher = launcher;
     }
 
     /**
@@ -104,8 +95,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     void selectWidgetsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
         mAppsCustomizePane.setCurrentPageToWidgets();
-
-        setCurrentTabByTag(WIDGETS_TAB_TAG);
     }
 
     /**
@@ -144,7 +133,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView.setContentDescription(label);
         tabView.setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View v) {
-                    mLauncher.onLongClickAppsTab(v);
                     return true;
                 }
         });
@@ -283,39 +271,38 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     p.setMargins((int) child.getLeft(), (int) child.getTop(), 0, 0);
                     mAnimationBuffer.addView(child, p);
 
-                    // Toggle the new content
-                    onTabChangedStart();
-                    onTabChangedEnd(type);
+                // Toggle the new content
+                onTabChangedStart();
+                onTabChangedEnd(type);
 
-                    // Animate the transition
-                    ObjectAnimator outAnim = ObjectAnimator.ofFloat(mAnimationBuffer, "alpha", 0f);
-                    outAnim.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                            mAnimationBuffer.setVisibility(View.GONE);
-                            mAnimationBuffer.removeAllViews();
-                            }
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-                            mAnimationBuffer.setVisibility(View.GONE);
-                            mAnimationBuffer.removeAllViews();
-                            }
-                            });
-                    ObjectAnimator inAnim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
-                    inAnim.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                            reloadCurrentPage();
-                            }
-                            });
-                    AnimatorSet animSet = new AnimatorSet();
-                    animSet.playTogether(outAnim, inAnim);
-                    animSet.setDuration(duration);
-                    animSet.start();
-                }}
-            });
-
-        }
+                // Animate the transition
+                ObjectAnimator outAnim = LauncherAnimUtils.ofFloat(mAnimationBuffer, "alpha", 0f);
+                outAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mAnimationBuffer.setVisibility(View.GONE);
+                        mAnimationBuffer.removeAllViews();
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        mAnimationBuffer.setVisibility(View.GONE);
+                        mAnimationBuffer.removeAllViews();
+                    }
+                });
+                ObjectAnimator inAnim = LauncherAnimUtils.ofFloat(mAppsCustomizePane, "alpha", 1f);
+                inAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        reloadCurrentPage();
+                    }
+                });
+                AnimatorSet animSet = LauncherAnimUtils.createAnimatorSet();
+                animSet.playTogether(outAnim, inAnim);
+                animSet.setDuration(duration);
+                animSet.start();
+            }}
+        });
+	}
     }
 
     public void setCurrentTabFromContent(AppsCustomizePagedView.ContentType type) {
@@ -380,11 +367,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // force building the layer, so you don't get a blip early in an animation
             // when the layer is created layer
             buildLayer();
-
-            // Let the GC system know that now is a good time to do any garbage
-            // collection; makes it less likely we'll get a GC during the all apps
-            // to workspace animation
-            System.gc();
         }
     }
 

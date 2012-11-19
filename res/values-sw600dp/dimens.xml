@@ -46,6 +46,9 @@
     <dimen name="folder_preview_size">68dp</dimen>
     <dimen name="folder_cell_width">86dp</dimen>
     <dimen name="folder_cell_height">90dp</dimen>
+    <dimen name="folder_width_gap">3dp</dimen>
+    <dimen name="folder_height_gap">3dp</dimen>
+    <dimen name="folder_padding">6dp</dimen>
 
     <dimen name="cell_layout_left_padding_port">12dp</dimen>
     <dimen name="cell_layout_right_padding_port">12dp</dimen>

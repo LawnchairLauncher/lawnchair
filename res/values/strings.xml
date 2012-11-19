@@ -261,6 +261,8 @@ s -->
     <string name="folder_cling_create_folder">To make a new folder on your Home screen, stack one app on top of another.</string>
     <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
     <string name="cling_dismiss">OK</string>
+    <!-- Error message on dummy custom cling layout [DO NOT TRANSLATE] -->
+    <string name="dummy_custom_cling_error_message">Error: custom workspace layout passed in but custom cling was not overwritten</string>
     <add-resource type="string" name="default_folder_name" />
 
     <!-- Folder accessibility -->

@@ -31,13 +31,13 @@
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal"
+        android:protectionLevel="dangerous"
         android:label="@string/permlab_install_shortcut"
         android:description="@string/permdesc_install_shortcut" />
     <permission
         android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal"
+        android:protectionLevel="dangerous"
         android:label="@string/permlab_uninstall_shortcut"
         android:description="@string/permdesc_uninstall_shortcut"/>
     <permission
@@ -66,8 +66,9 @@
         android:name="com.cyanogenmod.trebuchet.LauncherApplication"
         android:label="@string/application_name"
         android:icon="@drawable/ic_launcher_home"
-        android:hardwareAccelerated="@bool/config_hardwareAccelerated"
-        android:largeHeap="@bool/config_largeHeap">
+        android:hardwareAccelerated="true"
+        android:largeHeap="@bool/config_largeHeap"
+        android:supportsRtl="true">
         <activity
             android:name="com.cyanogenmod.trebuchet.Launcher"
             android:launchMode="singleTask"
@@ -85,7 +86,7 @@
 
         <activity
             android:name="com.cyanogenmod.trebuchet.WallpaperChooser"
-            style="@style/Theme.WallpaperPicker"
+            android:theme="@style/Theme.WallpaperPicker"
             android:label="@string/pick_wallpaper"
             android:icon="@drawable/ic_launcher_wallpaper"
             android:finishOnCloseSystemDialogs="true"
@@ -96,16 +97,6 @@
             </intent-filter>
             <meta-data android:name="android.wallpaper.preview"
                 android:resource="@xml/wallpaper_picker_preview" />
-        </activity>
-
-        <activity android:name="com.cyanogenmod.trebuchet.RocketLauncher"
-            android:label="@string/dream_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.DREAM" />
-            </intent-filter>
         </activity>
 
         <!-- Intent received used to prepopulate the default workspace. -->
@@ -142,11 +133,21 @@
             </intent-filter>
         </receiver>
 
+        <!-- New user initialization; set up initial wallpaper -->
+        <receiver
+            android:name="com.android.launcher2.UserInitializeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_INITIALIZE" />
+            </intent-filter>
+        </receiver>
+        
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="com.cyanogenmod.trebuchet.LauncherProvider"
             android:authorities="com.cyanogenmod.trebuchet.settings"
             android:writePermission="com.android.launcher.permission.WRITE_SETTINGS"
+            android:exported="true"
             android:readPermission="com.android.launcher.permission.READ_SETTINGS" />
 
         <meta-data android:name="android.nfc.disable_beam_default"

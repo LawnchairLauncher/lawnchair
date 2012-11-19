@@ -31,11 +31,6 @@ class FolderInfo extends ItemInfo {
     boolean opened;
 
     /**
-     * The folder name.
-     */
-    CharSequence title;
-
-    /**
      * The apps and shortcuts
      */
     ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();

@@ -30,11 +30,6 @@ import android.util.Log;
 class ShortcutInfo extends ItemInfo {
 
     /**
-     * The application name.
-     */
-    CharSequence title;
-
-    /**
      * The intent used to start the application.
      */
     Intent intent;
@@ -158,7 +153,7 @@ class ShortcutInfo extends ItemInfo {
         return "ShortcutInfo(title=" + title.toString() + "intent=" + intent + "id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container + " screen=" + screen
                 + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX + " spanY=" + spanY
-                + " isGesture=" + isGesture + " dropPos=" + dropPos + ")";
+                + " dropPos=" + dropPos + ")";
     }
 
     public static void dumpShortcutInfoList(String tag, String label,

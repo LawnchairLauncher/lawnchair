@@ -16,24 +16,31 @@
 
 <resources>
     <dimen name="app_icon_size">72dp</dimen>
+    <dimen name="app_icon_padding_top">0dp</dimen>
     <dimen name="reveal_radius">72dp</dimen>
+
+<!-- Hotseat -->
+    <dimen name="button_bar_height">82dp</dimen>
+    <dimen name="button_bar_height_top_padding">12dp</dimen>
+    <dimen name="button_bar_height_bottom_padding">12dp</dimen>
+    <dimen name="button_bar_width_left_padding">12dp</dimen>
+    <dimen name="button_bar_width_right_padding">12dp</dimen>
+    <dimen name="button_bar_height_plus_padding">82dp</dimen>
+    <dimen name="hotseat_width_gap">58dp</dimen>
+
 <!-- QSB -->
-    <dimen name="toolbar_button_vertical_padding">12dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
+    <dimen name="toolbar_button_vertical_padding">8dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">8dip</dimen>
 
 <!-- Workspace -->
-    <dimen name="qsb_bar_height">56dp</dimen>
-    <dimen name="qsb_bar_height_inset">37dp</dimen>
-    <dimen name="qsb_padding_left">0dp</dimen>
-    <dimen name="qsb_padding_right">0dp</dimen>
-    <dimen name="search_bar_height">40dp</dimen>
-    <!-- This should be @dimen/qsb_bar_height - @dimen/workspace_top_padding
-         to fix the extra space given to draw portals -->
-    <dimen name="workspace_content_large_only_top_margin">36dp</dimen>
-
-    <dimen name="folder_cell_width">96dp</dimen>
-    <dimen name="folder_cell_height">96dp</dimen>
-    <dimen name="folder_preview_size">75dp</dimen>
+    <dimen name="qsb_bar_height">60dp</dimen>
+    <dimen name="qsb_bar_height_inset">60dp</dimen>
+    <dimen name="qsb_padding_left">177dp</dimen>
+    <dimen name="qsb_padding_right">177dp</dimen>
+    <!-- We offset the proxy to overlap with the voice icon -->
+    <dimen name="qsb_voice_proxy_padding_right">230dp</dimen>
+    <!-- 44dp high for the optical bounds -->
+    <dimen name="search_bar_height">52dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">96dp</dimen>
@@ -55,32 +62,49 @@
     <dimen name="dragViewOffsetY">0dp</dimen>
 
 <!-- CellLayout padding land / port-->
-    <dimen name="cell_layout_left_padding_port">15dp</dimen>
-    <dimen name="cell_layout_left_padding_land">24dp</dimen>
-    <dimen name="cell_layout_right_padding_port">15dp</dimen>
-    <dimen name="cell_layout_right_padding_land">24dp</dimen>
-    <dimen name="cell_layout_top_padding_port">25dp</dimen>
+    <dimen name="cell_layout_left_padding_port">4dp</dimen>
+    <dimen name="cell_layout_left_padding_land">4dp</dimen>
+    <dimen name="cell_layout_right_padding_port">4dp</dimen>
+    <dimen name="cell_layout_right_padding_land">4dp</dimen>
+    <dimen name="cell_layout_top_padding_port">12dp</dimen>
     <dimen name="cell_layout_top_padding_land">12dp</dimen>
-    <dimen name="cell_layout_bottom_padding_port">25dp</dimen>
-    <dimen name="cell_layout_bottom_padding_land">12dp</dimen>
+    <dimen name="cell_layout_bottom_padding_port">8dp</dimen>
+    <dimen name="cell_layout_bottom_padding_land">8dp</dimen>
+
+<!-- Folders -->
+    <!-- The size of the image which sits behind the preview of the folder contents -->
+    <dimen name="folder_cell_width">96dp</dimen>
+    <dimen name="folder_cell_height">96dp</dimen>
+    <dimen name="folder_preview_size">70dp</dimen>
+    <dimen name="folder_width_gap">2dp</dimen>
+    <dimen name="folder_height_gap">2dp</dimen>
+    <dimen name="folder_padding">4dp</dimen>
 
 <!-- Workspace padding -->
     <dimen name="workspace_left_padding_port">0dp</dimen>
     <dimen name="workspace_left_padding_land">0dp</dimen>
     <dimen name="workspace_right_padding_port">0dp</dimen>
     <dimen name="workspace_right_padding_land">0dp</dimen>
-    <dimen name="workspace_top_padding_port">@dimen/workspace_content_large_only_top_margin</dimen>
-    <dimen name="workspace_top_padding_land">@dimen/workspace_content_large_only_top_margin</dimen>
-    <dimen name="workspace_bottom_padding_port">0dp</dimen>
-    <dimen name="workspace_bottom_padding_land">0dp</dimen>
+
+    <dimen name="workspace_top_padding_port">@dimen/qsb_bar_height_inset</dimen>
+    <dimen name="workspace_top_padding_land">@dimen/qsb_bar_height_inset</dimen>
+    <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height_plus_padding</dimen>
+    <dimen name="workspace_bottom_padding_land">@dimen/button_bar_height_plus_padding</dimen>
+
+    <!-- Divider width set to match the qsb width -->
+    <dimen name="workspace_divider_width">0dp</dimen>
+    <dimen name="workspace_divider_padding_left">177dp</dimen>
+    <dimen name="workspace_divider_padding_right">177dp</dimen>
+    <dimen name="workspace_divider_padding_top">0dp</dimen>
+    <dimen name="workspace_divider_padding_bottom">0dp</dimen>
 
 <!-- Workspace cell size -->
     <dimen name="workspace_cell_width_land">96dp</dimen>
     <dimen name="workspace_cell_width_port">96dp</dimen>
     <dimen name="workspace_cell_height_land">96dp</dimen>
     <dimen name="workspace_cell_height_port">96dp</dimen>
-    <dimen name="workspace_width_gap_land">32dp</dimen>
+    <dimen name="workspace_width_gap_land">50dp</dimen>
     <dimen name="workspace_width_gap_port">0dp</dimen>
-    <dimen name="workspace_height_gap_land">2dp</dimen>
-    <dimen name="workspace_height_gap_port">32dp</dimen>
+    <dimen name="workspace_height_gap_land">16dp</dimen>
+    <dimen name="workspace_height_gap_port">70dp</dimen>
 </resources>
