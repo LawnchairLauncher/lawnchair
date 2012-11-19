@@ -101,7 +101,6 @@ import com.android.launcher2.DropTarget.DragObject;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -148,8 +147,10 @@ public final class Launcher extends Activity
     static final int DEFAULT_SCREEN = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
-    static final String FORCE_ENABLE_ROTATION_PROPERTY = "debug.force_enable_rotation";
-    static final String DUMP_STATE_PROPERTY = "debug.dumpstate";
+    // To turn on these properties, type
+    // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
+    static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -319,6 +320,8 @@ public final class Launcher extends Activity
     private static ArrayList<PendingAddArguments> sPendingAddList
             = new ArrayList<PendingAddArguments>();
 
+    private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
+
     private static class PendingAddArguments {
         int requestCode;
         Intent intent;
@@ -328,18 +331,8 @@ public final class Launcher extends Activity
         int cellY;
     }
 
-
-    private boolean doesFileExist(String filename) {
-        FileInputStream fis = null;
-        try {
-            fis = openFileInput(filename);
-            fis.close();
-            return true;
-        } catch (java.io.FileNotFoundException e) {
-            return false;
-        } catch (java.io.IOException e) {
-            return true;
-        }
+    private static boolean isPropertyEnabled(String propertyName) {
+        return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
     @Override
@@ -1883,7 +1876,7 @@ public final class Launcher extends Activity
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (doesFileExist(DUMP_STATE_PROPERTY)) {
+                    if (isPropertyEnabled(DUMP_STATE_PROPERTY)) {
                         dumpState();
                         return true;
                     }
@@ -3682,8 +3675,7 @@ public final class Launcher extends Activity
     }
 
     public boolean isRotationEnabled() {
-        boolean forceEnableRotation = doesFileExist(FORCE_ENABLE_ROTATION_PROPERTY);
-        boolean enableRotation = forceEnableRotation ||
+        boolean enableRotation = sForceEnableRotation ||
                 getResources().getBoolean(R.bool.allow_rotation);
         return enableRotation;
     }
