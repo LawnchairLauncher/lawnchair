@@ -977,8 +977,8 @@ public class CellLayout extends ViewGroup {
 
         if (!LauncherApplication.isScreenLarge()){
             Resources res = getResources();
-            mCellWidth = (widthSpecSize - res.getDimensionPixelSize(R.dimen.cell_layout_left_padding_land) - res.getDimensionPixelSize(R.dimen.cell_layout_right_padding_land) ) / mCountX;
-            mCellHeight = (heightSpecSize - res.getDimensionPixelSize(R.dimen.cell_layout_top_padding_land) - res.getDimensionPixelSize(R.dimen.cell_layout_bottom_padding_land) ) / mCountY;
+            mCellWidth = widthSpecSize / mCountX;
+            mCellHeight = heightSpecSize / mCountY;
         }
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
