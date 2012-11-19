@@ -49,6 +49,9 @@
     <integer name="apps_customize_maxCellCountY">-1</integer>
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 
+    <!-- roughly a status bar (for determining how many rows of icons are in home) -->
+    <dimen name="status_bar_height">48dip</dimen>
+
     <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
     <dimen name="wallpaper_chooser_grid_width">196dp</dimen>
     <dimen name="wallpaper_chooser_grid_height">140dp</dimen>

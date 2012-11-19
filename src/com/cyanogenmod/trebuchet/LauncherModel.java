@@ -1469,7 +1469,7 @@ public class LauncherModel extends BroadcastReceiver {
                     Log.d(TAG, "workspace layout: ");
                     for (int y = 0; y < mCellCountY; y++) {
                         String line = "";
-                        for (int s = 0; s < Launcher.SCREEN_COUNT; s++) {
+                        for (int s = 0; s < Launcher.MAX_SCREEN_COUNT; s++) {
                             if (s > 0) {
                                 line += " | ";
                             }

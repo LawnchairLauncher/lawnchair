@@ -16,7 +16,7 @@
 
 <com.cyanogenmod.trebuchet.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
 
     android:id="@+id/drag_layer"
     android:background="@drawable/workspace_bg"
@@ -49,7 +49,6 @@
         android:paddingRight="@dimen/workspace_right_padding"
         android:paddingTop="@dimen/workspace_top_padding"
         android:paddingBottom="@dimen/workspace_bottom_padding"
-        launcher:defaultScreen="2"
         launcher:cellCountX="@integer/cell_count_x"
         launcher:cellCountY="@integer/cell_count_y"
         launcher:pageSpacing="@dimen/workspace_page_spacing"

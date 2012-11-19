@@ -1899,7 +1899,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mSortMode = sortMode;
 
         if (mSortMode == SortMode.Title) {
-            Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
+            Collections.sort(mApps, LauncherModel.getAppNameComparator());
         } else if (mSortMode == SortMode.InstallDate) {
             Collections.sort(mApps, LauncherModel.APP_INSTALL_TIME_COMPARATOR);
         }
@@ -1920,7 +1920,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
         if (mSortMode == SortMode.Title) {
-            Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
+            Collections.sort(mApps, LauncherModel.getAppNameComparator());
         } else if (mSortMode == SortMode.InstallDate) {
             Collections.sort(mApps, LauncherModel.APP_INSTALL_TIME_COMPARATOR);
         }
@@ -2122,7 +2122,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 count = mNumWidgetPages;
             }
 
-            return String.format(mContext.getString(stringId), page + 1, count);
+            return String.format(getContext().getString(stringId), page + 1, count);
         } else {
             switch (mContentType) {
             case Applications:
@@ -2132,7 +2132,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 stringId = R.string.apps_customize_widgets_scroll_format;
                 break;
             }
-            return String.format(mContext.getString(stringId), page + 1, getChildCount());
+            return String.format(getContext().getString(stringId), page + 1, getChildCount());
         }
     }
 }

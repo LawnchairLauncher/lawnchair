@@ -71,8 +71,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 }
             };
 
-        mLauncher = (Launcher) context;
-
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
         mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator(context);
@@ -135,7 +133,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView.setContentDescription(label);
         tabView.setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View v) {
-                    mLauncher.onLongClickAppsTab(v);
                     return true;
                 }
         });

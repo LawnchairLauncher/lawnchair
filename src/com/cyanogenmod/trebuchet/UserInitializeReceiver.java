@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.launcher2;
+package com.cyanogenmod.trebuchet;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.android.launcher.R;
+import com.cyanogenmod.trebuchet.R;
 
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
@@ -36,7 +36,7 @@ public class UserInitializeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final Resources resources = context.getResources();
         // Context.getPackageName() may return the "original" package name,
-        // com.android.launcher2; Resources needs the real package name,
+        // com.cyanogenmod.trebuchet; Resources needs the real package name,
         // com.android.launcher. So we ask Resources for what it thinks the
         // package name should be.
         final String packageName = resources.getResourcePackageName(R.array.wallpapers);
