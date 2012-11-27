@@ -479,10 +479,12 @@ public class Workspace extends SmoothPagedView
 
         if (!mShowSearchBar) {
             int paddingTop = 0;
+            int paddingLeft = 0;
             if (mLauncher.getCurrentOrientation() == Configuration.ORIENTATION_PORTRAIT) {
                 paddingTop = (int)res.getDimension(R.dimen.qsb_bar_hidden_inset);
+                paddingLeft = getPaddingRight();
             }
-            setPadding(0, paddingTop, getPaddingRight(), getPaddingBottom());
+            setPadding(paddingLeft, paddingTop, getPaddingRight(), getPaddingBottom());
         }
 
         if (!mShowScrollingIndicator) {
