@@ -86,6 +86,21 @@
             android:id="@+id/qsb_bar"
             layout="@layout/qsb_bar" />
 
+        <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
+             that it is still visible during the transition to AllApps and doesn't overlay on
+             top of that view. -->
+        <include layout="@layout/workspace_cling"
+            android:id="@+id/workspace_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <include layout="@layout/folder_cling"
+            android:id="@+id/folder_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
         <com.android.launcher2.DrawableStateProxyView
             android:id="@+id/voice_button_proxy"
             android:layout_width="@dimen/qsb_bar_height"
@@ -102,17 +117,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-
-        <include layout="@layout/workspace_cling"
-            android:id="@+id/workspace_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
-        <include layout="@layout/folder_cling"
-            android:id="@+id/folder_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
     </com.android.launcher2.DragLayer>
 </FrameLayout>
