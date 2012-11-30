@@ -83,6 +83,10 @@ public final class PreferencesProvider {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                     return preferences.getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
                 }
+                public static boolean getWallpaperHack(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_homescreen_scrolling_wallpaper_hack", true);
+                }
             }
             public static class Indicator {
                 public static boolean getShowScrollingIndicator(Context context) {
