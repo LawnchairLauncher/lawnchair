@@ -3739,7 +3739,9 @@ public final class Launcher extends Activity
     }
 
     private void dismissCling(final Cling cling, final String flag, int duration) {
-        if (cling != null && cling.getVisibility() == View.VISIBLE) {
+        // To catch cases where siblings of top-level views are made invisible, just check whether
+        // the cling is directly set to GONE before dismissing it.
+        if (cling != null && cling.getVisibility() != View.GONE) {
             ObjectAnimator anim = LauncherAnimUtils.ofFloat(cling, "alpha", 0f);
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
