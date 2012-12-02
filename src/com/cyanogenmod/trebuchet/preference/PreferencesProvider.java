@@ -85,7 +85,7 @@ public final class PreferencesProvider {
                 }
                 public static boolean getWallpaperHack(Context context) {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_scrolling_wallpaper_hack", true);
+                    return preferences.getBoolean("ui_homescreen_scrolling_wallpaper_hack", false);
                 }
             }
             public static class Indicator {

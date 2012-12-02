@@ -77,7 +77,7 @@
                 <CheckBoxPreference android:key="ui_homescreen_scrolling_wallpaper_hack"
                     android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_title"
                     android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_summary"
-                    android:defaultValue="true" />
+                    android:defaultValue="false" />
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/preferences_interface_homescreen_indicator_category">
                 <CheckBoxPreference android:key="ui_homescreen_indicator_enable"
