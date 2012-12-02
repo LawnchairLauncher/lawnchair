@@ -41,8 +41,6 @@ public class Hotseat extends FrameLayout {
     private int mCellCountY;
     private int mAllAppsButtonRank;
 
-    private int xrrrr;
-
     private boolean mTransposeLayoutWithOrientation;
     private boolean mIsLandscape;
 
@@ -95,7 +93,7 @@ public class Hotseat extends FrameLayout {
     CellLayout getLayout() {
         return mContent;
     }
-  
+
     private boolean hasVerticalHotseat() {
         return (mIsLandscape && mTransposeLayoutWithOrientation);
     }
