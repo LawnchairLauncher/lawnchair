@@ -110,8 +110,7 @@ public class Workspace extends SmoothPagedView
     private final WallpaperManager mWallpaperManager;
     private boolean mWallpaperHack;
     private Bitmap mWallpaperBitmap;
-    private float mWallpaperScrollX;
-    private float mWallpaperScrollY;
+    private float mWallpaperScroll;
     private int[] mWallpaperOffsets = new int[2];
     private Paint mPaint = new Paint();
     private IBinder mWindowToken;
@@ -177,6 +176,8 @@ public class Workspace extends SmoothPagedView
     boolean mIsDragOccuring = false;
     boolean mChildrenLayersEnabled = true;
 
+    private boolean mIsLandscape;
+
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
@@ -193,7 +194,7 @@ public class Workspace extends SmoothPagedView
     enum WallpaperVerticalOffset { TOP, MIDDLE, BOTTOM };
     int mWallpaperWidth;
     int mWallpaperHeight;
-    WallpaperOffsetInterpolator mWallpaperOffset;
+    WallpaperOffsetInterpolator mWallpaperInterpolator;
     boolean mUpdateWallpaperOffsetImmediately = false;
     private Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
@@ -502,7 +503,7 @@ public class Workspace extends SmoothPagedView
             disableScrollingIndicator();
         }
 
-        mWallpaperOffset = new WallpaperOffsetInterpolator();
+        mWallpaperInterpolator = new WallpaperOffsetInterpolator();
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
         display.getSize(mDisplaySize);
         if (mScrollWallpaper) {
@@ -906,6 +907,14 @@ public class Workspace extends SmoothPagedView
             mDelayedSnapToPageRunnable.run();
             mDelayedSnapToPageRunnable = null;
         }
+
+        // Update wallpaper offsets to match hack (for recent apps window)
+        if (mWallpaperHack) {
+            mLauncher.setWallpaperVisibility(true);
+            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
+            mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
+            mLauncher.setWallpaperVisibility(false);
+        }
     }
 
     @Override
@@ -1016,14 +1025,13 @@ public class Workspace extends SmoothPagedView
     private void syncWallpaperOffsetWithScroll() {
         final boolean enableWallpaperEffects = isHardwareAccelerated();
         if (enableWallpaperEffects) {
-            mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
+            mWallpaperInterpolator.setFinalX(wallpaperOffsetForCurrentScroll());
         }
     }
 
     private void centerWallpaperOffset() {
-        if (mWallpaperHack) {
-            mWallpaperScrollX = 0.5f;
-        } else if (mWindowToken != null) {
+        mWallpaperScroll = 0.5f;
+        if (!mWallpaperHack && mWindowToken != null) {
             mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
             mWallpaperManager.setWallpaperOffsets(mWindowToken, 0.5f, 0);
         }
@@ -1039,18 +1047,15 @@ public class Workspace extends SmoothPagedView
         if (mUpdateWallpaperOffsetImmediately) {
             updateNow = true;
             keepUpdating = false;
-            mWallpaperOffset.jumpToFinal();
+            mWallpaperInterpolator.jumpToFinal();
             mUpdateWallpaperOffsetImmediately = false;
         } else {
-            updateNow = keepUpdating = mWallpaperOffset.computeScrollOffset();
+            updateNow = keepUpdating = mWallpaperInterpolator.computeScrollOffset();
         }
         if (updateNow) {
-            if (mWallpaperHack) {
-                mWallpaperScrollX = mWallpaperOffset.getCurrX();
-                mWallpaperScrollY = mWallpaperOffset.getCurrY();
-            } else if (mWindowToken != null) {
-                mWallpaperManager.setWallpaperOffsets(mWindowToken,
-                        mWallpaperOffset.getCurrX(), mWallpaperOffset.getCurrY());
+            mWallpaperScroll = mWallpaperInterpolator.getCurrX();
+            if (!mWallpaperHack && mWindowToken != null) {
+                mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
             }
         }
         if (keepUpdating) {
@@ -1106,14 +1111,11 @@ public class Workspace extends SmoothPagedView
 
     class WallpaperOffsetInterpolator {
         float mFinalHorizontalWallpaperOffset = 0.0f;
-        float mFinalVerticalWallpaperOffset = 0.0f;
         float mHorizontalWallpaperOffset = 0.0f;
-        float mVerticalWallpaperOffset = 0.0f;
         long mLastWallpaperOffsetUpdateTime;
         boolean mIsMovingFast;
         boolean mOverrideHorizontalCatchupConstant;
         float mHorizontalCatchupConstant = 0.35f;
-        float mVerticalCatchupConstant = 0.35f;
 
         public WallpaperOffsetInterpolator() {
         }
@@ -1126,13 +1128,8 @@ public class Workspace extends SmoothPagedView
             mHorizontalCatchupConstant = f;
         }
 
-        public void setVerticalCatchupConstant(float f) {
-            mVerticalCatchupConstant = f;
-        }
-
         public boolean computeScrollOffset() {
-            if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0 &&
-                    Float.compare(mVerticalWallpaperOffset, mFinalVerticalWallpaperOffset) == 0) {
+            if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0) {
                 mIsMovingFast = false;
                 return false;
             }
@@ -1157,28 +1154,20 @@ public class Workspace extends SmoothPagedView
                 // slow
                 fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.27f : 0.5f;
             }
-            float fractionToCatchUpIn1MsVertical = mVerticalCatchupConstant;
 
             fractionToCatchUpIn1MsHorizontal /= 33f;
-            fractionToCatchUpIn1MsVertical /= 33f;
 
             final float UPDATE_THRESHOLD = 0.00001f;
             float hOffsetDelta = mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
-            float vOffsetDelta = mFinalVerticalWallpaperOffset - mVerticalWallpaperOffset;
-            boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD &&
-                Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
+            boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD;
 
             // Don't have any lag between workspace and wallpaper on non-large devices
             if (!LauncherApplication.isScreenLarge() || jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
-                mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
             } else {
-                float percentToCatchUpVertical =
-                    Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsVertical);
                 float percentToCatchUpHorizontal =
                     Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsHorizontal);
                 mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
-                mVerticalWallpaperOffset += percentToCatchUpVertical * vOffsetDelta;
             }
 
             mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
@@ -1193,25 +1182,12 @@ public class Workspace extends SmoothPagedView
             return mFinalHorizontalWallpaperOffset;
         }
 
-        public float getCurrY() {
-            return mVerticalWallpaperOffset;
-        }
-
-        public float getFinalY() {
-            return mFinalVerticalWallpaperOffset;
-        }
-
         public void setFinalX(float x) {
             mFinalHorizontalWallpaperOffset = Math.max(0f, Math.min(x, 1.0f));
         }
 
-        public void setFinalY(float y) {
-            mFinalVerticalWallpaperOffset = Math.max(0f, Math.min(y, 1.0f));
-        }
-
         public void jumpToFinal() {
             mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
-            mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
         }
     }
 
@@ -1449,13 +1425,17 @@ public class Workspace extends SmoothPagedView
                 // Wallpaper is smaller than screen
                 x += (width - wallpaperWidth) / 2;
             } else {
-                x -= mWallpaperScrollX * (wallpaperWidth - width) + mWallpaperOffsets[0];
+                x -= mWallpaperScroll * (wallpaperWidth - (width + mWallpaperOffsets[0])) + mWallpaperOffsets[0];
             }
-            if (height + mWallpaperOffsets[1] > wallpaperHeight) {
+            if (height + mWallpaperOffsets[0] > wallpaperHeight) {
                 // Wallpaper is smaller than screen
                 y += (height - wallpaperHeight) / 2;
             } else {
-                y -= mWallpaperScrollY * (wallpaperHeight - height) + mWallpaperOffsets[1];
+                if (!mIsLandscape) {
+                    y -= mWallpaperOffsets[1];
+                } else {
+                    y -= (wallpaperHeight - (height - mWallpaperOffsets[1])) / 2 - mWallpaperOffsets[1];
+                }
             }
 
             canvas.drawBitmap(mWallpaperBitmap, x, y, mPaint);
@@ -1905,7 +1885,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = false;
-        mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
+        mWallpaperInterpolator.setOverrideHorizontalCatchupConstant(false);
         updateChildrenLayersEnabled(false);
         // The code in getChangeStateAnimation to determine initialAlpha and finalAlpha will ensure
         // ensure that only the current page is visible during (and subsequently, after) the
@@ -3549,6 +3529,8 @@ public class Workspace extends SmoothPagedView
         if (!mScrollWallpaper) {
             centerWallpaperOffset();
         }
+
+        mIsLandscape = LauncherApplication.isScreenLandscape(mLauncher);
     }
 
     /**
