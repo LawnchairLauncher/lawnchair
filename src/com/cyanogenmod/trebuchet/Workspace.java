@@ -621,13 +621,11 @@ public class Workspace extends SmoothPagedView
             layout = mLauncher.getHotseat().getLayout();
             child.setOnKeyListener(null);
 
-            if (!mHideIconLabels) {
-                // Hide titles in the hotseat
-                if (child instanceof FolderIcon) {
-                    ((FolderIcon) child).setTextVisible(false);
-                } else if (child instanceof BubbleTextView) {
-                    ((BubbleTextView) child).setTextVisible(false);
-                }
+            // Hide titles in the hotseat
+            if (child instanceof FolderIcon) {
+                ((FolderIcon) child).setTextVisible(false);
+            } else if (child instanceof BubbleTextView) {
+                ((BubbleTextView) child).setTextVisible(false);
             }
 
             if (screen < 0) {
@@ -645,6 +643,12 @@ public class Workspace extends SmoothPagedView
                     ((FolderIcon) child).setTextVisible(true);
                 } else if (child instanceof BubbleTextView) {
                     ((BubbleTextView) child).setTextVisible(true);
+                }
+            } else {
+                if (child instanceof FolderIcon) {
+                    ((FolderIcon) child).setTextVisible(false);
+                } else if (child instanceof BubbleTextView) {
+                    ((BubbleTextView) child).setTextVisible(false);
                 }
             }
 
