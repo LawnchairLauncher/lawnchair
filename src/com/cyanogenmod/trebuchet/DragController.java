@@ -34,7 +34,6 @@ import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
 import com.cyanogenmod.trebuchet.R;
-import com.cyanogenmod.trebuchet.DropTarget.DragObject;
 
 import java.util.ArrayList;
 
@@ -441,7 +440,7 @@ public class DragController {
             case MotionEvent.ACTION_UP:
                 mLastTouchUpTime = System.currentTimeMillis();
                 if (mDragging) {
-                    PointF vec = isFlingingToDelete(mDragObject);
+                    PointF vec = isFlingingToDelete(mDragObject.dragSource);
                     if (vec != null) {
                         dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
                     } else {
@@ -583,7 +582,7 @@ public class DragController {
             mHandler.removeCallbacks(mScrollRunnable);
 
             if (mDragging) {
-                PointF vec = isFlingingToDelete(mDragObject);
+                PointF vec = isFlingingToDelete(mDragObject.dragSource);
                 if (vec != null) {
                     dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
                 } else {
@@ -606,10 +605,9 @@ public class DragController {
      *
      * @return the vector at which the item was flung, or null if no fling was detected.
      */
-    private PointF isFlingingToDelete(DragObject object) {
+    private PointF isFlingingToDelete(DragSource source) {
         if (mFlingToDeleteDropTarget == null) return null;
-        if (!object.dragSource.supportsFlingToDelete()) return null;
-        if (object.dragInfo instanceof AllAppsButtonInfo) return null;
+        if (!source.supportsFlingToDelete()) return null;
 
         ViewConfiguration config = ViewConfiguration.get(mLauncher);
         mVelocityTracker.computeCurrentVelocity(1000, config.getScaledMaximumFlingVelocity());

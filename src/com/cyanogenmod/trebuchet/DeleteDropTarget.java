@@ -131,9 +131,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private boolean isWorkspaceFolder(DragSource source, Object info) {
         return (source instanceof Workspace) && (info instanceof FolderInfo);
     }
-    private boolean isAllAppsButton(Object info) {
-        return (info instanceof AllAppsButtonInfo);
-    }
 
     private void setHoverColor() {
         setTextColor(mHoverColor);
@@ -150,10 +147,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
-        // If it's the AllApps button, from Hotseat, don't do anything.
-        if (isAllAppsButton(info)) {
-            return;
-        }
         boolean isUninstall = false;
 
         // If we are dragging an application from AppsCustomize, only show the uninstall control if we

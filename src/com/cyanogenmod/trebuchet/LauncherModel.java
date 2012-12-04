@@ -49,7 +49,6 @@ import android.util.Log;
 
 import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
-import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -1182,15 +1181,13 @@ public class LauncherModel extends BroadcastReceiver {
 
                 // We use the last index to refer to the hotseat and the screen as the rank, so
                 // test and update the occupied state accordingly
-                if (occupied[PreferencesProvider.Interface.Homescreen.getNumberHomescreens(mContext)]
-                        [item.screen][0] != null) {
+                if (occupied[Launcher.MAX_SCREEN_COUNT][item.screen][0] != null) {
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                         + " into position (" + item.screen + ":" + item.cellX + "," + item.cellY
                         + ") occupied by " + occupied[Launcher.MAX_SCREEN_COUNT][item.screen][0]);
                     return false;
                 } else {
-                    occupied[PreferencesProvider.Interface.Homescreen.getNumberHomescreens(mContext)]
-                            [item.screen][0] = item;
+                    occupied[Launcher.MAX_SCREEN_COUNT][item.screen][0] = item;
                     return true;
                 }
             } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
@@ -1247,10 +1244,8 @@ public class LauncherModel extends BroadcastReceiver {
                 // +1 for the hotseat (it can be larger than the workspace)
                 // Load workspace in reverse order to ensure that latest items are loaded first (and
                 // before any earlier duplicates)
-                int numberHotseatIcons = PreferencesProvider.Interface.Dock.getNumberHotseatIcons(mContext);
                 final ItemInfo occupied[][][] =
-                        new ItemInfo[PreferencesProvider.Interface.Homescreen.getNumberHomescreens(mContext) + 1]
-                                [Math.max(mCellCountX, numberHotseatIcons)][mCellCountY];
+                        new ItemInfo[Launcher.MAX_SCREEN_COUNT + 1][mCellCountX + 1][mCellCountY + 1];
 
                 try {
                     final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -1338,8 +1333,6 @@ public class LauncherModel extends BroadcastReceiver {
 
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, info)) {
-                                        id = c.getLong(idIndex);
-                                        itemsToRemove.add(id);
                                         break;
                                     }
 

@@ -27,8 +27,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.cyanogenmod.trebuchet.R;
-import com.cyanogenmod.trebuchet.preference.Preferences;
-import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 public class Hotseat extends FrameLayout {
     @SuppressWarnings("unused")
@@ -60,29 +58,14 @@ public class Hotseat extends FrameLayout {
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
-
-        int numberHotseatIcons = PreferencesProvider.Interface.Dock.getNumberHotseatIcons(context);
-        int defaultHotseatIcon = PreferencesProvider.Interface.Dock.getDefaultHotseatIcon(context,
-                context.getResources().getInteger(R.integer.hotseat_all_apps_index));
-        if (defaultHotseatIcon >= numberHotseatIcons) {
-            defaultHotseatIcon = numberHotseatIcons - 1;
-            PreferencesProvider.Interface.Dock.setDefaultHotseatIcon(context, defaultHotseatIcon);
-        }
-
-        mTransposeLayoutWithOrientation =
-                getResources().getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
-
+        Resources r = context.getResources();
+        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, -1);
+        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, -1);
+        mAllAppsButtonRank = r.getInteger(R.integer.hotseat_all_apps_index);
+        mTransposeLayoutWithOrientation = 
+                r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
-
-        if (mIsLandscape) {
-            mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, -1);
-            mCellCountY = numberHotseatIcons;
-        } else {
-            mCellCountX = numberHotseatIcons;
-            mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, -1);
-        }
-        mAllAppsButtonRank = defaultHotseatIcon;
     }
 
     public void setup(Launcher launcher) {
@@ -156,24 +139,10 @@ public class Hotseat extends FrameLayout {
             }
         });
 
-        allAppsButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mLauncher != null) {
-                    return mLauncher.onLongClick(v);
-                }
-                return false;
-            }
-        });
-
         // Note: We do this to ensure that the hotseat is always laid out in the orientation of
         // the hotseat in order regardless of which orientation they were added
         int x = getCellXFromOrder(mAllAppsButtonRank);
         int y = getCellYFromOrder(mAllAppsButtonRank);
-        AllAppsButtonInfo allAppsButtonInfo = new AllAppsButtonInfo();
-        allAppsButtonInfo.cellX = x;
-        allAppsButtonInfo.cellY = y;
-        allAppsButton.setTag(allAppsButtonInfo);
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x,y,1,1);
         lp.canReorder = false;
         mContent.addViewToCellLayout(allAppsButton, -1, 0, lp, true);

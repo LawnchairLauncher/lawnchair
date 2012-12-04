@@ -56,11 +56,6 @@ class LauncherSettings {
         static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
-         * The gesture is the All Apps button
-         */
-        static final int ITEM_TYPE_ALLAPPS = 5;
-
-        /**
          * The icon type.
          * <P>Type: INTEGER</P>
          */

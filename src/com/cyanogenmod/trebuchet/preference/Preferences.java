@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
-import com.cyanogenmod.trebuchet.LauncherApplication;
 import com.cyanogenmod.trebuchet.R;
 
 public class Preferences extends PreferenceActivity
@@ -36,9 +35,6 @@ public class Preferences extends PreferenceActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        if (LauncherApplication.isScreenLarge()) {
-            findPreference("ui_dock").setEnabled(false);
-        }
 
         mPrefs = getSharedPreferences(PreferencesProvider.PREFERENCES_KEY,
                 Context.MODE_PRIVATE);
