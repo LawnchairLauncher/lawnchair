@@ -909,7 +909,7 @@ public class Workspace extends SmoothPagedView
         }
 
         // Update wallpaper offsets to match hack (for recent apps window)
-        if (mWallpaperHack) {
+        if (mWallpaperHack && mWallpaperBitmap != null) {
             mLauncher.setWallpaperVisibility(true);
             mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
             mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
