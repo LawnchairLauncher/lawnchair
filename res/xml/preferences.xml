@@ -49,13 +49,13 @@
                 <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_screen_padding_vertical"
                     android:title="@string/preferences_interface_homescreen_general_screen_padding_vertical_title"
                     android:summary="@string/preferences_interface_homescreen_general_screen_padding_vertical_summary"
-                    android:defaultValue="0"
+                    android:defaultValue="5"
                     launcher:max="10"
                     launcher:min="0" />
                 <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_screen_padding_horizontal"
                     android:title="@string/preferences_interface_homescreen_general_screen_padding_horizontal_title"
                     android:summary="@string/preferences_interface_homescreen_general_screen_padding_horizontal_summary"
-                    android:defaultValue="0"
+                    android:defaultValue="5"
                     launcher:max="10"
                     launcher:min="0" />
                 <CheckBoxPreference android:key="ui_homescreen_general_search"

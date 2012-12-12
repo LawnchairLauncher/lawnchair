@@ -57,12 +57,12 @@ public final class PreferencesProvider {
             }
             public static int getScreenPaddingVertical(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return (int)((float) preferences.getInt("ui_homescreen_screen_padding_vertical", 0) * 3.0f *
+                return (int)((float) preferences.getInt("ui_homescreen_screen_padding_vertical", 3) * 3.0f *
                         LauncherApplication.getScreenDensity());
             }
             public static int getScreenPaddingHorizontal(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return (int)((float) preferences.getInt("ui_homescreen_screen_padding_horizontal", 0) * 3.0f *
+                return (int)((float) preferences.getInt("ui_homescreen_screen_padding_horizontal", 3) * 3.0f *
                         LauncherApplication.getScreenDensity());
             }
             public static boolean getShowSearchBar(Context context) {
