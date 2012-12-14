@@ -86,6 +86,10 @@ public final class PreferencesProvider {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                     return preferences.getBoolean("ui_homescreen_scrolling_wallpaper_hack", false);
                 }
+                public static boolean getShowOutlines(Context context, boolean def) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_homescreen_scrolling_show_outlines", def);
+                }
             }
             public static class Indicator {
                 public static boolean getShowScrollingIndicator(Context context) {

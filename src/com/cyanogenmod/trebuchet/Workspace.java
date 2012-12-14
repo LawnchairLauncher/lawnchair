@@ -285,6 +285,7 @@ public class Workspace extends SmoothPagedView
     private boolean mShowScrollingIndicator;
     private boolean mFadeScrollingIndicator;
     private boolean mShowDockDivider;
+    private boolean mShowOutlines;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -370,6 +371,8 @@ public class Workspace extends SmoothPagedView
         mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getShowScrollingIndicator(context);
         mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getFadeScrollingIndicator(context);
         mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(context);
+        mShowOutlines = PreferencesProvider.Interface.Homescreen.Scrolling.getShowOutlines(context,
+                res.getBoolean(R.bool.config_workspaceDefaultShowOutlines));
 
         initWorkspace();
         checkWallpaper();
@@ -857,10 +860,10 @@ public class Workspace extends SmoothPagedView
         }
 
         // Only show page outlines as we pan if we are on large screen
-        if (LauncherApplication.isScreenLarge()) {
+        if (mShowOutlines) {
             showOutlines();
-            mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
         }
+        mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
 
         // If we are not fading in adjacent screens, we still need to restore the alpha in case the
         // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
@@ -893,8 +896,8 @@ public class Workspace extends SmoothPagedView
                 mDragController.forceMoveEvent();
             }
         } else {
-            // If we are not mid-dragging, hide the page outlines if we are on a large screen
-            if (LauncherApplication.isScreenLarge()) {
+            // If we are not mid-dragging, hide the page outlines
+            if (mShowOutlines) {
                 hideOutlines();
             }
 
@@ -1210,7 +1213,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void showOutlines() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!mIsSwitchingState) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             mChildrenOutlineFadeInAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 1.0f);
@@ -1220,7 +1223,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void hideOutlines() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!mIsSwitchingState) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             mChildrenOutlineFadeOutAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 0.0f);

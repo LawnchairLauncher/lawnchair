@@ -42,6 +42,8 @@
     <bool name="config_useDropTargetDownTransition">true</bool>
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceFadeAdjacentScreens">false</bool>
+    <!-- Whether to show outlines on the screens when scrolling -->
+    <bool name="config_workspaceDefaultShowOutlines">false</bool>
 
     <!-- The transition duration for the background of the drop targets -->
     <integer name="config_dropTargetBgTransitionDuration">0</integer>

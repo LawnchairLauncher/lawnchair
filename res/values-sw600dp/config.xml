@@ -8,6 +8,10 @@
     <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
     <bool name="config_useCustomClings">true</bool>
 
+<!-- Workspace -->
+    <!-- Whether to show outlines on the screens when scrolling -->
+    <bool name="config_workspaceDefaultShowOutlines">true</bool>
+
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1000</integer>
 
