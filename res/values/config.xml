@@ -41,7 +41,7 @@
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">true</bool>
     <!-- Whether or not to fade the side pages -->
-    <bool name="config_workspaceFadeAdjacentScreens">false</bool>
+    <bool name="config_workspaceDefualtFadeInAdjacentScreens">false</bool>
     <!-- Whether to show outlines on the screens when scrolling -->
     <bool name="config_workspaceDefaultShowOutlines">false</bool>
 

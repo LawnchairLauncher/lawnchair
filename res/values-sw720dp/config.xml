@@ -21,7 +21,7 @@
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">true</bool>
     <!-- Whether or not to fade the side pages -->
-    <bool name="config_workspaceFadeAdjacentScreens">true</bool>
+    <bool name="config_workspaceDefualtFadeInAdjacentScreens">true</bool>
 
     <!-- Camera distance for the overscroll effect -->
     <integer name="config_cameraDistance">18000</integer>

@@ -315,7 +315,6 @@ public class Workspace extends SmoothPagedView
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
-        mWorkspaceFadeInAdjacentScreens = res.getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
@@ -373,6 +372,8 @@ public class Workspace extends SmoothPagedView
         mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(context);
         mShowOutlines = PreferencesProvider.Interface.Homescreen.Scrolling.getShowOutlines(context,
                 res.getBoolean(R.bool.config_workspaceDefaultShowOutlines));
+        mFadeInAdjacentScreens = PreferencesProvider.Interface.Homescreen.Scrolling.getFadeInAdjacentScreens(context,
+                res.getBoolean(R.bool.config_workspaceDefualtFadeInAdjacentScreens));
 
         initWorkspace();
         checkWallpaper();

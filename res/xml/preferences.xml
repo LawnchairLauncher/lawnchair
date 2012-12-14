@@ -78,6 +78,10 @@
                     android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_title"
                     android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_summary"
                     android:defaultValue="false" />
+                <CheckBoxPreference android:key="ui_homescreen_scrolling_fade_adjacent_screens"
+                    android:title="@string/preferences_interface_homescreen_scrolling_fade_adjacent_screens_title"
+                    android:summary="@string/preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary"
+                    android:defaultValue="@bool/config_workspaceDefualtFadeInAdjacentScreens" />
                 <CheckBoxPreference android:key="ui_homescreen_scrolling_show_outlines"
                     android:title="@string/preferences_interface_homescreen_scrolling_show_outlines_title"
                     android:summary="@string/preferences_interface_homescreen_scrolling_show_outlines_summary"
