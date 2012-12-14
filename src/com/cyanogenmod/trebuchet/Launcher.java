@@ -311,8 +311,6 @@ public final class Launcher extends Activity
     private boolean mHideIconLabels;
     private boolean mAutoRotate;
 
-    private boolean mWallpaperVisible;
-
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
@@ -2475,13 +2473,8 @@ public final class Launcher extends Activity
         }
     }
 
-    void setWallpaperVisibility(boolean visible) {
-        mWallpaperVisible = visible;
-        updateWallpaperVisibility(visible);
-    }
-
     void updateWallpaperVisibility(boolean visible) {
-        int wpflags = visible && mWallpaperVisible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
+        int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int curflags = getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
         if (wpflags != curflags) {
