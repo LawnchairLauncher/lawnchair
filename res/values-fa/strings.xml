@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="8424725141379931883">"راه انداز"</string>
     <string name="home" msgid="5921706419368316758">"صفحهٔ اصلی"</string>
     <string name="uid_name" msgid="3371120195364560632">"برنامه‌های Android Core"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
