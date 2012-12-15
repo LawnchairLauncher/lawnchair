@@ -99,7 +99,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected float mLastMotionXRemainder;
     protected float mLastMotionY;
     protected float mTotalMotionX;
-    private int mLastScreenCenter = -1;
+    private int mLastScreenScroll = -1;
     private int[] mChildOffsets;
     private int[] mChildRelativeOffsets;
     private int[] mChildOffsetsWithLayoutScale;
@@ -157,6 +157,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // If true, modify alpha of neighboring pages as user scrolls left/right
     protected boolean mFadeInAdjacentScreens = true;
+
+    // If true, mFadeInAdjacentScreens will be handled manually
+    protected boolean mHandleFadeInAdjacentScreens = false;
 
     // It true, use a different slop parameter (pagingTouchSlop = 2 * touchSlop) for deciding
     // to switch to a new page
@@ -655,17 +658,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    protected void screenScrolled(int screenCenter) {
+    protected void screenScrolled(int screenScroll) {
         if (isScrollingIndicatorEnabled()) {
             updateScrollingIndicator();
         }
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
 
-        if (mFadeInAdjacentScreens && !isInOverscroll) {
+        if (mFadeInAdjacentScreens && !isInOverscroll && !mHandleFadeInAdjacentScreens) {
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
                 if (child != null) {
-                    float scrollProgress = getScrollProgress(screenCenter, child, i);
+                    float scrollProgress = getScrollProgress(screenScroll, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.setAlpha(alpha);
                 }
@@ -780,22 +783,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected boolean shouldDrawChild(View child) {
-        return child.getAlpha() > 0;
+        return child.getAlpha() > 0 && child.getVisibility() == VISIBLE;
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        int halfScreenSize = getMeasuredWidth() / 2;
-        // mOverScrollX is equal to getScrollX() when we're within the normal scroll range.
-        // Otherwise it is equal to the scaled overscroll position.
-        int screenCenter = mOverScrollX + halfScreenSize;
-
-        if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
+        if (mOverScrollX != mLastScreenScroll || mForceScreenScrolled) {
             // set mForceScreenScrolled before calling screenScrolled so that screenScrolled can
             // set it for the next frame
             mForceScreenScrolled = false;
-            screenScrolled(screenCenter);
-            mLastScreenCenter = screenCenter;
+            screenScrolled(mOverScrollX);
+            mLastScreenScroll = mOverScrollX;
         }
 
         // Find out which screens are visible; as an optimization we only call draw on them
@@ -1094,12 +1092,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    protected float getScrollProgress(int screenCenter, View v, int page) {
+    protected float getScrollProgress(int screenScroll, View v, int page) {
         final int halfScreenSize = getMeasuredWidth() / 2;
 
         int totalDistance = getScaledMeasuredWidth(v) + mPageSpacing;
-        int delta = screenCenter - (getChildOffset(page) -
-                getRelativeChildOffset(page) + halfScreenSize);
+        int delta = screenScroll - (getChildOffset(page) -
+                getRelativeChildOffset(page));
 
         float scrollProgress = delta / (totalDistance * 1.0f);
         scrollProgress = Math.min(scrollProgress, 1.0f);

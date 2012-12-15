@@ -78,6 +78,11 @@ public final class PreferencesProvider {
                 return preferences.getBoolean("ui_homescreen_general_hide_icon_labels", false);
             }
             public static class Scrolling {
+                public static Workspace.TransitionEffect getTransitionEffect(Context context, String def) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return Workspace.TransitionEffect.valueOf(
+                            preferences.getString("ui_homescreen_scrolling_transition_effect", def));
+                }
                 public static boolean getScrollWallpaper(Context context) {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                     return preferences.getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
@@ -115,6 +120,17 @@ public final class PreferencesProvider {
             public static boolean getJoinWidgetsApps(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_drawer_widgets_join_apps", true);
+            }
+            public static class Scrolling {
+                public static AppsCustomizePagedView.TransitionEffect getTransitionEffect(Context context, String def) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return AppsCustomizePagedView.TransitionEffect.valueOf(
+                            preferences.getString("ui_drawer_scrolling_transition_effect", def));
+                }
+                public static boolean getFadeInAdjacentScreens(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_drawer_scrolling_fade_adjacent_screens", false);
+                }
             }
             public static class Indicator {
                 public static boolean getShowScrollingIndicator(Context context) {

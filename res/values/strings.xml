@@ -324,6 +324,8 @@ s -->
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide homescreen icon labels</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Transition effect</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Scrolling effect when scrolling homescreens</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Scroll wallpaper</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Scroll wallpaper when scrolling homescreens</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Wallpaper quick render</string>
@@ -345,6 +347,11 @@ s -->
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Join with apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
+    <string name="preferences_interface_drawer_scrolling_category">Scrolling</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Transition effect</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Scrolling effect when scrolling screens</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Fade side pages</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Fade the side pages when scrolling screens</string>
     <string name="preferences_interface_drawer_indicator_category">Indicator</string>
     <string name="preferences_interface_drawer_indicator_enable_title">Show page indicator</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
