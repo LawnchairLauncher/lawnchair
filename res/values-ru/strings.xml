@@ -146,8 +146,17 @@
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Прятать подписи иконок</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Прятать подписи иконок на рабочих столах</string>
     <string name="preferences_interface_homescreen_scrolling_category">ПРОКРУТКА</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Эффект перехода</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Эффект перехода при перелистывании рабочих экранов</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Прокрутка обоев</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Прокручивать обои при прокрутке рабочих столов</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Быстрая отрисовка обоев</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Используйте эту настройку для увеличения гладкости статических обоев</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Затемнять края экранов</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Затемнять края рабочих столов при перелистывании</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Показывать границы</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Показывать границы рабочих столов при перелистывании</string>
+
     <string name="preferences_interface_homescreen_indicator_fade_title">Скрывать индикатор</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Скрывать индикатор страниц после смены страницы</string>
     <string name="preferences_interface_homescreen_indicator_background_title">Отображать разделитель</string>
@@ -161,6 +170,11 @@
     <string name="preferences_interface_drawer_widgets_category">ВИДЖЕТЫ</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Вместе с приложениями</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Пролистывать из меню \"Приложения\" в меню \"Виджеты\" без смены вкладок</string>
+    <string name="preferences_interface_drawer_scrolling_category">Прокрутка</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Эффект перехода</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Эффект перехода при пролистывании экранов</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Затухание страниц</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Затухание страниц при пролистывании экранов</string>
     <string name="preferences_interface_drawer_indicator_category">ИНДИКАТОР</string>
     <string name="preferences_interface_drawer_indicator_enable_title">Отображать индикатор</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">Отображать индикатор выбранной страницы внизу экрана</string>
