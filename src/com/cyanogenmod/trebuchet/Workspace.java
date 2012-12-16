@@ -563,6 +563,7 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
+        mLauncher.setWallpaperVisibility(mWallpaperBitmap == null);
 
         // Make sure wallpaper gets redrawn to avoid ghost wallpapers
         invalidate();
@@ -952,8 +953,10 @@ public class Workspace extends SmoothPagedView
 
         // Update wallpaper offsets to match hack (for recent apps window)
         if (mWallpaperHack && mWallpaperBitmap != null) {
+            mLauncher.setWallpaperVisibility(true);
             mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
             mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
+            mLauncher.setWallpaperVisibility(false);
         }
     }
 
