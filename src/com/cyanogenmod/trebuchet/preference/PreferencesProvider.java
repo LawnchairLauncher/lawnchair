@@ -55,15 +55,9 @@ public final class PreferencesProvider {
                     return def;
                 }
             }
-            public static int getScreenPaddingVertical(Context context) {
+            public static boolean getStretchScreens(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return (int)((float) preferences.getInt("ui_homescreen_screen_padding_vertical", 3) * 3.0f *
-                        LauncherApplication.getScreenDensity());
-            }
-            public static int getScreenPaddingHorizontal(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return (int)((float) preferences.getInt("ui_homescreen_screen_padding_horizontal", 3) * 3.0f *
-                        LauncherApplication.getScreenDensity());
+                return preferences.getBoolean("ui_homescreen_stretch_screens", false);
             }
             public static boolean getShowSearchBar(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
