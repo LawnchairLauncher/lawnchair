@@ -2012,6 +2012,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     } else {
                         v.setTranslationY(v.getMeasuredHeight() * scrollProgress);
                         v.setRotationX(-rotation);
+                        v.setCameraDistance(mDensity * CAMERA_DISTANCE);
                     }
                     if (v.getVisibility() != VISIBLE) {
                         v.setVisibility(VISIBLE);
