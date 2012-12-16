@@ -892,7 +892,6 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        // Only show page outlines as we pan if we are on large screen
         if (mShowOutlines) {
             showOutlines();
         }
@@ -908,6 +907,10 @@ public class Workspace extends SmoothPagedView
 
         // Show the scroll indicator as you pan the page
         showScrollingIndicator(false);
+
+        if (mScrollWallpaper && mWallpaperHack && mWallpaperBitmap != null) {
+            mLauncher.setWallpaperVisibility(false);
+        }
     }
 
     protected void onPageEndMoving() {
@@ -956,7 +959,6 @@ public class Workspace extends SmoothPagedView
             mLauncher.setWallpaperVisibility(true);
             mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
             mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
-            mLauncher.setWallpaperVisibility(false);
         }
     }
 
