@@ -53,7 +53,7 @@
         android:layout_marginBottom="@dimen/button_bar_height_plus_padding"
         android:layout_gravity="bottom|center_horizontal" />
     <include
-        android:id="@+id/paged_view_indicator"
+        android:id="@+id/paged_view_indicator_horizontal"
         layout="@layout/scroll_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

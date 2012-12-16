@@ -189,7 +189,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private ValueAnimator mScrollIndicatorAnimator;
     private View mScrollIndicator;
     private int mScrollIndicatorPaddingLeft;
+    private int mScrollIndicatorPaddingTop;
     private int mScrollIndicatorPaddingRight;
+    private int mScrollIndicatorPaddingBottom;
     private boolean mHasScrollIndicator = true;
     private boolean mShouldShowScrollIndicator = false;
     private boolean mShouldShowScrollIndicatorImmediately = false;
@@ -234,8 +236,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 R.styleable.PagedView_pageLayoutHeightGap, 0);
         mScrollIndicatorPaddingLeft =
             a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingLeft, 0);
+        mScrollIndicatorPaddingTop =
+            a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingTop, 0);
         mScrollIndicatorPaddingRight =
             a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingRight, 0);
+        mScrollIndicatorPaddingBottom =
+            a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingBottom, 0);
         a.recycle();
 
         setHapticFeedbackEnabled(false);
@@ -1973,7 +1979,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mHasScrollIndicator && mScrollIndicator == null) {
             ViewGroup parent = (ViewGroup) getParent();
             if (parent != null) {
-                mScrollIndicator = (View) (parent.findViewById(R.id.paged_view_indicator));
+                if (!mVertical) {
+                    mScrollIndicator = (View) parent.findViewById(R.id.paged_view_indicator_horizontal);
+                } else {
+                    mScrollIndicator = (View) parent.findViewById(R.id.paged_view_indicator_vertical);
+                }
                 mHasScrollIndicator = mScrollIndicator != null;
                 if (mHasScrollIndicator) {
                     mScrollIndicator.setVisibility(View.VISIBLE);
@@ -2113,23 +2123,43 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int pageSize = !mVertical ? getMeasuredWidth() : getMeasuredHeight();
         int lastChildIndex = Math.max(0, getChildCount() - 1);
         int maxScroll = getChildOffset(lastChildIndex) - getRelativeChildOffset(lastChildIndex);
-        int trackWidth = getMeasuredWidth() - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
-        int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
-                mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
+        if (!mVertical) {
+            int trackWidth = pageSize - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
+            int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
+                    mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
 
-        float offset = Math.max(0f, Math.min(1f, (float) (!mVertical ? getScrollX() : getScrollY()) / maxScroll));
-        int indicatorSpace = trackWidth / numPages;
-        int indicatorPos = (int) (offset * (trackWidth - indicatorSpace)) + mScrollIndicatorPaddingLeft;
-        if (hasElasticScrollIndicator()) {
-            if (mScrollIndicator.getMeasuredWidth() != indicatorSpace) {
-                mScrollIndicator.getLayoutParams().width = indicatorSpace;
-                mScrollIndicator.requestLayout();
+            float offset = Math.max(0f, Math.min(1f, (float) getScrollX() / maxScroll));
+            int indicatorSpace = trackWidth / numPages;
+            int indicatorPos = (int) (offset * (trackWidth - indicatorSpace)) + mScrollIndicatorPaddingLeft;
+            if (hasElasticScrollIndicator()) {
+                if (mScrollIndicator.getMeasuredWidth() != indicatorSpace) {
+                    mScrollIndicator.getLayoutParams().width = indicatorSpace;
+                    mScrollIndicator.requestLayout();
+                }
+            } else {
+                int indicatorCenterOffset = indicatorSpace / 2 - indicatorWidth / 2;
+                indicatorPos += indicatorCenterOffset;
             }
+            mScrollIndicator.setTranslationX(indicatorPos);
         } else {
-            int indicatorCenterOffset = indicatorSpace / 2 - indicatorWidth / 2;
-            indicatorPos += indicatorCenterOffset;
+            int trackHeight = pageSize - mScrollIndicatorPaddingTop - mScrollIndicatorPaddingBottom;
+            int indicatorHeight = mScrollIndicator.getMeasuredHeight() -
+                    mScrollIndicator.getPaddingTop() - mScrollIndicator.getPaddingBottom();
+
+            float offset = Math.max(0f, Math.min(1f, (float) getScrollY() / maxScroll));
+            int indicatorSpace = trackHeight / numPages;
+            int indicatorPos = (int) (offset * (trackHeight - indicatorSpace)) + mScrollIndicatorPaddingTop;
+            if (hasElasticScrollIndicator()) {
+                if (mScrollIndicator.getMeasuredHeight() != indicatorSpace) {
+                    mScrollIndicator.getLayoutParams().height = indicatorSpace;
+                    mScrollIndicator.requestLayout();
+                }
+            } else {
+                int indicatorCenterOffset = indicatorSpace / 2 - indicatorHeight / 2;
+                indicatorPos += indicatorCenterOffset;
+            }
+            mScrollIndicator.setTranslationY(indicatorPos);
         }
-        mScrollIndicator.setTranslationX(indicatorPos);
     }
 
     public void showScrollIndicatorTrack() {

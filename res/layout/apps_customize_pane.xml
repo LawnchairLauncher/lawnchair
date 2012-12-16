@@ -78,11 +78,20 @@
                 android:visibility="gone" />
 
             <include
-                android:id="@+id/paged_view_indicator"
+                android:id="@+id/paged_view_indicator_horizontal"
                 layout="@layout/scroll_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom" />
+                android:layout_gravity="bottom"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/paged_view_indicator_vertical"
+                layout="@layout/scroll_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
 

@@ -106,7 +106,9 @@
         <attr name="pageSpacing" format="dimension" />
         <!-- The padding for the scroll indicator area -->
         <attr name="scrollIndicatorPaddingLeft" format="dimension" />
+        <attr name="scrollIndicatorPaddingTop" format="dimension" />
         <attr name="scrollIndicatorPaddingRight" format="dimension" />
+        <attr name="scrollIndicatorPaddingBottom" format="dimension" />
     </declare-styleable>
 
     <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
