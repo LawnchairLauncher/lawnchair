@@ -947,8 +947,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     final View v = getPageAt(i);
-                    if (mForceDrawAllChildrenNextFrame ||
-                               (leftTopScreen <= i && i <= rightBottomScreen && shouldDrawChild(v))) {
+                    if ((mForceDrawAllChildrenNextFrame || (leftTopScreen <= i && i <= rightBottomScreen))
+                            && shouldDrawChild(v)) {
                         drawChild(canvas, v, drawingTime);
                     }
                 }
