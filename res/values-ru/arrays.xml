@@ -46,4 +46,8 @@
         <item>Друг на друга</item>
         <item>Аккордеон</item>
     </string-array>
+    <string-array name="preferences_interface_drawer_orientation_entries">
+        <item>Горизонтальная</item>
+        <item>Вертикальная</item>
+    </string-array>
 </resources>
