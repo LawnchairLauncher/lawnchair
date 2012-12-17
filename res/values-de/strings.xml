@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*
 * Copyright (C) 2008 The Android Open Source Project
 *
@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
- -->
+-->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -178,10 +178,8 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Anzahl der für Icons verfügbaren Reihen / Spalten</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Reihen</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Spalten</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Vertikaler Seitenrand</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Einige Pixel Rand oben und unten auf jeder Seite</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Horizontaler Seitenrand</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Einige Pixel Rand rechts und links auf jeder Seite</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Seiten ausdehnen</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Seiten bildschirmfüllend ausdehen</string>
     <string name="preferences_interface_homescreen_general_search_title">Suchleiste</string>
     <string name="preferences_interface_homescreen_general_search_summary">Dauerhafte Anzeige der Suchleiste</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Größe aller Widgets anpassbar</string>
@@ -207,6 +205,8 @@
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Apps</string>
+    <string name="preferences_interface_drawer_orientation_title">Ausrichtung</string>
+    <string name="preferences_interface_drawer_orientation_summary">Scrollrichtung der App-Seiten auswählen</string>
     <string name="preferences_interface_drawer_widgets_category">Widget-Seiten</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Mit App-Seiten verbinden</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Blättern auch zwischen App- und Widget-Seiten</string>

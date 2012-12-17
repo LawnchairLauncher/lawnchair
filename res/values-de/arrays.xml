@@ -47,4 +47,9 @@
         <item>Stapeln</item>
         <item>Akkordeon</item>
     </string-array>
+
+    <string-array name="preferences_interface_drawer_orientation_entries">
+        <item>Horizontal</item>
+        <item>Vertikal</item>
+    </string-array>
 </resources>
