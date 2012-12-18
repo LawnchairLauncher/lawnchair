@@ -40,7 +40,7 @@ import java.util.ArrayList;
 
 public class AppsCustomizeTabHost extends TabHost implements LauncherTransitionable,
         TabHost.OnTabChangeListener  {
-    static final String LOG_TAG = "AppsCustomizeTabHost";
+    private static final String TAG = "Trebuchet.AppsCustomizeTabHost";
 
     private static final String APPS_TAB_TAG = "APPS";
     private static final String WIDGETS_TAB_TAG = "WIDGETS";

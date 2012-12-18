@@ -49,7 +49,7 @@ import java.util.ArrayList;
 public class WallpaperChooserDialogFragment extends DialogFragment implements
         AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
-    private static final String TAG = "Launcher.WallpaperChooserDialogFragment";
+    private static final String TAG = "Trebuchet.WallpaperChooserDialogFragment";
     private static final String EMBEDDED_KEY = "com.cyanogenmod.trebuchet."
             + "WallpaperChooserDialogFragment.EMBEDDED_KEY";
 

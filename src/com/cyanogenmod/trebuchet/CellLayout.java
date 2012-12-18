@@ -58,7 +58,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup {
-    static final String TAG = "CellLayout";
+    private static final String TAG = "Trebuchet.CellLayout";
 
     private Launcher mLauncher;
     private int mCellWidth;

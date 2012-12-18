@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
-    static final String TAG = "CellLayoutChildren";
+    private static final String TAG = "Trebuchet.CellLayoutChildren";
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.

@@ -26,8 +26,7 @@ import android.util.Log;
  *
  */
 public interface DropTarget {
-
-    public static final String TAG = "DropTarget";
+    static final String TAG = "Trebuchet.DropTarget";
 
     class DragObject {
         public int x = -1;

@@ -30,7 +30,7 @@ import com.cyanogenmod.trebuchet.R;
 
 public class Hotseat extends FrameLayout {
     @SuppressWarnings("unused")
-    private static final String TAG = "Hotseat";
+    private static final String TAG = "Trebuchet.Hotseat";
 
     private Launcher mLauncher;
     private CellLayout mContent;

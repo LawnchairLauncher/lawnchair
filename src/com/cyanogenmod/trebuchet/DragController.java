@@ -41,7 +41,7 @@ import java.util.ArrayList;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController {
-    private static final String TAG = "Launcher.DragController";
+    private static final String TAG = "Trebuchet.DragController";
 
     /** Indicates the drag is a move.  */
     public static int DRAG_ACTION_MOVE = 0;
@@ -416,7 +416,7 @@ public class DragController {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean debug = false;
         if (debug) {
-            Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
+            Log.d(TAG, "onInterceptTouchEvent " + ev + " mDragging="
                     + mDragging);
         }
 

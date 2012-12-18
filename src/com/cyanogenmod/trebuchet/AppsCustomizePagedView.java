@@ -237,7 +237,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         View.OnClickListener, View.OnKeyListener, DragSource,
         PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener,
         LauncherTransitionable {
-    static final String TAG = "AppsCustomizePagedView";
+    private static final String TAG = "Trebuchet.AppsCustomizePagedView";
 
     /**
      * The different content types that this paged view can show.

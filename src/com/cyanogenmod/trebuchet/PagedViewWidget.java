@@ -35,7 +35,7 @@ import com.cyanogenmod.trebuchet.R;
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
 public class PagedViewWidget extends LinearLayout {
-    static final String TAG = "PagedViewWidgetLayout";
+    private static final String TAG = "Trebuchet.PagedViewWidgetLayout";
 
     private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
 

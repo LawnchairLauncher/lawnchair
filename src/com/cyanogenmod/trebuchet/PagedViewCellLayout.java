@@ -32,7 +32,7 @@ import com.cyanogenmod.trebuchet.R;
  * to give a preview of its contents.
  */
 public class PagedViewCellLayout extends ViewGroup implements Page {
-    static final String TAG = "PagedViewCellLayout";
+    private static final String TAG = "Trebuchet.PagedViewCellLayout";
 
     private int mCellCountX;
     private int mCellCountY;

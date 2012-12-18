@@ -81,7 +81,7 @@ import java.util.Set;
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener {
-    private static final String TAG = "Launcher.Workspace";
+    private static final String TAG = "Trebuchet.Workspace";
 
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;

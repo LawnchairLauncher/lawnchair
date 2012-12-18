@@ -23,7 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class PreloadReceiver extends BroadcastReceiver {
-    private static final String TAG = "Launcher.PreloadReceiver";
+    private static final String TAG = "Trebuchet.PreloadReceiver";
     private static final boolean LOGD = false;
 
     public static final String EXTRA_WORKSPACE_NAME =

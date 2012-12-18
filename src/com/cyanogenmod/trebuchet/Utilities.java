@@ -41,7 +41,7 @@ import com.cyanogenmod.trebuchet.R;
  */
 final class Utilities {
     @SuppressWarnings("unused")
-    private static final String TAG = "Launcher.Utilities";
+    private static final String TAG = "Trebuchet.Utilities";
 
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;

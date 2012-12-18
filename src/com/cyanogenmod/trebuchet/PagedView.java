@@ -51,7 +51,7 @@ import java.util.ArrayList;
  * sequential list of "pages"
  */
 public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarchyChangeListener {
-    private static final String TAG = "PagedView";
+    private static final String TAG = "Trebuchet.PagedView";
     private static final boolean DEBUG = false;
     protected static final int INVALID_PAGE = -1;
 

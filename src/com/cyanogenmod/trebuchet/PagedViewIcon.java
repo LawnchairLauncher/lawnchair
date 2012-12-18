@@ -32,7 +32,7 @@ public class PagedViewIcon extends TextView {
     }
 
     @SuppressWarnings("unused")
-    private static final String TAG = "PagedViewIcon";
+    private static final String TAG = "Trebuchet.PagedViewIcon";
     private static final float PRESS_ALPHA = 0.4f;
 
     private PagedViewIcon.PressedCallback mPressedCallback;

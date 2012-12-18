@@ -27,7 +27,7 @@ import com.cyanogenmod.trebuchet.R;
 public class Preferences extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "Launcher.Preferences";
+    private static final String TAG = "Trebuchet.Preferences";
 
     private SharedPreferences mPrefs;
 

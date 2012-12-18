@@ -35,7 +35,7 @@ import java.util.HashMap;
  */
 public class IconCache {
     @SuppressWarnings("unused")
-    private static final String TAG = "Launcher.IconCache";
+    private static final String TAG = "Trebuchet.IconCache";
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 

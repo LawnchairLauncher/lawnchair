@@ -121,7 +121,7 @@ import java.util.Set;
 public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
                    View.OnTouchListener {
-    static final String TAG = "Launcher";
+    private static final String TAG = "Trebuchet.Launcher";
     static final boolean LOGD = false;
 
     static final boolean PROFILE_STARTUP = false;
