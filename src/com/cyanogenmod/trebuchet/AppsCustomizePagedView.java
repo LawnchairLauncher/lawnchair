@@ -303,6 +303,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private static final float TRANSITION_SCREEN_ROTATION = 12.5f;
     private boolean mScrollTransformsDirty = false;
     private boolean mOverscrollTransformsDirty = false;
+    private int mCameraDistance;
     private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
     private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
     public enum TransitionEffect {
@@ -377,6 +378,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mHandleFadeInAdjacentScreens = true;
 
         Resources resources = context.getResources();
+
+        mCameraDistance = resources.getInteger(R.integer.config_cameraDistance);
 
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
@@ -1897,7 +1900,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 float alpha = 1 - Math.abs(scrollProgress);
 
                 if (in) {
-                    v.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                    v.setCameraDistance(mDensity * mCameraDistance);
                 }
 
                 if (!mVertical) {
@@ -2012,7 +2015,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     } else {
                         v.setTranslationY(v.getMeasuredHeight() * scrollProgress);
                         v.setRotationX(-rotation);
-                        v.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                        v.setCameraDistance(mDensity * mCameraDistance);
                     }
                     if (v.getVisibility() != VISIBLE) {
                         v.setVisibility(VISIBLE);
@@ -2110,20 +2113,25 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             View v = getPageAt(index);
             if (v != null) {
                 float scrollProgress = getScrollProgress(screenScroll, v, index);
-                float rotation = - TRANSITION_MAX_ROTATION * scrollProgress;
-                v.setCameraDistance(mDensity * CAMERA_DISTANCE);
-                if (!mVertical) {
-                    v.setPivotX(v.getMeasuredWidth() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
-                    v.setPivotY(v.getMeasuredHeight() * 0.5f);
-                    v.setRotationY(rotation);
-                    v.setTranslationX(0);
-                } else {
-                    v.setPivotX(v.getMeasuredWidth() * 0.5f);
-                    v.setPivotY(v.getMeasuredHeight() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
-                    v.setRotationX(-rotation);
-                    v.setTranslationY(0);
+                float rotation = -TRANSITION_MAX_ROTATION * scrollProgress;
+                v.setCameraDistance(mDensity * mCameraDistance);
+                if (!mOverscrollTransformsDirty) {
+                    mOverscrollTransformsDirty = true;
+                    if (!mVertical) {
+                        v.setPivotX(v.getMeasuredWidth() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
+                        v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                        v.setTranslationX(0);
+                    } else {
+                        v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                        v.setPivotY(v.getMeasuredHeight() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
+                        v.setTranslationY(0);
+                    }
                 }
-                mOverscrollTransformsDirty = true;
+                if (!mVertical) {
+                    v.setRotationY(rotation);
+                } else {
+                    v.setRotationX(-rotation);
+                }
             }
         }
     }

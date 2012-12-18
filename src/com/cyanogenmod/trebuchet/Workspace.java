@@ -270,13 +270,18 @@ public class Workspace extends SmoothPagedView
     private float[] mOldScaleXs;
     private float[] mOldScaleYs;
     private float[] mOldBackgroundAlphas;
+    private float[] mOldBackgroundAlphaMultipliers;
     private float[] mOldAlphas;
+    private float[] mOldRotations;
+    private float[] mOldRotationYs;
     private float[] mNewTranslationXs;
     private float[] mNewTranslationYs;
     private float[] mNewScaleXs;
     private float[] mNewScaleYs;
     private float[] mNewBackgroundAlphas;
+    private float[] mNewBackgroundAlphaMultipliers;
     private float[] mNewAlphas;
+    private float[] mNewRotations;
     private float[] mNewRotationYs;
     private float mTransitionProgress;
 
@@ -1483,7 +1488,7 @@ public class Workspace extends SmoothPagedView
                 float scale = 1.0f - Math.abs(scrollProgress) * 0.2f;
 
                 if (in) {
-                    cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                    cl.setCameraDistance(mDensity * mCameraDistance);
                     cl.setPivotX(scrollProgress < 0 ? 0 : cl.getMeasuredWidth());
                 } else {
                     cl.setScaleX(scale);
@@ -1583,7 +1588,7 @@ public class Workspace extends SmoothPagedView
                 float rotation = -180.0f * scrollProgress;
 
                 if (scrollProgress >= -0.5f && scrollProgress <= 0.5f) {
-                    cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                    cl.setCameraDistance(mDensity * mCameraDistance);
                     cl.setTranslationX(cl.getMeasuredWidth() * scrollProgress);
                     cl.setPivotX(cl.getMeasuredWidth() * 0.5f);
                     cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
@@ -1686,7 +1691,7 @@ public class Workspace extends SmoothPagedView
                 if (getChildCount() > 1) {
                     float scrollProgress = getScrollProgress(screenScroll, cl, index);
                     cl.setOverScrollAmount(Math.abs(scrollProgress), index == 0);
-                    float rotation = - WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
+                    float rotation = -WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
                     cl.setRotationY(rotation);
                     setFadeForOverScroll(Math.abs(scrollProgress));
                     if (!mOverscrollTransformsDirty) {
@@ -2039,13 +2044,18 @@ public class Workspace extends SmoothPagedView
         mOldScaleXs = new float[childCount];
         mOldScaleYs = new float[childCount];
         mOldBackgroundAlphas = new float[childCount];
+        mOldBackgroundAlphaMultipliers = new float[childCount];
         mOldAlphas = new float[childCount];
+        mOldRotations = new float[childCount];
+        mOldRotationYs = new float[childCount];
         mNewTranslationXs = new float[childCount];
         mNewTranslationYs = new float[childCount];
         mNewScaleXs = new float[childCount];
         mNewScaleYs = new float[childCount];
         mNewBackgroundAlphas = new float[childCount];
+        mNewBackgroundAlphaMultipliers = new float[childCount];
         mNewAlphas = new float[childCount];
+        mNewRotations = new float[childCount];
         mNewRotationYs = new float[childCount];
     }
 
@@ -2196,10 +2206,6 @@ public class Workspace extends SmoothPagedView
 
             if (stateIsSmall || stateIsSpringLoaded) {
                 cl.setCameraDistance(1280 * mDensity);
-                if (mTransitionEffect == TransitionEffect.RotateUp ||
-                        mTransitionEffect == TransitionEffect.RotateDown) {
-                    cl.setTranslationX(0.0f);
-                }
                 cl.setPivotX(cl.getMeasuredWidth() * 0.5f);
                 cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
             }
@@ -2226,12 +2232,16 @@ public class Workspace extends SmoothPagedView
                 mOldScaleXs[i] = cl.getScaleX();
                 mOldScaleYs[i] = cl.getScaleY();
                 mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                mOldRotations[i] = cl.getRotation();
+                mOldRotationYs[i] = cl.getRotationY();
 
                 mNewTranslationXs[i] = translationX;
                 mNewTranslationYs[i] = translationY;
                 mNewScaleXs[i] = scale;
                 mNewScaleYs[i] = scale;
                 mNewBackgroundAlphas[i] = finalBackgroundAlpha;
+                mNewRotations[i] = rotation;
+                mNewRotationYs[i] = rotationY;
             } else {
                 cl.setTranslationX(translationX);
                 cl.setTranslationY(translationY);
@@ -2239,6 +2249,8 @@ public class Workspace extends SmoothPagedView
                 cl.setScaleY(finalScaleFactor);
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
+                cl.setRotation(rotation);
+                cl.setRotationY(rotationY);
             }
         }
 
@@ -2254,6 +2266,7 @@ public class Workspace extends SmoothPagedView
                     cl.setScaleY(mNewScaleYs[i]);
                     cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
                     cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
+                    cl.setRotation(mNewRotations[i]);
                     cl.setRotationY(mNewRotationYs[i]);
                 } else {
                     LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl);
@@ -2261,6 +2274,8 @@ public class Workspace extends SmoothPagedView
                         .translationY(mNewTranslationYs[i])
                         .scaleX(mNewScaleXs[i])
                         .scaleY(mNewScaleYs[i])
+                        .rotation(mNewRotations[i])
+                        .rotationY(mNewRotationYs[i])
                         .setDuration(duration)
                         .setInterpolator(mZoomInInterpolator);
                     anim.play(a);
