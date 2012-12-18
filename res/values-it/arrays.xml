@@ -25,10 +25,12 @@
         <item>Ingrandisci</item>
         <item>Ruota su</item>
         <item>Ruota giù</item>
-        <item>Ruota</item>
-        <item>Specchia</item>
+        <item>Cilindro interno</item>
+        <item>Cilindro esterno</item>
         <item>Cubo interno</item>
         <item>Cubo esterno</item>
+        <item>Ruota</item>
+        <item>Specchia</item>
         <item>Pila</item>
         <item>Fisarmonica</item>
     </string-array>
@@ -39,10 +41,12 @@
         <item>Ingrandisci</item>
         <item>Ruota su</item>
         <item>Ruota giù</item>
-        <item>Ruota</item>
-        <item>Specchia</item>
+        <item>Cilindro interno</item>
+        <item>Cilindro esterno</item>
         <item>Cubo interno</item>
         <item>Cubo esterno</item>
+        <item>Ruota</item>
+        <item>Specchia</item>
         <item>Pila</item>
         <item>Fisarmonica</item>
     </string-array>
