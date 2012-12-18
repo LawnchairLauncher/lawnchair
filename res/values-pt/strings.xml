@@ -162,4 +162,21 @@
     <string name="preferences_interface_drawer_indicator_enable_summary">Mostra o indicador da página atual no final da tela</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Esmaecer Indicador</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Esmaece o indicador após a troca da tela inicial</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Esticar telas</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Expandir telas iniciais para preencher o tamanho do visor</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efeito de transição</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efeito de rolagem na transição de telas iniciais</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Renderização de papel de parede rápida</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Use o hack de papel de parede para aumentar a suavizes nos papéis de parede com imagem estática</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Esmaecer lateral das telas</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Esmaecer a lateral das telas durante a transição de telas iniciais</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Exibir linhas externas</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Exibir linhas externas da tela na transição de telas iniciais</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientação</string>
+    <string name="preferences_interface_drawer_orientation_summary">Escolha para qual o sentido rolagem da gaveta</string>
+    <string name="preferences_interface_drawer_scrolling_category">Rolagem</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efeito de transição</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efeito de rolagem na transição de telas</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Esmaece lateral das páginas</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Esmaece lateral das páginas na transição de telas</string>
 </resources>
