@@ -25,10 +25,12 @@
         <item>Herauszoomen</item>
         <item>Rotieren oben</item>
         <item>Rotieren unten</item>
-        <item>Wirbeln</item>
-        <item>Blättern</item>
+        <item>Zylinder innen</item>
+        <item>zylinder außen</item>
         <item>Würfel innen</item>
         <item>Würfel außen</item>
+        <item>Wirbeln</item>
+        <item>Blättern</item>
         <item>Stapeln</item>
         <item>Akkordeon</item>
     </string-array>
@@ -40,10 +42,12 @@
         <item>Herauszoomen</item>
         <item>Rotieren oben</item>
         <item>Rotieren unten</item>
-        <item>Wirbeln</item>
-        <item>Blättern</item>
+        <item>Zylinder innen</item>
+        <item>zylinder außen</item>
         <item>Würfel innen</item>
         <item>Würfel außen</item>
+        <item>Wirbeln</item>
+        <item>Blättern</item>
         <item>Stapeln</item>
         <item>Akkordeon</item>
     </string-array>
