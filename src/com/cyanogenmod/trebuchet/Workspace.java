@@ -297,7 +297,9 @@ public class Workspace extends SmoothPagedView
         CubeIn,
         CubeOut,
         Stack,
-        Accordian
+        Accordian,
+        CylinderIn,
+        CylinderOut
     }
     private TransitionEffect mTransitionEffect = TransitionEffect.Standard;
 
@@ -1493,7 +1495,7 @@ public class Workspace extends SmoothPagedView
                 } else {
                     cl.setScaleX(scale);
                     cl.setScaleY(scale);
-                    cl.setPivotX(scrollProgress * cl.getMeasuredWidth() * 0.5f + cl.getMeasuredWidth() * 0.5f);
+                    cl.setPivotX((scrollProgress + 1) * cl.getMeasuredWidth() * 0.5f);
                 }
                 cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
                 cl.setRotationY(rotation);
@@ -1607,6 +1609,23 @@ public class Workspace extends SmoothPagedView
         invalidate();
     }
 
+    private void screenScrolledCylinder(int screenScroll, boolean in) {
+        for (int i = 0; i < getChildCount(); i++) {
+            CellLayout cl = (CellLayout) getPageAt(i);
+            if (cl != null) {
+                float scrollProgress = getScrollProgress(screenScroll, cl, i);
+                float rotation = (in ? WORKSPACE_ROTATION : -WORKSPACE_ROTATION) * scrollProgress;
+
+                cl.setPivotX((scrollProgress + 1) * cl.getMeasuredWidth() * 0.5f);
+                cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                cl.setRotationY(rotation);
+                if (mFadeInAdjacentScreens && !isSmall()) {
+                    setCellLayoutFadeAdjacent(cl, scrollProgress);
+                }
+            }
+        }
+    }
+
     @Override
     protected void screenScrolled(int screenScroll) {
         super.screenScrolled(screenScroll);
@@ -1635,6 +1654,7 @@ public class Workspace extends SmoothPagedView
                 // Limit the "normal" effects to mScrollX
                 int scroll = mScrollX;
 
+                // Reset transforms when we aren't in overscroll
                 if (mOverscrollFade != 0) {
                     setFadeForOverScroll(0);
                 }
@@ -1680,6 +1700,12 @@ public class Workspace extends SmoothPagedView
                         break;
                     case Accordian:
                         screenScrolledAccordian(scroll);
+                        break;
+                    case CylinderIn:
+                        screenScrolledCylinder(scroll, true);
+                        break;
+                    case CylinderOut:
+                        screenScrolledCylinder(scroll, false);
                         break;
                 }
                 mScrollTransformsDirty = false;

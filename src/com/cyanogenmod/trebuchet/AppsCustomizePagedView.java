@@ -318,7 +318,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         CubeIn,
         CubeOut,
         Stack,
-        Accordian
+        Accordian,
+        CylinderIn,
+        CylinderOut
     }
     private TransitionEffect mTransitionEffect = TransitionEffect.Standard;
 
@@ -2031,6 +2033,24 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    private void screenScrolledCylinder(int screenScroll, boolean in) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getPageAt(i);
+            if (v != null) {
+                float scrollProgress = getScrollProgress(screenScroll, v, i);
+                float rotation = (in ? TRANSITION_SCREEN_ROTATION : -TRANSITION_SCREEN_ROTATION) * scrollProgress;
+
+                v.setPivotX((scrollProgress + 1) * v.getMeasuredWidth() * 0.5f);
+                v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                v.setRotationY(rotation);
+                if (mFadeInAdjacentScreens) {
+                    float alpha = 1 - Math.abs(scrollProgress);
+                    v.setAlpha(alpha);
+                }
+            }
+        }
+    }
+
     // Transition effects
     @Override
     protected void screenScrolled(int screenScroll) {
@@ -2044,6 +2064,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (!isInOverscroll || mScrollTransformsDirty) {
             // Limit the "normal" effects to mScrollX/Y
             int scroll = !mVertical ? mScrollX : mScrollY;
+
             // Reset transforms when we aren't in overscroll
             if (mOverscrollTransformsDirty) {
                 mOverscrollTransformsDirty = false;
@@ -2067,6 +2088,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 v0.setPivotY(v0.getMeasuredHeight() / 2);
                 v1.setPivotY(v1.getMeasuredHeight() / 2);
             }
+
             switch (mTransitionEffect) {
                 case Standard:
                     screenScrolledStandard(scroll);
@@ -2104,6 +2126,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 case Accordian:
                     screenScrolledAccordian(scroll);
                     break;
+                case CylinderIn:
+                    screenScrolledCylinder(scroll, true);
+                    break;
+                case CylinderOut:
+                    screenScrolledCylinder(scroll, false);
             }
             mScrollTransformsDirty = false;
         }
