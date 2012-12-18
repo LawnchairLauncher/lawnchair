@@ -112,6 +112,7 @@
     <string name="custom_workspace_cling_description_1" msgid="6875529190849858047"></string>
     <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
+
     <string name="preferences_title">"Preferinţe"</string>
     <string name="preferences_interface_title">"Interfaţă"</string>
     <string name="preferences_application_title">"Aplicaţie"</string>
@@ -126,18 +127,24 @@
     <string name="preferences_interface_homescreen_general_grid_summary">"Alegeți numărul de rânduri / coloane pe ecranul de pornire"</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">"Rânduri"</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">"Coloane"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">"Umplere verticală"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">"Spațierea pe verticală suplimentară pe ecranul de pornire"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">"Umplere orizontală"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">"Spațierea orizontală suplimentară pe ecranul de pornire"</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">"Întindeţi ecranele"</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">"Extinde ecranele pentru a umple dimensiunea ecranului dispozitivului"</string>
     <string name="preferences_interface_homescreen_general_search_summary">"Activează bara de cautare persistentă"</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">"Redimensionarea orice widget"</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">"Permite redimensionarea widget-urilor care în mod normal nu sunt redimensionabile"</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">"Ascundeți etichetele pictogramelor"</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">"Ascundeți etichetele pictogramelor pe ecranul de pornire"</string>
     <string name="preferences_interface_homescreen_scrolling_category">"Defilare"</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">"Efect tranziţie"</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">"Efect de defilare la defilarea ecranelor"</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">"Defilați Imaginea de Fundal"</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">"Defilați imaginea de fundal atunci când defilaţi ecranele"</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">"Redare rapidă a im. de fundal"</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">"Utilizaţi hack imagine de fundal pentru a spori fineţea imaginilor de fundal statice"</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">"Atenuaţi paginile laterale"</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">"Atenuaţi paginile laterale la defilarea ecranelor"</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">"Afişaţi contur"</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">"Afişaţi conturul ecranelor la defilare"</string>
     <string name="preferences_interface_homescreen_indicator_category">"Indicator"</string>
     <string name="preferences_interface_homescreen_indicator_enable_title">"Afișaţi indicatorul de pagină"</string>
     <string name="preferences_interface_homescreen_indicator_enable_summary">"Afişaţi indicatorul de pagină curentă, în partea de jos a ecranului"</string>
@@ -145,10 +152,17 @@
     <string name="preferences_interface_homescreen_indicator_fade_summary">"Ascundeţi indicatorul după ce ecranul de pornire s-a schimbat"</string>
     <string name="preferences_interface_homescreen_indicator_background_title">"Afişaţi divizorul de andocare"</string>
     <string name="preferences_interface_homescreen_indicator_background_summary">"Afişaţi fundalul în spatele indicatorului"</string>
-    <string name="preferences_interface_drawer_title">"Sertar"</string>
+    <string name="preferences_interface_drawer_title">"Meniul Principal"</string>
+    <string name="preferences_interface_drawer_orientation_title">"Orientare"</string>
+    <string name="preferences_interface_drawer_orientation_summary">"Alegeţi în ce direcţie defilează meniul principal"</string>
     <string name="preferences_interface_drawer_widgets_category">"Widget-uri"</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">"Alăturați la aplicații"</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_summary">"Trecere de la sertar aplicații la sertar widget-uri, fără a schimba filele"</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">"Trecere de la meniu aplicații la meniu widget-uri, fără a schimba filele"</string>
+    <string name="preferences_interface_drawer_scrolling_category">"Defilare"</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">"Efect tranziţie"</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">"Efect de defilare la defilarea ecranelor"</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">"Atenuaţi paginile laterale"</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">"Atenuaţi paginile laterale la defilarea ecranelor"</string>
     <string name="preferences_interface_drawer_indicator_category">"Indicator"</string>
     <string name="preferences_interface_drawer_indicator_enable_title">"Afișaţi indicatorul de pagină"</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">"Afişaţi indicatorul de pagină curentă, în partea de jos a ecranului"</string>
