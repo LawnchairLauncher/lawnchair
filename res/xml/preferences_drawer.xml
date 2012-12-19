@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
+    android:key="ui_drawer"
+    android:title="@string/preferences_interface_drawer_title">
+    <ListPreference android:key="ui_drawer_orientation"
+        android:title="@string/preferences_interface_drawer_orientation_title"
+        android:summary="@string/preferences_interface_drawer_orientation_summary"
+        android:entries="@array/preferences_interface_drawer_orientation_entries"
+        android:entryValues="@array/preferences_interface_drawer_orientation_values"
+        android:defaultValue="horizontal" />
+    <PreferenceCategory android:title="@string/preferences_interface_drawer_widgets_category">
+        <CheckBoxPreference android:key="ui_drawer_widgets_join_apps"
+            android:title="@string/preferences_interface_drawer_widgets_join_apps_title"
+            android:summary="@string/preferences_interface_drawer_widgets_join_apps_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_interface_drawer_scrolling_category">
+        <ListPreference android:key="ui_drawer_scrolling_transition_effect"
+            android:title="@string/preferences_interface_drawer_scrolling_transition_effect_title"
+            android:summary="@string/preferences_interface_drawer_scrolling_transition_effect_summary"
+            android:entries="@array/preferences_interface_drawer_scrolling_transition_effect_entries"
+            android:entryValues="@array/preferences_interface_drawer_scrolling_transition_effect_values"
+            android:defaultValue="@string/config_drawerDefaultTransitionEffect" />
+        <CheckBoxPreference android:key="ui_drawer_scrolling_fade_adjacent_screens"
+            android:title="@string/preferences_interface_drawer_scrolling_fade_adjacent_screens_title"
+            android:summary="@string/preferences_interface_drawer_scrolling_fade_adjacent_screens_summary" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_interface_drawer_indicator_category">
+        <CheckBoxPreference android:key="ui_drawer_indicator_enable"
+            android:title="@string/preferences_interface_drawer_indicator_enable_title"
+            android:summary="@string/preferences_interface_drawer_indicator_enable_summary"
+            android:defaultValue="true" />
+        <CheckBoxPreference android:key="ui_drawer_indicator_fade"
+            android:title="@string/preferences_interface_drawer_indicator_fade_title"
+            android:summary="@string/preferences_interface_drawer_indicator_fade_summary"
+            android:defaultValue="true"
+            android:dependency="ui_drawer_indicator_enable" />
+    </PreferenceCategory>
+</PreferenceScreen>

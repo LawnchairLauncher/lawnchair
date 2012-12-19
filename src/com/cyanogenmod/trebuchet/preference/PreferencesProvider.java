@@ -23,60 +23,76 @@ import com.cyanogenmod.trebuchet.LauncherApplication;
 import com.cyanogenmod.trebuchet.Workspace;
 import com.cyanogenmod.trebuchet.AppsCustomizePagedView;
 
+import java.util.Map;
+
 public final class PreferencesProvider {
     public static final String PREFERENCES_KEY = "com.cyanogenmod.trebuchet_preferences";
 
     public static final String PREFERENCES_CHANGED = "preferences_changed";
+
+    private static Map<String, ?> sKeyValues;
+
+    public static void load(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+        sKeyValues = preferences.getAll();
+    }
+
+    private static int getInt(String key, int def) {
+        return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof Integer ?
+                (Integer) sKeyValues.get(key) : def;
+    }
+
+    private static boolean getBoolean(String key, boolean def) {
+        return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof Boolean ?
+                (Boolean) sKeyValues.get(key) : def;
+    }
+
+    private static String getString(String key, String def) {
+        return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof String ?
+                (String) sKeyValues.get(key) : def;
+    }
+
     public static class Interface {
         public static class Homescreen {
-            public static int getNumberHomescreens(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getInt("ui_homescreen_screens", 5);
+            public static int getNumberHomescreens() {
+                return getInt("ui_homescreen_screens", 5);
             }
-            public static int getDefaultHomescreen(Context context, int def) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getInt("ui_homescreen_default_screen", def + 1) - 1;
+            public static int getDefaultHomescreen(int def) {
+                return getInt("ui_homescreen_default_screen", def + 1) - 1;
             }
-            public static int getCellCountX(Context context, int def) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                String[] values = preferences.getString("ui_homescreen_grid", "0|" + def).split("\\|");
+            public static int getCellCountX(int def) {
+                String[] values = getString("ui_homescreen_grid", "0|" + def).split("\\|");
                 try {
                     return Integer.parseInt(values[1]);
                 } catch (NumberFormatException e) {
                     return def;
                 }
             }
-            public static int getCellCountY(Context context, int def) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                String[] values = preferences.getString("ui_homescreen_grid", def + "|0").split("\\|");;
+            public static int getCellCountY(int def) {
+                String[] values = getString("ui_homescreen_grid", def + "|0").split("\\|");;
                 try {
                     return Integer.parseInt(values[0]);
                 } catch (NumberFormatException e) {
                     return def;
                 }
             }
-            public static boolean getStretchScreens(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_stretch_screens", false);
+            public static boolean getStretchScreens() {
+                return getBoolean("ui_homescreen_stretch_screens", false);
             }
-            public static boolean getShowSearchBar(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_general_search", true);
+            public static boolean getShowSearchBar() {
+                return getBoolean("ui_homescreen_general_search", true);
             }
-            public static boolean getResizeAnyWidget(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_general_resize_any_widget", false);
+            public static boolean getResizeAnyWidget() {
+                return getBoolean("ui_homescreen_general_resize_any_widget", false);
             }
-            public static boolean getHideIconLabels(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_general_hide_icon_labels", false);
+            public static boolean getHideIconLabels() {
+                return getBoolean("ui_homescreen_general_hide_icon_labels", false);
             }
             public static class Scrolling {
-                public static Workspace.TransitionEffect getTransitionEffect(Context context, String def) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                public static Workspace.TransitionEffect getTransitionEffect(String def) {
                     try {
                         return Workspace.TransitionEffect.valueOf(
-                                preferences.getString("ui_homescreen_scrolling_transition_effect", def));
+                                getString("ui_homescreen_scrolling_transition_effect", def));
                     } catch (IllegalArgumentException iae) {
                         // Continue
                     }
@@ -89,58 +105,44 @@ public final class PreferencesProvider {
 
                     return Workspace.TransitionEffect.Standard;
                 }
-                public static boolean getScrollWallpaper(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
+                public static boolean getScrollWallpaper() {
+                    return getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
                 }
-                public static boolean getWallpaperHack(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_scrolling_wallpaper_hack", false);
+                public static boolean getWallpaperHack() {
+                    return getBoolean("ui_homescreen_scrolling_wallpaper_hack", false);
                 }
-                public static boolean getFadeInAdjacentScreens(Context context, boolean def) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_scrolling_fade_adjacent_screens", def);
+                public static boolean getFadeInAdjacentScreens(boolean def) {
+                    return getBoolean("ui_homescreen_scrolling_fade_adjacent_screens", def);
                 }
-                public static boolean getShowOutlines(Context context, boolean def) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_scrolling_show_outlines", def);
+                public static boolean getShowOutlines(boolean def) {
+                    return getBoolean("ui_homescreen_scrolling_show_outlines", def);
                 }
             }
             public static class Indicator {
-                public static boolean getShowScrollingIndicator(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_indicator_enable", true);
+                public static boolean getShowScrollingIndicator() {
+                    return getBoolean("ui_homescreen_indicator_enable", true);
                 }
-                public static boolean getFadeScrollingIndicator(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_indicator_fade", true);
+                public static boolean getFadeScrollingIndicator() {
+                    return getBoolean("ui_homescreen_indicator_fade", true);
                 }
-                public static int getScrollingIndicatorPosition(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return Integer.parseInt(preferences.getString("ui_homescreen_indicator_position", "0"));
-                }
-                public static boolean getShowDockDivider(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_homescreen_indicator_background", true);
+                public static int getScrollingIndicatorPosition() {
+                    return Integer.parseInt(getString("ui_homescreen_indicator_position", "0"));
                 }
             }
         }
 
         public static class Drawer {
-            public static boolean getVertical(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getString("ui_drawer_orientation", "horizontal").equals("vertical");
+            public static boolean getVertical() {
+                return getString("ui_drawer_orientation", "horizontal").equals("vertical");
             }
-            public static boolean getJoinWidgetsApps(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_drawer_widgets_join_apps", true);
+            public static boolean getJoinWidgetsApps() {
+                return getBoolean("ui_drawer_widgets_join_apps", true);
             }
             public static class Scrolling {
-                public static AppsCustomizePagedView.TransitionEffect getTransitionEffect(Context context, String def) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                public static AppsCustomizePagedView.TransitionEffect getTransitionEffect(String def) {
                     try {
                         return AppsCustomizePagedView.TransitionEffect.valueOf(
-                                preferences.getString("ui_drawer_scrolling_transition_effect", def));
+                                getString("ui_drawer_scrolling_transition_effect", def));
                     } catch (IllegalArgumentException iae) {
                         // Continue
                     }
@@ -153,25 +155,24 @@ public final class PreferencesProvider {
 
                     return AppsCustomizePagedView.TransitionEffect.Standard;
                 }
-                public static boolean getFadeInAdjacentScreens(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_drawer_scrolling_fade_adjacent_screens", false);
+                public static boolean getFadeInAdjacentScreens() {
+                    return getBoolean("ui_drawer_scrolling_fade_adjacent_screens", false);
                 }
             }
             public static class Indicator {
-                public static boolean getShowScrollingIndicator(Context context) {
-                   final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_drawer_indicator_enable", true);
+                public static boolean getShowScrollingIndicator() {
+                    return getBoolean("ui_drawer_indicator_enable", true);
                 }
-                public static boolean getFadeScrollingIndicator(Context context) {
-                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                    return preferences.getBoolean("ui_drawer_indicator_fade", true);
+                public static boolean getFadeScrollingIndicator() {
+                    return getBoolean("ui_drawer_indicator_fade", true);
                 }
             }
         }
 
         public static class Dock {
-
+            public static boolean getShowDivider() {
+                return getBoolean("ui_dock_divider", true);
+            }
         }
 
         public static class Icons {
@@ -179,9 +180,8 @@ public final class PreferencesProvider {
         }
 
         public static class General {
-            public static boolean getAutoRotate(Context context, boolean def) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_general_orientation", def);
+            public static boolean getAutoRotate(boolean def) {
+                return getBoolean("ui_general_orientation", def);
             }
         }
     }

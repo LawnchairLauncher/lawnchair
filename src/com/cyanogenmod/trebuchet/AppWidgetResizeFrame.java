@@ -126,7 +126,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mWidgetPaddingBottom = p.bottom;
 
         // Resize any widget
-        if (PreferencesProvider.Interface.Homescreen.getResizeAnyWidget(context)) {
+        if (PreferencesProvider.Interface.Homescreen.getResizeAnyWidget()) {
             mResizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
             mMinHSpan = 1;
             mMinVSpan = 1;

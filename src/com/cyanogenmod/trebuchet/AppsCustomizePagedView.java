@@ -384,13 +384,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mCameraDistance = resources.getInteger(R.integer.config_cameraDistance);
 
         // Preferences
-        mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
-        mVertical = PreferencesProvider.Interface.Drawer.getVertical(context);
-        mTransitionEffect = PreferencesProvider.Interface.Drawer.Scrolling.getTransitionEffect(context,
+        mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps();
+        mVertical = PreferencesProvider.Interface.Drawer.getVertical();
+        mTransitionEffect = PreferencesProvider.Interface.Drawer.Scrolling.getTransitionEffect(
                 resources.getString(R.string.config_drawerDefaultTransitionEffect));
-        mFadeInAdjacentScreens = PreferencesProvider.Interface.Drawer.Scrolling.getFadeInAdjacentScreens(context);
-        mShowScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getShowScrollingIndicator(context);
-        mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator(context);
+        mFadeInAdjacentScreens = PreferencesProvider.Interface.Drawer.Scrolling.getFadeInAdjacentScreens();
+        mShowScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getShowScrollingIndicator();
+        mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator();
 
 
         if (!mShowScrollingIndicator) {

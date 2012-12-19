@@ -373,6 +373,9 @@ public final class Launcher extends Activity
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
+        // Load all preferences
+        PreferencesProvider.load(this);
+
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
@@ -382,10 +385,10 @@ public final class Launcher extends Activity
         // LauncherModel load.
         mPaused = false;
         // Preferences
-        mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
-        mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(this);
-        mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels(this);
-        mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
+        mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
+        mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider();
+        mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
+        mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(getResources().getBoolean(R.bool.allow_rotation));
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(

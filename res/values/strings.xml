@@ -304,6 +304,7 @@ s -->
     <!-- UI -->
     <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">Homescreen</string>
+    <string name="preferences_interface_homescreen_summary">Screens and wallpaper</string>
     <string name="preferences_interface_homescreen_general_category">General</string>
     <string name="preferences_interface_homescreen_general_screens_title">Homescreens</string>
     <string name="preferences_interface_homescreen_general_screens_summary">Number of screens on the homescreen</string>
@@ -339,11 +340,10 @@ s -->
     <string name="preferences_interface_homescreen_indicator_fade_summary">Fade away the indicator after the homescreen has changed</string>
     <string name="preferences_interface_homescreen_indicator_position_title">Indicator position</string>
     <string name="preferences_interface_homescreen_indicator_position_summary">Choose where to show the indicator on the screen</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Show dock divider</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Show the background behind the indicator</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
+    <string name="preferences_interface_drawer_summary">Apps and widgets drawer</string>
     <string name="preferences_interface_drawer_orientation_title">Orientation</string>
     <string name="preferences_interface_drawer_orientation_summary">Choose which way the drawer scrolls</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
@@ -362,6 +362,8 @@ s -->
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_divider_title">Show dock divider</string>
+    <string name="preferences_interface_dock_divider_summary">Show divider between homescreen and dock</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Icons</string>

@@ -56,10 +56,4 @@
   public float getHorizontalWallpaperOffset();
 }
 
--keep class com.cyanogenmod.trebuchet.AllApps3D$Defines {
-  *;
-}
-
--keep class com.cyanogenmod.trebuchet.ClippedImageView {
-  *;
-}
+-keep class com.cyanogenmod.trebuchet.preference.Preferences$*Fragment
