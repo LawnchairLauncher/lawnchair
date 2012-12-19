@@ -64,7 +64,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     public SearchDropTargetBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mShowQSBSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(context);
+        mShowQSBSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
     }
 
     public void setup(Launcher launcher, DragController dragController) {

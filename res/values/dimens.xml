@@ -160,4 +160,7 @@
     <dimen name="workspace_width_gap_port">0dp</dimen>
     <dimen name="workspace_height_gap_land">0dp</dimen>
     <dimen name="workspace_height_gap_port">0dp</dimen>
+
+<!-- Preferences -->
+    <dimen name="header_icon_width">28dp</dimen>
 </resources>
