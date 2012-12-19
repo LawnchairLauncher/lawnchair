@@ -29,8 +29,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingLeft">35dp</item>
-        <item name="android:paddingRight">35dp</item>
+        <item name="android:paddingStart">35dp</item>
+        <item name="android:paddingEnd">35dp</item>
         <item name="android:text">@string/cling_dismiss</item>
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/cling_button_bg</item>
@@ -71,16 +71,16 @@
 
     <style name="WorkspaceIcon.Portrait">
         <item name="android:drawablePadding">@dimen/app_icon_drawable_padding</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
         <item name="android:paddingTop">@dimen/app_icon_padding_top</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
 
     <style name="WorkspaceIcon.Landscape">
         <item name="android:drawablePadding">@dimen/app_icon_drawable_padding_land</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
         <item name="android:paddingTop">@dimen/app_icon_padding_top</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
@@ -104,8 +104,8 @@
         <item name="android:background">@null</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
         <item name="android:drawablePadding">2dp</item>
     </style>
     <style name="WorkspaceIcon.Landscape.AppsCustomize">
@@ -121,8 +121,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/qsb_bar_height</item>
         <item name="android:layout_gravity">top|center_horizontal</item>
-        <item name="android:paddingLeft">@dimen/qsb_padding_left</item>
-        <item name="android:paddingRight">@dimen/qsb_padding_right</item>
+        <item name="android:paddingStart">@dimen/qsb_padding_left</item>
+        <item name="android:paddingEnd">@dimen/qsb_padding_right</item>
     </style>
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
@@ -145,8 +145,8 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingLeft">25dp</item>
-        <item name="android:paddingRight">25dp</item>
+        <item name="android:paddingStart">25dp</item>
+        <item name="android:paddingEnd">25dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
         <item name="android:singleLine">true</item>
@@ -161,8 +161,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingLeft">20dp</item>
-        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
         <item name="android:background">@drawable/tab_widget_indicator_selector</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">12sp</item>
@@ -176,8 +176,8 @@
     </style>
 
     <style name="MarketButton">
-        <item name="android:paddingLeft">5dp</item>
-        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
         <item name="android:textColor">@color/workspace_all_apps_and_delete_zone_text_color</item>
         <item name="android:textSize">18sp</item>
         <item name="android:shadowColor">@color/workspace_all_apps_and_delete_zone_text_shadow_color</item>

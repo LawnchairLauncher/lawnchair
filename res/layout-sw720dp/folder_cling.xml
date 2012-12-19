@@ -20,7 +20,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/cling_text_block_offset_x"
+        android:layout_marginStart="@dimen/cling_text_block_offset_x"
         android:layout_marginTop="@dimen/cling_text_block_offset_y">
         <LinearLayout
             android:layout_width="match_parent"

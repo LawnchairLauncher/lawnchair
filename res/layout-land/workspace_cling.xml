@@ -22,7 +22,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="40dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,16 +44,16 @@
         style="@style/ClingText"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="130dp"
-        android:layout_gravity="right|center_vertical"
-        android:gravity="right"
+        android:layout_marginEnd="130dp"
+        android:layout_gravity="end|center_vertical"
+        android:gravity="end"
         android:text="@string/workspace_cling_open_all_apps" />
     <Button
         style="@style/ClingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="10dp"
+        android:layout_gravity="bottom|end"
         android:onClick="dismissWorkspaceCling" />
 </com.android.launcher2.Cling>
