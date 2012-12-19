@@ -1899,7 +1899,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (v != null) {
                 float scrollProgress = getScrollProgress(screenScroll, v, i);
                 float rotation = (in ? 90.0f : -90.0f) * scrollProgress;
-                float alpha = 1 - Math.abs(scrollProgress);
 
                 if (in) {
                     v.setCameraDistance(mDensity * mCameraDistance);
@@ -1914,7 +1913,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     v.setPivotX(v.getMeasuredWidth() * 0.5f);
                     v.setRotationX(-rotation);
                 }
-                v.setAlpha(alpha);
+                if (mFadeInAdjacentScreens) {
+                    float alpha = 1 - Math.abs(scrollProgress);
+                    v.setAlpha(alpha);
+                }
             }
         }
     }

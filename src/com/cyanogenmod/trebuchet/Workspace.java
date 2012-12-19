@@ -1517,7 +1517,9 @@ public class Workspace extends SmoothPagedView
                 }
                 cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
                 cl.setRotationY(rotation);
-                setCellLayoutFadeAdjacent(cl, scrollProgress);
+                if (mFadeInAdjacentScreens && !isSmall()) {
+                    setCellLayoutFadeAdjacent(cl, scrollProgress);
+                }
             }
         }
     }
