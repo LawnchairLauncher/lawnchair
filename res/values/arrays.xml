@@ -18,6 +18,16 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="preferences_interface_homescreen_indicator_position_entries">
+        <item>Above Dock</item>
+        <item>Top</item>
+        <item>Bottom</item>
+    </string-array>
+    <string-array name="preferences_interface_homescreen_indicator_position_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
         <item>Standard</item>
         <item>Tablet</item>

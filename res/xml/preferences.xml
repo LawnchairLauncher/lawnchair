@@ -94,6 +94,13 @@
                     android:summary="@string/preferences_interface_homescreen_indicator_fade_summary"
                     android:defaultValue="true"
                     android:dependency="ui_homescreen_indicator_enable" />
+                <ListPreference android:key="ui_homescreen_indicator_position"
+                    android:title="@string/preferences_interface_homescreen_indicator_position_title"
+                    android:summary="@string/preferences_interface_homescreen_indicator_position_summary"
+                    android:entries="@array/preferences_interface_homescreen_indicator_position_entries"
+                    android:entryValues="@array/preferences_interface_homescreen_indicator_position_values"
+                    android:defaultValue="0"
+                    android:dependency="ui_homescreen_indicator_enable" />
                 <CheckBoxPreference android:key="ui_homescreen_indicator_background"
                     android:title="@string/preferences_interface_homescreen_indicator_background_title"
                     android:summary="@string/preferences_interface_homescreen_indicator_background_summary"

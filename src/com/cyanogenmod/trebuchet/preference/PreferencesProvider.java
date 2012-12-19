@@ -115,6 +115,10 @@ public final class PreferencesProvider {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                     return preferences.getBoolean("ui_homescreen_indicator_fade", true);
                 }
+                public static int getScrollingIndicatorPosition(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return Integer.parseInt(preferences.getString("ui_homescreen_indicator_position", "0"));
+                }
                 public static boolean getShowDockDivider(Context context) {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                     return preferences.getBoolean("ui_homescreen_indicator_background", true);

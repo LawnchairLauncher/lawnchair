@@ -45,12 +45,26 @@
         android:layout_marginBottom="@dimen/button_bar_height"
         android:layout_gravity="bottom" />
     <include
-        android:id="@+id/paged_view_indicator_horizontal"
+        android:id="@+id/paged_view_indicator_dock"
         layout="@layout/scroll_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/button_bar_height" />
+
+    <include
+        android:id="@+id/paged_view_indicator_top"
+        layout="@layout/scroll_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top" />
+
+    <include
+        android:id="@+id/paged_view_indicator_bottom"
+        layout="@layout/scroll_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
     <include layout="@layout/hotseat"
         android:id="@+id/hotseat"

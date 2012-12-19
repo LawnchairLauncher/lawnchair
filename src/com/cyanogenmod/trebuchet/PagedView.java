@@ -1979,11 +1979,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mHasScrollIndicator && mScrollIndicator == null) {
             ViewGroup parent = (ViewGroup) getParent();
             if (parent != null) {
-                if (!mVertical) {
-                    mScrollIndicator = (View) parent.findViewById(R.id.paged_view_indicator_horizontal);
-                } else {
-                    mScrollIndicator = (View) parent.findViewById(R.id.paged_view_indicator_vertical);
-                }
+                mScrollIndicator = parent.findViewById(getScrollingIndicatorId());
                 mHasScrollIndicator = mScrollIndicator != null;
                 if (mHasScrollIndicator) {
                     mScrollIndicator.setVisibility(View.VISIBLE);
@@ -1995,6 +1991,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected boolean isScrollingIndicatorEnabled() {
         return true;
+    }
+
+    protected int getScrollingIndicatorId() {
+        return R.id.paged_view_indicator;
     }
 
     Runnable hideScrollingIndicatorRunnable = new Runnable() {

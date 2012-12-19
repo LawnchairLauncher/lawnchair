@@ -319,8 +319,13 @@ public class Workspace extends SmoothPagedView
     private boolean mScrollWallpaper;
     private boolean mShowScrollingIndicator;
     private boolean mFadeScrollingIndicator;
+    private int mScrollingIndicatorPosition;
     private boolean mShowDockDivider;
     private boolean mShowOutlines;
+
+    private static final int SCROLLING_INDICATOR_DOCK = 0;
+    private static final int SCROLLING_INDICATOR_TOP = 1;
+    private static final int SCROLLING_INDICATOR_BOTTOM = 2;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -409,6 +414,7 @@ public class Workspace extends SmoothPagedView
                 res.getBoolean(R.bool.config_workspaceDefualtFadeInAdjacentScreens));
         mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getShowScrollingIndicator(context);
         mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getFadeScrollingIndicator(context);
+        mScrollingIndicatorPosition = PreferencesProvider.Interface.Homescreen.Indicator.getScrollingIndicatorPosition(context);
         mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(context);
 
         initWorkspace();
@@ -972,6 +978,19 @@ public class Workspace extends SmoothPagedView
         super.notifyPageSwitchListener();
         Launcher.setScreen(mCurrentPage);
     };
+
+    @Override
+    protected int getScrollingIndicatorId() {
+        switch (mScrollingIndicatorPosition) {
+            case SCROLLING_INDICATOR_TOP:
+                return R.id.paged_view_indicator_top;
+            case SCROLLING_INDICATOR_BOTTOM:
+                return R.id.paged_view_indicator_bottom;
+            case SCROLLING_INDICATOR_DOCK:
+            default:
+                return R.id.paged_view_indicator_dock;
+        }
+    }
 
     @Override
     protected void flashScrollingIndicator(boolean animated) {

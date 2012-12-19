@@ -2188,6 +2188,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
+    protected int getScrollingIndicatorId() {
+        if (!mVertical) {
+            return R.id.paged_view_indicator_horizontal;
+        } else {
+            return R.id.paged_view_indicator_vertical;
+        }
+    }
+
+    @Override
     protected void flashScrollingIndicator(boolean animated) {
         if (mFadeScrollingIndicator) {
             super.flashScrollingIndicator(animated);
