@@ -111,6 +111,9 @@ public final class PreferencesProvider {
                 public static boolean getWallpaperHack() {
                     return getBoolean("ui_homescreen_scrolling_wallpaper_hack", false);
                 }
+                public static int getWallpaperSize() {
+                    return getInt("ui_homescreen_scrolling_wallpaper_size", 2);
+                }
                 public static boolean getFadeInAdjacentScreens(boolean def) {
                     return getBoolean("ui_homescreen_scrolling_fade_adjacent_screens", def);
                 }

@@ -72,6 +72,12 @@
             android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_title"
             android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_summary"
             android:defaultValue="false" />
+        <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_scrolling_wallpaper_size"
+            android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_size_title"
+            android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_size_summary"
+            android:defaultValue="2"
+            launcher:max="5"
+            launcher:min="2" />
         <CheckBoxPreference android:key="ui_homescreen_scrolling_fade_adjacent_screens"
             android:title="@string/preferences_interface_homescreen_scrolling_fade_adjacent_screens_title"
             android:summary="@string/preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary"

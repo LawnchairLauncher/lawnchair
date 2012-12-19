@@ -317,6 +317,7 @@ public class Workspace extends SmoothPagedView
     private boolean mResizeAnyWidget;
     private boolean mHideIconLabels;
     private boolean mScrollWallpaper;
+    private int mWallpaperSize;
     private boolean mShowScrollingIndicator;
     private boolean mFadeScrollingIndicator;
     private int mScrollingIndicatorPosition;
@@ -407,6 +408,7 @@ public class Workspace extends SmoothPagedView
                 res.getString(R.string.config_workspaceDefaultTransitionEffect));
         mScrollWallpaper = PreferencesProvider.Interface.Homescreen.Scrolling.getScrollWallpaper();
         mWallpaperHack = PreferencesProvider.Interface.Homescreen.Scrolling.getWallpaperHack();
+        mWallpaperSize = PreferencesProvider.Interface.Homescreen.Scrolling.getWallpaperSize();
         mShowOutlines = PreferencesProvider.Interface.Homescreen.Scrolling.getShowOutlines(
                 res.getBoolean(R.bool.config_workspaceDefaultShowOutlines));
         mFadeInAdjacentScreens = PreferencesProvider.Interface.Homescreen.Scrolling.getFadeInAdjacentScreens(
@@ -1046,12 +1048,14 @@ public class Workspace extends SmoothPagedView
             mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
             mWallpaperHeight = maxDim;
         } else {
-            mWallpaperWidth = Math.max((int) (minDim * DEFAULT_WALLPAPER_SCREENS_SPAN), maxDim);
+            int screens = mWallpaperSize;
+            mWallpaperWidth = Math.max((int) (minDim * screens), maxDim);
             mWallpaperHeight = maxDim;
         }
         new Thread("setWallpaperDimension") {
             public void run() {
                 mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
+                checkWallpaper();
             }
         }.start();
     }
@@ -1205,6 +1209,13 @@ public class Workspace extends SmoothPagedView
                 mIsMovingFast = false;
                 return false;
             }
+
+            // Don't have any lag between workspace and wallpaper on non-large devices
+            if (!LauncherApplication.isScreenLarge()) {
+                mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
+                return true;
+            }
+
             boolean isLandscape = mDisplaySize.x > mDisplaySize.y;
 
             long currentTime = System.currentTimeMillis();
@@ -1233,7 +1244,6 @@ public class Workspace extends SmoothPagedView
             float hOffsetDelta = mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
             boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD;
 
-            // Don't have any lag between workspace and wallpaper on non-large devices
             if (!LauncherApplication.isScreenLarge() || jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
             } else {
