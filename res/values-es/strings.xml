@@ -54,7 +54,6 @@
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Eliminar del  escritorio"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Desinstalar"</string>
     <string name="delete_target_label" msgid="665300185123139530">"Eliminar"</string>
-    <string name="cancel_target_label">Cancelar</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Desinstalar"</string>
     <string name="info_target_label" msgid="4019495079517426980">"Información de la aplicación"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Buscar"</string>
@@ -68,10 +67,7 @@
     <string name="menu_search" msgid="4826514464423239041">"Buscar"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notificaciones"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Ajustes del sistema"</string>
-    <string name="menu_preferences">Ajustes de Trebuchet</string>
     <string name="menu_help" msgid="4901160661634590633">"Ayuda"</string>
-    <string name="menu_apps_sort_title">Nombre</string>
-    <string name="menu_apps_sort_install_date">Fecha</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Desinstalar la aplicación"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Información de la aplicación"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"1 aplicación seleccionada"</string>
@@ -100,8 +96,6 @@
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Para ver todas las aplicaciones, toca el círculo."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Selecciona algunas aplicaciones"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Para añadir una aplicación al escritorio, solo tienes que mantenerla pulsada."</string>
-    <string name="all_apps_sort_cling_title">Ordenar aplicaciones</string>
-    <string name="all_apps_sort_cling_add_item">Mantener pulsación sobre la pestaña de Aplicaciones para elegir el método de ordenación</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Organiza tus aplicaciones en carpetas"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover una aplicación, solo tienes que mantenerla pulsada."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en el escritorio, coloca una aplicación encima de otra."</string>
@@ -116,50 +110,90 @@
     <string name="custom_workspace_cling_description_1" msgid="6875529190849858047"></string>
     <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
-    <string name="preferences_title">"Preferencias"</string>
-    <string name="preferences_interface_title">"Interfaz"</string>
-    <string name="preferences_application_title">"Aplicación"</string>
-    <string name="preferences_interface_homescreen_title">"Pantalla de Inicio"</string>
-    <string name="preferences_interface_homescreen_general_category">"General"</string>
-    <string name="preferences_interface_homescreen_general_screens_title">"Pantallas de inicio"</string>
-    <string name="preferences_interface_homescreen_general_screens_summary">"Número de pantallas de inicio a mostrar"</string>
-    <string name="preferences_interface_homescreen_general_default_screen_title">"Pantalla por defecto"</string>
-    <string name="preferences_interface_homescreen_general_default_screen_summary">"Escoger la pantalla de inicio por defecto"</string>
-    <string name="preferences_interface_homescreen_general_search_title">"Barra de búsqueda"</string>
-    <string name="preferences_interface_homescreen_general_grid_title">"Filas/Columnas"</string>
-    <string name="preferences_interface_homescreen_general_grid_summary">"Elije el número de filas/columnas a mostrar en la pantalla de inicio</string>
-    <string name="preferences_interface_homescreen_general_grid_rows_title">"Filas"</string>
-    <string name="preferences_interface_homescreen_general_grid_columns_title">"Columnas"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">"Espaciado vertical"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">"Espaciado vertical adicional en la pantalla de inicio"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">"Espaciado horizontal"</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">"Espaciado horizontal adicional en la pantalla de inicio"</string>
-    <string name="preferences_interface_homescreen_general_search_summary">"Habilitar la barra de búsqueda permanentemente"</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">"Redimensionar widgets"</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">"Permitir redimensionar los widgets que normalmente no son redimensionables"</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">"Ocultar etiquetas"</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">"Ocultar las etiquetas de los iconos de la pantalla de inicio"</string>
-    <string name="preferences_interface_homescreen_scrolling_category">"Desplazamiento"</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">"Desplazar fondo"</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">"Desplazar fondo de escritorio al desplazar las pantallas de inicio"</string>
-    <string name="preferences_interface_homescreen_indicator_category">"Indicador"</string>
-    <string name="preferences_interface_homescreen_indicator_enable_title">"Mostrar el indicador de página"</string>
-    <string name="preferences_interface_homescreen_indicator_enable_summary">"Mostrar indicador de página actual en la parte inferior de la pantalla"</string>
-    <string name="preferences_interface_homescreen_indicator_fade_title">"Efecto fundido"</string>
-    <string name="preferences_interface_homescreen_indicator_fade_summary">"Activar efecto de fundido del indicador de página después de un cambio de pantalla de inicio"</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">"Separador"</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">"Mostrar una barra de separación debajo del indicador de página"</string>
-    <string name="preferences_interface_drawer_title">"Aplicaciones/Widgets"</string>
-    <string name="preferences_interface_drawer_widgets_category">"Widgets"</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_title">"Transición pestañas"</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_summary">"Pasar de pestañas de aplicaciones a pestañas de widgets sin necesidad de cambiar explícitamente de pestaña"</string>
-    <string name="preferences_interface_drawer_indicator_category">"Indicador"</string>
-    <string name="preferences_interface_drawer_indicator_enable_title">"Mostrar el indicador de página"</string>
-    <string name="preferences_interface_drawer_indicator_enable_summary">"Mostrar indicador de página actual en la parte inferior de la pantalla"</string>
-    <string name="preferences_interface_drawer_indicator_fade_title">"Efecto fundido"</string>
-    <string name="preferences_interface_drawer_indicator_fade_summary">"Activar efecto de fundido del indicador de página después de un cambio de pantalla"</string>
-    <string name="preferences_interface_dock_title">"Barra Aplicaciones"</string>
-    <string name="preferences_interface_icons_title">"Iconos"</string>
-    <string name="preferences_interface_general_title">"General"</string>
-    <string name="preferences_interface_general_orientation_title">"Rotación automática pantalla"</string>
+
+    <!-- CYANOGENMOD EDITS START -->
+
+    <string name="cancel_target_label">Cancelar</string>
+    <string name="menu_preferences">Ajustes de Trebuchet</string>
+    <string name="menu_apps_sort_title">Nombre</string>
+    <string name="menu_apps_sort_install_date">Fecha</string>
+    <string name="menu_apps_filter_system">Sistema</string>
+    <string name="menu_apps_filter_downloaded">Descargadas</string>
+    <string name="menu_hidden_apps_delete">Restablecer</string>
+    <string name="all_apps_sort_cling_title">Ordenar aplicaciones</string>
+    <string name="all_apps_sort_cling_add_item">Mantener pulsación sobre la pestaña Aplicaciones para elegir el método de ordenación</string>
+    <string name="hidden_apps_title">Aplicaciones ocultas</string>
+    <string name="preferences_title">Preferencias</string>
+    <string name="preferences_interface_title">Interfaz</string>
+    <string name="preferences_application_title">Aplicación</string>
+    <string name="preferences_interface_homescreen_title">Pantalla de inicio</string>
+    <string name="preferences_interface_homescreen_summary">Pantallas y fondo</string>
+    <string name="preferences_interface_homescreen_general_category">General</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Pantallas de inicio</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Número de pantallas de inicio a mostrar</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Pantalla por defecto</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Escoger la pantalla de inicio por defecto</string>
+    <string name="preferences_interface_homescreen_general_search_title">Barra de búsqueda</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Habilitar la barra de búsqueda permanentemente</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Filas y columnas</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Indicar el número de filas/columnas a mostrar en la pantalla de inicio</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Filas</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Columnas</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Extender pantallas</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Extender las pantallas de inicio para ocupar toda la pantalla</string>
+    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionar widgets</string>
+    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permitir redimensionar los widgets que normalmente no son redimensionables</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ocultar etiquetas</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ocultar las etiquetas de los iconos de la pantalla de inicio</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Desplazamiento</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efecto de transición</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efecto de transición al desplazarse entre pantallas</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Desplazar fondo</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Desplazar fondo de escritorio al desplazar las pantallas de inicio</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Renderizado rápido</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Usar el renderizado rápido, suaviza los fondos de pantalla con imágenes estáticas</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Tamaño del fondo</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Establecer cuantas pantallas ocupará el fondo de pantalla</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Efecto de fundido</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Efecto de fundido al desplazarse entre pantallas</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Bordes de pantalla</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Mostrar bordes delimitadores al desplazarse entre pantallas</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indicador</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Mostrar indicador</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Mostrar indicador de página actual en la pantalla</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Efecto de fundido</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Ocultar automáticamente el indicador de página</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Posición</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Establecer dónde se mostrará el indicador de página</string>
+    <string name="preferences_interface_drawer_title">Pestañas</string>
+    <string name="preferences_interface_drawer_summary">Aplicaciones y widgets</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientación</string>
+    <string name="preferences_interface_drawer_orientation_summary">Establecer la dirección de desplazamiento</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Aplicaciones ocultas</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Establecer las aplicaciones que se ocultarán en la pestaña aplicaciones</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgets</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Transición pestañas</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Pasar de pestañas de aplicaciones a pestañas de widgets sin necesidad de cambiar explícitamente de pestaña</string>
+    <string name="preferences_interface_drawer_scrolling_category">Desplazamiento</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efecto de transición</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efecto de transición al desplazarse entre pantallas</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Efecto de fundido</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Efecto de fundido al desplazarse entre pantallas</string>
+    <string name="preferences_interface_drawer_indicator_category">Indicador</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Mostrar indicador</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Mostrar indicador de página actual en la pantalla</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Efecto de fundido</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Ocultar automáticamente el indicador de página</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Posición</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Establecer dónde se mostrará el indicador de página</string>
+    <string name="preferences_interface_dock_title">Barra de aplicaciones</string>
+    <string name="preferences_interface_dock_divider_title">Separador</string>
+    <string name="preferences_interface_dock_divider_summary">Mostrar una línea divisoria sobre la barra de aplicaciones</string>
+    <string name="preferences_interface_icons_title">Iconos</string>
+    <string name="preferences_interface_general_title">General</string>
+    <string name="preferences_interface_general_orientation_title">Rotación automática pantalla</string>
+    <string name="preferences_interface_general_fullscreen_title">Modo pantalla completa</string>
+    <string name="preferences_interface_general_fullscreen_summary">Ocultar la barra de estado para extender la pantalla de inicio</string>
+
+    <!-- CYANOGENMOD ADDITIONS END -->
 </resources>

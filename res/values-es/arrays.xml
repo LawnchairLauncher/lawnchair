@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="preferences_interface_homescreen_indicator_position_entries">
+        <item>Estándar</item>
+        <item>Arriba</item>
+        <item>Abajo</item>
+    </string-array>
+    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
+        <item>Estándar</item>
+        <item>Tablet</item>
+        <item>Zoom entrante</item>
+        <item>Zoom saliente</item>
+        <item>Rotar arriba</item>
+        <item>Rotar abajo</item>
+        <item>Cilíndrico entrante</item>
+        <item>Cilíndrico saliente</item>
+        <item>Cúbico entrante</item>
+        <item>Cúbico saliente</item>
+        <item>Girar</item>
+        <item>Voltear</item>
+        <item>Apilar</item>
+        <item>Acordeón</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
+        <item>Estándar</item>
+        <item>Tablet</item>
+        <item>Zoom entrante</item>
+        <item>Zoom saliente</item>
+        <item>Rotar arriba</item>
+        <item>Rotar abajo</item>
+        <item>Cilíndrico entrante</item>
+        <item>Cilíndrico saliente</item>
+        <item>Cúbico entrante</item>
+        <item>Cúbico saliente</item>
+        <item>Girar</item>
+        <item>Voltear</item>
+        <item>Apilar</item>
+        <item>Acordeón</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>Arriba/Izquierda</item>
+        <item>Abajo/Derecha</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_orientation_entries">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+</resources>
