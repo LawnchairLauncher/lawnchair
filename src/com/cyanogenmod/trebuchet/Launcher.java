@@ -310,6 +310,7 @@ public final class Launcher extends Activity
     private boolean mShowDockDivider;
     private boolean mHideIconLabels;
     private boolean mAutoRotate;
+    private boolean mFullscreenMode;
 
     private boolean mWallpaperVisible;
 
@@ -389,6 +390,7 @@ public final class Launcher extends Activity
         mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider();
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
         mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(getResources().getBoolean(R.bool.allow_rotation));
+        mFullscreenMode = PreferencesProvider.Interface.General.getFullscreenMode();
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -806,27 +808,6 @@ public final class Launcher extends Activity
         }
         return Boolean.TRUE;
     }
-
-    // We can't hide the IME if it was forced open.  So don't bother
-    /*
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-        if (hasFocus) {
-            final InputMethodManager inputManager = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            inputManager.hideSoftInputFromWindow(lp.token, 0, new android.os.ResultReceiver(new
-                        android.os.Handler()) {
-                        protected void onReceiveResult(int resultCode, Bundle resultData) {
-                            Log.d(TAG, "ResultReceiver got resultCode=" + resultCode);
-                        }
-                    });
-            Log.d(TAG, "called hideSoftInputFromWindow from onWindowFocusChanged");
-        }
-    }
-    */
 
     private boolean acceptFilter() {
         final InputMethodManager inputManager = (InputMethodManager)
@@ -2492,6 +2473,15 @@ public final class Launcher extends Activity
         }
     }
 
+    private void updateFullscreenMode(boolean enable) {
+        int fsflags = enable ? WindowManager.LayoutParams.FLAG_FULLSCREEN : 0;
+        int curflags = getWindow().getAttributes().flags
+                & WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        if (fsflags != curflags) {
+            getWindow().setFlags(fsflags, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+     }
+
     private void dispatchOnLauncherTransitionPrepare(View v, boolean animated, boolean toWorkspace) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionPrepare(this, animated, toWorkspace);
@@ -2868,6 +2858,10 @@ public final class Launcher extends Activity
                     disableWallpaperIfInAllApps();
                 }
             }, 500);
+
+            if (mFullscreenMode) {
+                updateFullscreenMode(true);
+            }
         }
     }
 
