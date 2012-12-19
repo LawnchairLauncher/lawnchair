@@ -18,6 +18,12 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="preferences_interface_homescreen_indicator_position_entries">
+        <item>Oberhalb des Docks</item>
+        <item>Oben</item>
+        <item>Unten</item>
+    </string-array>
+
     <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
         <item>Standard</item>
         <item>Tablett</item>
@@ -26,7 +32,7 @@
         <item>Rotieren oben</item>
         <item>Rotieren unten</item>
         <item>Zylinder innen</item>
-        <item>zylinder außen</item>
+        <item>Zylinder außen</item>
         <item>Würfel innen</item>
         <item>Würfel außen</item>
         <item>Wirbeln</item>
@@ -50,6 +56,11 @@
         <item>Blättern</item>
         <item>Stapeln</item>
         <item>Akkordeon</item>
+    </string-array>
+
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>Oben/Links</item>
+        <item>Unten/Rechts</item>
     </string-array>
 
     <string-array name="preferences_interface_drawer_orientation_entries">

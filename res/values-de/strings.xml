@@ -39,6 +39,8 @@
     <string name="group_applications" msgid="2103752818818161976">"Apps"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Verknüpfungen"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all launcher actions -->
+    <string name="group_actions">Aktionen</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hintergründe"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Auf Ihrem Startbildschirm ist kein Platz mehr vorhanden."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>
@@ -57,6 +59,8 @@
     <string name="cancel_target_label">Abbrechen</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Deinstallieren"</string>
     <string name="info_target_label" msgid="4019495079517426980">"App-Info"</string>
+    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
+    <string name="edit_target_label">Bearbeiten</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Suchen"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Sprachsuche"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Apps"</string>
@@ -75,6 +79,14 @@
     <string name="menu_apps_sort_title">Name</string>
     <!-- Noun, menu item used to sort apps by install date -->
     <string name="menu_apps_sort_install_date">Installationsdatum</string>
+
+    <!-- Noun, menu item used to show system apps -->
+    <string name="menu_apps_filter_system">System</string>
+    <!-- Noun, menu item used to show downloaded apps -->
+    <string name="menu_apps_filter_downloaded">Heruntergeladen</string>
+
+    <!-- Noun, menu item used to reset hidden apps list -->
+    <string name="menu_hidden_apps_delete">Zurücksetzen</string>
 
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"App deinstallieren"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"App-Details"</string>
@@ -157,6 +169,9 @@
     <!-- Dummy string [CHAR_LIMIT=60] -->
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
 
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Versteckte Apps</string>
+
     <!--             -->
     <!-- Preferences -->
     <!--             -->
@@ -168,18 +183,19 @@
 
     <!-- UI -->
     <!-- Homescreen -->
-    <string name="preferences_interface_homescreen_title">Seiten</string>
+    <string name="preferences_interface_homescreen_title">Bildschirmseiten</string>
+    <string name="preferences_interface_homescreen_summary">Bildschirmseiten und Hintergrundbild</string>
     <string name="preferences_interface_homescreen_general_category">Allgemein</string>
     <string name="preferences_interface_homescreen_general_screens_title">Seitenzahl</string>
-    <string name="preferences_interface_homescreen_general_screens_summary">Anzahl der verwendbaren und wechselbaren Seiten für Icons und Widgets</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Anzahl der verwendbaren und wechselbaren Bildschirmseiten für Icons und Widgets</string>
     <string name="preferences_interface_homescreen_general_default_screen_title">Standardseite</string>
-    <string name="preferences_interface_homescreen_general_default_screen_summary">Aktive Seite nach Neustart des Geräts</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Aktive Bildschirmseite nach Neustart des Geräts</string>
     <string name="preferences_interface_homescreen_general_grid_title">Rastergröße</string>
     <string name="preferences_interface_homescreen_general_grid_summary">Anzahl der für Icons verfügbaren Reihen / Spalten</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Reihen</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Spalten</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Seiten ausdehnen</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Seiten bildschirmfüllend ausdehen</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Seiten bildschirmfüllend ausdehnen</string>
     <string name="preferences_interface_homescreen_general_search_title">Suchleiste</string>
     <string name="preferences_interface_homescreen_general_search_summary">Dauerhafte Anzeige der Suchleiste</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Größe aller Widgets anpassbar</string>
@@ -193,6 +209,8 @@
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Hintergrundbild bei Seitenwechsel scrollen</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Hintergrundbild schneller rendern</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Flüssigere Darstellung von statischen Hintergrundbildern</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Hintergrundbildgröße</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Größe des Hintergrundbilds in Seitenbreiten festlegen</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Seiten einblenden</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Beim Scrollen die Seiten einblenden</string>
     <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Umriss anzeigen</string>
@@ -202,11 +220,16 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Seitenindikator anzeigen</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Automatisch ausblenden</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Indikator nach Seitenwechsel ausblenden</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Indikator-Position</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Anzeigeposition des Indikators auswählen</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Apps</string>
+    <string name="preferences_interface_drawer_summary">Apps und Widgets</string>
     <string name="preferences_interface_drawer_orientation_title">Ausrichtung</string>
     <string name="preferences_interface_drawer_orientation_summary">Scrollrichtung der App-Seiten auswählen</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Versteckte Apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Apps auf den App-Seiten verstecken.</string>
     <string name="preferences_interface_drawer_widgets_category">Widget-Seiten</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Mit App-Seiten verbinden</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Blättern auch zwischen App- und Widget-Seiten</string>
@@ -223,6 +246,14 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_pages_title">Seiten</string>
+    <string name="preferences_interface_dock_pages_summary">Anzahl der Seiten im Dock</string>
+    <string name="preferences_interface_dock_default_page_title">Standardseite</string>
+    <string name="preferences_interface_dock_default_page_summary">Die Standardseite festlegen</string>
+    <string name="preferences_interface_dock_icons_title">Icons</string>
+    <string name="preferences_interface_dock_icons_summary">Anzahl der Icons/Spalten des Docks festlegen</string>
+    <string name="preferences_interface_dock_divider_title">Dock-Abtrennung anzeigen</string>
+    <string name="preferences_interface_dock_divider_summary">Linie als Indikator-Hintergrund anzeigen</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Icons</string>
@@ -230,4 +261,6 @@
     <!-- General -->
     <string name="preferences_interface_general_title">Allgemein</string>
     <string name="preferences_interface_general_orientation_title">Automatische Seitenausrichtung</string>
+    <string name="preferences_interface_general_fullscreen_title">Vollbildmodus</string>
+    <string name="preferences_interface_general_fullscreen_summary">Statusleiste für Vollbildansicht ausblenden</string>
 </resources>
