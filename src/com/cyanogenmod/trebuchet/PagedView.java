@@ -468,8 +468,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 || getScrollY() != mScroller.getCurrY()
                 || mOverScrollX != mScroller.getCurrX()) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-                invalidate();
             }
+            invalidate();
             return true;
         } else if (mNextPage != INVALID_PAGE) {
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
