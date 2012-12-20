@@ -329,7 +329,7 @@ s -->
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Scroll wallpaper when scrolling homescreens</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Wallpaper quick render</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Use wallpaper hack that increases smoothness on static image wallpapers</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Wallapaper size</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Wallpaper size</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">How many screens wide the wallpaper should be</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Fade side screens</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Fade the side screens when scrolling homescreens</string>

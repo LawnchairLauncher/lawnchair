@@ -23,7 +23,7 @@
         <item>Top</item>
         <item>Bottom</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_indicator_position_values">
+    <string-array name="preferences_interface_homescreen_indicator_position_values" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
