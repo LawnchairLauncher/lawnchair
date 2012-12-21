@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,11 +81,6 @@ public class Preferences extends PreferenceActivity
                 header.title = getString(R.string.application_name) + " " + getString(R.string.application_version);
             }
 
-            // Remove dock header on tablets
-            if (LauncherApplication.isScreenLarge() && header.id == R.id.preferences_dock_section) {
-                headers.remove(header);
-            }
-
             // Increment if not removed
             if (headers.get(i) == header) {
                 i++;
@@ -114,6 +110,11 @@ public class Preferences extends PreferenceActivity
             super.onCreate(savedInstanceState);
 
             addPreferencesFromResource(R.xml.preferences_homescreen);
+
+            PreferenceScreen preferenceScreen = getPreferenceScreen();
+            if (LauncherApplication.isScreenLarge()) {
+                preferenceScreen.removePreference(findPreference("ui_homescreen_grid"));
+            }
         }
     }
 
