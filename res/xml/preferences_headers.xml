@@ -25,19 +25,19 @@
             android:fragment="com.cyanogenmod.trebuchet.preference.Preferences$DrawerFragment"
             android:title="@string/preferences_interface_drawer_title"
             android:summary="@string/preferences_interface_drawer_summary" />
-            
+
     <header android:id="@+id/preferences_dock_section"
             android:fragment="com.cyanogenmod.trebuchet.preference.Preferences$DockFragment"
             android:title="@string/preferences_interface_dock_title" />
-    
+
     <header android:id="@+id/preferences_general_section"
             android:fragment="com.cyanogenmod.trebuchet.preference.Preferences$GeneralFragment"
             android:title="@string/preferences_interface_general_title" />
-            
+
     <header android:id="@+id/preferences_application_section"
-            android:title="@string/preferences_application_title" />        
-            
+            android:title="@string/preferences_application_title" />
+
     <header android:id="@+id/preferences_application_version"
-            android:summary="@string/application_copyright" />        
+            android:summary="@string/application_copyright" />
 
 </preference-headers>
