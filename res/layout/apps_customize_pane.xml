@@ -78,18 +78,32 @@
                 android:visibility="gone" />
 
             <include
-                android:id="@+id/paged_view_indicator_horizontal"
+                android:id="@+id/paged_view_indicator_left"
                 layout="@layout/scroll_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom" />
+                android:layout_gravity="left" />
 
             <include
-                android:id="@+id/paged_view_indicator_vertical"
+                android:id="@+id/paged_view_indicator_top"
+                layout="@layout/scroll_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top" />
+
+            <include
+                android:id="@+id/paged_view_indicator_right"
                 layout="@layout/scroll_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right" />
+
+            <include
+                android:id="@+id/paged_view_indicator_bottom"
+                layout="@layout/scroll_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom" />
         </FrameLayout>
     </LinearLayout>
 

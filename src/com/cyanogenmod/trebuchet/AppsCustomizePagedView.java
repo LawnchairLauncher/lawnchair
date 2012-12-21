@@ -365,6 +365,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private boolean mJoinWidgetsApps;
     private boolean mShowScrollingIndicator;
     private boolean mFadeScrollingIndicator;
+    private int mScrollingIndicatorPosition;
+
+    private static final int SCROLLING_INDICATOR_TOP = 1;
+    private static final int SCROLLING_INDICATOR_BOTTOM = 0;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -391,6 +395,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mFadeInAdjacentScreens = PreferencesProvider.Interface.Drawer.Scrolling.getFadeInAdjacentScreens();
         mShowScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getShowScrollingIndicator();
         mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator();
+        mScrollingIndicatorPosition = PreferencesProvider.Interface.Drawer.Indicator.getScrollingIndicatorPosition();
 
 
         if (!mShowScrollingIndicator) {
@@ -2192,9 +2197,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected int getScrollingIndicatorId() {
         if (!mVertical) {
-            return R.id.paged_view_indicator_horizontal;
+            if (mScrollingIndicatorPosition == SCROLLING_INDICATOR_BOTTOM) {
+                return R.id.paged_view_indicator_bottom;
+            } else {
+                return R.id.paged_view_indicator_top;
+            }
         } else {
-            return R.id.paged_view_indicator_vertical;
+            if (mScrollingIndicatorPosition == SCROLLING_INDICATOR_BOTTOM) {
+                return R.id.paged_view_indicator_right;
+            } else {
+                return R.id.paged_view_indicator_left;
+            }
         }
     }
 

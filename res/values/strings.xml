@@ -361,6 +361,8 @@ s -->
     <string name="preferences_interface_drawer_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Fade indicator</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Fade away the indicator after the page has changed</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Indicator position</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Choose where to show the indicator on the screen</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>

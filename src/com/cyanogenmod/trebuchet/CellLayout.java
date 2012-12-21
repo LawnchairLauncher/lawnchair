@@ -405,6 +405,7 @@ public class CellLayout extends ViewGroup {
             setOverScrollAmount(0, false);
             setPivotX(getMeasuredWidth() / 2);
             setPivotY(getMeasuredHeight() / 2);
+            setCameraDistance(1280 * LauncherApplication.getScreenDensity());
         }
     }
 

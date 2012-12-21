@@ -169,6 +169,9 @@ public final class PreferencesProvider {
                 public static boolean getFadeScrollingIndicator() {
                     return getBoolean("ui_drawer_indicator_fade", true);
                 }
+                public static int getScrollingIndicatorPosition() {
+                    return Integer.parseInt(getString("ui_drawer_indicator_position", "0"));
+                }
             }
         }
 
