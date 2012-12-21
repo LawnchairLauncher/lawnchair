@@ -26,9 +26,9 @@
             launcher:pickerTitle2="@string/preferences_interface_homescreen_general_grid_columns_title"
             launcher:defaultValue1="@integer/target_cell_count_x"
             launcher:defaultValue2="@integer/target_cell_count_y"
-            launcher:max1="7"
+            launcher:max1="@integer/config_maxWorkspaceRows"
             launcher:min1="3"
-            launcher:max2="7"
+            launcher:max2="@integer/config_maxWorkspaceColumns"
             launcher:min2="3" />
         <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_screens"
             android:title="@string/preferences_interface_homescreen_general_screens_title"
