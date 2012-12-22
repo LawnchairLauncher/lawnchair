@@ -79,7 +79,7 @@
     <string name="permdesc_read_settings" msgid="5788109303585403679">"Hiermee kan de app de instellingen en snelkoppelingen op de startpagina lezen."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"instellingen en snelkoppelingen voor de startpagina schrijven"</string>
     <string name="permdesc_write_settings" msgid="8530105489115785531">"Hiermee kan de app de instellingen en snelkoppelingen op de startpagina wijzigen."</string>
-    <string name="gadget_error_text" msgid="8359351016167075858">"Probleem bij het laden van widget"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Kan widget niet laden"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Dit is een systeem-app die niet kan worden verwijderd."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Naamloze map"</string>
@@ -141,41 +141,58 @@
     <!-- UI -->
     <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">Startscherm</string>
+    <string name="preferences_interface_homescreen_summary">Scherm en achtergrond</string>
     <string name="preferences_interface_homescreen_general_category">Algemeen</string>
     <string name="preferences_interface_homescreen_general_screens_title">Startschermen</string>
     <string name="preferences_interface_homescreen_general_screens_summary">Aantal startschermen</string>
     <string name="preferences_interface_homescreen_general_default_screen_title">Standaardscherm</string>
     <string name="preferences_interface_homescreen_general_default_screen_summary">Kies het standaardstartscherm</string>
+    <string name="preferences_interface_homescreen_general_search_title">Permanente zoekbalk</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Zoekbalk permanent tonen</string>
     <string name="preferences_interface_homescreen_general_grid_title">Rastergrootte</string>
     <string name="preferences_interface_homescreen_general_grid_summary">Kies het aantal rijen/kolommen op het startscherm</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rijen</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Kolommen</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Verticale opvulling</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Extra verticale opvulling op het startscherm</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Horizontale opvulling</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Extra horizontale opvulling op het startscherm</string>
-    <string name="preferences_interface_homescreen_general_search_title">Permanente zoekbalk</string>
-    <string name="preferences_interface_homescreen_general_search_summary">Zoekbalk permanent tonen</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Schermen uitrekken</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Startschermen uitrekken om het scherm te vullen</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Widgetgrootte altijd wijzigen</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Toestaan grootte van alle widgets te veranderen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Labels verbergen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Namen onder iconen verbergen</string>
-    <string name="preferences_interface_homescreen_scrolling_category">Scrollen</string>
+
+    <string name="preferences_interface_homescreen_scrolling_category">Bladeren</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Overgangseffect</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Bladereffect bij het bladeren door startschermen</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Achtergrond schuiven</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Achtergrond laten schuiven bij scrollen door startschermen</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Achtergrond laten schuiven bij bladeren door startschermen</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Grootte achtergrond</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Hoeveel schermen breed de achtergrond moet zijn</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Zijschermen vervagen</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Zijschermen vervagen bij het bladeren door startschermen</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Randen startschermen</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Schermranden tonen bij het bladeren door startschermen</string>
+
     <string name="preferences_interface_homescreen_indicator_category">Indicator</string>
     <string name="preferences_interface_homescreen_indicator_enable_title">Startschermindicator tonen</string>
     <string name="preferences_interface_homescreen_indicator_enable_summary">Indicator voor huidig startscherm onderaan tonen</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Indicator vervagen</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Indicator vervagen na het wisselen van startscherm</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Scheidingslijn dock tonen</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Achtergrond tonen achter indicator</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Plaats indicator</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Kies waar de indicator getoond moet worden</string>
 
     <!-- Drawer -->
-    <string name="preferences_interface_drawer_title">App- en widgetoverzicht</string>
+    <string name="preferences_interface_drawer_title">Overzicht</string>
+    <string name="preferences_interface_drawer_summary">App- en widgetoverzicht</string>
+    <string name="preferences_interface_drawer_orientation_title">Oriëntatie</string>
+    <string name="preferences_interface_drawer_orientation_summary">Kies naar welke kant het overzicht bladert</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Automatisch overgaan</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Van apps naar widgets overgaan zonder van tabblad te wisselen</string>
+    <string name="preferences_interface_drawer_scrolling_category">Bladeren</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Overgangseffecteffect</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Bladerefect bij het bladeren door schermen</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Zijpagina\'s vervagen</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Zijpagina\'s vervagen bij het bladeren door startschermen</string>
     <string name="preferences_interface_drawer_indicator_category">Indicator</string>
     <string name="preferences_interface_drawer_indicator_enable_title">Pagina-indicator tonen</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">Indicator voor huidige pagina onderaan tonen</string>
@@ -184,11 +201,15 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_divider_title">Scheidingslijn</string>
+    <string name="preferences_interface_dock_divider_summary">Een lijn tonen tussen startscherm en dock</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Iconen</string>
 
     <!-- General -->
     <string name="preferences_interface_general_title">Algemeen</string>
-    <string name="preferences_interface_general_orientation_title">Scherm autom. draaien</string>
+    <string name="preferences_interface_general_orientation_title">Scherm automatisch draaien</string>
+    <string name="preferences_interface_general_fullscreen_title">Volledig scherm</string>
+    <string name="preferences_interface_general_fullscreen_summary">De statusbalk verbergen om het startscherm uit te breiden</string>
 </resources>
