@@ -24,6 +24,13 @@
         android:entries="@array/preferences_interface_drawer_orientation_entries"
         android:entryValues="@array/preferences_interface_drawer_orientation_values"
         android:defaultValue="horizontal" />
+    <Preference android:key="ui_drawer_hidden_apps"
+        android:title="@string/preferences_interface_drawer_hidden_apps_title"
+        android:summary="@string/preferences_interface_drawer_hidden_apps_summary">
+        <intent
+            android:targetPackage="com.cyanogenmod.trebuchet"
+            android:targetClass="com.cyanogenmod.trebuchet.preference.HiddenAppsActivity"/>
+    </Preference>
     <PreferenceCategory android:title="@string/preferences_interface_drawer_widgets_category">
         <CheckBoxPreference android:key="ui_drawer_widgets_join_apps"
             android:title="@string/preferences_interface_drawer_widgets_join_apps_title"

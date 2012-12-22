@@ -115,6 +115,10 @@
                 <category android:name="com.cyanogenmod.category.LAUNCHER_PREFERENCES" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.cyanogenmod.trebuchet.preference.HiddenAppsActivity"
+            android:label="@string/hidden_apps_title"/>
+
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.cyanogenmod.trebuchet.InstallShortcutReceiver"

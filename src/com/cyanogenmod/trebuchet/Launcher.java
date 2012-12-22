@@ -2064,6 +2064,10 @@ public final class Launcher extends Activity
         } else if (sortMode == AppsCustomizePagedView.SortMode.InstallDate) {
             menu.findItem(R.id.apps_sort_install_date).setChecked(true);
         }
+        boolean showSystemApps = mAppsCustomizeContent.getShowSystemApps();
+        boolean showDownloadedApps = mAppsCustomizeContent.getShowDownloadedApps();
+        menu.findItem(R.id.apps_filter_system).setChecked(showSystemApps).setEnabled(showDownloadedApps);
+        menu.findItem(R.id.apps_filter_downloaded).setChecked(showDownloadedApps).setEnabled(showSystemApps);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
@@ -2072,6 +2076,12 @@ public final class Launcher extends Activity
                             break;
                         case R.id.apps_sort_install_date:
                             mAppsCustomizeContent.setSortMode(AppsCustomizePagedView.SortMode.InstallDate);
+                            break;
+                        case R.id.apps_filter_system:
+                            mAppsCustomizeContent.setShowSystemApps(!item.isChecked());
+                            break;
+                        case R.id.apps_filter_downloaded:
+                            mAppsCustomizeContent.setShowDownloadedApps(!item.isChecked());
                             break;
                     }
                     return true;

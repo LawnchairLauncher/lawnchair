@@ -164,6 +164,13 @@ s -->
     <string name="menu_apps_sort_title">Name</string>
     <!-- Noun, menu item used to sort apps by install date -->
     <string name="menu_apps_sort_install_date">Install Date</string>
+    <!-- Noun, menu item used to show system apps -->
+    <string name="menu_apps_filter_system">System</string>
+    <!-- Noun, menu item used to show downloaded apps -->
+    <string name="menu_apps_filter_downloaded">Downloaded</string>
+
+    <!-- Noun, menu item used to reset hidden apps list -->
+    <string name="menu_hidden_apps_delete">Reset</string>
 
     <!-- URL pointing to help text. If empty, no link to help will be created [DO NOT TRANSLATE] -->
     <string name="help_url" translatable="false"></string>
@@ -291,6 +298,9 @@ s -->
     <!-- Dummy string [CHAR_LIMIT=60] -->
     <string name="custom_workspace_cling_description_2"></string>
 
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Hidden Apps</string>
+
     <skip />
     <!--             -->
     <!-- Preferences -->
@@ -348,6 +358,8 @@ s -->
     <string name="preferences_interface_drawer_summary">Apps and widgets drawer</string>
     <string name="preferences_interface_drawer_orientation_title">Orientation</string>
     <string name="preferences_interface_drawer_orientation_summary">Choose which way the drawer scrolls</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Hidden apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Hide apps from the drawer</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Join with apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
