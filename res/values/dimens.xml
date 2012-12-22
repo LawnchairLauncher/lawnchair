@@ -50,7 +50,6 @@
     <dimen name="hotseat_height_gap">-1dp</dimen>
     <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
     <dimen name="workspace_icon_text_size">12sp</dimen>
-    <dimen name="workspace_spring_loaded_page_spacing">15dp</dimen>
 
     <dimen name="app_icon_drawable_padding">6dp</dimen>
     <dimen name="app_icon_drawable_padding_land">2dp</dimen>

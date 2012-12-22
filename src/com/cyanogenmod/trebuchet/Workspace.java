@@ -86,7 +86,6 @@ public class Workspace extends SmoothPagedView
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;
     private static final float WORKSPACE_OVERSCROLL_ROTATION = 24f;
-    private static final float WORKSPACE_ROTATION_ANGLE = 12.5f;
     private static float CAMERA_DISTANCE = 6500;
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
@@ -114,7 +113,6 @@ public class Workspace extends SmoothPagedView
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
 
     private float mWallpaperScrollRatio = 1.0f;
-    private int mOriginalPageSpacing;
 
     private final WallpaperManager mWallpaperManager;
     private boolean mWallpaperHack;
@@ -215,7 +213,6 @@ public class Workspace extends SmoothPagedView
     private Point mDisplaySize = new Point();
     private boolean mIsStaticWallpaper;
     private int mWallpaperTravelWidth;
-    private int mSpringLoadedPageSpacing;
     private int mCameraDistance;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
@@ -348,7 +345,6 @@ public class Workspace extends SmoothPagedView
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContentIsRefreshable = false;
-        mOriginalPageSpacing = mPageSpacing;
 
         mDragEnforcer = new DropTarget.DragEnforcer(context);
         // With workspace, data is available straight from the get-go
@@ -373,8 +369,6 @@ public class Workspace extends SmoothPagedView
 
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        mSpringLoadedPageSpacing =
-                res.getDimensionPixelSize(R.dimen.workspace_spring_loaded_page_spacing);
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
 
         // if the value is manually specified, use that instead
@@ -1484,12 +1478,12 @@ public class Workspace extends SmoothPagedView
             if (cl != null) {
                 float scrollProgress = getScrollProgress(screenScroll, cl, i);
                 float rotation =
-                        (up ? WORKSPACE_ROTATION_ANGLE : -WORKSPACE_ROTATION_ANGLE) * scrollProgress;
+                        (up ? WORKSPACE_ROTATION : -WORKSPACE_ROTATION) * scrollProgress;
 
                 if (mRotatePivotPoint < 0) {
                     mRotatePivotPoint =
                             (cl.getMeasuredWidth() * 0.5f) /
-                            (float) Math.tan(Math.toRadians((double) (WORKSPACE_ROTATION_ANGLE * 0.5f)));
+                            (float) Math.tan(Math.toRadians((double) (WORKSPACE_ROTATION * 0.5f)));
                 }
 
                 cl.setPivotX(cl.getMeasuredWidth() * 0.5f);
@@ -1672,9 +1666,6 @@ public class Workspace extends SmoothPagedView
                 if (cl != null) {
                     float scrollProgress = getScrollProgress(screenScroll, cl, i);
                     float rotation = WORKSPACE_ROTATION * scrollProgress;
-                    float translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
-
-                    cl.setTranslationX(translationX);
                     cl.setRotationY(rotation);
                 }
             }
@@ -2150,7 +2141,6 @@ public class Workspace extends SmoothPagedView
 
         if (state != State.NORMAL) {
             finalScaleFactor = mSpringLoadedShrinkFactor - (stateIsSmall ? 0.1f : 0);
-            setPageSpacing(mSpringLoadedPageSpacing);
             if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
                 setLayoutScale(finalScaleFactor);
@@ -2160,7 +2150,6 @@ public class Workspace extends SmoothPagedView
                 setLayoutScale(finalScaleFactor);
             }
         } else {
-            setPageSpacing(mOriginalPageSpacing);
             setLayoutScale(1.0f);
         }
 
@@ -2181,7 +2170,7 @@ public class Workspace extends SmoothPagedView
 
             // Tablet effect
             if (mTransitionEffect == TransitionEffect.Tablet || stateIsSmall || stateIsSpringLoaded) {
-                translationX = getOffsetXForRotation(rotationY, cl.getWidth(), cl.getHeight());
+                translationX = getOffsetXForRotation(rotationY, cl.getMeasuredWidth(), cl.getMeasuredHeight());
                 if (i < mCurrentPage) {
                     rotationY = WORKSPACE_ROTATION;
                 } else if (i > mCurrentPage) {
@@ -2228,7 +2217,7 @@ public class Workspace extends SmoothPagedView
             if ((mTransitionEffect == TransitionEffect.RotateUp ||
                     mTransitionEffect == TransitionEffect.RotateDown) && stateIsNormal) {
                 boolean up = mTransitionEffect == TransitionEffect.RotateUp;
-                rotation = (up ? WORKSPACE_ROTATION_ANGLE : -WORKSPACE_ROTATION_ANGLE) * Math.max(-1.0f, Math.min(1.0f , mCurrentPage - i));
+                rotation = (up ? WORKSPACE_ROTATION : -WORKSPACE_ROTATION) * Math.max(-1.0f, Math.min(1.0f , mCurrentPage - i));
                 translationX = cl.getMeasuredWidth() * (Math.max(-1.0f, Math.min(1.0f, i - mCurrentPage))) +
                         (up ? -1.0f : 1.0f) * (float) Math.sin(Math.toRadians((double) rotation)) *
                         (mRotatePivotPoint + cl.getMeasuredHeight() * 0.5f);
@@ -2245,6 +2234,15 @@ public class Workspace extends SmoothPagedView
                 }
             }
 
+            // Cylinder Effects
+            if ((mTransitionEffect == TransitionEffect.CylinderIn || mTransitionEffect == TransitionEffect.CylinderOut) && stateIsNormal) {
+                if (i < mCurrentPage) {
+                    rotationY = mTransitionEffect == TransitionEffect.CylinderOut ? -WORKSPACE_ROTATION : WORKSPACE_ROTATION;
+                } else if (i > mCurrentPage) {
+                    rotationY = mTransitionEffect == TransitionEffect.CylinderOut ? WORKSPACE_ROTATION : -WORKSPACE_ROTATION;
+                }
+            }
+
             // Accordian Effect
             if (mTransitionEffect == TransitionEffect.Accordian) {
                 if (stateIsSpringLoaded) {
@@ -2256,12 +2254,6 @@ public class Workspace extends SmoothPagedView
                         cl.setVisibility(INVISIBLE);
                     }
                 }
-            }
-
-            if (stateIsSmall || stateIsSpringLoaded) {
-                cl.setCameraDistance(1280 * mDensity);
-                cl.setPivotX(cl.getMeasuredWidth() * 0.5f);
-                cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
             }
 
             if (stateIsSmall || stateIsSpringLoaded) {

@@ -881,14 +881,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 int x = getScaledRelativeChildOffset(0) + pageWidth;
                 int leftScreen = 0;
                 int rightScreen = 0;
-                while (x <= mScrollX && leftScreen < pageCount - 1) {
+                while (leftScreen < pageCount - 1 && x + getPageAt(leftScreen).getTranslationX() <= mScrollX) {
                     leftScreen++;
                     x += getScaledMeasuredWidth(getPageAt(leftScreen)) + mPageSpacing;
                 }
                 rightScreen = leftScreen;
 
-
-                while (x < mScrollX + screenWidth && rightScreen < pageCount - 1) {
+                while (rightScreen < pageCount - 1 && x + getPageAt(rightScreen + 1).getTranslationX() < mScrollX + screenWidth) {
                     rightScreen++;
                     x += getScaledMeasuredWidth(getPageAt(rightScreen)) + mPageSpacing;
                 }
