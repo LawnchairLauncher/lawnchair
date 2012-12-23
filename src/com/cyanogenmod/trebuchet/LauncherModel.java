@@ -2153,8 +2153,14 @@ public class LauncherModel extends BroadcastReceiver {
         }
         info.setIcon(icon);
 
+        // from the db
+        if (info.title == null) {
+            if (c != null) {
+                info.title =  c.getString(titleIndex);
+            }
+        }
         // from the resource
-        if (resolveInfo != null) {
+        if (info.title == null && resolveInfo != null) {
             ComponentName key = LauncherModel.getComponentNameFromResolveInfo(resolveInfo);
             if (labelCache != null && labelCache.containsKey(key)) {
                 info.title = labelCache.get(key);
@@ -2163,12 +2169,6 @@ public class LauncherModel extends BroadcastReceiver {
                 if (labelCache != null) {
                     labelCache.put(key, info.title);
                 }
-            }
-        }
-        // from the db
-        if (info.title == null) {
-            if (c != null) {
-                info.title =  c.getString(titleIndex);
             }
         }
         // fall back to the class name of the activity

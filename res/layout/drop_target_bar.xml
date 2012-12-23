@@ -36,4 +36,15 @@
             android:text="@string/info_target_label"
             android:drawableLeft="@drawable/info_target_selector" />
     </FrameLayout>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/DropTargetButtonContainer"
+        android:layout_weight="1">
+        <!-- Edit target -->
+        <com.cyanogenmod.trebuchet.EditDropTarget
+            style="@style/DropTargetButton"
+            android:id="@+id/edit_target_text"
+            android:text="@string/edit_target_label"
+            android:drawableLeft="@drawable/edit_target_selector" />
+    </FrameLayout>
 </merge>

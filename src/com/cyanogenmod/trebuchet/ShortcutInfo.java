@@ -57,6 +57,11 @@ class ShortcutInfo extends ItemInfo {
      */
     private Bitmap mIcon;
 
+    /**
+     * Title change listener
+     */
+    private ShortcutListener mListener;
+
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -119,6 +124,17 @@ class ShortcutInfo extends ItemInfo {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION;
     }
 
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        if (mListener != null) {
+            mListener.onTitleChanged(title);
+        }
+    }
+
+    void setListener(ShortcutListener listener) {
+        mListener = listener;
+    }
+
     @Override
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
@@ -163,6 +179,10 @@ class ShortcutInfo extends ItemInfo {
             Log.d(tag, "   title=\"" + info.title + " icon=" + info.mIcon
                     + " customIcon=" + info.customIcon);
         }
+    }
+
+    interface ShortcutListener {
+        public void onTitleChanged(CharSequence title);
     }
 }
 

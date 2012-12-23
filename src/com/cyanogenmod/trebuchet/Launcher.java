@@ -29,6 +29,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -39,6 +40,7 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -89,6 +91,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -980,6 +983,31 @@ public final class Launcher extends Activity
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
         }
+    }
+
+    /**
+     * Starts shortcut rename dialog.
+     *
+     * @param info The shortcut to be edited
+     */
+    void updateShortcut(final ShortcutInfo info) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View layout = mInflater.inflate(R.layout.dialog_edit, null);
+        ImageView icon = (ImageView) layout.findViewById(R.id.dialog_edit_icon);
+        icon.setImageBitmap(info.getIcon(mIconCache));
+        final EditText title = (EditText) layout.findViewById(R.id.dialog_edit_text);
+        title.setText(info.title);
+        builder.setView(layout)
+                .setTitle(info.title)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        info.setTitle(title.getText());
+                        LauncherModel.updateItemInDatabase(Launcher.this, info);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null);
+        builder.show();
     }
 
     /**

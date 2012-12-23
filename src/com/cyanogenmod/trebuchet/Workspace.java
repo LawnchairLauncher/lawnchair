@@ -4048,8 +4048,8 @@ public class Workspace extends SmoothPagedView
             }
             cellLayout.onDropChild(mDragInfo.cell);
         }
-        if (d.cancelled &&  mDragInfo.cell != null) {
-                mDragInfo.cell.setVisibility(VISIBLE);
+        if (mDragInfo.cell != null) {
+            mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragOutline = null;
         mDragInfo = null;

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp"
+    android:paddingLeft="8dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+    <ImageButton
+        android:padding="5dp"
+        android:layout_width="@android:dimen/app_icon_size"
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/dialog_edit_icon"
+        android:layout_height="@android:dimen/app_icon_size" />
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:background="@android:drawable/divider_horizontal_dark" />
+    <EditText
+        android:layout_width="match_parent"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_edit_text" />
+</LinearLayout>

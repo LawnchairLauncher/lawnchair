@@ -127,6 +127,8 @@ s -->
     <string name="delete_target_uninstall_label">Uninstall</string>
     <!-- Label for the info icon. [CHAR_LIMIT=30] -->
     <string name="info_target_label">App info</string>
+    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
+    <string name="edit_target_label">Edit</string>
 
     <!-- Accessibility: Search button -->
     <string name="accessibility_search_button">Search</string>
