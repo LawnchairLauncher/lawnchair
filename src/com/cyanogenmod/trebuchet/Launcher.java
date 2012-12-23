@@ -149,6 +149,8 @@ public final class Launcher extends Activity
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
+    static final String ACTION_LAUNCHER = "com.cyanogenmod.trebuchet.LAUNCHER_ACTION";
+
     static final int MAX_SCREEN_COUNT = 7;
     static final int DEFAULT_SCREEN = 2;
 
@@ -1248,6 +1250,79 @@ public final class Launcher extends Activity
         resetAddInfo();
     }
 
+    private void addAction(LauncherAction.Action action) {
+        int[] cellXY = mPendingAddInfo.dropPos;
+        int cellX = mPendingAddInfo.cellX;
+        int cellY = mPendingAddInfo.cellY;
+        long container = mPendingAddInfo.container;
+        int screen = mPendingAddInfo.screen;
+        CellLayout layout = getCellLayout(container, screen);
+
+        boolean foundCellSpan = false;
+
+        Intent data = createActionIntent(action);
+
+        ShortcutInfo info = mModel.infoFromShortcutIntent(this, data, null);
+        if (info == null) {
+            return;
+        }
+        final View view = createShortcut(info);
+
+        if (cellX >= 0 && cellY >= 0) {
+            if (cellXY == null) {
+                cellXY = new int[2];
+            }
+            cellXY[0] = cellX;
+            cellXY[1] = cellY;
+
+            foundCellSpan = true;
+
+            // If appropriate, either create a folder or add to an existing folder
+            if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
+                    true, null,null)) {
+                return;
+            }
+            DragObject dragObject = new DragObject();
+            dragObject.dragInfo = info;
+            if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
+                    true)) {
+                return;
+            }
+        } else if (cellXY != null) {
+            // when dragging and dropping, just find the closest free spot
+            int[] result = layout.findNearestVacantArea(cellXY[0], cellXY[1], 1, 1, cellXY);
+            foundCellSpan = (result != null);
+        } else {
+            foundCellSpan = layout.findCellForSpan(cellXY, 1, 1);
+        }
+
+        if (!foundCellSpan) {
+            showOutOfSpaceMessage(isHotseatLayout(layout));
+            return;
+        }
+
+        LauncherModel.addItemToDatabase(this, info, container, screen, cellXY[0], cellXY[1], false);
+
+        if (!mRestoring) {
+            mWorkspace.addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1,
+                    isWorkspaceLocked());
+        }
+    }
+
+    private Intent createActionIntent(LauncherAction.Action action) {
+        Intent data = new Intent(Intent.ACTION_MAIN);
+        Intent intent = new Intent(ACTION_LAUNCHER);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setClassName(this, this.getClass().getName());
+        intent.putExtra(Intent.EXTRA_TEXT, action.toString());
+        data.putExtra(Intent.EXTRA_SHORTCUT_NAME,
+                getResources().getString(LauncherAction.Action.getString(action)));
+        data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
+        data.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                Intent.ShortcutIconResource.fromContext(this, LauncherAction.Action.getDrawable(action)));
+        return data;
+    }
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1480,6 +1555,18 @@ public final class Launcher extends Activity
                 processIntent.run();
             }
 
+        } else if (ACTION_LAUNCHER.equals(intent.getAction())) {
+            Bundle extras = intent.getExtras();
+            if (extras == null) {
+                return;
+            }
+            String actionString = extras.getString(Intent.EXTRA_TEXT);
+            LauncherAction.Action action = LauncherAction.Action.valueOf(actionString);
+            switch (action) {
+                case AllApps:
+                    showAllApps(true);
+                    break;
+            }
         }
     }
 
@@ -1757,6 +1844,30 @@ public final class Launcher extends Activity
             // Exit spring loaded mode if necessary after adding the widget
             exitSpringLoadedDragModeDelayed(true, false, null);
         }
+    }
+
+    /**
+     * Process action from drop.
+     *
+     * @param action The launcher action
+     * @param screen The screen where it should be added
+     * @param cell The cell it should be added to, optional
+     * @param position The location on the screen where it was dropped, optional
+     */
+    void processActionFromDrop(LauncherAction.Action action, long container, int screen,
+            int[] cell, int[] loc) {
+        resetAddInfo();
+        mPendingAddInfo.container = container;
+        mPendingAddInfo.screen = screen;
+        mPendingAddInfo.dropPos = loc;
+
+        if (cell != null) {
+            mPendingAddInfo.cellX = cell[0];
+            mPendingAddInfo.cellY = cell[1];
+        }
+
+        addAction(action);
+        exitSpringLoadedDragModeDelayed(true, true, null);
     }
 
     /**
@@ -2470,10 +2581,6 @@ public final class Launcher extends Activity
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
         return (mState == State.APPS_CUSTOMIZE) || (mOnResumeState == State.APPS_CUSTOMIZE);
-    }
-
-    public boolean isAllAppsButtonRank(int rank) {
-        return mHotseat.isAllAppsButtonRank(rank);
     }
 
     /**
