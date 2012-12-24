@@ -384,6 +384,8 @@ s -->
     <string name="preferences_interface_dock_title">Dock</string>
     <string name="preferences_interface_dock_pages_title">Pages</string>
     <string name="preferences_interface_dock_pages_summary">Number of pages in the dock</string>
+    <string name="preferences_interface_dock_default_page_title">Default Page</string>
+    <string name="preferences_interface_dock_default_page_summary">Choose the default page</string>
     <string name="preferences_interface_dock_divider_title">Show dock divider</string>
     <string name="preferences_interface_dock_divider_summary">Show divider between homescreen and dock</string>
 
