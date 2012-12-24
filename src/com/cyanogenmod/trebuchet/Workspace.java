@@ -663,6 +663,11 @@ public class Workspace extends SmoothPagedView
 
         final CellLayout layout;
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            // Note: We do this to ensure that the hotseat is always laid out in the orientation
+            // of the hotseat in order regardless of which orientation they were added
+            y = mLauncher.getHotseat().getCellYFromOrder(x);
+            x = mLauncher.getHotseat().getCellXFromOrder(x);
+            screen = mLauncher.getHotseat().getScreenFromOrder(screen);
             if (screen < 0 || screen >= mLauncher.getHotseat().getChildCount()) {
                 layout = (CellLayout) mLauncher.getHotseat().getLayout();
             } else {
@@ -676,11 +681,6 @@ public class Workspace extends SmoothPagedView
             } else if (child instanceof BubbleTextView) {
                 ((BubbleTextView) child).setTextVisible(false);
             }
-
-            // Note: We do this to ensure that the hotseat is always laid out in the orientation
-            // of the hotseat in order regardless of which orientation they were added
-            y = mLauncher.getHotseat().getCellYFromOrder(x);
-            x = mLauncher.getHotseat().getCellXFromOrder(x);
         } else {
             if (!mHideIconLabels) {
                 // Show titles if not in the hotseat
