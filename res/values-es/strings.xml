@@ -123,6 +123,8 @@
     <string name="all_apps_sort_cling_title">Ordenar aplicaciones</string>
     <string name="all_apps_sort_cling_add_item">Mantener pulsación sobre la pestaña Aplicaciones para elegir el método de ordenación</string>
     <string name="hidden_apps_title">Aplicaciones ocultas</string>
+    <string name="edit_target_label">Editar</string>
+    <string name="group_actions">Acciones</string>
     <string name="preferences_title">Preferencias</string>
     <string name="preferences_interface_title">Interfaz</string>
     <string name="preferences_application_title">Aplicación</string>
@@ -187,6 +189,12 @@
     <string name="preferences_interface_drawer_indicator_position_title">Posición</string>
     <string name="preferences_interface_drawer_indicator_position_summary">Establecer dónde se mostrará el indicador de página</string>
     <string name="preferences_interface_dock_title">Barra de aplicaciones</string>
+    <string name="preferences_interface_dock_pages_title">Páginas</string>
+    <string name="preferences_interface_dock_pages_summary">Número de páginas en la barra de aplicaciones</string>
+    <string name="preferences_interface_dock_default_page_title">Página por defecto</string>
+    <string name="preferences_interface_dock_default_page_summary">Escoger la página por defecto</string>
+    <string name="preferences_interface_dock_icons_title">Iconos</string>
+    <string name="preferences_interface_dock_icons_summary">Número de iconos en la barra de aplicaciones</string>
     <string name="preferences_interface_dock_divider_title">Separador</string>
     <string name="preferences_interface_dock_divider_summary">Mostrar una línea divisoria sobre la barra de aplicaciones</string>
     <string name="preferences_interface_icons_title">Iconos</string>
