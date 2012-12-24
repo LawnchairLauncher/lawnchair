@@ -127,10 +127,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Valitse kuinka monta riviä/saraketta näytöllä on</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rivit</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Sarakkeet</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Pystysuora täyttö</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Ylimääräistä pystysuoraa tilaa näytölle</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Vaakasuora täyttö</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Ylimääräistä vaakasuoraa tilaa näytölle</string>
     <string name="preferences_interface_homescreen_general_search_summary">Ota pysyvä hakupalkki käyttöön</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Vapaa widgetin koko</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Sallii widgetien koon muuttamisen vaikka koon muuttaminen olisi estetty</string>
@@ -144,8 +140,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Näyttää tämänhetkisen näytön osoittimen näytön alalaidassa</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Häivytä osoitin</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Häivyttää osoittimen kun kotinäyttö on vaihtunut</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Näytä alapalkin jakaja</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Näyttää osoittimen taustan</string>
     <string name="preferences_interface_drawer_title">Sovellusvalikko</string>
     <string name="preferences_interface_drawer_widgets_category">Widgetit</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Yhdistä sovelluksiin</string>
@@ -156,6 +150,8 @@
     <string name="preferences_interface_drawer_indicator_fade_title">Häivytä osoitin</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Häivyttää osoittimen kun sivu on vaihtunut</string>
     <string name="preferences_interface_dock_title">Alapalkki</string>
+    <string name="preferences_interface_dock_divider_title">Näytä alapalkin jakaja</string>
+    <string name="preferences_interface_dock_divider_summary">Näyttää osoittimen taustan</string>
     <string name="preferences_interface_icons_title">Kuvakkeet</string>
     <string name="preferences_interface_general_title">Yleiset</string>
     <string name="preferences_interface_general_orientation_title">Automaattinen näytön asento</string>

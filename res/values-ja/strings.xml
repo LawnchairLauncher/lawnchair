@@ -130,10 +130,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">ホーム画面の行やカラムの数を選択</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">行数</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">カラム数</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">垂直パディング</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">ホーム画面に垂直パディングを追加する</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">水平パディング</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">ホーム画面に水平パディングを追加する</string>
     <string name="preferences_interface_homescreen_general_search_title">サーチバー</string>
     <string name="preferences_interface_homescreen_general_search_summary">常設のサーチバーを有効にする</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">ウィジェットのリサイズ</string>
@@ -148,8 +144,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">画面の下部に現在のページインジケータを表示する</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">フェード</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">ホーム画面を移動した後にインジケータをフェードする</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">ドックの区切り線を表示</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">背景より手前にインジケータを表示する</string>
     <string name="preferences_interface_drawer_title">ドロワー</string>
     <string name="preferences_interface_drawer_widgets_category">ウィジェット</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">アプリと一緒に表示</string>
@@ -160,6 +154,8 @@
     <string name="preferences_interface_drawer_indicator_fade_title">フェード</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">ページを移動した後にインジケータをフェードする</string>
     <string name="preferences_interface_dock_title">ドック</string>
+    <string name="preferences_interface_dock_divider_title">ドックの区切り線を表示</string>
+    <string name="preferences_interface_dock_divider_summary">背景より手前にインジケータを表示する</string>
     <string name="preferences_interface_icons_title">アイコン</string>
     <string name="preferences_interface_general_title">一般</string>
     <string name="preferences_interface_general_orientation_title">画面の自動回転</string>

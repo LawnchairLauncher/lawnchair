@@ -130,10 +130,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Ana ekranda gösterilecek satır/sütun sayısını seçin</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Satırlar</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Sütunlar</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Dikey aralık</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Ana ekrandaki ek dikey boşluk</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Yatay aralık</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Ana ekrandaki ek yatay boşluk</string>
     <string name="preferences_interface_homescreen_general_search_title">Arama çubuğu</string>
     <string name="preferences_interface_homescreen_general_search_summary">Arama çubuğunu sürekli göster</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Bütün araçları boyutlandır</string>
@@ -148,8 +144,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Hangi sayfada olduğunuzu gösterir</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Göstergeyi soldur</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Ekran değiştikten sonra göstergeyi soldur</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Ayırıcı çizgiyi göster</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Sabit uygulamaların üstünde ayırıcı çizgiyi göster</string>
     <string name="preferences_interface_drawer_title">Uygulamalar</string>
     <string name="preferences_interface_drawer_widgets_category">Araçlar</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Uygulamalarla birleştir</string>
@@ -160,6 +154,8 @@
     <string name="preferences_interface_drawer_indicator_fade_title">Göstergeyi soldur</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Ekran değiştikten sonra göstergeyi soldur</string>
     <string name="preferences_interface_dock_title">Sabit programlar</string>
+    <string name="preferences_interface_dock_divider_title">Ayırıcı çizgiyi göster</string>
+    <string name="preferences_interface_dock_divider_summary">Sabit uygulamaların üstünde ayırıcı çizgiyi göster</string>
     <string name="preferences_interface_icons_title">Simgeler</string>
     <string name="preferences_interface_general_title">Genel</string>
     <string name="preferences_interface_general_orientation_title">Ekranı otomatik döndür</string>

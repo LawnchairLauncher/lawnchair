@@ -153,8 +153,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Mostra l\'indicatore della pagina corrente nella parte inferiore dello schermo</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Dissolvenza indicatore</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Dissolvi l\'indicatore dopo aver cambiato Home</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Mostra divisore dock</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Mostra lo sfondo dietro l\'indicatore</string>
     <string name="preferences_interface_drawer_title">Drawer</string>
     <string name="preferences_interface_drawer_orientation_title">Orientamento</string>
     <string name="preferences_interface_drawer_orientation_summary">Scegli in quale verso far scorrere il drawer</string>
@@ -172,6 +170,8 @@
     <string name="preferences_interface_drawer_indicator_fade_title">Dissolvenza indicatore</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Dissolvi l\'indicatore dopo aver cambiato pagina</string>
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_divider_title">Mostra divisore dock</string>
+    <string name="preferences_interface_dock_divider_summary">Mostra lo sfondo dietro l\'indicatore</string>
     <string name="preferences_interface_icons_title">Icone</string>
     <string name="preferences_interface_general_title">Generale</string>
     <string name="preferences_interface_general_orientation_title">Rotazione schermo</string>

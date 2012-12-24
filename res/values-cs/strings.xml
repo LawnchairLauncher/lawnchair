@@ -131,10 +131,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Vyberte počet řádků/sloupců na ploše</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Řádky</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Sloupce</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Svislé odsazení</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Dodatečné svislé rozestupy na ploše</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Vodorovné odsazení</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Dodatečné vodorovné rozestupy na ploše</string>
     <string name="preferences_interface_homescreen_general_search_summary">Povolit trvalou vyhledávací lištu</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Upravit velikost widgetu</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Povolit změnu velikosti widgetů, které nepodporují změnu velikosti</string>
@@ -148,8 +144,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Zobrazit indikátor aktuální plochy v dolní části obrazovky</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Slábnutí indikátoru</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Slábnutí indikátoru po změně plochy</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Zobrazit lištu ploch</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Zobrazit pozadí za indikátorem ploch</string>
     <string name="preferences_interface_drawer_title">Seznam aplikací</string>
     <string name="preferences_interface_drawer_widgets_category">Widgety</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Spojit s aplikacemi</string>
@@ -160,6 +154,8 @@
     <string name="preferences_interface_drawer_indicator_fade_title">Slábnutí indikátoru</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Slábnutí indikátoru po změně plochy</string>
     <string name="preferences_interface_dock_title">Dok aplikací</string>
+    <string name="preferences_interface_dock_divider_title">Zobrazit lištu ploch</string>
+    <string name="preferences_interface_dock_divider_summary">Zobrazit pozadí za indikátorem ploch</string>
     <string name="preferences_interface_icons_title">Ikony</string>
     <string name="preferences_interface_general_title">Obecné</string>
     <string name="preferences_interface_general_orientation_title">Automaticky otáčet displej</string>

@@ -149,10 +149,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Vælg antallet af rækker/kolonner på startskærmen</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rækker</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Kolonner</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Lodret fyld</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Ekstra lodret afstand på startskærmen</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Vandret fyld</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Ekstra vandret afstand på startskærmen</string>
     <string name="preferences_interface_homescreen_general_search_summary">Aktivér vedvarende søgefelt</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Ændre størrelse på enhver widget</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Tillader ændring af størrelsen på widgets, der normalt ikke kan ændres</string>
@@ -166,8 +162,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Viser den aktuelle side nederst på skærmen</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Udton indikator</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Udtoner indikatoren efter skift mellem startskærmene</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Vis startlinjeadskillelse</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Adskiller startlinjen fra baggrunden</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Applikationer</string>
@@ -182,6 +176,8 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Startlinjen</string>
+    <string name="preferences_interface_dock_divider_title">Vis startlinjeadskillelse</string>
+    <string name="preferences_interface_dock_divider_summary">Adskiller startlinjen fra baggrunden</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Ikoner</string>
