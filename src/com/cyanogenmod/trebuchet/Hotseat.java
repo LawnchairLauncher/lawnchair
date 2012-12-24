@@ -63,15 +63,22 @@ public class Hotseat extends PagedView {
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
-        Resources r = context.getResources();
-        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, DEFAULT_CELL_COUNT_X);
-        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, DEFAULT_CELL_COUNT_Y);
-        mCellCountX = PreferencesProvider.Interface.Dock.getNumberIcons(mCellCountX);
-        mAllAppsButtonRank = r.getInteger(R.integer.hotseat_all_apps_index);
-        mTransposeLayoutWithOrientation = 
-                r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+        mTransposeLayoutWithOrientation =
+                context.getResources().getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
+        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, !mIsLandscape ? DEFAULT_CELL_COUNT_X : DEFAULT_CELL_COUNT_Y);
+        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, !mIsLandscape ? DEFAULT_CELL_COUNT_Y : DEFAULT_CELL_COUNT_X);
+        int cellCount = PreferencesProvider.Interface.Dock.getNumberIcons(0);
+        if (cellCount > 0) {
+            if (!mIsLandscape) {
+                mCellCountX = cellCount;
+            } else {
+                mCellCountY = cellCount;
+            }
+        }
+
+        mVertical = mIsLandscape;
 
         LayoutInflater inflater =
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -117,7 +124,7 @@ public class Hotseat extends PagedView {
         return hasVerticalHotseat() ? 0 : rank;
     }
     int getCellYFromOrder(int rank) {
-        return hasVerticalHotseat() ? (mCellCountY - (rank + 1)) : 0;
+        return hasVerticalHotseat() ? rank : 0;
     }
 
     @Override

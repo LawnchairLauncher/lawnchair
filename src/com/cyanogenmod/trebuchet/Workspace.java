@@ -679,8 +679,8 @@ public class Workspace extends SmoothPagedView
 
             // Note: We do this to ensure that the hotseat is always laid out in the orientation
             // of the hotseat in order regardless of which orientation they were added
+            y = mLauncher.getHotseat().getCellYFromOrder(x);
             x = mLauncher.getHotseat().getCellXFromOrder(x);
-            y = mLauncher.getHotseat().getCellYFromOrder(y);
         } else {
             if (!mHideIconLabels) {
                 // Show titles if not in the hotseat
