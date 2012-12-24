@@ -31,15 +31,12 @@ public class Hotseat extends PagedView {
     private Launcher mLauncher;
     private CellLayout mContent;
 
-    private int mCellCountX;
-    private int mCellCountY;
-    private int mAllAppsButtonRank;
+    private int mCellCount;
 
     private boolean mTransposeLayoutWithOrientation;
     private boolean mIsLandscape;
 
-    private static final int DEFAULT_CELL_COUNT_X = 5;
-    private static final int DEFAULT_CELL_COUNT_Y = 1;
+    private static final int DEFAULT_CELL_COUNT = 5;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -67,15 +64,10 @@ public class Hotseat extends PagedView {
                 context.getResources().getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
-        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, !mIsLandscape ? DEFAULT_CELL_COUNT_X : DEFAULT_CELL_COUNT_Y);
-        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, !mIsLandscape ? DEFAULT_CELL_COUNT_Y : DEFAULT_CELL_COUNT_X);
+        mCellCount = a.getInt(R.styleable.Hotseat_cellCount, DEFAULT_CELL_COUNT);
         int cellCount = PreferencesProvider.Interface.Dock.getNumberIcons(0);
         if (cellCount > 0) {
-            if (!mIsLandscape) {
-                mCellCountX = cellCount;
-            } else {
-                mCellCountY = cellCount;
-            }
+            mCellCount = cellCount;
         }
 
         mVertical = mIsLandscape;
@@ -84,8 +76,8 @@ public class Hotseat extends PagedView {
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (int i = 0; i < hotseatPages; i++) {
             CellLayout cl = (CellLayout) inflater.inflate(R.layout.hotseat_page, null);
-            cl.setGridSize(mCellCountX, mCellCountY);
             cl.setIsHotseat(true);
+            cl.setGridSize((!mIsLandscape ? mCellCount : 1), (mIsLandscape ? mCellCount : 1));
             addView(cl);
         }
 
