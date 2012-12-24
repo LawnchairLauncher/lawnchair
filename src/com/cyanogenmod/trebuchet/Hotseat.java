@@ -58,24 +58,29 @@ public class Hotseat extends PagedView {
         int hotseatPages = PreferencesProvider.Interface.Dock.getNumberPages();
         int defaultPage = PreferencesProvider.Interface.Dock.getDefaultPage(hotseatPages / 2);
 
-        LayoutInflater inflater =
-                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        for (int i = 0; i < hotseatPages; i++) {
-            inflater.inflate(R.layout.hotseat_page, this);
-        }
 
         mCurrentPage = defaultPage;
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
         Resources r = context.getResources();
-        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, -1);
-        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, -1);
+        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, DEFAULT_CELL_COUNT_X);
+        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, DEFAULT_CELL_COUNT_Y);
+        mCellCountX = PreferencesProvider.Interface.Dock.getNumberIcons(mCellCountX);
         mAllAppsButtonRank = r.getInteger(R.integer.hotseat_all_apps_index);
         mTransposeLayoutWithOrientation = 
                 r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
+
+        LayoutInflater inflater =
+                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        for (int i = 0; i < hotseatPages; i++) {
+            CellLayout cl = (CellLayout) inflater.inflate(R.layout.hotseat_page, null);
+            cl.setGridSize(mCellCountX, mCellCountY);
+            cl.setIsHotseat(true);
+            addView(cl);
+        }
 
         // No data needed
         setDataIsReady();
@@ -118,13 +123,6 @@ public class Hotseat extends PagedView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (mCellCountX < 0) mCellCountX = DEFAULT_CELL_COUNT_X;
-        if (mCellCountY < 0) mCellCountY = DEFAULT_CELL_COUNT_Y;
-        for (int i = 0; i < getChildCount(); i++) {
-            CellLayout cl = (CellLayout) getPageAt(i);
-            cl.setGridSize(mCellCountX, mCellCountY);
-            cl.setIsHotseat(true);
-        }
         resetLayout();
     }
 
