@@ -109,14 +109,14 @@ public class Hotseat extends PagedView {
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
-        return hasVerticalHotseat() ? (mCellCountY - y - 1) : x;
+        return hasVerticalHotseat() ? (mCellCount - y - 1) : x;
     }
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
         return hasVerticalHotseat() ? 0 : rank;
     }
     int getCellYFromOrder(int rank) {
-        return hasVerticalHotseat() ? rank : 0;
+        return hasVerticalHotseat() ? (mCellCount - rank - 1) : 0;
     }
 
     @Override
