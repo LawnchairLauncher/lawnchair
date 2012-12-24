@@ -179,6 +179,9 @@ public final class PreferencesProvider {
         }
 
         public static class Dock {
+            public static int getNumberPages() {
+                return getInt("ui_dock_pages", 1);
+            }
             public static boolean getShowDivider() {
                 return getBoolean("ui_dock_divider", true);
             }

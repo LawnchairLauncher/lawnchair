@@ -195,6 +195,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private boolean mHasScrollIndicator = true;
     private boolean mShouldShowScrollIndicator = false;
     private boolean mShouldShowScrollIndicatorImmediately = false;
+    protected boolean mHandleScrollIndicator = false;
     protected static final int sScrollIndicatorFadeInDuration = 150;
     protected static final int sScrollIndicatorFadeOutDuration = 650;
     protected static final int sScrollIndicatorFadeOutShortDuration = 150;
@@ -2017,6 +2018,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mShouldShowScrollIndicatorImmediately = true;
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
+        if (mHandleScrollIndicator) return;
 
         mShouldShowScrollIndicator = false;
         getScrollingIndicator();
@@ -2048,6 +2050,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected void hideScrollingIndicator(boolean immediately, int duration) {
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
+        if (mHandleScrollIndicator) return;
 
         getScrollingIndicator();
         if (mScrollIndicator != null) {
@@ -2105,6 +2108,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updateScrollingIndicator() {
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
+        if (mHandleScrollIndicator) return;
 
         getScrollingIndicator();
         if (mScrollIndicator != null) {
@@ -2118,6 +2122,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updateScrollingIndicatorPosition() {
         if (!isScrollingIndicatorEnabled()) return;
         if (mScrollIndicator == null) return;
+        if (mHandleScrollIndicator) return;
         int numPages = getChildCount();
         int pageSize = !mVertical ? getMeasuredWidth() : getMeasuredHeight();
         int lastChildIndex = Math.max(0, getChildCount() - 1);

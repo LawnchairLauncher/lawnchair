@@ -18,6 +18,12 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     android:key="ui_dock"
     android:title="@string/preferences_interface_dock_title">
+    <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_dock_pages"
+        android:title="@string/preferences_interface_dock_pages_title"
+        android:summary="@string/preferences_interface_dock_pages_summary"
+        android:defaultValue="1"
+        launcher:max="3"
+        launcher:min="1" />
     <CheckBoxPreference android:key="ui_dock_divider"
         android:title="@string/preferences_interface_dock_divider_title"
         android:summary="@string/preferences_interface_dock_divider_summary"

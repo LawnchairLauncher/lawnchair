@@ -2549,7 +2549,7 @@ public final class Launcher extends Activity
 
     boolean isHotseatLayout(View layout) {
         return mHotseat != null && layout != null &&
-                (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
+                (layout instanceof CellLayout) && mHotseat.hasPage(layout);
     }
     Hotseat getHotseat() {
         return mHotseat;
@@ -2564,7 +2564,7 @@ public final class Launcher extends Activity
     CellLayout getCellLayout(long container, int screen) {
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             if (mHotseat != null) {
-                return mHotseat.getLayout();
+                return (CellLayout) mHotseat.getPageAt(screen);
             } else {
                 return null;
             }
