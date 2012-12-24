@@ -6,8 +6,6 @@
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
 
-    <bool name="config_cyanogenmod">false</bool>
-
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- Which default transition effect to use on the AppsCustomize -->
     <string name="config_drawerDefaultTransitionEffect">Stack</string>
