@@ -86,24 +86,27 @@ public class HiddenAppsActivity extends ListActivity implements MenuItem.OnMenuI
     }
 
     private void save() {
-        StringBuilder string = new StringBuilder("");
+        if (!mSaved) {
+            StringBuilder string = new StringBuilder("");
 
-        SparseBooleanArray checked = getListView().getCheckedItemPositions();
+            SparseBooleanArray checked = getListView().getCheckedItemPositions();
 
-        for (int i = 0; i < checked.size(); i++) {
-            if (checked.valueAt(i)) {
-                ResolveInfo app = (ResolveInfo) getListView().getItemAtPosition(checked.keyAt(i));
-                if (string.length() > 0) string.append("|");
-                string.append(new ComponentName(app.activityInfo.packageName, app.activityInfo.name).flattenToString());
+            for (int i = 0; i < checked.size(); i++) {
+                if (checked.valueAt(i)) {
+                    ResolveInfo app = (ResolveInfo) getListView().getItemAtPosition(checked.keyAt(i));
+                    if (string.length() > 0) string.append("|");
+                    string.append(new ComponentName(app.activityInfo.packageName, app.activityInfo.name).flattenToString());
 
+                }
             }
+
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putString("ui_drawer_hidden_apps", string.toString());
+            editor.putBoolean(PreferencesProvider.PREFERENCES_CHANGED, true);
+            editor.commit();
+
+            mSaved = true;
         }
-
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putString("ui_drawer_hidden_apps", string.toString());
-        editor.commit();
-
-        mSaved = true;
     }
 
     private void restore() {
