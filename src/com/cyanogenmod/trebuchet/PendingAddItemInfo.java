@@ -21,6 +21,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.content.Intent;
 import android.os.Parcelable;
 
 /**
@@ -45,6 +46,12 @@ class PendingAddShortcutInfo extends PendingAddItemInfo {
     public String toString() {
         return "Shortcut: " + shortcutActivityInfo.packageName;
     }
+}
+class PendingAddActionInfo extends PendingAddItemInfo {
+    /**
+     * The launcher action
+     */
+    LauncherAction.Action action;
 }
 
 class PendingAddWidgetInfo extends PendingAddItemInfo {

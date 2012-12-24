@@ -2678,18 +2678,7 @@ public class Workspace extends SmoothPagedView
 
             // Don't accept the drop if there's no room for the item
             if (!foundCell) {
-                // Don't show the message if we are dropping on the AllApps button and the hotseat
-                // is full
-                boolean isHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
-                if (mTargetCell != null && isHotseat) {
-                    Hotseat hotseat = mLauncher.getHotseat();
-                    if (hotseat.isAllAppsButtonRank(
-                            hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
-                        return false;
-                    }
-                }
-
-                mLauncher.showOutOfSpaceMessage(isHotseat);
+                mLauncher.showOutOfSpaceMessage(mLauncher.isHotseatLayout(dropTargetLayout));
                 return false;
             }
         }
@@ -3740,8 +3729,13 @@ public class Workspace extends SmoothPagedView
                                 container, screen, mTargetCell, span, null);
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        mLauncher.processShortcutFromDrop(pendingInfo.componentName,
-                                container, screen, mTargetCell, null);
+                        if (pendingInfo instanceof PendingAddActionInfo) {
+                            mLauncher.processActionFromDrop(((PendingAddActionInfo)pendingInfo).action,
+                                    container, screen, mTargetCell, null);
+                        } else {
+                            mLauncher.processShortcutFromDrop(pendingInfo.componentName,
+                                    container, screen, mTargetCell, null);
+                        }
                         break;
                     default:
                         throw new IllegalStateException("Unknown item type: " +

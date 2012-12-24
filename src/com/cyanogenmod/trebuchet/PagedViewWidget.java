@@ -127,6 +127,18 @@ public class PagedViewWidget extends LinearLayout {
         }
     }
 
+    public void applyFromLauncherActionInfo(LauncherActionInfo info) {
+        mIsAppWidget = false;
+        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        image.setContentDescription(getContext().getResources().getString(info.action.getString()));
+        final TextView name = (TextView) findViewById(R.id.widget_name);
+        name.setText(info.title);
+        final TextView dims = (TextView) findViewById(R.id.widget_dims);
+        if (dims != null) {
+            dims.setText(String.format(mDimensionsFormatString, 1, 1));
+        }
+    }
+
     public int[] getPreviewSize() {
         final ImageView i = (ImageView) findViewById(R.id.widget_preview);
         int[] maxSize = new int[2];

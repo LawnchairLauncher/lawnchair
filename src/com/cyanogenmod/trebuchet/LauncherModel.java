@@ -159,7 +159,6 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAppsRemoved(ArrayList<String> packageNames, boolean permanent);
         public void bindPackagesUpdated();
         public boolean isAllAppsVisible();
-        public boolean isAllAppsButtonRank(int rank);
         public void bindSearchablesChanged();
         public void onPageBoundSynchronously(int page);
     }
@@ -1174,11 +1173,6 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
             int containerIndex = item.screen;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // Return early if we detect that an item is under the hotseat button
-                if (mCallbacks == null || mCallbacks.get().isAllAppsButtonRank(item.screen)) {
-                    return false;
-                }
-
                 // We use the last index to refer to the hotseat and the screen as the rank, so
                 // test and update the occupied state accordingly
                 if (occupied[Launcher.MAX_SCREEN_COUNT][item.screen][0] != null) {
@@ -2533,17 +2527,25 @@ public class LauncherModel extends BroadcastReceiver {
             if (mLabelCache.containsKey(a)) {
                 labelA = mLabelCache.get(a);
             } else {
-                labelA = (a instanceof AppWidgetProviderInfo) ?
-                    ((AppWidgetProviderInfo) a).label :
-                    ((ResolveInfo) a).loadLabel(mPackageManager).toString();
+                if (a instanceof AppWidgetProviderInfo) {
+                    labelA = ((AppWidgetProviderInfo) a).label;
+                } else if (a instanceof ResolveInfo) {
+                    labelA = ((ResolveInfo) a).loadLabel(mPackageManager).toString();
+                } else {
+                    labelA = ((LauncherActionInfo) a).title;
+                }
                 mLabelCache.put(a, labelA);
             }
             if (mLabelCache.containsKey(b)) {
                 labelB = mLabelCache.get(b);
             } else {
-                labelB = (b instanceof AppWidgetProviderInfo) ?
-                    ((AppWidgetProviderInfo) b).label :
-                    ((ResolveInfo) b).loadLabel(mPackageManager).toString();
+                if (b instanceof AppWidgetProviderInfo) {
+                    labelB = ((AppWidgetProviderInfo) b).label;
+                } else if (b instanceof ResolveInfo) {
+                    labelB = ((ResolveInfo) b).loadLabel(mPackageManager).toString();
+                } else {
+                    labelB = ((LauncherActionInfo) b).title;
+                }
                 mLabelCache.put(b, labelB);
             }
             return mCollator.compare(labelA, labelB);

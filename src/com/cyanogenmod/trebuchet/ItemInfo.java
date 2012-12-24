@@ -28,14 +28,14 @@ import java.io.IOException;
  * Represents an item in the launcher.
  */
 class ItemInfo {
-    
+
     static final int NO_ID = -1;
-    
+
     /**
      * The id in the settings database for this item
      */
     long id = NO_ID;
-    
+
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
@@ -43,20 +43,20 @@ class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
     int itemType;
-    
+
     /**
-     * The id of the container that holds this item. For the desktop, this will be 
+     * The id of the container that holds this item. For the desktop, this will be
      * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
     long container = NO_ID;
-    
+
     /**
      * Iindicates the screen in which the shortcut appears.
      */
     int screen = -1;
-    
+
     /**
      * Indicates the X position of the associated cell.
      */
