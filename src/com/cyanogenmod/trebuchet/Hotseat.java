@@ -70,7 +70,7 @@ public class Hotseat extends PagedView {
             mCellCount = cellCount;
         }
 
-        mVertical = mIsLandscape;
+        mVertical = hasVerticalHotseat();
 
         LayoutInflater inflater =
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -117,6 +117,9 @@ public class Hotseat extends PagedView {
     }
     int getCellYFromOrder(int rank) {
         return hasVerticalHotseat() ? (mCellCount - rank - 1) : 0;
+    }
+    int getScreenFromOrder(int screen) {
+        return hasVerticalHotseat() ? (getChildCount() - screen - 1) : screen;
     }
 
     @Override
