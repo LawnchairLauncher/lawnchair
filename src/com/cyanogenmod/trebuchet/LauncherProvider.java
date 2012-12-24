@@ -492,6 +492,8 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (version < 13) {
+                db.delete(TABLE_FAVORITES, Favorites.CONTAINER + "=?", new String[] { Integer.toString(Favorites.CONTAINER_HOTSEAT) });
+
                 // The max id is not yet set at this point (onUpgrade is triggered in the ctor
                 // before it gets a change to get set, so we need to read it here when we use it)
                 if (mMaxId == -1) {
@@ -508,6 +510,15 @@ public class LauncherProvider extends ContentProvider {
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
                 onCreate(db);
             }
+        }
+
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (LOGD) Log.d(TAG, "onDowngrade triggered");
+
+            Log.w(TAG, "Destroying all old data.");
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+            onCreate(db);
         }
 
         private boolean updateContactsShortcuts(SQLiteDatabase db) {
