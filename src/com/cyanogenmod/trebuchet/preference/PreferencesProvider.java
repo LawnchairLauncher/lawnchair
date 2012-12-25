@@ -69,7 +69,7 @@ public final class PreferencesProvider {
                 }
             }
             public static int getCellCountY(int def) {
-                String[] values = getString("ui_homescreen_grid", def + "|0").split("\\|");;
+                String[] values = getString("ui_homescreen_grid", def + "|0").split("\\|");
                 try {
                     return Integer.parseInt(values[0]);
                 } catch (NumberFormatException e) {

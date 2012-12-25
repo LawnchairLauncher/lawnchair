@@ -29,7 +29,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/wallpaper_gallery_background">
 
-        <Gallery android:id="@+id/gallery"
+        <com.cyanogenmod.trebuchet.widget.EcoGallery android:id="@+id/gallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spacing="-4dp" />

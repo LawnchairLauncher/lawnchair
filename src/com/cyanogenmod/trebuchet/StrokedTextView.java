@@ -105,12 +105,12 @@ public class StrokedTextView extends TextView {
                 final int drawableLeft = getPaddingLeft();
                 final int drawableTop = getPaddingTop();
                 final Drawable[] drawables = getCompoundDrawables();
-                for (int i = 0; i < drawables.length; ++i) {
-                    if (drawables[i] != null) {
-                        drawables[i].setBounds(drawableLeft, drawableTop,
-                                drawableLeft + drawables[i].getIntrinsicWidth(),
-                                drawableTop + drawables[i].getIntrinsicHeight());
-                        drawables[i].draw(mCanvas);
+                for (Drawable drawable : drawables) {
+                    if (drawable != null) {
+                        drawable.setBounds(drawableLeft, drawableTop,
+                                drawableLeft + drawable.getIntrinsicWidth(),
+                                drawableTop + drawable.getIntrinsicHeight());
+                        drawable.draw(mCanvas);
                     }
                 }
 

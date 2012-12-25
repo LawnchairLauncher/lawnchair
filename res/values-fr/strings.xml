@@ -139,10 +139,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Définir le nombre de rangées et de colonnes sur l\'écran d\'accueil</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rangées</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Colonnes</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Marge verticale</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Espacement supplémentaire vertical sur l\'écran d\'accueil</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Marge horizontale</string>
-    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Espacement supplémentaire horizontal</string>
     <string name="preferences_interface_homescreen_general_search_summary">Activer la barre de recherche persistante</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionner tous les widgets</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permet de redimensionner les widgets qui normalement n\'en sont pas capables</string>

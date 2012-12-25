@@ -35,10 +35,6 @@
          AppsCustomize (y / x * 100%)  -->
     <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
 
-    <!-- Batch loading for loading in LauncherModel -->
-    <integer name="config_allAppsBatchLoadDelay">0</integer>
-    <integer name="config_allAppsBatchSize">0</integer>
-
 <!-- Workspace -->
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">true</bool>

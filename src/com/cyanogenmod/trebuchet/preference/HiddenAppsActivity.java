@@ -110,7 +110,7 @@ public class HiddenAppsActivity extends ListActivity implements MenuItem.OnMenuI
     }
 
     private void restore() {
-        List<ComponentName> apps = new ArrayList();
+        List<ComponentName> apps = new ArrayList<ComponentName>();
         String[] flattened = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString("ui_drawer_hidden_apps", "").split("\\|");
         for (String flat : flattened) {

@@ -220,8 +220,6 @@
     <string name="preferences_interface_drawer_indicator_enable_summary">Seitenindikator anzeigen</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Automatisch ausblenden</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Indikator nach Seitenwechsel ausblenden</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Dock-Abtrennung anzeigen</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Linie als Indikator-Hintergrund anzeigen</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>

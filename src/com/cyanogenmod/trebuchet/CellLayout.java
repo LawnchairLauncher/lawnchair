@@ -19,7 +19,6 @@ package com.cyanogenmod.trebuchet;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -49,7 +48,6 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
-import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.FolderIcon.FolderRingAnimator;
 
 import java.util.ArrayList;
@@ -362,7 +360,7 @@ public class CellLayout extends ViewGroup {
             mOverScrollForegroundDrawable = mOverScrollRight;
         }
 
-        mForegroundAlpha = (int) Math.round((r * 255));
+        mForegroundAlpha = Math.round((r * 255));
         mOverScrollForegroundDrawable.setAlpha(mForegroundAlpha);
         invalidate();
     }
@@ -495,14 +493,12 @@ public class CellLayout extends ViewGroup {
         int previewOffset = FolderRingAnimator.sPreviewSize;
 
         // The folder outer / inner ring image(s)
-        for (int i = 0; i < mFolderOuterRings.size(); i++) {
-            FolderRingAnimator fra = mFolderOuterRings.get(i);
-
+        for (FolderRingAnimator ringAnimator : mFolderOuterRings) {
             // Draw outer ring
             Drawable d = FolderRingAnimator.sSharedOuterRingDrawable;
-            int width = (int) fra.getOuterRingSize();
+            int width = (int) ringAnimator.getOuterRingSize();
             int height = width;
-            cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
+            cellToPoint(ringAnimator.mCellX, ringAnimator.mCellY, mTempLocation);
 
             int centerX = mTempLocation[0] + mCellWidth / 2;
             int centerY = mTempLocation[1] + previewOffset / 2;
@@ -515,9 +511,9 @@ public class CellLayout extends ViewGroup {
 
             // Draw inner ring
             d = FolderRingAnimator.sSharedInnerRingDrawable;
-            width = (int) fra.getInnerRingSize();
+            width = (int) ringAnimator.getInnerRingSize();
             height = width;
-            cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
+            cellToPoint(ringAnimator.mCellX, ringAnimator.mCellY, mTempLocation);
 
             centerX = mTempLocation[0] + mCellWidth / 2;
             centerY = mTempLocation[1] + previewOffset / 2;
@@ -897,9 +893,8 @@ public class CellLayout extends ViewGroup {
 
     public float getDistanceFromCell(float x, float y, int[] cell) {
         cellToCenterPoint(cell[0], cell[1], mTmpPoint);
-        float distance = (float) Math.sqrt( Math.pow(x - mTmpPoint[0], 2) +
+        return (float) Math.sqrt( Math.pow(x - mTmpPoint[0], 2) +
                 Math.pow(y - mTmpPoint[1], 2));
-        return distance;
     }
 
     void setCellGaps(int widthGap, int heightGap) {
@@ -1155,7 +1150,7 @@ public class CellLayout extends ViewGroup {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     lp.x = (int) ((1 - r) * oldX + r * newX);
                     lp.y = (int) ((1 - r) * oldY + r * newY);
                     child.requestLayout();
@@ -1456,9 +1451,6 @@ public class CellLayout extends ViewGroup {
                         hitMaxY |= ySize >= spanY;
                         incX = !incX;
                     }
-                    incX = true;
-                    hitMaxX = xSize >= spanX;
-                    hitMaxY = ySize >= spanY;
                 }
                 final int[] cellXY = mTmpXY;
                 cellToCenterPoint(x, y, cellXY);
@@ -1711,9 +1703,9 @@ public class CellLayout extends ViewGroup {
     }
 
     private void completeSetOfViewsToMove(ArrayList<View> views, Rect boundingRect, int[] direction,
-            boolean[][] occupied, View dragView, ItemConfiguration currentState) {
+            View dragView, ItemConfiguration currentState) {
         Rect r0 = new Rect(boundingRect);
-        int minRuns = 0;
+        int minRuns;
 
         // The first thing we do is to reduce the bounding rect to first or last row or column,
         // depending on the direction. Then, we add any necessary views that are already contained
@@ -1761,7 +1753,7 @@ public class CellLayout extends ViewGroup {
         @SuppressWarnings("unchecked")
         ArrayList<View> dup = (ArrayList<View>) views.clone();
         if (push) {
-            completeSetOfViewsToMove(dup, boundingRect, direction, mTmpOccupied, dragView,
+            completeSetOfViewsToMove(dup, boundingRect, direction, dragView,
                     currentState);
         }
 
@@ -1984,9 +1976,7 @@ public class CellLayout extends ViewGroup {
 
     private void copyOccupiedArray(boolean[][] occupied) {
         for (int i = 0; i < mCountX; i++) {
-            for (int j = 0; j < mCountY; j++) {
-                occupied[i][j] = mOccupied[i][j];
-            }
+            System.arraycopy(mOccupied[i], 0, occupied[i], 0, mCountY);
         }
     }
 
@@ -2003,10 +1993,9 @@ public class CellLayout extends ViewGroup {
         int result[] = new int[2];
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
-        boolean success = false;
         // First we try the exact nearest position of the item being dragged,
         // we will then want to try to move this around to other neighbouring positions
-        success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
+        boolean success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
                 solution);
 
         if (!success) {
@@ -2181,7 +2170,7 @@ public class CellLayout extends ViewGroup {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     float x = r * finalDeltaX + (1 - r) * initDeltaX;
                     float y = r * finalDeltaY + (1 - r) * initDeltaY;
                     child.setTranslationX(x);
@@ -2237,9 +2226,7 @@ public class CellLayout extends ViewGroup {
 
     private void commitTempPlacement() {
         for (int i = 0; i < mCountX; i++) {
-            for (int j = 0; j < mCountY; j++) {
-                mOccupied[i][j] = mTmpOccupied[i][j];
-            }
+            System.arraycopy(mTmpOccupied[i], 0, mOccupied[i], 0, mCountY);
         }
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -2271,7 +2258,7 @@ public class CellLayout extends ViewGroup {
     }
 
     ItemConfiguration findConfigurationNoShuffle(int pixelX, int pixelY, int minSpanX, int minSpanY,
-            int spanX, int spanY, View dragView, ItemConfiguration solution) {
+            int spanX, int spanY, ItemConfiguration solution) {
         int[] result = new int[2];
         int[] resultSpan = new int[2];
         findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, null, result,
@@ -2451,7 +2438,7 @@ public class CellLayout extends ViewGroup {
 
         // We attempt the approach which doesn't shuffle views at all
         ItemConfiguration noShuffleSolution = findConfigurationNoShuffle(pixelX, pixelY, minSpanX,
-                minSpanY, spanX, spanY, dragView, new ItemConfiguration());
+                minSpanY, spanX, spanY, new ItemConfiguration());
 
         ItemConfiguration finalSolution = null;
         if (swapSolution.isSolution && swapSolution.area() >= noShuffleSolution.area()) {
@@ -2699,7 +2686,6 @@ public class CellLayout extends ViewGroup {
                 // intersecting
                 intersectX = -1;
                 intersectY = -1;
-                continue;
             }
         }
 
@@ -3064,8 +3050,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                         leftMargin - rightMargin;
                 height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                         topMargin - bottomMargin;
-                x = (int) (myCellX * (cellWidth + widthGap) + leftMargin);
-                y = (int) (myCellY * (cellHeight + heightGap) + topMargin);
+                x = myCellX * (cellWidth + widthGap) + leftMargin;
+                y = myCellY * (cellHeight + heightGap) + topMargin;
             }
         }
 

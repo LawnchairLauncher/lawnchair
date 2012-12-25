@@ -34,20 +34,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
-
-import com.cyanogenmod.trebuchet.R;
+import com.cyanogenmod.trebuchet.widget.CustomAdapterView;
+import com.cyanogenmod.trebuchet.widget.EcoGallery;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class WallpaperChooserDialogFragment extends DialogFragment implements
-        AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
+        CustomAdapterView.OnItemSelectedListener, CustomAdapterView.OnItemClickListener {
 
     private static final String TAG = "Trebuchet.WallpaperChooserDialogFragment";
     private static final String EMBEDDED_KEY = "com.cyanogenmod.trebuchet."
@@ -139,7 +137,7 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
             View view = inflater.inflate(R.layout.wallpaper_chooser, container, false);
             view.setBackground(mWallpaperDrawable);
 
-            final Gallery gallery = (Gallery) view.findViewById(R.id.gallery);
+            final EcoGallery gallery = (EcoGallery) view.findViewById(R.id.gallery);
             gallery.setCallbackDuringFling(false);
             gallery.setOnItemSelectedListener(this);
             gallery.setAdapter(new ImageAdapter(getActivity()));
@@ -171,13 +169,13 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
 
     // Click handler for the Dialog's GridView
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(CustomAdapterView<?> parent, View view, int position, long id) {
         selectWallpaper(position);
     }
 
     // Selection handler for the embedded Gallery view
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelected(CustomAdapterView<?> parent, View view, int position, long id) {
         if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
             mLoader.cancel();
         }
@@ -185,7 +183,7 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(CustomAdapterView<?> parent) {
     }
 
     private void findWallpapers() {

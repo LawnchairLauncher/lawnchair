@@ -49,7 +49,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 
-import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -157,9 +156,8 @@ public class LauncherProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            int numValues = values.length;
-            for (int i = 0; i < numValues; i++) {
-                if (dbInsertAndCheck(mOpenHelper, db, args.table, null, values[i]) < 0) {
+            for (ContentValues value : values) {
+                if (dbInsertAndCheck(mOpenHelper, db, args.table, null, value) < 0) {
                     return 0;
                 }
             }
@@ -774,12 +772,12 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
-        private static final void beginDocument(XmlPullParser parser, String firstElementName)
+        private static void beginDocument(XmlPullParser parser, String firstElementName)
                 throws XmlPullParserException, IOException {
             int type;
             while ((type = parser.next()) != XmlPullParser.START_TAG
                     && type != XmlPullParser.END_DOCUMENT) {
-                ;
+
             }
 
             if (type != XmlPullParser.START_TAG) {
@@ -850,7 +848,7 @@ public class LauncherProvider extends ContentProvider {
                     } else if (TAG_CLOCK.equals(name)) {
                         added = addClockWidget(db, values);
                     } else if (TAG_APPWIDGET.equals(name)) {
-                        added = addAppWidget(parser, attrs, type, db, values, a, packageManager);
+                        added = addAppWidget(parser, attrs, db, values, a, packageManager);
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
                         added = id >= 0;
@@ -990,9 +988,8 @@ public class LauncherProvider extends ContentProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             List<AppWidgetProviderInfo> providers = appWidgetManager.getInstalledProviders();
             if (providers == null) return null;
-            final int providerCount = providers.size();
-            for (int i = 0; i < providerCount; i++) {
-                ComponentName provider = providers.get(i).provider;
+            for (AppWidgetProviderInfo p : providers) {
+                ComponentName provider = p.provider;
                 if (provider != null && provider.getPackageName().equals(packageName)) {
                     return provider;
                 }
@@ -1011,7 +1008,7 @@ public class LauncherProvider extends ContentProvider {
             return addAppWidget(db, values, cn, 2, 2, null);
         }
 
-        private boolean addAppWidget(XmlResourceParser parser, AttributeSet attrs, int type,
+        private boolean addAppWidget(XmlResourceParser parser, AttributeSet attrs,
                 SQLiteDatabase db, ContentValues values, TypedArray a,
                 PackageManager packageManager) throws XmlPullParserException, IOException {
 
@@ -1044,6 +1041,7 @@ public class LauncherProvider extends ContentProvider {
                 // Read the extras
                 Bundle extras = new Bundle();
                 int widgetDepth = parser.getDepth();
+                int type;
                 while ((type = parser.next()) != XmlPullParser.END_TAG ||
                         parser.getDepth() > widgetDepth) {
                     if (type != XmlPullParser.START_TAG) {
