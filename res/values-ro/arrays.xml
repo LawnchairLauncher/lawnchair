@@ -19,44 +19,48 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="preferences_interface_homescreen_indicator_position_entries">
-        <item>Mai sus de doc</item>
-        <item>În partea de sus</item>
-        <item>În partea de jos</item>
+        <item>"Mai sus de doc"</item>
+        <item>"În partea de sus"</item>
+        <item>"În partea de jos"</item>
     </string-array>
     <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tabletă</item>
-        <item>Mărire</item>
-        <item>Micşorare</item>
-        <item>Rotire în Sus</item>
-        <item>Rotire în Jos</item>
-        <item>Cilindru Interior</item>
-        <item>Cilindru Exterior</item>
-        <item>Cub Interior</item>
-        <item>Cub Exterior</item>
-        <item>Rotire</item>
-        <item>Răsturnare</item>
-        <item>Stivă</item>
-        <item>Acordeon</item>
+        <item>"Standard"</item>
+        <item>"Tabletă"</item>
+        <item>"Mărire"</item>
+        <item>"Micşorare"</item>
+        <item>"Rotire în Sus"</item>
+        <item>"Rotire în Jos"</item>
+        <item>"Cilindru Interior"</item>
+        <item>"Cilindru Exterior"</item>
+        <item>"Cub Interior"</item>
+        <item>"Cub Exterior"</item>
+        <item>"Rotire"</item>
+        <item>"Răsturnare"</item>
+        <item>"Stivă"</item>
+        <item>"Acordeon"</item>
     </string-array>
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tabletă</item>
-        <item>Mărire</item>
-        <item>Micşorare</item>
-        <item>Rotire în Sus</item>
-        <item>Rotire în Jos</item>
-        <item>Cilindru Interior</item>
-        <item>Cilindru Exterior</item>
-        <item>Cub Interior</item>
-        <item>Cub Exterior</item>
-        <item>Rotire</item>
-        <item>Răsturnare</item>
-        <item>Stivă</item>
-        <item>Acordeon</item>
+        <item>"Standard"</item>
+        <item>"Tabletă"</item>
+        <item>"Mărire"</item>
+        <item>"Micşorare"</item>
+        <item>"Rotire în Sus"</item>
+        <item>"Rotire în Jos"</item>
+        <item>"Cilindru Interior"</item>
+        <item>"Cilindru Exterior"</item>
+        <item>"Cub Interior"</item>
+        <item>"Cub Exterior"</item>
+        <item>"Rotire"</item>
+        <item>"Răsturnare"</item>
+        <item>"Stivă"</item>
+        <item>"Acordeon"</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>"Sus/Stânga"</item>
+        <item>"Jos/Dreapta"</item>
     </string-array>
     <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Orizontal</item>
-        <item>Vertical</item>
+        <item>"Orizontal"</item>
+        <item>"Vertical"</item>
     </string-array>
 </resources>
