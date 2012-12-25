@@ -27,6 +27,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 import com.cyanogenmod.trebuchet.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
@@ -303,8 +305,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             pt[1] += view.getTop() - view.getScrollY();
             viewParent = view.getParent();
         }
-        coord[0] = (int) Math.round(pt[0]);
-        coord[1] = (int) Math.round(pt[1]);
+        coord[0] = Math.round(pt[0]);
+        coord[1] = Math.round(pt[1]);
         return scale;
     }
 
@@ -743,10 +745,11 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         if (mInScrollArea && !LauncherApplication.isScreenLarge()) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = workspace.getWidth();
-            Rect childRect = new Rect();
-            getDescendantRectRelativeToSelf(workspace.getChildAt(0), childRect);
-
             int page = workspace.getNextPage();
+
+            Rect childRect = new Rect();
+            getDescendantRectRelativeToSelf(workspace.getChildAt(page), childRect);
+
             CellLayout leftPage = (CellLayout) workspace.getChildAt(page - 1);
             CellLayout rightPage = (CellLayout) workspace.getChildAt(page + 1);
 
