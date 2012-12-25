@@ -281,6 +281,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private int mMaxAppCellCountX, mMaxAppCellCountY;
     private int mWidgetCountX, mWidgetCountY;
     private int mWidgetWidthGap, mWidgetHeightGap;
+    private final int mWidgetPreviewIconPaddedDimension;
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
     private PagedViewCellLayout mWidgetSpacingLayout;
     private int mNumAppsPages = 0;
@@ -415,6 +416,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mClingFocusedY = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedY, 0);
         a.recycle();
         mWidgetSpacingLayout = new PagedViewCellLayout(getContext());
+
+        // The padding on the non-matched dimension for the default widget preview icons
+        // (top + bottom)
+        mWidgetPreviewIconPaddedDimension =
+                (int) (mAppIconSize * (1 + (2 * WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE)));
     }
 
     @Override
@@ -602,7 +608,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             } else if (!mHasShownAllAppsSortCling && isDataReady() &&
                     allAppsCling != null && allAppsCling.isDismissed()) {
                 mHasShownAllAppsSortCling = true;
-                mLauncher.showFirstRunAllAppsSortCling();
+                tabHost.selectAppsTab();
+                // Calculate the position for the cling punch through
+                int[] offset = new int[2];
+                View appsTab = tabHost.getCurrentTabView();
+                mLauncher.getDragLayer().getLocationInDragLayer(appsTab, offset);
+                mLauncher.showFirstRunAllAppsSortCling(offset);
             }
         }
     }
@@ -910,8 +921,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     Matrix.ScaleToFit.START);
             m.getValues(mv);
             scale = mv[0];
-        } else {
-            PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
+        } else if (createItemInfo instanceof PendingAddShortcutInfo) {
+            PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) createItemInfo;
             Drawable icon = mIconCache.getFullResIcon(createShortcutInfo.shortcutActivityInfo);
             preview = Bitmap.createBitmap(icon.getIntrinsicWidth(),
                     icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -921,6 +932,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             renderDrawableToBitmap(icon, preview, 0, 0,
                     icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
             mCanvas.restore();
+            mCanvas.setBitmap(null);
+            createItemInfo.spanX = createItemInfo.spanY = 1;
+        } else {
+            // Workaround for the fact that we don't keep the original ResolveInfo associated with
+            // the shortcut around.  To get the icon, we just render the preview image (which has
+            // the shortcut icon) to a new drag bitmap that clips the non-icon space.
+            preview = Bitmap.createBitmap(mWidgetPreviewIconPaddedDimension,
+                    mWidgetPreviewIconPaddedDimension, Bitmap.Config.ARGB_8888);
+            Drawable d = image.getDrawable();
+            mCanvas.setBitmap(preview);
+            d.draw(mCanvas);
             mCanvas.setBitmap(null);
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
