@@ -55,6 +55,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -477,6 +478,7 @@ public class Workspace extends PagedView
         updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
         setChildrenBackgroundAlphaMultipliers(1f);
+        mLauncher.getHotseat().setChildrenOutlineAlpha(1f);
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
         UninstallShortcutReceiver.enableUninstallQueue();
@@ -486,6 +488,7 @@ public class Workspace extends PagedView
         mIsDragOccuring = false;
         updateChildrenLayersEnabled(false);
         mLauncher.unlockScreenOrientation(false);
+        mLauncher.getHotseat().setChildrenOutlineAlpha(0f);
 
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
@@ -2784,7 +2787,7 @@ public class Workspace extends PagedView
         // We want the point to be mapped to the dragTarget.
         if (dropTargetLayout != null) {
             if (mLauncher.isHotseatLayout(dropTargetLayout)) {
-                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+               mLauncher.getHotseat().mapPointFromChildToSelf(dropTargetLayout, mDragViewVisualCenter);
             } else {
                 mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter, null);
             }
@@ -2864,6 +2867,8 @@ public class Workspace extends PagedView
                 if (mCurrentPage != screen && !hasMovedIntoHotseat) {
                     snapScreen = screen;
                     snapToPage(screen);
+                } else if (mLauncher.getHotseat().getCurrentPage() != screen && hasMovedIntoHotseat) {
+                    mLauncher.getHotseat().snapToPage(screen);
                 }
 
                 if (foundCell) {
@@ -3043,10 +3048,12 @@ public class Workspace extends PagedView
         // Here we store the final page that will be dropped to, if the workspace in fact
         // receives the drop
         if (mInScrollArea) {
-            if (isPageMoving()) {
+            PagedView target = mDragInfo != null && mDragInfo.container == Favorites.CONTAINER_HOTSEAT ?
+                    mLauncher.getHotseat() : this;
+            if (target.isPageMoving()) {
                 // If the user drops while the page is scrolling, we should use that page as the
                 // destination instead of the page that is being hovered over.
-                mDropToLayout = (CellLayout) getPageAt(getNextPage());
+                mDropToLayout = (CellLayout) target.getPageAt(target.getNextPage());
             } else {
                 mDropToLayout = mDragOverlappingLayout;
             }
@@ -3084,6 +3091,10 @@ public class Workspace extends PagedView
         cleanupReorder(true);
         cleanupFolderCreation();
         setCurrentDropOverCell(-1, -1);
+    }
+
+    PagedView getCurrentDropTarget() {
+        return mLauncher.isHotseatLayout(mDragTargetLayout) ? mLauncher.getHotseat() : this;
     }
 
     void setCurrentDragOverlappingLayout(CellLayout layout) {
@@ -3190,9 +3201,9 @@ public class Workspace extends PagedView
 
 
    void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {
-       hotseat.getLayout().getMatrix().invert(mTempInverseMatrix);
-       xy[0] = xy[0] - hotseat.getLeft() - hotseat.getLayout().getLeft();
-       xy[1] = xy[1] - hotseat.getTop() - hotseat.getLayout().getTop();
+       hotseat.getPageAt(hotseat.getNextPage()).getMatrix().invert(mTempInverseMatrix);
+       xy[0] = xy[0] - hotseat.getLeft() - hotseat.getPageAt(hotseat.getNextPage()).getLeft();
+       xy[1] = xy[1] - hotseat.getTop() - hotseat.getPageAt(hotseat.getNextPage()).getTop();
        mTempInverseMatrix.mapPoints(xy);
    }
 
@@ -3212,20 +3223,18 @@ public class Workspace extends PagedView
        xy[1] -= (getScrollY() - v.getTop());
    }
 
-   static private float squaredDistance(float[] point1, float[] point2) {
+   static float squaredDistance(float[] point1, float[] point2) {
         float distanceX = point1[0] - point2[0];
         float distanceY = point2[1] - point2[1];
         return distanceX * distanceX + distanceY * distanceY;
    }
 
-    /*
-     *
+    /**
      * This method returns the CellLayout that is currently being dragged to. In order to drag
      * to a CellLayout, either the touch point must be directly over the CellLayout, or as a second
      * strategy, we see if the dragView is overlapping any CellLayout and choose the closest one
      *
      * Return null if no CellLayout is currently being dragged over
-     *
      */
     private CellLayout findMatchingPageForDragOver(float originX, float originY, boolean exact) {
         // We loop through all the screens (ie CellLayouts) and see which ones overlap
@@ -3330,7 +3339,7 @@ public class Workspace extends PagedView
             if (mLauncher.getHotseat() != null && !isExternalDragWidget(d)) {
                 mLauncher.getHotseat().getHitRect(r);
                 if (r.contains(d.x, d.y)) {
-                    layout = mLauncher.getHotseat().getLayout();
+                    layout = mLauncher.getHotseat().findMatchingPageForDragOver(d.x, d.y, false);
                 }
             }
             if (layout == null) {
@@ -3342,12 +3351,8 @@ public class Workspace extends PagedView
                 setCurrentDragOverlappingLayout(layout);
 
                 boolean isInSpringLoadedMode = (mState == State.SPRING_LOADED);
-                if (isInSpringLoadedMode) {
-                    if (mLauncher.isHotseatLayout(layout)) {
-                        mSpringLoadedDragController.cancel();
-                    } else {
-                        mSpringLoadedDragController.setAlarm(mDragTargetLayout);
-                    }
+                if (isInSpringLoadedMode || mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                    mSpringLoadedDragController.setAlarm(mDragTargetLayout);
                 }
             }
         } else {
@@ -3355,7 +3360,7 @@ public class Workspace extends PagedView
             if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
                 mLauncher.getHotseat().getHitRect(r);
                 if (r.contains(d.x, d.y)) {
-                    layout = mLauncher.getHotseat().getLayout();
+                    layout = mLauncher.getHotseat().findMatchingPageForDragOver(d.x, d.y, false);
                 }
             }
             if (layout == null) {
@@ -3364,6 +3369,10 @@ public class Workspace extends PagedView
             if (layout != mDragTargetLayout) {
                 setCurrentDropLayout(layout);
                 setCurrentDragOverlappingLayout(layout);
+
+                if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                    mSpringLoadedDragController.setAlarm(mDragTargetLayout);
+                }
             }
         }
 
@@ -3371,7 +3380,7 @@ public class Workspace extends PagedView
         if (mDragTargetLayout != null) {
             // We want the point to be mapped to the dragTarget.
             if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
-                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+               mLauncher.getHotseat().mapPointFromChildToSelf(mDragTargetLayout, mDragViewVisualCenter);
             } else {
                 mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
             }
@@ -3586,9 +3595,12 @@ public class Workspace extends PagedView
         final int screen = mLauncher.isHotseatLayout(cellLayout) ?
                 mLauncher.getHotseat().indexOfChild(cellLayout) :
                 indexOfChild(cellLayout);
-        if (!mLauncher.isHotseatLayout(cellLayout) && screen != mCurrentPage
-                && mState != State.SPRING_LOADED) {
-            snapToPage(screen);
+        if (mState != State.SPRING_LOADED) {
+            if (!mLauncher.isHotseatLayout(cellLayout) && screen != mCurrentPage) {
+                snapToPage(screen);
+            } else if (mLauncher.isHotseatLayout(cellLayout) && screen != mLauncher.getHotseat().getCurrentPage()) {
+                mLauncher.getHotseat().snapToPage(screen);
+            }
         }
 
         if (info instanceof PendingAddItemInfo) {
@@ -3939,7 +3951,7 @@ public class Workspace extends PagedView
         } else if (mDragInfo != null) {
             CellLayout cellLayout;
             if (mLauncher.isHotseatLayout(target)) {
-                cellLayout = mLauncher.getHotseat().getLayout();
+                cellLayout = (CellLayout) mLauncher.getHotseat().getChildAt(mDragInfo.screen);
             } else {
                 cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
             }
@@ -3962,7 +3974,7 @@ public class Workspace extends PagedView
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mLauncher.isHotseatLayout(cl)) {
-            screen = -1;
+            screen = mLauncher.getHotseat().indexOfChild(cl);
             container = Favorites.CONTAINER_HOTSEAT;
         }
 

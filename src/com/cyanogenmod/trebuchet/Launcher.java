@@ -3997,7 +3997,7 @@ public final class Launcher extends Activity
         }
 
         // Notify the drag controller
-        mDragController.onAppsRemoved(packageNames, this);
+        mDragController.onAppsRemoved(packageNames);
     }
 
     /**
