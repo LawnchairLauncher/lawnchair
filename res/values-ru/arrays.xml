@@ -18,6 +18,11 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="preferences_interface_homescreen_indicator_position_entries">
+        <item>Над нижней панелью</item>
+        <item>Наверху</item>
+        <item>Внизу</item>
+    </string-array>
     <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
         <item>Стандартный</item>
         <item>Планшетный</item>
@@ -25,10 +30,12 @@
         <item>Уменьшение</item>
         <item>Вращение вверх</item>
         <item>Вращение вниз</item>
-        <item>Вращение</item>
-        <item>Переворот</item>
+        <item>Внутри круга</item>
+        <item>Вне круга</item>
         <item>В куб</item>
         <item>Из куба</item>
+        <item>Вращение</item>
+        <item>Переворот</item>
         <item>Друг на друга</item>
         <item>Аккордеон</item>
     </string-array>
@@ -39,12 +46,18 @@
         <item>Уменьшение</item>
         <item>Вращение вверх</item>
         <item>Вращение вниз</item>
-        <item>Вращение</item>
-        <item>Переворот</item>
+        <item>Внутри круга</item>
+        <item>Вне круга</item>
         <item>В куб</item>
         <item>Из куба</item>
+        <item>Вращение</item>
+        <item>Переворот</item>
         <item>Друг на друга</item>
         <item>Аккордеон</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>Наверху/Слева</item>
+        <item>Внизу/Справа</item>
     </string-array>
     <string-array name="preferences_interface_drawer_orientation_entries">
         <item>Горизонтальная</item>
