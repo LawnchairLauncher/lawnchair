@@ -65,7 +65,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
 
     static final String AUTHORITY = "com.cyanogenmod.trebuchet.settings";
 
@@ -121,8 +121,7 @@ public class LauncherProvider extends ContentProvider {
         return result;
     }
 
-    private static long dbInsertAndCheck(DatabaseHelper helper,
-            SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+    private static long dbInsertAndCheck(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
         if (!values.containsKey(LauncherSettings.Favorites._ID)) {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
@@ -140,7 +139,7 @@ public class LauncherProvider extends ContentProvider {
         SqlArguments args = new SqlArguments(uri);
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final long rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
+        final long rowId = dbInsertAndCheck(db, args.table, null, initialValues);
         if (rowId <= 0) return null;
 
         uri = ContentUris.withAppendedId(uri, rowId);
@@ -157,7 +156,7 @@ public class LauncherProvider extends ContentProvider {
         db.beginTransaction();
         try {
             for (ContentValues value : values) {
-                if (dbInsertAndCheck(mOpenHelper, db, args.table, null, value) < 0) {
+                if (dbInsertAndCheck(db, args.table, null, value) < 0) {
                     return 0;
                 }
             }
@@ -235,6 +234,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_SEARCH = "search";
         private static final String TAG_APPWIDGET = "appwidget";
         private static final String TAG_SHORTCUT = "shortcut";
+        private static final String TAG_ACTION = "action";
         private static final String TAG_FOLDER = "folder";
         private static final String TAG_EXTRA = "extra";
 
@@ -289,7 +289,8 @@ public class LauncherProvider extends ContentProvider {
                     "iconResource TEXT," +
                     "icon BLOB," +
                     "uri TEXT," +
-                    "displayMode INTEGER" +
+                    "displayMode INTEGER," +
+                    "action TEXT" +
                     ");");
 
             // Database was just created, so wipe any previous widgets
@@ -364,6 +365,7 @@ public class LauncherProvider extends ContentProvider {
             final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
             final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
             final int displayModeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.DISPLAY_MODE);
+            final int actionIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.LAUNCHER_ACTION);
 
             ContentValues[] rows = new ContentValues[c.getCount()];
             int i = 0;
@@ -384,6 +386,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
                 values.put(LauncherSettings.Favorites.URI, c.getString(uriIndex));
                 values.put(LauncherSettings.Favorites.DISPLAY_MODE, c.getInt(displayModeIndex));
+                values.put(LauncherSettings.Favorites.LAUNCHER_ACTION, c.getString(actionIndex));
                 rows[i++] = values;
             }
 
@@ -392,7 +395,7 @@ public class LauncherProvider extends ContentProvider {
             try {
                 int numValues = rows.length;
                 for (i = 0; i < numValues; i++) {
-                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, rows[i]) < 0) {
+                    if (dbInsertAndCheck(db, TABLE_FAVORITES, null, rows[i]) < 0) {
                         return 0;
                     } else {
                         total++;
@@ -489,8 +492,9 @@ public class LauncherProvider extends ContentProvider {
                 version = 12;
             }
 
-            if (version < 13) {
+            if (version < 14) {
                 db.delete(TABLE_FAVORITES, Favorites.CONTAINER + "=?", new String[] { Integer.toString(Favorites.CONTAINER_HOTSEAT) });
+                db.execSQL("ALTER TABLE favorites ADD COLUMN action TEXT;");
 
                 // The max id is not yet set at this point (onUpgrade is triggered in the ctor
                 // before it gets a change to get set, so we need to read it here when we use it)
@@ -500,7 +504,7 @@ public class LauncherProvider extends ContentProvider {
 
                 // Add default hotseat icons
                 loadFavorites(db, R.xml.update_workspace);
-                version = 13;
+                version = 14;
             }
 
             if (version != DATABASE_VERSION) {
@@ -849,6 +853,9 @@ public class LauncherProvider extends ContentProvider {
                         added = addClockWidget(db, values);
                     } else if (TAG_APPWIDGET.equals(name)) {
                         added = addAppWidget(parser, attrs, db, values, a, packageManager);
+                    } else if (TAG_ACTION.equals(name)) {
+                        long id = addLauncherAction(db, values, a);
+                        added = id >= 0;
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
                         added = id >= 0;
@@ -949,7 +956,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.SPANX, 1);
                 values.put(Favorites.SPANY, 1);
                 values.put(Favorites._ID, generateNewId());
-                if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) < 0) {
+                if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {
                     return -1;
                 }
             } catch (PackageManager.NameNotFoundException e) {
@@ -965,7 +972,7 @@ public class LauncherProvider extends ContentProvider {
             values.put(Favorites.SPANY, 1);
             long id = generateNewId();
             values.put(Favorites._ID, id);
-            if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) <= 0) {
+            if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) <= 0) {
                 return -1;
             } else {
                 return id;
@@ -1082,7 +1089,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.APPWIDGET_ID, appWidgetId);
                 values.put(Favorites._ID, generateNewId());
-                dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
+                dbInsertAndCheck(db, TABLE_FAVORITES, null, values);
 
                 allocatedAppWidgets = true;
 
@@ -1102,6 +1109,30 @@ public class LauncherProvider extends ContentProvider {
             }
 
             return allocatedAppWidgets;
+        }
+
+        private long addLauncherAction(SQLiteDatabase db, ContentValues values,
+                TypedArray a) {
+            Resources r = mContext.getResources();
+
+            String actionText = a.getString(R.styleable.Favorite_action);
+            LauncherAction.Action action = LauncherAction.Action.valueOf(actionText);
+
+            long id = generateNewId();
+            values.put(Favorites.TITLE, r.getString(action.getString()));
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_LAUNCHER_ACTION);
+            values.put(Favorites.SPANX, 1);
+            values.put(Favorites.SPANY, 1);
+            values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
+            values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
+            values.put(Favorites.ICON_RESOURCE, r.getResourceName(action.getDrawable()));
+            values.put(LauncherSettings.Favorites.LAUNCHER_ACTION, actionText);
+            values.put(Favorites._ID, id);
+
+            if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {
+                return -1;
+            }
+            return id;
         }
 
         private long addUriShortcut(SQLiteDatabase db, ContentValues values,
@@ -1138,7 +1169,7 @@ public class LauncherProvider extends ContentProvider {
             values.put(Favorites.ICON_RESOURCE, r.getResourceName(iconResId));
             values.put(Favorites._ID, id);
 
-            if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) < 0) {
+            if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {
                 return -1;
             }
             return id;

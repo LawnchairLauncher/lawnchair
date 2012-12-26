@@ -56,6 +56,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -651,7 +652,7 @@ public final class Launcher extends Activity
 
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
-        if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
+        if (resultCode == RESULT_OK && mPendingAddInfo.container != com.cyanogenmod.trebuchet.ItemInfo.NO_ID) {
             final PendingAddArguments args = new PendingAddArguments();
             args.requestCode = requestCode;
             args.intent = data;
@@ -867,7 +868,7 @@ public final class Launcher extends Activity
         final long pendingAddContainer = savedState.getLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, -1);
         final int pendingAddScreen = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
 
-        if (pendingAddContainer != ItemInfo.NO_ID && pendingAddScreen > -1) {
+        if (pendingAddContainer != com.cyanogenmod.trebuchet.ItemInfo.NO_ID && pendingAddScreen > -1) {
             mPendingAddInfo.container = pendingAddContainer;
             mPendingAddInfo.screen = pendingAddScreen;
             mPendingAddInfo.cellX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_X);
@@ -1008,6 +1009,7 @@ public final class Launcher extends Activity
             favorite.setTextVisible(false);
         }
         favorite.setOnClickListener(this);
+        favorite.setOnTouchListener(this);
         return favorite;
     }
 
@@ -1035,7 +1037,7 @@ public final class Launcher extends Activity
         if (info != null) {
             info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            info.container = ItemInfo.NO_ID;
+            info.container = com.cyanogenmod.trebuchet.ItemInfo.NO_ID;
             mWorkspace.addApplicationShortcut(info, layout, container, screen,
                     isWorkspaceLocked(), cellX, cellY);
         } else {
@@ -1228,12 +1230,11 @@ public final class Launcher extends Activity
 
         boolean foundCellSpan;
 
-        Intent data = createActionIntent(action);
+        LauncherActionInfo info = new LauncherActionInfo();
+        info.action = action;
+        info.title = getResources().getString(action.getString());
+        info.setIcon(((BitmapDrawable)getResources().getDrawable(action.getDrawable())).getBitmap());
 
-        ShortcutInfo info = mModel.infoFromShortcutIntent(this, data, null);
-        if (info == null) {
-            return;
-        }
         final View view = createShortcut(info);
 
         if (cellX >= 0 && cellY >= 0) {
@@ -1276,20 +1277,6 @@ public final class Launcher extends Activity
         }
     }
 
-    private Intent createActionIntent(LauncherAction.Action action) {
-        Intent data = new Intent(Intent.ACTION_MAIN);
-        Intent intent = new Intent(ACTION_LAUNCHER);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setClassName(this, this.getClass().getName());
-        intent.putExtra(Intent.EXTRA_TEXT, action.toString());
-        data.putExtra(Intent.EXTRA_SHORTCUT_NAME,
-                getResources().getString(LauncherAction.Action.getString(action)));
-        data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
-        data.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(this, LauncherAction.Action.getDrawable(action)));
-        return data;
-    }
-
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1301,7 +1288,7 @@ public final class Launcher extends Activity
 
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
-                if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
+                if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == com.cyanogenmod.trebuchet.ItemInfo.NO_ID) {
                     mAppsCustomizeTabHost.reset();
                     showWorkspace(false);
                 }
@@ -1555,7 +1542,7 @@ public final class Launcher extends Activity
         // this state is reflected.
         closeFolder();
 
-        if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screen > -1 &&
+        if (mPendingAddInfo.container != com.cyanogenmod.trebuchet.ItemInfo.NO_ID && mPendingAddInfo.screen > -1 &&
                 mWaitingForResult) {
             outState.putLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, mPendingAddInfo.container);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SCREEN, mPendingAddInfo.screen);
@@ -1786,7 +1773,7 @@ public final class Launcher extends Activity
     }
 
     private void resetAddInfo() {
-        mPendingAddInfo.container = ItemInfo.NO_ID;
+        mPendingAddInfo.container = com.cyanogenmod.trebuchet.ItemInfo.NO_ID;
         mPendingAddInfo.screen = -1;
         mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
         mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
@@ -2060,7 +2047,14 @@ public final class Launcher extends Activity
         }
 
         Object tag = v.getTag();
-        if (tag instanceof ShortcutInfo) {
+        if (tag instanceof LauncherActionInfo) {
+            LauncherAction.Action action = ((LauncherActionInfo) tag).action;
+            switch (action) {
+                case AllApps:
+                    showAllApps(true);
+                    break;
+            }
+        } else if (tag instanceof ShortcutInfo) {
             // Open shortcut
             final Intent intent = ((ShortcutInfo) tag).intent;
             int[] pos = new int[2];
@@ -2082,10 +2076,20 @@ public final class Launcher extends Activity
         }
     }
 
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
-        // this is an intercepted event being forwarded from mWorkspace;
-        // clicking anywhere on the workspace causes the customization drawer to slide down
-        showWorkspace(true);
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            Object tag = v.getTag();
+            if (tag instanceof LauncherActionInfo) {
+                LauncherAction.Action action = ((LauncherActionInfo) tag).action;
+                switch (action) {
+                    case AllApps:
+                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                        break;
+                }
+            }
+        }
         return false;
     }
 
@@ -3579,7 +3583,7 @@ public final class Launcher extends Activity
         public void onClick(DialogInterface dialog, int which) {
             cleanup();
 
-            LauncherActionInfo item = (LauncherActionInfo) mAdapter.getItem(which);
+            LauncherAction.AddAdapter.ItemInfo item = (LauncherAction.AddAdapter.ItemInfo) mAdapter.getItem(which);
             addAction(item.action);
         }
 
@@ -3716,6 +3720,12 @@ public final class Launcher extends Activity
                             mNewShortcutAnimateViews.add(shortcut);
                         }
                     }
+                    break;
+                case LauncherSettings.Favorites.ITEM_TYPE_LAUNCHER_ACTION:
+                    LauncherActionInfo launcherActionInfo = (LauncherActionInfo) item;
+                    View launcherAction = createShortcut(launcherActionInfo);
+                    workspace.addInScreen(launcherAction, item.container, item.screen, item.cellX,
+                            item.cellY, 1, 1, false);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,

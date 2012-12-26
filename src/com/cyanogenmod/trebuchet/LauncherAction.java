@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LauncherAction {
@@ -40,36 +41,26 @@ public class LauncherAction {
         }
     }
 
-    public static List<LauncherActionInfo> getAllActions(Context context) {
-        List<LauncherActionInfo> actions = new ArrayList<LauncherActionInfo>();
-
-        final Resources res = context.getResources();
-
-        for (Action action : Action.values()) {
-            LauncherActionInfo info = new LauncherActionInfo();
-            info.action = action;
-            info.drawable = Action.getDrawable(action);
-            info.title = res.getString(Action.getString(action));
-            actions.add(info);
-        }
-
-        return actions;
+    public static List<Action> getAllActions() {
+        return Arrays.asList(Action.values());
     }
 
     public static class AddAdapter extends BaseAdapter {
 
-        private class LauncherActionInfoItem extends LauncherActionInfo {
+        public class ItemInfo {
+            public Action action;
             public Drawable drawable;
-            public LauncherActionInfoItem(LauncherActionInfo info, Resources res) {
-                action = info.action;
-                drawable = res.getDrawable(info.drawable);
-                title = info.title;
+            public String title;
+            public ItemInfo(Action info, Resources res) {
+                action = info;
+                drawable = res.getDrawable(info.getDrawable());
+                title = res.getString(info.getString());
             }
         }
 
         private final LayoutInflater mInflater;
 
-        private final List<LauncherActionInfoItem> mItems = new ArrayList<LauncherActionInfoItem>();
+        private final List<ItemInfo> mItems = new ArrayList<ItemInfo>();
 
         public AddAdapter(Launcher launcher) {
             super();
@@ -79,14 +70,14 @@ public class LauncherAction {
             // Create default actions
             Resources res = launcher.getResources();
 
-            List<LauncherActionInfo> items = LauncherAction.getAllActions(launcher);
-            for (LauncherActionInfo item : items) {
-                mItems.add(new LauncherActionInfoItem(item, res));
+            List<Action> items = LauncherAction.getAllActions();
+            for (Action item : items) {
+                mItems.add(new ItemInfo(item, res));
             }
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            LauncherActionInfoItem item = (LauncherActionInfoItem) getItem(position);
+            ItemInfo item = (ItemInfo) getItem(position);
 
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.add_list_item, parent, false);

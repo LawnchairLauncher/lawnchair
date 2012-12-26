@@ -1,19 +1,23 @@
 package com.cyanogenmod.trebuchet;
 
-class LauncherActionInfo {
+import android.content.ContentValues;
+
+class LauncherActionInfo extends ShortcutInfo {
 
     /*
      * The launcher action
      */
     LauncherAction.Action action;
 
-    /*
-     * The drawable for the launcher action
-     */
-    int drawable;
+    LauncherActionInfo() {
+        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_LAUNCHER_ACTION;
+    }
 
-    /*
-     * The title for the launcher action
-     */
-    String title;
+    @Override
+    void onAddToDatabase(ContentValues values) {
+        super.onAddToDatabase(values);
+
+        String actionText = action != null ? action.name() : null;
+        values.put(LauncherSettings.Favorites.LAUNCHER_ACTION, actionText);
+    }
 }

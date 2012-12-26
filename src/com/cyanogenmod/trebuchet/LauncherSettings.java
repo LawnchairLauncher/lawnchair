@@ -56,6 +56,11 @@ class LauncherSettings {
         static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
+         * The gesture is a launcher action
+         */
+        static final int ITEM_TYPE_LAUNCHER_ACTION = 3;
+
+        /**
          * The icon type.
          * <P>Type: INTEGER</P>
          */
@@ -173,15 +178,6 @@ class LauncherSettings {
         static final int ITEM_TYPE_FOLDER = 2;
 
         /**
-        * The favorite is a live folder
-        *
-        * Note: live folders can no longer be added to Launcher, and any live folders which
-        * exist within the launcher database will be ignored when loading.  That said, these
-        * entries in the database may still exist, and are not automatically stripped.
-        */
-        static final int ITEM_TYPE_LIVE_FOLDER = 3;
-
-        /**
          * The favorite is a widget
          */
         static final int ITEM_TYPE_APPWIDGET = 4;
@@ -207,15 +203,6 @@ class LauncherSettings {
          * <P>Type: INTEGER</P>
          */
         static final String APPWIDGET_ID = "appWidgetId";
-        
-        /**
-         * Indicates whether this favorite is an application-created shortcut or not.
-         * If the value is 0, the favorite is not an application-created shortcut, if the
-         * value is 1, it is an application-created shortcut.
-         * <P>Type: INTEGER</P>
-         */
-        @Deprecated
-        static final String IS_SHORTCUT = "isShortcut";
 
         /**
          * The URI associated with the favorite. It is used, for instance, by
@@ -232,5 +219,10 @@ class LauncherSettings {
          * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
          */
         static final String DISPLAY_MODE = "displayMode";
+
+        /**
+         * The LauncherAction of a launcher action shortcut
+         */
+        static final String LAUNCHER_ACTION = "action";
     }
 }

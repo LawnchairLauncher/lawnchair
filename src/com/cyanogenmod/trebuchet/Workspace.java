@@ -1715,8 +1715,8 @@ public class Workspace extends PagedView
                     if (!mOverscrollTransformsDirty) {
                         mOverscrollTransformsDirty = true;
                         cl.setCameraDistance(mDensity * mCameraDistance);
-                        cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
                         cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                        cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
                         cl.setOverscrollTransformsDirty(true);
                     }
                 }
@@ -3654,6 +3654,7 @@ public class Workspace extends PagedView
                                 container, screen, mTargetCell, span, null);
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        case LauncherSettings.Favorites.ITEM_TYPE_LAUNCHER_ACTION:
                         if (pendingInfo instanceof PendingAddActionInfo) {
                             mLauncher.processActionFromDrop(((PendingAddActionInfo)pendingInfo).action,
                                     container, screen, mTargetCell, null);
@@ -3691,6 +3692,7 @@ public class Workspace extends PagedView
             switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            case LauncherSettings.Favorites.ITEM_TYPE_LAUNCHER_ACTION:
                 if (info.container == NO_ID && info instanceof ApplicationInfo) {
                     // Came from all apps -- make a copy
                     info = new ShortcutInfo((ApplicationInfo) info);
@@ -3821,7 +3823,7 @@ public class Workspace extends PagedView
 
         int[] finalPos = new int[2];
         float scaleXY[] = new float[2];
-        boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
+        boolean scalePreview = !(info instanceof PendingAddShortcutInfo || info instanceof PendingAddActionInfo);
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
                 external, scalePreview);
 
