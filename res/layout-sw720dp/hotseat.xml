@@ -17,20 +17,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     launcher:cellCountX="@integer/hotseat_cell_count"
-    launcher:cellCountY="1">
-    <com.cyanogenmod.trebuchet.CellLayout
-        android:id="@+id/layout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:paddingTop="@dimen/button_bar_height_top_padding"
-        android:paddingBottom="@dimen/button_bar_height_bottom_padding"
-        android:paddingLeft="@dimen/button_bar_width_left_padding"
-        android:paddingRight="@dimen/button_bar_width_right_padding"
-
-        launcher:cellWidth="@dimen/hotseat_cell_width"
-        launcher:cellHeight="@dimen/hotseat_cell_height"
-        launcher:widthGap="@dimen/hotseat_width_gap"
-        launcher:heightGap="@dimen/hotseat_height_gap"
-        launcher:maxGap="@dimen/hotseat_width_gap" />
-</com.cyanogenmod.trebuchet.Hotseat>
+    launcher:cellCountY="1" />

@@ -4349,9 +4349,12 @@ public class Workspace extends PagedView
                     // return null for some shortcuts (for instance, for shortcuts to
                     // web pages.)
                     final Intent intent = info.intent;
-                    final ComponentName name = intent.getComponent();
-                    if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                            Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                    if (intent != null && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
+                            Intent.ACTION_MAIN.equals(intent.getAction())) {
+                        final ComponentName name = intent.getComponent();
+                        if (name == null) {
+                            continue;
+                        }
                         for (ApplicationInfo app : apps) {
                             if (app.componentName.equals(name)) {
                                 BubbleTextView shortcut = (BubbleTextView) view;
