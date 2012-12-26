@@ -4183,12 +4183,12 @@ public final class Launcher extends Activity
             removeCling(R.id.all_apps_cling);
         }
     }
-    public void showFirstRunAllAppsSortCling() {
+    public void showFirstRunAllAppsSortCling(int[] position) {
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
             getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
         if (isClingsEnabled() && !prefs.getBoolean(Cling.ALLAPPS_SORT_CLING_DISMISSED_KEY, false)) {
-            initCling(R.id.all_apps_sort_cling, null, true, 0);
+            initCling(R.id.all_apps_sort_cling, position, true, 0);
         } else {
             removeCling(R.id.all_apps_sort_cling);
         }
