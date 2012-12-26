@@ -74,14 +74,12 @@
         launcher:screen="0"
         launcher:x="1"
         launcher:y="0" />
-    <shortcut
+    <action
         launcher:container="-101"
         launcher:screen="0"
         launcher:x="2"
         launcher:y="0"
-        launcher:icon="@drawable/ic_allapps"
-        launcher:title="@string/all_apps_button_label"
-        launcher:uri="#Intent;action=com.cyanogenmod.trebuchet.LAUNCHER_ACTION;category=android.intent.category.HOME;launchFlags=0x10200000;component=com.cyanogenmod.trebuchet/com.cyanogenmod.trebuchet.Launcher;S.android.intent.extra.TEXT=AllApps;end" />
+        launcher:action="AllApps" />
     <favorite
         launcher:packageName="com.android.mms"
         launcher:className="com.android.mms.ui.ConversationList"

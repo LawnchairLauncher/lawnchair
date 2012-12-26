@@ -64,28 +64,34 @@
         launcher:packageName="com.android.contacts"
         launcher:className="com.android.contacts.activities.DialtactsActivity"
         launcher:container="-101"
-        launcher:screen="1"
+        launcher:screen="0"
         launcher:x="1"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.contacts"
         launcher:className="com.android.contacts.activities.PeopleActivity"
         launcher:container="-101"
-        launcher:screen="2"
+        launcher:screen="0"
         launcher:x="2"
         launcher:y="0" />
+    <action
+        launcher:container="-101"
+        launcher:screen="0"
+        launcher:x="3"
+        launcher:y="0"
+        launcher:action="AllApps" />
     <favorite
         launcher:packageName="com.android.mms"
         launcher:className="com.android.mms.ui.ConversationList"
         launcher:container="-101"
-        launcher:screen="4"
+        launcher:screen="0"
         launcher:x="4"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.browser"
         launcher:className="com.android.browser.BrowserActivity"
         launcher:container="-101"
-        launcher:screen="5"
+        launcher:screen="0"
         launcher:x="5"
         launcher:y="0" />
 </favorites>
