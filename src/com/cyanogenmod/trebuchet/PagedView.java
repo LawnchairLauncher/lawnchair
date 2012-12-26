@@ -177,7 +177,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mUsePagingTouchSlop = true;
 
     // If true, the subclass should directly update scrollX itself in its computeScroll method
-    // (SmoothPagedView does this)
     protected boolean mDeferScrollUpdate = false;
 
     protected boolean mIsPageMoving = false;
@@ -461,7 +460,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
     }
 
-    // we moved this functionality to a helper function so SmoothPagedView can reuse it
     protected boolean computeScrollHelper() {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
@@ -1693,6 +1691,30 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         public float getInterpolation(float t) {
             t -= 1.0f;
             return -(t*t*t*t - 1);
+        }
+    }
+
+    public static class OvershootInterpolator implements Interpolator {
+        private static final float DEFAULT_TENSION = 1.3f;
+        private float mTension;
+
+        public OvershootInterpolator() {
+            mTension = DEFAULT_TENSION;
+        }
+
+        public void setDistance(int distance) {
+            mTension = distance > 0 ? DEFAULT_TENSION / distance : DEFAULT_TENSION;
+        }
+
+        public void disableSettle() {
+            mTension = 0.f;
+        }
+
+        public float getInterpolation(float t) {
+            // _o(t) = t * t * ((tension + 1) * t + tension)
+            // o(t) = _o(t - 1) + 1
+            t -= 1.0f;
+            return t * t * ((mTension + 1) * t + mTension) + 1.0f;
         }
     }
 

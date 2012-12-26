@@ -139,7 +139,7 @@ public class FocusHelper {
         final TabWidget tabs = tabHost.getTabWidget();
         final int widgetIndex = parent.indexOfChild(w);
         final int widgetCount = parent.getChildCount();
-        final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parent));
+        final int pageIndex = container.indexToPage(container.indexOfChild(parent));
         final int pageCount = container.getChildCount();
         final int cellCountX = parent.getCellCountX();
         final int cellCountY = parent.getCellCountY();
@@ -148,7 +148,7 @@ public class FocusHelper {
 
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        ViewGroup newParent = null;
+        ViewGroup newParent;
         // Now that we load items in the bg asynchronously, we can't just focus
         // child siblings willy-nilly
         View child = null;
@@ -299,7 +299,7 @@ public class FocusHelper {
         final TabWidget tabs = tabHost.getTabWidget();
         final int iconIndex = itemContainer.indexOfChild(v);
         final int itemCount = itemContainer.getChildCount();
-        final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parentLayout));
+        final int pageIndex = container.indexToPage(container.indexOfChild(parentLayout));
         final int pageCount = container.getChildCount();
 
         final int x = iconIndex % countX;
@@ -307,10 +307,10 @@ public class FocusHelper {
 
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        ViewGroup newParent = null;
+        ViewGroup newParent;
         // Side pages do not always load synchronously, so check before focusing child siblings
         // willy-nilly
-        View child = null;
+        View child;
         boolean wasHandled = false;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:

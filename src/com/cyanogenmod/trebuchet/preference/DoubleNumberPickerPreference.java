@@ -160,7 +160,7 @@ public class DoubleNumberPickerPreference extends DialogPreference {
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
-            persistString(mNumberPicker1.getValue() + "|" + mNumberPicker2.getValue());;
+            persistString(mNumberPicker1.getValue() + "|" + mNumberPicker2.getValue());
         }
     }
 

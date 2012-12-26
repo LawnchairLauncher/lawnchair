@@ -130,13 +130,6 @@
         <attr name="clingFocusedY" format="integer" />
     </declare-styleable>
 
-    <!-- HandleView specific attributes. These attributes are used to customize
-         a HandleView view in XML files. -->
-    <declare-styleable name="HandleView">
-        <!-- Orientation of the handle. -->
-        <attr name="direction" />
-    </declare-styleable>
-
     <!-- XML attributes used by default_workspace.xml -->
     <declare-styleable name="Favorite">
         <attr name="className" format="string" />
@@ -183,4 +176,17 @@
         <attr name="pickerTitle1" format="string" />
         <attr name="pickerTitle2" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="EcoGallery">
+        <attr name="gravity" format="integer" />
+        <attr name="animationDuration" format="integer" />
+        <attr name="unselectedAlpha" format="float" />
+        <attr name="spacing" format="dimension" />
+    </declare-styleable>
+    <attr name="ecoGalleryStyle" format="reference" />
+
+    <declare-styleable name="CustomAbsSpinner">
+        <attr name="entries" format="reference" />
+    </declare-styleable>
+    <attr name="customAbsSpinnerStyle" format="reference" />
 </resources>

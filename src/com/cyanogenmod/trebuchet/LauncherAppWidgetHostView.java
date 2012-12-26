@@ -56,10 +56,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
 
     public boolean orientationChangedSincedInflation() {
         int orientation = mContext.getResources().getConfiguration().orientation;
-        if (mPreviousOrientation != orientation) {
-           return true;
-       }
-       return false;
+        return mPreviousOrientation != orientation;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {

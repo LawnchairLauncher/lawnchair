@@ -210,7 +210,7 @@ public class Cling extends FrameLayout {
             }
         }
         return true;
-    };
+    }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -283,10 +283,10 @@ public class Cling extends FrameLayout {
 
             canvas.drawBitmap(b, 0, 0, null);
             c.setBitmap(null);
-            b = null;
+            b.recycle();
         }
 
         // Draw the rest of the cling
         super.dispatchDraw(canvas);
-    };
+    }
 }

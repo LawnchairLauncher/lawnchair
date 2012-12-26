@@ -34,7 +34,6 @@ import android.widget.TextView;
  * too aggressive.
  */
 public class BubbleTextView extends TextView implements ShortcutInfo.ShortcutListener {
-    static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
     static final float SHADOW_Y_OFFSET = 2.0f;

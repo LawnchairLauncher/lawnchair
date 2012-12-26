@@ -104,18 +104,12 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
         getDescendantRectRelativeToSelf(folder.getEditTextRegion(), mHitRect);
-        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
-            return true;
-        }
-        return false;
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
     private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
         getDescendantRectRelativeToSelf(folder, mHitRect);
-        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
-            return true;
-        }
-        return false;
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
@@ -732,7 +726,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     private Drawable mLeftHoverDrawable;
     private Drawable mRightHoverDrawable;
 
-    void onEnterScrollArea(int direction) {
+    void onEnterScrollArea() {
         mInScrollArea = true;
         invalidate();
     }

@@ -17,6 +17,7 @@
 package com.cyanogenmod.trebuchet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -169,7 +170,7 @@ class ShortcutInfo extends ItemInfo {
         return "ShortcutInfo(title=" + title.toString() + "intent=" + intent + "id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container + " screen=" + screen
                 + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX + " spanY=" + spanY
-                + " dropPos=" + dropPos + ")";
+                + " dropPos=" + Arrays.toString(dropPos) + ")";
     }
 
     public static void dumpShortcutInfoList(String tag, String label,

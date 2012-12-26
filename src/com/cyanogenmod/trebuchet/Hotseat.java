@@ -18,19 +18,14 @@ package com.cyanogenmod.trebuchet;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 public class Hotseat extends PagedView {
-    private Launcher mLauncher;
-    private CellLayout mContent;
-
     private int mCellCount;
 
     private boolean mTransposeLayoutWithOrientation;
@@ -83,10 +78,7 @@ public class Hotseat extends PagedView {
 
         // No data needed
         setDataIsReady();
-    }
 
-    public void setup(Launcher launcher) {
-        mLauncher = launcher;
         setOnKeyListener(new HotseatIconKeyEventListener());
     }
 

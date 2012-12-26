@@ -190,7 +190,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newApps = sharedPrefs.getStringSet(NEW_APPS_LIST_KEY, newApps);
                     }
                     synchronized (newApps) {
-                        newApps.add(intent.toUri(0).toString());
+                        newApps.add(intent.toUri(0));
                     }
                     final Set<String> savedNewApps = newApps;
                     new Thread("setNewAppsThread") {
@@ -231,10 +231,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         final int yCount = LauncherModel.getCellCountY();
         boolean[][] occupied = new boolean[xCount][yCount];
 
-        ItemInfo item = null;
         int cellX, cellY, spanX, spanY;
-        for (int i = 0; i < items.size(); ++i) {
-            item = items.get(i);
+        for (ItemInfo item : items) {
             if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 if (item.screen == screen) {
                     cellX = item.cellX;
