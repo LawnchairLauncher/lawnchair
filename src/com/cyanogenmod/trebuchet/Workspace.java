@@ -2670,8 +2670,10 @@ public class Workspace extends PagedView
             return false;
         }
 
-        boolean aboveShortcut = ((ItemInfo) dropOverView.getTag()).itemType ==
-                LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        ItemInfo aboveInfo = (ItemInfo) dropOverView.getTag();
+        boolean aboveShortcut =
+                (aboveInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                aboveInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
         boolean willBecomeShortcut =
                 (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
