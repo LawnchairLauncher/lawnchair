@@ -74,11 +74,15 @@ public class Hotseat extends PagedView {
 
         mVertical = hasVerticalHotseat();
 
+
+        float childrenScale = PreferencesProvider.Interface.Dock.getIconScale(
+                getResources().getInteger(R.integer.hotseat_item_scale_percentage)) / 100f;
+
         LayoutInflater inflater =
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (int i = 0; i < hotseatPages; i++) {
             CellLayout cl = (CellLayout) inflater.inflate(R.layout.hotseat_page, null);
-            cl.setIsHotseat(true);
+            cl.setChildrenScale(childrenScale);
             cl.setGridSize((!hasVerticalHotseat() ? mCellCount : 1), (hasVerticalHotseat() ? mCellCount : 1));
             addView(cl);
         }

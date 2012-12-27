@@ -138,8 +138,7 @@ public class CellLayout extends ViewGroup {
     private TimeInterpolator mEaseOutInterpolator;
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
-    private boolean mIsHotseat = false;
-    private float mHotseatScale = 1f;
+    private float mChildrenScale = 1f;
 
     public static final int MODE_DRAG_OVER = 0;
     public static final int MODE_ON_DROP = 1;
@@ -202,8 +201,6 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
-        mHotseatScale = (res.getInteger(R.integer.hotseat_item_scale_percentage) / 100f);
-
         mNormalBackground = res.getDrawable(R.drawable.homescreen_blue_normal_holo);
         mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_blue_strong_holo);
 
@@ -326,8 +323,12 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets.buildLayer();
     }
 
+    public void setChildrenScale(float childrenScale) {
+        mChildrenScale = childrenScale;
+    }
+
     public float getChildrenScale() {
-        return mIsHotseat ? mHotseatScale : 1.0f;
+        return mChildrenScale;
     }
 
     public void setGridSize(int x, int y) {
@@ -609,10 +610,6 @@ public class CellLayout extends ViewGroup {
         return mCountY;
     }
 
-    public void setIsHotseat(boolean isHotseat) {
-        mIsHotseat = isHotseat;
-    }
-
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
             boolean markCells) {
         final LayoutParams lp = params;
@@ -622,11 +619,7 @@ public class CellLayout extends ViewGroup {
             BubbleTextView bubbleChild = (BubbleTextView) child;
 
             Resources res = getResources();
-            if (mIsHotseat) {
-                bubbleChild.setTextColor(res.getColor(android.R.color.transparent));
-            } else {
-                bubbleChild.setTextColor(res.getColor(R.color.workspace_icon_text_color));
-            }
+            bubbleChild.setTextColor(res.getColor(R.color.workspace_icon_text_color));
         }
 
         child.setScaleX(getChildrenScale());

@@ -188,6 +188,9 @@ public final class PreferencesProvider {
             public static int getNumberIcons(int def) {
                 return getInt("ui_dock_icons", def);
             }
+            public static int getIconScale(int def) {
+                return getInt("ui_dock_icon_scale", def);
+            }
             public static boolean getShowDivider() {
                 return getBoolean("ui_dock_divider", true);
             }
