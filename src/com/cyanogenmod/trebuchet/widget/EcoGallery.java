@@ -156,13 +156,6 @@ public class EcoGallery extends CustomAbsSpinner implements GestureDetector.OnGe
      */
     private boolean mIsFirstScroll;
 
-
-    /**
-     * If true the reflection calls failed and this widget will behave
-     * unpredictably if used further
-     */
-    private boolean mBroken;
-
     public EcoGallery(Context context) {
         this(context, null);
     }
@@ -173,8 +166,6 @@ public class EcoGallery extends CustomAbsSpinner implements GestureDetector.OnGe
 
     public EcoGallery(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        mBroken = true;
 
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(true);
@@ -205,51 +196,8 @@ public class EcoGallery extends CustomAbsSpinner implements GestureDetector.OnGe
 
         // We draw the selected item last (because otherwise the item to the
         // right overlaps it)
-        int FLAG_USE_CHILD_DRAWING_ORDER = 0x400;
-        int FLAG_SUPPORT_STATIC_TRANSFORMATIONS = 0x800;
-        Class vgClass = ViewGroup.class;
-
-        try {
-            Field childDrawingOrder = vgClass
-                    .getDeclaredField("FLAG_USE_CHILD_DRAWING_ORDER");
-            Field supportStaticTrans = vgClass
-                    .getDeclaredField("FLAG_SUPPORT_STATIC_TRANSFORMATIONS");
-
-            childDrawingOrder.setAccessible(true);
-            supportStaticTrans.setAccessible(true);
-
-            FLAG_USE_CHILD_DRAWING_ORDER = childDrawingOrder.getInt(this);
-            FLAG_SUPPORT_STATIC_TRANSFORMATIONS = supportStaticTrans.getInt(this);
-        } catch (NoSuchFieldException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-        }
-        try {
-            // set new group flags
-            Field groupFlags = vgClass.getDeclaredField("mGroupFlags");
-            groupFlags.setAccessible(true);
-            int groupFlagsValue = groupFlags.getInt(this);
-
-            groupFlagsValue |= FLAG_USE_CHILD_DRAWING_ORDER;
-            groupFlagsValue |= FLAG_SUPPORT_STATIC_TRANSFORMATIONS;
-
-            groupFlags.set(this, groupFlagsValue);
-
-            // working!
-            mBroken = false;
-        } catch (NoSuchFieldException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-        }
-    }
-
-    /**
-     * @return Whether the widget is broken or working (functional)
-     */
-    public boolean isBroken() {
-        return mBroken;
+        mGroupFlags |= FLAG_USE_CHILD_DRAWING_ORDER;
+        mGroupFlags |= FLAG_SUPPORT_STATIC_TRANSFORMATIONS;
     }
 
     /**
