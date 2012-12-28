@@ -36,7 +36,7 @@ public class PreloadReceiver extends BroadcastReceiver {
         if (provider != null) {
             String name = intent.getStringExtra(EXTRA_WORKSPACE_NAME);
             final int workspaceResId = !TextUtils.isEmpty(name)
-                    ? context.getResources().getIdentifier(name, "xml", "com.android.launcher") : 0;
+                    ? context.getResources().getIdentifier(name, "xml", "com.cyanogenmod.trebuchet") : 0;
             if (LOGD) {
                 Log.d(TAG, "workspace name: " + name + " id: " + workspaceResId);
             }
