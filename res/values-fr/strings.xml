@@ -152,8 +152,6 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Afficher l\'indicateur de page en bas de l\'écran</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Fondu</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Faire disparaître l\'indicateur après le changement d\'écran</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Séparateur horizontal</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Afficher la ligne entre la barre de dock et l\'écran d\'accueil</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Applications</string>

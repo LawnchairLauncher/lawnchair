@@ -42,7 +42,6 @@
     <string name="group_shortcuts" msgid="9133529424900391877">"Verknüpfungen"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all launcher actions -->
-    <string name="group_actions">Aktionen</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hintergründe"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Auf Ihrem Startbildschirm ist kein Platz mehr vorhanden."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>

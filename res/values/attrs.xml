@@ -143,7 +143,6 @@
         <attr name="icon" format="reference" />  
         <attr name="title" format="reference" />
         <attr name="uri" format="string" />
-        <attr name="action" format="string" />
     </declare-styleable>
     <declare-styleable name="Extra">
         <attr name="key" format="string" />

@@ -47,12 +47,6 @@ class PendingAddShortcutInfo extends PendingAddItemInfo {
         return "Shortcut: " + shortcutActivityInfo.packageName;
     }
 }
-class PendingAddActionInfo extends PendingAddItemInfo {
-    /**
-     * The launcher action
-     */
-    LauncherAction.Action action;
-}
 
 class PendingAddWidgetInfo extends PendingAddItemInfo {
     int minWidth;

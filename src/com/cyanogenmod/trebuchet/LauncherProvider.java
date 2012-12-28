@@ -230,7 +230,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_SEARCH = "search";
         private static final String TAG_APPWIDGET = "appwidget";
         private static final String TAG_SHORTCUT = "shortcut";
-        private static final String TAG_ACTION = "action";
+        private static final String TAG_ALLAPPS = "allapps";
         private static final String TAG_FOLDER = "folder";
         private static final String TAG_EXTRA = "extra";
 
@@ -283,8 +283,7 @@ public class LauncherProvider extends ContentProvider {
                     "iconType INTEGER," +
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
-                    "icon BLOB," +
-                    "action TEXT" +
+                    "icon BLOB" +
                     ");");
 
             // Database was just created, so wipe any previous widgets
@@ -352,7 +351,7 @@ public class LauncherProvider extends ContentProvider {
             try {
                 // Select and iterate through each matching widget
                 c = db.query(TABLE_FAVORITES,
-                        new String[] { Favorites._ID, Favorites.INTENT },
+                        new String[]{Favorites._ID, Favorites.INTENT},
                         selectWhere, null, null, null, null);
                 if (c == null) return false;
 
@@ -530,8 +529,8 @@ public class LauncherProvider extends ContentProvider {
                         added = addClockWidget(db, values);
                     } else if (TAG_APPWIDGET.equals(name)) {
                         added = addAppWidget(parser, attrs, db, values, a, packageManager);
-                    } else if (TAG_ACTION.equals(name)) {
-                        long id = addLauncherAction(db, values, a);
+                    } else if (TAG_ALLAPPS.equals(name)) {
+                        long id = addAllAppsButton(db, values, a);
                         added = id >= 0;
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
@@ -788,22 +787,18 @@ public class LauncherProvider extends ContentProvider {
             return allocatedAppWidgets;
         }
 
-        private long addLauncherAction(SQLiteDatabase db, ContentValues values,
+        private long addAllAppsButton(SQLiteDatabase db, ContentValues values,
                 TypedArray a) {
             Resources r = mContext.getResources();
 
-            String actionText = a.getString(R.styleable.Favorite_action);
-            LauncherAction.Action action = LauncherAction.Action.valueOf(actionText);
-
             long id = generateNewId();
-            values.put(Favorites.TITLE, r.getString(action.getString()));
-            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_LAUNCHER_ACTION);
+            values.put(Favorites.TITLE, r.getString(R.string.all_apps_button_label));
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_ALLAPPS);
             values.put(Favorites.SPANX, 1);
             values.put(Favorites.SPANY, 1);
             values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
             values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
-            values.put(Favorites.ICON_RESOURCE, r.getResourceName(action.getDrawable()));
-            values.put(LauncherSettings.Favorites.LAUNCHER_ACTION, actionText);
+            values.put(Favorites.ICON_RESOURCE, r.getResourceName(R.drawable.all_apps_button_icon));
             values.put(Favorites._ID, id);
 
             if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {

@@ -39,7 +39,6 @@
     <string name="group_applications" msgid="2103752818818161976">"Приложения"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Ярлыки"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Виджеты"</string>
-    <string name="group_actions">Действия</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Обои"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"На главных экранах всё занято."</string>
     <string name="out_of_space" msgid="8365249326091984698">"На этом экране всё занято."</string>

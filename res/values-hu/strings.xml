@@ -40,7 +40,6 @@
     <string name="group_applications" msgid="2103752818818161976">"Alkalmazások"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Parancsikonok"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Modulok"</string>
-    <string name="group_actions">Műveletek</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Háttérképek"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Nincs több hely a Kezdőképernyőkön."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Nincs több hely ezen a főoldalon."</string>

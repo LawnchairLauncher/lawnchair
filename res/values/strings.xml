@@ -87,8 +87,6 @@ s -->
     <string name="group_shortcuts">Shortcuts</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widgets</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all launcher actions -->
-    <string name="group_actions">Actions</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
     <string name="group_wallpapers">Wallpapers</string>
     <!-- Error message when user has filled all their home screens -->

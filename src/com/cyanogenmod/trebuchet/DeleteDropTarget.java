@@ -38,8 +38,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.cyanogenmod.trebuchet.R;
-
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
     private static int FLING_DELETE_ANIMATION_DURATION = 350;
@@ -113,7 +111,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 switch (addInfo.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                    case LauncherSettings.Favorites.ITEM_TYPE_LAUNCHER_ACTION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                         return true;
                 }
             }
@@ -149,6 +147,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
         boolean isUninstall = false;
+        boolean isVisible = true;
 
         // If we are dragging an application from AppsCustomize, only show the uninstall control if we
         // can delete the app (it was downloaded)
@@ -160,12 +159,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         } else if (isWorkspaceOrFolderApplication(source, info)) {
             ShortcutInfo shortcutInfo = (ShortcutInfo) info;
             PackageManager pm = getContext().getPackageManager();
-            if (shortcutInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_LAUNCHER_ACTION) {
+            if (shortcutInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
                 ResolveInfo resolveInfo = pm.resolveActivity(shortcutInfo.intent, 0);
                 if (resolveInfo != null && (resolveInfo.activityInfo.applicationInfo.flags &
                         android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
                     isUninstall = true;
                 }
+            } else {
+                isVisible = false;
             }
         }
 
@@ -173,12 +174,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mCurrentDrawable = getCompoundDrawables()[0];
 
         mUninstall = isUninstall;
-        mActive = true;
+        mActive = isVisible;
         mMode = MODE_DELETE;
 
         setTextColor(mOriginalTextColor);
         resetHoverColor();
-        ((ViewGroup) getParent()).setVisibility(View.VISIBLE);
+        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (getText().length() > 0) {
             if (isAllAppsItem(source, info)) {
                 setText(R.string.cancel_target_label);

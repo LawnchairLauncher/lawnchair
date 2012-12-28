@@ -74,12 +74,11 @@
         launcher:screen="0"
         launcher:x="1"
         launcher:y="0" />
-    <action
+    <allapps
         launcher:container="-101"
         launcher:screen="0"
         launcher:x="2"
-        launcher:y="0"
-        launcher:action="AllApps" />
+        launcher:y="0" />
     <favorite
         launcher:packageName="com.android.mms"
         launcher:className="com.android.mms.ui.ConversationList"

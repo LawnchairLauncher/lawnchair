@@ -58,7 +58,7 @@ class LauncherSettings {
         /**
          * The gesture is a launcher action
          */
-        static final int ITEM_TYPE_LAUNCHER_ACTION = 3;
+        static final int ITEM_TYPE_ALLAPPS = 3;
 
         /**
          * The icon type.
@@ -188,10 +188,5 @@ class LauncherSettings {
          * <P>Type: INTEGER</P>
          */
         static final String APPWIDGET_ID = "appWidgetId";
-
-        /**
-         * The LauncherAction of a launcher action shortcut
-         */
-        static final String LAUNCHER_ACTION = "action";
     }
 }

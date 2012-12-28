@@ -124,7 +124,6 @@
     <string name="all_apps_sort_cling_add_item">Mantener pulsación sobre la pestaña Aplicaciones para elegir el método de ordenación</string>
     <string name="hidden_apps_title">Aplicaciones ocultas</string>
     <string name="edit_target_label">Editar</string>
-    <string name="group_actions">Acciones</string>
     <string name="preferences_title">Preferencias</string>
     <string name="preferences_interface_title">Interfaz</string>
     <string name="preferences_application_title">Aplicación</string>

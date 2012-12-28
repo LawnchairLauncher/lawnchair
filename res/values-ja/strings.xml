@@ -112,7 +112,6 @@
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
 
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all launcher actions -->
-    <string name="group_actions">アクション</string>
     <!-- Label for the info icon. [CHAR_LIMIT=30] -->
     <string name="edit_target_label">編集</string>
     <!-- Noun, menu item used to show system apps -->

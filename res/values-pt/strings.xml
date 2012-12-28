@@ -195,5 +195,4 @@
     <string name="menu_apps_filter_downloaded">Baixado</string>
     <string name="menu_hidden_apps_delete">Restaurar</string>
     <string name="hidden_apps_title">Aplicativos ocultos</string>
-    <string name="group_actions">Ações</string>
 </resources>
