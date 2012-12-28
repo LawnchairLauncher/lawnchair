@@ -111,6 +111,20 @@
     <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
 
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all launcher actions -->
+    <string name="group_actions">アクション</string>
+    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
+    <string name="edit_target_label">編集</string>
+    <!-- Noun, menu item used to show system apps -->
+    <string name="menu_apps_filter_system">システム</string>
+    <!-- Noun, menu item used to show downloaded apps -->
+    <string name="menu_apps_filter_downloaded">ダウンロード済み</string>
+    <!-- Noun, menu item used to reset hidden apps list -->
+    <string name="menu_hidden_apps_delete">リセット</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Hidden Apps</string>
+
     <string name="cancel_target_label">キャンセル</string>
     <string name="menu_preferences">Trebuchet設定</string>
     <string name="menu_apps_sort_title">名前</string>
@@ -120,7 +134,11 @@
     <string name="preferences_title">設定</string>
     <string name="preferences_interface_title">インタフェース</string>
     <string name="preferences_application_title">アプリケーション</string>
+
+    <!-- UI -->
+    <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">ホーム画面</string>
+    <string name="preferences_interface_homescreen_summary">画面と壁紙</string>
     <string name="preferences_interface_homescreen_general_category">一般</string>
     <string name="preferences_interface_homescreen_general_screens_title">スクリーン数</string>
     <string name="preferences_interface_homescreen_general_screens_summary">ホーム画面で扱うスクリーンの数</string>
@@ -130,6 +148,8 @@
     <string name="preferences_interface_homescreen_general_grid_summary">ホーム画面の行やカラムの数を選択</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">行数</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">カラム数</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">画面を拡張</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">画面のサイズいっぱいにホーム画面を拡張する</string>
     <string name="preferences_interface_homescreen_general_search_title">サーチバー</string>
     <string name="preferences_interface_homescreen_general_search_summary">常設のサーチバーを有効にする</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">ウィジェットのリサイズ</string>
@@ -137,28 +157,68 @@
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">アイコンラベルを隠す</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">ホーム画面のアイコンラベルを隠す</string>
     <string name="preferences_interface_homescreen_scrolling_category">スクロール</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">スクロール効果</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">ホーム画面をスクロールさせたときの演出効果</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">壁紙スクロール</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">ホーム画面をスクロールさせたとき壁紙をスクロールする</string>
-    <string name="preferences_interface_homescreen_indicator_category">インジケータ</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">クイック壁紙描画</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">固定イメージの壁紙のとき、よりスムースに描画するハックを利用する</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">壁紙サイズ</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">壁紙の幅のサイズを指定する</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">画面の端をぼかす</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">ホーム画面をスクロールするとき、画面の端をぼかす</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">アウトラインを表示</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">ホーム画面をスクロールするとき、画面の外枠を表示する</string>
+    <string name="preferences_interface_homescreen_indicator_category">インジケーター</string>
     <string name="preferences_interface_homescreen_indicator_enable_title">ページインジケータを表示する</string>
-    <string name="preferences_interface_homescreen_indicator_enable_summary">画面の下部に現在のページインジケータを表示する</string>
-    <string name="preferences_interface_homescreen_indicator_fade_title">フェード</string>
-    <string name="preferences_interface_homescreen_indicator_fade_summary">ホーム画面を移動した後にインジケータをフェードする</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">画面の下部に現在のページインジケーターを表示する</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">インジケーターをぼかす</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">ホーム画面を移動した後にインジケーターをぼかす</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">インジケーターの位置</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">インジケーターを表示する画面の位置を選択する</string>
+
+    <!-- Drawer -->
     <string name="preferences_interface_drawer_title">ドロワー</string>
+    <string name="preferences_interface_drawer_summary">アプリとウェジェットの一覧</string>
+    <string name="preferences_interface_drawer_orientation_title">向き</string>
+    <string name="preferences_interface_drawer_orientation_summary">ドロワーのスクロールする方向を選択する</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">アプリを隠す</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">ドロワーからアプリを隠す</string>
     <string name="preferences_interface_drawer_widgets_category">ウィジェット</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">アプリと一緒に表示</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">タブを変更しないでアプリドロワーからウィジェットドロワーに遷移する</string>
-    <string name="preferences_interface_drawer_indicator_category">インジケータ</string>
-    <string name="preferences_interface_drawer_indicator_enable_title">ページインジケータを表示</string>
-    <string name="preferences_interface_drawer_indicator_enable_summary">画面の下部に現在のページインジケータを表示する</string>
+    <string name="preferences_interface_drawer_scrolling_category">スクロール</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">スクロール効果</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">ページをスクロールさせたときの演出効果</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">ページの端をぼかす</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">ページをスクロールするとき、ページの端をぼかす</string>
+    <string name="preferences_interface_drawer_indicator_category">インジケーター</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">ページインジケーターを表示</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">画面の下部に現在のページインジケーターを表示する</string>
     <string name="preferences_interface_drawer_indicator_fade_title">フェード</string>
-    <string name="preferences_interface_drawer_indicator_fade_summary">ページを移動した後にインジケータをフェードする</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">ページを移動した後にインジケーターをフェードする</string>
+    <string name="preferences_interface_drawer_indicator_position_title">インジケーターの位置</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">インジケーターを表示する画面の位置を選択する</string>
+
+    <!-- Dock -->
     <string name="preferences_interface_dock_title">ドック</string>
+    <string name="preferences_interface_dock_pages_title">ページ</string>
+    <string name="preferences_interface_dock_pages_summary">ドックのページ数</string>
+    <string name="preferences_interface_dock_default_page_title">デフォルトページ</string>
+    <string name="preferences_interface_dock_default_page_summary">デフォルトページを選択</string>
+    <string name="preferences_interface_dock_icons_title">アイコン</string>
+    <string name="preferences_interface_dock_icons_summary">ドックのアイコンとカラムの数</string>
     <string name="preferences_interface_dock_divider_title">ドックの区切り線を表示</string>
     <string name="preferences_interface_dock_divider_summary">背景より手前にインジケータを表示する</string>
+
+    <!-- Icons -->
     <string name="preferences_interface_icons_title">アイコン</string>
+
+    <!-- General -->
     <string name="preferences_interface_general_title">一般</string>
     <string name="preferences_interface_general_orientation_title">画面の自動回転</string>
+    <string name="preferences_interface_general_fullscreen_title">フルスクリーンモード</string>
+    <string name="preferences_interface_general_fullscreen_summary">ステータスバーを隠してホーム画面を拡張する</string>
 
 
 </resources>
