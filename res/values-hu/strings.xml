@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Modulok"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Modul felvételéhez érintse meg, és tartsa lenyomva"</string>
     <string name="market" msgid="2652226429823445833">"Bolt"</string>
+    <string name="menu">Menü</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Nem lehet elemeket dobni erre a Kezdőképernyőre."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"A létrehozáshoz válasszon modult"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappa neve"</string>
@@ -219,6 +220,8 @@
     <string name="preferences_interface_dock_default_page_summary">Válasszon alapértelmezett lapot</string>
     <string name="preferences_interface_dock_icons_title">Ikonok</string>
     <string name="preferences_interface_dock_icons_summary">Ikonok száma a tálcán</string>
+    <string name="preferences_interface_dock_icon_scale_title">Ikonok mérete</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Tálcán szereplő ikonok mérete</string>
     <string name="preferences_interface_dock_divider_title">Tálca elválasztó</string>
     <string name="preferences_interface_dock_divider_summary">Tálca és a képernyő közti elválasztó vonal</string>
 
