@@ -29,6 +29,8 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Zum Hinzufügen Widget berühren und halten"</string>
     <string name="market" msgid="2652226429823445833">"Shop"</string>
+    <!-- Menu button text. -->
+    <string name="menu">Menü</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Element wurde nicht auf Startbildschirm abgelegt."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Widget zum Erstellen auswählen"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Ordnername"</string>
@@ -220,7 +222,7 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Seitenindikator anzeigen</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Automatisch ausblenden</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Indikator nach Seitenwechsel ausblenden</string>
-    <string name="preferences_interface_homescreen_indicator_position_title">Indikator-Position</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Position</string>
     <string name="preferences_interface_homescreen_indicator_position_summary">Anzeigeposition des Indikators auswählen</string>
 
     <!-- Drawer -->
@@ -243,6 +245,8 @@
     <string name="preferences_interface_drawer_indicator_enable_summary">Seitenindikator anzeigen</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Automatisch ausblenden</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Indikator nach Seitenwechsel ausblenden</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Position</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Anzeigeposition des Indikators auswählen</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
@@ -252,6 +256,8 @@
     <string name="preferences_interface_dock_default_page_summary">Die Standardseite festlegen</string>
     <string name="preferences_interface_dock_icons_title">Icons</string>
     <string name="preferences_interface_dock_icons_summary">Anzahl der Icons/Spalten des Docks festlegen</string>
+    <string name="preferences_interface_dock_icon_scale_title">Icongröße</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Größe der Icons im Dock</string>
     <string name="preferences_interface_dock_divider_title">Dock-Abtrennung anzeigen</string>
     <string name="preferences_interface_dock_divider_summary">Linie als Indikator-Hintergrund anzeigen</string>
 
