@@ -2779,7 +2779,7 @@ public final class Launcher extends Activity
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    updateWallpaperVisibility(true);
+                    updateWallpaperVisibility(!mWorkspace.isRenderingWallpaper());
                     // Prepare the position
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);

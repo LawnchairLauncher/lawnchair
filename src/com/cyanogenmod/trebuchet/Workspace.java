@@ -568,6 +568,10 @@ public class Workspace extends PagedView
         invalidate();
     }
 
+    public boolean isRenderingWallpaper() {
+        return mWallpaperHack && mWallpaperBitmap != null;
+    }
+
     @Override
     public void onChildViewAdded(View parent, View child) {
         if (!(child instanceof CellLayout)) {
