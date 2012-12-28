@@ -606,7 +606,8 @@ public final class Launcher extends Activity
                 break;
             case REQUEST_PICK_SHORTCUT:
                 processShortcut(args.intent);
-                break;
+                // Don't remove pending add info
+                return false;
             case REQUEST_CREATE_SHORTCUT:
                 completeAddShortcut(args.intent, args.container, args.screen, args.cellX,
                         args.cellY);
