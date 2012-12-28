@@ -183,42 +183,11 @@ class LauncherSettings {
         static final int ITEM_TYPE_APPWIDGET = 4;
 
         /**
-         * The favorite is a clock
-         */
-        static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
-
-        /**
-         * The favorite is a search widget
-         */
-        static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
-
-        /**
-         * The favorite is a photo frame
-         */
-        static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
-
-        /**
          * The appWidgetId of the widget
          *
          * <P>Type: INTEGER</P>
          */
         static final String APPWIDGET_ID = "appWidgetId";
-
-        /**
-         * The URI associated with the favorite. It is used, for instance, by
-         * live folders to find the content provider.
-         * <P>Type: TEXT</P>
-         */
-        static final String URI = "uri";
-
-        /**
-         * The display mode if the item is a live folder.
-         * <P>Type: INTEGER</P>
-         *
-         * @see android.provider.LiveFolders#DISPLAY_MODE_GRID
-         * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
-         */
-        static final String DISPLAY_MODE = "displayMode";
 
         /**
          * The LauncherAction of a launcher action shortcut
