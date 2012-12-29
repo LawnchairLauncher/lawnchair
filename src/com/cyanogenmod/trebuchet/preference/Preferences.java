@@ -81,7 +81,6 @@ public class Preferences extends PreferenceActivity
 
             if (header.id == R.id.preferences_general_section) {
                 Calendar calendar = Calendar.getInstance();
-                Log.e(TAG, Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)));
                 if (calendar.get(Calendar.HOUR_OF_DAY) == 3) {
                     String[] strings = getResources().getStringArray(R.array.preferences_koush);
                     Random random = new Random();
