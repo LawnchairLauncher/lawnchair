@@ -197,6 +197,8 @@
     <string name="preferences_interface_dock_default_page_summary">Выбор страницы по умолчанию</string>
     <string name="preferences_interface_dock_icons_title">Иконки</string>
     <string name="preferences_interface_dock_icons_summary">Количество иконок/колонок в нижней панели</string>
+    <string name="preferences_interface_dock_icon_scale_title">Масштаб иконок</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Масштабирование иконок в нижней панели</string>
     <string name="preferences_interface_dock_divider_title">Показывать разделитель</string>
     <string name="preferences_interface_dock_divider_summary">Отображать разделитель между рабочим столом и нижней панелью</string>
 
@@ -206,4 +208,6 @@
     <!-- General -->
     <string name="preferences_interface_general_title">Основные</string>
     <string name="preferences_interface_general_orientation_title">Автоповорот экрана</string>
+    <string name="preferences_interface_general_fullscreen_title">Полноэкранный режим</string>
+    <string name="preferences_interface_general_fullscreen_summary">Скрывать строку состояния для увеличения площади домашних экранов</string>
 </resources>
