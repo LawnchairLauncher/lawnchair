@@ -1251,9 +1251,6 @@ public class LauncherModel extends BroadcastReceiver {
                             LauncherSettings.Favorites.SPANY);
                     final int actionIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.LAUNCHER_ACTION);
-                    //final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
-                    //final int displayModeIndex = c.getColumnIndexOrThrow(
-                    //        LauncherSettings.Favorites.DISPLAY_MODE);
 
                     ShortcutInfo info;
                     String intentDescription;
