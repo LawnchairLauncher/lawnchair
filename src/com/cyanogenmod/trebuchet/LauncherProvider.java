@@ -40,6 +40,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -291,6 +292,103 @@ public class LauncherProvider extends ContentProvider {
                 mAppWidgetHost.deleteHost();
                 sendAppWidgetResetNotify();
             }
+
+            if (!convertDatabase(db)) {
+                // Set a shared pref so that we know we need to load the default workspace later
+                setFlagToLoadDefaultWorkspaceLater();
+            }
+        }
+
+        private void setFlagToLoadDefaultWorkspaceLater() {
+            String spKey = LauncherApplication.getSharedPreferencesKey();
+            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, true);
+            editor.commit();
+        }
+
+        private boolean convertDatabase(SQLiteDatabase db) {
+            if (LOGD) Log.d(TAG, "converting database from an older format, but not onUpgrade");
+            boolean converted = false;
+
+            final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
+                    "/old_favorites?notify=true");
+            final ContentResolver resolver = mContext.getContentResolver();
+            Cursor cursor = null;
+
+            try {
+                cursor = resolver.query(uri, null, null, null, null);
+            } catch (Exception e) {
+                // Ignore
+            }
+
+            // We already have a favorites database in the old provider
+            if (cursor != null && cursor.getCount() > 0) {
+                try {
+                    converted = copyFromCursor(db, cursor) > 0;
+                } finally {
+                    cursor.close();
+                }
+
+                if (converted) {
+                    resolver.delete(uri, null, null);
+                }
+            }
+
+            return converted;
+        }
+
+        private int copyFromCursor(SQLiteDatabase db, Cursor c) {
+            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+            final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+            final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
+            final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
+            final int iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
+            final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
+            final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
+            final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+            final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
+            final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
+            final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+
+            ContentValues[] rows = new ContentValues[c.getCount()];
+            int i = 0;
+            while (c.moveToNext()) {
+                ContentValues values = new ContentValues(c.getColumnCount());
+                values.put(LauncherSettings.Favorites._ID, c.getLong(idIndex));
+                values.put(LauncherSettings.Favorites.INTENT, c.getString(intentIndex));
+                values.put(LauncherSettings.Favorites.TITLE, c.getString(titleIndex));
+                values.put(LauncherSettings.Favorites.ICON_TYPE, c.getInt(iconTypeIndex));
+                values.put(LauncherSettings.Favorites.ICON, c.getBlob(iconIndex));
+                values.put(LauncherSettings.Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));
+                values.put(LauncherSettings.Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
+                values.put(LauncherSettings.Favorites.CONTAINER, c.getInt(containerIndex));
+                values.put(LauncherSettings.Favorites.ITEM_TYPE, c.getInt(itemTypeIndex));
+                values.put(LauncherSettings.Favorites.APPWIDGET_ID, -1);
+                values.put(LauncherSettings.Favorites.SCREEN, c.getInt(screenIndex));
+                values.put(LauncherSettings.Favorites.CELLX, c.getInt(cellXIndex));
+                values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
+                rows[i++] = values;
+            }
+
+            db.beginTransaction();
+            int total = 0;
+            try {
+                int numValues = rows.length;
+                for (i = 0; i < numValues; i++) {
+                    if (dbInsertAndCheck(db, TABLE_FAVORITES, null, rows[i]) < 0) {
+                        return 0;
+                    } else {
+                        total++;
+                    }
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+
+            return total;
         }
 
         @Override
