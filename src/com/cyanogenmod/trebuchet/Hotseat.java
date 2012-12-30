@@ -67,10 +67,7 @@ public class Hotseat extends PagedView {
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
         mCellCount = a.getInt(R.styleable.Hotseat_cellCount, DEFAULT_CELL_COUNT);
-        int cellCount = PreferencesProvider.Interface.Dock.getNumberIcons(0);
-        if (cellCount > 0) {
-            mCellCount = cellCount;
-        }
+        mCellCount = PreferencesProvider.Interface.Dock.getNumberIcons(mCellCount);
 
         mVertical = hasVerticalHotseat();
 
