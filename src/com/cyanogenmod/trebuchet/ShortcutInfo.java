@@ -36,6 +36,12 @@ class ShortcutInfo extends ItemInfo {
     Intent intent;
 
     /**
+     * Indicates whether the title comes from an application's resource (if false)
+     * or from a custom title (if true.)
+     */
+    boolean customTitle;
+
+    /**
      * Indicates whether the icon comes from an application's resource (if false)
      * or from a custom Bitmap (if true.)
      */
@@ -127,6 +133,7 @@ class ShortcutInfo extends ItemInfo {
 
     public void setTitle(CharSequence title) {
         this.title = title;
+        this.customTitle = true;
         if (mListener != null) {
             mListener.onTitleChanged(title);
         }
@@ -140,7 +147,7 @@ class ShortcutInfo extends ItemInfo {
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
 
-        String titleStr = title != null ? title.toString() : null;
+        String titleStr = title != null && customTitle ? title.toString() : null;
         values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
 
         String uri = intent != null ? intent.toUri(0) : null;
