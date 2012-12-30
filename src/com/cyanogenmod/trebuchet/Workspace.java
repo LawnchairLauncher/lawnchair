@@ -3214,8 +3214,8 @@ public class Workspace extends PagedView
 
    void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {
        hotseat.getPageAt(hotseat.getNextPage()).getMatrix().invert(mTempInverseMatrix);
-       xy[0] = xy[0] - hotseat.getLeft() - hotseat.getPageAt(hotseat.getNextPage()).getLeft();
-       xy[1] = xy[1] - hotseat.getTop() - hotseat.getPageAt(hotseat.getNextPage()).getTop();
+       xy[0] = xy[0] - (hotseat.getLeft() - hotseat.getScrollX()) - hotseat.getPageAt(hotseat.getNextPage()).getLeft();
+       xy[1] = xy[1] - (hotseat.getTop() - hotseat.getScrollY()) - hotseat.getPageAt(hotseat.getNextPage()).getTop();
        mTempInverseMatrix.mapPoints(xy);
    }
 

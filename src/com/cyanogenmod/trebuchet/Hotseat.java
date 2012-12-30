@@ -216,14 +216,6 @@ public class Hotseat extends PagedView {
         }
     }
 
-    /**
-     * Return the current {@link CellLayout}, correctly picking the destination
-     * screen while a scroll is in progress.
-     */
-    public CellLayout getCurrentDropLayout() {
-        return (CellLayout) getChildAt(getNextPage());
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
