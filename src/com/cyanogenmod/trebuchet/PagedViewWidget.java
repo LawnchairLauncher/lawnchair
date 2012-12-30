@@ -29,8 +29,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cyanogenmod.trebuchet.R;
-
 /**
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
@@ -108,8 +106,8 @@ public class PagedViewWidget extends LinearLayout {
         name.setText(info.label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
-            int hSpan = Math.min(cellSpan[0], LauncherModel.getCellCountX());
-            int vSpan = Math.min(cellSpan[1], LauncherModel.getCellCountY());
+            int hSpan = Math.min(cellSpan[0], LauncherModel.getWorkspaceCellCountX());
+            int vSpan = Math.min(cellSpan[1], LauncherModel.getWorkspaceCellCountY());
             dims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         }
     }

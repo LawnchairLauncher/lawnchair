@@ -150,6 +150,15 @@
     <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height</dimen>
     <dimen name="workspace_bottom_padding_land">0dp</dimen>
 
+    <dimen name="workspace_left_padding_port_qsb_hidden">0dp</dimen>
+    <dimen name="workspace_left_padding_land_qsb_hidden">0dp</dimen>
+    <dimen name="workspace_top_padding_port_qsb_hidden">0dp</dimen>
+    <dimen name="workspace_top_padding_land_qsb_hidden">0dp</dimen>
+    <dimen name="workspace_right_padding_port_hotseat_hidden">0dp</dimen>
+    <dimen name="workspace_right_padding_land_hotseat_hidden">0dp</dimen>
+    <dimen name="workspace_bottom_padding_port_hotseat_hidden">0dp</dimen>
+    <dimen name="workspace_bottom_padding_land_hotseat_hidden">0dp</dimen>
+
 <!-- Workspace cell size -->
     <dimen name="workspace_cell_width_land">106dp</dimen>
     <dimen name="workspace_cell_width_port">80dp</dimen>

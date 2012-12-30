@@ -179,6 +179,9 @@ public final class PreferencesProvider {
         }
 
         public static class Dock {
+            public static boolean getShowDock() {
+                return getBoolean("ui_dock_enabled", true);
+            }
             public static int getNumberPages() {
                 return getInt("ui_dock_pages", 1);
             }

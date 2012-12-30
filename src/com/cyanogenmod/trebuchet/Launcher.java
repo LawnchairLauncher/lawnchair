@@ -55,6 +55,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -148,7 +149,9 @@ public final class Launcher extends Activity
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
-    static final int MAX_SCREEN_COUNT = 7;
+    static final int MAX_WORKSPACE_SCREEN_COUNT = 7;
+    static final int MAX_HOTSEAT_SCREEN_COUNT = 3;
+    static final int MAX_SCREEN_COUNT = MAX_WORKSPACE_SCREEN_COUNT + MAX_HOTSEAT_SCREEN_COUNT;
     static final int DEFAULT_SCREEN = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
@@ -302,6 +305,7 @@ public final class Launcher extends Activity
         = new HideFromAccessibilityHelper();
     // Preferences
     private boolean mShowSearchBar;
+    private boolean mShowHotseat;
     private boolean mShowDockDivider;
     private boolean mHideIconLabels;
     private boolean mAutoRotate;
@@ -382,7 +386,8 @@ public final class Launcher extends Activity
         mPaused = false;
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
-        mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider();
+        mShowHotseat = PreferencesProvider.Interface.Dock.getShowDock();
+        mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider() && mShowHotseat;
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
         mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(getResources().getBoolean(R.bool.allow_rotation));
         mFullscreenMode = PreferencesProvider.Interface.General.getFullscreenMode();
@@ -940,6 +945,10 @@ public final class Launcher extends Activity
         // Hide the search divider if we are hiding search bar
         if (!mShowSearchBar && mQsbDivider != null && getCurrentOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
             mQsbDivider.setVisibility(View.GONE);
+        }
+
+        if (!mShowHotseat) {
+            mHotseat.setVisibility(View.GONE);
         }
 
         if (!mShowDockDivider && mDockDivider != null) {
@@ -2401,6 +2410,7 @@ public final class Launcher extends Activity
                 // User long pressed on empty space
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+
                 startWallpaper();
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
@@ -3019,7 +3029,7 @@ public final class Launcher extends Activity
      * Shows the hotseat area.
      */
     void showHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (mShowHotseat) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
                     int duration = 0;
@@ -3038,7 +3048,7 @@ public final class Launcher extends Activity
      * Hides the hotseat area.
      */
     void hideHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (mShowHotseat) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
                     int duration = 0;
@@ -3615,7 +3625,7 @@ public final class Launcher extends Activity
             public int compare(View a, View b) {
                 CellLayout.LayoutParams alp = (CellLayout.LayoutParams) a.getLayoutParams();
                 CellLayout.LayoutParams blp = (CellLayout.LayoutParams) b.getLayoutParams();
-                int cellCountX = LauncherModel.getCellCountX();
+                int cellCountX = LauncherModel.getWorkspaceCellCountX();
                 return (alp.cellY * cellCountX + alp.cellX) - (blp.cellY * cellCountX + blp.cellX);
             }
         });

@@ -30,7 +30,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -301,6 +300,7 @@ public class Workspace extends PagedView
     private int mDefaultHomescreen;
     private boolean mStretchScreens;
     private boolean mShowSearchBar;
+    private boolean mShowHotseat;
     private boolean mResizeAnyWidget;
     private boolean mHideIconLabels;
     private boolean mScrollWallpaper;
@@ -388,6 +388,7 @@ public class Workspace extends PagedView
 
         mStretchScreens = PreferencesProvider.Interface.Homescreen.getStretchScreens();
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
+        mShowHotseat = PreferencesProvider.Interface.Dock.getShowDock();
         mResizeAnyWidget = PreferencesProvider.Interface.Homescreen.getResizeAnyWidget();
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
         mTransitionEffect = PreferencesProvider.Interface.Homescreen.Scrolling.getTransitionEffect(
@@ -402,7 +403,7 @@ public class Workspace extends PagedView
         mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getShowScrollingIndicator();
         mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getFadeScrollingIndicator();
         mScrollingIndicatorPosition = PreferencesProvider.Interface.Homescreen.Indicator.getScrollingIndicatorPosition();
-        mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider();
+        mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider() && mShowHotseat;
 
         initWorkspace();
         checkWallpaper();
@@ -524,13 +525,18 @@ public class Workspace extends PagedView
         }
 
         if (!mShowSearchBar) {
-            int paddingTop = 0;
-            int paddingLeft = 0;
-            if (mLauncher.getCurrentOrientation() == Configuration.ORIENTATION_PORTRAIT) {
-                paddingTop = (int)res.getDimension(R.dimen.qsb_bar_hidden_inset);
-                paddingLeft = getPaddingRight();
-            }
+            int paddingLeft = (int) res.getDimension(R.dimen.workspace_left_padding_qsb_hidden);
+            int paddingTop = (int) res.getDimension(R.dimen.workspace_top_padding_qsb_hidden);
             setPadding(paddingLeft, paddingTop, getPaddingRight(), getPaddingBottom());
+        }
+
+        if (!mShowHotseat) {
+            int paddingRight = (int) res.getDimension(R.dimen.workspace_right_padding_hotseat_hidden);
+            int paddingBottom = (int) res.getDimension(R.dimen.workspace_bottom_padding_hotseat_hidden);
+            setPadding(getPaddingLeft(), getPaddingTop(), paddingRight, paddingBottom);
+
+            View dockScrollingIndicator = findViewById(R.id.paged_view_indicator_dock);
+            ((MarginLayoutParams)dockScrollingIndicator.getLayoutParams()).bottomMargin = 0;
         }
 
         if (!mShowScrollingIndicator) {
@@ -3026,7 +3032,7 @@ public class Workspace extends PagedView
                 int height = smallestSize.y - paddingTop - paddingBottom;
                 mLandscapeCellLayoutMetrics = new Rect();
                 CellLayout.getMetrics(mLandscapeCellLayoutMetrics, res,
-                        width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
+                        width, height, LauncherModel.getWorkspaceCellCountX(), LauncherModel.getWorkspaceCellCountY(),
                         orientation);
             }
             return mLandscapeCellLayoutMetrics;
@@ -3040,7 +3046,7 @@ public class Workspace extends PagedView
                 int height = largestSize.y - paddingTop - paddingBottom;
                 mPortraitCellLayoutMetrics = new Rect();
                 CellLayout.getMetrics(mPortraitCellLayoutMetrics, res,
-                        width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
+                        width, height, LauncherModel.getWorkspaceCellCountX(), LauncherModel.getWorkspaceCellCountY(),
                         orientation);
             }
             return mPortraitCellLayoutMetrics;

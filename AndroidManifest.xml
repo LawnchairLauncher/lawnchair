@@ -22,7 +22,7 @@
     package="com.cyanogenmod.trebuchet"
     android:versionName="@string/application_version">
 
-    <original-package android:name="com.android.launcher2" />
+    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="17" />
 
     <permission
         android:name="com.android.launcher.permission.PRELOAD_WORKSPACE"
@@ -39,19 +39,19 @@
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="dangerous"
         android:label="@string/permlab_uninstall_shortcut"
-        android:description="@string/permdesc_uninstall_shortcut"/>
+        android:description="@string/permdesc_uninstall_shortcut" />
     <permission
         android:name="com.android.launcher.permission.READ_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
         android:label="@string/permlab_read_settings"
-        android:description="@string/permdesc_read_settings"/>
+        android:description="@string/permdesc_read_settings" />
     <permission
         android:name="com.android.launcher.permission.WRITE_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
         android:label="@string/permlab_write_settings"
-        android:description="@string/permdesc_write_settings"/>
+        android:description="@string/permdesc_write_settings" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
@@ -80,7 +80,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
         </activity>
 
@@ -117,7 +117,7 @@
         </activity>
 
         <activity android:name="com.cyanogenmod.trebuchet.preference.HiddenAppsActivity"
-            android:label="@string/hidden_apps_title"/>
+            android:label="@string/hidden_apps_title" />
 
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
@@ -145,7 +145,7 @@
                 <action android:name="android.intent.action.USER_INITIALIZE" />
             </intent-filter>
         </receiver>
-        
+
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="com.cyanogenmod.trebuchet.LauncherProvider"
@@ -155,6 +155,6 @@
             android:readPermission="com.android.launcher.permission.READ_SETTINGS" />
 
         <meta-data android:name="android.nfc.disable_beam_default"
-                       android:value="true" />
+            android:value="true" />
     </application>
 </manifest>

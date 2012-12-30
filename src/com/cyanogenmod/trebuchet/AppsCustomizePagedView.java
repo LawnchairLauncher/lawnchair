@@ -538,10 +538,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int maxCellCountX = Integer.MAX_VALUE;
         int maxCellCountY = Integer.MAX_VALUE;
         if (LauncherApplication.isScreenLarge()) {
-            maxCellCountX = (isLandscape ? LauncherModel.getCellCountX() :
-                LauncherModel.getCellCountY());
-            maxCellCountY = (isLandscape ? LauncherModel.getCellCountY() :
-                LauncherModel.getCellCountX());
+            maxCellCountX = (isLandscape ? LauncherModel.getWorkspaceCellCountX() :
+                LauncherModel.getWorkspaceCellCountY());
+            maxCellCountY = (isLandscape ? LauncherModel.getWorkspaceCellCountY() :
+                LauncherModel.getWorkspaceCellCountX());
         }
         if (mMaxAppCellCountX > -1) {
             maxCellCountX = Math.min(maxCellCountX, mMaxAppCellCountX);
@@ -653,8 +653,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int[] minSpanXY = Launcher.getMinSpanForWidget(mLauncher, widget);
                 int minSpanX = Math.min(spanXY[0], minSpanXY[0]);
                 int minSpanY = Math.min(spanXY[1], minSpanXY[1]);
-                if (minSpanX <= LauncherModel.getCellCountX() &&
-                        minSpanY <= LauncherModel.getCellCountY()) {
+                if (minSpanX <= LauncherModel.getWorkspaceCellCountX() &&
+                        minSpanY <= LauncherModel.getWorkspaceCellCountY()) {
                     mWidgets.add(widget);
                 } else {
                     Log.e(TAG, "Widget " + widget.provider + " can not fit on this device (" +

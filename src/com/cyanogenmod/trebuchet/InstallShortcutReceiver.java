@@ -24,7 +24,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
 
-import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 import java.util.ArrayList;
@@ -92,8 +91,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             }
         }
         // Queue the item up for adding if launcher has not loaded properly yet
-        boolean launcherNotLoaded = LauncherModel.getCellCountX() <= 0 ||
-                LauncherModel.getCellCountY() <= 0;
+        boolean launcherNotLoaded = LauncherModel.getWorkspaceCellCountX() <= 0 ||
+                LauncherModel.getWorkspaceCellCountY() <= 0;
 
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, name, intent);
         if (mUseInstallQueue || launcherNotLoaded) {
@@ -167,7 +166,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             String name, Intent intent, final int screen, boolean shortcutExists,
             final SharedPreferences sharedPrefs, int[] result) {
         int[] tmpCoordinates = new int[2];
-        if (findEmptyCell(context, items, tmpCoordinates, screen)) {
+        if (findEmptyCell(items, tmpCoordinates, screen)) {
             if (intent != null) {
                 if (intent.getAction() == null) {
                     intent.setAction(Intent.ACTION_VIEW);
@@ -225,10 +224,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private static boolean findEmptyCell(Context context, ArrayList<ItemInfo> items, int[] xy,
+    private static boolean findEmptyCell(ArrayList<ItemInfo> items, int[] xy,
             int screen) {
-        final int xCount = LauncherModel.getCellCountX();
-        final int yCount = LauncherModel.getCellCountY();
+        final int xCount = LauncherModel.getWorkspaceCellCountX();
+        final int yCount = LauncherModel.getWorkspaceCellCountY();
         boolean[][] occupied = new boolean[xCount][yCount];
 
         int cellX, cellY, spanX, spanY;

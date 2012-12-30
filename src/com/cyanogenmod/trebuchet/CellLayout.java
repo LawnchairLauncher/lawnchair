@@ -189,8 +189,8 @@ public class CellLayout extends ViewGroup {
         mWidthGap = mOriginalWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
         mHeightGap = mOriginalHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
         mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
-        mCountX = LauncherModel.getCellCountX();
-        mCountY = LauncherModel.getCellCountY();
+        mCountX = LauncherModel.getWorkspaceCellCountX();
+        mCountY = LauncherModel.getWorkspaceCellCountY();
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
@@ -614,7 +614,6 @@ public class CellLayout extends ViewGroup {
             boolean markCells) {
         final LayoutParams lp = params;
 
-        // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
 

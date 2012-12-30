@@ -702,28 +702,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
     }
 
-    @Override
-    protected int getChildDrawingOrder(int childCount, int i) {
-        // TODO: We have turned off this custom drawing order because it now effects touch
-        // dispatch order. We need to sort that issue out and then decide how to go about this.
-        if (true || LauncherApplication.isScreenLandscape(getContext()) ||
-                mWorkspaceIndex == -1 || mQsbIndex == -1 ||
-                mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
-            return i;
-        }
-
-        // This ensures that the workspace is drawn above the hotseat and qsb,
-        // except when the workspace is drawing a background gradient, in which
-        // case we want the workspace to stay behind these elements.
-        if (i == mQsbIndex) {
-            return mWorkspaceIndex;
-        } else if (i == mWorkspaceIndex) {
-            return mQsbIndex;
-        } else {
-            return i;
-        }
-    }
-
     private boolean mInScrollArea;
     private Drawable mLeftHoverDrawable;
     private Drawable mRightHoverDrawable;

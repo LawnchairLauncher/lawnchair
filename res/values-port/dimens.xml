@@ -34,6 +34,11 @@
     <dimen name="workspace_top_padding">@dimen/workspace_top_padding_port</dimen>
     <dimen name="workspace_bottom_padding">@dimen/workspace_bottom_padding_port</dimen>
 
+    <dimen name="workspace_left_padding_qsb_hidden">@dimen/workspace_left_padding_port_qsb_hidden</dimen>
+    <dimen name="workspace_right_padding_hotseat_hidden">@dimen/workspace_right_padding_port_hotseat_hidden</dimen>
+    <dimen name="workspace_top_padding_qsb_hidden">@dimen/workspace_top_padding_port_qsb_hidden</dimen>
+    <dimen name="workspace_bottom_padding_hotseat_hidden">@dimen/workspace_bottom_padding_port_hotseat_hidden</dimen>
+
     <dimen name="workspace_page_spacing">-1dp</dimen>
 
 <!-- AppsCustomize -->

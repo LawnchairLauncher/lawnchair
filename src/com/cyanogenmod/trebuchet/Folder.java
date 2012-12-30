@@ -44,7 +44,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.FolderInfo.FolderListener;
 import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
@@ -128,8 +127,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mMaxCountY = res.getInteger(R.integer.folder_max_count_y);
         mMaxNumItems = res.getInteger(R.integer.folder_max_num_items);
         if (mMaxCountX < 0 || mMaxCountY < 0 || mMaxNumItems < 0) {
-            mMaxCountX = LauncherModel.getCellCountX();
-            mMaxCountY = LauncherModel.getCellCountY();
+            mMaxCountX = LauncherModel.getWorkspaceCellCountX();
+            mMaxCountY = LauncherModel.getWorkspaceCellCountY();
             mMaxNumItems = mMaxCountX * mMaxCountY;
         }
 

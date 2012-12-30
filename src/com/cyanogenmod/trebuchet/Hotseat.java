@@ -69,6 +69,8 @@ public class Hotseat extends PagedView {
         mCellCount = a.getInt(R.styleable.Hotseat_cellCount, DEFAULT_CELL_COUNT);
         mCellCount = PreferencesProvider.Interface.Dock.getNumberIcons(mCellCount);
 
+        LauncherModel.updateHotseatLayoutCells(mCellCount);
+
         mVertical = hasVerticalHotseat();
 
 
