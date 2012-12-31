@@ -140,7 +140,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     @Override
     public boolean acceptDrop(DragObject d) {
-        // We can remove everything including App shortcuts, folders, widgets, etc.
+        if (d.dragInfo instanceof ShortcutInfo) {
+            if (((ShortcutInfo) d.dragInfo).itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                return false;
+            }
+        }
         return true;
     }
 
