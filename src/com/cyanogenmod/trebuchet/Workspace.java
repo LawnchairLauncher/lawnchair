@@ -4242,10 +4242,10 @@ public class Workspace extends PagedView
                         if (tag instanceof ShortcutInfo) {
                             final ShortcutInfo info = (ShortcutInfo) tag;
                             final Intent intent = info.intent;
-                            final ComponentName name = intent.getComponent();
 
-                            if (name != null) {
-                                if (packageNames.contains(name.getPackageName())) {
+                            if (intent != null) {
+                                final ComponentName name = intent.getComponent();
+                                if (name != null && packageNames.contains(name.getPackageName())) {
                                     LauncherModel.deleteItemFromDatabase(mLauncher, info);
                                     childrenToRemove.add(view);
                                 }

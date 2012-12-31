@@ -28,7 +28,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -619,7 +618,7 @@ public class LauncherProvider extends ContentProvider {
                     values.put(LauncherSettings.Favorites.CELLY, y);
 
                     if (TAG_FAVORITE.equals(name)) {
-                        long id = addAppShortcut(db, values, a, packageManager, intent);
+                        long id = addAppShortcut(db, values, a, intent);
                         added = id >= 0;
                     } else if (TAG_SEARCH.equals(name)) {
                         added = addSearchWidget(db, values);
@@ -662,7 +661,7 @@ public class LauncherProvider extends ContentProvider {
 
                             if (TAG_FAVORITE.equals(folder_item_name) && folderId >= 0) {
                                 long id =
-                                    addAppShortcut(db, values, ar, packageManager, intent);
+                                    addAppShortcut(db, values, ar, intent);
                                 if (id >= 0) {
                                     folderItems.add(id);
                                 }
@@ -704,38 +703,22 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private long addAppShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
-                PackageManager packageManager, Intent intent) {
-            long id = -1;
-            ActivityInfo info;
+                Intent intent) {
+            long id;
             String packageName = a.getString(R.styleable.Favorite_packageName);
             String className = a.getString(R.styleable.Favorite_className);
-            try {
-                ComponentName cn;
-                try {
-                    cn = new ComponentName(packageName, className);
-                    info = packageManager.getActivityInfo(cn, 0);
-                } catch (PackageManager.NameNotFoundException nnfe) {
-                    String[] packages = packageManager.currentToCanonicalPackageNames(
-                        new String[] { packageName });
-                    cn = new ComponentName(packages[0], className);
-                    info = packageManager.getActivityInfo(cn, 0);
-                }
-                id = generateNewId();
-                intent.setComponent(cn);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                values.put(Favorites.INTENT, intent.toUri(0));
-                values.put(Favorites.TITLE, info.loadLabel(packageManager).toString());
-                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
-                values.put(Favorites.SPANX, 1);
-                values.put(Favorites.SPANY, 1);
-                values.put(Favorites._ID, generateNewId());
-                if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {
-                    return -1;
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.w(TAG, "Unable to add favorite: " + packageName +
-                        "/" + className, e);
+            ComponentName cn = new ComponentName(packageName, className);
+            id = generateNewId();
+            intent.setComponent(cn);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            values.put(Favorites.INTENT, intent.toUri(0));
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
+            values.put(Favorites.SPANX, 1);
+            values.put(Favorites.SPANY, 1);
+            values.put(Favorites._ID, generateNewId());
+            if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {
+                return -1;
             }
             return id;
         }
