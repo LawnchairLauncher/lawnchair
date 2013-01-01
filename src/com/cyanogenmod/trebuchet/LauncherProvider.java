@@ -28,7 +28,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -628,7 +627,7 @@ public class LauncherProvider extends ContentProvider {
                     } else if (TAG_APPWIDGET.equals(name)) {
                         added = addAppWidget(parser, attrs, db, values, a, packageManager);
                     } else if (TAG_ALLAPPS.equals(name)) {
-                        long id = addAllAppsButton(db, values, a);
+                        long id = addAllAppsButton(db, values);
                         added = id >= 0;
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
@@ -883,8 +882,7 @@ public class LauncherProvider extends ContentProvider {
             return allocatedAppWidgets;
         }
 
-        private long addAllAppsButton(SQLiteDatabase db, ContentValues values,
-                TypedArray a) {
+        private long addAllAppsButton(SQLiteDatabase db, ContentValues values) {
             Resources r = mContext.getResources();
 
             long id = generateNewId();

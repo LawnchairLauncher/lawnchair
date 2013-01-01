@@ -1099,8 +1099,8 @@ public class Workspace extends PagedView
     }
 
     private void updateWallpaperOffsets() {
-        boolean updateNow = false;
-        boolean keepUpdating = true;
+        boolean updateNow;
+        boolean keepUpdating;
         if (mUpdateWallpaperOffsetImmediately) {
             updateNow = true;
             keepUpdating = false;
@@ -2915,7 +2915,7 @@ public class Workspace extends PagedView
                             final Runnable addResizeFrame = new Runnable() {
                                 public void run() {
                                     DragLayer dragLayer = mLauncher.getDragLayer();
-                                    dragLayer.addResizeFrame(info, hostView, cellLayout);
+                                    dragLayer.addResizeFrame(hostView, cellLayout);
                                 }
                             };
                             resizeRunnable = (new Runnable() {
@@ -3103,10 +3103,6 @@ public class Workspace extends PagedView
         cleanupReorder(true);
         cleanupFolderCreation();
         setCurrentDropOverCell(-1, -1);
-    }
-
-    PagedView getCurrentDropTarget() {
-        return mLauncher.isHotseatLayout(mDragTargetLayout) ? mLauncher.getHotseat() : this;
     }
 
     void setCurrentDragOverlappingLayout(CellLayout layout) {
@@ -3788,7 +3784,7 @@ public class Workspace extends PagedView
 
     private void getFinalPositionForDropAnimation(int[] loc, float[] scaleXY,
             DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell,
-            boolean external, boolean scale) {
+            boolean scale) {
         // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
         // location and size on the home screen.
         int spanX = info.spanX;
@@ -3832,7 +3828,7 @@ public class Workspace extends PagedView
         float scaleXY[] = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
-                external, scalePreview);
+                scalePreview);
 
         Resources res = mLauncher.getResources();
         int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
@@ -4253,7 +4249,6 @@ public class Workspace extends PagedView
                         } else if (tag instanceof FolderInfo) {
                             final FolderInfo info = (FolderInfo) tag;
                             final ArrayList<ShortcutInfo> contents = info.contents;
-                            final int contentsCount = contents.size();
                             final ArrayList<ShortcutInfo> appsToRemoveFromFolder =
                                     new ArrayList<ShortcutInfo>();
 

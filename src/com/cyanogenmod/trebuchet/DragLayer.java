@@ -27,11 +27,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -40,15 +38,12 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.cyanogenmod.trebuchet.R;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
-public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChangeListener {
+public class DragLayer extends FrameLayout {
     private DragController mDragController;
     private int[] mTmpXY = new int[2];
 
@@ -70,8 +65,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
-    private int mWorkspaceIndex = -1;
-    private int mQsbIndex = -1;
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_FADE_OUT = 1;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
@@ -88,7 +81,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
-        setOnHierarchyChangeListener(this);
 
         mLeftHoverDrawable = getResources().getDrawable(R.drawable.page_hover_left_holo);
         mRightHoverDrawable = getResources().getDrawable(R.drawable.page_hover_right_holo);
@@ -182,10 +174,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
                         } else {
-                            return true;
+                            mHoverPointClosesFolder = false;
                         }
                     case MotionEvent.ACTION_HOVER_MOVE:
                         isOverFolder = isEventOverFolder(currentFolder, ev);
@@ -253,8 +243,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                     mCurrentResizeFrame = null;
             }
         }
-        if (handled) return true;
-        return mDragController.onTouchEvent(ev);
+        return handled || mDragController.onTouchEvent(ev);
     }
 
     /**
@@ -399,16 +388,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
     }
 
-    public boolean hasResizeFrames() {
-        return mResizeFrames.size() > 0;
-    }
-
-    public boolean isWidgetBeingResized() {
-        return mCurrentResizeFrame != null;
-    }
-
-    public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget,
-            CellLayout cellLayout) {
+    public void addResizeFrame(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
         AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
                 widget, cellLayout, this);
 
@@ -683,23 +663,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             }
         });
         mFadeOutAnim.start();
-    }
-
-    @Override
-    public void onChildViewAdded(View parent, View child) {
-        updateChildIndices();
-    }
-
-    @Override
-    public void onChildViewRemoved(View parent, View child) {
-        updateChildIndices();
-    }
-
-    private void updateChildIndices() {
-        if (mLauncher != null) {
-            mWorkspaceIndex = indexOfChild(mLauncher.getWorkspace());
-            mQsbIndex = indexOfChild(mLauncher.getSearchBar());
-        }
     }
 
     private boolean mInScrollArea;

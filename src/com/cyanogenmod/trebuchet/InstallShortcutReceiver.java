@@ -143,7 +143,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             for (int i = 0; i <= (2 * screenCount) + 1 && !found; ++i) {
                 int si = screen + (int) ((i / 2f) + 0.5f) * ((i % 2 == 1) ? 1 : -1);
                 if (0 <= si && si < screenCount) {
-                    found = installShortcut(context, data, items, name, intent, si, exists, sp,
+                    found = installShortcut(context, data, items, intent, si, exists, sp,
                             result);
                 }
             }
@@ -163,7 +163,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private static boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
-            String name, Intent intent, final int screen, boolean shortcutExists,
+            Intent intent, final int screen, boolean shortcutExists,
             final SharedPreferences sharedPrefs, int[] result) {
         int[] tmpCoordinates = new int[2];
         if (findEmptyCell(items, tmpCoordinates, screen)) {

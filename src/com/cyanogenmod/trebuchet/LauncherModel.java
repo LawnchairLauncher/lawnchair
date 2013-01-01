@@ -2428,11 +2428,9 @@ public class LauncherModel extends BroadcastReceiver {
     }
     public static class WidgetAndShortcutNameComparator implements Comparator<Object> {
         private Collator mCollator;
-        private Context mContext;
         private PackageManager mPackageManager;
         private HashMap<Object, String> mLabelCache;
-        WidgetAndShortcutNameComparator(Context context, PackageManager pm) {
-            mContext = context;
+        WidgetAndShortcutNameComparator(PackageManager pm) {
             mPackageManager = pm;
             mLabelCache = new HashMap<Object, String>();
             mCollator = Collator.getInstance();

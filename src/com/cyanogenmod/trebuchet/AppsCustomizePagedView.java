@@ -667,7 +667,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
         mWidgets.addAll(shortcuts);
         Collections.sort(mWidgets,
-                new LauncherModel.WidgetAndShortcutNameComparator(mLauncher, mPackageManager));
+                new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
         updatePageCounts();
         invalidateOnDataChange();
     }
