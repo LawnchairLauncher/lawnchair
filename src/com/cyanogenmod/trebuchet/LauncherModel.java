@@ -435,13 +435,13 @@ public class LauncherModel extends BroadcastReceiver {
 
     /**
      * Returns true if the shortcuts already exists in the database.
-     * we identify a shortcut by its title and intent.
+     * we identify a shortcut by its intent.
      */
-    static boolean shortcutExists(Context context, String title, Intent intent) {
+    static boolean shortcutExists(Context context, Intent intent) {
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            new String[] { "title", "intent" }, "title=? and intent=?",
-            new String[] { title, intent.toUri(0) }, null);
+            new String[] { "intent" }, "intent=?",
+            new String[] { intent.toUri(0) }, null);
         boolean result = false;
         try {
             result = c.moveToFirst();

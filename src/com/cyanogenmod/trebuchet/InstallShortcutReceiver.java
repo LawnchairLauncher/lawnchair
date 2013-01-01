@@ -132,7 +132,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         boolean found = false;
         synchronized (app) {
             final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
-            final boolean exists = LauncherModel.shortcutExists(context, name, intent);
+            final boolean exists = LauncherModel.shortcutExists(context, intent);
 
             // Try adding to the workspace screens incrementally, starting at the default or center
             // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))

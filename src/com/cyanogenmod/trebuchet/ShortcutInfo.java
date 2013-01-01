@@ -147,7 +147,8 @@ class ShortcutInfo extends ItemInfo {
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
 
-        String titleStr = title != null && customTitle ? title.toString() : null;
+        String titleStr = title != null && (customTitle || itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) ?
+                title.toString() : null;
         values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
 
         String uri = intent != null ? intent.toUri(0) : null;
