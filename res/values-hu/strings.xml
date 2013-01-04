@@ -169,7 +169,7 @@
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Elrejti a kezdőképernyőn lévő ikonok neveit</string>
     <string name="preferences_interface_homescreen_scrolling_category">Kinézet</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Lapozás</string>
-    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Válassza ki, milyen effektel váltson a kezdőképernyők között</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Válassza ki, milyen effekttel váltson a kezdőképernyők között</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Háttérkép görgetése</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Háttérkép görgetése a kezdőképernyők közti váltások során</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Háttérkép gyors kirajzolása</string>
@@ -182,7 +182,7 @@
     <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Kezdőképernyő körvonalának megjelenítése váltás közben</string>
     <string name="preferences_interface_homescreen_indicator_category">Jelzések</string>
     <string name="preferences_interface_homescreen_indicator_enable_title">Aktuális képernyő</string>
-    <string name="preferences_interface_homescreen_indicator_enable_summary">Aktuális képernyő jelzése a oldal alján</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Aktuális képernyő jelzése az oldal alján</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Képernyőjelölő</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Csak képernyőváltáskor látszik</string>
     <string name="preferences_interface_homescreen_indicator_position_title">Jelölő helye</string>
@@ -200,7 +200,7 @@
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Alkalmazások és modulok között folyamatos lapozással való váltás</string>
     <string name="preferences_interface_drawer_scrolling_category">Kinézet</string>
     <string name="preferences_interface_drawer_scrolling_transition_effect_title">Lapozás</string>
-    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Válassza ki, milyen effektel váltson az alkalmazásképernyők között</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Válassza ki, milyen effekttel váltson az alkalmazásképernyők között</string>
     <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Elhalványuló váltás</string>
     <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Váltáskor elhalványulnak az egymás melletti alkalmazásképernyők</string>
     <string name="preferences_interface_drawer_indicator_category">Jelzések</string>
@@ -213,6 +213,8 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Tálca</string>
+    <string name="preferences_interface_dock_enabled_title">Tálca megjelenítése</string>
+    <string name="preferences_interface_dock_enabled_summary">Tálca megjelenítése a kezdőképernyő alján</string>
     <string name="preferences_interface_dock_pages_title">Lapok</string>
     <string name="preferences_interface_dock_pages_summary">Lapok száma a tálcán</string>
     <string name="preferences_interface_dock_default_page_title">Alapértelmezett lap</string>
