@@ -1978,8 +1978,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 float scrollProgress = getScrollProgress(screenScroll, v, i);
                 float scale = 1.0f - Math.abs(scrollProgress);
 
-                v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
-                v.setScaleX(scale);
+                if (!mVertical) {
+                    v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
+                    v.setScaleX(scale);
+                } else {
+                    v.setPivotY(scrollProgress < 0 ? 0 : v.getMeasuredHeight());
+                    v.setScaleY(scale);
+                }
 
                 if (mFadeInAdjacentScreens) {
                     float alpha = 1 - Math.abs(scrollProgress);
@@ -2051,9 +2056,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 float scrollProgress = getScrollProgress(screenScroll, v, i);
                 float rotation = (in ? TRANSITION_SCREEN_ROTATION : -TRANSITION_SCREEN_ROTATION) * scrollProgress;
 
-                v.setPivotX((scrollProgress + 1) * v.getMeasuredWidth() * 0.5f);
-                v.setPivotY(v.getMeasuredHeight() * 0.5f);
-                v.setRotationY(rotation);
+                if (!mVertical) {
+                    v.setPivotX((scrollProgress + 1) * v.getMeasuredWidth() * 0.5f);
+                    v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                    v.setRotationY(rotation);
+                } else {
+                    v.setPivotY((scrollProgress + 1) * v.getMeasuredHeight() * 0.5f);
+                    v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                    v.setRotationX(-rotation);
+                }
+
                 if (mFadeInAdjacentScreens) {
                     float alpha = 1 - Math.abs(scrollProgress);
                     v.setAlpha(alpha);
