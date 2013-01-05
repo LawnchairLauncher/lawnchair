@@ -37,9 +37,7 @@ import android.widget.TextView;
 import com.cyanogenmod.trebuchet.LauncherApplication;
 import com.cyanogenmod.trebuchet.R;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 public class Preferences extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -70,7 +68,6 @@ public class Preferences extends PreferenceActivity
     @Override
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.preferences_headers, target);
-
         updateHeaders(target);
     }
 
@@ -78,20 +75,6 @@ public class Preferences extends PreferenceActivity
         int i = 0;
         while (i < headers.size()) {
             Header header = headers.get(i);
-
-            if (header.id == R.id.preferences_general_section) {
-                Calendar calendar = Calendar.getInstance();
-                Log.e(TAG, Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)));
-                if (calendar.get(Calendar.HOUR_OF_DAY) == 3) {
-                    String[] strings = getResources().getStringArray(R.array.preferences_koush);
-                    Random random = new Random();
-                    for (int j = 0; j < 20; j++) {
-                        Header h = new Header();
-                        h.title = strings[random.nextInt(strings.length)];
-                        headers.add(i + 1, h);
-                    }
-                }
-            }
 
             // Version preference
             if (header.id == R.id.preferences_application_version) {
