@@ -213,12 +213,16 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Startlinjen</string>
+    <string name="preferences_interface_dock_enabled_title">Vis startlinje</string>
+    <string name="preferences_interface_dock_enabled_summary">Vis startlinjen nedenunder hjemmeskærmen</string>
     <string name="preferences_interface_dock_pages_title">Sider</string>
     <string name="preferences_interface_dock_pages_summary">Antal sider i startlinjen</string>
     <string name="preferences_interface_dock_default_page_title">Standardside</string>
     <string name="preferences_interface_dock_default_page_summary">Vælg standardsiden</string>
     <string name="preferences_interface_dock_icons_title">Ikoner</string>
     <string name="preferences_interface_dock_icons_summary">Antal ikoner/kolonner i startlinjen</string>
+    <string name="preferences_interface_dock_icon_scale_title">Ikonstørrelse</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Størrelse på startlinjens ikoner</string>
     <string name="preferences_interface_dock_divider_title">Vis skillelinje for startlinje</string>
     <string name="preferences_interface_dock_divider_summary">Vis skillelinje mellem startskærm og startlinje</string>
 
