@@ -195,4 +195,11 @@
     <string name="menu_apps_filter_downloaded">Baixado</string>
     <string name="menu_hidden_apps_delete">Restaurar</string>
     <string name="hidden_apps_title">Aplicativos ocultos</string>
+    <string name="edit_target_label">Editar</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Indicador de posição</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Escolha onde exibir o indicador na tela</string>
+    <string name="preferences_interface_dock_enabled_title">Exibir Dock</string>
+    <string name="preferences_interface_dock_enabled_summary">Exibir o dock embaixo da tela inicial</string>
+    <string name="preferences_interface_dock_icon_scale_title">Escala do ícone</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Escala do ícone no dock</string>
 </resources>
