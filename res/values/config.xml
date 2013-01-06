@@ -87,6 +87,9 @@
     <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
     <bool name="config_useCustomClings">false</bool>
 
+    <!-- Whether or not to use the wallpaper hack by default -->
+    <bool name="config_workspaceDefaultWallpaperHack">false</bool>
+
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
     <integer name="hotseat_cell_count">5</integer>

@@ -68,7 +68,7 @@
         <CheckBoxPreference android:key="ui_homescreen_scrolling_wallpaper_hack"
             android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_title"
             android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_hack_summary"
-            android:defaultValue="false" />
+            android:defaultValue="@bool/config_workspaceDefaultWallpaperHack" />
         <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_scrolling_wallpaper_size"
             android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_size_title"
             android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_size_summary"
