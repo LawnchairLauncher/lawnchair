@@ -31,8 +31,8 @@
         android:paddingRight="@dimen/workspace_right_padding"
         android:paddingTop="@dimen/workspace_top_padding"
         android:paddingBottom="@dimen/workspace_bottom_padding"
-        launcher:cellCountX="@integer/cell_count_x"
-        launcher:cellCountY="@integer/cell_count_y"
+        launcher:cellCountX="@integer/target_cell_count_x"
+        launcher:cellCountY="@integer/target_cell_count_y"
         launcher:pageSpacing="@dimen/workspace_page_spacing"
         launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
         launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height" />

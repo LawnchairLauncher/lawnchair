@@ -1,6 +1,6 @@
 <resources>
-    <integer name="cell_count_x">8</integer>
-    <integer name="cell_count_y">5</integer>
+    <integer name="default_cell_count_x">8</integer>
+    <integer name="default_cell_count_y">5</integer>
     <integer name="hotseat_cell_count">9</integer>
     <integer name="hotseat_all_apps_index">4</integer>
     <bool name="config_largeHeap">true</bool>

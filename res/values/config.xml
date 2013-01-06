@@ -77,8 +77,12 @@
     <integer name="folder_max_count_y">4</integer>
     <integer name="folder_max_num_items">16</integer>
 
-    <integer name="cell_count_x">4</integer>
-    <integer name="cell_count_y">4</integer>
+    <!-- Actual cell count -->
+    <integer name="target_cell_count_x">@integer/default_cell_count_x</integer>
+    <integer name="target_cell_count_y">@integer/default_cell_count_y</integer>
+    <!-- Default cell count that scales properly (will be used as a reference for scaling when different counts are used) -->
+    <integer name="default_cell_count_x">4</integer>
+    <integer name="default_cell_count_y">4</integer>
 
     <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
     <bool name="config_useCustomClings">false</bool>

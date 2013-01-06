@@ -1,6 +1,6 @@
 <resources>
-    <integer name="cell_count_x">6</integer>
-    <integer name="cell_count_y">6</integer>
+    <integer name="default_cell_count_x">6</integer>
+    <integer name="default_cell_count_y">6</integer>
     <integer name="hotseat_cell_count">7</integer>
     <integer name="hotseat_all_apps_index">3</integer>
     <bool name="allow_rotation">true</bool>

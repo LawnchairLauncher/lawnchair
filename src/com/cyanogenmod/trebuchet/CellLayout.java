@@ -281,8 +281,8 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
 
         if (!LauncherApplication.isScreenLarge()){
-            mCellWidth = (mCellWidth * 4) / mCountX;
-            mCellHeight = (mCellHeight * 4) / mCountY;
+            mCellWidth = (mCellWidth * res.getInteger(R.integer.default_cell_count_x)) / mCountX;
+            mCellHeight = (mCellHeight * res.getInteger(R.integer.default_cell_count_y)) / mCountY;
         }
 
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
