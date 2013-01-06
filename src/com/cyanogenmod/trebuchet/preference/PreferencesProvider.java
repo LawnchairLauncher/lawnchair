@@ -82,9 +82,6 @@ public final class PreferencesProvider {
             public static boolean getShowSearchBar() {
                 return getBoolean("ui_homescreen_general_search", true);
             }
-            public static boolean getResizeAnyWidget() {
-                return getBoolean("ui_homescreen_general_resize_any_widget", false);
-            }
             public static boolean getHideIconLabels() {
                 return getBoolean("ui_homescreen_general_hide_icon_labels", false);
             }

@@ -133,8 +133,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">Colonne</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Allunga schermate</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Espandi le schermate per riempire tutto lo schermo</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Ridimensiona widget</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permette di ridimensionare tutti i widget, anche quelli ai quali normalmente non è consentito</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Nascondi etichette</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Nascondi le etichette delle icone nella Home</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scorrimento</string>

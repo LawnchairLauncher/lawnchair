@@ -165,8 +165,6 @@
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Stræk skærme</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Udvid startskærme til at fylde størrelsen på skærmen</string>
     <string name="preferences_interface_homescreen_general_search_summary">Aktivér vedvarende søgefelt</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Ændre størrelse på enhver widget</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Tillader ændring af størrelsen på widgets, der normalt ikke kan ændres</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skjul ikontekst</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skjul ikontekster på startskærmene</string>
     <string name="preferences_interface_homescreen_scrolling_category">Bladring</string>

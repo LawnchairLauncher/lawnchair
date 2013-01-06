@@ -141,8 +141,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">"Coloane"</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">"Întindeţi ecranele"</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">"Extinde ecranele pentru a umple dimensiunea ecranului dispozitivului"</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">"Redimensionarea orice widget"</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">"Permite redimensionarea obiectelor widget care în mod normal nu sunt redimensionabile"</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">"Ascundeți etichetele pictogramelor"</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">"Ascundeți etichetele pictogramelor pe ecranul de pornire"</string>
     <string name="preferences_interface_homescreen_scrolling_category">"Defilare"</string>

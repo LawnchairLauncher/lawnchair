@@ -132,8 +132,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">Sütunlar</string>
     <string name="preferences_interface_homescreen_general_search_title">Arama çubuğu</string>
     <string name="preferences_interface_homescreen_general_search_summary">Arama çubuğunu sürekli göster</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Bütün araçları boyutlandır</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Boyutlandırmayı desteklemese bile araçları yine de boyutlandır</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Simge etiketlerini gizle</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ana ekrandaki simge etiketlerini gizle</string>
     <string name="preferences_interface_homescreen_scrolling_category">Kaydırma</string>

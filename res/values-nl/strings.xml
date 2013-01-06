@@ -155,8 +155,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">Kolommen</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Schermen uitrekken</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Startschermen uitrekken om het scherm te vullen</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Widgetgrootte altijd wijzigen</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Toestaan grootte van alle widgets te veranderen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Labels verbergen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Namen onder iconen verbergen</string>
 

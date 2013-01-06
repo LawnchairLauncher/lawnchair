@@ -140,8 +140,6 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rangées</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Colonnes</string>
     <string name="preferences_interface_homescreen_general_search_summary">Activer la barre de recherche persistante</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionner tous les widgets</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permet de redimensionner les widgets qui normalement n\'en sont pas capables</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Sans libellés</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Cacher le libellé des icônes de l\'écran d\'accueil</string>
     <string name="preferences_interface_homescreen_scrolling_category">Défilement</string>

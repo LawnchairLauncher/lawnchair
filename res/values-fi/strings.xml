@@ -128,8 +128,6 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rivit</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Sarakkeet</string>
     <string name="preferences_interface_homescreen_general_search_summary">Ota pysyvä hakupalkki käyttöön</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Vapaa widgetin koko</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Sallii widgetien koon muuttamisen vaikka koon muuttaminen olisi estetty</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Piilota kuvakkeiden tekstit</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Piilota kuvakkeiden tekstit kotinäytöllä</string>
     <string name="preferences_interface_homescreen_scrolling_category">Selaaminen</string>

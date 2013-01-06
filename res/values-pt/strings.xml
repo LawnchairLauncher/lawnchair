@@ -127,8 +127,6 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">Linhas</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Colunas</string>
     <string name="preferences_interface_homescreen_general_search_summary">Ativar Barra de Pesquisa persistente</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionar Widgets</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permite redimensionamento de Widgets que normalmente não são redimensionáveis</string>
     <string name="preferences_interface_homescreen_general_screens_title">Telas Iniciais</string>
     <string name="preferences_interface_homescreen_general_screens_summary">Número de telas na Tela Inicial</string>
     <string name="preferences_interface_homescreen_general_default_screen_title">Tela Padrão</string>

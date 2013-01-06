@@ -148,8 +148,6 @@
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Эластичные экраны</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Расширять домашние экраны до заполнения размера экрана</string>
     <string name="preferences_interface_homescreen_general_search_summary">Включить неисчезающую строку поиска Google</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Изм. разм. любого виджета</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Позволяет изменять размеры виджетов, которые изначально неизменяемые</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Прятать подписи иконок</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Прятать подписи иконок на рабочих столах</string>
     <string name="preferences_interface_homescreen_scrolling_category">ПРОКРУТКА</string>

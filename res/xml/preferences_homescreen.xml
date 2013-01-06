@@ -50,9 +50,6 @@
             android:title="@string/preferences_interface_homescreen_general_search_title"
             android:summary="@string/preferences_interface_homescreen_general_search_summary"
             android:defaultValue="true" />
-        <CheckBoxPreference android:key="ui_homescreen_general_resize_any_widget"
-            android:title="@string/preferences_interface_homescreen_general_resize_any_widget_title"
-            android:summary="@string/preferences_interface_homescreen_general_resize_any_widget_summary" />
         <CheckBoxPreference android:key="ui_homescreen_general_hide_icon_labels"
             android:title="@string/preferences_interface_homescreen_general_hide_icon_labels_title"
             android:summary="@string/preferences_interface_homescreen_general_hide_icon_labels_summary" />

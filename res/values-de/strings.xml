@@ -199,8 +199,6 @@
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Seiten bildschirmfüllend ausdehnen</string>
     <string name="preferences_interface_homescreen_general_search_title">Suchleiste</string>
     <string name="preferences_interface_homescreen_general_search_summary">Dauerhafte Anzeige der Suchleiste</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Größe aller Widgets anpassbar</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Größe statischer Widgets auch anpassbar machen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Beschriftung nicht anzeigen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Beschriftung unterhalb der Icons nicht anzeigen</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrollen</string>

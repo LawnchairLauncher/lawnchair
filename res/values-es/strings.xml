@@ -142,8 +142,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">Columnas</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Extender pantallas</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Extender las pantallas de inicio para ocupar toda la pantalla</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Redimensionar widgets</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Permitir redimensionar los widgets que normalmente no son redimensionables</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ocultar etiquetas</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ocultar las etiquetas de los iconos de la pantalla de inicio</string>
     <string name="preferences_interface_homescreen_scrolling_category">Desplazamiento</string>

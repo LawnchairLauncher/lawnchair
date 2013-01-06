@@ -13,8 +13,6 @@ import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
-
 public class AppWidgetResizeFrame extends FrameLayout {
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
@@ -120,19 +118,9 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mWidgetPaddingBottom = p.bottom;
 
         // Resize any widget
-        if (PreferencesProvider.Interface.Homescreen.getResizeAnyWidget()) {
-            mResizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
-            mMinHSpan = 1;
-            mMinVSpan = 1;
-        }
-
-        if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
-            mTopHandle.setVisibility(GONE);
-            mBottomHandle.setVisibility(GONE);
-        } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
-            mLeftHandle.setVisibility(GONE);
-            mRightHandle.setVisibility(GONE);
-        }
+        mResizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
+        mMinHSpan = 1;
+        mMinVSpan = 1;
 
         final float density = mLauncher.getResources().getDisplayMetrics().density;
         mBackgroundPadding = (int) Math.ceil(density * BACKGROUND_PADDING);

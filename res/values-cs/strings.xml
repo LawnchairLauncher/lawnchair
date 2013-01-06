@@ -132,8 +132,6 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">Řádky</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Sloupce</string>
     <string name="preferences_interface_homescreen_general_search_summary">Povolit trvalou vyhledávací lištu</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Upravit velikost widgetu</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Povolit změnu velikosti widgetů, které nepodporují změnu velikosti</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skrýt popisky ikon</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skrýt popisky ikon na ploše</string>
     <string name="preferences_interface_homescreen_scrolling_category">Posouvání</string>

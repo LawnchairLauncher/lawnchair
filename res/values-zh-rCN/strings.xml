@@ -161,8 +161,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">列</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">拉长屏幕</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">扩展主屏幕为填充屏幕大小</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">调整任何小部件的大小</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">允许小部件的大小调整</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">隐藏图标标签</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">隐藏在主屏幕上图标的标签</string>
     <string name="preferences_interface_homescreen_scrolling_category">滚动</string>

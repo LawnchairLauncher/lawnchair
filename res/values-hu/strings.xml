@@ -163,8 +163,6 @@
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Képernyő kiterjesztése</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Kezdőképernyők kiterjesztése a kijelző kitöltéséhez</string>
     <string name="preferences_interface_homescreen_general_search_summary">Állandó keresősáv engedélyezése</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Átméretezhető modulok</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Modulok átméretezésének engedélyezése a kezdőképernyőn</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ikon feliratok elrejtése</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Elrejti a kezdőképernyőn lévő ikonok neveit</string>
     <string name="preferences_interface_homescreen_scrolling_category">Kinézet</string>

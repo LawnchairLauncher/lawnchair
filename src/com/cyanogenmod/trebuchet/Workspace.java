@@ -389,7 +389,6 @@ public class Workspace extends PagedView
         mStretchScreens = PreferencesProvider.Interface.Homescreen.getStretchScreens();
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
         mShowHotseat = PreferencesProvider.Interface.Dock.getShowDock();
-        mResizeAnyWidget = PreferencesProvider.Interface.Homescreen.getResizeAnyWidget();
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
         mTransitionEffect = PreferencesProvider.Interface.Homescreen.Scrolling.getTransitionEffect(
                 res.getString(R.string.config_workspaceDefaultTransitionEffect));
@@ -2908,16 +2907,13 @@ public class Workspace extends PagedView
                         // in its final location
 
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
-                        AppWidgetProviderInfo pinfo = hostView.getAppWidgetInfo();
-                        if (pinfo != null &&
-                                pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE || mResizeAnyWidget) {
-                            final Runnable addResizeFrame = new Runnable() {
+                        final Runnable addResizeFrame = new Runnable() {
                                 public void run() {
                                     DragLayer dragLayer = mLauncher.getDragLayer();
                                     dragLayer.addResizeFrame(hostView, cellLayout);
                                 }
-                            };
-                            resizeRunnable = (new Runnable() {
+                        };
+                        resizeRunnable = new Runnable() {
                                 public void run() {
                                     if (!isPageMoving()) {
                                         addResizeFrame.run();
@@ -2925,8 +2921,7 @@ public class Workspace extends PagedView
                                         mDelayedResizeRunnable = addResizeFrame;
                                     }
                                 }
-                            });
-                        }
+                        };
                     }
 
                     LauncherModel.moveItemInDatabase(mLauncher, info, container, screen, lp.cellX,
