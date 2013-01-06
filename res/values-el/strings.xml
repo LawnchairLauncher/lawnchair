@@ -152,8 +152,6 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">Στήλες</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Επέκταση αρχικών οθονών</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Επέκταση αρχικών οθονών για να γεμίζει το μέγεθος της οθόνης</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Αλλαγή μεγέθους widget</string>
-    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Επιτρέπει την αλλαγή μεγέθους σε widget που δεν έχουν αυτή τη δυνατότητα</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Απόκρυψη ετικετών</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Απόκρυψη ετικετών των εικονιδίων στην αρχική σελίδα</string>
     <string name="preferences_interface_homescreen_scrolling_category">Κύλιση</string>
