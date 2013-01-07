@@ -81,11 +81,11 @@
     <dimen name="button_bar_height">62dip</dimen>
     <!-- Because portal animations go beyond the bounds of an icon, we need
          to make the dock layout slightly larger than the button_bar_height -->
-    <dimen name="button_bar_height_top_padding">8dp</dimen>
+    <dimen name="button_bar_height_top_padding">0dp</dimen>
     <dimen name="button_bar_height_bottom_padding">0dp</dimen>
     <dimen name="button_bar_width_left_padding">0dp</dimen>
     <dimen name="button_bar_width_right_padding">0dp</dimen>
-    <dimen name="button_bar_height_plus_padding">70dp</dimen>
+    <dimen name="button_bar_height_plus_padding">62dp</dimen>
 
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>

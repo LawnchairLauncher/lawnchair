@@ -22,13 +22,13 @@
     <dimen name="hotseat_width_gap">0dp</dimen>
     <dimen name="hotseat_height_gap">0dp</dimen>
     <!-- height of the bottom row of controls -->
-    <dimen name="button_bar_height">80dip</dimen>
+    <dimen name="button_bar_height">62dip</dimen>
     <!-- Because portal animations go beyond the bounds of an icon, we need
          to make the dock layout slightly larger than the button_bar_height -->
-    <dimen name="button_bar_height_bottom_padding">8dp</dimen>
+    <dimen name="button_bar_height_bottom_padding">0dp</dimen>
     <dimen name="button_bar_width_left_padding">8dp</dimen>
     <dimen name="button_bar_width_right_padding">8dp</dimen>
-    <dimen name="button_bar_height_plus_padding">80dp</dimen>
+    <dimen name="button_bar_height_plus_padding">62dp</dimen>
 
 <!-- CellLayout padding land / port-->
     <dimen name="cell_layout_left_padding_port">8dp</dimen>
