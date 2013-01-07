@@ -1800,11 +1800,7 @@ public class Workspace extends PagedView
                 // Wallpaper is smaller than screen
                 y += (height - wallpaperHeight) / 2;
             } else {
-                if (!mIsLandscape) {
-                    y -= mWallpaperOffsets[1];
-                } else {
-                    y -= (wallpaperHeight - (height - mWallpaperOffsets[1])) / 2 - mWallpaperOffsets[1];
-                }
+                y -= mWallpaperOffsets[1];
             }
 
             canvas.drawBitmap(mWallpaperBitmap, x, y, mPaint);
