@@ -60,6 +60,7 @@
         <item name="android:textSize">13sp</item>
     </style>
     <style name="WorkspaceIcon.Portrait.Folder">
+        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
@@ -77,6 +78,7 @@
         <item name="android:textSize">13sp</item>
     </style>
     <style name="WorkspaceIcon.Landscape.Folder">
+        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
@@ -95,6 +97,7 @@
     </style>
 
     <style name="WorkspaceIcon.Portrait.AppsCustomize">
+        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
         <item name="android:background">@null</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
@@ -104,6 +107,7 @@
         <item name="android:textSize">13sp</item>
     </style>
     <style name="WorkspaceIcon.Landscape.AppsCustomize">
+        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
         <item name="android:background">@null</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
