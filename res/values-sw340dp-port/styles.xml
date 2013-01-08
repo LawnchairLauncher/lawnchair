@@ -30,6 +30,7 @@
         <item name="android:maxWidth">150dp</item>
     </style>
     <style name="WorkspaceIcon.Portrait.AppsCustomize">
+        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
         <item name="android:singleLine">false</item>
         <item name="android:maxLines">2</item>
         <item name="android:background">@null</item>
