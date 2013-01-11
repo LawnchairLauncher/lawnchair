@@ -37,7 +37,7 @@
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">true</bool>
     <!-- Which default transition effect to use on the workspace -->
-    <string name="config_workspaceDefaultTransitionEffect">Tablet</string>
+    <string name="config_workspaceDefaultTransitionEffect">ZoomIn</string>
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceDefualtFadeInAdjacentScreens">false</bool>
     <!-- Whether to show outlines on the screens when scrolling -->
