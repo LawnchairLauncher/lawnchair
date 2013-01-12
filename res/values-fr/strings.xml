@@ -118,7 +118,7 @@
     <string name="menu_apps_sort_install_date">Date d\'installation</string>
     <string name="menu_apps_filter_system">Système</string>
     <string name="menu_apps_filter_downloaded">Téléchargé</string>
-    <string name="menu_hidden_apps_delete">Réinitialisé</string>
+    <string name="menu_hidden_apps_delete">Réinitialiser</string>
     <string name="menu_preferences">Paramètres de Trebuchet</string>
     <string name="edit_target_label">Éditer</string>
     <string name="cancel_target_label">Annuler</string>
@@ -151,7 +151,7 @@
     <string name="preferences_interface_homescreen_general_default_screen_title">Écran par défaut</string>
     <string name="preferences_interface_homescreen_general_default_screen_summary">Sélectionnez l\'écran par défaut</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Étendre l\'écran</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Étendre l\écran d\'accueil pour remplir la totalité de l\'écran</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Étendre l\'écran d\'accueil pour remplir la totalité de l\'écran</string>
     <string name="preferences_interface_homescreen_general_search_title">Barre de recherche</string>
     <string name="preferences_interface_homescreen_general_search_summary">Activer la barre de recherche persistante</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Sans libellés</string>
@@ -168,7 +168,7 @@
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Estomper l\'écran</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Estomper les écrans lorsque vous les faites défiler</string>
     <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Afficher les bordures</string>
-    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Afficher les bordures de l\écran quand les pages défilent</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Afficher les bordures de l\'écran quand les pages défilent</string>
     <string name="preferences_interface_homescreen_indicator_category">Indicateur</string>
     <string name="preferences_interface_homescreen_indicator_enable_title">Indicateur de page</string>
     <string name="preferences_interface_homescreen_indicator_enable_summary">Afficher l\'indicateur de page en bas de l\'écran</string>
