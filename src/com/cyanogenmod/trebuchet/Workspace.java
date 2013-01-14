@@ -2001,13 +2001,13 @@ public class Workspace extends PagedView
                 }
             }
             for (int i = 0; i < screenCount; i++) {
-                final CellLayout layout = (CellLayout) getChildAt(i);
+                final CellLayout layout = (CellLayout) getPageAt(i);
                 if (!(leftScreen <= i && i <= rightScreen && shouldDrawChild(layout))) {
                     layout.disableHardwareLayers();
                 }
             }
             for (int i = 0; i < screenCount; i++) {
-                final CellLayout layout = (CellLayout) getChildAt(i);
+                final CellLayout layout = (CellLayout) getPageAt(i);
                 if (leftScreen <= i && i <= rightScreen && shouldDrawChild(layout)) {
                     layout.enableHardwareLayers();
                 }
