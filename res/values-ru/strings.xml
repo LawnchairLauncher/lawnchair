@@ -215,22 +215,4 @@
     <string name="preferences_interface_general_orientation_title">Автоповорот экрана</string>
     <string name="preferences_interface_general_fullscreen_title">Полноэкранный режим</string>
     <string name="preferences_interface_general_fullscreen_summary">Скрывать строку состояния для увеличения площади домашних экранов</string>
-
-    <!-- Koush steals yachts -->
-    <string-array name="preferences_koush">
-        <item>Koush крадёт яхты!!!!</item>
-        <item>Koush крадёт яхты!!!!</item>
-        <item>Koush крадёт яхты!!!!</item>
-        <item>Koush крадёт яхты!!!!</item>
-        <item>Я надеюсь, что вы наступите на LEGO!!!!</item>
-        <item>Эта настройка здесь, \"потому что мы можем\"</item>
-        <item>На мой взгляд не плохо, но кто-то должен утвердить</item>
-        <item>Мне кажется, лучше не отправлять это</item>
-        <item>ПОЧЕМУ ВЫ НЕ СПИТЕ В 3 ЧАСА УТРА!!!!</item>
-        <item>Не отправлять</item>
-        <item>&lt;cdesai&gt; настройки кажутся маленькими</item>
-        <item>&lt;cdesai&gt; размер настроек</item>
-        <item>&lt;nebkat&gt; что же я должен сделать?</item>
-        <item>&lt;nebkat&gt; заполни пространство этим \"Koush крадёт яхты!!!!\"?</item>
-    </string-array>
 </resources>

@@ -223,22 +223,4 @@
     <string name="preferences_interface_general_orientation_title">Rotation auto. de l\'écran</string>
     <string name="preferences_interface_general_fullscreen_title">Plein écran</string>
     <string name="preferences_interface_general_fullscreen_summary">Cacher la barre d\'état pour étendre l\'écran d\'accueil</string>
-
-    <!-- Koush steals yachts -->
-    <string-array name="preferences_koush">
-        <item>Koush vole des yachts !!!!</item>
-        <item>Koush vole des yachts !!!!</item>
-        <item>Koush vole des yachts !!!!</item>
-        <item>Koush vole des yachts !!!!</item>
-        <item>J\'espère que vous montez sur un LEGO !!!!</item>
-        <item>Ce paramètre est là \"parce que nous le voulons\"</item>
-        <item>Cela semble correct pour moi, mais quelqu\'un doit l\'approuver</item>
-        <item>Je préfèrerai que vous ne soumettiez pas cela</item>
-        <item>QUE FAITES VOUS DEBOUT A 3H DU MATIN !!!!</item>
-        <item>Ne pas soumettre</item>
-        <item>&lt;cdesai&gt; paramètres semblent faibles</item>
-        <item>&lt;cdesai&gt; la taille des préférences</item>
-        <item>&lt;nebkat&gt; que suis-je censé faire ?</item>
-        <item>&lt;nebkat&gt; remplacer les espaces par \"Koush vole des yachts\" ?</item>
-    </string-array>
 </resources>

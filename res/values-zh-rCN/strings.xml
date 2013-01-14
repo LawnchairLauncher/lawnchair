@@ -230,22 +230,4 @@
     <string name="preferences_interface_general_orientation_title">自动旋转屏幕</string>
     <string name="preferences_interface_general_fullscreen_title">全屏模式</string>
     <string name="preferences_interface_general_fullscreen_summary">隐藏状态栏以便扩展主屏幕</string>
-
-    <!-- Koush steals yachts -->
-    <string-array name="preferences_koush">
-        <item>Koush 会偷游艇!!!!</item>
-        <item>Koush 会偷游艇!!!!</item>
-        <item>Koush 会偷游艇!!!!</item>
-        <item>Koush 会偷游艇!!!!</item>
-        <item>我希望你会踩到 LEGO!!!!</item>
-        <item>为什么这些设置在这里? 因为 \"我们可以这么做\"</item>
-        <item>我看起来没问题, 但需要另一位的认可</item>
-        <item>我希望您不提交这个</item>
-        <item>为什么你凌晨3点还没睡!!!!</item>
-        <item>不要提交</item>
-        <item>&lt;cdesai&gt; 设置感觉有点空</item>
-        <item>&lt;cdesai&gt; 可能是因为选项的大小吧</item>
-        <item>&lt;nebkat&gt; 你要我怎么处理?</item>
-        <item>&lt;nebkat&gt; 把剩余的空间用 \"Koush 会偷游艇\" 填满?</item>
-    </string-array>
 </resources>
