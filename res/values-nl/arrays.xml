@@ -53,6 +53,10 @@
         <item>Stapel</item>
         <item>Accordeon</item>
     </string-array>
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>Boven/links</item>
+        <item>Beneden/rechts</item>
+    </string-array>
     <string-array name="preferences_interface_drawer_orientation_entries">
         <item>Horizontaal</item>
         <item>Verticaal</item>
