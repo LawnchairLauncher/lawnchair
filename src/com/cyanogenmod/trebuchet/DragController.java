@@ -173,16 +173,18 @@ public class DragController {
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
-            Rect dragRegion, float initialDragViewScale) {
+            Point extraPadding, float initialDragViewScale) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
-        int dragLayerX = loc[0] + v.getPaddingLeft() +
+        int viewExtraPaddingLeft = extraPadding != null ? extraPadding.x : 0;
+        int viewExtraPaddingTop = extraPadding != null ? extraPadding.y : 0;
+        int dragLayerX = loc[0] + v.getPaddingLeft() + viewExtraPaddingLeft +
                 (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
-        int dragLayerY = loc[1] + v.getPaddingTop() +
+        int dragLayerY = loc[1] + v.getPaddingTop() + viewExtraPaddingTop +
                 (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
 
-        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion,
-                initialDragViewScale);
+        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null,
+                null, initialDragViewScale);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);

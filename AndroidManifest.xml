@@ -159,6 +159,15 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="com.cyanogenmod.trebuchet.PackageChangedReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package"></data>
+            </intent-filter>
+        </receiver>
+
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="com.cyanogenmod.trebuchet.LauncherProvider"
