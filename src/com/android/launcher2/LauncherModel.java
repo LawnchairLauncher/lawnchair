@@ -1988,6 +1988,7 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         mBgAllAppsList.updatePackage(context, packages[i]);
+                        WidgetPreviewLoader.removeFromDb(context, packages[i]);
                     }
                     break;
                 case OP_REMOVE:
@@ -1995,6 +1996,7 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mBgAllAppsList.removePackage(packages[i]);
+                        WidgetPreviewLoader.removeFromDb(context, packages[i]);
                     }
                     break;
             }
