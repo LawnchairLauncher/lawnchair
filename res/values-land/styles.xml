@@ -23,7 +23,7 @@
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">@dimen/qsb_bar_height</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">left</item>
+        <item name="android:layout_gravity">start</item>
     </style>
     <style name="SearchDropTargetBar">
         <item name="android:orientation">vertical</item>
@@ -35,8 +35,8 @@
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingStart">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/toolbar_button_horizontal_padding</item>
     </style>
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">match_parent</item>
@@ -49,8 +49,8 @@
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingStart">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/toolbar_button_horizontal_padding</item>
         <item name="android:shadowColor">#DD000000</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>

@@ -15,8 +15,8 @@
 -->
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingLeft="@dimen/workspace_divider_padding_left"
-    android:paddingRight="@dimen/workspace_divider_padding_right"
+    android:paddingStart="@dimen/workspace_divider_padding_left"
+    android:paddingEnd="@dimen/workspace_divider_padding_right"
     android:paddingTop="@dimen/workspace_divider_padding_top"
     android:paddingBottom="@dimen/workspace_divider_padding_bottom"
     android:scaleType="fitXY"

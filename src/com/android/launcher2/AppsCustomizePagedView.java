@@ -1451,11 +1451,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int ix = i % mWidgetCountX;
             int iy = i / mWidgetCountX;
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
-                    GridLayout.spec(iy, GridLayout.LEFT),
+                    GridLayout.spec(iy, GridLayout.START),
                     GridLayout.spec(ix, GridLayout.TOP));
             lp.width = cellWidth;
             lp.height = cellHeight;
-            lp.setGravity(Gravity.TOP | Gravity.LEFT);
+            lp.setGravity(Gravity.TOP | Gravity.START);
             if (ix > 0) lp.leftMargin = mWidgetWidthGap;
             if (iy > 0) lp.topMargin = mWidgetHeightGap;
             layout.addView(widget, lp);

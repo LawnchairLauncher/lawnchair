@@ -35,8 +35,8 @@
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/workspace_left_padding"
-            android:paddingRight="@dimen/workspace_right_padding"
+            android:paddingStart="@dimen/workspace_left_padding"
+            android:paddingEnd="@dimen/workspace_right_padding"
             android:paddingTop="@dimen/workspace_top_padding"
             android:paddingBottom="@dimen/workspace_bottom_padding"
             launcher:defaultScreen="2"
@@ -58,16 +58,16 @@
             layout="@layout/workspace_divider"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/qsb_bar_height"
-            android:layout_gravity="left" />
+            android:layout_marginStart="@dimen/qsb_bar_height"
+            android:layout_gravity="start" />
 
         <include
             android:id="@+id/dock_divider"
             layout="@layout/workspace_divider"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/button_bar_height"
-            android:layout_gravity="right" />
+            android:layout_marginEnd="@dimen/button_bar_height"
+            android:layout_gravity="end" />
 
         <include
             android:id="@+id/paged_view_indicator"
@@ -80,7 +80,7 @@
             android:id="@+id/hotseat"
             android:layout_width="@dimen/button_bar_height_plus_padding"
             android:layout_height="match_parent"
-            android:layout_gravity="right" />
+            android:layout_gravity="end" />
 
         <include
             android:id="@+id/qsb_bar"
@@ -105,7 +105,7 @@
             android:id="@+id/voice_button_proxy"
             android:layout_width="@dimen/qsb_bar_height"
             android:layout_height="@dimen/app_icon_size"
-            android:layout_gravity="top|left"
+            android:layout_gravity="top|start"
             android:layout_marginTop="64dp"
             android:clickable="true"
             android:onClick="onClickVoiceButton"

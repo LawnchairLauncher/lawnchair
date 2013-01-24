@@ -20,7 +20,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
         android:minWidth="168dp"
         android:textSize="24sp"
         android:layout_marginTop="235dp"
-        android:layout_marginRight="36dp"
-        android:layout_gravity="top|right"
+        android:layout_marginEnd="36dp"
+        android:layout_gravity="top|end"
         android:onClick="dismissAllAppsCling" />
 </com.android.launcher2.Cling>

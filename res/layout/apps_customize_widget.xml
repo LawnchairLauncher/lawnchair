@@ -32,8 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingTop="@dimen/app_widget_preview_padding_top"
-        android:paddingLeft="@dimen/app_widget_preview_padding_left"
-        android:paddingRight="@dimen/app_widget_preview_padding_right"
+        android:paddingStart="@dimen/app_widget_preview_padding_left"
+        android:paddingEnd="@dimen/app_widget_preview_padding_right"
         android:scaleType="matrix"
         android:background="@drawable/widget_container_holo" />
 
@@ -41,8 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/app_widget_preview_label_margin_top"
-        android:layout_marginLeft="@dimen/app_widget_preview_label_margin_left"
-        android:layout_marginRight="@dimen/app_widget_preview_label_margin_right"
+        android:layout_marginStart="@dimen/app_widget_preview_label_margin_left"
+        android:layout_marginEnd="@dimen/app_widget_preview_label_margin_right"
         android:orientation="horizontal">
         <!-- The name of the widget. -->
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -50,13 +50,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="start"
             android:singleLine="true"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
 
             android:textColor="#FFFFFFFF"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:textAlignment="viewStart" />
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
              style. -->
@@ -65,9 +66,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="0"
-            android:gravity="left"
+            android:gravity="start"
 
             android:textColor="#FF555555"
             android:textSize="12sp" />

@@ -22,8 +22,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layoutDirection="ltr">
+        android:visibility="gone">
         <!-- The layout_width of the tab bar gets overriden to align the content
              with the text in the tabs in AppsCustomizeTabHost. -->
         <FrameLayout
@@ -36,7 +35,8 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="left"
+                android:layout_gravity="center"
+                android:gravity="start"
                 android:background="@drawable/tab_unselected_holo"
                 android:tabStripEnabled="false"
                 android:divider="@null" />
@@ -45,7 +45,7 @@
                 layout="@layout/market_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right" />
+                android:layout_gravity="end" />
         </FrameLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"

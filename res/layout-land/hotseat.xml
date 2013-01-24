@@ -25,8 +25,8 @@
         android:layout_gravity="center"
         android:paddingTop="@dimen/button_bar_width_left_padding"
         android:paddingBottom="@dimen/button_bar_width_right_padding"
-        android:paddingLeft="@dimen/button_bar_height_top_padding"
-        android:paddingRight="@dimen/button_bar_height_bottom_padding"
+        android:paddingStart="@dimen/button_bar_height_top_padding"
+        android:paddingEnd="@dimen/button_bar_height_bottom_padding"
 
         launcher:cellWidth="@dimen/hotseat_cell_width"
         launcher:cellHeight="@dimen/hotseat_cell_height"

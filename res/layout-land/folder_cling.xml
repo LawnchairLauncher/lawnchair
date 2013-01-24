@@ -20,7 +20,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
         style="@style/ClingButton"
         android:id="@+id/cling_dismiss"
         android:layout_marginBottom="15dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="10dp"
+        android:layout_gravity="bottom|end"
         android:onClick="dismissFolderCling" />
 </com.android.launcher2.Cling>

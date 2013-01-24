@@ -20,8 +20,8 @@
 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/cell_layout_left_padding"
-    android:paddingRight="@dimen/cell_layout_right_padding"
+    android:paddingStart="@dimen/cell_layout_left_padding"
+    android:paddingEnd="@dimen/cell_layout_right_padding"
     android:paddingTop="@dimen/cell_layout_top_padding"
     android:paddingBottom="@dimen/cell_layout_bottom_padding"
     android:hapticFeedbackEnabled="false"
