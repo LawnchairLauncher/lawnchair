@@ -143,6 +143,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public boolean acceptDrop(DragObject d) {
         if (d.dragInfo instanceof ShortcutInfo) {
             if (((ShortcutInfo) d.dragInfo).itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                d.deferDragViewCleanupPostAnimation = false;
                 return false;
             }
         }
