@@ -349,6 +349,17 @@ public final class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Listen for expanded desktop
+        getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.EXPANDED_DESKTOP_STATE),
+                false, new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                // Refresh launcher content
+                finish();
+            }
+        });
+
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
