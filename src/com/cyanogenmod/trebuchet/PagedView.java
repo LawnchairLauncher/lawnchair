@@ -1631,7 +1631,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int getChildWidth(int index) {
         // This functions are called enough times that it actually makes a difference in the
         // profiler -- so just inline the max() here
-        final int measuredWidth = getPageAt(index).getMeasuredWidth();
+        final int measuredWidth = getPageAt(index) != null ? getPageAt(index).getMeasuredWidth() : 0;
         final int minWidth = mMinimumWidth;
         return (minWidth > measuredWidth) ? minWidth : measuredWidth;
     }
@@ -1639,7 +1639,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int getChildHeight(int index) {
         // This functions are called enough times that it actually makes a difference in the
         // profiler -- so just inline the max() here
-        final int measuredHeight = getPageAt(index).getMeasuredHeight();
+        final int measuredHeight = getPageAt(index) != null ? getPageAt(index).getMeasuredHeight() : 0;
         final int minHeight = mMinimumHeight;
         return (minHeight > measuredHeight) ? minHeight : measuredHeight;
     }
