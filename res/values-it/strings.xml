@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widget"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Tocca e tieni premuto per scegliere un widget."</string>
     <string name="market" msgid="2652226429823445833">"Acquista"</string>
+    <string name="menu">Menù</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Rilascio elemento in schermata Home non riuscito."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Scegli il widget da creare"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome cartella"</string>
@@ -57,6 +58,7 @@
     <string name="cancel_target_label">Cancella</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Disinstalla"</string>
     <string name="info_target_label" msgid="4019495079517426980">"Informazioni applicazione"</string>
+    <string name="edit_target_label">Modifica</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Cerca"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Ricerca vocale"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Applicazioni"</string>
@@ -72,6 +74,9 @@
     <string name="menu_help" msgid="4901160661634590633">"Guida"</string>
     <string name="menu_apps_sort_title">Nome</string>
     <string name="menu_apps_sort_install_date">Data Installazione</string>
+    <string name="menu_apps_filter_system">Sistema</string>
+    <string name="menu_apps_filter_downloaded">Scaricate</string>
+    <string name="menu_hidden_apps_delete">Ripristina</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Disinstalla applicazione"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Dettagli applicazione"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"1 applicazione selezionata"</string>
@@ -116,10 +121,12 @@
     <string name="custom_workspace_cling_description_1" msgid="6875529190849858047"></string>
     <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
+    <string name="hidden_apps_title">Applicazioni nascoste</string>
     <string name="preferences_title">Preferenze</string>
     <string name="preferences_interface_title">Interfaccia</string>
     <string name="preferences_application_title">Applicazione</string>
     <string name="preferences_interface_homescreen_title">Schermata home</string>
+    <string name="preferences_interface_homescreen_summary">Schermate e sfondo</string>
     <string name="preferences_interface_homescreen_general_category">Generale</string>
     <string name="preferences_interface_homescreen_general_screens_title">Schermate Home</string>
     <string name="preferences_interface_homescreen_general_screens_summary">Numero di schermate nella Home</string>
@@ -142,6 +149,8 @@
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Muovi lo sfondo quando scorri nella Home</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Rendering rapido dello sfondo</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Usa un hack per incrementare la fluidità delle immagini statiche di sfondo</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Dimensione sfondo</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Numero di schermate totali presenti nello sfondo</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Dissolvenza pagine laterali</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Dissolvi le pagine laterali quando scorri nella Home</string>
     <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Mostra delineatori</string>
@@ -151,9 +160,14 @@
     <string name="preferences_interface_homescreen_indicator_enable_summary">Mostra l\'indicatore della pagina corrente nella parte inferiore dello schermo</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Dissolvenza indicatore</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Dissolvi l\'indicatore dopo aver cambiato Home</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Posizione indicatore</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">In quale posizione mostrare l\'indicatore nella schermata</string>
     <string name="preferences_interface_drawer_title">Drawer</string>
+    <string name="preferences_interface_drawer_summary">Contenitore delle applicazioni e dei widget</string>
     <string name="preferences_interface_drawer_orientation_title">Orientamento</string>
     <string name="preferences_interface_drawer_orientation_summary">Scegli in quale verso far scorrere il drawer</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Applicazioni nascoste</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Nasconde le applicazioni dal drawer</string>
     <string name="preferences_interface_drawer_widgets_category">Widget</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Unisci alle applicazioni</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Scorri dalla schermata applicazioni a quella dei widget senza cambiare scheda</string>
@@ -167,10 +181,24 @@
     <string name="preferences_interface_drawer_indicator_enable_summary">Mostra l\'indicatore della pagina corrente nella parte inferiore dello schermo</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Dissolvenza indicatore</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Dissolvi l\'indicatore dopo aver cambiato pagina</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Posizione indicatore</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">In quale posizione mostrare l\'indicatore nella schermata</string>
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_enabled_title">Mostra dock</string>
+    <string name="preferences_interface_dock_enabled_summary">Mostra dock nella parte inferiore dello schermo</string>
+    <string name="preferences_interface_dock_pages_title">Pagine</string>
+    <string name="preferences_interface_dock_pages_summary">Numero di pagine nella barra dock</string>
+    <string name="preferences_interface_dock_default_page_title">Pagina di default</string>
+    <string name="preferences_interface_dock_default_page_summary">Pagina che viene mostrata per default</string>
+    <string name="preferences_interface_dock_icons_title">Icone</string>
+    <string name="preferences_interface_dock_icons_summary">Numero di icone/colonne nella barra dock</string>
+    <string name="preferences_interface_dock_icon_scale_title">Scala icone</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Scala delle icone nella barra dock</string>
     <string name="preferences_interface_dock_divider_title">Mostra divisore dock</string>
     <string name="preferences_interface_dock_divider_summary">Mostra lo sfondo dietro l\'indicatore</string>
     <string name="preferences_interface_icons_title">Icone</string>
     <string name="preferences_interface_general_title">Generale</string>
     <string name="preferences_interface_general_orientation_title">Rotazione schermo</string>
+    <string name="preferences_interface_general_fullscreen_title">Modalità fullscreen</string>
+    <string name="preferences_interface_general_fullscreen_summary">Nasconde la barra di stato per estendere la schermata home</string>
 </resources>
