@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"ウィジェット"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"ウィジェットを追加するには押し続けます。"</string>
     <string name="market" msgid="2652226429823445833">"ショップ"</string>
+    <string name="menu">メニュー</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"このホーム画面にアイテムをドロップできませんでした。"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"作成するウィジェットの選択"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
@@ -199,12 +200,16 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">ドック</string>
+    <string name="preferences_interface_dock_enabled_title">ドックを表示</string>
+    <string name="preferences_interface_dock_enabled_summary">ホームスクリーンの下部にドックを表示する</string>
     <string name="preferences_interface_dock_pages_title">ページ</string>
     <string name="preferences_interface_dock_pages_summary">ドックのページ数</string>
     <string name="preferences_interface_dock_default_page_title">デフォルトページ</string>
     <string name="preferences_interface_dock_default_page_summary">デフォルトページを選択</string>
     <string name="preferences_interface_dock_icons_title">アイコン</string>
     <string name="preferences_interface_dock_icons_summary">ドックのアイコンとカラムの数</string>
+    <string name="preferences_interface_dock_icon_scale_title">アイコンスケール</string>
+    <string name="preferences_interface_dock_icon_scale_summary">ドックに表示するアイコンのスケール</string>
     <string name="preferences_interface_dock_divider_title">ドックの区切り線を表示</string>
     <string name="preferences_interface_dock_divider_summary">背景より手前にインジケータを表示する</string>
 
