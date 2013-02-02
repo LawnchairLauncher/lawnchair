@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="preferences_interface_homescreen_indicator_position_entries">
+        <item>Bo die Dok</item>
+        <item>Bo</item>
+        <item>Onderkant</item>
+    </string-array>
+    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
+        <item>Standaard</item>
+        <item>Tablet</item>
+        <item>Zoom in</item>
+        <item>Zoom uit</item>
+        <item>Roteer op</item>
+        <item>Roteer af</item>
+        <item>Silinder in</item>
+        <item>Silinder uit</item>
+        <item>Kubus in</item>
+        <item>Kubus uit</item>
+        <item>Spin</item>
+        <item>Flip</item>
+        <item>Stapel</item>
+        <item>Konsertina</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
+        <item>Standaard</item>
+        <item>Tablet</item>
+        <item>Zoom in</item>
+        <item>Zoom uit</item>
+        <item>Roteer op</item>
+        <item>Roteer af</item>
+        <item>Silinder in</item>
+        <item>Silinder uit</item>
+        <item>Kubus in</item>
+        <item>Kubus uit</item>
+        <item>Spin</item>
+        <item>Flip</item>
+        <item>Stapel</item>
+        <item>Konsertina</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>Bo/Links</item>
+        <item>Onder/Regs</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_orientation_entries">
+        <item>Horisontaal</item>
+        <item>Vertikaal</item>
+    </string-array>
+</resources>
