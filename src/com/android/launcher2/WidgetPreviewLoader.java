@@ -103,8 +103,8 @@ class BitmapFactoryOptionsCache extends SoftReferenceThreadLocal<BitmapFactory.O
 public class WidgetPreviewLoader {
     static final String TAG = "WidgetPreviewLoader";
 
-    private int mPreviewBitmapMaxWidth;
-    private int mPreviewBitmapMaxHeight;
+    private int mPreviewBitmapWidth;
+    private int mPreviewBitmapHeight;
     private String mSize;
     private Context mContext;
     private Launcher mLauncher;
@@ -131,27 +131,30 @@ public class WidgetPreviewLoader {
 
     private WidgetPreviewCacheDb mDb;
 
-    private static HashMap<String, WeakReference<Bitmap>> sLoadedPreviews;
-    private static ArrayList<SoftReference<Bitmap>> sUnusedBitmaps;
+    private HashMap<String, WeakReference<Bitmap>> mLoadedPreviews;
+    private ArrayList<SoftReference<Bitmap>> mUnusedBitmaps;
     private static HashSet<String> sInvalidPackages;
 
     static {
-        sLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();
-        sUnusedBitmaps = new ArrayList<SoftReference<Bitmap>>();
         sInvalidPackages = new HashSet<String>();
     }
 
-    public WidgetPreviewLoader(int previewWidth, int previewHeight,
-            Launcher launcher, PagedViewCellLayout widgetSpacingLayout) {
-        mPreviewBitmapMaxWidth = previewWidth;
-        mPreviewBitmapMaxHeight = previewHeight;
-        mSize = previewWidth + "x" + previewHeight;
+    public WidgetPreviewLoader(Launcher launcher) {
         mContext = mLauncher = launcher;
         mPackageManager = mContext.getPackageManager();
         mAppIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.app_icon_size);
         mIconCache = ((LauncherApplication) launcher.getApplicationContext()).getIconCache();
-        mWidgetSpacingLayout = widgetSpacingLayout;
         mDb = new WidgetPreviewCacheDb(mContext);
+        mLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();
+        mUnusedBitmaps = new ArrayList<SoftReference<Bitmap>>();
+    }
+
+    public void setPreviewSize(int previewWidth, int previewHeight,
+            PagedViewCellLayout widgetSpacingLayout) {
+        mPreviewBitmapWidth = previewWidth;
+        mPreviewBitmapHeight = previewHeight;
+        mSize = previewWidth + "x" + previewHeight;
+        mWidgetSpacingLayout = widgetSpacingLayout;
     }
 
     public Bitmap getPreview(final Object o) {
@@ -165,20 +168,22 @@ public class WidgetPreviewLoader {
             return null;
         }
         if (packageValid) {
-            synchronized(sLoadedPreviews) {
+            synchronized(mLoadedPreviews) {
                 // check if it exists in our existing cache
-                if (sLoadedPreviews.containsKey(name) && sLoadedPreviews.get(name).get() != null) {
-                    return sLoadedPreviews.get(name).get();
+                if (mLoadedPreviews.containsKey(name) && mLoadedPreviews.get(name).get() != null) {
+                    return mLoadedPreviews.get(name).get();
                 }
             }
         }
 
         Bitmap unusedBitmap = null;
-        synchronized(sUnusedBitmaps) {
+        synchronized(mUnusedBitmaps) {
             // not in cache; we need to load it from the db
-            while ((unusedBitmap == null || !unusedBitmap.isMutable())
-                    && sUnusedBitmaps.size() > 0) {
-                unusedBitmap = sUnusedBitmaps.remove(0).get();
+            while ((unusedBitmap == null || !unusedBitmap.isMutable() ||
+                    unusedBitmap.getWidth() != mPreviewBitmapWidth ||
+                    unusedBitmap.getHeight() != mPreviewBitmapHeight)
+                    && mUnusedBitmaps.size() > 0) {
+                unusedBitmap = mUnusedBitmaps.remove(0).get();
             }
             if (unusedBitmap != null) {
                 final Canvas c = mCachedAppWidgetPreviewCanvas.get();
@@ -189,7 +194,7 @@ public class WidgetPreviewLoader {
         }
 
         if (unusedBitmap == null) {
-            unusedBitmap = Bitmap.createBitmap(mPreviewBitmapMaxWidth, mPreviewBitmapMaxHeight,
+            unusedBitmap = Bitmap.createBitmap(mPreviewBitmapWidth, mPreviewBitmapHeight,
                     Bitmap.Config.ARGB_8888);
         }
 
@@ -200,8 +205,8 @@ public class WidgetPreviewLoader {
         }
 
         if (preview != null) {
-            synchronized(sLoadedPreviews) {
-                sLoadedPreviews.put(name, new WeakReference<Bitmap>(preview));
+            synchronized(mLoadedPreviews) {
+                mLoadedPreviews.put(name, new WeakReference<Bitmap>(preview));
             }
             return preview;
         } else {
@@ -212,8 +217,8 @@ public class WidgetPreviewLoader {
                 throw new RuntimeException("generatePreview is not recycling the bitmap " + o);
             }
 
-            synchronized(sLoadedPreviews) {
-                sLoadedPreviews.put(name, new WeakReference<Bitmap>(preview));
+            synchronized(mLoadedPreviews) {
+                mLoadedPreviews.put(name, new WeakReference<Bitmap>(preview));
             }
 
             // write to db on a thread pool... this can be done lazily and improves the performance
@@ -229,16 +234,16 @@ public class WidgetPreviewLoader {
         }
     }
 
-    public static void releaseBitmap(Object o, Bitmap bitmapToFree) {
+    public void releaseBitmap(Object o, Bitmap bitmapToFree) {
         // enable this code when doDecode doesn't force Bitmaps to become immutable
         String name = getObjectName(o);
-        synchronized(sLoadedPreviews) {
-            synchronized(sUnusedBitmaps) {
-                Bitmap b = sLoadedPreviews.get(name).get();
+        synchronized(mLoadedPreviews) {
+            synchronized(mUnusedBitmaps) {
+                Bitmap b = mLoadedPreviews.get(name).get();
                 if (b == bitmapToFree) {
-                    sLoadedPreviews.remove(name);
+                    mLoadedPreviews.remove(name);
                     if (bitmapToFree.isMutable()) {
-                        sUnusedBitmaps.add(new SoftReference<Bitmap>(b));
+                        mUnusedBitmaps.add(new SoftReference<Bitmap>(b));
                     }
                 } else {
                     throw new RuntimeException("Bitmap passed in doesn't match up");
@@ -378,15 +383,15 @@ public class WidgetPreviewLoader {
 
     public Bitmap generatePreview(Object info, Bitmap preview) {
         if (preview != null &&
-                (preview.getWidth() != mPreviewBitmapMaxWidth ||
-                preview.getHeight() != mPreviewBitmapMaxHeight)) {
+                (preview.getWidth() != mPreviewBitmapWidth ||
+                preview.getHeight() != mPreviewBitmapHeight)) {
             throw new RuntimeException("Improperly sized bitmap passed as argument");
         }
         if (info instanceof AppWidgetProviderInfo) {
             return generateWidgetPreview((AppWidgetProviderInfo) info, preview);
         } else {
             return generateShortcutPreview(
-                    (ResolveInfo) info, mPreviewBitmapMaxWidth, mPreviewBitmapMaxHeight, preview);
+                    (ResolveInfo) info, mPreviewBitmapWidth, mPreviewBitmapHeight, preview);
         }
     }
 
@@ -404,12 +409,12 @@ public class WidgetPreviewLoader {
     }
 
     public int maxWidthForWidgetPreview(int spanX) {
-        return Math.min(mPreviewBitmapMaxWidth,
+        return Math.min(mPreviewBitmapWidth,
                 mWidgetSpacingLayout.estimateCellWidth(spanX));
     }
 
     public int maxHeightForWidgetPreview(int spanY) {
-        return Math.min(mPreviewBitmapMaxHeight,
+        return Math.min(mPreviewBitmapHeight,
                 mWidgetSpacingLayout.estimateCellHeight(spanY));
     }
 

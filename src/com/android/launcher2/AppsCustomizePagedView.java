@@ -75,7 +75,7 @@ class AsyncTaskPageData {
     }
 
     AsyncTaskPageData(int p, ArrayList<Object> l, int cw, int ch, AsyncTaskCallback bgR,
-            AsyncTaskCallback postR) {
+            AsyncTaskCallback postR, WidgetPreviewLoader w) {
         page = p;
         items = l;
         generatedImages = new ArrayList<Bitmap>();
@@ -83,13 +83,14 @@ class AsyncTaskPageData {
         maxImageHeight = ch;
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
+        widgetPreviewLoader = w;
     }
     void cleanup(boolean cancelled) {
         // Clean up any references to source/generated bitmaps
         if (generatedImages != null) {
             if (cancelled) {
                 for (int i = 0; i < generatedImages.size(); i++) {
-                    WidgetPreviewLoader.releaseBitmap(items.get(i), generatedImages.get(i));
+                    widgetPreviewLoader.releaseBitmap(items.get(i), generatedImages.get(i));
                 }
             }
             generatedImages.clear();
@@ -103,6 +104,7 @@ class AsyncTaskPageData {
     int maxImageHeight;
     AsyncTaskCallback doInBackgroundCallback;
     AsyncTaskCallback postExecuteCallback;
+    WidgetPreviewLoader widgetPreviewLoader;
 }
 
 /**
@@ -346,6 +348,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     protected void onDataReady(int width, int height) {
+        if (mWidgetPreviewLoader == null) {
+            mWidgetPreviewLoader = new WidgetPreviewLoader(mLauncher);
+        }
+
         // Note that we transpose the counts in portrait so that we get a similar layout
         boolean isLandscape = getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
@@ -1110,7 +1116,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     // do cleanup inside onSyncWidgetPageItems
                     onSyncWidgetPageItems(data);
                 }
-            });
+            }, mWidgetPreviewLoader);
 
         // Ensure that the task is appropriately prioritized and runs in parallel
         AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page,
@@ -1174,7 +1180,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.minSpanX = minSpanXY[0];
                 createItemInfo.minSpanY = minSpanXY[1];
 
-                widget.applyFromAppWidgetProviderInfo(info, -1, spanXY);
+                widget.applyFromAppWidgetProviderInfo(info, -1, spanXY, mWidgetPreviewLoader);
                 widget.setTag(createItemInfo);
                 widget.setShortPressListener(this);
             } else if (rawInfo instanceof ResolveInfo) {
@@ -1184,7 +1190,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);
-                widget.applyFromResolveInfo(mPackageManager, info);
+                widget.applyFromResolveInfo(mPackageManager, info, mWidgetPreviewLoader);
                 widget.setTag(createItemInfo);
             }
             widget.setOnClickListener(this);
@@ -1221,13 +1227,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     maxPreviewHeight = maxSize[1];
                 }
 
-                if (mWidgetPreviewLoader == null) {
-                    mWidgetPreviewLoader = new WidgetPreviewLoader(
-                            maxPreviewWidth, maxPreviewHeight, mLauncher, mWidgetSpacingLayout);
-                }
+                mWidgetPreviewLoader.setPreviewSize(
+                        maxPreviewWidth, maxPreviewHeight, mWidgetSpacingLayout);
                 if (immediate) {
                     AsyncTaskPageData data = new AsyncTaskPageData(page, items,
-                            maxPreviewWidth, maxPreviewHeight, null, null);
+                            maxPreviewWidth, maxPreviewHeight, null, null, mWidgetPreviewLoader);
                     loadWidgetPreviewsInBackground(null, data);
                     onSyncWidgetPageItems(data);
                 } else {
