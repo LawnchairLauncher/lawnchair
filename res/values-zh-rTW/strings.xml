@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"小工具"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"輕觸並按住小工具即可選取。"</string>
     <string name="market" msgid="2652226429823445833">"商店"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"無法將項目拖放至這個主螢幕上。"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"選擇要建立的小工具"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"資料夾名稱"</string>
@@ -91,7 +92,7 @@
     <string name="workspace_scroll_format" msgid="1704767047951143301">"主螢幕 %1$d，共 %2$d 個"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"應用程式：第 %1$d 頁，共 %2$d 頁"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"小工具：第 %1$d 頁，共 %2$d 頁"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"當作自己家"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"當做自己家"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"您可以將最愛的應用程式放在這裡。"</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"如要查看您所有的應用程式，請輕觸圓圈。"</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"選擇一些應用程式"</string>

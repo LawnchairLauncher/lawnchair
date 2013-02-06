@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"วิดเจ็ต"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"แตะค้างเพื่อรับวิดเจ็ต"</string>
     <string name="market" msgid="2652226429823445833">"ร้าน"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"ไม่สามารถวางรายการลงในหน้าจอหลักนี้"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"เลือกวิดเจ็ตที่จะสร้าง"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"ชื่อโฟลเดอร์"</string>
@@ -92,7 +93,7 @@
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"แอปพลิเคชันหน้า %1$d จาก %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"วิดเจ็ตหน้า %1$d จาก %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"เชิญตามสบาย"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"คุณสามารถวางแอปพลิเคชันโปรดของคุณไว้ที่นี่"</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"วางแอปพลิเคชันโปรดของคุณได้ที่นี่"</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"หากต้องการดูแอปพลิเคชันทั้งหมด โปรดแตะที่วงกลม"</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"เลือกบางแอปพลิเคชัน"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"หากต้องการเพิ่มแอปพลิเคชันลงในหน้าจอหลัก ให้แตะแอปพลิเคชันค้างไว้"</string>

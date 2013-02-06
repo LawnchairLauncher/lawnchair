@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Mantén premut un widget per triar-lo."</string>
     <string name="market" msgid="2652226429823445833">"Botiga"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"No s\'ha pogut deixar anar aquest element a la pantalla d\'inici."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Selecciona el widget que vulguis crear"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nom de la carpeta"</string>
@@ -92,7 +93,7 @@
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Pàgina d\'aplicacions %1$d de %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Pàgina de widgets %1$d de %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Personalitza el teu escriptori"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"Ací pots col·locar les teves aplicacions preferides."</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"Aquí pots col·locar les teves aplicacions preferides."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Per veure totes les aplicacions, toca el cercle."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Tria algunes aplicacions"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Per afegir una aplicació a la pantalla d\'inici, mantén-la premuda."</string>

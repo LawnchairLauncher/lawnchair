@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"위젯"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"위젯을 선택하려면 길게 터치하세요."</string>
     <string name="market" msgid="2652226429823445833">"쇼핑"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d×%2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"홈 화면에 항목을 놓을 수 없습니다."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"만들 위젯 선택"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>

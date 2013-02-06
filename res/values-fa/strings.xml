@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"ابزارک‌ها"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"برای انتخاب یک ابزارک لمس کنید و نگه دارید."</string>
     <string name="market" msgid="2652226429823445833">"فروشگاه"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%2$d × %1$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"این مورد را نمی‌توان در این صفحهٔ اصلی رها کرد."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"انتخاب ابزارک برای ایجاد"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"نام پوشه"</string>
@@ -98,7 +99,7 @@
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"اگر می‌خواهید برنامه‌ای را به صفحهٔ اصلی خود اضافه کنید، آن را لمس کرده و نگه دارید."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"برنامه‌های خود را با پوشه‌ها سازماندهی کنید"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"برای جابجا کردن یک برنامه، آن را لمس کرده و نگهدارید."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحهٔ اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشهٔ جدید در صفحهٔ اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"تأیید"</string>
     <string name="folder_opened" msgid="1262064100943801533">"پوشه باز شده، <xliff:g id="WIDTH">%1$d</xliff:g> در <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"برای بستن پوشه لمس کنید"</string>

@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Виџети"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Додирните и задржите да бисте узели виџет."</string>
     <string name="market" msgid="2652226429823445833">"Куповина"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d×%2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Није могуће отпустити ставку на почетни екран."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Избор виџета за прављење"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Име директоријума"</string>

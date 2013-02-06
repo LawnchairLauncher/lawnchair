@@ -30,6 +30,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Blijf aanraken om een widget toe te voegen"</string>
     <string name="market" msgid="2652226429823445833">"Play Store"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Kan item niet neerzetten in dit startscherm."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Widget selecteren om te maken"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mapnaam"</string>
@@ -92,11 +93,11 @@
     <string name="workspace_scroll_format" msgid="1704767047951143301">"Startscherm %1$d van %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"App-pagina %1$d van %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Widgetpagina %1$d van %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"Doe maar alsof u thuis bent"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"Personaliseer het startscherm"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"U kunt hier uw favoriete apps plaatsen."</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Als u al uw apps wilt bekijken, raakt u de cirkel aan."</string>
-    <string name="all_apps_cling_title" msgid="2559734712581447107">"Enkele apps selecteren"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Als u een app wilt toevoegen aan het startscherm, blijft u de app aanraken."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Tik op de cirkel om al uw apps te bekijken."</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"Selecteer een aantal apps"</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Als u een app wilt toevoegen aan het startscherm, tikt u op de app en houdt u deze vast."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Uw apps ordenen met mappen"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Als u een app wilt verplaatsen, blijft u de app aanraken."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Als u een nieuwe map op het startscherm wilt maken, stapelt u een app boven op een andere app."</string>

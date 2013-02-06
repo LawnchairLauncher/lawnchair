@@ -29,19 +29,20 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Mantén pulsado el widget que quieras seleccionar."</string>
     <string name="market" msgid="2652226429823445833">"Tienda"</string>
-    <string name="external_drop_widget_error" msgid="2285187188524172774">"Error al arrastrar elemento a este escritorio"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Error al arrastrar elemento a esta pantalla de inicio"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Selecciona el widget que quieres añadir"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nombre de carpeta"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Cambiar nombre de carpeta"</string>
     <string name="rename_action" msgid="6016003384693240896">"Aceptar"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Cancelar"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"Añadir al escritorio"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Añadir a la pantalla de inicio"</string>
     <string name="group_applications" msgid="2103752818818161976">"Aplicaciones"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Accesos directos"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Fondos de pantalla"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"No queda espacio en las pantallas del escritorio."</string>
-    <string name="out_of_space" msgid="8365249326091984698">"No queda espacio en el escritorio."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"No queda espacio en la pantalla de inicio."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"No queda espacio en la barra de accesos directos."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Este widget es demasiado grande para la barra de accesos directos."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Se ha creado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
@@ -86,7 +87,7 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Esta aplicación es del sistema y no se puede desinstalar."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Carpeta sin nombre"</string>
-    <string name="workspace_description_format" msgid="2968608205939373034">"Pantalla principal %1$d"</string>
+    <string name="workspace_description_format" msgid="2968608205939373034">"Pantalla de inicio %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Página %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="1704767047951143301">"Pantalla principal %1$d de %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Página de aplicaciones %1$d de %2$d"</string>
@@ -95,10 +96,10 @@
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Aquí puedes poner tus aplicaciones favoritas."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Para ver todas las aplicaciones, toca el círculo."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Selecciona algunas aplicaciones"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Para añadir una aplicación al escritorio, solo tienes que mantenerla pulsada."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Para añadir una aplicación a tu pantalla de inicio, solo tienes que mantenerla pulsada."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Organiza tus aplicaciones en carpetas"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover una aplicación, solo tienes que mantenerla pulsada."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en el escritorio, coloca una aplicación encima de otra."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en la pantalla de inicio, coloca una aplicación encima de otra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Aceptar"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Carpeta abierta, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Toca para cerrar la carpeta."</string>

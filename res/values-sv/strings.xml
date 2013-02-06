@@ -29,19 +29,20 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgetar"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Tryck länge om du vill flytta en widget."</string>
     <string name="market" msgid="2652226429823445833">"Butik"</string>
-    <string name="external_drop_widget_error" msgid="2285187188524172774">"Objektet kunde inte släppas på den här startsidan."</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Objektet kunde inte släppas på den här startskärmen."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Ange vilken widget du vill använda"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappnamn"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Byt namn på mapp"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Avbryt"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"Lägg till på startsidan"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Lägg till på startskärmen"</string>
     <string name="group_applications" msgid="2103752818818161976">"Appar"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Genvägar"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgetar"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Bakgrundsbilder"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Det finns inte plats för mer på dina startskärmar."</string>
-    <string name="out_of_space" msgid="8365249326091984698">"Det finns inte plats för mer på den här startsidan."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Det finns inte plats för mer på den här startskärmen."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Utrymmet på Hotseat är fullt."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Denna widget är för stor för Hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har skapats."</string>

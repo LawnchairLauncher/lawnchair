@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"ウィジェット"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"ウィジェットを追加するには押し続けます。"</string>
     <string name="market" msgid="2652226429823445833">"ショップ"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"このホーム画面にアイテムをドロップできませんでした。"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"作成するウィジェットの選択"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
@@ -55,7 +56,7 @@
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"アンインストール"</string>
     <string name="delete_target_label" msgid="665300185123139530">"削除"</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"アンインストール"</string>
-    <string name="info_target_label" msgid="4019495079517426980">"アプリケーション情報"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"アプリ情報"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"検索"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"音声検索"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"アプリ"</string>
@@ -92,8 +93,8 @@
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"アプリの%1$d/%2$dページ"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"ウィジェットの%1$d/%2$dページ"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"ここがあなたのホームです"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"お気に入りのアプリをここに置くことができます。"</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"すべてのアプリを見るにはサークルをタップします。"</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"お気に入りのアプリをここに​置くことができます。"</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"すべてのアプリを見るには​サークルをタップします。"</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"アプリの選択"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"アプリをホーム画面に追加するにはアプリを押し続けます。"</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"フォルダでアプリを整理"</string>

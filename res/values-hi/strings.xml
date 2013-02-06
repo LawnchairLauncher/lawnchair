@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"विजेट"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"किसी विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="market" msgid="2652226429823445833">"दुकान"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"इस मुखपृष्ठ स्‍क्रीन पर आइटम को नहीं छोड़ा जा सका."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"बनाने के लिए विजेट चुनें"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"फ़ोल्‍डर का नाम"</string>
@@ -93,7 +94,7 @@
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"%2$d में %1$d विजेट पृष्ठ"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"जैसा चाहें वैसा उपयोग करें"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"आप अपने पसंदीदा एप्लिकेशन यहां रख सकते हैं."</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"अपने सभी एप्लिकेशन देखने के लिए, मंडली को स्‍पर्श करें."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"अपने सभी एप्लिकेशन देखने के लिए, वृत्त को स्‍पर्श करें."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"कुछ एप्लिकेशन चुनें"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"किसी एप्लिकेशन को अपनी मुखपृष्ठ स्‍क्रीन से जोड़ने के लिए, उसे स्‍पर्श करके रखें."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"अपने एप्लिकेशन को फ़ोल्डर के साथ व्‍यवस्थित करें"</string>

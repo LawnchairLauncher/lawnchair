@@ -29,6 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Miniaplikácie"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Miniaplikáciu pridáte stlačením a podržaním."</string>
     <string name="market" msgid="2652226429823445833">"Obchod"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Položku sa nepodarilo presunúť na túto plochu."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Zvoľte miniaplikáciu na vytvorenie"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Názov priečinka"</string>
@@ -50,7 +51,7 @@
     <string name="title_select_shortcut" msgid="1873670208166882222">"Vyberte odkaz"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Vyberte aplikáciu"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Aplikácie"</string>
-    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Domovská stránka"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Plocha"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Odstrániť"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Odinštalovať"</string>
     <string name="delete_target_label" msgid="665300185123139530">"Odstrániť"</string>
