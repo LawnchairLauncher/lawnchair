@@ -43,7 +43,7 @@
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapety"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Na plochách již není místo."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Na této ploše již není místo."</string>
-    <string name="hotseat_out_of_space" msgid="6304886797358479361">"V části hotseat již není místo."</string>
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"V sekci hotseat již není místo."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Widget je pro hotseat příliš velký."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl vytvořen."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl odebrán."</string>
