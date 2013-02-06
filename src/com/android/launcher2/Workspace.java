@@ -1182,18 +1182,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    float overScrollBackgroundAlphaInterpolator(float r) {
-        float threshold = 0.08f;
-
-        if (r > mOverScrollMaxBackgroundAlpha) {
-            mOverScrollMaxBackgroundAlpha = r;
-        } else if (r < mOverScrollMaxBackgroundAlpha) {
-            r = mOverScrollMaxBackgroundAlpha;
-        }
-
-        return Math.min(r / threshold, 1.0f);
-    }
-
     private void updatePageAlphaValues(int screenCenter) {
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
         if (mWorkspaceFadeInAdjacentScreens &&
@@ -1226,23 +1214,38 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
+        final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
 
         updatePageAlphaValues(screenCenter);
         enableHwLayersOnVisiblePages();
 
         if (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) {
-            int index = mOverScrollX < 0 ? 0 : getChildCount() - 1;
+            int index = 0;
+            float pivotX = 0f;
+            final float leftBiasedPivot = 0.25f;
+            final float rightBiasedPivot = 0.75f;
+            final int lowerIndex = 0;
+            final int upperIndex = getChildCount() - 1;
+            if (isRtl) {
+                index = mOverScrollX < 0 ? upperIndex : lowerIndex;
+                pivotX = (index == 0 ? leftBiasedPivot : rightBiasedPivot);
+            } else {
+                index = mOverScrollX < 0 ? lowerIndex : upperIndex;
+                pivotX = (index == 0 ? rightBiasedPivot : leftBiasedPivot);
+            }
+
             CellLayout cl = (CellLayout) getChildAt(index);
             float scrollProgress = getScrollProgress(screenCenter, cl, index);
-            cl.setOverScrollAmount(Math.abs(scrollProgress), index == 0);
-            float rotation = - WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
+            final boolean isLeftPage = (isRtl ? index > 0 : index == 0);
+            cl.setOverScrollAmount(Math.abs(scrollProgress), isLeftPage);
+            float rotation = -WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
             cl.setRotationY(rotation);
             setFadeForOverScroll(Math.abs(scrollProgress));
             if (!mOverscrollTransformsSet) {
                 mOverscrollTransformsSet = true;
                 cl.setCameraDistance(mDensity * mCameraDistance);
-                cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
+                cl.setPivotX(cl.getMeasuredWidth() * pivotX);
                 cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
                 cl.setOverscrollTransformsDirty(true);
             }

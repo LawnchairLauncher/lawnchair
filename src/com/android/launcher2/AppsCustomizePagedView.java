@@ -1348,6 +1348,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // In apps customize, we have a scrolling effect which emulates pulling cards off of a stack.
     @Override
     protected void screenScrolled(int screenCenter) {
+        final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
 
         for (int i = 0; i < getChildCount(); i++) {
@@ -1355,19 +1356,28 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (v != null) {
                 float scrollProgress = getScrollProgress(screenCenter, v, i);
 
-                float interpolatedProgress =
-                        mZInterpolator.getInterpolation(Math.abs(Math.min(scrollProgress, 0)));
+                float interpolatedProgress;
+                float translationX;
+                float maxScrollProgress = Math.max(0, scrollProgress);
+                float minScrollProgress = Math.min(0, scrollProgress);
+
+                if (isRtl) {
+                    translationX = maxScrollProgress * v.getMeasuredWidth();
+                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(maxScrollProgress));
+                } else {
+                    translationX = minScrollProgress * v.getMeasuredWidth();
+                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(minScrollProgress));
+                }
                 float scale = (1 - interpolatedProgress) +
                         interpolatedProgress * TRANSITION_SCALE_FACTOR;
-                float translationX = Math.min(0, scrollProgress) * v.getMeasuredWidth();
 
                 float alpha;
-
-                if (scrollProgress < 0) {
-                    alpha = scrollProgress < 0 ? mAlphaInterpolator.getInterpolation(
-                        1 - Math.abs(scrollProgress)) : 1.0f;
+                if (isRtl && (scrollProgress > 0)) {
+                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(maxScrollProgress));
+                } else if (!isRtl && (scrollProgress < 0)) {
+                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(scrollProgress));
                 } else {
-                    // On large screens we need to fade the page as it nears its leftmost position
+                    //  On large screens we need to fade the page as it nears its leftmost position
                     alpha = mLeftScreenAlphaInterpolator.getInterpolation(1 - scrollProgress);
                 }
 
@@ -1376,17 +1386,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int pageHeight = v.getMeasuredHeight();
 
                 if (PERFORM_OVERSCROLL_ROTATION) {
-                    if (i == 0 && scrollProgress < 0) {
+                    float xPivot = isRtl ? 1f - TRANSITION_PIVOT : TRANSITION_PIVOT;
+                    boolean isOverscrollingFirstPage = isRtl ? scrollProgress > 0 : scrollProgress < 0;
+                    boolean isOverscrollingLastPage = isRtl ? scrollProgress < 0 : scrollProgress > 0;
+
+                    if (i == 0 && isOverscrollingFirstPage) {
                         // Overscroll to the left
-                        v.setPivotX(TRANSITION_PIVOT * pageWidth);
+                        v.setPivotX(xPivot * pageWidth);
                         v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
                         scale = 1.0f;
                         alpha = 1.0f;
                         // On the first page, we don't want the page to have any lateral motion
                         translationX = 0;
-                    } else if (i == getChildCount() - 1 && scrollProgress > 0) {
+                    } else if (i == getChildCount() - 1 && isOverscrollingLastPage) {
                         // Overscroll to the right
-                        v.setPivotX((1 - TRANSITION_PIVOT) * pageWidth);
+                        v.setPivotX((1 - xPivot) * pageWidth);
                         v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
                         scale = 1.0f;
                         alpha = 1.0f;
