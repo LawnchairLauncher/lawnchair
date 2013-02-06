@@ -352,6 +352,12 @@ public class WidgetPreviewLoader {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
+    public void closeDb()  {
+        if (mDb != null) {
+            mDb.close();
+        }
+    }
+
     private Bitmap readFromDb(String name, Bitmap b) {
         if (mCachedSelectQuery == null) {
             mCachedSelectQuery = WidgetPreviewCacheDb.COLUMN_NAME + " = ? AND " +

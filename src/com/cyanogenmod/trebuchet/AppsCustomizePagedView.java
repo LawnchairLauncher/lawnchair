@@ -1060,6 +1060,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         cancelAllTasks();
+        if (mWidgetPreviewLoader != null) {
+            mWidgetPreviewLoader.closeDb();
+        }
     }
 
     public void clearAllWidgetPages() {
