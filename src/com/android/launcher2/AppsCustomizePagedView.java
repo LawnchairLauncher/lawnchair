@@ -1242,6 +1242,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                                 maxPreviewWidth, maxPreviewHeight, mWidgetCountX);
                     }
                 }
+                layout.setOnLayoutListener(null);
             }
         });
     }
