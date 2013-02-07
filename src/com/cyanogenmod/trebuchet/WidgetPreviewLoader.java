@@ -234,15 +234,14 @@ public class WidgetPreviewLoader {
         }
     }
 
-    public void releaseBitmap(Object o, Bitmap bitmapToFree) {
-        // enable this code when doDecode doesn't force Bitmaps to become immutable
+    public void recycleBitmap(Object o, Bitmap bitmapToRecycle) {
         String name = getObjectName(o);
         synchronized(mLoadedPreviews) {
             synchronized(mUnusedBitmaps) {
                 Bitmap b = mLoadedPreviews.get(name).get();
-                if (b == bitmapToFree) {
+                if (b == bitmapToRecycle) {
                     mLoadedPreviews.remove(name);
-                    if (bitmapToFree.isMutable()) {
+                    if (bitmapToRecycle.isMutable()) {
                         mUnusedBitmaps.add(new SoftReference<Bitmap>(b));
                     }
                 } else {

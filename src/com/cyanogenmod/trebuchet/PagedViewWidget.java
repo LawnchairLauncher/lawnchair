@@ -36,6 +36,7 @@ public class PagedViewWidget extends LinearLayout {
     private static final String TAG = "Trebuchet.PagedViewWidgetLayout";
 
     private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
+    private static boolean sRecyclePreviewsWhenDetachedFromWindow = true;
 
     private String mDimensionsFormatString;
     CheckForShortPress mPendingCheckForShortPress = null;
@@ -80,6 +81,10 @@ public class PagedViewWidget extends LinearLayout {
         sDeletePreviewsWhenDetachedFromWindow = value;
     }
 
+    public static void setRecyclePreviewsWhenDetachedFromWindow(boolean value) {
+        sRecyclePreviewsWhenDetachedFromWindow = value;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -88,8 +93,9 @@ public class PagedViewWidget extends LinearLayout {
             final ImageView image = (ImageView) findViewById(R.id.widget_preview);
             if (image != null) {
                 FastBitmapDrawable preview = (FastBitmapDrawable) image.getDrawable();
-                if (mInfo != null && preview != null && preview.getBitmap() != null) {
-                    mWidgetPreviewLoader.releaseBitmap(mInfo, preview.getBitmap());
+                if (sRecyclePreviewsWhenDetachedFromWindow &&
+                        mInfo != null && preview != null && preview.getBitmap() != null) {
+                    mWidgetPreviewLoader.recycleBitmap(mInfo, preview.getBitmap());
                 }
                 image.setImageDrawable(null);
             }

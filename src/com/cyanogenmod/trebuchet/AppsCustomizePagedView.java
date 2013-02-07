@@ -91,7 +91,7 @@ class AsyncTaskPageData {
         if (generatedImages != null) {
             if (cancelled) {
                 for (int i = 0; i < generatedImages.size(); i++) {
-                    widgetPreviewLoader.releaseBitmap(items.get(i), generatedImages.get(i));
+                    widgetPreviewLoader.recycleBitmap(items.get(i), generatedImages.get(i));
                 }
             }
             generatedImages.clear();
