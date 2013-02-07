@@ -22,6 +22,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -70,7 +71,7 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     }
 
     protected Drawable getCurrentDrawable() {
-        Drawable[] drawables = getCompoundDrawables();
+        Drawable[] drawables = getCompoundDrawablesRelative();
         for (int i = 0; i < drawables.length; ++i) {
             if (drawables[i] != null) {
                 return drawables[i];
@@ -116,21 +117,39 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
         outRect.bottom += mBottomDragPadding;
     }
 
-    Rect getIconRect(int itemWidth, int itemHeight, int drawableWidth, int drawableHeight) {
+    private boolean isRtl() {
+        return (getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+    }
+
+    Rect getIconRect(int viewWidth, int viewHeight, int drawableWidth, int drawableHeight) {
         DragLayer dragLayer = mLauncher.getDragLayer();
 
         // Find the rect to animate to (the view is center aligned)
         Rect to = new Rect();
         dragLayer.getViewRectRelativeToSelf(this, to);
-        int width = drawableWidth;
-        int height = drawableHeight;
-        int left = to.left + getPaddingLeft();
-        int top = to.top + (getMeasuredHeight() - height) / 2;
-        to.set(left, top, left + width, top + height);
+
+        final int width = drawableWidth;
+        final int height = drawableHeight;
+
+        final int left;
+        final int right;
+
+        if (isRtl()) {
+            right = to.right - getPaddingRight();
+            left = right - width;
+        } else {
+            left = to.left + getPaddingLeft();
+            right = left + width;
+        }
+
+        final int top = to.top + (getMeasuredHeight() - height) / 2;
+        final int bottom = top +  height;
+
+        to.set(left, top, right, bottom);
 
         // Center the destination rect about the trash icon
-        int xOffset = (int) -(itemWidth - width) / 2;
-        int yOffset = (int) -(itemHeight - height) / 2;
+        final int xOffset = (int) -(viewWidth - width) / 2;
+        final int yOffset = (int) -(viewHeight - height) / 2;
         to.offset(xOffset, yOffset);
 
         return to;

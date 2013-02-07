@@ -23,7 +23,7 @@
             style="@style/DropTargetButton"
             android:id="@+id/delete_target_text"
             android:text="@string/delete_zone_label_workspace"
-            android:drawableLeft="@drawable/remove_target_selector" />
+            android:drawableStart="@drawable/remove_target_selector" />
     </FrameLayout>
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,6 +34,6 @@
             style="@style/DropTargetButton"
             android:id="@+id/info_target_text"
             android:text="@string/info_target_label"
-            android:drawableLeft="@drawable/info_target_selector" />
+            android:drawableStart="@drawable/info_target_selector" />
     </FrameLayout>
 </merge>
