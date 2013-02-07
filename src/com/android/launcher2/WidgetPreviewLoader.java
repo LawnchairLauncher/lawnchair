@@ -274,7 +274,7 @@ public class WidgetPreviewLoader {
                     COLUMN_SIZE + " TEXT NOT NULL, " +
                     COLUMN_PREVIEW_BITMAP + " BLOB NOT NULL, " +
                     "PRIMARY KEY (" + COLUMN_NAME + ", " + COLUMN_SIZE + ") " +
-                    ");");
+                    ") IF NOT EXISTS;");
         }
 
         @Override
