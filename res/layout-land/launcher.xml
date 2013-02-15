@@ -14,85 +14,97 @@
      limitations under the License.
 -->
 
-<com.cyanogenmod.trebuchet.DragLayer
+<!-- Full screen view projects under the status bar and contains the background -->
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
-
-    android:id="@+id/drag_layer"
+    android:id="@+id/launcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/workspace_bg">
 
-    <!-- The workspace contains 5 screens of cells -->
-    <com.cyanogenmod.trebuchet.Workspace
-        android:id="@+id/workspace"
+    <com.cyanogenmod.trebuchet.DragLayer
+        android:id="@+id/drag_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/workspace_left_padding"
-        android:paddingRight="@dimen/workspace_right_padding"
-        android:paddingTop="@dimen/workspace_top_padding"
-        android:paddingBottom="@dimen/workspace_bottom_padding"
-        launcher:cellCountX="@integer/target_cell_count_x"
-        launcher:cellCountY="@integer/target_cell_count_y"
-        launcher:pageSpacing="@dimen/workspace_page_spacing"
-        launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
-        launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height" />
+        android:fitsSystemWindows="true">
 
-    <include
-        android:id="@+id/qsb_divider"
-        layout="@layout/workspace_divider"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/qsb_bar_height"
-        android:layout_gravity="left" />
-    <include
-        android:id="@+id/dock_divider"
-        layout="@layout/workspace_divider"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/button_bar_height"
-        android:layout_gravity="right" />
-    <include
-        android:id="@+id/paged_view_indicator_horizontal"
-        layout="@layout/scroll_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        <!-- The workspace contains 5 screens of cells -->
+        <com.cyanogenmod.trebuchet.Workspace
+            android:id="@+id/workspace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/workspace_left_padding"
+            android:paddingRight="@dimen/workspace_right_padding"
+            android:paddingTop="@dimen/workspace_top_padding"
+            android:paddingBottom="@dimen/workspace_bottom_padding"
+            launcher:cellCountX="@integer/target_cell_count_x"
+            launcher:cellCountY="@integer/target_cell_count_y"
+            launcher:pageSpacing="@dimen/workspace_page_spacing"
+            launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
+            launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height" />
+    
+        <include
+            android:id="@+id/qsb_divider"
+            layout="@layout/workspace_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/qsb_bar_height"
+            android:layout_gravity="left" />
+        <include
+            android:id="@+id/dock_divider"
+            layout="@layout/workspace_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/button_bar_height"
+            android:layout_gravity="right" />
+        <include
+            android:id="@+id/paged_view_indicator_horizontal"
+            layout="@layout/scroll_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
 
-    <include layout="@layout/hotseat"
-        android:id="@+id/hotseat"
-        android:layout_width="@dimen/button_bar_height_plus_padding"
-        android:layout_height="match_parent"
-        android:layout_gravity="right" />
-    <include
-        android:id="@+id/qsb_bar"
-        layout="@layout/qsb_bar" />
+        <include layout="@layout/hotseat"
+            android:id="@+id/hotseat"
+            android:layout_width="@dimen/button_bar_height_plus_padding"
+            android:layout_height="match_parent"
+            android:layout_gravity="right" />
+        <include
+            android:id="@+id/qsb_bar"
+            layout="@layout/qsb_bar" />
 
-    <com.cyanogenmod.trebuchet.DrawableStateProxyView
-        android:id="@+id/voice_button_proxy"
-        android:layout_width="@dimen/qsb_bar_height"
-        android:layout_height="@dimen/app_icon_size"
-        android:layout_gravity="top|left"
-        android:layout_marginTop="64dp"
-        android:clickable="true"
-        android:onClick="onClickVoiceButton"
-        android:importantForAccessibility="no"
-        launcher:sourceViewId="@+id/voice_button" />
+        <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
+             that it is still visible during the transition to AllApps and doesn't overlay on
+             top of that view. -->
+        <include layout="@layout/workspace_cling"
+            android:id="@+id/workspace_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
-    <include layout="@layout/apps_customize_pane"
-        android:id="@+id/apps_customize_pane"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible" />
+        <include layout="@layout/folder_cling"
+            android:id="@+id/folder_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
-    <include layout="@layout/workspace_cling"
-        android:id="@+id/workspace_cling"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        <com.cyanogenmod.trebuchet.DrawableStateProxyView
+            android:id="@+id/voice_button_proxy"
+            android:layout_width="@dimen/qsb_bar_height"
+            android:layout_height="@dimen/app_icon_size"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="64dp"
+            android:clickable="true"
+            android:onClick="onClickVoiceButton"
+            android:importantForAccessibility="no"
+            launcher:sourceViewId="@+id/voice_button" />
 
-    <include layout="@layout/folder_cling"
-        android:id="@+id/folder_cling"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-</com.cyanogenmod.trebuchet.DragLayer>
+        <include layout="@layout/apps_customize_pane"
+            android:id="@+id/apps_customize_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+
+    </com.cyanogenmod.trebuchet.DragLayer>
+</FrameLayout>
