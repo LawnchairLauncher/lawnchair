@@ -236,13 +236,15 @@ public class WidgetPreviewLoader {
 
     public void recycleBitmap(Object o, Bitmap bitmapToRecycle) {
         String name = getObjectName(o);
-        synchronized(mLoadedPreviews) {
-            synchronized(mUnusedBitmaps) {
+        synchronized (mLoadedPreviews) {
+            if (mLoadedPreviews.containsKey(name)) {
                 Bitmap b = mLoadedPreviews.get(name).get();
                 if (b == bitmapToRecycle) {
                     mLoadedPreviews.remove(name);
                     if (bitmapToRecycle.isMutable()) {
-                        mUnusedBitmaps.add(new SoftReference<Bitmap>(b));
+                        synchronized (mUnusedBitmaps) {
+                            mUnusedBitmaps.add(new SoftReference<Bitmap>(b));
+                        }
                     }
                 } else {
                     throw new RuntimeException("Bitmap passed in doesn't match up");
