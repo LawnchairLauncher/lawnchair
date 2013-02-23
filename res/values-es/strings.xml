@@ -1,25 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-/*
-* Copyright (C) 2008 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
- -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
 
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="home" msgid="5921706419368316758">"Casa"</string>
+    <string name="home" msgid="5921706419368316758">"Inicio"</string>
     <string name="uid_name" msgid="3371120195364560632">"Aplicaciones básicas de Android"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Seleccionar fondo de pantalla de"</string>
@@ -164,15 +160,15 @@
     <string name="preferences_interface_homescreen_indicator_fade_summary">Ocultar automáticamente el indicador de página</string>
     <string name="preferences_interface_homescreen_indicator_position_title">Posición</string>
     <string name="preferences_interface_homescreen_indicator_position_summary">Establecer dónde se mostrará el indicador de página</string>
-    <string name="preferences_interface_drawer_title">Pestañas</string>
-    <string name="preferences_interface_drawer_summary">Aplicaciones y widgets</string>
+    <string name="preferences_interface_drawer_title">Aplicaciones y widgets</string>
+    <string name="preferences_interface_drawer_summary">Establecer la configuración de las aplicaciones y widgets</string>
     <string name="preferences_interface_drawer_orientation_title">Orientación</string>
     <string name="preferences_interface_drawer_orientation_summary">Establecer la dirección de desplazamiento</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Aplicaciones ocultas</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Establecer las aplicaciones que se ocultarán en la pestaña aplicaciones</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_title">Transición pestañas</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_summary">Pasar de pestañas de aplicaciones a pestañas de widgets sin necesidad de cambiar explícitamente de pestaña</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Transición entre pestañas</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Pasar de la pestaña Aplicaciones a la pestaña Widgets automáticamente</string>
     <string name="preferences_interface_drawer_scrolling_category">Desplazamiento</string>
     <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efecto de transición</string>
     <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efecto de transición al desplazarse entre pantallas</string>
