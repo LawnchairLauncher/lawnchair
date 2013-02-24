@@ -100,7 +100,7 @@
     <string name="workspace_scroll_format" msgid="1704767047951143301">"Schermata Home %1$d di %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Pagina di applicazioni %1$d di %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Pagina di widget %1$d di %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"Personalizza la schermata home"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"Personalizza la schermata Home"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Puoi posizionare le tue applicazioni preferite qui."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Per visualizzare tutte le tue applicazioni, tocca il cerchio."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Scegli alcune applicazioni"</string>
@@ -125,7 +125,7 @@
     <string name="preferences_title">Preferenze</string>
     <string name="preferences_interface_title">Interfaccia</string>
     <string name="preferences_application_title">Applicazione</string>
-    <string name="preferences_interface_homescreen_title">Schermata home</string>
+    <string name="preferences_interface_homescreen_title">Schermata Home</string>
     <string name="preferences_interface_homescreen_summary">Schermate e sfondo</string>
     <string name="preferences_interface_homescreen_general_category">Generale</string>
     <string name="preferences_interface_homescreen_general_screens_title">Schermate Home</string>
@@ -167,7 +167,7 @@
     <string name="preferences_interface_drawer_orientation_title">Orientamento</string>
     <string name="preferences_interface_drawer_orientation_summary">Scegli in quale verso far scorrere il drawer</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Applicazioni nascoste</string>
-    <string name="preferences_interface_drawer_hidden_apps_summary">Nasconde le applicazioni dal drawer</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Nascondi le applicazioni dal drawer</string>
     <string name="preferences_interface_drawer_widgets_category">Widget</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Unisci alle applicazioni</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Scorri dalla schermata applicazioni a quella dei widget senza cambiare scheda</string>
@@ -188,8 +188,8 @@
     <string name="preferences_interface_dock_enabled_summary">Mostra dock nella parte inferiore dello schermo</string>
     <string name="preferences_interface_dock_pages_title">Pagine</string>
     <string name="preferences_interface_dock_pages_summary">Numero di pagine nella barra dock</string>
-    <string name="preferences_interface_dock_default_page_title">Pagina di default</string>
-    <string name="preferences_interface_dock_default_page_summary">Pagina che viene mostrata per default</string>
+    <string name="preferences_interface_dock_default_page_title">Pagina predefinita</string>
+    <string name="preferences_interface_dock_default_page_summary">Pagina che viene mostrata di default</string>
     <string name="preferences_interface_dock_icons_title">Icone</string>
     <string name="preferences_interface_dock_icons_summary">Numero di icone/colonne nella barra dock</string>
     <string name="preferences_interface_dock_icon_scale_title">Scala icone</string>
@@ -199,6 +199,6 @@
     <string name="preferences_interface_icons_title">Icone</string>
     <string name="preferences_interface_general_title">Generale</string>
     <string name="preferences_interface_general_orientation_title">Rotazione schermo</string>
-    <string name="preferences_interface_general_fullscreen_title">Modalità fullscreen</string>
-    <string name="preferences_interface_general_fullscreen_summary">Nasconde la barra di stato per estendere la schermata home</string>
+    <string name="preferences_interface_general_fullscreen_title">Modalità schermo intero</string>
+    <string name="preferences_interface_general_fullscreen_summary">Nascondi la barra di stato per estendere la schermata Home</string>
 </resources>
