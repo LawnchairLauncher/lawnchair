@@ -696,6 +696,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             boolean success) {
         if (success) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon) {
+                // We need to inject the folder info to the shortcut because
+                // the folder is going to be removed from the workspace and the
+                // shortcut could need to be restored
+                if (d.dragInfo instanceof ShortcutInfo) {
+                    ((ShortcutInfo)d.dragInfo).mFolderInfo = mInfo;
+                }
                 replaceFolderWithFinalItem();
             }
         } else {
