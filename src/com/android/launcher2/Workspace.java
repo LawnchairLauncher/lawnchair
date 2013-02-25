@@ -409,6 +409,8 @@ public class Workspace extends SmoothPagedView
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
         mIconCache = app.getIconCache();
         setWillNotDraw(false);
+        setClipChildren(false);
+        setClipToPadding(false);
         setChildrenDrawnWithCacheEnabled(true);
 
         final Resources res = getResources();
