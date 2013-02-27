@@ -51,7 +51,7 @@
         <item>Fisarmonica</item>
     </string-array>
     <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Orizontale</item>
+        <item>Orizzontale</item>
         <item>Verticale</item>
     </string-array>
 </resources>
