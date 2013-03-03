@@ -1336,6 +1336,9 @@ public final class Launcher extends Activity
             // When Launcher comes back to foreground, a different Activity might be responsible for
             // the app market intent, so refresh the icon
             updateAppMarketIcon();
+            // When Launcher comes back to foreground, a different Launcher might be made default
+            // so refresh the icon
+            updateOverflowMenuButton();
             clearTypedText();
         }
     }
@@ -3691,9 +3694,6 @@ public final class Launcher extends Activity
                             .commit();
             }
         }.start();
-
-        // Hide overflow menu on devices with a hardkey
-        updateOverflowMenuButton();
     }
 
     @Override
@@ -3735,6 +3735,9 @@ public final class Launcher extends Activity
             // list of applications without waiting for any progress bars views to be hidden.
             setAllAppsRunnable.run();
         }
+
+        // Hide overflow menu on devices with a hardkey
+        updateOverflowMenuButton();
     }
 
     /**
