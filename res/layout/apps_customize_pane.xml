@@ -40,18 +40,26 @@
                 android:background="@drawable/tab_unselected_holo"
                 android:tabStripEnabled="false"
                 android:divider="@null" />
-            <include
-                android:id="@+id/overflow_menu_button"
-                layout="@layout/overflow_menu_button"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right" />
-            <include
-                android:id="@+id/market_button"
-                layout="@layout/market_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right" />
+                android:background="@drawable/tab_unselected_holo"
+                android:orientation="horizontal"
+                android:layout_gravity="right">
+                <include
+                    android:id="@+id/overflow_menu_button"
+                    layout="@layout/overflow_menu_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true" />
+                <include
+                    android:id="@+id/market_button"
+                    layout="@layout/market_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@id/overflow_menu_button"
+                    android:layout_alignWithParentIfMissing="true" />
+            </RelativeLayout>
         </FrameLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"
