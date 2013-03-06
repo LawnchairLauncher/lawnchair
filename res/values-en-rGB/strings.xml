@@ -79,7 +79,7 @@
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Allows an app to add shortcuts without user intervention."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"uninstall shortcuts"</string>
     <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Allows the app to remove shortcuts without user intervention."</string>
-    <string name="permlab_read_settings" msgid="3452408290738106747">"read Home settings and short cuts"</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"read Home settings and shortcuts"</string>
     <string name="permdesc_read_settings" msgid="5788109303585403679">"Allows an app to read the settings and shortcuts in Home."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"write Home settings and shortcuts"</string>
     <string name="permdesc_write_settings" msgid="8530105489115785531">"Allows the app to change the settings and shortcuts in Home."</string>
