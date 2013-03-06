@@ -182,10 +182,6 @@ public class CellLayout extends ViewGroup {
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
-        // CellLayout guarantees its children are not laid out outside of its bounds,
-        // child clipping is thus unnecessary and disabling it offers better performance
-        // when we rotate the whole layout
-        setClipChildren(false);
         setClipToPadding(false);
         mLauncher = (Launcher) context;
 
