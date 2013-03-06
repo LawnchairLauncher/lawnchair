@@ -3456,8 +3456,8 @@ public final class Launcher extends Activity
         ActivityInfo defaultLauncher = getPackageManager().resolveActivity(launcherIntent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo;
         // Hide preferences if not on CyanogenMod or not default launcher
         // (in which case preferences don't get shown in system settings)
-        boolean preferencesVisible = getPackageManager().hasSystemFeature("com.cyanogenmod.android") ||
-                defaultLauncher.packageName.equals(getClass().getPackage().getName());
+        boolean preferencesVisible = !getPackageManager().hasSystemFeature("com.cyanogenmod.android") ||
+                !defaultLauncher.packageName.equals(getClass().getPackage().getName());
 
         boolean disabled = ViewConfiguration.get(this).hasPermanentMenuKey() || !preferencesVisible;
         overflowMenuButton.setVisibility(disabled ? View.GONE : View.VISIBLE);
