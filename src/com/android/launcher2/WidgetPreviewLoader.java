@@ -254,7 +254,7 @@ public class WidgetPreviewLoader {
     }
 
     static class WidgetPreviewCacheDb extends SQLiteOpenHelper {
-        final static int DB_VERSION = 1;
+        final static int DB_VERSION = 2;
         final static String DB_NAME = "widgetpreviews.db";
         final static String TABLE_NAME = "shortcut_and_widget_previews";
         final static String COLUMN_NAME = "name";
@@ -280,7 +280,10 @@ public class WidgetPreviewLoader {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            // We are still only on version 1
+            if (oldVersion != newVersion) {
+                // Delete all the records; they'll be repopulated as this is a cache
+                db.execSQL("DELETE FROM " + TABLE_NAME);
+            }
         }
     }
 
@@ -403,11 +406,6 @@ public class WidgetPreviewLoader {
     }
 
     public Bitmap generateWidgetPreview(AppWidgetProviderInfo info, Bitmap preview) {
-        // should just read what's in the DB, and return it
-        // what's the method that's used?
-        // going to have to track down more or less how the DB stuff works
-        // when you long click on something, we're going to have to load the bigger preview at that
-        // time (worry about it later)
         int[] cellSpans = Launcher.getSpanForWidget(mLauncher, info);
         int maxWidth = maxWidthForWidgetPreview(cellSpans[0]);
         int maxHeight = maxHeightForWidgetPreview(cellSpans[1]);
@@ -526,7 +524,7 @@ public class WidgetPreviewLoader {
             final Rect dest = mCachedAppWidgetPreviewDestRect.get();
             c.setBitmap(preview);
             src.set(0, 0, defaultPreview.getWidth(), defaultPreview.getHeight());
-            dest.set(x, 0, previewWidth, previewHeight);
+            dest.set(x, 0, x + previewWidth, previewHeight);
 
             Paint p = mCachedAppWidgetPreviewPaint.get();
             if (p == null) {
