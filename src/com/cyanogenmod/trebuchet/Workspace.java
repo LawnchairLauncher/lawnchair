@@ -2424,7 +2424,6 @@ public class Workspace extends PagedView
                     }
                 }
             }
-            buildPageHardwareLayers();
             anim.setStartDelay(delay);
         }
 
@@ -2444,6 +2443,7 @@ public class Workspace extends PagedView
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = true;
+        updateChildrenLayersEnabled(false);
         cancelScrollingIndicatorAnimations();
     }
 
