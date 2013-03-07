@@ -1700,7 +1700,6 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             }
-            buildPageHardwareLayers();
             anim.setStartDelay(delay);
         }
 
@@ -1720,6 +1719,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = true;
+        updateChildrenLayersEnabled(false);
         cancelScrollingIndicatorAnimations();
     }
 
