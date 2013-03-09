@@ -174,7 +174,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // It true, use a different slop parameter (pagingTouchSlop = 2 * touchSlop) for deciding
     // to switch to a new page
-    protected boolean mUsePagingTouchSlop = false;
+    protected boolean mUsePagingTouchSlop = true;
 
     // If true, the subclass should directly update scrollX itself in its computeScroll method
     protected boolean mDeferScrollUpdate = false;
@@ -1216,69 +1216,25 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 if (mUsePagingTouchSlop ? xPaged : xMoved) {
                     // Scroll if the user moved far enough along the X axis
                     mTouchState = TOUCH_STATE_SCROLLING;
+                    mTotalMotionX += Math.abs(mLastMotionX - x);
+                    mLastMotionX = x;
                     mLastMotionXRemainder = 0;
                     mTouchX = mScrollX;
                     pageBeginMoving();
-                    // Early scroll by starting as soon as we detect it's okay to scroll
-                    // instead of waiting for vsync.
-                    initiateScroll(ev);
                 }
             } else {
                 if (mUsePagingTouchSlop ? yPaged : yMoved) {
                     // Scroll if the user moved far enough along the X axis
                     mTouchState = TOUCH_STATE_SCROLLING;
+                    mTotalMotionY += Math.abs(mLastMotionY - y);
+                    mLastMotionY = y;
                     mLastMotionYRemainder = 0;
                     mTouchY = mScrollY;
                     pageBeginMoving();
-                    // Early scroll by starting as soon as we detect it's okay to scroll
-                    // instead of waiting for vsync.
-                    initiateScroll(ev);
                 }
             }
             // Either way, cancel any pending longpress
             cancelCurrentPageLongPress();
-        }
-    }
-
-    protected void initiateScroll(MotionEvent ev) {
-        final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-        final float x = ev.getX(pointerIndex);
-        final float deltaX = mLastMotionX + mLastMotionXRemainder - x;
-        final float y = ev.getY(pointerIndex);
-        final float deltaY = mLastMotionY + mLastMotionYRemainder - y;
-
-        mTotalMotionX += Math.abs(deltaX);
-        mTotalMotionY += Math.abs(deltaY);
-
-        // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
-        // keep the remainder because we are actually testing if we've moved from the last
-        // scrolled position (which is discrete).
-        if (Math.abs(!mVertical ? deltaX : deltaY) >= 1.0f) {
-            if (!mVertical) {
-                mTouchX += deltaX;
-                mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-                if (!mDeferScrollUpdate) {
-                    scrollBy((int) deltaX, 0);
-                    if (DEBUG) Log.d(TAG, "onTouchEvent().Scrolling: " + deltaX);
-                } else {
-                    invalidate();
-                }
-                mLastMotionX = x;
-                mLastMotionXRemainder = deltaX - (int) deltaX;
-            } else {
-                mTouchY += deltaY;
-                mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-                if (!mDeferScrollUpdate) {
-                    scrollBy(0, (int) deltaY);
-                    if (DEBUG) Log.d(TAG, "onTouchEvent().Scrolling: " + deltaY);
-                } else {
-                    invalidate();
-                }
-                mLastMotionY = y;
-                mLastMotionYRemainder =- deltaY - (int) deltaY;
-            }
-        } else {
-            awakenScrollBars();
         }
     }
 
@@ -1433,7 +1389,45 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         case MotionEvent.ACTION_MOVE:
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 // Scroll to follow the motion event
-                initiateScroll(ev);
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                final float x = ev.getX(pointerIndex);
+                final float deltaX = mLastMotionX + mLastMotionXRemainder - x;
+                final float y = ev.getY(pointerIndex);
+                final float deltaY = mLastMotionY + mLastMotionYRemainder - y;
+
+                mTotalMotionX += Math.abs(deltaX);
+                mTotalMotionY += Math.abs(deltaY);
+
+                // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
+                // keep the remainder because we are actually testing if we've moved from the last
+                // scrolled position (which is discrete).
+                if (Math.abs(!mVertical ? deltaX : deltaY) >= 1.0f) {
+                    if (!mVertical) {
+                        mTouchX += deltaX;
+                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+                        if (!mDeferScrollUpdate) {
+                            scrollBy((int) deltaX, 0);
+                            if (DEBUG) Log.d(TAG, "onTouchEvent().Scrolling: " + deltaX);
+                        } else {
+                            invalidate();
+                        }
+                        mLastMotionX = x;
+                        mLastMotionXRemainder = deltaX - (int) deltaX;
+                    } else {
+                        mTouchY += deltaY;
+                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+                        if (!mDeferScrollUpdate) {
+                            scrollBy(0, (int) deltaY);
+                            if (DEBUG) Log.d(TAG, "onTouchEvent().Scrolling: " + deltaY);
+                        } else {
+                            invalidate();
+                        }
+                        mLastMotionY = y;
+                        mLastMotionYRemainder = deltaY - (int) deltaY;
+                    }
+                } else {
+                    awakenScrollBars();
+                }
             } else {
                 determineScrollingStart(ev);
             }
