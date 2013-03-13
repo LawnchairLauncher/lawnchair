@@ -434,7 +434,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
                     newHeight);
             PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", lp.x, newX);
             PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", lp.y, newY);
-            ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(lp, width, height, x, y);
+            ObjectAnimator oa =
+                    LauncherAnimUtils.ofPropertyValuesHolder(lp, this, width, height, x, y);
             ObjectAnimator leftOa = LauncherAnimUtils.ofFloat(mLeftHandle, "alpha", 1.0f);
             ObjectAnimator rightOa = LauncherAnimUtils.ofFloat(mRightHandle, "alpha", 1.0f);
             ObjectAnimator topOa = LauncherAnimUtils.ofFloat(mTopHandle, "alpha", 1.0f);

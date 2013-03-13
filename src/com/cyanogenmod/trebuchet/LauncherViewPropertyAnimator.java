@@ -19,6 +19,7 @@ package com.cyanogenmod.trebuchet;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.view.ViewPropertyAnimator;
 import android.view.View;
 
@@ -125,6 +126,12 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public void onAnimationStart(Animator animation) {
+	// This is the first time we get a handle to the internal ValueAnimator
+	// used by the ViewPropertyAnimator.
+	// FirstFrameAnimatorHelper hooks itself up to the updates on the animator,
+	// and then adjusts the play time to keep the first two frames jank-free
+        new FirstFrameAnimatorHelper((ValueAnimator) animation, mTarget)
+                .onAnimationUpdate((ValueAnimator) animation);
         for (int i = 0; i < mListeners.size(); i++) {
             Animator.AnimatorListener listener = mListeners.get(i);
             listener.onAnimationStart(this);

@@ -305,11 +305,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     final AnimatorSet animSet = LauncherAnimUtils.createAnimatorSet();
                     animSet.playTogether(outAnim, inAnim);
                     animSet.setDuration(duration);
-                    post(new Runnable() {
-                        public void run() {
-                            animSet.start();
-                        }
-                    });
+                    animSet.start();
                 }
             });
         }

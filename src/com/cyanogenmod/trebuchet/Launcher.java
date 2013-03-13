@@ -1429,7 +1429,7 @@ public final class Launcher extends Activity
         filter.addAction(Intent.ACTION_USER_PRESENT);
         filter.addAction(Intent.ACTION_SET_WALLPAPER);
         registerReceiver(mReceiver, filter);
-
+        FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
         mVisible = true;
     }
@@ -1458,10 +1458,9 @@ public final class Launcher extends Activity
                 final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
                 // We want to let Launcher draw itself at least once before we force it to build
                 // layers on all the workspace pages, so that transitioning to Launcher from other
-                // apps is nice and speedy. Usually the first call to preDraw doesn't correspond to
-                // a true draw so we wait until the second preDraw call to be safe
-                observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                    public boolean onPreDraw() {
+                // apps is nice and speedy.
+                observer.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+                    public void onDraw() {
                         // We delay the layer building a bit in order to give
                         // other message processing a time to run.  In particular
                         // this avoids a delay in hiding the IME if it was
@@ -1469,8 +1468,8 @@ public final class Launcher extends Activity
                         // some communication back with the app.
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
 
-                        observer.removeOnPreDrawListener(this);
-                        return true;
+                        observer.removeOnDrawListener(this);
+                        return;
                     }
                 });
             }
@@ -2848,6 +2847,7 @@ public final class Launcher extends Activity
      */
     private void showAppsCustomizeHelper(final boolean animated, final boolean springLoaded) {
         if (mStateAnimation != null) {
+            mStateAnimation.setDuration(0);
             mStateAnimation.cancel();
             mStateAnimation = null;
         }
@@ -2878,7 +2878,7 @@ public final class Launcher extends Activity
 
             toView.setVisibility(View.VISIBLE);
             toView.setAlpha(0f);
-            final ObjectAnimator alphaAnim = ObjectAnimator
+            final ObjectAnimator alphaAnim = LauncherAnimUtils
                 .ofFloat(toView, "alpha", 0f, 1f)
                 .setDuration(fadeDuration);
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
@@ -2943,7 +2943,6 @@ public final class Launcher extends Activity
             }
 
             boolean delayAnim = false;
-            final ViewTreeObserver observer;
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
@@ -2953,10 +2952,7 @@ public final class Launcher extends Activity
             if ((toView.getContent().getMeasuredWidth() == 0) ||
                     (mWorkspace.getMeasuredWidth() == 0) ||
                     (toView.getMeasuredWidth() == 0)) {
-                observer = mWorkspace.getViewTreeObserver();
                 delayAnim = true;
-            } else {
-                observer = null;
             }
 
             final AnimatorSet stateAnimation = mStateAnimation;
@@ -2969,25 +2965,17 @@ public final class Launcher extends Activity
                     setPivotsForZoom(toView);
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
-                    toView.post(new Runnable() {
-                        public void run() {
-                            // Check that mStateAnimation hasn't changed while
-                            // we waited for a layout/draw pass
-                            if (mStateAnimation != stateAnimation)
-                                return;
-                            mStateAnimation.start();
-                        }
-                    });
+                    LauncherAnimUtils.startAnimationAfterNextDraw(mStateAnimation, toView);
                 }
             };
             if (delayAnim) {
-                final OnGlobalLayoutListener delayedStart = new OnGlobalLayoutListener() {
-                    public void onGlobalLayout() {
-                        toView.post(startAnimRunnable);
-                        observer.removeOnGlobalLayoutListener(this);
-                    }
-                };
-                observer.addOnGlobalLayoutListener(delayedStart);
+                final ViewTreeObserver observer = toView.getViewTreeObserver();
+                observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+                        public void onGlobalLayout() {
+                            startAnimRunnable.run();
+                            toView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    });
             } else {
                 startAnimRunnable.run();
             }
@@ -3028,6 +3016,7 @@ public final class Launcher extends Activity
             final Runnable onCompleteRunnable) {
 
         if (mStateAnimation != null) {
+            mStateAnimation.setDuration(0);
             mStateAnimation.cancel();
             mStateAnimation = null;
         }
@@ -3062,7 +3051,7 @@ public final class Launcher extends Activity
                 setDuration(duration).
                 setInterpolator(new Workspace.ZoomInInterpolator());
 
-            final ObjectAnimator alphaAnim = ObjectAnimator
+            final ObjectAnimator alphaAnim = LauncherAnimUtils
                 .ofFloat(fromView, "alpha", 1f, 0f)
                 .setDuration(fadeOutDuration);
             alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -3105,14 +3094,7 @@ public final class Launcher extends Activity
             }
             dispatchOnLauncherTransitionStart(fromView, animated, true);
             dispatchOnLauncherTransitionStart(toView, animated, true);
-            final Animator stateAnimation = mStateAnimation;
-            mWorkspace.post(new Runnable() {
-                public void run() {
-                    if (stateAnimation != mStateAnimation)
-                        return;
-                    mStateAnimation.start();
-                }
-            });
+            LauncherAnimUtils.startAnimationAfterNextDraw(mStateAnimation, toView);
         } else {
             fromView.setVisibility(View.GONE);
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);

@@ -239,7 +239,7 @@ public class CellLayout extends ViewGroup {
 
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
-                new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
+                new InterruptibleInOutAnimator(this, duration, fromAlphaValue, toAlphaValue);
             anim.getAnimator().setInterpolator(mEaseOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
@@ -1146,7 +1146,7 @@ public class CellLayout extends ViewGroup {
                 return true;
             }
 
-            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
@@ -2336,7 +2336,7 @@ public class CellLayout extends ViewGroup {
             if (finalDeltaX == 0 && finalDeltaY == 0) {
                 return;
             }
-            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
             a = va;
             va.setRepeatMode(ValueAnimator.REVERSE);
             va.setRepeatCount(ValueAnimator.INFINITE);
