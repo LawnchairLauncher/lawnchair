@@ -77,7 +77,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         // Enable the hw layers before the animation starts (will be disabled in the onAnimationEnd
         // callback below)
         v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        v.buildLayer();
     }
 
     private void setupAnimation(ObjectAnimator anim, final View v) {

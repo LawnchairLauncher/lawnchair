@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.view.View;
 
 /**
  * A convenience class for two-way animations, e.g. a fadeIn/fadeOut animation.
@@ -44,8 +45,8 @@ public class InterruptibleInOutAnimator {
     // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
     private int mDirection = STOPPED;
 
-    public InterruptibleInOutAnimator(long duration, float fromValue, float toValue) {
-        mAnimator = LauncherAnimUtils.ofFloat(fromValue, toValue).setDuration(duration);
+    public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
+        mAnimator = LauncherAnimUtils.ofFloat(view, fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;

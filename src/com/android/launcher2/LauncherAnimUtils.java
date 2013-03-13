@@ -21,6 +21,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import java.util.HashSet;
 
@@ -47,6 +49,22 @@ public class LauncherAnimUtils {
         a.addListener(sEndAnimListener);
     }
 
+    // Helper method. Assumes a draw is pending, and that if the animation's duration is 0
+    // it should be cancelled
+    public static void startAnimationAfterNextDraw(final Animator animator, final View view) {
+        final ViewTreeObserver observer = view.getViewTreeObserver();
+        observer.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+                public void onDraw() {
+                    // Use this as a signal that the animation was cancelled
+                    if (animator.getDuration() == 0) {
+                        return;
+                    }
+                    animator.start();
+                    view.getViewTreeObserver().removeOnDrawListener(this);
+                }
+            });
+    }
+
     public static void onDestroyActivity() {
         HashSet<Animator> animators = new HashSet<Animator>(sAnimators);
         for (Animator a : animators) {
@@ -64,28 +82,40 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static ValueAnimator ofFloat(float... values) {
+    public static ValueAnimator ofFloat(View target, float... values) {
         ValueAnimator anim = new ValueAnimator();
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);
         return anim;
     }
 
-    public static ObjectAnimator ofFloat(Object target, String propertyName, float... values) {
+    public static ObjectAnimator ofFloat(View target, String propertyName, float... values) {
         ObjectAnimator anim = new ObjectAnimator();
         anim.setTarget(target);
         anim.setPropertyName(propertyName);
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);
+        new FirstFrameAnimatorHelper(anim, target);
         return anim;
     }
 
-    public static ObjectAnimator ofPropertyValuesHolder(Object target,
+    public static ObjectAnimator ofPropertyValuesHolder(View target,
             PropertyValuesHolder... values) {
         ObjectAnimator anim = new ObjectAnimator();
         anim.setTarget(target);
         anim.setValues(values);
         cancelOnDestroyActivity(anim);
+        new FirstFrameAnimatorHelper(anim, target);
+        return anim;
+    }
+
+    public static ObjectAnimator ofPropertyValuesHolder(Object target,
+            View view, PropertyValuesHolder... values) {
+        ObjectAnimator anim = new ObjectAnimator();
+        anim.setTarget(target);
+        anim.setValues(values);
+        cancelOnDestroyActivity(anim);
+        new FirstFrameAnimatorHelper(anim, view);
         return anim;
     }
 }
