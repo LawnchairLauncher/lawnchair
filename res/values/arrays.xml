@@ -42,7 +42,7 @@
         <item>Spin</item>
         <item>Flip</item>
         <item>Stack</item>
-        <item>Accordian</item>
+        <item>Accordion</item>
     </string-array>
     <string-array name="preferences_interface_homescreen_scrolling_transition_effect_values" translatable="false">
         <item>Standard</item>
@@ -58,7 +58,7 @@
         <item>Spin</item>
         <item>Flip</item>
         <item>Stack</item>
-        <item>Accordian</item>
+        <item>Accordion</item>
     </string-array>
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
         <item>Standard</item>
@@ -74,7 +74,7 @@
         <item>Spin</item>
         <item>Flip</item>
         <item>Stack</item>
-        <item>Accordian</item>
+        <item>Accordion</item>
     </string-array>
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_values" translatable="false">
         <item>Standard</item>
@@ -90,7 +90,7 @@
         <item>Spin</item>
         <item>Flip</item>
         <item>Stack</item>
-        <item>Accordian</item>
+        <item>Accordion</item>
     </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Top/Left</item>
