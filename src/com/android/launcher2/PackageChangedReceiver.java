@@ -13,6 +13,7 @@ public class PackageChangedReceiver extends BroadcastReceiver {
             // they sent us a bad intent
             return;
         }
-        WidgetPreviewLoader.removeFromDb(context, packageName);
+        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+        WidgetPreviewLoader.removeFromDb(app.getWidgetPreviewCacheDb(), packageName);
     }
 }
