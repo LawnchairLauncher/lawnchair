@@ -67,7 +67,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+<<<<<<< HEAD:src/com/cyanogenmod/trebuchet/Launcher.java
 import android.os.UserHandle;
+=======
+import android.os.UserManager;
+>>>>>>> e233a8b... Hide clings in child mode:src/com/android/launcher2/Launcher.java
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -4269,8 +4273,17 @@ public final class Launcher extends Activity
     /* Cling related */
     private boolean isClingsEnabled() {
         // disable clings when running in a test harness
-        return !ActivityManager.isRunningInTestHarness();
+        if(ActivityManager.isRunningInTestHarness()) return false;
 
+        // Restricted secondary users (child mode) will potentially have very few apps
+        // seeded when they start up for the first time. Clings won't work well with that
+        boolean supportsRestrictedUsers =
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+        if (supportsRestrictedUsers) {
+            final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
+            if (um.isUserRestricted()) return false;
+        }
+        return true;
     }
 
     private Cling initCling(int clingId, int[] positionData, boolean animate, int delay) {
