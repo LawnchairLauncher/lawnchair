@@ -129,7 +129,7 @@ public class WidgetPreviewLoader {
 
     private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
 
-    private WidgetPreviewCacheDb mDb;
+    private CacheDb mDb;
 
     private HashMap<String, WeakReference<Bitmap>> mLoadedPreviews;
     private ArrayList<SoftReference<Bitmap>> mUnusedBitmaps;
@@ -143,8 +143,9 @@ public class WidgetPreviewLoader {
         mContext = mLauncher = launcher;
         mPackageManager = mContext.getPackageManager();
         mAppIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.app_icon_size);
-        mIconCache = ((LauncherApplication) launcher.getApplicationContext()).getIconCache();
-        mDb = new WidgetPreviewCacheDb(mContext);
+        LauncherApplication app = (LauncherApplication) launcher.getApplicationContext();
+        mIconCache = app.getIconCache();
+        mDb = app.getWidgetPreviewCacheDb();
         mLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();
         mUnusedBitmaps = new ArrayList<SoftReference<Bitmap>>();
     }
@@ -253,7 +254,7 @@ public class WidgetPreviewLoader {
         }
     }
 
-    static class WidgetPreviewCacheDb extends SQLiteOpenHelper {
+    static class CacheDb extends SQLiteOpenHelper {
         final static int DB_VERSION = 2;
         final static String DB_NAME = "widgetpreviews.db";
         final static String TABLE_NAME = "shortcut_and_widget_previews";
@@ -262,7 +263,7 @@ public class WidgetPreviewLoader {
         final static String COLUMN_PREVIEW_BITMAP = "preview_bitmap";
         Context mContext;
 
-        public WidgetPreviewCacheDb(Context context) {
+        public CacheDb(Context context) {
             super(context, new File(context.getCacheDir(), DB_NAME).getPath(), null, DB_VERSION);
             // Store the context for later use
             mContext = context;
@@ -325,24 +326,24 @@ public class WidgetPreviewLoader {
         SQLiteDatabase db = mDb.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(WidgetPreviewCacheDb.COLUMN_NAME, name);
+        values.put(CacheDb.COLUMN_NAME, name);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         preview.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        values.put(WidgetPreviewCacheDb.COLUMN_PREVIEW_BITMAP, stream.toByteArray());
-        values.put(WidgetPreviewCacheDb.COLUMN_SIZE, mSize);
-        db.insert(WidgetPreviewCacheDb.TABLE_NAME, null, values);
+        values.put(CacheDb.COLUMN_PREVIEW_BITMAP, stream.toByteArray());
+        values.put(CacheDb.COLUMN_SIZE, mSize);
+        db.insert(CacheDb.TABLE_NAME, null, values);
     }
 
-    public static void removeFromDb(final Context mContext, final String packageName) {
+    public static void removeFromDb(final CacheDb cacheDb, final String packageName) {
         synchronized(sInvalidPackages) {
             sInvalidPackages.add(packageName);
         }
         new AsyncTask<Void, Void, Void>() {
             public Void doInBackground(Void ... args) {
-                SQLiteDatabase db = new WidgetPreviewCacheDb(mContext).getWritableDatabase();
-                db.delete(WidgetPreviewCacheDb.TABLE_NAME,
-                        WidgetPreviewCacheDb.COLUMN_NAME + " LIKE ? OR " +
-                        WidgetPreviewCacheDb.COLUMN_NAME + " LIKE ?", // SELECT query
+                SQLiteDatabase db = cacheDb.getWritableDatabase();
+                db.delete(CacheDb.TABLE_NAME,
+                        CacheDb.COLUMN_NAME + " LIKE ? OR " +
+                        CacheDb.COLUMN_NAME + " LIKE ?", // SELECT query
                         new String[] {
                             WIDGET_PREFIX + packageName + "/%",
                             SHORTCUT_PREFIX + packageName + "/%"} // args to SELECT query
@@ -364,12 +365,12 @@ public class WidgetPreviewLoader {
 
     private Bitmap readFromDb(String name, Bitmap b) {
         if (mCachedSelectQuery == null) {
-            mCachedSelectQuery = WidgetPreviewCacheDb.COLUMN_NAME + " = ? AND " +
-                    WidgetPreviewCacheDb.COLUMN_SIZE + " = ?";
+            mCachedSelectQuery = CacheDb.COLUMN_NAME + " = ? AND " +
+                    CacheDb.COLUMN_SIZE + " = ?";
         }
         SQLiteDatabase db = mDb.getReadableDatabase();
-        Cursor result = db.query(WidgetPreviewCacheDb.TABLE_NAME,
-                new String[] { WidgetPreviewCacheDb.COLUMN_PREVIEW_BITMAP }, // cols to return
+        Cursor result = db.query(CacheDb.TABLE_NAME,
+                new String[] { CacheDb.COLUMN_PREVIEW_BITMAP }, // cols to return
                 mCachedSelectQuery, // select query
                 new String[] { name, mSize }, // args to select query
                 null,

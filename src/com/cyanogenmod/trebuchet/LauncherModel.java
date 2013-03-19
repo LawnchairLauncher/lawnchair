@@ -2120,26 +2120,33 @@ public class LauncherModel extends BroadcastReceiver {
             final Context context = mApp;
 
             final String[] packages = mPackages;
+            final int N = packages.length;
             switch (mOp) {
                 case OP_ADD:
-                    for (String p : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + p);
-                        mBgAllAppsList.addPackage(context, p);
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
+                        mBgAllAppsList.addPackage(context, packages[i]);
                     }
                     break;
                 case OP_UPDATE:
-                    for (String p : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + p);
-                        mBgAllAppsList.updatePackage(context, p);
-                        WidgetPreviewLoader.removeFromDb(context, p);
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
+                        mBgAllAppsList.updatePackage(context, packages[i]);
+                        LauncherApplication app =
+                                (LauncherApplication) context.getApplicationContext();
+                        WidgetPreviewLoader.removeFromDb(
+                                app.getWidgetPreviewCacheDb(), packages[i]);
                     }
                     break;
                 case OP_REMOVE:
                 case OP_UNAVAILABLE:
-                    for (String p : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + p);
-                        mBgAllAppsList.removePackage(p);
-                        WidgetPreviewLoader.removeFromDb(context, p);
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
+                        mBgAllAppsList.removePackage(packages[i]);
+                        LauncherApplication app =
+                                (LauncherApplication) context.getApplicationContext();
+                        WidgetPreviewLoader.removeFromDb(
+                                app.getWidgetPreviewCacheDb(), packages[i]);
                     }
                     break;
             }
