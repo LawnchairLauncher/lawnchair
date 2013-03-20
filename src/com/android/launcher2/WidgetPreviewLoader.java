@@ -348,19 +348,12 @@ public class WidgetPreviewLoader {
                             WIDGET_PREFIX + packageName + "/%",
                             SHORTCUT_PREFIX + packageName + "/%"} // args to SELECT query
                             );
-                db.close();
                 synchronized(sInvalidPackages) {
                     sInvalidPackages.remove(packageName);
                 }
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-    }
-
-    public void closeDb()  {
-        if (mDb != null) {
-            mDb.close();
-        }
     }
 
     private Bitmap readFromDb(String name, Bitmap b) {
