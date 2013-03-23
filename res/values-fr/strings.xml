@@ -147,7 +147,7 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rangées</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Colonnes</string>
     <string name="preferences_interface_homescreen_general_screens_title">Écrans d\'accueil</string>
-    <string name="preferences_interface_homescreen_general_screens_summary">Nombre de pages sur l\'écran d\'accueil</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Nombre d\'écrans d\'accueil</string>
     <string name="preferences_interface_homescreen_general_default_screen_title">Écran par défaut</string>
     <string name="preferences_interface_homescreen_general_default_screen_summary">Sélectionnez l\'écran par défaut</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Étendre l\'écran</string>
