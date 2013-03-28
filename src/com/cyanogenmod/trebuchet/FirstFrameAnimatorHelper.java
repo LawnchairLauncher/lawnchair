@@ -60,7 +60,7 @@ public class FirstFrameAnimatorHelper implements ValueAnimator.AnimatorUpdateLis
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
     }
 
-    public void onAnimationUpdate(ValueAnimator animation) {
+    public void onAnimationUpdate(final ValueAnimator animation) {
         if (mStartTime == -1) {
             mStartFrame = sGlobalFrameCounter;
             mStartTime = System.currentTimeMillis();
@@ -86,7 +86,11 @@ public class FirstFrameAnimatorHelper implements ValueAnimator.AnimatorUpdateLis
                 mAdjustedSecondFrameTime = true;
             } else {
                 if (frameNum > 1) {
-                    animation.removeUpdateListener(this);
+                    mTarget.post(new Runnable() {
+                            public void run() {
+                                animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
+                            }
+                        });
                 }
                 if (DEBUG) print(animation);
             }
