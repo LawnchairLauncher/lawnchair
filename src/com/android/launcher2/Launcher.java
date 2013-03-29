@@ -63,6 +63,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.os.UserManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -3686,6 +3687,14 @@ public final class Launcher extends Activity
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 
+        // Restricted secondary users (child mode) will potentially have very few apps
+        // seeded when they start up for the first time. Clings won't work well with that
+        boolean supportsRestrictedUsers =
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+        if (supportsRestrictedUsers) {
+            final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
+            if (um.isUserRestricted()) return false;
+        }
         return true;
     }
 
