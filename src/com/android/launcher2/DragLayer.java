@@ -742,6 +742,13 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         invalidate();
     }
 
+    /**
+     * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
+     */
+    private boolean isLayoutRtl() {
+        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -753,8 +760,9 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             getDescendantRectRelativeToSelf(workspace.getChildAt(0), childRect);
 
             int page = workspace.getNextPage();
-            CellLayout leftPage = (CellLayout) workspace.getChildAt(page - 1);
-            CellLayout rightPage = (CellLayout) workspace.getChildAt(page + 1);
+            final boolean isRtl = isLayoutRtl();
+            CellLayout leftPage = (CellLayout) workspace.getChildAt(isRtl ? page + 1 : page - 1);
+            CellLayout rightPage = (CellLayout) workspace.getChildAt(isRtl ? page - 1 : page + 1);
 
             if (leftPage != null && leftPage.getIsDragOverlapping()) {
                 mLeftHoverDrawable.setBounds(0, childRect.top,

@@ -998,6 +998,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void syncAppsPageItems(int page, boolean immediate) {
         // ensure that we have the right number of items on the pages
+        final boolean isRtl = isLayoutRtl();
         int numCells = mCellCountX * mCellCountY;
         int startIndex = page * numCells;
         int endIndex = Math.min(startIndex + numCells, mApps.size());
@@ -1019,6 +1020,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int index = i - startIndex;
             int x = index % mCellCountX;
             int y = index / mCellCountX;
+            if (isRtl) {
+                x = mCellCountX - x - 1;
+            }
             layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
 
             items.add(info);
