@@ -937,7 +937,7 @@ public class Workspace extends PagedView
             if (isSmall()) {
                 // If we are in springloaded mode, then force an event to check if the current touch
                 // is under a new page (to scroll to)
-                mDragController.forceMoveEvent();
+                mDragController.forceTouchMove();
             }
         } else {
             // If we are not mid-dragging, hide the page outlines
