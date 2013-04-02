@@ -516,22 +516,26 @@ public class DragController {
         mLastTouch[0] = x;
         mLastTouch[1] = y;
         final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
+        final DragLayer dragLayer = mLauncher.getDragLayer();
+        final boolean isRtl = (dragLayer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+        final int forwardDirection = isRtl ? SCROLL_RIGHT : SCROLL_LEFT;
+        final int backwardsDirection = isRtl ? SCROLL_LEFT : SCROLL_RIGHT;
 
         if (x < mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
-                if (mDragScroller.onEnterScrollArea(x, y, SCROLL_LEFT)) {
-                    mLauncher.getDragLayer().onEnterScrollArea(SCROLL_LEFT);
-                    mScrollRunnable.setDirection(SCROLL_LEFT);
+                if (mDragScroller.onEnterScrollArea(x, y, forwardDirection)) {
+                    dragLayer.onEnterScrollArea(forwardDirection);
+                    mScrollRunnable.setDirection(forwardDirection);
                     mHandler.postDelayed(mScrollRunnable, delay);
                 }
             }
         } else if (x > mScrollView.getWidth() - mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
-                if (mDragScroller.onEnterScrollArea(x, y, SCROLL_RIGHT)) {
-                    mLauncher.getDragLayer().onEnterScrollArea(SCROLL_RIGHT);
-                    mScrollRunnable.setDirection(SCROLL_RIGHT);
+                if (mDragScroller.onEnterScrollArea(x, y, backwardsDirection)) {
+                    dragLayer.onEnterScrollArea(backwardsDirection);
+                    mScrollRunnable.setDirection(backwardsDirection);
                     mHandler.postDelayed(mScrollRunnable, delay);
                 }
             }
