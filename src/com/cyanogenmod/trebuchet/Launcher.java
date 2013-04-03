@@ -264,6 +264,8 @@ public final class Launcher extends Activity
     private boolean mWaitingForResult;
     private boolean mOnResumeNeedsLoad;
 
+    private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
+
     // Keep track of whether the user has left launcher
     private static boolean sPausedFromUserAction = false;
 
@@ -793,6 +795,12 @@ public final class Launcher extends Activity
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
+        // We might have postponed some bind calls until onResume (see waitUntilResume) --
+        // execute them here
+        for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
+            mOnResumeCallbacks.get(i).run();
+        }
+        mOnResumeCallbacks.clear();
 
         // Reset the pressed state of icons that were locked in the press state while activities
         // were launching
@@ -3624,6 +3632,30 @@ public final class Launcher extends Activity
     }
 
     /**
+     * If the activity is currently paused, signal that we need to run the passed Runnable
+     * in onResume.
+     *
+     * This needs to be called from incoming places where resources might have been loaded
+     * while we are paused.  That is becaues the Configuration might be wrong
+     * when we're not running, and if it comes back to what it was when we
+     * were paused, we are not restarted.
+     *
+     * Implementation of the method from LauncherModel.Callbacks.
+     *
+     * @return true if we are currently paused.  The caller might be able to
+     * skip some work in that case since we will come back again.
+     */
+    private boolean waitUntilResume(Runnable run) {
+        if (mPaused) {
+            Log.i(TAG, "Deferring update until onResume");
+            mOnResumeCallbacks.add(run);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * If the activity is currently paused, signal that we need to re-run the loader
      * in onResume.
      *
@@ -3664,8 +3696,12 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
-        final Workspace workspace = mWorkspace;
+        // If we're starting binding all over again, clear any bind calls we'd postponed in
+        // the past (see waitUntilResume) -- we don't need them since we're starting binding
+        // from scratch again
+        mOnResumeCallbacks.clear();
 
+        final Workspace workspace = mWorkspace;
         mNewShortcutAnimatePage = -1;
         mNewShortcutAnimateViews.clear();
         mWorkspace.clearDropTargets();
@@ -3686,8 +3722,14 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end) {
-        setLoadOnResume();
+    public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end) {
+        if (waitUntilResume(new Runnable() {
+                public void run() {
+                    bindItems(shortcuts, start, end);
+                }
+            })) {
+            return;
+        }
 
         // Get the list of added shortcuts and intersect them with the set of shortcuts here
         Set<String> newApps = new HashSet<String>();
@@ -3747,8 +3789,14 @@ public final class Launcher extends Activity
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindFolders(HashMap<Long, FolderInfo> folders) {
-        setLoadOnResume();
+    public void bindFolders(final HashMap<Long, FolderInfo> folders) {
+        if (waitUntilResume(new Runnable() {
+                public void run() {
+                    bindFolders(folders);
+                }
+            })) {
+            return;
+        }
         sFolders.clear();
         sFolders.putAll(folders);
     }
@@ -3758,8 +3806,14 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppWidget(LauncherAppWidgetInfo item) {
-        setLoadOnResume();
+    public void bindAppWidget(final LauncherAppWidgetInfo item) {
+        if (waitUntilResume(new Runnable() {
+                public void run() {
+                    bindAppWidget(item);
+                }
+            })) {
+            return;
+        }
 
         final long start = DEBUG_WIDGETS ? SystemClock.uptimeMillis() : 0;
         if (DEBUG_WIDGETS) {
@@ -3800,8 +3854,13 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems() {
-        setLoadOnResume();
-
+        if (waitUntilResume(new Runnable() {
+                public void run() {
+                    finishBindingItems();
+                }
+            })) {
+            return;
+        }
         if (mSavedState != null) {
             if (!mWorkspace.hasFocus()) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
@@ -3985,8 +4044,15 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
-        setLoadOnResume();
+    public void bindAppsAdded(final ArrayList<ApplicationInfo> apps) {
+        if (waitUntilResume(new Runnable() {
+                public void run() {
+                    bindAppsAdded(apps);
+                }
+            })) {
+            return;
+        }
+
 
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(apps);
@@ -3998,8 +4064,15 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsUpdated(ArrayList<ApplicationInfo> apps) {
-        setLoadOnResume();
+    public void bindAppsUpdated(final ArrayList<ApplicationInfo> apps) {
+        if (waitUntilResume(new Runnable() {
+                public void run() {
+                    bindAppsUpdated(apps);
+                }
+            })) {
+            return;
+        }
+
         if (mWorkspace != null) {
             mWorkspace.updateShortcuts(apps);
         }
