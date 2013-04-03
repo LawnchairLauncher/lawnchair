@@ -247,6 +247,8 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_enabled_title">Aktivieren</string>
+    <string name="preferences_interface_dock_enabled_summary">Dock anzeigen</string>
     <string name="preferences_interface_dock_pages_title">Seiten</string>
     <string name="preferences_interface_dock_pages_summary">Anzahl der Seiten im Dock</string>
     <string name="preferences_interface_dock_default_page_title">Standardseite</string>
