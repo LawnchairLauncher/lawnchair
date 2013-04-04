@@ -1272,15 +1272,22 @@ public final class Launcher extends Activity
                 // layers on all the workspace pages, so that transitioning to Launcher from other
                 // apps is nice and speedy.
                 observer.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+                    private boolean mStarted = false;
                     public void onDraw() {
+                        if (mStarted) return;
+                        mStarted = true;
                         // We delay the layer building a bit in order to give
                         // other message processing a time to run.  In particular
                         // this avoids a delay in hiding the IME if it was
                         // currently shown, because doing that may involve
                         // some communication back with the app.
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
-
-                        observer.removeOnDrawListener(this);
+                        final ViewTreeObserver.OnDrawListener listener = this;
+                        mWorkspace.post(new Runnable() {
+                                public void run() {
+                                    mWorkspace.getViewTreeObserver().removeOnDrawListener(listener);
+                                }
+                            });
                         return;
                     }
                 });
