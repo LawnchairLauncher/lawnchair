@@ -56,7 +56,9 @@ public class Hotseat extends PagedView {
 
         int hotseatPages = PreferencesProvider.Interface.Dock.getNumberPages();
         int defaultPage = PreferencesProvider.Interface.Dock.getDefaultPage(hotseatPages / 2);
-
+        if (defaultPage >= hotseatPages) {
+            defaultPage = hotseatPages / 2;
+        }
 
         mCurrentPage = defaultPage;
 
