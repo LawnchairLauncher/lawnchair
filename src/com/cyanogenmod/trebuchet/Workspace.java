@@ -112,7 +112,8 @@ public class Workspace extends PagedView
     private final WallpaperManager mWallpaperManager;
     private boolean mWallpaperHack;
     private Bitmap mWallpaperBitmap;
-    private float mWallpaperScroll;
+    private float mWallpaperScrollX;
+    private float mWallpaperScrollY;
     private int[] mWallpaperOffsets = new int[2];
     private Paint mPaint = new Paint();
     private IBinder mWindowToken;
@@ -555,7 +556,7 @@ public class Workspace extends PagedView
     }
 
     protected void checkWallpaper() {
-        if (mWallpaperHack) {
+        if (mWallpaperHack && mNumberHomescreens > 1) {
             if (mWallpaperBitmap != null) {
                 mWallpaperBitmap = null;
             }
@@ -573,7 +574,7 @@ public class Workspace extends PagedView
     }
 
     public boolean isRenderingWallpaper() {
-        return mWallpaperHack && mWallpaperBitmap != null;
+        return mWallpaperHack && mNumberHomescreens > 1 && mWallpaperBitmap != null;
     }
 
     @Override
@@ -908,7 +909,7 @@ public class Workspace extends PagedView
         // Show the scroll indicator as you pan the page
         showScrollingIndicator(false);
 
-        if (mScrollWallpaper && mWallpaperHack && mWallpaperBitmap != null) {
+        if (mScrollWallpaper && isRenderingWallpaper()) {
             mLauncher.setWallpaperVisibility(false);
         }
     }
@@ -954,10 +955,10 @@ public class Workspace extends PagedView
         }
 
         // Update wallpaper offsets to match hack (for recent apps window)
-        if (mScrollWallpaper && mWallpaperHack && mWallpaperBitmap != null) {
+        if (mScrollWallpaper && isRenderingWallpaper()) {
             mLauncher.setWallpaperVisibility(true);
             mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
-            mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
+            mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScrollX, mWallpaperScrollY);
         }
     }
 
@@ -1087,9 +1088,10 @@ public class Workspace extends PagedView
     }
 
     private void centerWallpaperOffset() {
-        mWallpaperScroll = 0.5f;
+        mWallpaperScrollX = 0.5f;
+        mWallpaperScrollY = 0.5f;
         if (mWindowToken != null) {
-            mWallpaperManager.setWallpaperOffsets(mWindowToken, 0.5f, 0);
+            mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScrollX, mWallpaperScrollY);
         }
     }
 
@@ -1109,9 +1111,10 @@ public class Workspace extends PagedView
             updateNow = keepUpdating = mWallpaperInterpolator.computeScrollOffset();
         }
         if (updateNow) {
-            mWallpaperScroll = mWallpaperInterpolator.getCurrX();
+            mWallpaperScrollX = mWallpaperInterpolator.getCurrX();
+            mWallpaperScrollY = mWallpaperInterpolator.getCurrY();
             if (!mWallpaperHack && mWindowToken != null) {
-                mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScroll, 0);
+                mWallpaperManager.setWallpaperOffsets(mWindowToken, mWallpaperScrollX, mWallpaperScrollY);
             }
         }
         if (keepUpdating) {
@@ -1172,11 +1175,14 @@ public class Workspace extends PagedView
 
     class WallpaperOffsetInterpolator {
         float mFinalHorizontalWallpaperOffset = 0.0f;
+        float mFinalVerticalWallpaperOffset = 0.5f;
         float mHorizontalWallpaperOffset = 0.0f;
+        float mVerticalWallpaperOffset = 0.5f;
         long mLastWallpaperOffsetUpdateTime;
         boolean mIsMovingFast;
         boolean mOverrideHorizontalCatchupConstant;
         float mHorizontalCatchupConstant = 0.35f;
+        float mVerticalCatchupConstant = 0.35f;
 
         public WallpaperOffsetInterpolator() {
         }
@@ -1189,8 +1195,13 @@ public class Workspace extends PagedView
             mHorizontalCatchupConstant = f;
         }
 
+        public void setVerticalCatchupConstant(float f) {
+            mVerticalCatchupConstant = f;
+        }
+
         public boolean computeScrollOffset() {
-            if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0) {
+            if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0 &&
+                    Float.compare(mVerticalWallpaperOffset, mFinalVerticalWallpaperOffset) == 0) {
                 mIsMovingFast = false;
                 return false;
             }
@@ -1198,6 +1209,7 @@ public class Workspace extends PagedView
             // Don't have any lag between workspace and wallpaper on non-large devices
             if (!LauncherApplication.isScreenLarge()) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
+                mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
                 return true;
             }
 
@@ -1222,19 +1234,28 @@ public class Workspace extends PagedView
                 // slow
                 fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.27f : 0.5f;
             }
+            float fractionToCatchUpIn1MsVertical = mVerticalCatchupConstant;
 
             fractionToCatchUpIn1MsHorizontal /= 33f;
+            fractionToCatchUpIn1MsVertical /= 33f;
 
             final float UPDATE_THRESHOLD = 0.00001f;
             float hOffsetDelta = mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
-            boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD;
+            float vOffsetDelta = mFinalVerticalWallpaperOffset - mVerticalWallpaperOffset;
+            boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD &&
+                Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
 
+            // Don't have any lag between workspace and wallpaper on non-large devices
             if (!LauncherApplication.isScreenLarge() || jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
+                mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
             } else {
+                float percentToCatchUpVertical =
+                    Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsVertical);
                 float percentToCatchUpHorizontal =
                     Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsHorizontal);
                 mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
+                mVerticalWallpaperOffset += percentToCatchUpVertical * vOffsetDelta;
             }
 
             mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
@@ -1249,12 +1270,25 @@ public class Workspace extends PagedView
             return mFinalHorizontalWallpaperOffset;
         }
 
+        public float getCurrY() {
+            return mVerticalWallpaperOffset;
+        }
+
+        public float getFinalY() {
+            return mFinalVerticalWallpaperOffset;
+        }
+
         public void setFinalX(float x) {
             mFinalHorizontalWallpaperOffset = Math.max(0f, Math.min(x, 1.0f));
         }
 
+        public void setFinalY(float y) {
+            mFinalVerticalWallpaperOffset = Math.max(0f, Math.min(y, 1.0f));
+        }
+
         public void jumpToFinal() {
             mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
+            mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
         }
     }
 
@@ -1778,10 +1812,12 @@ public class Workspace extends PagedView
     protected void onDraw(Canvas canvas) {
         if (mScrollWallpaper) {
             updateWallpaperOffsets();
+        } else {
+            centerWallpaperOffset();
         }
 
         // Draw the wallpaper if necessary
-        if (mWallpaperHack && mWallpaperBitmap != null) {
+        if (isRenderingWallpaper()) {
             float x = getScrollX();
             float y = getScrollY();
 
@@ -1794,13 +1830,13 @@ public class Workspace extends PagedView
                 // Wallpaper is smaller than screen
                 x += (width - wallpaperWidth) / 2;
             } else {
-                x -= mWallpaperScroll * (wallpaperWidth - (width + mWallpaperOffsets[0])) + mWallpaperOffsets[0];
+                x -= mWallpaperScrollX * (wallpaperWidth - (width + mWallpaperOffsets[0])) + mWallpaperOffsets[0];
             }
-            if (height + mWallpaperOffsets[0] > wallpaperHeight) {
+            if (height + mWallpaperOffsets[1] > wallpaperHeight) {
                 // Wallpaper is smaller than screen
                 y += (height - wallpaperHeight) / 2;
             } else {
-                y -= mWallpaperOffsets[1];
+                y -= (wallpaperHeight - (height + mWallpaperOffsets[1])) / 2;
             }
 
             canvas.drawBitmap(mWallpaperBitmap, x, y, mPaint);
