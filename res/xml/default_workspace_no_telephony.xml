@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<!-- Copyright (C) 2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
         launcher:x="0"
         launcher:y="0"
         launcher:spanX="3"
-        launcher:spanY="4" />
+        launcher:spanY="2" />
     <favorite
         launcher:packageName="com.android.camera"
         launcher:className="com.android.camera.Camera"
@@ -61,8 +61,20 @@
 
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <favorite
-        launcher:packageName="com.android.contacts"
-        launcher:className="com.android.contacts.activities.DialtactsActivity"
+        launcher:packageName="com.android.email"
+        launcher:className="com.android.email.activity.Welcome"
+        launcher:container="-101"
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="0" />
+    <favorite
+        launcher:packageName="com.android.calendar"
+        launcher:className="com.android.calendar.AllInOneActivity"
+        launcher:container="-101"
+        launcher:screen="0"
+        launcher:x="1"
+        launcher:y="0" />
+    <allapps
         launcher:container="-101"
         launcher:screen="0"
         launcher:x="2"
@@ -74,23 +86,11 @@
         launcher:screen="0"
         launcher:x="3"
         launcher:y="0" />
-    <allapps
-        launcher:container="-101"
-        launcher:screen="0"
-        launcher:x="4"
-        launcher:y="0" />
-    <favorite
-        launcher:packageName="com.android.mms"
-        launcher:className="com.android.mms.ui.ConversationList"
-        launcher:container="-101"
-        launcher:screen="0"
-        launcher:x="5"
-        launcher:y="0" />
     <favorite
         launcher:packageName="com.android.browser"
         launcher:className="com.android.browser.BrowserActivity"
         launcher:container="-101"
         launcher:screen="0"
-        launcher:x="6"
+        launcher:x="4"
         launcher:y="0" />
 </favorites>
