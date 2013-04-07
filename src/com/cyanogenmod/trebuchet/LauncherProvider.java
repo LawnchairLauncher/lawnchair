@@ -40,6 +40,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -209,7 +210,12 @@ public class LauncherProvider extends ContentProvider {
 
             // Use default workspace resource if none provided
             if (workspaceResId == 0) {
-                workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, R.xml.default_workspace);
+                TelephonyManager tm = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+                if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+                    workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, R.xml.default_workspace_no_telephony);
+                } else {
+                    workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, R.xml.default_workspace);
+                }
             }
 
             // Populate favorites table with initial favorites
@@ -418,7 +424,12 @@ public class LauncherProvider extends ContentProvider {
                 }
 
                 // Add default hotseat icons
-                loadFavorites(db, R.xml.update_workspace);
+                TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+                if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+                    loadFavorites(db, R.xml.update_workspace_no_telephony);
+                } else {
+                    loadFavorites(db, R.xml.update_workspace);
+                }
                 version = 14;
             }
 

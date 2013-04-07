@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<!-- Copyright (C) 2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,50 +15,7 @@
 -->
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet">
-    <!-- Far-left screen [0] -->
-
-    <!-- Left screen [1] -->
-    <appwidget
-        launcher:packageName="com.android.settings"
-        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
-        launcher:screen="1"
-        launcher:x="0"
-        launcher:y="3"
-        launcher:spanX="4"
-        launcher:spanY="1" />
-
-    <!-- Middle screen [2] -->
-    <appwidget
-        launcher:packageName="com.cyanogenmod.lockclock"
-        launcher:className="com.cyanogenmod.lockclock.ClockWidgetProvider"
-        launcher:screen="2"
-        launcher:x="0"
-        launcher:y="0"
-        launcher:spanX="3"
-        launcher:spanY="4" />
-    <favorite
-        launcher:packageName="com.android.camera"
-        launcher:className="com.android.camera.Camera"
-        launcher:screen="2"
-        launcher:x="0"
-        launcher:y="3" />
-
-    <!-- Right screen [3] -->
-    <favorite
-        launcher:packageName="com.android.gallery3d"
-        launcher:className="com.android.gallery3d.app.Gallery"
-        launcher:screen="3"
-        launcher:x="1"
-        launcher:y="3" />
-    <favorite
-        launcher:packageName="com.android.settings"
-        launcher:className="com.android.settings.Settings"
-        launcher:screen="3"
-        launcher:x="2"
-        launcher:y="3" />
-
-    <!-- Far-right screen [4] -->
-
+    <!-- Update the db with new hotseat all apps button. -->
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <favorite
         launcher:packageName="com.android.contacts"
