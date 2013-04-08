@@ -29,7 +29,6 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Γραφικά στοιχεία"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Αγγίξτε παρατεταμένα για να πάρετε ένα γραφ.στοιχ."</string>
     <string name="market" msgid="2652226429823445833">"Αγορές"</string>
-    <string name="menu">Μενού</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Αδυναμία τοποθέτησης στοιχείου στην Αρχική οθόνη."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Επιλ. γραφ. στοιχείο για δημιουργία"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Όνομα φακέλου"</string>
@@ -55,10 +54,8 @@
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Κατάργηση"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Κατάργηση εγκατάστασης"</string>
     <string name="delete_target_label" msgid="665300185123139530">"Κατάργηση"</string>
-    <string name="cancel_target_label">Ακύρωση</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Κατάργηση εγκατάστασης"</string>
     <string name="info_target_label" msgid="4019495079517426980">"Πληροφορίες εφαρμογής"</string>
-    <string name="edit_target_label">Επεξεργασία</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Αναζήτηση"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Φωνητική αναζήτηση"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Εφαρμογές"</string>
@@ -70,13 +67,7 @@
     <string name="menu_search" msgid="4826514464423239041">"Αναζήτηση"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Ειδοποιήσεις"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Ρυθμίσεις συστήματος"</string>
-    <string name="menu_preferences">Ρυθμίσεις Trebuchet</string>
     <string name="menu_help" msgid="4901160661634590633">"Βοήθεια"</string>
-    <string name="menu_apps_sort_title">Όνομα</string>
-    <string name="menu_apps_sort_install_date">Ημερομηνία εγκατάστασης</string>
-    <string name="menu_apps_filter_system">Σύστημα</string>
-    <string name="menu_apps_filter_downloaded">Ληφθέντες</string>
-    <string name="menu_hidden_apps_delete">Επαναφορά</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Κατάργηση εγκατάστασης εφαρμογής"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Λεπτομέρειες εφαρμογής"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"Επιλέχθηκε 1 εφαρμογή"</string>
@@ -105,8 +96,6 @@
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Για να δείτε όλες τις εφαρμογές σας, αγγίξτε τον κύκλο."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Επιλέξτε κάποιες εφαρμογές"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Για να προσθέσετε μια εφαρμογή στην αρχική σας οθόνη, αγγίξτε την παρατεταμένα."</string>
-    <string name="all_apps_sort_cling_title">Ταξινομήστε τις εφαρμογές σας</string>
-    <string name="all_apps_sort_cling_add_item">Αγγίξτε και κρατήστε την καρτέλα Εφαρμογών για να επιλέξετε τη λειτουργία ταξινόμησης</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Οργανώστε τις εφαρμογές σας με φακέλους"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Για να μετακινήσετε μια εφαρμογή, αγγίξτε την παρατεταμένα."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Για να δημιουργήσετε ένα νέο φάκελο στην αρχική οθόνη, τοποθετήστε μια εφαρμογή πάνω σε μια άλλη."</string>
@@ -121,104 +110,4 @@
     <string name="custom_workspace_cling_description_1" msgid="6875529190849858047"></string>
     <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
     <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
-
-    <!-- Hidden apps -->
-    <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
-
-    <skip />
-    <!--             -->
-    <!-- Preferences -->
-    <!--             -->
-    <string name="preferences_title">Ρυθμίσεις</string>
-    <!-- UI -->
-    <string name="preferences_interface_title">Διεπαφή</string>
-    <!-- Application -->
-    <string name="preferences_application_title">Εφαρμογή</string>
-
-    <!-- UI -->
-    <!-- Homescreen -->
-    <string name="preferences_interface_homescreen_title">Αρχική οθόνη</string>
-    <string name="preferences_interface_homescreen_summary">Οθόνες και ταπετσαρία</string>
-    <string name="preferences_interface_homescreen_general_category">Γενικά</string>
-    <string name="preferences_interface_homescreen_general_screens_title">Αρχικές οθόνες</string>
-    <string name="preferences_interface_homescreen_general_screens_summary">Αριθμός αρχικών οθονών</string>
-    <string name="preferences_interface_homescreen_general_default_screen_title">Προεπιλεγμένη οθόνη</string>
-    <string name="preferences_interface_homescreen_general_default_screen_summary">Προεπιλεγμένη αρχική οθόνη</string>
-    <string name="preferences_interface_homescreen_general_search_title">Μπάρα αναζήτησης</string>
-    <string name="preferences_interface_homescreen_general_search_summary">Ενεργοποίηση επίμονης μπάρας αναζήτησης</string>
-    <string name="preferences_interface_homescreen_general_grid_title">Μέγεθος πλέγματος</string>
-    <string name="preferences_interface_homescreen_general_grid_summary">Επιλέξτε τον αριθμό των γραμμών/στηλών στην αρχική οθόνη</string>
-    <string name="preferences_interface_homescreen_general_grid_rows_title">Γραμμές</string>
-    <string name="preferences_interface_homescreen_general_grid_columns_title">Στήλες</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_title">Επέκταση αρχικών οθονών</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Επέκταση αρχικών οθονών για να γεμίζει το μέγεθος της οθόνης</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Απόκρυψη ετικετών</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Απόκρυψη ετικετών των εικονιδίων στην αρχική σελίδα</string>
-    <string name="preferences_interface_homescreen_scrolling_category">Κύλιση</string>
-    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Εφέ μετάβασης</string>
-    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Εφέ κύλισης μεταξύ των αρχικών οθονών</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Κύλιση ταπετσαρίας</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Κύλιση ταπετσαρίας κατά τη μετακίνηση στις αρχικές οθόνες</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Γρήγορος σχεδιασμός ταπετσαρίας</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Χρήση του hack ταπετσαρίας που αυξάνει την ομαλότητα στις στατικές ταπετσαρίες</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Μέγεθος ταπετσαρίας</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Πόσες οθόνες θα καλύπτει η ταπετσαρία</string>
-    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Ξεθώριασμα οθονών</string>
-    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Ξεθώριασμα των διπλανών οθονών κατά την κύλιση μεταξύ αρχικών οθονών</string>
-    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Εμφάνιση περιγράμματος</string>
-    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Εμφάνιση περιγράμματος των οθονών κατά την κύλιση μεταξύ αρχικών οθονών</string>
-    <string name="preferences_interface_homescreen_indicator_category">Ένδειξη</string>
-    <string name="preferences_interface_homescreen_indicator_enable_title">Εμφάνιση ένδειξης σελίδας</string>
-    <string name="preferences_interface_homescreen_indicator_enable_summary">Εμφάνιση ένδειξης τρέχουσας σελίδας στο κάτω μέρος της οθόνης</string>
-    <string name="preferences_interface_homescreen_indicator_fade_title">Αυτόματη απόκρυψη ένδειξης</string>
-    <string name="preferences_interface_homescreen_indicator_fade_summary">Αυτόματη απόκρυψη της ένδειξης μετά την αλλαγή σελίδας</string>
-    <string name="preferences_interface_homescreen_indicator_position_title">Θέση ένδειξης</string>
-    <string name="preferences_interface_homescreen_indicator_position_summary">Επιλέξτε πού θα εμφανίζεται η ένδειξη στην οθόνη</string>
-
-    <!-- Drawer -->
-    <string name="preferences_interface_drawer_title">Συρτάρι</string>
-    <string name="preferences_interface_drawer_summary">Συρτάρι εφαρμογών και widget</string>
-    <string name="preferences_interface_drawer_orientation_title">Προσανατολισμός</string>
-    <string name="preferences_interface_drawer_orientation_summary">Επιλέξτε τον τρόπο κύλισης του συρταριού</string>
-    <string name="preferences_interface_drawer_hidden_apps_title">Κρυμμένες εφαρμογές</string>
-    <string name="preferences_interface_drawer_hidden_apps_summary">Εφαρμογές που δεν εμφανίζονται στο συρτάρι</string>
-    <string name="preferences_interface_drawer_widgets_category">Widgets</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_title">Σύνδεση με εφαρμογές</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_summary">Κύλιση από το συρτάρι εφαρμογών στο συρτάρι widgets χωρίς εναλλαγή καρτέλας</string>
-    <string name="preferences_interface_drawer_scrolling_category">Κύλιση</string>
-    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Εφέ μετάβασης</string>
-    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Εφέ κύλισης μεταξύ των οθονών</string>
-    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Ξεθώριασμα σελιδών</string>
-    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Ξεθώριασμα των διπλανών σελιδών κατά την κύλιση μεταξύ οθονών</string>
-    <string name="preferences_interface_drawer_indicator_category">Ένδειξη</string>
-    <string name="preferences_interface_drawer_indicator_enable_title">Εμφάνιση ένδειξης σελίδας</string>
-    <string name="preferences_interface_drawer_indicator_enable_summary">Εμφάνιση ένδειξης τρέχουσας σελίδας στο κάτω μέρος της οθόνης</string>
-    <string name="preferences_interface_drawer_indicator_fade_title">Αυτόματη απόκρυψη ένδειξης</string>
-    <string name="preferences_interface_drawer_indicator_fade_summary">Αυτόματη απόκρυψη της ένδειξης μετά την αλλαγή σελίδας</string>
-    <string name="preferences_interface_drawer_indicator_position_title">Θέση ένδειξης</string>
-    <string name="preferences_interface_drawer_indicator_position_summary">Επιλέξτε πού θα εμφανίζεται η ένδειξη στην οθόνη</string>
-
-    <!-- Dock -->
-    <string name="preferences_interface_dock_title">Μπάρα εφαρμογών</string>
-    <string name="preferences_interface_dock_enabled_title">Εμφάνιση μπάρας</string>
-    <string name="preferences_interface_dock_enabled_summary">Εμφάνιση της μπάρας κάτω από την αρχική οθόνη</string>
-    <string name="preferences_interface_dock_pages_title">Σελίδες</string>
-    <string name="preferences_interface_dock_pages_summary">Αριθμός σελιδών στην μπάρα</string>
-    <string name="preferences_interface_dock_default_page_title">Προεπιλεγμένη σελίδα</string>
-    <string name="preferences_interface_dock_default_page_summary">Επιλέξτε την προεπιλεγμένη σελίδα</string>
-    <string name="preferences_interface_dock_icons_title">Εικονίδια</string>
-    <string name="preferences_interface_dock_icons_summary">Αριθμός εικονιδίων που θα εμφανίζονται στην μπάρα</string>
-    <string name="preferences_interface_dock_icon_scale_title">Κλίμακα εικονιδίων</string>
-    <string name="preferences_interface_dock_icon_scale_summary">Κλίμακα των εικονιδίων στην μπάρα</string>
-    <string name="preferences_interface_dock_divider_title">Εμφάνιση διαχωριστικού</string>
-    <string name="preferences_interface_dock_divider_summary">Εμφάνιση διαχωριστικού μεταξύ της αρχικής οθόνης και της μπάρας</string>
-
-    <!-- Icons -->
-    <string name="preferences_interface_icons_title">Εικονίδια</string>
-
-    <!-- General -->
-    <string name="preferences_interface_general_title">Γενικά</string>
-    <string name="preferences_interface_general_orientation_title">Αυτόματη περιστροφή οθόνης</string>
-    <string name="preferences_interface_general_fullscreen_title">Λειτουργία πλήρους οθόνης</string>
-    <string name="preferences_interface_general_fullscreen_summary">Απόκρυψη της μπάρας ειδοποιήσεων για επέκταση της αρχικής οθόνης</string>
 </resources>
