@@ -55,6 +55,7 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     TimeInterpolator mInterpolator;
     ArrayList<Animator.AnimatorListener> mListeners;
     boolean mRunning = false;
+    FirstFrameAnimatorHelper mFirstFrameHelper;
 
     public LauncherViewPropertyAnimator(View target) {
         mTarget = target;
@@ -126,12 +127,10 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public void onAnimationStart(Animator animation) {
-	// This is the first time we get a handle to the internal ValueAnimator
-	// used by the ViewPropertyAnimator.
-	// FirstFrameAnimatorHelper hooks itself up to the updates on the animator,
-	// and then adjusts the play time to keep the first two frames jank-free
-        new FirstFrameAnimatorHelper((ValueAnimator) animation, mTarget)
-                .onAnimationUpdate((ValueAnimator) animation);
+        // This is the first time we get a handle to the internal ValueAnimator
+        // used by the ViewPropertyAnimator.
+        mFirstFrameHelper.onAnimationStart(animation);
+
         for (int i = 0; i < mListeners.size(); i++) {
             Animator.AnimatorListener listener = mListeners.get(i);
             listener.onAnimationStart(this);
@@ -195,6 +194,11 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     @Override
     public void start() {
         mViewPropertyAnimator = mTarget.animate();
+
+        // FirstFrameAnimatorHelper hooks itself up to the updates on the animator,
+        // and then adjusts the play time to keep the first two frames jank-free
+        mFirstFrameHelper = new FirstFrameAnimatorHelper(mViewPropertyAnimator, mTarget);
+
         if (mPropertiesToSet.contains(Properties.TRANSLATION_X)) {
             mViewPropertyAnimator.translationX(mTranslationX);
         }
