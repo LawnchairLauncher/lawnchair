@@ -19,13 +19,13 @@
 
     <!-- Left screen [1] -->
     <appwidget
-        launcher:packageName="com.android.settings"
-        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
+        launcher:packageName="com.andrew.apollo"
+        launcher:className="com.andrew.apollo.appwidgets.AppWidgetLarge"
         launcher:screen="1"
-        launcher:x="0"
-        launcher:y="3"
+        launcher:x="2"
+        launcher:y="0"
         launcher:spanX="4"
-        launcher:spanY="1" />
+        launcher:spanY="2" />
 
     <!-- Middle screen [2] -->
     <appwidget
@@ -34,8 +34,8 @@
         launcher:screen="2"
         launcher:x="0"
         launcher:y="0"
-        launcher:spanX="3"
-        launcher:spanY="4" />
+        launcher:spanX="4"
+        launcher:spanY="3" />
     <favorite
         launcher:packageName="com.android.camera"
         launcher:className="com.android.camera.Camera"
