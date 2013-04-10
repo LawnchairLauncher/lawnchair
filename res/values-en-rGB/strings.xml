@@ -30,6 +30,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Touch &amp; hold to pick up a widget."</string>
     <string name="market" msgid="2652226429823445833">"Shop"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Couldn\'t drop item on this Home screen."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Choose widget to create"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Folder name"</string>
@@ -79,7 +80,7 @@
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Allows an app to add shortcuts without user intervention."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"uninstall shortcuts"</string>
     <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Allows the app to remove shortcuts without user intervention."</string>
-    <string name="permlab_read_settings" msgid="3452408290738106747">"read Home settings and short cuts"</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"read Home settings and shortcuts"</string>
     <string name="permdesc_read_settings" msgid="5788109303585403679">"Allows an app to read the settings and shortcuts in Home."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"write Home settings and shortcuts"</string>
     <string name="permdesc_write_settings" msgid="8530105489115785531">"Allows the app to change the settings and shortcuts in Home."</string>

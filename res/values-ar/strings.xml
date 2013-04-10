@@ -30,6 +30,8 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"الأدوات"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"المس مع الاستمرار لاختيار إحدى الأدوات."</string>
     <string name="market" msgid="2652226429823445833">"تسوق"</string>
+    <!-- no translation found for widget_dims_format (1386418557719032947) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="2285187188524172774">"تعذر إسقاط العنصر في هذه الشاشة الرئيسية."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"اختيار أداة لإنشائها"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"اسم المجلد"</string>
