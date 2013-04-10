@@ -30,6 +30,8 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"विजेट"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"किसी विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="market" msgid="2652226429823445833">"दुकान"</string>
+    <!-- no translation found for widget_dims_format (1386418557719032947) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="2285187188524172774">"इस मुखपृष्ठ स्‍क्रीन पर आइटम को नहीं छोड़ा जा सका."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"बनाने के लिए विजेट चुनें"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"फ़ोल्‍डर का नाम"</string>
