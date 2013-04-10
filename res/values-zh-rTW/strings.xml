@@ -30,6 +30,8 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"小工具"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"輕觸並按住小工具即可選取。"</string>
     <string name="market" msgid="2652226429823445833">"商店"</string>
+    <!-- no translation found for widget_dims_format (1386418557719032947) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="2285187188524172774">"無法將項目拖放至這個主螢幕上。"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"選擇要建立的小工具"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"資料夾名稱"</string>
