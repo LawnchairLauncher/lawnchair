@@ -43,6 +43,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
 
     private static ViewTreeObserver.OnDrawListener sGlobalDrawListener;
     private static long sGlobalFrameCounter;
+    private static boolean sVisible;
 
     public FirstFrameAnimatorHelper(ValueAnimator animator, View target) {
         mTarget = target;
@@ -61,6 +62,10 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         onAnimationUpdate(va);
     }
 
+    public static void setIsVisible(boolean visible) {
+        sVisible = visible;
+    }
+
     public static void initializeDrawListener(View view) {
         if (sGlobalDrawListener != null) {
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
@@ -77,6 +82,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 }
             };
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
+        sVisible = true;
     }
 
     public void onAnimationUpdate(final ValueAnimator animation) {
@@ -87,6 +93,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         }
 
         if (!mHandlingOnAnimationUpdate &&
+            sVisible &&
             // If the current play time exceeds the duration, the animation
             // will get finished, even if we call setCurrentPlayTime -- therefore
             // don't adjust the animation in that case
