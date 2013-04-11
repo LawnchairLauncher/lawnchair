@@ -1293,7 +1293,11 @@ public final class Launcher extends Activity
                         final ViewTreeObserver.OnDrawListener listener = this;
                         mWorkspace.post(new Runnable() {
                                 public void run() {
-                                    mWorkspace.getViewTreeObserver().removeOnDrawListener(listener);
+                                    if (mWorkspace != null &&
+                                            mWorkspace.getViewTreeObserver() != null) {
+                                        mWorkspace.getViewTreeObserver().
+                                                removeOnDrawListener(listener);
+                                    }
                                 }
                             });
                         return;
