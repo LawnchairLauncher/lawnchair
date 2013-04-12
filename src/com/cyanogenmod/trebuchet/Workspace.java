@@ -1675,7 +1675,7 @@ public class Workspace extends PagedView
                 cl.setCameraDistance(mDensity * mCameraDistance);
                 cl.setTranslationX(cl.getMeasuredWidth() * scrollProgress);
                 cl.setPivotX(left ? 0f : cl.getMeasuredWidth());
-                cl.setPivotY(0f);
+                cl.setPivotY(cl.getMeasuredHeight() / 2);
                 cl.setRotationY(rotation);
 
                 if (mFadeInAdjacentScreens && !isSmall()) {

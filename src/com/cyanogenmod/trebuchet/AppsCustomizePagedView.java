@@ -2082,13 +2082,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             View v = getPageAt(i);
             if (v != null) {
                 float scrollProgress = getScrollProgress(screenScroll, v, i);
-                float rotation = 90.0f * -scrollProgress;
+                float rotation = 90.0f * scrollProgress;
 
                 v.setCameraDistance(mDensity * mCameraDistance);
-                v.setTranslationX(v.getMeasuredWidth() * scrollProgress);
-                v.setPivotX(left ? 0f : v.getMeasuredWidth());
-                v.setPivotY(0f);
-                v.setRotationY(rotation);
+                if (!mVertical) {
+                    v.setTranslationX(v.getMeasuredWidth() * scrollProgress);
+                    v.setPivotX(left ? 0f : v.getMeasuredWidth());
+                    v.setPivotY(v.getMeasuredHeight() / 2);
+                    v.setRotationY(-rotation);
+                } else {
+                    v.setTranslationY(v.getMeasuredHeight() * scrollProgress);
+                    v.setPivotX(v.getMeasuredWidth() / 2);
+                    v.setPivotY(left ? 0f : v.getMeasuredHeight());
+                    v.setRotationX(rotation);
+                }
 
                 if (mFadeInAdjacentScreens) {
                     float alpha = 1 - Math.abs(scrollProgress);
