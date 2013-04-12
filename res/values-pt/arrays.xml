@@ -38,6 +38,8 @@
         <item>Virar</item>
         <item>Pilha</item>
         <item>Acordeão</item>
+        <item>Carrossel p/ esquerda</item>
+        <item>Carrossel p/ direita</item>
     </string-array>
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
         <item>Padrão</item>
@@ -54,6 +56,8 @@
         <item>Virar</item>
         <item>Pilha</item>
         <item>Acordeão</item>
+        <item>Carrossel p/ esquerda</item>
+        <item>Carrossel p/ direita</item>
     </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Topo/Esquerda</item>
