@@ -3773,11 +3773,11 @@ public final class Launcher extends Activity
 
         // Restricted secondary users (child mode) will potentially have very few apps
         // seeded when they start up for the first time. Clings won't work well with that
-        boolean supportsRestrictedUsers =
+        boolean supportsLimitedUsers =
                 android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
-        if (supportsRestrictedUsers) {
+        if (supportsLimitedUsers) {
             final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
-            if (um.isUserRestricted()) return false;
+            if (um.isUserLimited()) return false;
         }
         return true;
     }
