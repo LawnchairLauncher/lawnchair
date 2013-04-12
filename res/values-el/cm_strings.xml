@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Μενού</string>
+    <string name="cancel_target_label">Ακύρωση</string>
+    <string name="edit_target_label">Επεξεργασία</string>
+    <string name="menu_preferences">Ρυθμίσεις Trebuchet</string>
+    <string name="menu_apps_sort_title">Όνομα</string>
+    <string name="menu_apps_sort_install_date">Ημερομηνία εγκατάστασης</string>
+    <string name="menu_apps_filter_system">Σύστημα</string>
+    <string name="menu_apps_filter_downloaded">Ληφθέντες</string>
+    <string name="menu_hidden_apps_delete">Επαναφορά</string>
+    <string name="all_apps_sort_cling_title">Ταξινομήστε τις εφαρμογές σας</string>
+    <string name="all_apps_sort_cling_add_item">Αγγίξτε και κρατήστε την καρτέλα Εφαρμογών για να επιλέξετε τη λειτουργία ταξινόμησης</string>
+    <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
+    <string name="preferences_title">Ρυθμίσεις</string>
+    <string name="preferences_interface_title">Διεπαφή</string>
+    <string name="preferences_application_title">Εφαρμογή</string>
+    <string name="preferences_interface_homescreen_title">Αρχική οθόνη</string>
+    <string name="preferences_interface_homescreen_summary">Οθόνες και ταπετσαρία</string>
+    <string name="preferences_interface_homescreen_general_category">Γενικά</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Αρχικές οθόνες</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Αριθμός αρχικών οθονών</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Προεπιλεγμένη οθόνη</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Προεπιλεγμένη αρχική οθόνη</string>
+    <string name="preferences_interface_homescreen_general_search_title">Μπάρα αναζήτησης</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Ενεργοποίηση επίμονης μπάρας αναζήτησης</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Μέγεθος πλέγματος</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Επιλέξτε τον αριθμό των γραμμών/στηλών στην αρχική οθόνη</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Γραμμές</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Στήλες</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Επέκταση αρχικών οθονών</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Επέκταση αρχικών οθονών για να γεμίζει το μέγεθος της οθόνης</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Απόκρυψη ετικετών</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Απόκρυψη ετικετών των εικονιδίων στην αρχική σελίδα</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Κύλιση</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Εφέ μετάβασης</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Εφέ κύλισης μεταξύ των αρχικών οθονών</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Κύλιση ταπετσαρίας</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Κύλιση ταπετσαρίας κατά τη μετακίνηση στις αρχικές οθόνες</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Γρήγορος σχεδιασμός ταπετσαρίας</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Χρήση του hack ταπετσαρίας που αυξάνει την ομαλότητα στις στατικές ταπετσαρίες</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Μέγεθος ταπετσαρίας</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Πόσες οθόνες θα καλύπτει η ταπετσαρία</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Ξεθώριασμα οθονών</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Ξεθώριασμα των διπλανών οθονών κατά την κύλιση μεταξύ αρχικών οθονών</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Εμφάνιση περιγράμματος</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Εμφάνιση περιγράμματος των οθονών κατά την κύλιση μεταξύ αρχικών οθονών</string>
+    <string name="preferences_interface_homescreen_indicator_category">Ένδειξη</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Εμφάνιση ένδειξης σελίδας</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Εμφάνιση ένδειξης τρέχουσας σελίδας στο κάτω μέρος της οθόνης</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Αυτόματη απόκρυψη ένδειξης</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Αυτόματη απόκρυψη της ένδειξης μετά την αλλαγή σελίδας</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Θέση ένδειξης</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Επιλέξτε πού θα εμφανίζεται η ένδειξη στην οθόνη</string>
+    <string name="preferences_interface_drawer_title">Συρτάρι</string>
+    <string name="preferences_interface_drawer_summary">Συρτάρι εφαρμογών και widget</string>
+    <string name="preferences_interface_drawer_orientation_title">Προσανατολισμός</string>
+    <string name="preferences_interface_drawer_orientation_summary">Επιλέξτε τον τρόπο κύλισης του συρταριού</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Κρυμμένες εφαρμογές</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Εφαρμογές που δεν εμφανίζονται στο συρτάρι</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgets</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Σύνδεση με εφαρμογές</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Κύλιση από το συρτάρι εφαρμογών στο συρτάρι widgets χωρίς εναλλαγή καρτέλας</string>
+    <string name="preferences_interface_drawer_scrolling_category">Κύλιση</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Εφέ μετάβασης</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Εφέ κύλισης μεταξύ των οθονών</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Ξεθώριασμα σελιδών</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Ξεθώριασμα των διπλανών σελιδών κατά την κύλιση μεταξύ οθονών</string>
+    <string name="preferences_interface_drawer_indicator_category">Ένδειξη</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Εμφάνιση ένδειξης σελίδας</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Εμφάνιση ένδειξης τρέχουσας σελίδας στο κάτω μέρος της οθόνης</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Αυτόματη απόκρυψη ένδειξης</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Αυτόματη απόκρυψη της ένδειξης μετά την αλλαγή σελίδας</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Θέση ένδειξης</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Επιλέξτε πού θα εμφανίζεται η ένδειξη στην οθόνη</string>
+    <string name="preferences_interface_dock_title">Μπάρα εφαρμογών</string>
+    <string name="preferences_interface_dock_enabled_title">Εμφάνιση μπάρας</string>
+    <string name="preferences_interface_dock_enabled_summary">Εμφάνιση της μπάρας κάτω από την αρχική οθόνη</string>
+    <string name="preferences_interface_dock_pages_title">Σελίδες</string>
+    <string name="preferences_interface_dock_pages_summary">Αριθμός σελιδών στην μπάρα</string>
+    <string name="preferences_interface_dock_default_page_title">Προεπιλεγμένη σελίδα</string>
+    <string name="preferences_interface_dock_default_page_summary">Επιλέξτε την προεπιλεγμένη σελίδα</string>
+    <string name="preferences_interface_dock_icons_title">Εικονίδια</string>
+    <string name="preferences_interface_dock_icons_summary">Αριθμός εικονιδίων που θα εμφανίζονται στην μπάρα</string>
+    <string name="preferences_interface_dock_icon_scale_title">Κλίμακα εικονιδίων</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Κλίμακα των εικονιδίων στην μπάρα</string>
+    <string name="preferences_interface_dock_divider_title">Εμφάνιση διαχωριστικού</string>
+    <string name="preferences_interface_dock_divider_summary">Εμφάνιση διαχωριστικού μεταξύ της αρχικής οθόνης και της μπάρας</string>
+    <string name="preferences_interface_icons_title">Εικονίδια</string>
+    <string name="preferences_interface_general_title">Γενικά</string>
+    <string name="preferences_interface_general_orientation_title">Αυτόματη περιστροφή οθόνης</string>
+    <string name="preferences_interface_general_fullscreen_title">Λειτουργία πλήρους οθόνης</string>
+    <string name="preferences_interface_general_fullscreen_summary">Απόκρυψη της μπάρας ειδοποιήσεων για επέκταση της αρχικής οθόνης</string>
+</resources>
