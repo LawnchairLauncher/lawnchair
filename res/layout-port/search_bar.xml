@@ -41,6 +41,7 @@
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:scaleType="fitStart"
             android:src="@drawable/ic_home_search_normal_holo"
             android:adjustViewBounds="true" />
     </com.cyanogenmod.trebuchet.HolographicLinearLayout>
@@ -65,6 +66,7 @@
             android:id="@+id/voice_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:scaleType="fitEnd"
             android:src="@drawable/ic_home_voice_search_holo"
             android:adjustViewBounds="true" />
     </com.cyanogenmod.trebuchet.HolographicLinearLayout>

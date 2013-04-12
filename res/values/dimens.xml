@@ -56,7 +56,7 @@
     <dimen name="app_icon_padding_top">8dp</dimen>
 
 <!-- QSB -->
-    <dimen name="toolbar_button_vertical_padding">0dip</dimen>
+    <dimen name="toolbar_button_vertical_padding">4dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
     <!-- External toolbar icon size (for bounds) -->
     <dimen name="toolbar_external_icon_width">36dp</dimen>
