@@ -3777,7 +3777,7 @@ public final class Launcher extends Activity
                 android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
         if (supportsLimitedUsers) {
             final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
-            if (um.isUserLimited()) return false;
+            if (um.isLinkedUser()) return false;
         }
         return true;
     }
