@@ -953,16 +953,28 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         Runnable onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
+                final int screen = mInfo.screen;
+                if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                    mInfo.screen = mLauncher.getHotseat().getScreenFromOrder(mInfo.screen);
+                }
 
-               View child = null;
+                final CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
+
+                View child = null;
                 // Move the item from the folder to the workspace, in the position of the folder
                 if (getItemCount() == 1) {
                     ShortcutInfo finalItem = mInfo.contents.get(0);
                     child = mLauncher.createShortcut(R.layout.application, cellLayout,
                             finalItem);
+                    int x = mInfo.cellX, y = mInfo.cellY;
+                    if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                        mLauncher.getHotseat().hasVerticalHotseat()) {
+                        // Note: We need the correct position in order to save to db
+                        y = mLauncher.getHotseat().getCellYFromOrder(x);
+                        x = mLauncher.getHotseat().getCellXFromOrder(x);
+                    }
                     LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                            mInfo.screen, mInfo.cellX, mInfo.cellY);
+                            screen, x, y);
                 }
                 if (getItemCount() <= 1) {
                     // Remove the folder
@@ -976,7 +988,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 // We add the child after removing the folder to prevent both from existing at
                 // the same time in the CellLayout.
                 if (child != null) {
-                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen,
+                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, screen,
                             mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
                 }
             }
