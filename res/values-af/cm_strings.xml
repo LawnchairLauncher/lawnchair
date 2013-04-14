@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2012-13 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Kopiereg \u00A9 CyanogenMod 2013</string>
+    <string name="hidden_apps_title">Versteekte prgramme</string>
+    <string name="preferences_title">Instellings</string>
+    <string name="preferences_interface_title">Koppelvlak</string>
+    <string name="preferences_application_title">Program</string>
+    <string name="preferences_interface_homescreen_title">Tuisskerm</string>
+    <string name="preferences_interface_homescreen_summary">Skerms en agtergrond</string>
+    <string name="preferences_interface_homescreen_general_category">Algemeen</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Tuisskerm</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Die aantal beskikbare Tuisskerms</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Standaard skerm</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Kies die standaard skerm</string>
+    <string name="preferences_interface_homescreen_general_search_title">Soekbalk</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Aktiveer permanente soekbalk</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Rooster grootte</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Kies die aantal rye/kolomme op die Tuisskerm</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Rye</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Kolomme</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Strek skerm</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Vergroot Tuisskerms om die hele toestel skerm te vul</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Versteek ikoon etikette</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Steek Tuisskerm ikoon etikette weg</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Rol</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Oorgangseffek</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Oorgangseffek wanneer Tuisskerms gerol word</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Rol agtergrond</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Rol agtergrond wanneer Tuisskerms gerol word</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Rol agtergrond \'hack\'</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Gebruik agtergrond \'hack\' wat beter werkverigting gee tydens die rol van statiese agtergronde</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Agtergrond grootte</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Hoeveel skerms wyd die agtergrond moet wees</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Verdof kant skerms</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Verdof die kant skerms wanneer Tuisskerms gerol word</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Wys buitelyne</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Wys skerm buitelyne wanneer Tuisskerms gerol word</string>
+    <string name="preferences_interface_homescreen_indicator_category">Aanwyser</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Wys skerm aanwyser</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Wys huidige skerm aanwyser op die Tuisskerm</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Verdof aanwyser</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Verdof die aanwyser na die Tuisskerm verander het</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Aanwyser posisie</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Kies waar die aanwyser op die skerm geplaas moet word</string>
+    <string name="preferences_interface_drawer_title">Laai</string>
+    <string name="preferences_interface_drawer_summary">Programme- en legstukke-laai</string>
+    <string name="preferences_interface_drawer_orientation_title">Oriëntasie</string>
+    <string name="preferences_interface_drawer_orientation_summary">Kies in watter rigting die laai rol</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Versteekde programme</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Steek programme in die laai weg</string>
+    <string name="preferences_interface_drawer_widgets_category">Legstukke</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Saam met programme</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Rol vanaf die programme na die legstukke laai sonder om oortjie te kies</string>
+    <string name="preferences_interface_drawer_scrolling_category">Rol</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Oorgangseffek</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Oorgangseffek wanneer program en legstukke bladsye gerol word</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Verdof kant bladsye</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Verdof die kant bladsye wanneer bladsy gerol word</string>
+    <string name="preferences_interface_drawer_indicator_category">Aanwyser</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Wys bladsy aanwyser</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Wys huidige bladsy aanwyser aan die onderkant van die skerm</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Verdof aanwyser</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Verdof die die aanwyser na die bladsy verander het</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Aanwyser posisie</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Kies waar die aanwyser op die skerm geplaas moet word</string>
+    <string name="preferences_interface_dock_title">Dok</string>
+    <string name="preferences_interface_dock_enabled_title">Wys dok</string>
+    <string name="preferences_interface_dock_enabled_summary">Die dok is sigbaar onder die tuisskerm</string>
+    <string name="preferences_interface_dock_pages_title">Bladsy</string>
+    <string name="preferences_interface_dock_pages_summary">Aantal bladsye in die dok</string>
+    <string name="preferences_interface_dock_default_page_title">Standaard bladsy</string>
+    <string name="preferences_interface_dock_default_page_summary">Kies die standaard bladsy</string>
+    <string name="preferences_interface_dock_icons_title">Ikone</string>
+    <string name="preferences_interface_dock_icons_summary">Aantal ikone/kolomme in die dok</string>
+    <string name="preferences_interface_dock_icon_scale_title">Ikoon skaal</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Skaal van ikone in die dok</string>
+    <string name="preferences_interface_dock_divider_title">Wys dok-verdeler</string>
+    <string name="preferences_interface_dock_divider_summary">Wys verdeler tussen tuisskerm en die dok</string>
+    <string name="preferences_interface_icons_title">Ikone</string>
+    <string name="preferences_interface_general_title">Algemeen</string>
+    <string name="preferences_interface_general_orientation_title">Outo-roteer skerm</string>
+    <string name="preferences_interface_general_fullscreen_title">Volskerm</string>
+    <string name="preferences_interface_general_fullscreen_summary">Versteek die statusbalk om die tuisskerm te vergroot</string>
+    <string name="effects_standard">Standaard</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Zoom in</string>
+    <string name="effects_zoom_out">Zoom uit</string>
+    <string name="effects_rotate_up">Roteer op</string>
+    <string name="effects_rotate_down">Roteer af</string>
+    <string name="effects_cylinder_in">Silinder in</string>
+    <string name="effects_cylinder_out">Silinder uit</string>
+    <string name="effects_cube_in">Kubus in</string>
+    <string name="effects_cube_out">Kubus uit</string>
+    <string name="effects_spin">Spin</string>
+    <string name="effects_flip">Flip</string>
+    <string name="effects_stack">Stapel</string>
+    <string name="effects_accordion">Konsertina</string>
+</resources>
