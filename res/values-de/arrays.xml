@@ -39,6 +39,8 @@
         <item>Blättern</item>
         <item>Stapeln</item>
         <item>Akkordeon</item>
+        <item>Karussell links</item>
+        <item>Karussell rechts</item>
     </string-array>
 
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
@@ -56,6 +58,8 @@
         <item>Blättern</item>
         <item>Stapeln</item>
         <item>Akkordeon</item>
+        <item>Karussell links</item>
+        <item>Karussell rechts</item>
     </string-array>
 
     <string-array name="preferences_interface_drawer_indicator_position_entries">
