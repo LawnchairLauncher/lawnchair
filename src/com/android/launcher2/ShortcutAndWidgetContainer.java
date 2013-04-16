@@ -39,16 +39,22 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private int mWidthGap;
     private int mHeightGap;
 
+    private int mCountX;
+
+    private boolean mInvertIfRtl = false;
+
     public ShortcutAndWidgetContainer(Context context) {
         super(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
     }
 
-    public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap ) {
+    public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap,
+            int countX) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
         mWidthGap = widthGap;
         mHeightGap = heightGap;
+        mCountX = countX;
     }
 
     public View getChildAt(int x, int y) {
@@ -96,7 +102,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public void setupLp(CellLayout.LayoutParams lp) {
-        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
+                mCountX);
+    }
+
+    // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
+    public void setInvertIfRtl(boolean invert) {
+        mInvertIfRtl = invert;
     }
 
     public void measureChild(View child) {
@@ -104,11 +116,19 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
-        lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap);
+        lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(), mCountX);
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
         int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
                 MeasureSpec.EXACTLY);
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
+    }
+
+    private boolean invertLayoutHorizontally() {
+        return mInvertIfRtl && isLayoutRtl();
+    }
+
+    public boolean isLayoutRtl() {
+        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
     @Override
