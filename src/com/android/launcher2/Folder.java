@@ -156,6 +156,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mContent = (CellLayout) findViewById(R.id.folder_content);
         mContent.setGridSize(0, 0);
         mContent.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
+        mContent.setInvertIfRtl(true);
         mFolderName = (FolderEditText) findViewById(R.id.folder_name);
         mFolderName.setFolder(this);
         mFolderName.setOnFocusChangeListener(this);
@@ -612,9 +613,17 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     }
 
+    public boolean isLayoutRtl() {
+        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
+    }
+
     public void onDragOver(DragObject d) {
         float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView, null);
         mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1], 1, 1, mTargetCell);
+
+        if (isLayoutRtl()) {
+            mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
+        }
 
         if (mTargetCell[0] != mPreviousTargetCell[0] || mTargetCell[1] != mPreviousTargetCell[1]) {
             mReorderAlarm.cancelAlarm();
