@@ -283,7 +283,9 @@ public class CellLayout extends ViewGroup {
         mForegroundRect = new Rect();
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
+                mCountX);
+
         addView(mShortcutsAndWidgets);
     }
 
@@ -331,7 +333,14 @@ public class CellLayout extends ViewGroup {
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
         mTempRectStack.clear();
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
+                mCountX);
         requestLayout();
+    }
+
+    // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
+    public void setInvertIfRtl(boolean invert) {
+        mShortcutsAndWidgets.setInvertIfRtl(invert);
     }
 
     private void invalidateBubbleTextView(BubbleTextView icon) {
@@ -985,7 +994,8 @@ public class CellLayout extends ViewGroup {
             int vFreeSpace = vSpace - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
+                    mCountX);
         } else {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
@@ -3242,12 +3252,17 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             this.cellVSpan = cellVSpan;
         }
 
-        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap) {
+        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap,
+                boolean invertHorizontally, int colCount) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
                 final int myCellVSpan = cellVSpan;
-                final int myCellX = useTmpCoords ? tmpCellX : cellX;
-                final int myCellY = useTmpCoords ? tmpCellY : cellY;
+                int myCellX = useTmpCoords ? tmpCellX : cellX;
+                int myCellY = useTmpCoords ? tmpCellY : cellY;
+
+                if (invertHorizontally) {
+                    myCellX = colCount - myCellX - cellHSpan;
+                }
 
                 width = myCellHSpan * cellWidth + ((myCellHSpan - 1) * widthGap) -
                         leftMargin - rightMargin;
