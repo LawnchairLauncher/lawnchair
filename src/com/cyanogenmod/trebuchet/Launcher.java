@@ -168,6 +168,8 @@ public final class Launcher extends Activity
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
+    private static final String RUNTIME_STATE_CURRENT_HOTSEAT_SCREEN = "launcher.hotseat.current_screen";
+    // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
     // Type: int
     private static final String RUNTIME_STATE_PENDING_ADD_CONTAINER = "launcher.add_container";
@@ -890,6 +892,10 @@ public final class Launcher extends Activity
         if (currentScreen > -1) {
             mWorkspace.setCurrentPage(currentScreen);
         }
+        int currentHotseatScreen = savedState.getInt(RUNTIME_STATE_CURRENT_HOTSEAT_SCREEN, -1);
+        if (currentHotseatScreen > -1) {
+            mHotseat.setCurrentPage(mHotseat.getScreenFromOrder(currentHotseatScreen));
+        }
 
         final long pendingAddContainer = savedState.getLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, -1);
         final int pendingAddScreen = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
@@ -1588,6 +1594,7 @@ public final class Launcher extends Activity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
+        outState.putInt(RUNTIME_STATE_CURRENT_HOTSEAT_SCREEN, mHotseat.getScreenFromOrder(mHotseat.getCurrentPage()));
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
@@ -1984,8 +1991,18 @@ public final class Launcher extends Activity
         if (mHideIconLabels) {
             newFolder.setTextVisible(false);
         }
-        mWorkspace.addInScreen(newFolder, container, screen, cellX, cellY, 1, 1,
-                isWorkspaceLocked());
+        int x = cellX, y = cellY;
+        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+            getHotseat().hasVerticalHotseat()) {
+            // Note: If the destination of the new folder is the hotseat and
+            // the hotseat is in vertical mode, then we need to invert the xy position,
+            // so the addInScreen method will use the correct values to draw the new folder
+            // in the correct position
+            // We use the y in both case to determine the new position
+            x = getHotseat().getInverterCellXFromOrder(y);
+            y = getHotseat().getInverterCellYFromOrder(y);
+        }
+        mWorkspace.addInScreen(newFolder, container, screen, x, y, 1, 1, isWorkspaceLocked());
         return newFolder;
     }
 
