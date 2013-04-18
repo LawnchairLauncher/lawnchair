@@ -1544,6 +1544,7 @@ public final class Launcher extends Activity
                     if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                             openFolder == null) {
                         mWorkspace.moveToDefaultScreen(true);
+                        mHotseat.moveToDefaultScreen(true);
                     }
 
                     closeFolder();
