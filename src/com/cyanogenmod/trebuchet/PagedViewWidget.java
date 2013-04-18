@@ -101,7 +101,6 @@ public class PagedViewWidget extends LinearLayout {
         if (maxWidth > -1) {
             image.setMaxWidth(maxWidth);
         }
-        image.setContentDescription(info.label);
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(info.label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
@@ -116,7 +115,6 @@ public class PagedViewWidget extends LinearLayout {
         mIsAppWidget = false;
         CharSequence label = info.loadLabel(pm);
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
-        image.setContentDescription(label);
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
