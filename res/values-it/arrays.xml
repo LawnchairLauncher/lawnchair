@@ -33,6 +33,8 @@
         <item>Specchia</item>
         <item>Pila</item>
         <item>Fisarmonica</item>
+        <item>Carosello sinistra</item>
+        <item>Carosello destra</item>
     </string-array>
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
         <item>Predefinito</item>
@@ -49,6 +51,12 @@
         <item>Specchia</item>
         <item>Pila</item>
         <item>Fisarmonica</item>
+        <item>Carosello sinistra</item>
+        <item>Carosello destra</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_indicator_position_entries">
+        <item>Superiore/Sinistra</item>
+        <item>Inferiore/Destra</item>
     </string-array>
     <string-array name="preferences_interface_drawer_orientation_entries">
         <item>Orizzontale</item>
