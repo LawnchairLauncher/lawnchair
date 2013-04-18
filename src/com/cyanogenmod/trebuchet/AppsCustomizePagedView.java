@@ -657,6 +657,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         List<ResolveInfo> shortcuts = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
         for (AppWidgetProviderInfo widget : widgets) {
+            widget.label = widget.label.trim();
             if (widget.minWidth > 0 && widget.minHeight > 0) {
                 // Ensure that all widgets we show can be added on a workspace of this size
                 int[] spanXY = Launcher.getSpanForWidget(mLauncher, widget);
