@@ -200,4 +200,20 @@
     <string name="preferences_interface_dock_enabled_summary">Exibir o dock embaixo da tela inicial</string>
     <string name="preferences_interface_dock_icon_scale_title">Escala do ícone</string>
     <string name="preferences_interface_dock_icon_scale_summary">Escala do ícone no dock</string>
+    <string name="effects_standard">Padrão</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Aproximado</string>
+    <string name="effects_zoom_out">Distanciado</string>
+    <string name="effects_rotate_up">Rotacionar p/ cima</string>
+    <string name="effects_rotate_down">Rotacionar p/ baixo</string>
+    <string name="effects_cylinder_in">Cilindro interno</string>
+    <string name="effects_cylinder_out">Cilindro externo</string>
+    <string name="effects_cube_in">Cubo interno</string>
+    <string name="effects_cube_out">Cubo externo</string>
+    <string name="effects_spin">Girar</string>
+    <string name="effects_flip">Virar</string>
+    <string name="effects_stack">Pilha</string>
+    <string name="effects_accordion">Acordeão</string>
+    <string name="effects_carousel_left">Carrossel p/ esquerda</string>
+    <string name="effects_carousel_right">Carrossel p/ direita</string>
 </resources>

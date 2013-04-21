@@ -201,4 +201,20 @@
     <string name="preferences_interface_general_orientation_title">Rotazione schermo</string>
     <string name="preferences_interface_general_fullscreen_title">Modalità schermo intero</string>
     <string name="preferences_interface_general_fullscreen_summary">Nascondi la barra di stato per estendere la schermata Home</string>
+    <string name="effects_standard">Predefinito</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Riduci</string>
+    <string name="effects_zoom_out">Ingrandisci</string>
+    <string name="effects_rotate_up">Ruota su</string>
+    <string name="effects_rotate_down">Ruota giù</string>
+    <string name="effects_cylinder_in">Cilindro interno</string>
+    <string name="effects_cylinder_out">Cilindro esterno</string>
+    <string name="effects_cube_in">Cubo interno</string>
+    <string name="effects_cube_out">Cubo esterno</string>
+    <string name="effects_spin">Ruota</string>
+    <string name="effects_flip">Specchia</string>
+    <string name="effects_stack">Pila</string>
+    <string name="effects_accordion">Fisarmonica</string>
+    <string name="effects_carousel_left">Carosello sinistra</string>
+    <string name="effects_carousel_right">Carosello destra</string>
 </resources>

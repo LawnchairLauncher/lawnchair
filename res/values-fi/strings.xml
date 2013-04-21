@@ -198,4 +198,18 @@
     <string name="menu_apps_filter_downloaded">Ladatut</string>
     <string name="menu_hidden_apps_delete">Nollaa</string>
     <string name="hidden_apps_title">Piilotetut sovellukset</string>
+    <string name="effects_standard">Normaali</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Zoomaa sisään</string>
+    <string name="effects_zoom_out">Zoomaa ulos</string>
+    <string name="effects_rotate_up">Käännä ylös</string>
+    <string name="effects_rotate_down">Käännä alas</string>
+    <string name="effects_cylinder_in">Sylinteri sisään</string>
+    <string name="effects_cylinder_out">Sylinteri ulos</string>
+    <string name="effects_cube_in">Kuutio sisään</string>
+    <string name="effects_cube_out">Kuutio ulos</string>
+    <string name="effects_spin">Pyöräytä</string>
+    <string name="effects_flip">Käännä</string>
+    <string name="effects_stack">Pino</string>
+    <string name="effects_accordion">Harmonikka</string>
 </resources>

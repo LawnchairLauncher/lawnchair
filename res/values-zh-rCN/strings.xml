@@ -230,4 +230,20 @@
     <string name="preferences_interface_general_orientation_title">自动旋转屏幕</string>
     <string name="preferences_interface_general_fullscreen_title">全屏模式</string>
     <string name="preferences_interface_general_fullscreen_summary">隐藏状态栏以便扩展主屏幕</string>
+
+    <!-- Effects -->
+    <string name="effects_standard">标准</string>
+    <string name="effects_tablet">平板</string>
+    <string name="effects_zoom_in">放大</string>
+    <string name="effects_zoom_out">缩小</string>
+    <string name="effects_rotate_up">向上转动</string>
+    <string name="effects_rotate_down">向下转动</string>
+    <string name="effects_cylinder_in">圆柱凹入</string>
+    <string name="effects_cylinder_out">圆柱凸出</string>
+    <string name="effects_cube_in">立方凹入</string>
+    <string name="effects_cube_out">立方凸出</string>
+    <string name="effects_spin">旋转</string>
+    <string name="effects_flip">翻动</string>
+    <string name="effects_stack">堆叠</string>
+    <string name="effects_accordion">手风琴</string>
 </resources>

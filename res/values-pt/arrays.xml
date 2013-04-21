@@ -23,42 +23,6 @@
         <item>Topo</item>
         <item>Fundo</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Padrão</item>
-        <item>Tablet</item>
-        <item>Aproximado</item>
-        <item>Distanciado</item>
-        <item>Rotacionar p/ cima</item>
-        <item>Rotacionar p/ baixo</item>
-        <item>Cilindro interno</item>
-        <item>Cilindro externo</item>
-        <item>Cubo interno</item>
-        <item>Cubo externo</item>
-        <item>Girar</item>
-        <item>Virar</item>
-        <item>Pilha</item>
-        <item>Acordeão</item>
-        <item>Carrossel p/ esquerda</item>
-        <item>Carrossel p/ direita</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Padrão</item>
-        <item>Tablet</item>
-        <item>Aproximado</item>
-        <item>Distanciado</item>
-        <item>Rotacionar p/ cima</item>
-        <item>Rotacionar p/ baixo</item>
-        <item>Cilindro interno</item>
-        <item>Cilindro externo</item>
-        <item>Cubo interno</item>
-        <item>Cubo externo</item>
-        <item>Girar</item>
-        <item>Virar</item>
-        <item>Pilha</item>
-        <item>Acordeão</item>
-        <item>Carrossel p/ esquerda</item>
-        <item>Carrossel p/ direita</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Topo/Esquerda</item>
         <item>Fundo/Direita</item>

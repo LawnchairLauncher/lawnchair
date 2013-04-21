@@ -211,4 +211,20 @@
     <string name="preferences_interface_general_orientation_title">Autoobracanie ekranu</string>
     <string name="preferences_interface_general_fullscreen_title">Tryb pełnoekranowy</string>
     <string name="preferences_interface_general_fullscreen_summary">Ukrywa pasek stanu, by rozszerzyć stronę główną</string>
+
+    <!-- Effects -->
+    <string name="effects_standard">Standardowo</string>
+    <string name="effects_tablet">Jak w tablecie</string>
+    <string name="effects_zoom_in">Powiększanie</string>
+    <string name="effects_zoom_out">Zmniejszanie</string>
+    <string name="effects_rotate_up">Obrót w górę</string>
+    <string name="effects_rotate_down">Obrót w dół</string>
+    <string name="effects_cylinder_in">Cylinder wewn.</string>
+    <string name="effects_cylinder_out">Cylinder zewn.</string>
+    <string name="effects_cube_in">Kostka wewn.</string>
+    <string name="effects_cube_out">Kostka zewn.</string>
+    <string name="effects_spin">Wirowanie</string>
+    <string name="effects_flip">Przerzucanie</string>
+    <string name="effects_stack">Układanie</string>
+    <string name="effects_accordion">Akordeonowo</string>
 </resources>

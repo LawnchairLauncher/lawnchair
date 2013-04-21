@@ -23,38 +23,6 @@
         <item>Fent</item>
         <item>Lent</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Csúsztatás</item>
-        <item>Táblagép</item>
-        <item>Nagyítás befelé</item>
-        <item>Nagyítás kifelé</item>
-        <item>Forgatás felfelé</item>
-        <item>Forgatás lefelé</item>
-        <item>Henger belül</item>
-        <item>Henger kívül</item>
-        <item>Kocka belül</item>
-        <item>Kocka kívül</item>
-        <item>Pörgetés</item>
-        <item>Forgatás</item>
-        <item>Kártyapakli</item>
-        <item>Harmónika</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Csúsztatás</item>
-        <item>Táblagép</item>
-        <item>Nagyítás befelé</item>
-        <item>Nagyítás kifelé</item>
-        <item>Forgatás felfelé</item>
-        <item>Forgatás lefelé</item>
-        <item>Henger belül</item>
-        <item>Henger kívül</item>
-        <item>Kocka belül</item>
-        <item>Kocka kívül</item>
-        <item>Pörgetés</item>
-        <item>Forgatás</item>
-        <item>Kártyapakli</item>
-        <item>Harmónika</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Fent/Bal oldalon</item>
         <item>Lent/Jobb oldalon</item>

@@ -204,4 +204,19 @@
     <string name="preferences_interface_general_orientation_title">"Rotire automată a ecranului"</string>
     <string name="preferences_interface_general_fullscreen_title">"Ecran complet"</string>
     <string name="preferences_interface_general_fullscreen_summary">Ascundeţi bara de stare pentru a extinde ecranul de pornire"</string>
+
+    <string name="effects_standard">"Standard"</string>
+    <string name="effects_tablet">"Tabletă"</string>
+    <string name="effects_zoom_in">"Mărire"</string>
+    <string name="effects_zoom_out">"Micşorare"</string>
+    <string name="effects_rotate_up">"Rotire în Sus"</string>
+    <string name="effects_rotate_down">"Rotire în Jos"</string>
+    <string name="effects_cylinder_in">"Cilindru Interior"</string>
+    <string name="effects_cylinder_out">"Cilindru Exterior"</string>
+    <string name="effects_cube_in">"Cub Interior"</string>
+    <string name="effects_cube_out">"Cub Exterior"</string>
+    <string name="effects_spin">"Rotire"</string>
+    <string name="effects_flip">"Răsturnare"</string>
+    <string name="effects_stack">"Stivă"</string>
+    <string name="effects_accordion">"Acordeon"</string>
 </resources>

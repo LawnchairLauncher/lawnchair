@@ -24,44 +24,6 @@
         <item>Unten</item>
     </string-array>
 
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tablett</item>
-        <item>Hineinzoomen</item>
-        <item>Herauszoomen</item>
-        <item>Rotieren oben</item>
-        <item>Rotieren unten</item>
-        <item>Zylinder innen</item>
-        <item>Zylinder außen</item>
-        <item>Würfel innen</item>
-        <item>Würfel außen</item>
-        <item>Wirbeln</item>
-        <item>Blättern</item>
-        <item>Stapeln</item>
-        <item>Akkordeon</item>
-        <item>Karussell links</item>
-        <item>Karussell rechts</item>
-    </string-array>
-
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tablett</item>
-        <item>Hineinzoomen</item>
-        <item>Herauszoomen</item>
-        <item>Rotieren oben</item>
-        <item>Rotieren unten</item>
-        <item>Zylinder innen</item>
-        <item>zylinder außen</item>
-        <item>Würfel innen</item>
-        <item>Würfel außen</item>
-        <item>Wirbeln</item>
-        <item>Blättern</item>
-        <item>Stapeln</item>
-        <item>Akkordeon</item>
-        <item>Karussell links</item>
-        <item>Karussell rechts</item>
-    </string-array>
-
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Oben/Links</item>
         <item>Unten/Rechts</item>

@@ -215,4 +215,22 @@
     <string name="preferences_interface_general_orientation_title">Автоповорот экрана</string>
     <string name="preferences_interface_general_fullscreen_title">Полноэкранный режим</string>
     <string name="preferences_interface_general_fullscreen_summary">Скрывать строку состояния для увеличения площади домашних экранов</string>
+
+    <!-- Effects -->
+    <string name="effects_standard">Стандартный</string>
+    <string name="effects_tablet">Планшетный</string>
+    <string name="effects_zoom_in">Увеличение</string>
+    <string name="effects_zoom_out">Уменьшение</string>
+    <string name="effects_rotate_up">Вращение вверх</string>
+    <string name="effects_rotate_down">Вращение вниз</string>
+    <string name="effects_cylinder_in">Внутри круга</string>
+    <string name="effects_cylinder_out">Вне круга</string>
+    <string name="effects_cube_in">В куб</string>
+    <string name="effects_cube_out">Из куба</string>
+    <string name="effects_spin">Вращение</string>
+    <string name="effects_flip">Переворот</string>
+    <string name="effects_stack">Друг на друга</string>
+    <string name="effects_accordion">Аккордеон</string>
+    <string name="effects_carousel_left">Карусель влево</string>
+    <string name="effects_carousel_right">Карусель вправо</string>
 </resources>

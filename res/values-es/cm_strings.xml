@@ -106,4 +106,20 @@
     <string name="preferences_interface_general_orientation_title">Rotación automática pantalla</string>
     <string name="preferences_interface_general_fullscreen_title">Modo pantalla completa</string>
     <string name="preferences_interface_general_fullscreen_summary">Ocultar la barra de estado para extender la pantalla de inicio</string>
+    <string name="effects_standard">Estándar</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Zoom entrante</string>
+    <string name="effects_zoom_out">Zoom saliente</string>
+    <string name="effects_rotate_up">Rotar arriba</string>
+    <string name="effects_rotate_down">Rotar abajo</string>
+    <string name="effects_cylinder_in">Cilíndrico entrante</string>
+    <string name="effects_cylinder_out">Cilíndrico saliente</string>
+    <string name="effects_cube_in">Cúbico entrante</string>
+    <string name="effects_cube_out">Cúbico saliente</string>
+    <string name="effects_spin">Girar</string>
+    <string name="effects_flip">Voltear</string>
+    <string name="effects_stack">Apilar</string>
+    <string name="effects_accordion">Acordeón</string>
+    <string name="effects_carousel_left">Carrusel izquierda</string>
+    <string name="effects_carousel_right">Carrusel derecha</string>
 </resources>

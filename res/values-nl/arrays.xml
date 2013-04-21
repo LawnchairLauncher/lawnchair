@@ -21,38 +21,6 @@
         <item>Bovenaan</item>
         <item>Onderaan</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standaard</item>
-        <item>Tablet</item>
-        <item>Inzoomen</item>
-        <item>Uitzoomen</item>
-        <item>Naar boven draaien</item>
-        <item>Naar beneden draaien</item>
-        <item>Cylinder-in</item>
-        <item>Cylinder-uit</item>
-        <item>Kubus-in</item>
-        <item>Kubus-uit</item>
-        <item>Draaien</item>
-        <item>Spiegelen</item>
-        <item>Stapel</item>
-        <item>Accordeon</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standaard</item>
-        <item>Tablet</item>
-        <item>Inzoomen</item>
-        <item>Uitzoomen</item>
-        <item>Naar boven draaien</item>
-        <item>Naar beneden draaien</item>
-        <item>Cylinder-in</item>
-        <item>Cylinder-uit</item>
-        <item>Kubus-in</item>
-        <item>Kubus-uit</item>
-        <item>Draaien</item>
-        <item>Spiegelen</item>
-        <item>Stapel</item>
-        <item>Accordeon</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Boven/links</item>
         <item>Beneden/rechts</item>

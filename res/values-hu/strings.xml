@@ -233,4 +233,20 @@
     <string name="preferences_interface_general_fullscreen_title">Teljes képernyő</string>
     <string name="preferences_interface_general_fullscreen_summary">Értesítési sáv elrejtése a kezdőképernyő kiterjesztéséhez</string>
 
+    <!-- Effects -->
+    <string name="effects_standard">Csúsztatás</string>
+    <string name="effects_tablet">Táblagép</string>
+    <string name="effects_zoom_in">Nagyítás befelé</string>
+    <string name="effects_zoom_out">Nagyítás kifelé</string>
+    <string name="effects_rotate_up">Forgatás felfelé</string>
+    <string name="effects_rotate_down">Forgatás lefelé</string>
+    <string name="effects_cylinder_in">Henger belül</string>
+    <string name="effects_cylinder_out">Henger kívül</string>
+    <string name="effects_cube_in">Kocka belül</string>
+    <string name="effects_cube_out">Kocka kívül</string>
+    <string name="effects_spin">Pörgetés</string>
+    <string name="effects_flip">Forgatás</string>
+    <string name="effects_stack">Kártyapakli</string>
+    <string name="effects_accordion">Harmónika</string>
+
 </resources>

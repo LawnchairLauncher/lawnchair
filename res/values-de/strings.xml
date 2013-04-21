@@ -268,4 +268,22 @@
     <string name="preferences_interface_general_orientation_title">Automatische Seitenausrichtung</string>
     <string name="preferences_interface_general_fullscreen_title">Vollbildmodus</string>
     <string name="preferences_interface_general_fullscreen_summary">Statusleiste für Vollbildansicht ausblenden</string>
+
+    <!-- Effects -->
+    <string name="effects_standard">Standard</string>
+    <string name="effects_tablet">Tablett</string>
+    <string name="effects_zoom_in">Hineinzoomen</string>
+    <string name="effects_zoom_out">Herauszoomen</string>
+    <string name="effects_rotate_up">Rotieren oben</string>
+    <string name="effects_rotate_down">Rotieren unten</string>
+    <string name="effects_cylinder_in">Zylinder innen</string>
+    <string name="effects_cylinder_out">Zylinder außen</string>
+    <string name="effects_cube_in">Würfel innen</string>
+    <string name="effects_cube_out">Würfel außen</string>
+    <string name="effects_spin">Wirbeln</string>
+    <string name="effects_flip">Blättern</string>
+    <string name="effects_stack">Stapeln</string>
+    <string name="effects_accordion">Akkordeon</string>
+    <string name="effects_carousel_left">Karussell links</string>
+    <string name="effects_carousel_right">Karussell rechts</string>
 </resources>

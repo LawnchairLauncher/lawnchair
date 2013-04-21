@@ -23,38 +23,6 @@
         <item>En haut</item>
         <item>En bas</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tablette</item>
-        <item>Zoom intérieur</item>
-        <item>Zoom extérieur</item>
-        <item>Rotation vers le haut</item>
-        <item>Rotation vers le bas</item>
-        <item>Cylindre intérieur</item>
-        <item>Cylindre extérieur</item>
-        <item>Cube intérieur</item>
-        <item>Cube extérieur</item>
-        <item>Retournement</item>
-        <item>Feuille</item>
-        <item>Empilement</item>
-        <item>Accordéon</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tablette</item>
-        <item>Zoom intérieur</item>
-        <item>Zoom extérieur</item>
-        <item>Rotation vers le haut</item>
-        <item>Rotation vers le bas</item>
-        <item>Cylindre intérieur</item>
-        <item>Cylindre extérieur</item>
-        <item>Cube intérieur</item>
-        <item>Cube extérieur</item>
-        <item>Retournement</item>
-        <item>Feuille</item>
-        <item>Empilement</item>
-        <item>Accordéon</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Haut/Gauche</item>
         <item>Bas/Droite</item>

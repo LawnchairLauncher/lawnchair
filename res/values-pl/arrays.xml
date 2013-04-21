@@ -23,38 +23,6 @@
         <item>Na górze</item>
         <item>Na dole</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standardowo</item>
-        <item>Jak w tablecie</item>
-        <item>Powiększanie</item>
-        <item>Zmniejszanie</item>
-        <item>Obrót w górę</item>
-        <item>Obrót w dół</item>
-        <item>Cylinder wewn.</item>
-        <item>Cylinder zewn.</item>
-        <item>Kostka wewn.</item>
-        <item>Kostka zewn.</item>
-        <item>Wirowanie</item>
-        <item>Przerzucanie</item>
-        <item>Układanie</item>
-        <item>Akordeonowo</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standardowo</item>
-        <item>Jak w tablecie</item>
-        <item>Powiększanie</item>
-        <item>Zmniejszanie</item>
-        <item>Obrót w górę</item>
-        <item>Obrót w dół</item>
-        <item>Cylinder wewn.</item>
-        <item>Cylinder zewn.</item>
-        <item>Kostka wewn.</item>
-        <item>Kostka zewn.</item>
-        <item>Wirowanie</item>
-        <item>Przerzucanie</item>
-        <item>Układanie</item>
-        <item>Akordeonowo</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Góra/Lewo</item>
         <item>Dół/Prawo</item>

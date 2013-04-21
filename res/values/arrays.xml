@@ -28,23 +28,23 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tablet</item>
-        <item>Zoom In</item>
-        <item>Zoom Out</item>
-        <item>Rotate Up</item>
-        <item>Rotate Down</item>
-        <item>Cylinder In</item>
-        <item>Cylinder Out</item>
-        <item>Cube In</item>
-        <item>Cube Out</item>
-        <item>Spin</item>
-        <item>Flip</item>
-        <item>Stack</item>
-        <item>Accordion</item>
-        <item>Carousel left</item>
-        <item>Carousel right</item>
+    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries" translatable="false">
+        <item>@string/effects_standard</item>
+        <item>@string/effects_tablet</item>
+        <item>@string/effects_zoom_in</item>
+        <item>@string/effects_zoom_out</item>
+        <item>@string/effects_rotate_up</item>
+        <item>@string/effects_rotate_down</item>
+        <item>@string/effects_cylinder_in</item>
+        <item>@string/effects_cylinder_out</item>
+        <item>@string/effects_cube_in</item>
+        <item>@string/effects_cube_out</item>
+        <item>@string/effects_spin</item>
+        <item>@string/effects_flip</item>
+        <item>@string/effects_stack</item>
+        <item>@string/effects_accordion</item>
+        <item>@string/effects_carousel_left</item>
+        <item>@string/effects_carousel_right</item>
     </string-array>
     <string-array name="preferences_interface_homescreen_scrolling_transition_effect_values" translatable="false">
         <item>Standard</item>
@@ -64,23 +64,23 @@
         <item>CarouselLeft</item>
         <item>CarouselRight</item>
     </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standard</item>
-        <item>Tablet</item>
-        <item>Zoom In</item>
-        <item>Zoom Out</item>
-        <item>Rotate Up</item>
-        <item>Rotate Down</item>
-        <item>Cylinder In</item>
-        <item>Cylinder Out</item>
-        <item>Cube In</item>
-        <item>Cube Out</item>
-        <item>Spin</item>
-        <item>Flip</item>
-        <item>Stack</item>
-        <item>Accordion</item>
-        <item>Carousel left</item>
-        <item>Carousel right</item>
+    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries" translatable="false">
+        <item>@string/effects_standard</item>
+        <item>@string/effects_tablet</item>
+        <item>@string/effects_zoom_in</item>
+        <item>@string/effects_zoom_out</item>
+        <item>@string/effects_rotate_up</item>
+        <item>@string/effects_rotate_down</item>
+        <item>@string/effects_cylinder_in</item>
+        <item>@string/effects_cylinder_out</item>
+        <item>@string/effects_cube_in</item>
+        <item>@string/effects_cube_out</item>
+        <item>@string/effects_spin</item>
+        <item>@string/effects_flip</item>
+        <item>@string/effects_stack</item>
+        <item>@string/effects_accordion</item>
+        <item>@string/effects_carousel_left</item>
+        <item>@string/effects_carousel_right</item>
     </string-array>
     <string-array name="preferences_interface_drawer_scrolling_transition_effect_values" translatable="false">
         <item>Standard</item>

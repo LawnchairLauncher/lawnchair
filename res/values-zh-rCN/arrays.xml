@@ -24,38 +24,6 @@
         <item>顶部</item>
         <item>底部</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>标准</item>
-        <item>平板</item>
-        <item>放大</item>
-        <item>缩小</item>
-        <item>向上转动</item>
-        <item>向下转动</item>
-        <item>圆柱凹入</item>
-        <item>圆柱凸出</item>
-        <item>立方凹入</item>
-        <item>立方凸出</item>
-        <item>旋转</item>
-        <item>翻动</item>
-        <item>堆叠</item>
-        <item>手风琴</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>标准</item>
-        <item>平板</item>
-        <item>放大</item>
-        <item>缩小</item>
-        <item>向上转动</item>
-        <item>向下转动</item>
-        <item>圆柱凹入</item>
-        <item>圆柱凸出</item>
-        <item>立方凹入</item>
-        <item>立方凸出</item>
-        <item>旋转</item>
-        <item>翻动</item>
-        <item>堆叠</item>
-        <item>手风琴</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>上方/左方</item>
         <item>下方/右方</item>

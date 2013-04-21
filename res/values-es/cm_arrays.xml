@@ -20,42 +20,6 @@
         <item>Arriba</item>
         <item>Abajo</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Estándar</item>
-        <item>Tablet</item>
-        <item>Zoom entrante</item>
-        <item>Zoom saliente</item>
-        <item>Rotar arriba</item>
-        <item>Rotar abajo</item>
-        <item>Cilíndrico entrante</item>
-        <item>Cilíndrico saliente</item>
-        <item>Cúbico entrante</item>
-        <item>Cúbico saliente</item>
-        <item>Girar</item>
-        <item>Voltear</item>
-        <item>Apilar</item>
-        <item>Acordeón</item>
-        <item>Carrusel izquierda</item>
-        <item>Carrusel derecha</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Estándar</item>
-        <item>Tablet</item>
-        <item>Zoom entrante</item>
-        <item>Zoom saliente</item>
-        <item>Rotar arriba</item>
-        <item>Rotar abajo</item>
-        <item>Cilíndrico entrante</item>
-        <item>Cilíndrico saliente</item>
-        <item>Cúbico entrante</item>
-        <item>Cúbico saliente</item>
-        <item>Girar</item>
-        <item>Voltear</item>
-        <item>Apilar</item>
-        <item>Acordeón</item>
-        <item>Carrusel izquierda</item>
-        <item>Carrusel derecha</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Arriba/Izquierda</item>
         <item>Abajo/Derecha</item>

@@ -106,4 +106,18 @@
     <string name="preferences_interface_general_orientation_title">Rotation auto. de l\'écran</string>
     <string name="preferences_interface_general_fullscreen_title">Plein écran</string>
     <string name="preferences_interface_general_fullscreen_summary">Cacher la barre d\'état pour étendre l\'écran d\'accueil</string>
+    <string name="effects_standard">Standard</string>
+    <string name="effects_tablet">Tablette</string>
+    <string name="effects_zoom_in">Zoom intérieur</string>
+    <string name="effects_zoom_out">Zoom extérieur</string>
+    <string name="effects_rotate_up">Rotation vers le haut</string>
+    <string name="effects_rotate_down">Rotation vers le bas</string>
+    <string name="effects_cylinder_in">Cylindre intérieur</string>
+    <string name="effects_cylinder_out">Cylindre extérieur</string>
+    <string name="effects_cube_in">Cube intérieur</string>
+    <string name="effects_cube_out">Cube extérieur</string>
+    <string name="effects_spin">Retournement</string>
+    <string name="effects_flip">Feuille</string>
+    <string name="effects_stack">Empilement</string>
+    <string name="effects_accordion">Accordéon</string>
 </resources>

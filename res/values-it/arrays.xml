@@ -18,42 +18,6 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Predefinito</item>
-        <item>Tablet</item>
-        <item>Riduci</item>
-        <item>Ingrandisci</item>
-        <item>Ruota su</item>
-        <item>Ruota giù</item>
-        <item>Cilindro interno</item>
-        <item>Cilindro esterno</item>
-        <item>Cubo interno</item>
-        <item>Cubo esterno</item>
-        <item>Ruota</item>
-        <item>Specchia</item>
-        <item>Pila</item>
-        <item>Fisarmonica</item>
-        <item>Carosello sinistra</item>
-        <item>Carosello destra</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Predefinito</item>
-        <item>Tablet</item>
-        <item>Riduci</item>
-        <item>Ingrandisci</item>
-        <item>Ruota su</item>
-        <item>Ruota giù</item>
-        <item>Cilindro interno</item>
-        <item>Cilindro esterno</item>
-        <item>Cubo interno</item>
-        <item>Cubo esterno</item>
-        <item>Ruota</item>
-        <item>Specchia</item>
-        <item>Pila</item>
-        <item>Fisarmonica</item>
-        <item>Carosello sinistra</item>
-        <item>Carosello destra</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Superiore/Sinistra</item>
         <item>Inferiore/Destra</item>

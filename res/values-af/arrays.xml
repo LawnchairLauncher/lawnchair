@@ -23,38 +23,6 @@
         <item>Bo</item>
         <item>Onderkant</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Standaard</item>
-        <item>Tablet</item>
-        <item>Zoom in</item>
-        <item>Zoom uit</item>
-        <item>Roteer op</item>
-        <item>Roteer af</item>
-        <item>Silinder in</item>
-        <item>Silinder uit</item>
-        <item>Kubus in</item>
-        <item>Kubus uit</item>
-        <item>Spin</item>
-        <item>Flip</item>
-        <item>Stapel</item>
-        <item>Konsertina</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Standaard</item>
-        <item>Tablet</item>
-        <item>Zoom in</item>
-        <item>Zoom uit</item>
-        <item>Roteer op</item>
-        <item>Roteer af</item>
-        <item>Silinder in</item>
-        <item>Silinder uit</item>
-        <item>Kubus in</item>
-        <item>Kubus uit</item>
-        <item>Spin</item>
-        <item>Flip</item>
-        <item>Stapel</item>
-        <item>Konsertina</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Bo/Links</item>
         <item>Onder/Regs</item>

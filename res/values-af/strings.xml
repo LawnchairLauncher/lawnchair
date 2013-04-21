@@ -202,5 +202,20 @@
     <string name="preferences_interface_general_fullscreen_title">Volskerm</string>
     <string name="preferences_interface_general_fullscreen_summary">Versteek die statusbalk om die tuisskerm te vergroot</string>
 
+    <string name="effects_standard">Standaard</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Zoom in</string>
+    <string name="effects_zoom_out">Zoom uit</string>
+    <string name="effects_rotate_up">Roteer op</string>
+    <string name="effects_rotate_down">Roteer af</string>
+    <string name="effects_cylinder_in">Silinder in</string>
+    <string name="effects_cylinder_out">Silinder uit</string>
+    <string name="effects_cube_in">Kubus in</string>
+    <string name="effects_cube_out">Kubus uit</string>
+    <string name="effects_spin">Spin</string>
+    <string name="effects_flip">Flip</string>
+    <string name="effects_stack">Stapel</string>
+    <string name="effects_accordion">Konsertina</string>
+
     <!-- CYANOGENMOD ADDITIONS END -->
 </resources>

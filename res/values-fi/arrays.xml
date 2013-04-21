@@ -23,38 +23,6 @@
         <item>Ylhäällä</item>
         <item>Alhaalla</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries">
-        <item>Normaali</item>
-        <item>Tablet</item>
-        <item>Zoomaa sisään</item>
-        <item>Zoomaa ulos</item>
-        <item>Käännä ylös</item>
-        <item>Käännä alas</item>
-        <item>Sylinteri sisään</item>
-        <item>Sylinteri ulos</item>
-        <item>Kuutio sisään</item>
-        <item>Kuutio ulos</item>
-        <item>Pyöräytä</item>
-        <item>Käännä</item>
-        <item>Pino</item>
-        <item>Harmonikka</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries">
-        <item>Normaali</item>
-        <item>Tablet</item>
-        <item>Zoomaa sisään</item>
-        <item>Zoomaa ulos</item>
-        <item>Käännä ylös</item>
-        <item>Käännä alas</item>
-        <item>Sylinteri sisään</item>
-        <item>Sylinteri ulos</item>
-        <item>Kuutio sisään</item>
-        <item>Kuutio ulos</item>
-        <item>Pyöräytä</item>
-        <item>Käännä</item>
-        <item>Pino</item>
-        <item>Harmonikka</item>
-    </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
         <item>Ylhäällä/Vasemmalla</item>
         <item>Alhaalla/Oikealla</item>
