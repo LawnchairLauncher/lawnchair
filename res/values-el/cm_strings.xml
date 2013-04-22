@@ -105,4 +105,20 @@
     <string name="preferences_interface_general_orientation_title">Αυτόματη περιστροφή οθόνης</string>
     <string name="preferences_interface_general_fullscreen_title">Λειτουργία πλήρους οθόνης</string>
     <string name="preferences_interface_general_fullscreen_summary">Απόκρυψη της μπάρας ειδοποιήσεων για επέκταση της αρχικής οθόνης</string>
+    <string name="effects_standard">Κανονικό</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Ζουμ μέσα</string>
+    <string name="effects_zoom_out">Ζουμ έξω</string>
+    <string name="effects_rotate_up">Περιστροφή πάνω</string>
+    <string name="effects_rotate_down">Περιστροφή κάτω</string>
+    <string name="effects_cylinder_in">Κύλινδρος μέσα</string>
+    <string name="effects_cylinder_out">Κύλινδρος έξω</string>
+    <string name="effects_cube_in">Κύβος μέσα</string>
+    <string name="effects_cube_out">Κύβος έξω</string>
+    <string name="effects_spin">Στροβιλισμός</string>
+    <string name="effects_flip">Αναποδογύρισμα</string>
+    <string name="effects_stack">Στοίβα</string>
+    <string name="effects_accordion">Ακορντεόν</string>
+    <string name="effects_carousel_left">Καρουσέλ αριστερά</string>
+    <string name="effects_carousel_right">Καρουσέλ δεξιά</string>
 </resources>
