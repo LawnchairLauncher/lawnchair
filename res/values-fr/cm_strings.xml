@@ -120,4 +120,6 @@
     <string name="effects_flip">Feuille</string>
     <string name="effects_stack">Empilement</string>
     <string name="effects_accordion">Accordéon</string>
+    <string name="effects_carousel_left">Carrousel à gauche</string>
+    <string name="effects_carousel_right">Carrousel à droite</string>
 </resources>
