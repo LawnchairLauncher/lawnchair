@@ -128,7 +128,6 @@ public class PagedViewWidget extends LinearLayout {
         mIsAppWidget = false;
         mInfo = info;
         CharSequence label = info.loadLabel(pm);
-        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);

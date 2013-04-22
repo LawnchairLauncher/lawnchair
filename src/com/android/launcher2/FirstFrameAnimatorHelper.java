@@ -19,11 +19,10 @@ package com.android.launcher2;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.util.Log;
-import android.view.ViewTreeObserver;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
+import android.view.ViewTreeObserver;
 
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
