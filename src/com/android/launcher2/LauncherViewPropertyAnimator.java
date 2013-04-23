@@ -19,9 +19,8 @@ package com.android.launcher2;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.view.ViewPropertyAnimator;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

@@ -106,7 +106,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private static String sDefaultFolderName;
     private static String sHintText;
-    private ObjectAnimator mOpenCloseAnimator;
 
     private boolean mDestroyed;
 
@@ -421,7 +420,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
-        final ObjectAnimator oa = mOpenCloseAnimator =
+        final ObjectAnimator oa =
             LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {
@@ -471,7 +470,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.9f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
-        final ObjectAnimator oa = mOpenCloseAnimator =
+        final ObjectAnimator oa =
                 LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {

@@ -94,7 +94,6 @@ public class Workspace extends SmoothPagedView
     private Drawable mBackground;
     boolean mDrawBackground = true;
     private float mBackgroundAlpha = 0;
-    private float mOverScrollMaxBackgroundAlpha = 0.0f;
 
     private float mWallpaperScrollRatio = 1.0f;
     private int mOriginalPageSpacing;
@@ -786,7 +785,6 @@ public class Workspace extends SmoothPagedView
                 hideScrollingIndicator(false);
             }
         }
-        mOverScrollMaxBackgroundAlpha = 0.0f;
 
         if (mDelayedResizeRunnable != null) {
             mDelayedResizeRunnable.run();
