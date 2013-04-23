@@ -718,6 +718,18 @@ public final class Launcher extends Activity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        FirstFrameAnimatorHelper.setIsVisible(false);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirstFrameAnimatorHelper.setIsVisible(true);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
