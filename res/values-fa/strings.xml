@@ -100,7 +100,7 @@
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"اگر می‌خواهید برنامه‌ای را به صفحهٔ اصلی خود اضافه کنید، آن را لمس کرده و نگه دارید."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"برنامه‌های خود را با پوشه‌ها سازماندهی کنید"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"برای جابجا کردن یک برنامه، آن را لمس کرده و نگهدارید."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحهٔ اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشهٔ جدید در صفحهٔ اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"تأیید"</string>
     <string name="folder_opened" msgid="1262064100943801533">"پوشه باز شده، <xliff:g id="WIDTH">%1$d</xliff:g> در <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"برای بستن پوشه لمس کنید"</string>
