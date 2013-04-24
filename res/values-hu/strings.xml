@@ -248,5 +248,7 @@
     <string name="effects_flip">Forgatás</string>
     <string name="effects_stack">Kártyapakli</string>
     <string name="effects_accordion">Harmónika</string>
+    <string name="effects_carousel_left">Körhinta balra</string>
+    <string name="effects_carousel_right">Körhinta jobbra</string>
 
 </resources>
