@@ -67,11 +67,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
-<<<<<<< HEAD:src/com/cyanogenmod/trebuchet/Launcher.java
 import android.os.UserHandle;
-=======
 import android.os.UserManager;
->>>>>>> e233a8b... Hide clings in child mode:src/com/android/launcher2/Launcher.java
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -4279,9 +4276,13 @@ public final class Launcher extends Activity
         // seeded when they start up for the first time. Clings won't work well with that
         boolean supportsLimitedUsers =
                 android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
-        if (supportsLimitedUsers) {
-            final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
-            if (um.isUserLimited()) return false;
+        Account[] accounts = AccountManager.get(this).getAccounts();
+        if (supportsLimitedUsers && accounts.length == 0) {
+            UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
+            Bundle restrictions = um.getUserRestrictions();
+            if (restrictions.getBoolean(UserManager.DISALLOW_MODIFY_ACCOUNTS, false)) {
+               return false;
+            }
         }
         return true;
     }
