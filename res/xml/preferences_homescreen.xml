@@ -45,7 +45,8 @@
             launcher:min="1" />
         <CheckBoxPreference android:key="ui_homescreen_stretch_screens"
             android:title="@string/preferences_interface_homescreen_general_stretch_screens_title"
-            android:summary="@string/preferences_interface_homescreen_general_stretch_screens_summary" />
+            android:summary="@string/preferences_interface_homescreen_general_stretch_screens_summary"
+            android:defaultValue="true" />
         <CheckBoxPreference android:key="ui_homescreen_general_search"
             android:title="@string/preferences_interface_homescreen_general_search_title"
             android:summary="@string/preferences_interface_homescreen_general_search_summary"

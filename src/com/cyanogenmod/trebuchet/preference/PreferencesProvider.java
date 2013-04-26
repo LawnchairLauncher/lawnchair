@@ -77,7 +77,7 @@ public final class PreferencesProvider {
                 }
             }
             public static boolean getStretchScreens() {
-                return getBoolean("ui_homescreen_stretch_screens", false);
+                return getBoolean("ui_homescreen_stretch_screens", true);
             }
             public static boolean getShowSearchBar() {
                 return getBoolean("ui_homescreen_general_search", true);
