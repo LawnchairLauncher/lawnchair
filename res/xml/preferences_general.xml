@@ -20,6 +20,10 @@
     android:title="@string/preferences_interface_general_title">
     <CheckBoxPreference android:key="ui_general_orientation"
         android:title="@string/preferences_interface_general_orientation_title" />
+    <CheckBoxPreference android:key="ui_general_lock_workspace"
+        android:title="@string/preferences_interface_general_lock_workspace_title"
+        android:summary="@string/preferences_interface_general_lock_workspace_summary"
+        android:defaultValue="@bool/lock_workspace" />
     <CheckBoxPreference android:key="ui_general_fullscreen"
         android:title="@string/preferences_interface_general_fullscreen_title"
         android:summary="@string/preferences_interface_general_fullscreen_summary" />

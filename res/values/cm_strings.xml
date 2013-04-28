@@ -28,6 +28,11 @@
     <!-- Label for the info icon. [CHAR_LIMIT=30] -->
     <string name="edit_target_label">Edit</string>
 
+    <!-- Menu item used to lock workspace -->
+    <string name="menu_lock_workspace">Lock homescreen</string>
+    <!-- Menu item used to unlock workspace -->
+    <string name="menu_unlock_workspace">Unlock homescreen</string>
+
     <!-- Noun, menu item used to show the launcher preferences -->
     <string name="menu_preferences">Trebuchet settings</string>
 
@@ -50,6 +55,9 @@
 
     <!-- Hidden apps -->
     <string name="hidden_apps_title">Hidden apps</string>
+
+    <!-- Workspace is locked -->
+    <string name="workspace_locked">Homescreen is locked, unlock in settings to rearrange</string>
 
     <!-- Settings -->
     <string name="preferences_title">Settings</string>
@@ -142,6 +150,8 @@
     <!-- General -->
     <string name="preferences_interface_general_title">General</string>
     <string name="preferences_interface_general_orientation_title">Auto-rotate screen</string>
+    <string name="preferences_interface_general_lock_workspace_title">Lock homescreen</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Lock shortcuts and folders positions in the homescreen, dock and apps and widgets drawer</string>
     <string name="preferences_interface_general_fullscreen_title">Fullscreen mode</string>
     <string name="preferences_interface_general_fullscreen_summary">Hide the status bar to extend the homescreen</string>
 

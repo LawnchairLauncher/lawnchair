@@ -2,6 +2,7 @@
     <bool name="config_largeHeap">false</bool>
     <bool name="is_large_screen">false</bool>
     <bool name="allow_rotation">false</bool>
+    <bool name="lock_workspace">false</bool>
 
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>

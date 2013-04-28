@@ -204,6 +204,9 @@ public final class PreferencesProvider {
             public static boolean getAutoRotate(boolean def) {
                 return getBoolean("ui_general_orientation", def);
             }
+            public static boolean getLockWorkspace(boolean def) {
+                return getBoolean("ui_general_lock_workspace", def);
+            }
             public static boolean getFullscreenMode() {
                 return getBoolean("ui_general_fullscreen", false);
             }
