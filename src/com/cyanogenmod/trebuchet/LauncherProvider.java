@@ -896,11 +896,15 @@ public class LauncherProvider extends ContentProvider {
         private long addAllAppsButton(SQLiteDatabase db, ContentValues values) {
             Resources r = mContext.getResources();
 
+            Intent intent = new Intent();
+            intent.setClassName(mContext.getPackageName(), Launcher.class.getName());
+
             long id = generateNewId();
             values.put(Favorites.TITLE, r.getString(R.string.all_apps_button_label));
             values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_ALLAPPS);
             values.put(Favorites.SPANX, 1);
             values.put(Favorites.SPANY, 1);
+            values.put(Favorites.INTENT, intent.toUri(0));
             values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
             values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
             values.put(Favorites.ICON_RESOURCE, r.getResourceName(R.drawable.all_apps_button_icon));

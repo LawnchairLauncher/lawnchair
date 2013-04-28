@@ -197,6 +197,9 @@ public final class PreferencesProvider {
             public static int getNumberIcons(int def) {
                 return getInt("ui_dock_icons", def);
             }
+            public static boolean getHideIconLabels() {
+                return getBoolean("ui_dock_hide_icon_labels", true);
+            }
             public static int getIconScale(int def) {
                 return getInt("ui_dock_icon_scale", def);
             }

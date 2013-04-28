@@ -87,6 +87,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -319,6 +320,7 @@ public final class Launcher extends Activity
     private boolean mShowHotseat;
     private boolean mShowDockDivider;
     private boolean mHideIconLabels;
+    private boolean mHideDockIconLabels;
     private boolean mAutoRotate;
     private boolean mLockWorkspace;
     private boolean mFullscreenMode;
@@ -387,6 +389,7 @@ public final class Launcher extends Activity
         mIconCache = app.getIconCache();
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
+        final Resources res = getResources();
 
         // Load all preferences
         PreferencesProvider.load(this);
@@ -404,6 +407,12 @@ public final class Launcher extends Activity
         mShowHotseat = PreferencesProvider.Interface.Dock.getShowDock();
         mShowDockDivider = PreferencesProvider.Interface.Dock.getShowDivider() && mShowHotseat;
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
+        mHideDockIconLabels = PreferencesProvider.Interface.Dock.getHideIconLabels();
+        boolean verticalHotseat =
+                res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation) &&
+                res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        mHideDockIconLabels = PreferencesProvider.Interface.Dock.getHideIconLabels() ||
+                (!mShowHotseat || (verticalHotseat && !LauncherApplication.isScreenLarge()));
         mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(getResources().getBoolean(R.bool.allow_rotation));
         mLockWorkspace = PreferencesProvider.Interface.General.getLockWorkspace(getResources().getBoolean(R.bool.lock_workspace));
         mFullscreenMode = PreferencesProvider.Interface.General.getFullscreenMode();
@@ -983,6 +992,30 @@ public final class Launcher extends Activity
             mDockDivider.setVisibility(View.GONE);
         }
 
+        // Redim the hotseat and statusbar to let some extra size for the item text
+        if (mShowHotseat && !mHideDockIconLabels && !mHotseat.hasVerticalHotseat()) {
+            Resources res = getResources();
+            int bottomMarginWithText = res.getDimensionPixelSize(R.dimen.button_bar_height_with_text);
+            // Divider
+            if (mDockDivider != null) {
+                ((MarginLayoutParams)mDockDivider.getLayoutParams()).bottomMargin = bottomMarginWithText;
+            }
+            // Divider indicator
+            View dockScrollingIndicator = findViewById(R.id.paged_view_indicator_dock);
+            if (dockScrollingIndicator != null) {
+                ((MarginLayoutParams)dockScrollingIndicator.getLayoutParams()).bottomMargin = bottomMarginWithText;
+            }
+            // Hotseat
+            mHotseat.getLayoutParams().height = res.getDimensionPixelSize(R.dimen.button_bar_height_plus_padding_with_text);
+
+            // Workspace
+            mWorkspace.setPadding(
+                    mWorkspace.getPaddingLeft(),
+                    mWorkspace.getPaddingTop(),
+                    mWorkspace.getPaddingRight(),
+                    res.getDimensionPixelSize(R.dimen.workspace_bottom_padding_port_with_text));
+        }
+
         // Setup AppsCustomize
         mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
         mAppsCustomizeContent = (AppsCustomizePagedView)
@@ -1048,9 +1081,7 @@ public final class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
-        if (mHideIconLabels) {
-            favorite.setTextVisible(false);
-        }
+        favorite.setTextVisible(!mHideIconLabels);
         favorite.setOnClickListener(this);
         favorite.setOnTouchListener(this);
         return favorite;
@@ -2001,10 +2032,13 @@ public final class Launcher extends Activity
         // Create the view
         FolderIcon newFolder =
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo);
-        if (mHideIconLabels) {
-            newFolder.setTextVisible(false);
-        }
         int x = cellX, y = cellY;
+        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            newFolder.setTextVisible(!mHideDockIconLabels);
+        } else {
+            newFolder.setTextVisible(!mHideIconLabels);
+        }
+
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
             getHotseat().hasVerticalHotseat()) {
             // Note: If the destination of the new folder is the hotseat and
@@ -3636,9 +3670,7 @@ public final class Launcher extends Activity
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item);
-                    if (!mHideIconLabels) {
-                        newFolder.setTextVisible(false);
-                    }
+                    newFolder.setTextVisible(!mHideIconLabels);
                     workspace.addInScreen(newFolder, item.container, item.screen, item.cellX,
                             item.cellY, 1, 1, false);
                     break;

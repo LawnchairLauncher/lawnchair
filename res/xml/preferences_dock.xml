@@ -44,6 +44,11 @@
         launcher:max="@integer/hotseat_cell_count"
         launcher:min="3" />
     <!-- android:dependency="ui_dock_enabled" /-->
+    <CheckBoxPreference android:key="ui_dock_hide_icon_labels"
+        android:title="@string/preferences_interface_dock_hide_icon_labels_title"
+        android:summary="@string/preferences_interface_dock_hide_icon_labels_summary"
+        android:defaultValue="true" />
+    <!-- android:dependency="ui_dock_enabled" /-->
     <com.cyanogenmod.trebuchet.preference.SeekBarDialogPreference android:key="ui_dock_icon_scale"
         android:title="@string/preferences_interface_dock_icon_scale_title"
         android:summary="@string/preferences_interface_dock_icon_scale_summary"

@@ -21,11 +21,13 @@
 
 <!-- Hotseat -->
     <dimen name="button_bar_height">82dp</dimen>
+    <dimen name="button_bar_height_with_text">@dimen/button_bar_height</dimen>
     <dimen name="button_bar_height_top_padding">12dp</dimen>
     <dimen name="button_bar_height_bottom_padding">12dp</dimen>
     <dimen name="button_bar_width_left_padding">12dp</dimen>
     <dimen name="button_bar_width_right_padding">12dp</dimen>
     <dimen name="button_bar_height_plus_padding">82dp</dimen>
+    <dimen name="button_bar_height_plus_padding_with_text">@dimen/button_bar_height_plus_padding</dimen>
     <dimen name="hotseat_width_gap">58dp</dimen>
 
 <!-- QSB -->
@@ -89,6 +91,7 @@
     <dimen name="workspace_top_padding_port">@dimen/qsb_bar_height_inset</dimen>
     <dimen name="workspace_top_padding_land">@dimen/qsb_bar_height_inset</dimen>
     <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height_plus_padding</dimen>
+    <dimen name="workspace_bottom_padding_port_with_text">@dimen/button_bar_height_plus_padding</dimen>
     <dimen name="workspace_bottom_padding_land">@dimen/button_bar_height_plus_padding</dimen>
 
     <!-- Divider width set to match the qsb width -->

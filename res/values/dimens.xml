@@ -79,6 +79,7 @@
 
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">62dip</dimen>
+    <dimen name="button_bar_height_with_text">90dip</dimen>
     <!-- Because portal animations go beyond the bounds of an icon, we need
          to make the dock layout slightly larger than the button_bar_height -->
     <dimen name="button_bar_height_top_padding">0dp</dimen>
@@ -86,6 +87,7 @@
     <dimen name="button_bar_width_left_padding">0dp</dimen>
     <dimen name="button_bar_width_right_padding">0dp</dimen>
     <dimen name="button_bar_height_plus_padding">62dp</dimen>
+    <dimen name="button_bar_height_plus_padding_with_text">90dp</dimen>
 
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
@@ -148,6 +150,7 @@
     <dimen name="workspace_top_padding_port">@dimen/qsb_bar_height_inset</dimen>
     <dimen name="workspace_top_padding_land">0dp</dimen>
     <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height</dimen>
+    <dimen name="workspace_bottom_padding_port_with_text">100dp</dimen>
     <dimen name="workspace_bottom_padding_land">0dp</dimen>
 
     <dimen name="workspace_left_padding_port_qsb_hidden">0dp</dimen>
@@ -171,4 +174,5 @@
 
 <!-- Preferences -->
     <dimen name="header_icon_width">28dp</dimen>
+
 </resources>
