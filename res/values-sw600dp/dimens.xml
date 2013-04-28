@@ -35,11 +35,13 @@
     <dimen name="hotseat_width_gap">-1dp</dimen>
     <dimen name="hotseat_height_gap">-1dp</dimen>
     <dimen name="button_bar_height">94dip</dimen>
+    <dimen name="button_bar_height_with_text">@dimen/button_bar_height</dimen>
     <dimen name="button_bar_height_bottom_padding">14dp</dimen>
     <dimen name="button_bar_height_top_padding">20dp</dimen>
     <dimen name="button_bar_width_left_padding">25dp</dimen>
     <dimen name="button_bar_width_right_padding">25dp</dimen>
     <dimen name="button_bar_height_plus_padding">104dp</dimen>
+    <dimen name="button_bar_height_plus_padding_with_text">@dimen/button_bar_height_plus_padding</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->

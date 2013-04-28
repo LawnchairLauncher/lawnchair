@@ -139,6 +139,8 @@
     <string name="preferences_interface_dock_default_page_summary">Choose the default page</string>
     <string name="preferences_interface_dock_icons_title">Icons</string>
     <string name="preferences_interface_dock_icons_summary">Number of icons/columns in the dock</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Hide icon labels</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Hide dock icon labels</string>
     <string name="preferences_interface_dock_icon_scale_title">Icon scale</string>
     <string name="preferences_interface_dock_icon_scale_summary">Scale of icons in the dock</string>
     <string name="preferences_interface_dock_divider_title">Show dock divider</string>

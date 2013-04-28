@@ -348,6 +348,15 @@ public class CellLayout extends ViewGroup {
         requestLayout();
     }
 
+    void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap) {
+        mCellWidth = cellWidth;
+        mCellHeight = cellHeight;
+        mWidthGap = widthGap;
+        mHeightGap = heightGap;
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+        requestLayout();
+    }
+
     private void invalidateBubbleTextView(BubbleTextView icon) {
         final int padding = icon.getPressedOrFocusedBackgroundPadding();
         invalidate(icon.getLeft() + getPaddingLeft() - padding,
