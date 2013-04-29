@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="application_version">1.0</string>
+
+    <string name="menu">Menu</string>
+
+    <string name="cancel_target_label">Annuller</string>
+
+    <string name="edit_target_label">Rediger</string>
+
+    <string name="menu_lock_workspace">Lås startskærm</string>
+    <string name="menu_unlock_workspace">Lås startskærm op</string>
+
+    <string name="menu_preferences">Trebuchet-indstillinger</string>
+
+    <string name="menu_apps_sort_title">Navn</string>
+    <string name="menu_apps_sort_install_date">Installationsdato</string>
+    <string name="menu_apps_filter_system">System</string>
+    <string name="menu_apps_filter_downloaded">Downloadet</string>
+
+    <string name="menu_hidden_apps_delete">Nulstil</string>
+
+    <string name="all_apps_sort_cling_title">Sortér dine apps</string>
+    <string name="all_apps_sort_cling_add_item">Tryk på fanen Apps og hold den nede for at vælge sortering</string>
+
+    <string name="hidden_apps_title">Skjulte apps</string>
+
+    <string name="workspace_locked">Startskærm er låst, lås den op for at omarrangere</string>
+
+    <string name="preferences_title">Indstillinger</string>
+    <string name="preferences_interface_title">Brugerflade</string>
+    <string name="preferences_application_title">App</string>
+
+    <string name="preferences_interface_homescreen_title">Startskærm</string>
+    <string name="preferences_interface_homescreen_summary">Skærme og tapet</string>
+    <string name="preferences_interface_homescreen_general_category">Generelt</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Startskærme</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Antallet af skærme på startskærmen</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Standardskærm</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Vælg standard-startskærm</string>
+    <string name="preferences_interface_homescreen_general_search_title">Søgefelt</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Gitterstørrelse</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Vælg antallet af rækker/kolonner på startskærmen</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Rækker</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Kolonner</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Stræk skærme</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Udvid startskærme til at fylde størrelsen på skærmen</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Aktivér vedvarende søgefelt</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skjul ikontekst</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skjul ikontekster på startskærmene</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Bladring</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Overgangseffekt</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Bladringseffekt, når startskærme bladres</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Rul tapet</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Rul tapetet ved bladring mellem startskærme</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Hurtig rendering af tapet</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Brug hack til tapet, der øger glathed på statiske tapetbilleder</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Tapetets størrelse</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Hvor mange skærmbredder skal tapetet være</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Udton sideskærme</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Udton sideskærme, når startskærme bladres</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Vis konturer</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Vis skærmkonturer, når startskærme bladres</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Vis sideindikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Viser den aktuelle side nederst på skærmen</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Udton indikator</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Udtoner indikatoren efter skift mellem startskærmene</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Position for indikator</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Vælg, hvor indikatoren skal vises på skærmen</string>
+
+    <string name="preferences_interface_drawer_title">Skuffe</string>
+    <string name="preferences_interface_drawer_summary">Skuffe til apps og widgets</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientering</string>
+    <string name="preferences_interface_drawer_orientation_summary">Vælg hvilken retning, skuffen bladrer</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Skjulte apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Skjul apps fra skuffen</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgets</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Sammen med apps</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Glid fra applikationer til widgets uden at skifte fane</string>
+    <string name="preferences_interface_drawer_scrolling_category">Bladring</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Overgangseffekt</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Bladringseffekt, når skærme bladres</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Udton sider</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Udton siderne, når skærme bladres</string>
+    <string name="preferences_interface_drawer_indicator_category">Indikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Vis sideindikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Viser den aktuelle side nederst på skærmen</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Udton indikator</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Udtoner indikatoren efter skift mellem siderne</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Position for indikator</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Vælg, hvor indikatoren skal vises på skærmen</string>
+
+    <string name="preferences_interface_dock_title">Startlinjen</string>
+    <string name="preferences_interface_dock_enabled_title">Vis startlinje</string>
+    <string name="preferences_interface_dock_enabled_summary">Vis startlinjen nedenunder hjemmeskærmen</string>
+    <string name="preferences_interface_dock_pages_title">Sider</string>
+    <string name="preferences_interface_dock_pages_summary">Antal sider i startlinjen</string>
+    <string name="preferences_interface_dock_default_page_title">Standardside</string>
+    <string name="preferences_interface_dock_default_page_summary">Vælg standardsiden</string>
+    <string name="preferences_interface_dock_icons_title">Ikoner</string>
+    <string name="preferences_interface_dock_icons_summary">Antal ikoner/kolonner i startlinjen</string>
+    <string name="preferences_interface_dock_icon_scale_title">Ikonstørrelse</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Størrelse på startlinjens ikoner</string>
+    <string name="preferences_interface_dock_divider_title">Vis skillelinje for startlinje</string>
+    <string name="preferences_interface_dock_divider_summary">Vis skillelinje mellem startskærm og startlinje</string>
+
+    <string name="preferences_interface_icons_title">Ikoner</string>
+
+    <string name="preferences_interface_general_title">Generelt</string>
+    <string name="preferences_interface_general_orientation_title">Rotér skærm automatisk</string>
+    <string name="preferences_interface_general_lock_workspace_title">Lås startskærm</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Lås genvejs- og mappepositioner på startskærmen, startlinjen og apps- og widgetsskuffen</string>
+    <string name="preferences_interface_general_fullscreen_title">Fuldskærmstilstand</string>
+    <string name="preferences_interface_general_fullscreen_summary">Skjul statuslinjen for at udvide startskærmen</string>
+
+    <string name="effects_standard">Standard</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Zoom ind</string>
+    <string name="effects_zoom_out">Zoom ud</string>
+    <string name="effects_rotate_up">Rotér op</string>
+    <string name="effects_rotate_down">Rotér ned</string>
+    <string name="effects_cylinder_in">Cylinder ind</string>
+    <string name="effects_cylinder_out">Cylinder ud</string>
+    <string name="effects_cube_in">Kube ind</string>
+    <string name="effects_cube_out">Kube ud</string>
+    <string name="effects_spin">Drej</string>
+    <string name="effects_flip">Vend</string>
+    <string name="effects_stack">Læg ovenpå</string>
+    <string name="effects_accordion">Harmonika</string>
+    <string name="effects_carousel_left">Karrusel venstre</string>
+    <string name="effects_carousel_right">Karrusel højre</string>
+</resources>
