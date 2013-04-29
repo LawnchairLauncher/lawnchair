@@ -17,6 +17,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="menu">Menú</string>
     <string name="cancel_target_label">Cancelar</string>
+    <string name="edit_target_label">Editar</string>
+    <string name="menu_lock_workspace">Bloquear escritorio</string>
+    <string name="menu_unlock_workspace">Desbloquear escritorio</string>
     <string name="menu_preferences">Ajustes de Trebuchet</string>
     <string name="menu_apps_sort_title">Nombre</string>
     <string name="menu_apps_sort_install_date">Fecha</string>
@@ -26,7 +29,7 @@
     <string name="all_apps_sort_cling_title">Ordenar aplicaciones</string>
     <string name="all_apps_sort_cling_add_item">Mantener pulsación sobre la pestaña Aplicaciones para elegir el método de ordenación</string>
     <string name="hidden_apps_title">Aplicaciones ocultas</string>
-    <string name="edit_target_label">Editar</string>
+    <string name="workspace_locked">El escritorio está bloqueado. Accede a ajustes para permitir reorganizarlo</string>
     <string name="preferences_title">Preferencias</string>
     <string name="preferences_interface_title">Interfaz</string>
     <string name="preferences_application_title">Aplicación</string>
@@ -104,6 +107,8 @@
     <string name="preferences_interface_icons_title">Iconos</string>
     <string name="preferences_interface_general_title">General</string>
     <string name="preferences_interface_general_orientation_title">Rotación automática pantalla</string>
+    <string name="preferences_interface_general_lock_workspace_title">Bloquear escritorio</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Bloquear la posición de carpetas y accesos directos en el escritorio, incluyendo los widgets y la barra de aplicaciones</string>
     <string name="preferences_interface_general_fullscreen_title">Modo pantalla completa</string>
     <string name="preferences_interface_general_fullscreen_summary">Ocultar la barra de estado para extender la pantalla de inicio</string>
     <string name="effects_standard">Estándar</string>
