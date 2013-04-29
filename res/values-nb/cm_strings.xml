@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Meny</string>
+    <string name="cancel_target_label">Avbryt</string>
+    <string name="edit_target_label">Rediger</string>
+    <string name="menu_preferences">Trebuchet innstillinger</string>
+    <string name="menu_apps_sort_title">Navn</string>
+    <string name="menu_apps_sort_install_date">Dato installert</string>
+    <string name="menu_apps_filter_system">System</string>
+    <string name="menu_apps_filter_downloaded">Nedlastet</string>
+    <string name="menu_hidden_apps_delete">Tilbakestill</string>
+    <string name="all_apps_sort_cling_title">Sorter appene dine</string>
+    <string name="all_apps_sort_cling_add_item">Klikk &amp; hold app-fanen for å velge sorteringsmetode</string>
+    <string name="hidden_apps_title">Skjulte Apper</string>
+    <string name="preferences_title">Innstillinger</string>
+    <string name="preferences_interface_title">Grensesnitt</string>
+    <string name="preferences_application_title">App</string>
+    <string name="preferences_interface_homescreen_title">Hjemmeskjerm</string>
+    <string name="preferences_interface_homescreen_summary">Skjermer og bakgrunn</string>
+    <string name="preferences_interface_homescreen_general_category">Generelt</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Hjemmeskjermer</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Antall sider på hjemmeskjermen</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Hovedskjerm</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Velg hovedskjerm</string>
+    <string name="preferences_interface_homescreen_general_search_title">Søkefelt</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Aktiver vedvarende søkefelt</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Rutestørrelse</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Velg antall rader/kolonner på hjemmeskjermen</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Rader</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Kolonner</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Strekk skjermene</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Utvid hjemmeskjermen for å fylle størrelsen på displayet</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skjul etiketter</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skjul etikettene som er under ikonene</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Overgangseffekt</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Overgangseffekt mellom hjemmeskjermene</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Scroll bakgrunn</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Scroll bakgrunnen når det scrolles mellom hjemmeskjermene</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Rask bakgrunnsrendring</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Bruk en hack som gjør at scrolling med statiske bakgrunner blir jevnere</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Størrelse på bakgrunnsbilde</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Hvor mange skjermer bred skal bakgrunnen være</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Nedtone sideskjermer</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Nedtone sideskjermene ved scrolling</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Vis linjer</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Vis linjer rundt skjermene ved scrolling</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Vis sideindikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Vis en indikator på hvilken side som vises</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Nedtone indikatoren</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Nedtone indikatoren etter at det er byttet hjemmeskjerm</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Posisjon på indikator</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Velg hvor på skjermen indikatoren skal være</string>
+    <string name="preferences_interface_drawer_title">App-skuff</string>
+    <string name="preferences_interface_drawer_summary">App- og modul-skuff</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientering</string>
+    <string name="preferences_interface_drawer_orientation_summary">Velg hvilken vei skuffen skal scrolles</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Skjulte apper</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Skjul apper fra app-skuffen</string>
+    <string name="preferences_interface_drawer_widgets_category">Moduler</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Apper og moduler sammen</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Scroll mellom apper og moduler uten å skifte fane</string>
+    <string name="preferences_interface_drawer_scrolling_category">Scrolling</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Overgangseffekt</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Overgangseffekt mellom sidene</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Nedtone sider</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Nedtone sidene ved scrolling</string>
+    <string name="preferences_interface_drawer_indicator_category">Indikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Vis sideindikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Vis en indikator på hvilken side som vises</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Nedtone indikator</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Nedtone indikatoren etter at det er byttet side</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Posisjon på indikator</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Velg hvor på skjermen indikatoren skal være</string>
+    <string name="preferences_interface_dock_title">Dokksone</string>
+    <string name="preferences_interface_dock_enabled_title">Vis dokksone</string>
+    <string name="preferences_interface_dock_enabled_summary">Vis dokksone under hjemmeskjermen</string>
+    <string name="preferences_interface_dock_pages_title">Sider</string>
+    <string name="preferences_interface_dock_pages_summary">Antall sider i dokksonen</string>
+    <string name="preferences_interface_dock_default_page_title">Hovedside</string>
+    <string name="preferences_interface_dock_default_page_summary">Velg en hovedside</string>
+    <string name="preferences_interface_dock_icons_title">Ikoner</string>
+    <string name="preferences_interface_dock_icons_summary">Antall ikoner/kolonner i dokksonen</string>
+    <string name="preferences_interface_dock_icon_scale_title">Skalering av ikoner</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Skalering av ikoner i dokksonen</string>
+    <string name="preferences_interface_dock_divider_title">Vis en linje</string>
+    <string name="preferences_interface_dock_divider_summary">Vis en linje mellom dokksonen og hjemmeskjermen</string>
+    <string name="preferences_interface_icons_title">Ikoner</string>
+    <string name="preferences_interface_general_title">Generelt</string>
+    <string name="preferences_interface_general_orientation_title">Roter skjerm automatisk</string>
+    <string name="preferences_interface_general_fullscreen_title">Fullskjermmodus</string>
+    <string name="preferences_interface_general_fullscreen_summary">Skjul statuslinjen for å utvide hjemmeskjermen</string>
+    <string name="effects_standard">Standard</string>
+    <string name="effects_tablet">Nettbrett</string>
+    <string name="effects_zoom_in">Zoom inn</string>
+    <string name="effects_zoom_out">Zoom ut</string>
+    <string name="effects_rotate_up">Roter oppover</string>
+    <string name="effects_rotate_down">Roter nedover</string>
+    <string name="effects_cylinder_in">Sylinder inn</string>
+    <string name="effects_cylinder_out">Sylinder ut</string>
+    <string name="effects_cube_in">Kube inn</string>
+    <string name="effects_cube_out">Kube ut</string>
+    <string name="effects_spin">Snurr</string>
+    <string name="effects_flip">Vend</string>
+    <string name="effects_stack">Stable</string>
+    <string name="effects_accordion">Trekkspill</string>
+    <string name="effects_carousel_left">Karusell venstre</string>
+    <string name="effects_carousel_right">Karusell høyre</string>
+</resources>
