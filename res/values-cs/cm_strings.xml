@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Nabídka</string>
+    <string name="cancel_target_label">Zrušit</string>
+    <string name="edit_target_label">Změnit</string>
+
+    <string name="menu_lock_workspace">Uzamknout pracovní plochu</string>
+    <string name="menu_unlock_workspace">Odemknout pracovní plochu</string>
+
+    <string name="menu_preferences">Nastavení</string>
+    <string name="menu_apps_sort_title">Jméno</string>
+    <string name="menu_apps_sort_install_date">Datum instalace</string>
+    <string name="menu_apps_filter_system">Systémové</string>
+    <string name="menu_apps_filter_downloaded">Stažené</string>
+    <string name="menu_hidden_apps_delete">Obnovit</string>
+    <string name="all_apps_sort_cling_title">Seřadit aplikace</string>
+    <string name="all_apps_sort_cling_add_item">Přidrž prst na kartě aplikací pro výběr režimu řazení</string>
+    <string name="hidden_apps_title">Skryté aplikace</string>
+    <string name="workspace_locked">Pracovní plocha uzamčena. Pro změnu uspořádání ji nejprve odemkněte v nastavení.</string>
+    <string name="preferences_title">Předvolby</string>
+    <string name="preferences_interface_title">Rozhraní</string>
+    <string name="preferences_application_title">Aplikace</string>
+    <string name="preferences_interface_homescreen_title">Pracovní plocha</string>
+    <string name="preferences_interface_homescreen_summary">Plochy a tapeta</string>
+    <string name="preferences_interface_homescreen_general_category">Hlavní</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Plochy</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Počet ploch</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Výchozí plocha</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Vybrat výchozí plochu</string>
+    <string name="preferences_interface_homescreen_general_search_title">Vyhledávací lišta</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Velikost mřížky</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Vyberte počet řádků/sloupců na ploše</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Řádky</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Sloupce</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Roztáhnout plochy</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Roztáhnout plochy, aby vyplnily obrazovku</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Povolit trvalou vyhledávací lištu</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skrýt popisky ikon</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skrýt popisky ikon na ploše</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Posouvání</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efekt přechodu</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efekt použitý při přechodu mezi plochami</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Posouvání tapety</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Posouvání tapety při posunu plochy</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Rychlé vykreslování tapety</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Použít upravené vykreslování, které způsobí plynulejší posun při použití statické tapety</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Velikost tapety</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Přes kolik ploch má být tapeta zvětšena</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Prolínat hranu plochy</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Prolínat hranu plochy při posouvání mezi plochami</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Zobrazit ohraničení</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Zobrazovat ohraničení plochy</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indikátor</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Zobrazit indikátor ploch</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Zobrazit indikátor aktuální plochy v dolní části obrazovky</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Slábnutí indikátoru</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Slábnutí indikátoru po změně plochy</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Indikátor pozice</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Zvolte, kde se bude zobrazovat indikátor pozice</string>
+    <string name="preferences_interface_drawer_title">Seznam aplikací</string>
+    <string name="preferences_interface_drawer_summary">Složka aplikací a widgetů</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientace</string>
+    <string name="preferences_interface_drawer_orientation_summary">Zvolte směr posunu složky</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Skryté aplikace</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Skrýt aplikace ze složky</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgety</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Spojit s aplikacemi</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Přecházet mezi aplikacemi a widgety bez změny záložek</string>
+    <string name="preferences_interface_drawer_scrolling_category">Posouvání</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efekt přechodu</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efekt plochy při posunu obrazovky</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Prolínat hrany ploch</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Prolínat hrany ploch při posouvání plochy</string>
+    <string name="preferences_interface_drawer_indicator_category">Indikátor</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Zobrazit indikátor ploch</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Zobrazit indikátor aktuální plochy v dolní části obrazovky</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Slábnutí indikátoru</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Slábnutí indikátoru po změně plochy</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Indikátor pozice</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Zvolte místo, kde se bude zobrazovat indikátor pozice plochy</string>
+    <string name="preferences_interface_dock_title">Dok aplikací</string>
+    <string name="preferences_interface_dock_enabled_title">Zobrazit dok</string>
+    <string name="preferences_interface_dock_enabled_summary">Zobrazit dok v dolní části plochy</string>
+    <string name="preferences_interface_dock_default_page_title">Výchozí plocha</string>
+    <string name="preferences_interface_dock_default_page_summary">Zolte výchozí plochu</string>
+    <string name="preferences_interface_dock_pages_title">Stránky</string>
+    <string name="preferences_interface_dock_pages_summary">Počet stránek v doku</string>
+    <string name="preferences_interface_dock_icons_title">Ikony</string>
+    <string name="preferences_interface_dock_icons_summary">Počet ikon/sloupců v doku</string>
+    <string name="preferences_interface_dock_icon_scale_title">Změnšení ikon</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Změnšení ikon v doku</string>
+    <string name="preferences_interface_dock_divider_title">Zobrazit oddělovač doku</string>
+    <string name="preferences_interface_dock_divider_summary">Zobrazit pozadí za indikátorem ploch</string>
+    <string name="preferences_interface_icons_title">Ikony</string>
+    <string name="preferences_interface_general_title">Obecné</string>
+    <string name="preferences_interface_general_orientation_title">Automaticky otáčet displej</string>
+    <string name="preferences_interface_general_lock_workspace_title">Uzamknout pracovní plochu</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Pozice všech zástupců a složek budou na pracovní ploše, v doku, ve složce widgetů a aplikací uzamčeny</string>
+    <string name="preferences_interface_general_fullscreen_title">Režim na celý displej</string>
+    <string name="preferences_interface_general_fullscreen_summary">Skrýt stavový řádek a rozšířit plochy</string>
+
+    <string name="effects_standard">Klasické posunutí</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Přiblížení</string>
+    <string name="effects_zoom_out">Oddálení</string>
+    <string name="effects_rotate_up">Otočení nahoru</string>
+    <string name="effects_rotate_down">Otočení dolů</string>
+    <string name="effects_cylinder_in">Uvnitř válce</string>
+    <string name="effects_cylinder_out">Vně válce</string>
+    <string name="effects_cube_in">Uvnitř kostky</string>
+    <string name="effects_cube_out">Vně kostky</string>
+    <string name="effects_spin">Rotace</string>
+    <string name="effects_flip">Překlopení</string>
+    <string name="effects_stack">Vrstvy</string>
+    <string name="effects_accordion">Harmonika</string>
+    <string name="effects_carousel_left">Kolotoč vlevo</string>
+    <string name="effects_carousel_right">Kolotoč vpravo</string>
+</resources>
