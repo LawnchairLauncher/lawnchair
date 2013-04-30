@@ -18,8 +18,8 @@ package com.cyanogenmod.trebuchet.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
-import com.cyanogenmod.trebuchet.LauncherApplication;
 import com.cyanogenmod.trebuchet.Workspace;
 import com.cyanogenmod.trebuchet.AppsCustomizePagedView;
 
@@ -30,11 +30,12 @@ public final class PreferencesProvider {
 
     public static final String PREFERENCES_CHANGED = "preferences_changed";
 
-    private static Map<String, ?> sKeyValues;
+    private static Map<String, Object> sKeyValues;
 
+    @SuppressWarnings("unchecked")
     public static void load(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-        sKeyValues = preferences.getAll();
+        sKeyValues = (Map<String, Object>)preferences.getAll();
     }
 
     private static int getInt(String key, int def) {
@@ -45,6 +46,14 @@ public final class PreferencesProvider {
     private static boolean getBoolean(String key, boolean def) {
         return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof Boolean ?
                 (Boolean) sKeyValues.get(key) : def;
+    }
+
+    private static void setBoolean(Context ctx, String key, boolean value) {
+        SharedPreferences preferences = ctx.getSharedPreferences(PREFERENCES_KEY, 0);
+        Editor editor = preferences.edit();
+        editor.putBoolean(key, value);
+        editor.apply(); // For better performance
+        sKeyValues.put(key, Boolean.valueOf(value));
     }
 
     private static String getString(String key, String def) {
@@ -206,6 +215,9 @@ public final class PreferencesProvider {
             }
             public static boolean getLockWorkspace(boolean def) {
                 return getBoolean("ui_general_lock_workspace", def);
+            }
+            public static void setLockWorkspace(Context ctx, boolean value) {
+                setBoolean(ctx, "ui_general_lock_workspace", value);
             }
             public static boolean getFullscreenMode() {
                 return getBoolean("ui_general_fullscreen", false);
