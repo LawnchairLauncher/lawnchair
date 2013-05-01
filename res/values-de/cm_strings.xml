@@ -17,6 +17,9 @@
     <string name="menu">Menü</string>
     <string name="cancel_target_label">Abbrechen</string>
     <string name="edit_target_label">Bearbeiten</string>
+    <string name="menu_lock_workspace">Startbildschirm sperren</string>
+    <string name="menu_unlock_workspace">Startbildschirm entsperren</string>
+    <string name="menu_preferences">Trebuchet-Einstellungen</string>
     <string name="menu_apps_sort_title">Name</string>
     <string name="menu_apps_sort_install_date">Installationsdatum</string>
     <string name="menu_apps_filter_system">System</string>
@@ -26,6 +29,7 @@
     <string name="all_apps_sort_cling_add_item">App-Tab gedrückt halten, um die Art der Sortierung zu wählen.</string>
     <string name="hidden_apps_title">Versteckte Apps</string>
     <string name="preferences_title">Launcher-Einstellungen</string>
+    <string name="workspace_locked">Startbildschirm ist gesperrt; zum Umgestalten in den Einstellungen entsperren</string>
     <string name="preferences_interface_title">Oberfläche</string>
     <string name="preferences_application_title">Launcher-Version</string>
     <string name="preferences_interface_homescreen_title">Bildschirmseiten</string>
