@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="cancel_target_label">İptal</string>
+    <string name="menu_preferences">Trebuchet ayarları</string>
+    <string name="menu_apps_sort_title">Ad</string>
+    <string name="menu_apps_sort_install_date">Kurulum Tarihi</string>
+    <string name="all_apps_sort_cling_title">Uygulamaları sırala</string>
+    <string name="all_apps_sort_cling_add_item">Sıralama modunu seçmek için uygulamalara dokunun ve basılı tutun</string>
+    <string name="preferences_title">Tercihler</string>
+    <string name="preferences_interface_title">Arayüz</string>
+    <string name="preferences_application_title">Uygulama</string>
+    <string name="preferences_interface_homescreen_title">Ana ekran</string>
+    <string name="preferences_interface_homescreen_general_category">Genel</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Ana ekranlar</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Ana ekran sayısı</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Varsayılan ekran</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Varsayılan ekranı seçin</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Döşeme boyutu</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Ana ekranda gösterilecek satır/sütun sayısını seçin</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Satırlar</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Sütunlar</string>
+    <string name="preferences_interface_homescreen_general_search_title">Arama çubuğu</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Arama çubuğunu sürekli göster</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Simge etiketlerini gizle</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ana ekrandaki simge etiketlerini gizle</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Kaydırma</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Duvar kağıdını kaydır</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Ana ekranları duvar kağıdı ile birlikte kaydır</string>
+    <string name="preferences_interface_homescreen_indicator_category">Gösterge</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Sayfa göstergesi</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Hangi sayfada olduğunuzu gösterir</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Göstergeyi soldur</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Ekran değiştikten sonra göstergeyi soldur</string>
+    <string name="preferences_interface_drawer_title">Uygulamalar</string>
+    <string name="preferences_interface_drawer_widgets_category">Araçlar</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Uygulamalarla birleştir</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Sekmelere dokunmadan Uygulamalar/Araçlar arası geçiş yap</string>
+    <string name="preferences_interface_drawer_indicator_category">Gösterge</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Sayfa göstergesi</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Hangi sayfada olduğunuzu gösterir</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Göstergeyi soldur</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Ekran değiştikten sonra göstergeyi soldur</string>
+    <string name="preferences_interface_dock_title">Sabit programlar</string>
+    <string name="preferences_interface_dock_divider_title">Ayırıcı çizgiyi göster</string>
+    <string name="preferences_interface_dock_divider_summary">Sabit uygulamaların üstünde ayırıcı çizgiyi göster</string>
+    <string name="preferences_interface_icons_title">Simgeler</string>
+    <string name="preferences_interface_general_title">Genel</string>
+    <string name="preferences_interface_general_orientation_title">Ekranı otomatik döndür</string>
+</resources>

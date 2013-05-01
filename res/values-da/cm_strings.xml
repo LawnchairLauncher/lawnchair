@@ -15,37 +15,24 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
-    <string name="application_version">1.0</string>
-
     <string name="menu">Menu</string>
-
     <string name="cancel_target_label">Annuller</string>
-
     <string name="edit_target_label">Rediger</string>
-
     <string name="menu_lock_workspace">Lås startskærm</string>
     <string name="menu_unlock_workspace">Lås startskærm op</string>
-
     <string name="menu_preferences">Trebuchet-indstillinger</string>
-
     <string name="menu_apps_sort_title">Navn</string>
     <string name="menu_apps_sort_install_date">Installationsdato</string>
     <string name="menu_apps_filter_system">System</string>
     <string name="menu_apps_filter_downloaded">Downloadet</string>
-
     <string name="menu_hidden_apps_delete">Nulstil</string>
-
     <string name="all_apps_sort_cling_title">Sortér dine apps</string>
     <string name="all_apps_sort_cling_add_item">Tryk på fanen Apps og hold den nede for at vælge sortering</string>
-
     <string name="hidden_apps_title">Skjulte apps</string>
-
     <string name="workspace_locked">Startskærm er låst, lås den op for at omarrangere</string>
-
     <string name="preferences_title">Indstillinger</string>
     <string name="preferences_interface_title">Brugerflade</string>
     <string name="preferences_application_title">App</string>
-
     <string name="preferences_interface_homescreen_title">Startskærm</string>
     <string name="preferences_interface_homescreen_summary">Skærme og tapet</string>
     <string name="preferences_interface_homescreen_general_category">Generelt</string>
@@ -83,7 +70,6 @@
     <string name="preferences_interface_homescreen_indicator_fade_summary">Udtoner indikatoren efter skift mellem startskærmene</string>
     <string name="preferences_interface_homescreen_indicator_position_title">Position for indikator</string>
     <string name="preferences_interface_homescreen_indicator_position_summary">Vælg, hvor indikatoren skal vises på skærmen</string>
-
     <string name="preferences_interface_drawer_title">Skuffe</string>
     <string name="preferences_interface_drawer_summary">Skuffe til apps og widgets</string>
     <string name="preferences_interface_drawer_orientation_title">Orientering</string>
@@ -105,7 +91,6 @@
     <string name="preferences_interface_drawer_indicator_fade_summary">Udtoner indikatoren efter skift mellem siderne</string>
     <string name="preferences_interface_drawer_indicator_position_title">Position for indikator</string>
     <string name="preferences_interface_drawer_indicator_position_summary">Vælg, hvor indikatoren skal vises på skærmen</string>
-
     <string name="preferences_interface_dock_title">Startlinjen</string>
     <string name="preferences_interface_dock_enabled_title">Vis startlinje</string>
     <string name="preferences_interface_dock_enabled_summary">Vis startlinjen nedenunder hjemmeskærmen</string>
@@ -119,16 +104,13 @@
     <string name="preferences_interface_dock_icon_scale_summary">Størrelse på startlinjens ikoner</string>
     <string name="preferences_interface_dock_divider_title">Vis skillelinje for startlinje</string>
     <string name="preferences_interface_dock_divider_summary">Vis skillelinje mellem startskærm og startlinje</string>
-
     <string name="preferences_interface_icons_title">Ikoner</string>
-
     <string name="preferences_interface_general_title">Generelt</string>
     <string name="preferences_interface_general_orientation_title">Rotér skærm automatisk</string>
     <string name="preferences_interface_general_lock_workspace_title">Lås startskærm</string>
     <string name="preferences_interface_general_lock_workspace_summary">Lås genvejs- og mappepositioner på startskærmen, startlinjen og apps- og widgetsskuffen</string>
     <string name="preferences_interface_general_fullscreen_title">Fuldskærmstilstand</string>
     <string name="preferences_interface_general_fullscreen_summary">Skjul statuslinjen for at udvide startskærmen</string>
-
     <string name="effects_standard">Standard</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Zoom ind</string>

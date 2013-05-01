@@ -14,7 +14,21 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Menü</string>
+    <string name="cancel_target_label">Mégsem</string>
+    <string name="edit_target_label">Szerkesztés</string>
+    <string name="menu_lock_workspace">Kezdőképernyő zárolása</string>
+    <string name="menu_unlock_workspace">Kezdőképernyő feloldása</string>
+    <string name="menu_apps_sort_title">Név</string>
+    <string name="menu_apps_sort_install_date">Telepítés ideje</string>
+    <string name="menu_apps_filter_system">Rendszer</string>
+    <string name="menu_apps_filter_downloaded">Letöltött</string>
+    <string name="all_apps_sort_cling_title">Rendezze sorba alkalmazásait</string>
+    <string name="all_apps_sort_cling_add_item">"Ha sorba szeretné rendezni alkalmazásait, érintse meg, és tartsa lenyomva az Alkalmazások lapfület."</string>
+    <string name="menu_hidden_apps_delete">Visszaállítás</string>
+    <string name="menu_preferences">Trebuchet beállítások</string>
     <string name="hidden_apps_title">Elrejtett alkalmazások</string>
+    <string name="workspace_locked">A kezdőképernyő zárolva van, szerkesztéshez oldja fel a beállításokban</string>
     <string name="preferences_title">Beállítások</string>
     <string name="preferences_interface_title">Felület</string>
     <string name="preferences_application_title">Alkalmazás</string>
@@ -92,6 +106,8 @@
     <string name="preferences_interface_icons_title">Ikonok</string>
     <string name="preferences_interface_general_title">Általános</string>
     <string name="preferences_interface_general_orientation_title">Képernyő elforgatása</string>
+    <string name="preferences_interface_general_lock_workspace_title">Kezdőképernyő zárolás</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Ikonok, mappák, tálca, alkalmazások és modulok helyzetének zárolása a kezdőképernyőn</string>
     <string name="preferences_interface_general_fullscreen_title">Teljes képernyő</string>
     <string name="preferences_interface_general_fullscreen_summary">Értesítési sáv elrejtése a kezdőképernyő kiterjesztéséhez</string>
     <string name="effects_standard">Csúsztatás</string>
@@ -110,9 +126,4 @@
     <string name="effects_accordion">Harmónika</string>
     <string name="effects_carousel_left">Körhinta balra</string>
     <string name="effects_carousel_right">Körhinta jobbra</string>
-    <string name="menu_lock_workspace">Kezdőképernyő zárolása</string>
-    <string name="menu_unlock_workspace">Kezdőképernyő feloldása</string>
-    <string name="workspace_locked">A kezdőképernyő zárolva van, szerkesztéshez oldja fel a beállításokban</string>
-    <string name="preferences_interface_general_lock_workspace_title">Kezdőképernyő zárolás</string>
-    <string name="preferences_interface_general_lock_workspace_summary">Ikonok, mappák, tálca, alkalmazások és modulok helyzetének zárolása a kezdőképernyőn</string>
 </resources>

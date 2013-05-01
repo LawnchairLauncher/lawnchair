@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Menü</string>
+    <string name="cancel_target_label">Abbrechen</string>
+    <string name="edit_target_label">Bearbeiten</string>
+    <string name="menu_apps_sort_title">Name</string>
+    <string name="menu_apps_sort_install_date">Installationsdatum</string>
+    <string name="menu_apps_filter_system">System</string>
+    <string name="menu_apps_filter_downloaded">Heruntergeladen</string>
+    <string name="menu_hidden_apps_delete">Zurücksetzen</string>
+    <string name="all_apps_sort_cling_title">Apps sortieren</string>
+    <string name="all_apps_sort_cling_add_item">App-Tab gedrückt halten, um die Art der Sortierung zu wählen.</string>
+    <string name="hidden_apps_title">Versteckte Apps</string>
+    <string name="preferences_title">Launcher-Einstellungen</string>
+    <string name="preferences_interface_title">Oberfläche</string>
+    <string name="preferences_application_title">Launcher-Version</string>
+    <string name="preferences_interface_homescreen_title">Bildschirmseiten</string>
+    <string name="preferences_interface_homescreen_summary">Bildschirmseiten und Hintergrundbild</string>
+    <string name="preferences_interface_homescreen_general_category">Allgemein</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Seitenzahl</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Anzahl der verwendbaren und wechselbaren Bildschirmseiten für Icons und Widgets</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Standardseite</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Aktive Bildschirmseite nach Neustart des Geräts</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Rastergröße</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Anzahl der für Icons verfügbaren Reihen / Spalten</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Reihen</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Spalten</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Seiten ausdehnen</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Seiten bildschirmfüllend ausdehnen</string>
+    <string name="preferences_interface_homescreen_general_search_title">Suchleiste</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Dauerhafte Anzeige der Suchleiste</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Beschriftung nicht anzeigen</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Beschriftung unterhalb der Icons nicht anzeigen</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Scrollen</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Übergangsanimation</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Animation beim Scrollen zwischen den Seiten</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Hintergrundbild scrollen</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Hintergrundbild bei Seitenwechsel scrollen</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Hintergrundbild schneller rendern</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Flüssigere Darstellung von statischen Hintergrundbildern</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Hintergrundbildgröße</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Größe des Hintergrundbilds in Seitenbreiten festlegen</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Seiten einblenden</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Beim Scrollen die Seiten einblenden</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Umriss anzeigen</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Beim Scrollen den Umriss der Seite anzeigen</string>
+    <string name="preferences_interface_homescreen_indicator_category">Seitenindikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Anzeigen</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Seitenindikator anzeigen</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Automatisch ausblenden</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Indikator nach Seitenwechsel ausblenden</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Position</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Anzeigeposition des Indikators auswählen</string>
+    <string name="preferences_interface_drawer_title">Apps</string>
+    <string name="preferences_interface_drawer_summary">Apps und Widgets</string>
+    <string name="preferences_interface_drawer_orientation_title">Ausrichtung</string>
+    <string name="preferences_interface_drawer_orientation_summary">Scrollrichtung der App-Seiten auswählen</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Versteckte Apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Apps auf den App-Seiten verstecken.</string>
+    <string name="preferences_interface_drawer_widgets_category">Widget-Seiten</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Mit App-Seiten verbinden</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Blättern auch zwischen App- und Widget-Seiten</string>
+    <string name="preferences_interface_drawer_scrolling_category">Scrollen</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Übergangsanimation</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Animation beim Scrollen zwischen den Seiten</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Seiten einblenden</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Beim Scrollen die Seiten einblenden</string>
+    <string name="preferences_interface_drawer_indicator_category">Seitenindikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Anzeigen</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Seitenindikator anzeigen</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Automatisch ausblenden</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Indikator nach Seitenwechsel ausblenden</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Position</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Anzeigeposition des Indikators auswählen</string>
+    <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_enabled_title">Aktivieren</string>
+    <string name="preferences_interface_dock_enabled_summary">Dock anzeigen</string>
+    <string name="preferences_interface_dock_pages_title">Seiten</string>
+    <string name="preferences_interface_dock_pages_summary">Anzahl der Seiten im Dock</string>
+    <string name="preferences_interface_dock_default_page_title">Standardseite</string>
+    <string name="preferences_interface_dock_default_page_summary">Die Standardseite festlegen</string>
+    <string name="preferences_interface_dock_icons_title">Icons</string>
+    <string name="preferences_interface_dock_icons_summary">Anzahl der Icons/Spalten des Docks festlegen</string>
+    <string name="preferences_interface_dock_icon_scale_title">Icongröße</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Größe der Icons im Dock</string>
+    <string name="preferences_interface_dock_divider_title">Dock-Abtrennung anzeigen</string>
+    <string name="preferences_interface_dock_divider_summary">Linie als Indikator-Hintergrund anzeigen</string>
+    <string name="preferences_interface_icons_title">Icons</string>
+    <string name="preferences_interface_general_title">Allgemein</string>
+    <string name="preferences_interface_general_orientation_title">Automatische Seitenausrichtung</string>
+    <string name="preferences_interface_general_fullscreen_title">Vollbildmodus</string>
+    <string name="preferences_interface_general_fullscreen_summary">Statusleiste für Vollbildansicht ausblenden</string>
+    <string name="effects_standard">Standard</string>
+    <string name="effects_tablet">Tablett</string>
+    <string name="effects_zoom_in">Hineinzoomen</string>
+    <string name="effects_zoom_out">Herauszoomen</string>
+    <string name="effects_rotate_up">Rotieren oben</string>
+    <string name="effects_rotate_down">Rotieren unten</string>
+    <string name="effects_cylinder_in">Zylinder innen</string>
+    <string name="effects_cylinder_out">Zylinder außen</string>
+    <string name="effects_cube_in">Würfel innen</string>
+    <string name="effects_cube_out">Würfel außen</string>
+    <string name="effects_spin">Wirbeln</string>
+    <string name="effects_flip">Blättern</string>
+    <string name="effects_stack">Stapeln</string>
+    <string name="effects_accordion">Akkordeon</string>
+    <string name="effects_carousel_left">Karussell links</string>
+    <string name="effects_carousel_right">Karussell rechts</string>
+</resources>

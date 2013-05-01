@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (C) 2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,24 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
- -->
-
-<resources>
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="menu">Menu</string>
+    <string name="cancel_target_label">Annuler</string>
+    <string name="edit_target_label">Éditer</string>
+    <string name="menu_lock_workspace">Verrouiller l\'écran d\'accueil</string>
+    <string name="menu_unlock_workspace">Déverrouiller l\'écran d\'accueil</string>
     <string name="menu_apps_sort_title">Nom</string>
     <string name="menu_apps_sort_install_date">Date d\'installation</string>
     <string name="menu_apps_filter_system">Système</string>
     <string name="menu_apps_filter_downloaded">Téléchargé</string>
     <string name="menu_hidden_apps_delete">Réinitialiser</string>
     <string name="menu_preferences">Paramètres de Trebuchet</string>
-    <string name="edit_target_label">Éditer</string>
-    <string name="cancel_target_label">Annuler</string>
     <string name="all_apps_sort_cling_title">Triez vos applications</string>
     <string name="all_apps_sort_cling_add_item">Appuyez de manière prolongée sur l\'onglet Application pour sélectionner votre méthode de tri</string>
     <string name="hidden_apps_title">Applications masquées</string>
+    <string name="workspace_locked">L\'écran d\'accueil est verrouillé. Pour le réorganiser, déverrouiller le dans les paramètres</string>
     <string name="preferences_title">Paramètres</string>
     <string name="preferences_interface_title">Interface</string>
     <string name="preferences_application_title">Application</string>
@@ -104,6 +107,8 @@
     <string name="preferences_interface_icons_title">Icônes</string>
     <string name="preferences_interface_general_title">Général</string>
     <string name="preferences_interface_general_orientation_title">Rotation auto. de l\'écran</string>
+    <string name="preferences_interface_general_lock_workspace_title">Verrouiller l\'écran d\'accueil</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Verrouiller la position des raccourcis et des dossiers sur l\'écran d\'accueil, dans le dock et dans le menu des applications et des widgets</string>
     <string name="preferences_interface_general_fullscreen_title">Plein écran</string>
     <string name="preferences_interface_general_fullscreen_summary">Cacher la barre d\'état pour étendre l\'écran d\'accueil</string>
     <string name="effects_standard">Standard</string>

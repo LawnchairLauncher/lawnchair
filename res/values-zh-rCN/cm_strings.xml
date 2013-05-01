@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">菜单</string>
+    <string name="cancel_target_label">取消</string>
+    <string name="edit_target_label">编辑</string>
+    <string name="menu_preferences">Trebuchet 设置</string>
+    <string name="menu_apps_sort_title">名称</string>
+    <string name="menu_apps_sort_install_date">安装日期</string>
+    <string name="menu_apps_filter_system">系统</string>
+    <string name="menu_apps_filter_downloaded">已下载</string>
+    <string name="menu_hidden_apps_delete">重置</string>
+    <string name="all_apps_sort_cling_title">整理您的程序</string>
+    <string name="all_apps_sort_cling_add_item">按住应用程序标签 &amp; 选择您的排列方式。</string>
+    <string name="hidden_apps_title">隐藏应用</string>
+    <string name="preferences_title">启动器选项</string>
+    <string name="preferences_interface_title">界面</string>
+    <string name="preferences_application_title">应用</string>
+    <string name="preferences_interface_homescreen_title">主屏幕</string>
+    <string name="preferences_interface_homescreen_summary">屏幕与壁纸</string>
+    <string name="preferences_interface_homescreen_general_category">常规</string>
+    <string name="preferences_interface_homescreen_general_screens_title">主屏幕数量</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">主屏幕上的页面数量</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">默认主屏幕</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">选择默认的主屏幕</string>
+    <string name="preferences_interface_homescreen_general_search_title">搜索栏</string>
+    <string name="preferences_interface_homescreen_general_search_summary">启用搜索栏</string>
+    <string name="preferences_interface_homescreen_general_grid_title">网格大小</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">选择主屏幕上的行/列数</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">行</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">列</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">拉长屏幕</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">扩展主屏幕为填充屏幕大小</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">隐藏图标标签</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">隐藏在主屏幕上图标的标签</string>
+    <string name="preferences_interface_homescreen_scrolling_category">滚动</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">过渡效果</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">滚动页面时产生的效果</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">滚动壁纸</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">主屏幕滚动时壁纸将会一起滚动</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">壁纸快速渲染器</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">手动绘制壁纸位图, 加强静态壁纸的流畅性</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">壁纸大小</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">设定壁纸宽度 (以屏幕为单位)</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">淡出旁边屏幕</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">滚动主屏幕时淡出旁边的屏幕</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">显示边框</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">滚动主屏幕时显示各屏幕的边框</string>
+    <string name="preferences_interface_homescreen_indicator_category">指示器</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">启用页面指示器</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">在屏幕上显示当前页面的指示器</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">淡出指示器</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">改变主屏幕后将淡出指示器</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">指示器位置</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">选择指示器在屏幕上的位置</string>
+    <string name="preferences_interface_drawer_title">抽屉</string>
+    <string name="preferences_interface_drawer_summary">应用与小部件抽屉</string>
+    <string name="preferences_interface_drawer_orientation_title">方向</string>
+    <string name="preferences_interface_drawer_orientation_summary">选择抽屉的滚动方向</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">隐藏应用</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">从抽屉里隐藏应用程序</string>
+    <string name="preferences_interface_drawer_widgets_category">小部件</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">与应用关联</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">从应用程序菜单直接滑动到小部件菜单</string>
+    <string name="preferences_interface_drawer_scrolling_category">滚动</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">过渡效果</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">滚动屏幕时产生的效果</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">淡出旁边页面</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">滚动屏幕时淡出旁边的页面</string>
+    <string name="preferences_interface_drawer_indicator_category">指示器</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">启用页面指示器</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">在屏幕上显示当前页面的指示器</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">淡出指示器</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">改变页面后将淡出指示器</string>
+    <string name="preferences_interface_drawer_indicator_position_title">指示器位置</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">选择指示器在屏幕上的位置</string>
+    <string name="preferences_interface_dock_title">底座</string>
+    <string name="preferences_interface_dock_enabled_title">显示底座</string>
+    <string name="preferences_interface_dock_enabled_summary">显示在主屏幕下部的底座</string>
+    <string name="preferences_interface_dock_pages_title">页面</string>
+    <string name="preferences_interface_dock_pages_summary">设置底座页面数</string>
+    <string name="preferences_interface_dock_default_page_title">默认页面</string>
+    <string name="preferences_interface_dock_default_page_summary">选择默认页面</string>
+    <string name="preferences_interface_dock_icons_title">图标</string>
+    <string name="preferences_interface_dock_icons_summary">设置底座上的图标数量/列数</string>
+    <string name="preferences_interface_dock_icon_scale_title">图标比例</string>
+    <string name="preferences_interface_dock_icon_scale_summary">设置底座上图标的比例</string>
+    <string name="preferences_interface_dock_divider_title">显示底座分隔器</string>
+    <string name="preferences_interface_dock_divider_summary">显示指示器后面的背景</string>
+    <string name="preferences_interface_icons_title">图标</string>
+    <string name="preferences_interface_general_title">常规</string>
+    <string name="preferences_interface_general_orientation_title">自动旋转屏幕</string>
+    <string name="preferences_interface_general_fullscreen_title">全屏模式</string>
+    <string name="preferences_interface_general_fullscreen_summary">隐藏状态栏以便扩展主屏幕</string>
+    <string name="effects_standard">标准</string>
+    <string name="effects_tablet">平板</string>
+    <string name="effects_zoom_in">放大</string>
+    <string name="effects_zoom_out">缩小</string>
+    <string name="effects_rotate_up">向上转动</string>
+    <string name="effects_rotate_down">向下转动</string>
+    <string name="effects_cylinder_in">圆柱凹入</string>
+    <string name="effects_cylinder_out">圆柱凸出</string>
+    <string name="effects_cube_in">立方凹入</string>
+    <string name="effects_cube_out">立方凸出</string>
+    <string name="effects_spin">旋转</string>
+    <string name="effects_flip">翻动</string>
+    <string name="effects_stack">堆叠</string>
+    <string name="effects_accordion">手风琴</string>
+</resources>

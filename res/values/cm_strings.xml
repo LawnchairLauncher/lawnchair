@@ -17,7 +17,7 @@
     <!-- App copyright -->
     <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <!-- App version -->
-    <string name="application_version">1.0</string>
+    <string name="application_version" translatable="false">1.0</string>
 
     <!-- Menu button text. -->
     <string name="menu">Menu</string>

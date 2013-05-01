@@ -21,7 +21,7 @@
     <!-- General -->
     <skip />
     <!-- Application name -->
-    <string name="application_name" translatable="false">Launcher</string>
+    <string name="application_name" translatable="false">Trebuchet</string>
     <!-- Accessibility-facing application name -->
     <string name="home">Home</string>
     <!-- Name for all applications running as this uid. -->

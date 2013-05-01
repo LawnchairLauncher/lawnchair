@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">"Meniu"</string>
+    <string name="edit_target_label">"Editați"</string>
+    <string name="menu_apps_sort_title">"Nume"</string>
+    <string name="menu_apps_sort_install_date">"Dată Instalare"</string>
+    <string name="menu_apps_filter_system">"Sistem"</string>
+    <string name="menu_apps_filter_downloaded">"Descărcate"</string>
+    <string name="menu_hidden_apps_delete">"Resetați"</string>
+    <string name="hidden_apps_title">"Aplicații ascunse"</string>
+    <string name="preferences_title">"Preferinţe"</string>
+    <string name="preferences_interface_title">"Interfaţă"</string>
+    <string name="preferences_application_title">"Aplicaţie"</string>
+    <string name="preferences_interface_homescreen_title">"Ecranul de pornire"</string>
+    <string name="preferences_interface_homescreen_summary">"Ecrane şi im. de fundal"</string>
+    <string name="preferences_interface_homescreen_general_category">"General"</string>
+    <string name="preferences_interface_homescreen_general_screens_title">"Ecrane de pornire"</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">"Numărul de ecrane pe ecranul de pornire"</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">"Ecranul implicit"</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">"Alegeți ecranul de pornire implicit"</string>
+    <string name="preferences_interface_homescreen_general_search_title">"Bara de Căutare"</string>
+    <string name="preferences_interface_homescreen_general_search_summary">"Activează bara de cautare persistentă"</string>
+    <string name="preferences_interface_homescreen_general_grid_title">"Dimensiune Grilă"</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">"Alegeți numărul de rânduri / coloane pe ecranul de pornire"</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">"Rânduri"</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">"Coloane"</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">"Întindeţi ecranele"</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">"Extinde ecranele pentru a umple dimensiunea ecranului dispozitivului"</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">"Ascundeți etichetele pictogramelor"</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">"Ascundeți etichetele pictogramelor pe ecranul de pornire"</string>
+    <string name="preferences_interface_homescreen_scrolling_category">"Defilare"</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">"Efect tranziţie"</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">"Efect de defilare la defilarea ecranelor"</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">"Defilați im. de fundal"</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">"Defilați imaginea de fundal atunci când defilaţi ecranele"</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">"Redare rapidă a im. de fundal"</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">"Utilizaţi hack imagine de fundal pentru a spori fineţea imaginilor de fundal statice"</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">"Dimensiune im. de fundal"</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">"Pe câte ecrane se întinde im. de fundal"</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">"Atenuaţi paginile laterale"</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">"Atenuaţi paginile laterale la defilarea ecranelor"</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">"Afişaţi contur"</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">"Afişaţi conturul ecranelor la defilare"</string>
+    <string name="preferences_interface_homescreen_indicator_category">"Indicator"</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">"Afișaţi indicatorul de pagină"</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">"Afişaţi indicatorul de pagină curentă, în partea de jos a ecranului"</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">"Ascundeţi indicatorul"</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">"Ascundeţi indicatorul după ce ecranul de pornire s-a schimbat"</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">"Poziţie indicator"</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Alegeţi unde să se arate indicatorul pe ecran"</string>
+    <string name="preferences_interface_drawer_title">"Meniul Principal"</string>
+    <string name="preferences_interface_drawer_summary">"Aplicaţii şi obiecte widget"</string>
+    <string name="preferences_interface_drawer_orientation_title">"Orientare"</string>
+    <string name="preferences_interface_drawer_orientation_summary">"Alegeţi în ce direcţie defilează meniul principal"</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">"Aplicații ascunse"</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">"Aplicații ascunse din meniul principal"</string>
+    <string name="preferences_interface_drawer_widgets_category">"Obiecte widget"</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">"Alăturați la aplicații"</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">"Trecere de la aplicații la obiecte widget, fără a schimba filele"</string>
+    <string name="preferences_interface_drawer_scrolling_category">"Defilare"</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">"Efect tranziţie"</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">"Efect de defilare la defilarea ecranelor"</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">"Atenuaţi paginile laterale"</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">"Atenuaţi paginile laterale la defilarea ecranelor"</string>
+    <string name="preferences_interface_drawer_indicator_category">"Indicator"</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">"Afișaţi indicatorul de pagină"</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">"Afişaţi indicatorul de pagină curentă, în partea de jos a ecranului"</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">"Atenuaţi indicatorul"</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">"Ascundeţi indicator după ce pagina s-a schimbat"</string>
+    <string name="preferences_interface_drawer_indicator_position_title">"Poziție indicator"</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">"Alegeţi unde să se arate indicatorul pe ecran"</string>
+    <string name="preferences_interface_dock_title">"Doc"</string>
+    <string name="preferences_interface_dock_pages_title">"Pagini"</string>
+    <string name="preferences_interface_dock_pages_summary">"Numărul de pagini în doc"</string>
+    <string name="preferences_interface_dock_default_page_title">"Pagina prestabilită"</string>
+    <string name="preferences_interface_dock_default_page_summary">"Alegeți pagina prestabilită"</string>
+    <string name="preferences_interface_dock_icons_title">"Pictograme"</string>
+    <string name="preferences_interface_dock_icons_summary">"Numărul de pictograme/coloane în doc"</string>
+    <string name="preferences_interface_dock_icon_scale_title">"Dimensiune pictograme"</string>
+    <string name="preferences_interface_dock_icon_scale_summary">"Dimensiunea pictogramelor în doc"</string>
+    <string name="preferences_interface_dock_divider_title">"Arătaţi separator doc"</string>
+    <string name="preferences_interface_dock_divider_summary">"Arătaţi separatorul între ecranul de pornire şi doc"</string>
+    <string name="preferences_interface_icons_title">"Pictograme"</string>
+    <string name="preferences_interface_general_title">"General"</string>
+    <string name="preferences_interface_general_orientation_title">"Rotire automată a ecranului"</string>
+    <string name="preferences_interface_general_fullscreen_title">"Ecran complet"</string>
+    <string name="preferences_interface_general_fullscreen_summary">Ascundeţi bara de stare pentru a extinde ecranul de pornire"</string>
+    <string name="effects_standard">"Standard"</string>
+    <string name="effects_tablet">"Tabletă"</string>
+    <string name="effects_zoom_in">"Mărire"</string>
+    <string name="effects_zoom_out">"Micşorare"</string>
+    <string name="effects_rotate_up">"Rotire în Sus"</string>
+    <string name="effects_rotate_down">"Rotire în Jos"</string>
+    <string name="effects_cylinder_in">"Cilindru Interior"</string>
+    <string name="effects_cylinder_out">"Cilindru Exterior"</string>
+    <string name="effects_cube_in">"Cub Interior"</string>
+    <string name="effects_cube_out">"Cub Exterior"</string>
+    <string name="effects_spin">"Rotire"</string>
+    <string name="effects_flip">"Răsturnare"</string>
+    <string name="effects_stack">"Stivă"</string>
+    <string name="effects_accordion">"Acordeon"</string>
+</resources>
