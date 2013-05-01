@@ -51,6 +51,7 @@ import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.text.Collator;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -155,7 +156,9 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
-        public void bindAppsRemoved(ArrayList<String> packageNames, boolean permanent);
+        public void bindComponentsRemoved(ArrayList<String> packageNames,
+                        ArrayList<ApplicationInfo> appInfos,
+                        boolean matchPackageNamesOnly);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public boolean isAllAppsVisible();
         public void bindSearchablesChanged();
@@ -2143,6 +2146,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             ArrayList<ApplicationInfo> added = null;
             ArrayList<ApplicationInfo> modified = null;
+            final ArrayList<ApplicationInfo> removedApps = new ArrayList<ApplicationInfo>();
 
             if (mBgAllAppsList.added.size() > 0) {
                 added = new ArrayList<ApplicationInfo>(mBgAllAppsList.added);
@@ -2152,14 +2156,9 @@ public class LauncherModel extends BroadcastReceiver {
                 modified = new ArrayList<ApplicationInfo>(mBgAllAppsList.modified);
                 mBgAllAppsList.modified.clear();
             }
-            // We may be removing packages that have no associated launcher application, so we
-            // pass through the removed package names directly.
-            // NOTE: We flush the icon cache aggressively in removePackage() above.
-            final ArrayList<String> removedPackageNames = new ArrayList<String>();
             if (mBgAllAppsList.removed.size() > 0) {
+                removedApps.addAll(mBgAllAppsList.removed);
                 mBgAllAppsList.removed.clear();
-
-                removedPackageNames.addAll(Arrays.asList(packages));
             }
 
             final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
@@ -2190,13 +2189,19 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
             }
-            if (!removedPackageNames.isEmpty()) {
-                final boolean permanent = mOp != OP_UNAVAILABLE;
+            // If a package has been removed, or an app has been removed as a result of
+            // an update (for example), make the removed callback.
+            if (mOp == OP_REMOVE || !removedApps.isEmpty()) {
+                final boolean permanent = (mOp == OP_REMOVE);
+                final ArrayList<String> removedPackageNames =
+                        new ArrayList<String>(Arrays.asList(packages));
+
                 mHandler.post(new Runnable() {
                     public void run() {
                         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                        if (callbacks == cb) {
-                            callbacks.bindAppsRemoved(removedPackageNames, permanent);
+                        if (callbacks == cb && cb != null) {
+                            callbacks.bindComponentsRemoved(removedPackageNames,
+                                    removedApps, permanent);
                         }
                     }
                 });

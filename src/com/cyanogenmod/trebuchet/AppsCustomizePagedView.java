@@ -2186,16 +2186,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
         return -1;
     }
-    private int findAppByPackage(List<ApplicationInfo> list, String packageName) {
-        int length = list.size();
-        for (int i = 0; i < length; ++i) {
-            ApplicationInfo info = list.get(i);
-            if (ItemInfo.getPackageName(info.intent).equals(packageName)) {
-                return i;
-            }
-        }
-        return -1;
-    }
     private void removeAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
         // loop through all the apps and remove apps that have the same component
         for (ApplicationInfo info : list) {
@@ -2205,18 +2195,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
-    private void removeAppsWithPackageNameWithoutInvalidate(ArrayList<String> packageNames) {
-        // loop through all the package names and remove apps that have the same package name
-        for (String pn : packageNames) {
-            int removeIndex = findAppByPackage(mApps, pn);
-            while (removeIndex > -1) {
-                mApps.remove(removeIndex);
-                removeIndex = findAppByPackage(mApps, pn);
-            }
-        }
-    }
-    public void removeApps(ArrayList<String> packageNames) {
-        removeAppsWithPackageNameWithoutInvalidate(packageNames);
+    public void removeApps(ArrayList<ApplicationInfo> appInfos) {
+        removeAppsWithoutInvalidate(appInfos);
         filterAppsWithoutInvalidate();
         updatePageCountsAndInvalidateData();
     }

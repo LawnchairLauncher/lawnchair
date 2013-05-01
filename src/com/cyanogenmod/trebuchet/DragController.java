@@ -326,18 +326,19 @@ public class DragController {
         }
         endDrag();
     }
-    public void onAppsRemoved(ArrayList<String> packageNames) {
+    public void onAppsRemoved(ArrayList<ApplicationInfo> appInfos) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             Object rawDragInfo = mDragObject.dragInfo;
             if (rawDragInfo instanceof ShortcutInfo) {
                 ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
-                for (String pn : packageNames) {
+                for (ApplicationInfo info : appInfos) {
                     // Added null checks to prevent NPE we've seen in the wild
                     if (dragInfo != null &&
                         dragInfo.intent != null) {
-                        boolean isSamePackage = dragInfo.getPackageName().equals(pn);
-                        if (isSamePackage) {
+                        boolean isSameComponent =
+                                dragInfo.intent.getComponent().equals(info.componentName);
+                        if (isSameComponent) {
                             cancelDrag();
                             return;
                         }
