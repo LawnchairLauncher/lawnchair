@@ -93,12 +93,6 @@ class ShortcutInfo extends ItemInfo {
         return mIcon;
     }
 
-    /** Returns the package name that the shortcut's intent will resolve to, or an empty string if
-     *  none exists. */
-    String getPackageName() {
-        return super.getPackageName(intent);
-    }
-
     public void updateIcon(IconCache iconCache) {
         mIcon = iconCache.getIcon(intent);
         usingFallbackIcon = iconCache.isDefaultIcon(mIcon);
