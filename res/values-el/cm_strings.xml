@@ -17,6 +17,8 @@
     <string name="menu">Μενού</string>
     <string name="cancel_target_label">Ακύρωση</string>
     <string name="edit_target_label">Επεξεργασία</string>
+    <string name="menu_lock_workspace">Κλείδωμα αρχικής οθόνης</string>
+    <string name="menu_unlock_workspace">Ξεκλείδωμα αρχικής οθόνης</string>
     <string name="menu_preferences">Ρυθμίσεις Trebuchet</string>
     <string name="menu_apps_sort_title">Όνομα</string>
     <string name="menu_apps_sort_install_date">Ημερομηνία εγκατάστασης</string>
@@ -26,6 +28,7 @@
     <string name="all_apps_sort_cling_title">Ταξινομήστε τις εφαρμογές σας</string>
     <string name="all_apps_sort_cling_add_item">Αγγίξτε και κρατήστε την καρτέλα Εφαρμογών για να επιλέξετε τη λειτουργία ταξινόμησης</string>
     <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
+    <string name="workspace_locked">Η αρχική οθόνη είναι κλειδωμένη, ξεκλειδώστε την από τις ρυθμίσεις για να κάνετε αλλαγές</string>
     <string name="preferences_title">Ρυθμίσεις</string>
     <string name="preferences_interface_title">Διεπαφή</string>
     <string name="preferences_application_title">Εφαρμογή</string>
@@ -103,6 +106,8 @@
     <string name="preferences_interface_icons_title">Εικονίδια</string>
     <string name="preferences_interface_general_title">Γενικά</string>
     <string name="preferences_interface_general_orientation_title">Αυτόματη περιστροφή οθόνης</string>
+    <string name="preferences_interface_general_lock_workspace_title">Κλείδωμα αρχικής οθόνης</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Κλείδωμα θέσης συντομεύσεων και φακέλων στην αρχική οθόνη, dock και συρταριού εφαρμογών και widget</string>
     <string name="preferences_interface_general_fullscreen_title">Λειτουργία πλήρους οθόνης</string>
     <string name="preferences_interface_general_fullscreen_summary">Απόκρυψη της μπάρας ειδοποιήσεων για επέκταση της αρχικής οθόνης</string>
     <string name="effects_standard">Κανονικό</string>
