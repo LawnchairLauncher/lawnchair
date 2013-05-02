@@ -17,6 +17,8 @@
     <string name="menu">Menù</string>
     <string name="cancel_target_label">Cancella</string>
     <string name="edit_target_label">Modifica</string>
+    <string name="menu_lock_workspace">Blocca schermata Home</string>
+    <string name="menu_unlock_workspace">Slocca schermata Home</string>
     <string name="menu_preferences">Impostazioni Trebuchet</string>
     <string name="menu_apps_sort_title">Nome</string>
     <string name="menu_apps_sort_install_date">Data Installazione</string>
@@ -26,6 +28,7 @@
     <string name="all_apps_sort_cling_title">Ordina applicazioni</string>
     <string name="all_apps_sort_cling_add_item">Tocca e tieni premuta la scheda delle applicazioni per scegliere in che ordine visualizzarle</string>
     <string name="hidden_apps_title">Applicazioni nascoste</string>
+    <string name="workspace_locked">La schermata Home è bloccata, sblocca in impostazioni per riorganizzare</string>
     <string name="preferences_title">Preferenze</string>
     <string name="preferences_interface_title">Interfaccia</string>
     <string name="preferences_application_title">Applicazione</string>
@@ -103,6 +106,8 @@
     <string name="preferences_interface_icons_title">Icone</string>
     <string name="preferences_interface_general_title">Generale</string>
     <string name="preferences_interface_general_orientation_title">Rotazione schermo</string>
+    <string name="preferences_interface_general_lock_workspace_title">Blocca schermata Home</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Blocca le scorciatoie e la posizione delle cartelle nella schermata Home, dock e drawer applicazioni e widget</string>
     <string name="preferences_interface_general_fullscreen_title">Modalità schermo intero</string>
     <string name="preferences_interface_general_fullscreen_summary">Nascondi la barra di stato per estendere la schermata Home</string>
     <string name="effects_standard">Predefinito</string>
