@@ -2244,6 +2244,14 @@ public final class Launcher extends Activity
         ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
+        oa.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    if (mFolderIconImageView != null) {
+                        mFolderIconImageView.setAlpha(0);
+                        mFolderIconImageView.setScalex(1.5f);
+                        mFolderIconImageView.setScalex(1.5f);
+                    }
+                }
         oa.start();
     }
 
