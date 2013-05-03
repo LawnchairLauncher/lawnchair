@@ -486,6 +486,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     cling.bringToFront();
                 }
                 setFocusOnFirstChild();
+                setAlpha(1);
+                setScaleX(1);
+                setScaleY(1);
             }
         });
         oa.setDuration(mExpandDuration);
