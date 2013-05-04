@@ -17,6 +17,8 @@
     <string name="menu">Meny</string>
     <string name="cancel_target_label">Avbryt</string>
     <string name="edit_target_label">Rediger</string>
+    <string name="menu_lock_workspace">Lås hjemmeskjerm</string>
+    <string name="menu_unlock_workspace">Lås opp hjemmeskjerm</string>
     <string name="menu_preferences">Trebuchet innstillinger</string>
     <string name="menu_apps_sort_title">Navn</string>
     <string name="menu_apps_sort_install_date">Dato installert</string>
@@ -26,6 +28,7 @@
     <string name="all_apps_sort_cling_title">Sorter appene dine</string>
     <string name="all_apps_sort_cling_add_item">Klikk &amp; hold app-fanen for å velge sorteringsmetode</string>
     <string name="hidden_apps_title">Skjulte Apper</string>
+    <string name="workspace_locked">Hjemmeskjermen er låst, lås den opp i innstillinger for å omorganisere</string>
     <string name="preferences_title">Innstillinger</string>
     <string name="preferences_interface_title">Grensesnitt</string>
     <string name="preferences_application_title">App</string>
@@ -103,6 +106,8 @@
     <string name="preferences_interface_icons_title">Ikoner</string>
     <string name="preferences_interface_general_title">Generelt</string>
     <string name="preferences_interface_general_orientation_title">Roter skjerm automatisk</string>
+    <string name="preferences_interface_general_lock_workspace_title">Lås hjemmeskjerm</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Lås posisjonen på snarveier og mapper på hjemmeskjermen, i dokksonen og i app- og modul-skuffen</string>
     <string name="preferences_interface_general_fullscreen_title">Fullskjermmodus</string>
     <string name="preferences_interface_general_fullscreen_summary">Skjul statuslinjen for å utvide hjemmeskjermen</string>
     <string name="effects_standard">Standard</string>
