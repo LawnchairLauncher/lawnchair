@@ -111,6 +111,8 @@
     <string name="preferences_interface_dock_default_page_summary">Выбор страницы по умолчанию</string>
     <string name="preferences_interface_dock_icons_title">Иконки</string>
     <string name="preferences_interface_dock_icons_summary">Количество иконок/колонок в нижней панели</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Прятать подписи иконок</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Прятать подписи иконок в нижней панели</string>
     <string name="preferences_interface_dock_icon_scale_title">Масштаб иконок</string>
     <string name="preferences_interface_dock_icon_scale_summary">Масштабирование иконок в нижней панели</string>
     <string name="preferences_interface_dock_divider_title">Показывать разделитель</string>
