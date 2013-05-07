@@ -320,14 +320,19 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      */
     protected void updateCurrentPageScroll() {
         // If the current page is invalid, just reset the scroll position to zero
-        int newX = 0;
+        int newScrollPos = 0;
         if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
             int offset = getChildOffset(mCurrentPage);
             int relOffset = getRelativeChildOffset(mCurrentPage);
-            newX = offset - relOffset;
+            newScrollPos = offset - relOffset;
         }
-        scrollTo(newX, 0);
-        mScroller.setFinalX(newX);
+        if (!mVertical) {
+            scrollTo(newScrollPos, 0);
+            mScroller.setFinalX(newScrollPos);
+        } else {
+            scrollTo(0, newScrollPos);
+            mScroller.setFinalY(newScrollPos);
+        }
         mScroller.forceFinished(true);
     }
 
