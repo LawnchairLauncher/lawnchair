@@ -40,7 +40,7 @@
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Schermen uitrekken</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_summary">Startschermen uitrekken om het scherm te vullen</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Labels verbergen</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Namen onder iconen verbergen</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Labels verbergen onder pictogrammen op startscherm</string>
     <string name="preferences_interface_homescreen_scrolling_category">Bladeren</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Overgangseffect</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Bladereffect bij het bladeren door startschermen</string>
@@ -91,6 +91,8 @@
     <string name="preferences_interface_dock_default_page_summary">De standaardpagina kiezen</string>
     <string name="preferences_interface_dock_icons_title">Pictogrammen</string>
     <string name="preferences_interface_dock_icons_summary">Aantal pictogrammen/kolommen in het dock</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Labels verbergen</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Labels verbergen onder pictogrammen in het dock</string>
     <string name="preferences_interface_dock_icon_scale_title">Pictogrammen schalen</string>
     <string name="preferences_interface_dock_icon_scale_summary">Pictogrammen schalen in het dock</string>
     <string name="preferences_interface_dock_divider_title">Scheidingslijn</string>
