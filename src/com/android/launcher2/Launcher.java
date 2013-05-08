@@ -3702,27 +3702,51 @@ public final class Launcher extends Activity
     }
 
     /**
-     * A package was uninstalled.
+     * A package was uninstalled.  We take both the super set of packageNames
+     * in addition to specific applications to remove, the reason being that
+     * this can be called when a package is updated as well.  In that scenario,
+     * we only remove specific components from the workspace, where as
+     * package-removal should clear all items by package name.
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsRemoved(ArrayList<String> packageNames, boolean permanent) {
-        if (permanent) {
-            mWorkspace.removeItems(packageNames);
+    public void bindComponentsRemoved(final ArrayList<String> packageNames,
+                                      final ArrayList<ApplicationInfo> appInfos,
+                                      final boolean matchPackageNamesOnly) {
+        if (waitUntilResume(new Runnable() {
+            public void run() {
+                bindComponentsRemoved(packageNames, appInfos, matchPackageNamesOnly);
+            }
+        })) {
+            return;
+        }
+
+        if (matchPackageNamesOnly) {
+            mWorkspace.removeItemsByPackageName(packageNames);
+        } else {
+            mWorkspace.removeItemsByApplicationInfo(appInfos);
         }
 
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.removeApps(packageNames);
+            mAppsCustomizeContent.removeApps(appInfos);
         }
 
         // Notify the drag controller
-        mDragController.onAppsRemoved(packageNames, this);
+        mDragController.onAppsRemoved(appInfos, this);
     }
 
     /**
      * A number of packages were updated.
      */
     public void bindPackagesUpdated() {
+        if (waitUntilResume(new Runnable() {
+            public void run() {
+                bindPackagesUpdated();
+            }
+        })) {
+            return;
+        }
+
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated();
         }
