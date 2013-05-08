@@ -97,12 +97,6 @@ class ApplicationInfo extends ItemInfo {
         firstInstallTime = info.firstInstallTime;
     }
 
-    /** Returns the package name that the shortcut's intent will resolve to, or an empty string if
-     *  none exists. */
-    String getPackageName() {
-        return super.getPackageName(intent);
-    }
-
     /**
      * Creates the application intent based on a component name and various launch flags.
      * Sets {@link #itemType} to {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
