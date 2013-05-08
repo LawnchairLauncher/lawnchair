@@ -288,7 +288,6 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
 
     private Drawable mWorkspaceBackgroundDrawable;
-    private Drawable mBlackBackgroundDrawable;
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
 
@@ -959,7 +958,6 @@ public final class Launcher extends Activity
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
-        mBlackBackgroundDrawable = new ColorDrawable(Color.BLACK);
 
         // Setup the drag layer
         mDragLayer.setup(this, dragController);
@@ -2433,7 +2431,7 @@ public final class Launcher extends Activity
 
     private void setWorkspaceBackground(boolean workspace) {
         mLauncherView.setBackground(workspace ?
-                mWorkspaceBackgroundDrawable : mBlackBackgroundDrawable);
+                mWorkspaceBackgroundDrawable : null);
     }
 
     void updateWallpaperVisibility(boolean visible) {
