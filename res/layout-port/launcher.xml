@@ -25,11 +25,7 @@
     android:background="@drawable/workspace_bg">
 
     <com.android.launcher2.DragLayer
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-
         android:id="@+id/drag_layer"
-        android:background="@drawable/workspace_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
