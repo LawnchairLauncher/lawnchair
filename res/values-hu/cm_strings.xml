@@ -99,6 +99,8 @@
     <string name="preferences_interface_dock_default_page_summary">Válasszon alapértelmezett lapot</string>
     <string name="preferences_interface_dock_icons_title">Ikonok</string>
     <string name="preferences_interface_dock_icons_summary">Ikonok száma a tálcán</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Ikonfeliratok elrejtése a tálcán</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Elrejti a tálcán lévő ikonok neveit</string>
     <string name="preferences_interface_dock_icon_scale_title">Ikonok mérete</string>
     <string name="preferences_interface_dock_icon_scale_summary">Tálcán szereplő ikonok mérete</string>
     <string name="preferences_interface_dock_divider_title">Tálca elválasztó</string>
