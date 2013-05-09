@@ -99,6 +99,8 @@
     <string name="preferences_interface_dock_default_page_summary">Pagina che viene mostrata di default</string>
     <string name="preferences_interface_dock_icons_title">Icone</string>
     <string name="preferences_interface_dock_icons_summary">Numero di icone/colonne nella barra dock</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Nascondi etichette</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Nascondi le etichette delle icone nella barra dock</string>
     <string name="preferences_interface_dock_icon_scale_title">Scala icone</string>
     <string name="preferences_interface_dock_icon_scale_summary">Scala delle icone nella barra dock</string>
     <string name="preferences_interface_dock_divider_title">Mostra divisore dock</string>
