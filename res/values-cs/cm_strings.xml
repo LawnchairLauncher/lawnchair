@@ -101,6 +101,8 @@
     <string name="preferences_interface_dock_pages_summary">Počet stránek v doku</string>
     <string name="preferences_interface_dock_icons_title">Ikony</string>
     <string name="preferences_interface_dock_icons_summary">Počet ikon/sloupců v doku</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Skrýt popisky ikon</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Skrýt popisky ikon v doku</string>
     <string name="preferences_interface_dock_icon_scale_title">Změnšení ikon</string>
     <string name="preferences_interface_dock_icon_scale_summary">Změnšení ikon v doku</string>
     <string name="preferences_interface_dock_divider_title">Zobrazit oddělovač doku</string>
