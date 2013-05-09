@@ -99,6 +99,8 @@
     <string name="preferences_interface_dock_default_page_summary">Velg en hovedside</string>
     <string name="preferences_interface_dock_icons_title">Ikoner</string>
     <string name="preferences_interface_dock_icons_summary">Antall ikoner/kolonner i dokksonen</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Skjul etiketter</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Skjul etikettene som er under ikonene i dokksonen</string>
     <string name="preferences_interface_dock_icon_scale_title">Skalering av ikoner</string>
     <string name="preferences_interface_dock_icon_scale_summary">Skalering av ikoner i dokksonen</string>
     <string name="preferences_interface_dock_divider_title">Vis en linje</string>
