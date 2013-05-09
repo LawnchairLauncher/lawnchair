@@ -17,6 +17,8 @@
     <string name="menu">菜单</string>
     <string name="cancel_target_label">取消</string>
     <string name="edit_target_label">编辑</string>
+    <string name="menu_lock_workspace">锁定主屏幕</string>
+    <string name="menu_unlock_workspace">解除主屏幕锁定</string>
     <string name="menu_preferences">Trebuchet 设置</string>
     <string name="menu_apps_sort_title">名称</string>
     <string name="menu_apps_sort_install_date">安装日期</string>
@@ -26,6 +28,7 @@
     <string name="all_apps_sort_cling_title">整理您的程序</string>
     <string name="all_apps_sort_cling_add_item">按住应用程序标签 &amp; 选择您的排列方式。</string>
     <string name="hidden_apps_title">隐藏应用</string>
+    <string name="workspace_locked">主屏幕已锁定，请到设置内解锁后再尝试更改</string>
     <string name="preferences_title">启动器选项</string>
     <string name="preferences_interface_title">界面</string>
     <string name="preferences_application_title">应用</string>
@@ -52,7 +55,7 @@
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">滚动壁纸</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">主屏幕滚动时壁纸将会一起滚动</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">壁纸快速渲染器</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">手动绘制壁纸位图, 加强静态壁纸的流畅性</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">手动绘制壁纸位图，加强静态壁纸的流畅性</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">壁纸大小</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">设定壁纸宽度 (以屏幕为单位)</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">淡出旁边屏幕</string>
@@ -96,6 +99,8 @@
     <string name="preferences_interface_dock_default_page_summary">选择默认页面</string>
     <string name="preferences_interface_dock_icons_title">图标</string>
     <string name="preferences_interface_dock_icons_summary">设置底座上的图标数量/列数</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">隐藏图标标签</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">隐藏底座上图标的标签</string>
     <string name="preferences_interface_dock_icon_scale_title">图标比例</string>
     <string name="preferences_interface_dock_icon_scale_summary">设置底座上图标的比例</string>
     <string name="preferences_interface_dock_divider_title">显示底座分隔器</string>
@@ -103,6 +108,8 @@
     <string name="preferences_interface_icons_title">图标</string>
     <string name="preferences_interface_general_title">常规</string>
     <string name="preferences_interface_general_orientation_title">自动旋转屏幕</string>
+    <string name="preferences_interface_general_lock_workspace_title">锁定主屏幕</string>
+    <string name="preferences_interface_general_lock_workspace_summary">锁定所有在主屏幕与底座上的图标和文件夹的位置</string>
     <string name="preferences_interface_general_fullscreen_title">全屏模式</string>
     <string name="preferences_interface_general_fullscreen_summary">隐藏状态栏以便扩展主屏幕</string>
     <string name="effects_standard">标准</string>
@@ -119,4 +126,6 @@
     <string name="effects_flip">翻动</string>
     <string name="effects_stack">堆叠</string>
     <string name="effects_accordion">手风琴</string>
+    <string name="effects_carousel_left">旋转木马 (左)</string>
+    <string name="effects_carousel_right">旋转木马 (右)</string>
 </resources>
