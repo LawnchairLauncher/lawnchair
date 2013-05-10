@@ -18,7 +18,9 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
     android:key="ui_homescreen"
     android:title="@string/preferences_interface_homescreen_title">
-    <PreferenceCategory android:title="@string/preferences_interface_homescreen_general_category">
+    <PreferenceCategory
+        android:key="ui_homescreen_general"
+        android:title="@string/preferences_interface_homescreen_general_category">
         <com.cyanogenmod.trebuchet.preference.DoubleNumberPickerPreference android:key="ui_homescreen_grid"
             android:title="@string/preferences_interface_homescreen_general_grid_title"
             android:summary="@string/preferences_interface_homescreen_general_grid_summary"
