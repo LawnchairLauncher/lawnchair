@@ -99,6 +99,8 @@
     <string name="preferences_interface_dock_default_page_summary">Die Standardseite festlegen</string>
     <string name="preferences_interface_dock_icons_title">Icons</string>
     <string name="preferences_interface_dock_icons_summary">Anzahl der Icons/Spalten des Docks festlegen</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Beschriftung nicht anzeigen</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Beschriftung unterhalb der Dock-Icons nicht anzeigen</string>
     <string name="preferences_interface_dock_icon_scale_title">Icongröße</string>
     <string name="preferences_interface_dock_icon_scale_summary">Größe der Icons im Dock</string>
     <string name="preferences_interface_dock_divider_title">Dock-Abtrennung anzeigen</string>
