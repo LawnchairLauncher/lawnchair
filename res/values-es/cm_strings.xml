@@ -99,6 +99,8 @@
     <string name="preferences_interface_dock_default_page_summary">Establecer la página por defecto</string>
     <string name="preferences_interface_dock_icons_title">Número de iconos</string>
     <string name="preferences_interface_dock_icons_summary">Establecer el número de iconos que se mostrarán</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Ocultar etiquetas</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Ocultar las etiquetas de los iconos de la barra de aplicaciones</string>
     <string name="preferences_interface_dock_icon_scale_title">Tamaño de iconos</string>
     <string name="preferences_interface_dock_icon_scale_summary">Establecer la escala para los iconos</string>
     <string name="preferences_interface_dock_divider_title">Separador</string>
