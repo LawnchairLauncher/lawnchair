@@ -383,7 +383,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps();
-        mVertical = PreferencesProvider.Interface.Drawer.getVertical();
         mTransitionEffect = PreferencesProvider.Interface.Drawer.Scrolling.getTransitionEffect(
                 resources.getString(R.string.config_drawerDefaultTransitionEffect));
         mFadeInAdjacentScreens = PreferencesProvider.Interface.Drawer.Scrolling.getFadeInAdjacentScreens();
@@ -427,7 +426,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void init() {
         super.init();
-        mCenterPages = false;
+        mVertical = PreferencesProvider.Interface.Drawer.getVertical();
+        mCenterPages = LauncherApplication.isScreenLarge() && mVertical;
 
         Context context = getContext();
         Resources r = context.getResources();
