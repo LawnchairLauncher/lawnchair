@@ -18,7 +18,7 @@
     <string name="cancel_target_label">Cancella</string>
     <string name="edit_target_label">Modifica</string>
     <string name="menu_lock_workspace">Blocca schermata Home</string>
-    <string name="menu_unlock_workspace">Slocca schermata Home</string>
+    <string name="menu_unlock_workspace">Sblocca schermata Home</string>
     <string name="menu_preferences">Impostazioni Trebuchet</string>
     <string name="menu_apps_sort_title">Nome</string>
     <string name="menu_apps_sort_install_date">Data Installazione</string>
