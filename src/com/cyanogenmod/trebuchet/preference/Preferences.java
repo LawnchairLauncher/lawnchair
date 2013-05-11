@@ -18,15 +18,12 @@ package com.cyanogenmod.trebuchet.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,7 +127,7 @@ public class Preferences extends PreferenceActivity
 
             PreferenceCategory general = (PreferenceCategory)findPreference("ui_homescreen_general");
             boolean workspaceTabletGrid = getResources().getBoolean(R.bool.config_workspaceTabletGrid);
-            if (general != null && (LauncherApplication.isScreenLarge() || workspaceTabletGrid == false)) {
+            if (general != null && (LauncherApplication.isScreenLarge() && workspaceTabletGrid == false)) {
                 Preference grid = findPreference("ui_homescreen_grid");
                 if (grid != null) {
                     general.removePreference(grid);
