@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="menu">Μενού</string>
     <string name="cancel_target_label">Ακύρωση</string>
     <string name="edit_target_label">Επεξεργασία</string>
@@ -99,6 +100,8 @@
     <string name="preferences_interface_dock_default_page_summary">Επιλέξτε την προεπιλεγμένη σελίδα</string>
     <string name="preferences_interface_dock_icons_title">Εικονίδια</string>
     <string name="preferences_interface_dock_icons_summary">Αριθμός εικονιδίων που θα εμφανίζονται στην μπάρα</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Απόκρυψη ετικετών εφαρμογών</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Απόκρυψη των ετικετών των εφαρμογών στην μπάρα</string>
     <string name="preferences_interface_dock_icon_scale_title">Κλίμακα εικονιδίων</string>
     <string name="preferences_interface_dock_icon_scale_summary">Κλίμακα των εικονιδίων στην μπάρα</string>
     <string name="preferences_interface_dock_divider_title">Εμφάνιση διαχωριστικού</string>
