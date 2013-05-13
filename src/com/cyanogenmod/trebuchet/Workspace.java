@@ -4350,21 +4350,21 @@ public class Workspace extends PagedView
                 if (tag instanceof ShortcutInfo) {
                     ShortcutInfo info = (ShortcutInfo) tag;
                     ComponentName cn = info.intent.getComponent();
-                    if (packageNames.contains(cn.getPackageName())) {
+                    if ((cn != null) && packageNames.contains(cn.getPackageName())) {
                         cns.add(cn);
                     }
                 } else if (tag instanceof FolderInfo) {
                     FolderInfo info = (FolderInfo) tag;
                     for (ShortcutInfo s : info.contents) {
                         ComponentName cn = s.intent.getComponent();
-                        if (packageNames.contains(cn.getPackageName())) {
+                        if ((cn != null) && packageNames.contains(cn.getPackageName())) {
                             cns.add(cn);
                         }
                     }
                 } else if (tag instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
                     ComponentName cn = info.providerName;
-                    if (packageNames.contains(cn.getPackageName())) {
+                    if ((cn != null) && packageNames.contains(cn.getPackageName())) {
                         cns.add(cn);
                     }
                 }
