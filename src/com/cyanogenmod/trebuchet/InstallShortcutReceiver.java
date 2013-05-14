@@ -58,10 +58,23 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String SHORTCUT_MIMETYPE =
             "com.cyanogenmod.trebuchet/shortcut";
 
+    private static Object sLock = new Object();
+
     // The set of shortcuts that are pending install
     private static ArrayList<PendingInstallShortcutInfo> mInstallQueue =
             new ArrayList<PendingInstallShortcutInfo>();
 
+    private static void addToStringSet(SharedPreferences sharedPrefs,
+            SharedPreferences.Editor editor, String key, String value) {
+        Set<String> strings = sharedPrefs.getStringSet(key, null);
+        if (strings == null) {
+            strings = new HashSet<String>(0);
+        } else {
+            strings = new HashSet<String>(strings);
+        }
+        strings.add(value);
+        editor.putStringSet(key, strings);
+    }
     // Determines whether to defer installing shortcuts immediately until
     // processAllPendingInstalls() is called.
     private static boolean mUseInstallQueue = false;
@@ -141,6 +154,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         final int[] result = {INSTALL_SHORTCUT_SUCCESSFUL};
         boolean found = false;
         synchronized (app) {
+            // Flush the LauncherModel worker thread, so that if we just did another
+            // processInstallShortcut, we give it time for its shortcut to get added to the
+            // database (getItemsInLocalCoordinates reads the database)
+            app.getModel().flushWorkerThread();
             final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
             final boolean exists = LauncherModel.shortcutExists(context, intent);
 
@@ -180,7 +197,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private static boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
-            Intent intent, final int screen, boolean shortcutExists,
+            final Intent intent, final int screen, boolean shortcutExists,
             final SharedPreferences sharedPrefs, int[] result) {
         int[] tmpCoordinates = new int[2];
         if (findEmptyCell(items, tmpCoordinates, screen)) {
@@ -198,24 +215,20 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 // different places)
                 boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
                 if (duplicate || !shortcutExists) {
-                    // If the new app is going to fall into the same page as before, then just
-                    // continue adding to the current page
-                    int newAppsScreen = sharedPrefs.getInt(NEW_APPS_PAGE_KEY, screen);
-                    Set<String> newApps = new HashSet<String>();
-                    if (newAppsScreen == screen) {
-                        newApps = sharedPrefs.getStringSet(NEW_APPS_LIST_KEY, newApps);
-                    }
-                    synchronized (newApps) {
-                        newApps.add(intent.toUri(0));
-                    }
-                    final Set<String> savedNewApps = newApps;
                     new Thread("setNewAppsThread") {
                         public void run() {
-                            synchronized (savedNewApps) {
-                                sharedPrefs.edit()
-                                           .putInt(NEW_APPS_PAGE_KEY, screen)
-                                           .putStringSet(NEW_APPS_LIST_KEY, savedNewApps)
-                                           .commit();
+                            synchronized (sLock) {
+                                // If the new app is going to fall into the same page as before,
+                                // then just continue adding to the current page
+                                final int newAppsScreen = sharedPrefs.getInt(
+                                        NEW_APPS_PAGE_KEY, screen);
+                                SharedPreferences.Editor editor = sharedPrefs.edit();
+                                if (newAppsScreen == screen) {
+                                    addToStringSet(sharedPrefs,
+                                        editor, NEW_APPS_LIST_KEY, intent.toUri(0));
+                                }
+                                editor.putInt(NEW_APPS_PAGE_KEY, screen);
+                                editor.commit();
                             }
                         }
                     }.start();
