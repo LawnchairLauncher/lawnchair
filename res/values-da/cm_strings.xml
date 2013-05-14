@@ -100,6 +100,8 @@
     <string name="preferences_interface_dock_default_page_summary">Vælg standardsiden</string>
     <string name="preferences_interface_dock_icons_title">Ikoner</string>
     <string name="preferences_interface_dock_icons_summary">Antal ikoner/kolonner i startlinjen</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Skjul ikonetiketter</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Skjul ikonetiketter i startlinje</string>
     <string name="preferences_interface_dock_icon_scale_title">Ikonstørrelse</string>
     <string name="preferences_interface_dock_icon_scale_summary">Størrelse på startlinjens ikoner</string>
     <string name="preferences_interface_dock_divider_title">Vis skillelinje for startlinje</string>
