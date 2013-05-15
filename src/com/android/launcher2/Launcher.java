@@ -126,6 +126,7 @@ public final class Launcher extends Activity
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
+    static final boolean DEBUG_RESUME_TIME = true;
 
     private static final int MENU_GROUP_WALLPAPER = 1;
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -730,6 +731,10 @@ public final class Launcher extends Activity
 
     @Override
     protected void onResume() {
+        long startTime = 0;
+        if (DEBUG_RESUME_TIME) {
+            startTime = System.currentTimeMillis();
+        }
         super.onResume();
 
         // Restore the previous launcher state
@@ -756,10 +761,18 @@ public final class Launcher extends Activity
         }
         // We might have postponed some bind calls until onResume (see waitUntilResume) --
         // execute them here
+        long startTimeCallbacks = 0;
+        if (DEBUG_RESUME_TIME) {
+            startTimeCallbacks = System.currentTimeMillis();
+        }
         for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
             mOnResumeCallbacks.get(i).run();
         }
         mOnResumeCallbacks.clear();
+        if (DEBUG_RESUME_TIME) {
+            Log.d(TAG, "Time spent processing callbacks in onResume: " +
+                (System.currentTimeMillis() - startTimeCallbacks));
+        }
 
         // Reset the pressed state of icons that were locked in the press state while activities
         // were launching
@@ -780,6 +793,9 @@ public final class Launcher extends Activity
         // Again, as with the above scenario, it's possible that one or more of the global icons
         // were updated in the wrong orientation.
         updateGlobalIcons();
+        if (DEBUG_RESUME_TIME) {
+            Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
+        }
     }
 
     @Override
@@ -1412,6 +1428,10 @@ public final class Launcher extends Activity
 
     @Override
     protected void onNewIntent(Intent intent) {
+        long startTime = 0;
+        if (DEBUG_RESUME_TIME) {
+            startTime = System.currentTimeMillis();
+        }
         super.onNewIntent(intent);
 
         // Close the menu
@@ -1471,6 +1491,9 @@ public final class Launcher extends Activity
                 processIntent.run();
             }
 
+        }
+        if (DEBUG_RESUME_TIME) {
+            Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }
     }
 

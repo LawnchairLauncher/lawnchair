@@ -203,7 +203,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                                 final int newAppsScreen = sharedPrefs.getInt(
                                         NEW_APPS_PAGE_KEY, screen);
                                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                                if (newAppsScreen == screen) {
+                                if (newAppsScreen == -1 || newAppsScreen == screen) {
                                     addToStringSet(sharedPrefs,
                                         editor, NEW_APPS_LIST_KEY, intent.toUri(0));
                                 }
