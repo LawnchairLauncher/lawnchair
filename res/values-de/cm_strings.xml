@@ -108,6 +108,8 @@
     <string name="preferences_interface_icons_title">Icons</string>
     <string name="preferences_interface_general_title">Allgemein</string>
     <string name="preferences_interface_general_orientation_title">Automatische Seitenausrichtung</string>
+    <string name="preferences_interface_general_lock_workspace_title">Startbildschirm sperren</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Platzierung von Verknüpfungen und Ordnern in Startbildschirm, Dock und App-Liste sperren</string>
     <string name="preferences_interface_general_fullscreen_title">Vollbildmodus</string>
     <string name="preferences_interface_general_fullscreen_summary">Statusleiste für Vollbildansicht ausblenden</string>
     <string name="effects_standard">Standard</string>
