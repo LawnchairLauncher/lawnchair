@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Autorské práva \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Ponuka</string>
+    <string name="cancel_target_label">Zrušiť</string>
+    <string name="edit_target_label">Upraviť</string>
+    <string name="menu_lock_workspace">Uzamknúť domovskú obrazovku</string>
+    <string name="menu_unlock_workspace">Odomknúť domovskú obrazovku</string>
+    <string name="menu_preferences">Nastavenia spúšťača Trebuchet</string>
+    <string name="menu_apps_sort_title">Názov</string>
+    <string name="menu_apps_sort_install_date">Dátum inštalácie</string>
+    <string name="menu_apps_filter_system">Systémové</string>
+    <string name="menu_apps_filter_downloaded">Prevzaté</string>
+    <string name="menu_hidden_apps_delete">Znovunastaviť</string>
+    <string name="all_apps_sort_cling_title">Usporiadanie vašich aplikácií</string>
+    <string name="all_apps_sort_cling_add_item">Ťuknite a podržte záložku Aplikácie na vybratie režimu usporiadania</string>
+    <string name="hidden_apps_title">Skryté aplikácie</string>
+    <string name="workspace_locked">Domovská obrazovka je uzamknutá, odomknite ju v nastaveniach aby ste mohli robiť úpravy</string>
+    <string name="preferences_title">Nastavenia</string>
+    <string name="preferences_interface_title">Rozhranie</string>
+    <string name="preferences_application_title">Aplikácia</string>
+    <string name="preferences_interface_homescreen_title">Domovská obrazovka</string>
+    <string name="preferences_interface_homescreen_summary">Obrazovky a pozadie</string>
+    <string name="preferences_interface_homescreen_general_category">Všeobecné</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Domovské obrazovky</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Počet obrazoviek na domovskej obrazovke</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Predvolená obrazovka</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Výber predvolenej domovskej obrazovky</string>
+    <string name="preferences_interface_homescreen_general_search_title">Vyhľadávacia lišta</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Na trvalo povolí vyhľadávaciu lištu</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Veľkosť mriežky</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Zvolí počet riadkov/stĺpcov na domovskej obrazovke</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Riadky</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Stĺpce</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Roztiahnuť obrazovky</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Zväčší domovské obrazovky, aby vyplnili celú veľkosť displeja</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skryť menovky ikôn</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skryje menovky ikôn na domovskej obrazovke</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Posúvanie</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efekt prechodu</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efekt posúvanie pri posúvaní domovských obrazoviek</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Posúvať pozadie</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Posunie pozadie pri posúvaní domovských obrazoviek</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Rýchle vykreslenie pozadia</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Použije trik s pozadím, ktorý zvýši jemnosť nehybných obrázkov pozadia</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Veľkosť pozadia</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Určuje na koľko obrazoviek má byť široké pozadie</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Zoslabenie bočných obrazoviek</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Zoslabí bočné obrazovky pri posúvaní domovských obrazoviek</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Zobraziť okraje</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Zobrazí okraje obrazoviek pri posúvaní domovských obrazoviek</string>
+    <string name="preferences_interface_homescreen_indicator_category">Ukazovateľ</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Zobraziť ukazovateľ stránok</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Zobrazí ukazovateľ aktuálnej stránky na obrazovke</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Zoslabiť ukazovateľ</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Zoslabí ukazateľ po zmene domovskej obrazovky</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Pozícia ukazovateľa</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Určí, kde na obrazovke bude zobrazený ukazovateľ</string>
+    <string name="preferences_interface_drawer_title">Ponuka</string>
+    <string name="preferences_interface_drawer_summary">Ponuka aplikácií a miniaplikácií</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientácia</string>
+    <string name="preferences_interface_drawer_orientation_summary">Určí, ktorým smerom sa bude ponuka posúvať</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Skryté aplikácie</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Skryje aplikácie v ponuke</string>
+    <string name="preferences_interface_drawer_widgets_category">Miniaplikácie</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Zlúčiť s aplikáciami</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Posunie z ponuky aplikácií do ponuky miniaplikácií bez zmeny karty</string>
+    <string name="preferences_interface_drawer_scrolling_category">Posúvanie</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efekt prechodu</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efekt posúvanie pri posúvaní obrazoviek</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Zoslabiť bočné stránky</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Zoslabí bočné stránky pri posúvaní obrazoviek</string>
+    <string name="preferences_interface_drawer_indicator_category">Ukazovateľ</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Zobraziť ukazovateľ stránok</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Zobrazí ukazovateľ aktuálnej stránky na spodku obrazovky</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Zoslabiť ukazovateľ</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Zoslabí ukazovateľ po zmene stránky</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Pozícia ukazovateľa</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Určí, kde na obrazovke bude zobrazený ukazovateľ</string>
+    <string name="preferences_interface_dock_title">Dok</string>
+    <string name="preferences_interface_dock_enabled_title">Zobraziť dok</string>
+    <string name="preferences_interface_dock_enabled_summary">Zobrazí dok pod domovskou obrazovkou</string>
+    <string name="preferences_interface_dock_pages_title">Stránky</string>
+    <string name="preferences_interface_dock_pages_summary">Počet stránok v doku</string>
+    <string name="preferences_interface_dock_default_page_title">Predvolená stránka</string>
+    <string name="preferences_interface_dock_default_page_summary">Určí predvolenú stránku</string>
+    <string name="preferences_interface_dock_icons_title">Ikony</string>
+    <string name="preferences_interface_dock_icons_summary">Počet ikôn/stĺpcov v doku</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Skryť menovky ikôn</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Skryje menovky ikôn v doku</string>
+    <string name="preferences_interface_dock_icon_scale_title">Mierka ikôn</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Mierka ikôn v doku</string>
+    <string name="preferences_interface_dock_divider_title">Zobraziť oddeľovač</string>
+    <string name="preferences_interface_dock_divider_summary">Zobrazí oddeľovač medzi domovskou obrazovkou a dokom</string>
+    <string name="preferences_interface_icons_title">Ikony</string>
+    <string name="preferences_interface_general_title">Všeobecné</string>
+    <string name="preferences_interface_general_orientation_title">Automaticky otáčať obrazovku</string>
+    <string name="preferences_interface_general_lock_workspace_title">Uzamknúť domovskú obrazovku</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Uzamkne pozície odkazov a priečinkov domovskej obrazovky, doku a ponuky aplikácií a miniaplikácií</string>
+    <string name="preferences_interface_general_fullscreen_title">Režim na celú obrazovku</string>
+    <string name="preferences_interface_general_fullscreen_summary">Skryje stavovú lištu kvôli zväčšeniu domovskej obrazovky</string>
+    <string name="effects_standard">Štandardný</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Priblíženie</string>
+    <string name="effects_zoom_out">Oddialenie</string>
+    <string name="effects_rotate_up">Otočenie hore</string>
+    <string name="effects_rotate_down">Otočenie dolu</string>
+    <string name="effects_cylinder_in">Valec zvnútra</string>
+    <string name="effects_cylinder_out">Valec zvonku</string>
+    <string name="effects_cube_in">Kocka zvnútra</string>
+    <string name="effects_cube_out">Kocka zvonku</string>
+    <string name="effects_spin">Roztočenie</string>
+    <string name="effects_flip">Preklopenie</string>
+    <string name="effects_stack">Hromadenie</string>
+    <string name="effects_accordion">Akordeón</string>
+    <string name="effects_carousel_left">Kolotoč doľava</string>
+    <string name="effects_carousel_right">Kolotoč doprava</string>
+</resources>
