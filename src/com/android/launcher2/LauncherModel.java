@@ -161,7 +161,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<ApplicationInfo> appInfos,
                         boolean matchPackageNamesOnly);
-        public void bindPackagesUpdated();
+        public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public boolean isAllAppsVisible();
         public boolean isAllAppsButtonRank(int rank);
         public void bindSearchablesChanged();
@@ -2105,16 +2105,30 @@ public class LauncherModel extends BroadcastReceiver {
                 });
             }
 
+            final ArrayList<Object> widgetsAndShortcuts =
+                getSortedWidgetsAndShortcuts(context);
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                     if (callbacks == cb && cb != null) {
-                        callbacks.bindPackagesUpdated();
+                        callbacks.bindPackagesUpdated(widgetsAndShortcuts);
                     }
                 }
             });
         }
+    }
+
+    // Returns a list of ResolveInfos/AppWindowInfos in sorted order
+    public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
+        widgetsAndShortcuts.addAll(AppWidgetManager.getInstance(context).getInstalledProviders());
+        Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
+        widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
+        Collections.sort(widgetsAndShortcuts,
+            new LauncherModel.WidgetAndShortcutNameComparator(packageManager));
+        return widgetsAndShortcuts;
     }
 
     /**
