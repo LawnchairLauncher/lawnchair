@@ -137,6 +137,7 @@ public final class Launcher extends Activity
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
+    static final boolean DEBUG_RESUME_TIME = false;
 
     private static final int MENU_GROUP_WALLPAPER = 1;
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -432,7 +433,8 @@ public final class Launcher extends Activity
 
         // Update customization drawer _after_ restoring the states
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated();
+            mAppsCustomizeContent.onPackagesUpdated(
+                LauncherModel.getSortedWidgetsAndShortcuts(this));
         }
 
         if (PROFILE_STARTUP) {
@@ -807,12 +809,29 @@ public final class Launcher extends Activity
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
-        // We might have postponed some bind calls until onResume (see waitUntilResume) --
-        // execute them here
-        for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
-            mOnResumeCallbacks.get(i).run();
+        if (mOnResumeCallbacks.size() > 0) {
+            // We might have postponed some bind calls until onResume (see waitUntilResume) --
+            // execute them here
+            long startTimeCallbacks = 0;
+            if (DEBUG_RESUME_TIME) {
+                startTimeCallbacks = System.currentTimeMillis();
+            }
+
+            if (mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.setBulkBind(true);
+            }
+            for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
+                mOnResumeCallbacks.get(i).run();
+            }
+            if (mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.setBulkBind(false);
+            }
+            mOnResumeCallbacks.clear();
+            if (DEBUG_RESUME_TIME) {
+                Log.d(TAG, "Time spent processing callbacks in onResume: " +
+                    (System.currentTimeMillis() - startTimeCallbacks));
+            }
         }
-        mOnResumeCallbacks.clear();
 
         // Reset the pressed state of icons that were locked in the press state while activities
         // were launching
@@ -3666,14 +3685,22 @@ public final class Launcher extends Activity
      * @return true if we are currently paused.  The caller might be able to
      * skip some work in that case since we will come back again.
      */
-    private boolean waitUntilResume(Runnable run) {
+    private boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
         if (mPaused) {
             Log.i(TAG, "Deferring update until onResume");
+            if (deletePreviousRunnables) {
+                while (mOnResumeCallbacks.remove(run)) {
+                }
+            }
             mOnResumeCallbacks.add(run);
             return true;
         } else {
             return false;
         }
+    }
+
+    private boolean waitUntilResume(Runnable run) {
+        return waitUntilResume(run, false);
     }
 
     /**
@@ -4140,9 +4167,23 @@ public final class Launcher extends Activity
     /**
      * A number of packages were updated.
      */
-    public void bindPackagesUpdated() {
+
+    private ArrayList<Object> mWidgetsAndShortcuts;
+    private Runnable mBindPackagesUpdatedRunnable = new Runnable() {
+            public void run() {
+                bindPackagesUpdated(mWidgetsAndShortcuts);
+                mWidgetsAndShortcuts = null;
+            }
+        };
+
+    public void bindPackagesUpdated(final ArrayList<Object> widgetsAndShortcuts) {
+        if (waitUntilResume(mBindPackagesUpdatedRunnable, true)) {
+            mWidgetsAndShortcuts = widgetsAndShortcuts;
+            return;
+        }
+
         if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated();
+            mAppsCustomizeContent.onPackagesUpdated(widgetsAndShortcuts);
         }
     }
 
