@@ -128,7 +128,7 @@ public class Preferences extends PreferenceActivity
             PreferenceCategory general = (PreferenceCategory)findPreference("ui_homescreen_general");
             if (general != null && LauncherApplication.isScreenLarge()) {
                 boolean workspaceTabletGrid = getResources().getBoolean(R.bool.config_workspaceTabletGrid);
-                if (workspaceTabletGrid == false))
+                if (workspaceTabletGrid == false) {
                     Preference grid = findPreference("ui_homescreen_grid");
                     if (grid != null) {
                         general.removePreference(grid);
