@@ -35,8 +35,8 @@
 
     <dimen name="qsb_bar_height">102dp</dimen>
     <dimen name="qsb_bar_height_inset">102dp</dimen>
-    <dimen name="qsb_padding_left">72dp</dimen>
-    <dimen name="qsb_padding_right">72dp</dimen>
+    <dimen name="qsb_padding_left">16dp</dimen>
+    <dimen name="qsb_padding_right">16dp</dimen>
     <!-- We offset the proxy to overlap with the voice icon -->
     <dimen name="qsb_voice_proxy_padding_right">100dp</dimen>
 
@@ -44,8 +44,8 @@
     <integer name="apps_customize_cling_focused_y">2</integer>
 
     <!-- Divider width set to match the qsb width -->
-    <dimen name="workspace_divider_padding_left">72dp</dimen>
-    <dimen name="workspace_divider_padding_right">72dp</dimen>
+    <dimen name="workspace_divider_padding_left">@dimen/qsb_padding_left</dimen>
+    <dimen name="workspace_divider_padding_right">@dimen/qsb_padding_right</dimen>
 
 <!-- Hotseat -->
     <dimen name="hotseat_width_gap">14dp</dimen>

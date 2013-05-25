@@ -126,11 +126,17 @@ public class Preferences extends PreferenceActivity
             addPreferencesFromResource(R.xml.preferences_homescreen);
 
             PreferenceCategory general = (PreferenceCategory)findPreference("ui_homescreen_general");
-            boolean workspaceTabletGrid = getResources().getBoolean(R.bool.config_workspaceTabletGrid);
-            if (general != null && (LauncherApplication.isScreenLarge() && workspaceTabletGrid == false)) {
-                Preference grid = findPreference("ui_homescreen_grid");
-                if (grid != null) {
-                    general.removePreference(grid);
+            if (general != null && LauncherApplication.isScreenLarge()) {
+                boolean workspaceTabletGrid = getResources().getBoolean(R.bool.config_workspaceTabletGrid);
+                if (workspaceTabletGrid == false))
+                    Preference grid = findPreference("ui_homescreen_grid");
+                    if (grid != null) {
+                        general.removePreference(grid);
+                    }
+                }
+                Preference stretch = findPreference("ui_homescreen_stretch_screens");
+                if (stretch != null) {
+                    general.removePreference(stretch);
                 }
             }
         }
