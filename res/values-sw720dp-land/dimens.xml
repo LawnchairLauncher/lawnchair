@@ -33,6 +33,10 @@
     <integer name="apps_customize_cling_focused_x">4</integer>
     <integer name="apps_customize_cling_focused_y">2</integer>
 
+<!-- Hotseat -->
+    <dimen name="hotseat_cell_width">110dp</dimen>
+    <dimen name="hotseat_width_gap">-1dp</dimen>
+
 <!-- Cling -->
     <!-- The offset for the text in the cling -->
     <dimen name="cling_text_block_offset_x">140dp</dimen>

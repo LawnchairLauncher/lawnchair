@@ -392,6 +392,10 @@ public class Workspace extends PagedView
         }
 
         mStretchScreens = PreferencesProvider.Interface.Homescreen.getStretchScreens();
+        // Large screen has calculated dimensions always
+        if (LauncherApplication.isScreenLarge()) {
+            mStretchScreens = false;
+        }
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
         mShowHotseat = PreferencesProvider.Interface.Dock.getShowDock();
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();

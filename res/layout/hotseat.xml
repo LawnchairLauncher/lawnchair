@@ -16,4 +16,5 @@
 <com.cyanogenmod.trebuchet.Hotseat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
+    launcher:pageSpacing="@dimen/workspace_page_spacing"
     launcher:cellCount="@integer/hotseat_cell_count" />
