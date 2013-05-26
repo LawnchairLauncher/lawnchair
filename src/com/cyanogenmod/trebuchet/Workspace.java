@@ -392,8 +392,9 @@ public class Workspace extends PagedView
         }
 
         mStretchScreens = PreferencesProvider.Interface.Homescreen.getStretchScreens();
-        // Large screen has calculated dimensions always
-        if (LauncherApplication.isScreenLarge()) {
+        // Large screen has calculated dimensions always, unless specified by config_workspaceTabletGrid option
+        boolean workspaceTabletGrid = getResources().getBoolean(R.bool.config_workspaceTabletGrid);
+        if (LauncherApplication.isScreenLarge() && workspaceTabletGrid == false) {
             mStretchScreens = false;
         }
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();

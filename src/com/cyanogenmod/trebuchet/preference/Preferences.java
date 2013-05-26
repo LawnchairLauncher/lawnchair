@@ -133,10 +133,10 @@ public class Preferences extends PreferenceActivity
                     if (grid != null) {
                         general.removePreference(grid);
                     }
-                }
-                Preference stretch = findPreference("ui_homescreen_stretch_screens");
-                if (stretch != null) {
-                    general.removePreference(stretch);
+                    Preference stretch = findPreference("ui_homescreen_stretch_screens");
+                    if (stretch != null) {
+                        general.removePreference(stretch);
+                    }
                 }
             }
         }
