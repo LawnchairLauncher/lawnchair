@@ -45,7 +45,8 @@ class FastBitmapDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         final Rect r = getBounds();
-        canvas.drawBitmap(mBitmap, r.left, r.top, mPaint);
+        // Draw the bitmap into the bounding rect
+        canvas.drawBitmap(mBitmap, null, r, mPaint);
     }
 
     @Override
