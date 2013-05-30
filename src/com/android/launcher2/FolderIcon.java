@@ -402,9 +402,11 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                     postAnimationRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
             addItem(item);
             mHiddenItems.add(item);
+            mFolder.hideItem(item);
             postDelayed(new Runnable() {
                 public void run() {
                     mHiddenItems.remove(item);
+                    mFolder.showItem(item);
                     invalidate();
                 }
             }, DROP_IN_ANIMATION_DURATION);
@@ -535,7 +537,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
-        ArrayList<View> items = mFolder.getItemsInReadingOrder(false);
+        ArrayList<View> items = mFolder.getItemsInReadingOrder();
         Drawable d;
         TextView v;
 

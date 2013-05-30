@@ -690,22 +690,21 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 replaceFolderWithFinalItem();
             }
         } else {
+            setupContentForNumItems(getItemCount());
             // The drag failed, we need to return the item to the folder
             mFolderIcon.onDrop(d);
-
-            // We're going to trigger a "closeFolder" which may occur before this item has
-            // been added back to the folder -- this could cause the folder to be deleted
-            if (mOnExitAlarm.alarmPending()) {
-                mSuppressFolderDeletion = true;
-            }
         }
 
         if (target != this) {
             if (mOnExitAlarm.alarmPending()) {
                 mOnExitAlarm.cancelAlarm();
+                if (!success) {
+                    mSuppressFolderDeletion = true;
+                }
                 completeDragExit();
             }
         }
+
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
         mItemAddedBackToSelfViaIcon = false;
@@ -1024,6 +1023,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mInfo.add(item);
     }
 
+    // This is used so the item doesn't immediately appear in the folder when added. In one case
+    // we need to create the illusion that the item isn't added back to the folder yet, to
+    // to correspond to the animation of the icon back into the folder. This is
+    public void hideItem(ShortcutInfo info) {
+        View v = getViewForInfo(info);
+        v.setVisibility(INVISIBLE);
+    }
+    public void showItem(ShortcutInfo info) {
+        View v = getViewForInfo(info);
+        v.setVisibility(VISIBLE);
+    }
+
     public void onAdd(ShortcutInfo item) {
         mItemsInvalidated = true;
         // If the item was dropped onto this open folder, we have done the work associated
@@ -1076,20 +1087,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public ArrayList<View> getItemsInReadingOrder() {
-        return getItemsInReadingOrder(true);
-    }
-
-    public ArrayList<View> getItemsInReadingOrder(boolean includeCurrentDragItem) {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
             for (int j = 0; j < mContent.getCountY(); j++) {
                 for (int i = 0; i < mContent.getCountX(); i++) {
                     View v = mContent.getChildAt(i, j);
                     if (v != null) {
-                        ShortcutInfo info = (ShortcutInfo) v.getTag();
-                        if (info != mCurrentDragInfo || includeCurrentDragItem) {
-                            mItemsInReadingOrder.add(v);
-                        }
+                        mItemsInReadingOrder.add(v);
                     }
                 }
             }
