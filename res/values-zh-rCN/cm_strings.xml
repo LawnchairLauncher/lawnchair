@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">版权所有 \u00A9 2013 CyanogenMod 项目</string>
     <string name="menu">菜单</string>
     <string name="cancel_target_label">取消</string>
     <string name="edit_target_label">编辑</string>
@@ -38,7 +39,7 @@
     <string name="preferences_interface_homescreen_general_screens_title">主屏幕数量</string>
     <string name="preferences_interface_homescreen_general_screens_summary">主屏幕上的页面数量</string>
     <string name="preferences_interface_homescreen_general_default_screen_title">默认主屏幕</string>
-    <string name="preferences_interface_homescreen_general_default_screen_summary">选择默认的主屏幕</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">选择默认主屏幕</string>
     <string name="preferences_interface_homescreen_general_search_title">搜索栏</string>
     <string name="preferences_interface_homescreen_general_search_summary">启用搜索栏</string>
     <string name="preferences_interface_homescreen_general_grid_title">网格大小</string>
@@ -46,12 +47,12 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">行</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">列</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">拉长屏幕</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_summary">扩展主屏幕为填充屏幕大小</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">扩展主屏幕以填充屏幕大小</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">隐藏图标标签</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">隐藏在主屏幕上图标的标签</string>
     <string name="preferences_interface_homescreen_scrolling_category">滚动</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_title">过渡效果</string>
-    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">滚动页面时产生的效果</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">滚动主屏幕时产生的效果</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">滚动壁纸</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">主屏幕滚动时壁纸将会一起滚动</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">壁纸快速渲染器</string>
@@ -80,7 +81,7 @@
     <string name="preferences_interface_drawer_widgets_join_apps_summary">从应用程序菜单直接滑动到小部件菜单</string>
     <string name="preferences_interface_drawer_scrolling_category">滚动</string>
     <string name="preferences_interface_drawer_scrolling_transition_effect_title">过渡效果</string>
-    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">滚动屏幕时产生的效果</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">滚动页面时产生的效果</string>
     <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">淡出旁边页面</string>
     <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">滚动屏幕时淡出旁边的页面</string>
     <string name="preferences_interface_drawer_indicator_category">指示器</string>
