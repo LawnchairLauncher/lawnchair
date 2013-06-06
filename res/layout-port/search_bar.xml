@@ -15,14 +15,14 @@
 -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     style="@style/SearchDropTargetBar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/search_bar_height"
     android:layout_gravity="bottom|center_horizontal"
     android:background="@drawable/search_frame">
    <!-- Global search icon -->
-   <com.android.launcher2.HolographicLinearLayout
+   <com.android.launcher3.HolographicLinearLayout
         style="@style/SearchButton"
         launcher:sourceImageViewId="@+id/search_button"
         android:id="@+id/search_button_container"
@@ -44,10 +44,10 @@
             android:scaleType="fitStart"
             android:src="@drawable/ic_home_search_normal_holo"
             android:adjustViewBounds="true" />
-    </com.android.launcher2.HolographicLinearLayout>
+    </com.android.launcher3.HolographicLinearLayout>
 
     <!-- Voice search icon -->
-    <com.android.launcher2.HolographicLinearLayout
+    <com.android.launcher3.HolographicLinearLayout
         style="@style/SearchButton"
         launcher:sourceImageViewId="@+id/voice_button"
         android:id="@+id/voice_button_container"
@@ -69,5 +69,5 @@
             android:scaleType="fitEnd"
             android:src="@drawable/ic_home_voice_search_holo"
             android:adjustViewBounds="true" />
-    </com.android.launcher2.HolographicLinearLayout>
+    </com.android.launcher3.HolographicLinearLayout>
 </RelativeLayout>

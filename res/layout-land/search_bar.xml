@@ -19,7 +19,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
    <!-- Global search icon -->
-   <com.android.launcher2.HolographicImageView
+   <com.android.launcher3.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/search_button"
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
         android:contentDescription="@string/accessibility_search_button" />
 
     <!-- Voice search icon -->
-    <com.android.launcher2.HolographicImageView
+    <com.android.launcher3.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/voice_button"
         android:layout_width="match_parent"

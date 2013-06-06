@@ -17,21 +17,21 @@
 <!-- Full screen view projects under the status bar and contains the background -->
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
 
     android:id="@+id/launcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/workspace_bg">
 
-    <com.android.launcher2.DragLayer
+    <com.android.launcher3.DragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
         <!-- The workspace contains 5 screens of cells -->
-        <com.android.launcher2.Workspace
+        <com.android.launcher3.Workspace
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -51,7 +51,7 @@
             <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
             <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
             <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
-        </com.android.launcher2.Workspace>
+        </com.android.launcher3.Workspace>
 
         <include
             android:id="@+id/qsb_divider"
@@ -101,7 +101,7 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-        <com.android.launcher2.DrawableStateProxyView
+        <com.android.launcher3.DrawableStateProxyView
             android:id="@+id/voice_button_proxy"
             android:layout_width="@dimen/qsb_bar_height"
             android:layout_height="@dimen/app_icon_size"
@@ -117,5 +117,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-    </com.android.launcher2.DragLayer>
+    </com.android.launcher3.DragLayer>
 </FrameLayout>

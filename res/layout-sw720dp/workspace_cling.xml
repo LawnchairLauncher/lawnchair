@@ -13,9 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher2.Cling
+<com.android.launcher3.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     launcher:drawIdentifier="workspace_portrait">
@@ -59,4 +59,4 @@
         android:layout_marginEnd="10dp"
         android:layout_gravity="bottom|end"
         android:onClick="dismissWorkspaceCling" />
-</com.android.launcher2.Cling>
+</com.android.launcher3.Cling>

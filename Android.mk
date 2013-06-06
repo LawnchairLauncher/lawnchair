@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2008 The Android Open Source Project
+# Copyright (C) 2013 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := android-common android-support-v13
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-renderscript-files-under, src)
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := 17
 
-LOCAL_PACKAGE_NAME := Launcher2
-LOCAL_CERTIFICATE := shared
+LOCAL_PACKAGE_NAME := Launcher3
+#LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Home
 
