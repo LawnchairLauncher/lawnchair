@@ -17,15 +17,6 @@
 -->
 
 <resources>
-    <!-- Orientation of a widget. -->
-    <attr name="direction">
-        <!-- Vertical widget. -->
-        <enum name="vertical" value="0" />
-        <!-- Horizontal widget. -->
-        <enum name="horizontal" value="1" />
-    </attr>
-
-    <skip />
 
     <!-- DrawableStateProxyView specific attributes. These attributes are used to customize
          a DrawableStateProxyView view in XML files. -->
@@ -130,13 +121,6 @@
         <attr name="clingFocusedX" format="integer" />
         <!-- The y index of the item to be focused in the cling -->
         <attr name="clingFocusedY" format="integer" />
-    </declare-styleable>
-
-    <!-- HandleView specific attributes. These attributes are used to customize
-         a HandleView view in XML files. -->
-    <declare-styleable name="HandleView">
-        <!-- Orientation of the handle. -->
-        <attr name="direction" />
     </declare-styleable>
 
     <!-- XML attributes used by default_workspace.xml -->
