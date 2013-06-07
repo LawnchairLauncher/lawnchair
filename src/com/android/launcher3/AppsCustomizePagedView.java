@@ -201,6 +201,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
     private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
 
+    public static boolean DISABLE_ALL_APPS = true;
+
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private static final int sPageSleepDelay = 200;
@@ -433,7 +435,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         if (!isDataReady()) {
-            if (!mApps.isEmpty() && !mWidgets.isEmpty()) {
+            if ((DISABLE_ALL_APPS || !mApps.isEmpty()) && !mWidgets.isEmpty()) {
                 setDataIsReady();
                 setMeasuredDimension(width, height);
                 onDataReady(width, height);
@@ -1546,9 +1548,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {
-        mApps = list;
-        Collections.sort(mApps, LauncherModel.getAppNameComparator());
-        updatePageCountsAndInvalidateData();
+        if (!DISABLE_ALL_APPS) {
+            mApps = list;
+            Collections.sort(mApps, LauncherModel.getAppNameComparator());
+            updatePageCountsAndInvalidateData();
+        }
     }
     private void addAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
         // We add it in place, in alphabetical order
@@ -1561,9 +1565,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
+
     public void addApps(ArrayList<ApplicationInfo> list) {
-        addAppsWithoutInvalidate(list);
-        updatePageCountsAndInvalidateData();
+        if (!DISABLE_ALL_APPS) {
+            addAppsWithoutInvalidate(list);
+            updatePageCountsAndInvalidateData();
+        } else {
+            // TODO: Maybe put them somewhere else?
+        }
     }
     private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {
         ComponentName removeComponent = item.intent.getComponent();
@@ -1595,9 +1604,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We remove and re-add the updated applications list because it's properties may have
         // changed (ie. the title), and this will ensure that the items will be in their proper
         // place in the list.
-        removeAppsWithoutInvalidate(list);
-        addAppsWithoutInvalidate(list);
-        updatePageCountsAndInvalidateData();
+        if (!DISABLE_ALL_APPS) {
+            removeAppsWithoutInvalidate(list);
+            addAppsWithoutInvalidate(list);
+            updatePageCountsAndInvalidateData();
+        }
     }
 
     public void reset() {

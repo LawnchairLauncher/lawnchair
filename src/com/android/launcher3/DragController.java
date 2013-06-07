@@ -597,6 +597,10 @@ public class DragController {
 
             if (mDragging) {
                 PointF vec = isFlingingToDelete(mDragObject.dragSource);
+                if (!(mDragObject.dragInfo instanceof LauncherAppWidgetInfo) &&
+                        !(mDragObject.dragInfo instanceof PendingAddWidgetInfo)) {
+                    vec = null;
+                }
                 if (vec != null) {
                     dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
                 } else {

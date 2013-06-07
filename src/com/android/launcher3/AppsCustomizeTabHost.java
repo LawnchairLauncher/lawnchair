@@ -80,9 +80,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         setCurrentTabByTag(getTabTagForContentType(type));
         setOnTabChangedListener(this);
     }
-    void selectAppsTab() {
-        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Applications);
-    }
+
     void selectWidgetsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
     }
@@ -121,7 +119,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView = (TextView) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
         tabView.setText(label);
         tabView.setContentDescription(label);
-        addTab(newTabSpec(APPS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
         label = getContext().getString(R.string.widgets_tab_label);
         tabView = (TextView) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
         tabView.setText(label);

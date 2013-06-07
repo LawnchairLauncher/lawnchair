@@ -129,7 +129,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public boolean acceptDrop(DragObject d) {
         // We can remove everything including App shortcuts, folders, widgets, etc.
-        return true;
+        if ((d.dragInfo instanceof LauncherAppWidgetInfo) ||
+                (d.dragInfo instanceof PendingAddWidgetInfo)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -144,13 +149,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         // If we are dragging an application from AppsCustomize, only show the control if we can
         // delete the app (it was downloaded), and rename the string to "uninstall" in such a case
-        if (isAllAppsApplication(source, info)) {
-            ApplicationInfo appInfo = (ApplicationInfo) info;
-            if ((appInfo.flags & ApplicationInfo.DOWNLOADED_FLAG) != 0) {
-                isUninstall = true;
-            } else {
-                isVisible = false;
-            }
+
+        if ((info instanceof LauncherAppWidgetInfo) ||
+                (info instanceof PendingAddWidgetInfo)) {
+            isVisible = true;
+        } else {
+            isVisible = false;
         }
 
         if (isUninstall) {
