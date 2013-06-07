@@ -261,6 +261,7 @@ public final class Launcher extends Activity
     private boolean mUserPresent = true;
     private boolean mVisible = false;
     private boolean mAttached = false;
+    private static final boolean DISABLE_CLINGS = true;
 
     private static LocaleConfiguration sLocaleConfiguration = null;
 
@@ -3877,6 +3878,10 @@ public final class Launcher extends Activity
 
     /* Cling related */
     private boolean isClingsEnabled() {
+        if (DISABLE_CLINGS) {
+            return false;
+        }
+
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 
