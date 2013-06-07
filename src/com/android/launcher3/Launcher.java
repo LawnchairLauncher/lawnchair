@@ -115,7 +115,7 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public final class Launcher extends Activity
+public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
                    View.OnTouchListener {
     static final String TAG = "Launcher";
@@ -562,6 +562,10 @@ public final class Launcher extends Activity
                 }
             }
         }
+    }
+
+    public LayoutInflater getInflater() {
+        return mInflater;
     }
 
     public DragLayer getDragLayer() {
@@ -1430,7 +1434,7 @@ public final class Launcher extends Activity
         return mModel;
     }
 
-    void closeSystemDialogs() {
+    public void closeSystemDialogs() {
         getWindow().closeAllPanels();
 
         // Whatever we were doing is hereby canceled.
@@ -1629,14 +1633,20 @@ public final class Launcher extends Activity
             sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
         }
 
+        startSearch(initialQuery, selectInitialQuery,
+                appSearchData, sourceBounds);
+    }
+
+    public void startSearch(String initialQuery,
+            boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         startGlobalSearch(initialQuery, selectInitialQuery,
-            appSearchData, sourceBounds);
+                appSearchData, sourceBounds);
     }
 
     /**
      * Starts the global search activity. This code is a copied from SearchManager
      */
-    public void startGlobalSearch(String initialQuery,
+    private void startGlobalSearch(String initialQuery,
             boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         final SearchManager searchManager =
             (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -2060,6 +2070,10 @@ public final class Launcher extends Activity
     public void onClickVoiceButton(View v) {
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 
+        startVoice();
+    }
+
+    public void startVoice() {
         try {
             final SearchManager searchManager =
                     (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -2883,6 +2897,11 @@ public final class Launcher extends Activity
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+
+        onWorkspaceShown();
+    }
+
+    public void onWorkspaceShown() {
     }
 
     void showAllApps(boolean animated) {

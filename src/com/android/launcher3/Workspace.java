@@ -663,6 +663,11 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
+
+        if (mLauncher != null && mLauncher.onTouch(this, ev)) {
+            return true;
+        }
+
         return super.onInterceptTouchEvent(ev);
     }
 
