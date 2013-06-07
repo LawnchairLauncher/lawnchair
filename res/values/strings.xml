@@ -39,6 +39,8 @@
     <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
 
+    <string name="widget_adder">Widgets</string>
+
     <!-- AppsCustomize pane -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>

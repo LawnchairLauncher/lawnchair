@@ -2000,6 +2000,12 @@ public final class Launcher extends Activity
         if (tag instanceof ShortcutInfo) {
             // Open shortcut
             final Intent intent = ((ShortcutInfo) tag).intent;
+
+            ComponentName widgetComp = new ComponentName(this, WidgetAdder.class);
+            if (intent.getComponent().getClassName().equals(widgetComp.getClassName())) {
+                showAllApps(true);
+                return;
+            }
             int[] pos = new int[2];
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(new Rect(pos[0], pos[1],

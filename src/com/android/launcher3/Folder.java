@@ -236,14 +236,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onClick(View v) {
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
-            // refactor this code from Folder
-            ShortcutInfo item = (ShortcutInfo) tag;
-            int[] pos = new int[2];
-            v.getLocationOnScreen(pos);
-            item.intent.setSourceBounds(new Rect(pos[0], pos[1],
-                    pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-
-            mLauncher.startActivitySafely(v, item.intent, item);
+            mLauncher.onClick(v);
         }
     }
 
