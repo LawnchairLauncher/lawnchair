@@ -57,7 +57,7 @@
             android:paddingEnd="@dimen/workspace_right_padding"
             android:paddingTop="@dimen/workspace_top_padding"
             android:paddingBottom="@dimen/workspace_bottom_padding"
-            launcher:defaultScreen="2"
+            launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
             launcher:cellCountX="@integer/cell_count_x"
             launcher:cellCountY="@integer/cell_count_y"
             launcher:pageSpacing="@dimen/workspace_page_spacing"
