@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -42,6 +43,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
@@ -70,15 +72,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private int mExpandDuration;
     protected CellLayout mContent;
+    private ScrollView mScrollView;
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
     private int mState = STATE_NONE;
     private static final int REORDER_ANIMATION_DURATION = 230;
+    private static final int REORDER_DELAY = 250;
     private static final int ON_EXIT_CLOSE_DELAY = 800;
     private boolean mRearrangeOnClose = false;
     private FolderIcon mFolderIcon;
     private int mMaxCountX;
     private int mMaxCountY;
+    private int mMaxVisibleX;
+    private int mMaxVisibleY;
+    private int mMaxContentAreaHeight = 0;
     private int mMaxNumItems;
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
@@ -101,11 +108,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private float mFolderIconPivotX;
     private float mFolderIconPivotY;
 
+    private static final int SCROLL_CUT_OFF_AMOUNT = 60;
+    private static final int SCROLL_BAND_HEIGHT = 110;
+
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
 
     private static String sDefaultFolderName;
     private static String sHintText;
+
+    private int DRAG_MODE_NONE = 0;
+    private int DRAG_MODE_REORDER = 1;
+    private int DRAG_MODE_SCROLL_UP = 2;
+    private int DRAG_MODE_SCROLL_DOWN = 3;
+    private int mDragMode = DRAG_MODE_NONE;
 
     private boolean mDestroyed;
 
@@ -122,13 +138,33 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
 
         Resources res = getResources();
-        mMaxCountX = res.getInteger(R.integer.folder_max_count_x);
-        mMaxCountY = res.getInteger(R.integer.folder_max_count_y);
+        mMaxCountX = mMaxVisibleX = res.getInteger(R.integer.folder_max_count_x);
+        mMaxCountY = mMaxVisibleY = res.getInteger(R.integer.folder_max_count_y);
         mMaxNumItems = res.getInteger(R.integer.folder_max_num_items);
-        if (mMaxCountX < 0 || mMaxCountY < 0 || mMaxNumItems < 0) {
-            mMaxCountX = LauncherModel.getCellCountX();
-            mMaxCountY = LauncherModel.getCellCountY();
+
+        if (mMaxCountY == -1) {
+            // -2 indicates unlimited
+            mMaxCountY = Integer.MAX_VALUE;
+            mMaxVisibleX = LauncherModel.getCellCountX() + 1;
+        }
+        if (mMaxNumItems == -1) {
+            // -2 indicates unlimited
+            mMaxNumItems = Integer.MAX_VALUE;
+            mMaxVisibleY = LauncherModel.getCellCountY() + 1;
+        }
+        if (mMaxCountX == 0) {
+            mMaxCountX = mMaxVisibleX = LauncherModel.getCellCountX();
+            mMaxVisibleX++;
+        }
+        if (mMaxCountY == 0) {
+            mMaxCountY = mMaxVisibleY = LauncherModel.getCellCountY();
+            mMaxVisibleY++;
+        }
+        if (mMaxNumItems == 0) {
             mMaxNumItems = mMaxCountX * mMaxCountY;
+            if (mMaxNumItems < 0) {
+                mMaxNumItems = Integer.MAX_VALUE;
+            }
         }
 
         mInputMethodManager = (InputMethodManager)
@@ -152,7 +188,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mScrollView = (ScrollView) findViewById(R.id.scroll_view);
         mContent = (CellLayout) findViewById(R.id.folder_content);
+
+        // Beyond this height, the area scrolls
+        mContent.setGridSize(mMaxVisibleX, mMaxVisibleY);
+        mMaxContentAreaHeight = mContent.getDesiredHeight() - SCROLL_CUT_OFF_AMOUNT;
+
         mContent.setGridSize(0, 0);
         mContent.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         mContent.setInvertIfRtl(true);
@@ -617,19 +659,72 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onDragOver(DragObject d) {
+        int scrollOffset = mScrollView.getScrollY();
+
         float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView, null);
-        mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1], 1, 1, mTargetCell);
+        r[0] -= getPaddingLeft();
+        r[1] -= getPaddingTop();
+
+        mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1] + scrollOffset,
+                1, 1, mTargetCell);
 
         if (isLayoutRtl()) {
             mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
         }
 
-        if (mTargetCell[0] != mPreviousTargetCell[0] || mTargetCell[1] != mPreviousTargetCell[1]) {
+        if (r[1] < SCROLL_BAND_HEIGHT && mScrollView.getScrollY() > 0) {
+            // Scroll up
+            if (mDragMode != DRAG_MODE_SCROLL_UP) {
+                mDragMode = DRAG_MODE_SCROLL_UP;
+                scrollUp();
+            }
+            mReorderAlarm.cancelAlarm();
+        } else if (r[1] > (getFolderHeight() - SCROLL_BAND_HEIGHT) && mScrollView.getScrollY() <
+                (mContent.getMeasuredHeight() - mScrollView.getMeasuredHeight())) {
+            if (mDragMode != DRAG_MODE_SCROLL_DOWN) {
+                mDragMode = DRAG_MODE_SCROLL_DOWN;
+                scrollDown();
+            }
+            mReorderAlarm.cancelAlarm();
+        } else if (mTargetCell[0] != mPreviousTargetCell[0] || mTargetCell[1] != mPreviousTargetCell[1]) {
             mReorderAlarm.cancelAlarm();
             mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
-            mReorderAlarm.setAlarm(150);
+            mReorderAlarm.setAlarm(REORDER_DELAY);
             mPreviousTargetCell[0] = mTargetCell[0];
             mPreviousTargetCell[1] = mTargetCell[1];
+            mDragMode = DRAG_MODE_REORDER;
+        } else {
+            mDragMode = DRAG_MODE_NONE;
+        }
+    }
+
+    Runnable mScrollUpRunnable = new Runnable() {
+        @Override
+        public void run() {
+            scrollUp();
+        }
+    };
+
+    Runnable mScrollDownRunnable = new Runnable() {
+        @Override
+        public void run() {
+            scrollDown();
+        }
+    };
+
+    private void scrollUp() {
+        if (mDragMode == DRAG_MODE_SCROLL_UP) {
+            mScrollView.setScrollY(mScrollView.getScrollY() - 7);
+            invalidate();
+            post(mScrollUpRunnable);
+        }
+    }
+
+    private void scrollDown() {
+        if (mDragMode == DRAG_MODE_SCROLL_DOWN) {
+            mScrollView.setScrollY(mScrollView.getScrollY() + 7);
+            invalidate();
+            post(mScrollDownRunnable);
         }
     }
 
@@ -681,6 +776,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mOnExitAlarm.setAlarm(ON_EXIT_CLOSE_DELAY);
         }
         mReorderAlarm.cancelAlarm();
+        mDragMode = DRAG_MODE_NONE;
     }
 
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
@@ -704,7 +800,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 completeDragExit();
             }
         }
-
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
         mItemAddedBackToSelfViaIcon = false;
@@ -714,7 +809,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         // Reordering may have occured, and we need to save the new item locations. We do this once
         // at the end to prevent unnecessary database operations.
-        updateItemLocationsInDatabase();
+        updateItemLocationsInDatabaseBatch();
     }
 
     @Override
@@ -739,6 +834,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             LauncherModel.moveItemInDatabase(mLauncher, info, mInfo.id, 0,
                         info.cellX, info.cellY);
         }
+    }
+
+    private void updateItemLocationsInDatabaseBatch() {
+        ArrayList<View> list = getItemsInReadingOrder();
+        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        for (int i = 0; i < list.size(); i++) {
+            View v = list.get(i);
+            ItemInfo info = (ItemInfo) v.getTag();
+            items.add(info);
+        }
+
+        LauncherModel.moveItemsInDatabase(mLauncher, items, mInfo.id, 0);
     }
 
     public void notifyDrop() {
@@ -792,8 +899,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
-        int height = getPaddingTop() + getPaddingBottom() + mContent.getDesiredHeight()
-                + mFolderNameHeight;
+        int height = getFolderHeight();
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
         float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
@@ -862,18 +968,35 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         centerAboutIcon();
     }
 
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
-        int height = getPaddingTop() + getPaddingBottom() + mContent.getDesiredHeight()
+    private int getFolderHeight() {
+        int contentAreaHeight = mContent.getDesiredHeight();
+        if (contentAreaHeight >= mMaxContentAreaHeight) {
+            // Subtract a bit so the user can see that it's scrollable.
+            contentAreaHeight = mMaxContentAreaHeight;
+        }
+        int height = getPaddingTop() + getPaddingBottom() + contentAreaHeight
                 + mFolderNameHeight;
+        return height;
+    }
 
-        int contentWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
-                MeasureSpec.EXACTLY);
-        int contentHeightSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredHeight(),
-                MeasureSpec.EXACTLY);
-        mContent.measure(contentWidthSpec, contentHeightSpec);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        mFolderName.measure(contentWidthSpec,
+        int contentAreaHeight = mContent.getDesiredHeight();
+        if (contentAreaHeight >= mMaxContentAreaHeight) {
+            // Subtract a bit so the user can see that it's scrollable.
+            contentAreaHeight = mMaxContentAreaHeight;
+        }
+
+        int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
+        int height = getFolderHeight();
+        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
+                MeasureSpec.EXACTLY);
+        int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(contentAreaHeight,
+                MeasureSpec.EXACTLY);
+
+        mContent.setFixedSize(mContent.getDesiredWidth(), mContent.getDesiredHeight());
+        mScrollView.measure(contentAreaWidthSpec, contentAreaHeightSpec);
+        mFolderName.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFolderNameHeight, MeasureSpec.EXACTLY));
         setMeasuredDimension(width, height);
     }

@@ -106,6 +106,10 @@ public class CellLayout extends ViewGroup {
     private Rect mForegroundRect;
     private int mForegroundPadding;
 
+    // These values allow a fixed measurement to be set on the CellLayout.
+    private int mFixedWidth = -1;
+    private int mFixedHeight = -1;
+
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
     private final Point mDragCenter = new Point();
@@ -972,6 +976,11 @@ public class CellLayout extends ViewGroup {
         metrics.set(cellWidth, cellHeight, widthGap, heightGap);
     }
 
+    public void setFixedSize(int width, int height) {
+        mFixedWidth = width;
+        mFixedHeight = height;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -980,7 +989,12 @@ public class CellLayout extends ViewGroup {
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
 
-        if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
+        int newWidth = widthSpecSize;
+        int newHeight = heightSpecSize;
+        if (mFixedWidth > 0 && mFixedHeight > 0) {
+            newWidth = mFixedWidth;
+            newHeight = mFixedHeight;
+        } else if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
@@ -1002,8 +1016,6 @@ public class CellLayout extends ViewGroup {
         }
 
         // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY
-        int newWidth = widthSpecSize;
-        int newHeight = heightSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST) {
             newWidth = getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth) +
                 ((mCountX - 1) * mWidthGap);

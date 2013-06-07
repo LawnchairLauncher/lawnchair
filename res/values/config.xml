@@ -70,10 +70,11 @@
     <integer name="config_cameraDistance">6500</integer>
 
     <!-- Folder max bounds and max number of items. Note: folder_max_count_x * folder_max_count_y
-         >= folder_max_num_items. When these are set to -1, they are automatically determined. -->
+         >= folder_max_num_items. If any values are set to 0, the values will be determined automatically.
+         A value of -1 indicates unbounded -->
     <integer name="folder_max_count_x">4</integer>
-    <integer name="folder_max_count_y">4</integer>
-    <integer name="folder_max_num_items">16</integer>
+    <integer name="folder_max_count_y">-1</integer>
+    <integer name="folder_max_num_items">-1</integer>
 
     <integer name="cell_count_x">4</integer>
     <integer name="cell_count_y">4</integer>

@@ -22,6 +22,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -332,48 +333,81 @@ public class LauncherModel extends BroadcastReceiver {
         Runnable r = new Runnable() {
             public void run() {
                 cr.update(uri, values, null, null);
+                updateItemArrays(item, itemId, stackTrace);
+            }
+        };
+        runOnWorkerThread(r);
+    }
 
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    checkItemInfoLocked(itemId, item, stackTrace);
+    static void updateItemsInDatabaseHelper(Context context, final ArrayList<ContentValues> valuesList,
+            final ArrayList<ItemInfo> items, final String callingFunction) {
+        final ContentResolver cr = context.getContentResolver();
 
-                    if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                            item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                        // Item is in a folder, make sure this folder exists
-                        if (!sBgFolders.containsKey(item.container)) {
-                            // An items container is being set to a that of an item which is not in
-                            // the list of Folders.
-                            String msg = "item: " + item + " container being set to: " +
-                                    item.container + ", not in the list of folders";
-                            Log.e(TAG, msg);
-                            Launcher.dumpDebugLogsToConsole();
-                        }
-                    }
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        Runnable r = new Runnable() {
+            public void run() {
+                ArrayList<ContentProviderOperation> ops =
+                        new ArrayList<ContentProviderOperation>();
+                int count = items.size();
+                for (int i = 0; i < count; i++) {
+                    ItemInfo item = items.get(i);
+                    final long itemId = item.id;
+                    final Uri uri = LauncherSettings.Favorites.getContentUri(itemId, false);
+                    ContentValues values = valuesList.get(i);
 
-                    // Items are added/removed from the corresponding FolderInfo elsewhere, such
-                    // as in Workspace.onDrop. Here, we just add/remove them from the list of items
-                    // that are on the desktop, as appropriate
-                    ItemInfo modelItem = sBgItemsIdMap.get(itemId);
-                    if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                            modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                        switch (modelItem.itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                                if (!sBgWorkspaceItems.contains(modelItem)) {
-                                    sBgWorkspaceItems.add(modelItem);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    } else {
-                        sBgWorkspaceItems.remove(modelItem);
-                    }
+                    ops.add(ContentProviderOperation.newUpdate(uri).withValues(values).build());
+                    updateItemArrays(item, itemId, stackTrace);
+
+                }
+                try {
+                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
         runOnWorkerThread(r);
+    }
+
+    static void updateItemArrays(ItemInfo item, long itemId, StackTraceElement[] stackTrace) {
+        // Lock on mBgLock *after* the db operation
+        synchronized (sBgLock) {
+            checkItemInfoLocked(itemId, item, stackTrace);
+
+            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                    item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                // Item is in a folder, make sure this folder exists
+                if (!sBgFolders.containsKey(item.container)) {
+                    // An items container is being set to a that of an item which is not in
+                    // the list of Folders.
+                    String msg = "item: " + item + " container being set to: " +
+                            item.container + ", not in the list of folders";
+                    Log.e(TAG, msg);
+                    Launcher.dumpDebugLogsToConsole();
+                }
+            }
+
+            // Items are added/removed from the corresponding FolderInfo elsewhere, such
+            // as in Workspace.onDrop. Here, we just add/remove them from the list of items
+            // that are on the desktop, as appropriate
+            ItemInfo modelItem = sBgItemsIdMap.get(itemId);
+            if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                    modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                switch (modelItem.itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                        if (!sBgWorkspaceItems.contains(modelItem)) {
+                            sBgWorkspaceItems.add(modelItem);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                sBgWorkspaceItems.remove(modelItem);
+            }
+        }
     }
 
     public void flushWorkerThread() {
@@ -435,6 +469,46 @@ public class LauncherModel extends BroadcastReceiver {
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
         updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
+    }
+
+    /**
+     * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
+     * cellX, cellY have already been updated on the ItemInfos.
+     */
+    static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
+            final long container, final int screen) {
+
+        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+        int count = items.size();
+
+        for (int i = 0; i < count; i++) {
+            ItemInfo item = items.get(i);
+            String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: "
+                    + item.id + " (" + item.container + ", " + item.screen + ", " + item.cellX
+                    + ", " + item.cellY + ") --> " + "(" + container + ", " + screen + ", "
+                    + item.cellX + ", " + item.cellY + ")";
+            Launcher.sDumpLogs.add(transaction);
+            item.container = container;
+
+            // We store hotseat items in canonical form which is this orientation invariant position
+            // in the hotseat
+            if (context instanceof Launcher && screen < 0 &&
+                    container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(item.cellX,
+                        item.cellY);
+            } else {
+                item.screen = screen;
+            }
+
+            final ContentValues values = new ContentValues();
+            values.put(LauncherSettings.Favorites.CONTAINER, item.container);
+            values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+            values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+            values.put(LauncherSettings.Favorites.SCREEN, item.screen);
+
+            contentValues.add(values);
+        }
+        updateItemsInDatabaseHelper(context, contentValues, items, "moveItemInDatabase");
     }
 
     /**

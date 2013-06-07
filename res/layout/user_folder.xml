@@ -22,20 +22,25 @@
     android:orientation="vertical"
     android:background="@drawable/portal_container_holo">
 
-    <com.android.launcher3.CellLayout
-        android:id="@+id/folder_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/folder_padding"
-        android:paddingEnd="@dimen/folder_padding"
-        android:paddingTop="@dimen/folder_padding"
-        android:paddingBottom="@dimen/folder_padding"
-        android:cacheColorHint="#ff333333"
-        android:hapticFeedbackEnabled="false"
-        launcher:widthGap="@dimen/folder_width_gap"
-        launcher:heightGap="@dimen/folder_height_gap"
-        launcher:cellWidth="@dimen/folder_cell_width"
-        launcher:cellHeight="@dimen/folder_cell_height" />
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <com.android.launcher3.CellLayout
+          android:id="@+id/folder_content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingStart="@dimen/folder_padding"
+          android:paddingEnd="@dimen/folder_padding"
+          android:paddingTop="@dimen/folder_padding"
+          android:paddingBottom="@dimen/folder_padding"
+          android:cacheColorHint="#ff333333"
+          android:hapticFeedbackEnabled="false"
+          launcher:widthGap="@dimen/folder_width_gap"
+          launcher:heightGap="@dimen/folder_height_gap"
+          launcher:cellWidth="@dimen/folder_cell_width"
+          launcher:cellHeight="@dimen/folder_cell_height" />
+    </ScrollView>
 
     <com.android.launcher3.FolderEditText
         android:id="@+id/folder_name"
