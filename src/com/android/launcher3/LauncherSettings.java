@@ -102,6 +102,13 @@ class LauncherSettings {
                 "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
 
         /**
+         * The content:// style URL for this table
+         */
+        static final Uri OLD_CONTENT_URI = Uri.parse("content://" +
+                LauncherProvider.OLD_AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
+                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+
+        /**
          * The content:// style URL for this table. When this Uri is used, no notification is
          * sent if the content changes.
          */

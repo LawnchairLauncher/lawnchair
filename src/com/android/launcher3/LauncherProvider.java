@@ -68,6 +68,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final int DATABASE_VERSION = 12;
 
+    static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = "com.android.launcher3.settings";
 
     static final String TABLE_FAVORITES = "favorites";
@@ -78,7 +79,7 @@ public class LauncherProvider extends ContentProvider {
             "DEFAULT_WORKSPACE_RESOURCE_ID";
 
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.android.launcher3.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
+            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
     /**
      * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
@@ -206,11 +207,30 @@ public class LauncherProvider extends ContentProvider {
     }
 
     /**
+     * @param Should we load the old db for upgrade? first run only.
+     */
+    synchronized public boolean shouldLoadOldDb() {
+        String spKey = LauncherApplication.getSharedPreferencesKey();
+        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
+
+        boolean loadOldDb = false;
+        if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
+
+            SharedPreferences.Editor editor = sp.edit();
+            editor.remove(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED);
+            editor.commit();
+            loadOldDb = true;
+        }
+        return loadOldDb;
+    }
+
+    /**
      * @param workspaceResId that can be 0 to use default or non-zero for specific resource
      */
     synchronized public void loadDefaultFavoritesIfNecessary(int origWorkspaceResId) {
         String spKey = LauncherApplication.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
+
         if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
             int workspaceResId = origWorkspaceResId;
 
@@ -225,6 +245,7 @@ public class LauncherProvider extends ContentProvider {
             if (origWorkspaceResId != 0) {
                 editor.putInt(DEFAULT_WORKSPACE_RESOURCE_ID, origWorkspaceResId);
             }
+
             mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), workspaceResId);
             editor.commit();
         }

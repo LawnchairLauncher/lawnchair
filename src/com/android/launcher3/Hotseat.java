@@ -16,7 +16,9 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -27,6 +29,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.R;
+
+import java.util.ArrayList;
 
 public class Hotseat extends FrameLayout {
     @SuppressWarnings("unused")
@@ -107,5 +111,53 @@ public class Hotseat extends FrameLayout {
 
     void resetLayout() {
         mContent.removeAllViewsInLayout();
+    }
+
+    void addAllAppsFolder(IconCache iconCache, ArrayList<ApplicationInfo> allApps,
+            ArrayList<ComponentName> onWorkspace, Launcher launcher) {
+        FolderInfo fi = new FolderInfo();
+
+        fi.cellX = getCellXFromOrder(mAllAppsButtonRank);
+        fi.cellY = getCellYFromOrder(mAllAppsButtonRank);
+        fi.spanX = 1;
+        fi.spanY = 1;
+        fi.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+        fi.screen = mAllAppsButtonRank;
+        fi.itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
+        fi.title = "All Apps";
+        LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screen, fi.cellX,
+                fi.cellY, false);
+        FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
+                getLayout(), fi, iconCache);
+
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(fi.cellX,fi.cellY,1,1);
+        mContent.addViewToCellLayout(folder, -1, 0, lp, true);
+
+        for (ApplicationInfo info: allApps) {
+            ComponentName cn = info.intent.getComponent();
+            if (!onWorkspace.contains(cn)) {
+                System.out.println("Adding to all apps: " + info.intent);
+                ShortcutInfo si = info.makeShortcut();
+                fi.add(si);
+            }
+        }
+    }
+
+    void addAppsToAllAppsFolder(ArrayList<ApplicationInfo> apps) {
+        View v = mContent.getChildAt(getCellXFromOrder(mAllAppsButtonRank), getCellYFromOrder(mAllAppsButtonRank));
+        FolderIcon fi = null;
+
+        if (v instanceof FolderIcon) {
+            fi = (FolderIcon) v;
+        } else {
+            return;
+        }
+
+        FolderInfo info = fi.getFolderInfo();
+        for (ApplicationInfo a: apps) {
+            ComponentName cn = a.intent.getComponent();
+            ShortcutInfo si = a.makeShortcut();
+            info.add(si);
+        }
     }
 }

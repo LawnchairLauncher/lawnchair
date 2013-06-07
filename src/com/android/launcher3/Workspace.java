@@ -3416,6 +3416,96 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    ArrayList<ComponentName> stripDuplicateApps() {
+        ArrayList<ComponentName> uniqueIntents = new ArrayList<ComponentName>();
+        stripDuplicateApps((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents);
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            stripDuplicateApps(cl, uniqueIntents);
+        }
+        return uniqueIntents;
+    }
+
+    void stripDuplicateApps(CellLayout cl,  ArrayList<ComponentName> uniqueIntents) {
+        int count = cl.getShortcutsAndWidgets().getChildCount();
+
+        ArrayList<View> children = new ArrayList<View>();
+        for (int i = 0; i < count; i++) {
+            View v = cl.getShortcutsAndWidgets().getChildAt(i);
+            children.add(v);
+        }
+
+        for (int i = 0; i < count; i++) {
+            View v = children.get(i);
+            ItemInfo info = (ItemInfo) v.getTag();
+            // Null check required as the AllApps button doesn't have an item info
+            if (info instanceof ShortcutInfo) {
+                ShortcutInfo si = (ShortcutInfo) info;
+                ComponentName cn = si.intent.getComponent();
+
+                if (!uniqueIntents.contains(cn)) {
+                    uniqueIntents.add(cn);
+                } else {
+                    cl.removeViewInLayout(v);
+                    LauncherModel.deleteItemFromDatabase(mLauncher, si);
+                }
+            }
+            if (v instanceof FolderIcon) {
+                FolderIcon fi = (FolderIcon) v;
+                ArrayList<View> items = fi.getFolder().getItemsInReadingOrder();
+                for (int j = 0; j < items.size(); j++) {
+                    if (items.get(j).getTag() instanceof ShortcutInfo) {
+                        ShortcutInfo si = (ShortcutInfo) items.get(j).getTag();
+                        ComponentName cn = si.intent.getComponent();
+
+                        if (!uniqueIntents.contains(cn)) {
+                            uniqueIntents.add(cn);
+                        } else {
+                            fi.getFolderInfo().remove(si);
+                            LauncherModel.deleteItemFromDatabase(mLauncher, si);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void saveWorkspaceToDb() {
+        saveWorkspaceScreenToDb((CellLayout) mLauncher.getHotseat().getLayout());
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            saveWorkspaceScreenToDb(cl);
+        }
+    }
+
+    void saveWorkspaceScreenToDb(CellLayout cl) {
+        int count = cl.getShortcutsAndWidgets().getChildCount();
+
+        int screen = indexOfChild(cl);
+        int container = Favorites.CONTAINER_DESKTOP;
+
+        if (mLauncher.isHotseatLayout(cl)) {
+            screen = -1;
+            container = Favorites.CONTAINER_HOTSEAT;
+        }
+
+        for (int i = 0; i < count; i++) {
+            View v = cl.getShortcutsAndWidgets().getChildAt(i);
+            ItemInfo info = (ItemInfo) v.getTag();
+            // Null check required as the AllApps button doesn't have an item info
+            if (info != null) {
+                LauncherModel.addItemToDatabase(mLauncher, info, container, screen, info.cellX,
+                        info.cellY, false);
+            }
+            if (v instanceof FolderIcon) {
+                FolderIcon fi = (FolderIcon) v;
+                fi.getFolder().addItemLocationsInDatabase();
+            }
+        }
+    }
+
     @Override
     public boolean supportsFlingToDelete() {
         return true;

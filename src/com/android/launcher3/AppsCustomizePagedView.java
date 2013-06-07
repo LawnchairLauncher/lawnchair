@@ -1565,13 +1565,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
-
     public void addApps(ArrayList<ApplicationInfo> list) {
         if (!DISABLE_ALL_APPS) {
             addAppsWithoutInvalidate(list);
             updatePageCountsAndInvalidateData();
         } else {
             // TODO: Maybe put them somewhere else?
+            mLauncher.getHotseat().addAppsToAllAppsFolder(list);
         }
     }
     private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {

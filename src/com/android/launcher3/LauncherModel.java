@@ -154,7 +154,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void startBinding();
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end);
         public void bindFolders(HashMap<Long,FolderInfo> folders);
-        public void finishBindingItems();
+        public void finishBindingItems(boolean upgradePath);
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
@@ -306,7 +306,8 @@ public class LauncherModel extends BroadcastReceiver {
             if (stackTrace != null) {
                 e.setStackTrace(stackTrace);
             }
-            throw e;
+            // TODO: something breaks this in the upgrade path
+            //throw e;
         }
     }
 
@@ -1050,6 +1051,7 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
+        private boolean mIsUpgradePath;
 
         private HashMap<Object, CharSequence> mLabelCache;
 
@@ -1334,7 +1336,11 @@ public class LauncherModel extends BroadcastReceiver {
             final boolean isSafeMode = manager.isSafeMode();
 
             // Make sure the default workspace is loaded, if needed
-            mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
+            boolean loadOldDb = mApp.getLauncherProvider().shouldLoadOldDb();
+            Uri contentUri = loadOldDb ? LauncherSettings.Favorites.OLD_CONTENT_URI :
+                    LauncherSettings.Favorites.CONTENT_URI;
+
+            mIsUpgradePath = loadOldDb;
 
             synchronized (sBgLock) {
                 sBgWorkspaceItems.clear();
@@ -1345,8 +1351,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
-                final Cursor c = contentResolver.query(
-                        LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
+                final Cursor c = contentResolver.query(contentUri, null, null, null, null);
 
                 // +1 for the hotseat (it can be larger than the workspace)
                 // Load workspace in reverse order to ensure that latest items are loaded first (and
@@ -1437,7 +1442,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     info.screen = c.getInt(screenIndex);
                                     info.cellX = c.getInt(cellXIndex);
                                     info.cellY = c.getInt(cellYIndex);
-
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, info)) {
                                         break;
@@ -1454,6 +1458,10 @@ public class LauncherModel extends BroadcastReceiver {
                                                 findOrMakeFolder(sBgFolders, container);
                                         folderInfo.add(info);
                                         break;
+                                    }
+                                    if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                                            loadOldDb) {
+                                        info.screen = permuteScreens(info.screen);
                                     }
                                     sBgItemsIdMap.put(info.id, info);
 
@@ -1493,6 +1501,10 @@ public class LauncherModel extends BroadcastReceiver {
                                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
                                         sBgWorkspaceItems.add(folderInfo);
                                         break;
+                                }
+                                if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                                        loadOldDb) {
+                                    folderInfo.screen = permuteScreens(folderInfo.screen);
                                 }
 
                                 sBgItemsIdMap.put(folderInfo.id, folderInfo);
@@ -1534,8 +1546,12 @@ public class LauncherModel extends BroadcastReceiver {
                                             "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
                                         continue;
                                     }
-                                    appWidgetInfo.container = c.getInt(containerIndex);
+                                    if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                                            loadOldDb) {
+                                        appWidgetInfo.screen = permuteScreens(appWidgetInfo.screen);
+                                    }
 
+                                    appWidgetInfo.container = c.getInt(containerIndex);
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, appWidgetInfo)) {
                                         break;
@@ -1587,6 +1603,16 @@ public class LauncherModel extends BroadcastReceiver {
                         Log.d(TAG, "[ " + line + " ]");
                     }
                 }
+            }
+        }
+
+        // We rearrange the screens from the old launcher
+        // 12345 -> 34512
+        private int permuteScreens(int screen) {
+            if (screen >= 2) {
+                return screen - 2;
+            } else {
+                return screen + 3;
             }
         }
 
@@ -1867,7 +1893,7 @@ public class LauncherModel extends BroadcastReceiver {
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
-                        callbacks.finishBindingItems();
+                        callbacks.finishBindingItems(mIsUpgradePath);
                     }
 
                     // If we're profiling, ensure this is the last thing in the queue.

@@ -296,6 +296,8 @@ public final class Launcher extends Activity
     // it from the context.
     private SharedPreferences mSharedPrefs;
 
+    private static ArrayList<ComponentName> mIntentsOnWorkspaceFromUpgradePath = null;
+
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
     private int mNewShortcutAnimatePage = -1;
@@ -3535,10 +3537,10 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void finishBindingItems() {
+    public void finishBindingItems(final boolean upgradePath) {
         if (waitUntilResume(new Runnable() {
                 public void run() {
-                    finishBindingItems();
+                    finishBindingItems(upgradePath);
                 }
             })) {
             return;
@@ -3590,6 +3592,13 @@ public final class Launcher extends Activity
         }
 
         mWorkspaceLoading = false;
+        if (upgradePath) {
+            mWorkspace.saveWorkspaceToDb();
+
+            // Run through this twice... a little hackleberry, but the right solution is complex.
+            mWorkspace.stripDuplicateApps();
+            mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps();
+        }
     }
 
     private boolean canRunNewAppsAnimation() {
@@ -3681,6 +3690,12 @@ public final class Launcher extends Activity
             public void run() {
                 if (mAppsCustomizeContent != null) {
                     mAppsCustomizeContent.setApps(apps);
+
+                    if (mIntentsOnWorkspaceFromUpgradePath != null) {
+                        getHotseat().addAllAppsFolder(mIconCache, apps,
+                                mIntentsOnWorkspaceFromUpgradePath, Launcher.this);
+                        mIntentsOnWorkspaceFromUpgradePath = null;
+                    }
                 }
             }
         };
