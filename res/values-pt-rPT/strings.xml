@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="home" msgid="5921706419368316758">"Página Inicial"</string>
     <string name="uid_name" msgid="3371120195364560632">"Aplicações Principais do Android"</string>
-    <string name="folder_name" msgid="8551881338202938211"></string>
+    <string name="folder_name" msgid="8551881338202938211">"Nome da pasta"</string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Escolher imagem de fundo de"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir imagem de fundo"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Imagens de fundo"</string>
@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Prima sem soltar para escolher um widget."</string>
     <string name="market" msgid="2652226429823445833">"Loja"</string>
-    <string name="external_drop_widget_error" msgid="2285187188524172774">"Não foi possível largar o item neste Ecrã Principal."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Não foi possível largar o item neste ecrã Principal."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Escolher um widget para criar"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome da pasta"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Mudar o nome da pasta"</string>
@@ -40,7 +40,7 @@
     <string name="group_shortcuts" msgid="9133529424900391877">"Atalhos"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Imagens de fundo"</string>
-    <string name="completely_out_of_space" msgid="1759078539443491182">"Sem espaço nos Ecrãs principais."</string>
+    <string name="completely_out_of_space" msgid="1759078539443491182">"Sem espaço nos ecrãs principais."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Não existe espaço suficiente neste ecrã principal."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Não existe espaço suficiente na barra personalizável."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Este widget é demasiado grande para a barra inferior."</string>
