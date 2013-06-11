@@ -2047,7 +2047,9 @@ public class Launcher extends Activity
     public boolean onTouch(View v, MotionEvent event) {
         // this is an intercepted event being forwarded from mWorkspace;
         // clicking anywhere on the workspace causes the customization drawer to slide down
-        showWorkspace(true);
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            showWorkspace(true);
+        }
         return false;
     }
 
@@ -2898,10 +2900,10 @@ public class Launcher extends Activity
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
 
-        onWorkspaceShown();
+        onWorkspaceShown(animated);
     }
 
-    public void onWorkspaceShown() {
+    public void onWorkspaceShown(boolean animated) {
     }
 
     void showAllApps(boolean animated) {
