@@ -844,14 +844,9 @@ public class Launcher extends Activity
 
         mWorkspace.addView(customScreen, 0);
 
-        // We don't want to change the current or the default screen
-        mWorkspace.post(new Runnable() {
-            @Override
-            public void run() {
-                mWorkspace.incrementDefaultScreen();
-                mWorkspace.setCurrentPage(mWorkspace.getCurrentPage() + 1);
-            }
-        });
+        // Ensure that the current page and default page are maintained.
+        mWorkspace.incrementDefaultScreen();
+        mWorkspace.setCurrentPage(mWorkspace.getCurrentPage() + 1);
     }
 
     @Override

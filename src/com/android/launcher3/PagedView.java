@@ -89,6 +89,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mFirstLayout = true;
 
     protected int mCurrentPage;
+    protected int mChildCountOnLastMeasure;
+
     protected int mNextPage = INVALID_PAGE;
     protected int mMaxScrollX;
     protected Scroller mScroller;
@@ -347,7 +349,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             return;
         }
 
-
+        mForceScreenScrolled = true;
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
         updateCurrentPageScroll();
         updateScrollingIndicator();
@@ -563,6 +565,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // We also wait until we set the measured dimensions before flushing the cache as well, to
         // ensure that the cache is filled with good values.
         invalidateCachedOffsets();
+
+        if (mChildCountOnLastMeasure != getChildCount()) {
+            setCurrentPage(mCurrentPage);
+        }
+        mChildCountOnLastMeasure = getChildCount();
 
         if (childCount > 0) {
             if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getMeasuredWidth() + ", "
