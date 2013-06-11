@@ -736,7 +736,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     protected int getChildDrawingOrder(int childCount, int i) {
         // TODO: We have turned off this custom drawing order because it now effects touch
         // dispatch order. We need to sort that issue out and then decide how to go about this.
-        if (true || LauncherApplication.isScreenLandscape(getContext()) ||
+        if (true || LauncherAppState.isScreenLandscape(getContext()) ||
                 mWorkspaceIndex == -1 || mQsbIndex == -1 ||
                 mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
             return i;
@@ -779,7 +779,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        if (mInScrollArea && !LauncherApplication.isScreenLarge()) {
+        if (mInScrollArea && !LauncherAppState.isScreenLarge()) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = workspace.getWidth();
             Rect childRect = new Rect();

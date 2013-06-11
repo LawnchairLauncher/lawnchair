@@ -126,7 +126,7 @@ public class Cling extends FrameLayout {
         } else if (mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
             return new int[]{getMeasuredWidth() - (mButtonBarHeight / 2), getMeasuredHeight() / 2};
         } else if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
-            final float scale = LauncherApplication.getScreenDensity();
+            final float scale = LauncherAppState.getScreenDensity();
             final int cornerXOffset = (int) (scale * 15);
             final int cornerYOffset = (int) (scale * 10);
             return new int[]{getMeasuredWidth() - cornerXOffset, cornerYOffset};

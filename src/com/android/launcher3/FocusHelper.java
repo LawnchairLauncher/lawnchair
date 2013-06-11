@@ -437,7 +437,7 @@ public class FocusHelper {
      * Handles key events in the tab widget.
      */
     static boolean handleTabKeyEvent(AccessibleTabView v, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenLarge()) return false;
+        if (!LauncherAppState.isScreenLarge()) return false;
 
         final FocusOnlyTabWidget parent = (FocusOnlyTabWidget) v.getParent();
         final TabHost tabHost = findTabHostParent(parent);

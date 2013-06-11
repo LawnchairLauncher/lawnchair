@@ -357,8 +357,8 @@ public class Launcher extends Activity
         }
 
         super.onCreate(savedInstanceState);
-        LauncherApplication app = ((LauncherApplication)getApplication());
-        mSharedPrefs = getSharedPreferences(LauncherApplication.getSharedPreferencesKey(),
+        LauncherAppState app = LauncherAppState.getInstance();
+        mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
@@ -1567,7 +1567,7 @@ public class Launcher extends Activity
         mWorkspace.removeCallbacks(mBuildLayersRunnable);
 
         // Stop callbacks from LauncherModel
-        LauncherApplication app = ((LauncherApplication) getApplication());
+        LauncherAppState app = (LauncherAppState.getInstance());
         mModel.stopLoader();
         app.setLauncher(null);
 
@@ -2645,7 +2645,7 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
-                    if (mWorkspace != null && !springLoaded && !LauncherApplication.isScreenLarge()) {
+                    if (mWorkspace != null && !springLoaded && !LauncherAppState.isScreenLarge()) {
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
                         hideDockDivider();
@@ -2715,7 +2715,7 @@ public class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             toView.bringToFront();
 
-            if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+            if (!springLoaded && !LauncherAppState.isScreenLarge()) {
                 // Hide the workspace scrollbar
                 mWorkspace.hideScrollingIndicator(true);
                 hideDockDivider();
@@ -3006,7 +3006,7 @@ public class Launcher extends Activity
      * Shows the hotseat area.
      */
     void showHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (!LauncherAppState.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
                     int duration = 0;
@@ -3025,7 +3025,7 @@ public class Launcher extends Activity
      * Hides the hotseat area.
      */
     void hideHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (!LauncherAppState.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
                     int duration = 0;

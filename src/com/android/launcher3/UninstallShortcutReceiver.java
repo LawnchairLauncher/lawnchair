@@ -81,12 +81,12 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
 
     private static void processUninstallShortcut(Context context,
             PendingUninstallShortcutInfo pendingInfo) {
-        String spKey = LauncherApplication.getSharedPreferencesKey();
+        String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sharedPrefs = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         final Intent data = pendingInfo.data;
 
-        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+        LauncherAppState app = LauncherAppState.getInstance();
         synchronized (app) {
             removeShortcut(context, data, sharedPrefs);
         }

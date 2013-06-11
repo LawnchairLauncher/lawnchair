@@ -135,7 +135,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         super(context, attrs);
         setAlwaysDrawnWithCacheEnabled(false);
         mInflater = LayoutInflater.from(context);
-        mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
+        mIconCache = (LauncherAppState.getInstance()).getIconCache();
 
         Resources res = getResources();
         mMaxCountX = mMaxVisibleX = res.getInteger(R.integer.folder_max_count_x);

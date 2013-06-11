@@ -297,7 +297,7 @@ public class Workspace extends SmoothPagedView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
 
-        if (LauncherApplication.isScreenLarge()) {
+        if (LauncherAppState.isScreenLarge()) {
             // Determine number of rows/columns dynamically
             // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
             // Around that ratio we should make cells the same size in portrait and
@@ -405,7 +405,7 @@ public class Workspace extends SmoothPagedView
         Context context = getContext();
         mCurrentPage = mDefaultPage;
         Launcher.setScreen(mCurrentPage);
-        LauncherApplication app = (LauncherApplication)context.getApplicationContext();
+        LauncherAppState app = LauncherAppState.getInstance();
         mIconCache = app.getIconCache();
         setWillNotDraw(false);
         setClipChildren(false);
@@ -600,7 +600,7 @@ public class Workspace extends SmoothPagedView
 
         // Only allow tap to next page on large devices, where there's significant margin outside
         // the active workspace
-        return LauncherApplication.isScreenLarge() && hitsPage(current - 1, x, y);
+        return LauncherAppState.isScreenLarge() && hitsPage(current - 1, x, y);
     }
 
     @Override
@@ -611,7 +611,7 @@ public class Workspace extends SmoothPagedView
 
         // Only allow tap to next page on large devices, where there's significant margin outside
         // the active workspace
-        return LauncherApplication.isScreenLarge() && hitsPage(current + 1, x, y);
+        return LauncherAppState.isScreenLarge() && hitsPage(current + 1, x, y);
     }
 
     /**
@@ -746,7 +746,7 @@ public class Workspace extends SmoothPagedView
         }
 
         // Only show page outlines as we pan if we are on large screen
-        if (LauncherApplication.isScreenLarge()) {
+        if (LauncherAppState.isScreenLarge()) {
             showOutlines();
             mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
         }
@@ -781,7 +781,7 @@ public class Workspace extends SmoothPagedView
             }
         } else {
             // If we are not mid-dragging, hide the page outlines if we are on a large screen
-            if (LauncherApplication.isScreenLarge()) {
+            if (LauncherAppState.isScreenLarge()) {
                 hideOutlines();
             }
 
@@ -850,7 +850,7 @@ public class Workspace extends SmoothPagedView
 
         // We need to ensure that there is enough extra space in the wallpaper for the intended
         // parallax effects
-        if (LauncherApplication.isScreenLarge()) {
+        if (LauncherAppState.isScreenLarge()) {
             mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
             mWallpaperHeight = maxDim;
         } else {
@@ -883,7 +883,7 @@ public class Workspace extends SmoothPagedView
         float scrollProgress =
             adjustedScrollX / (float) scrollRange;
 
-        if (LauncherApplication.isScreenLarge() && mIsStaticWallpaper) {
+        if (LauncherAppState.isScreenLarge() && mIsStaticWallpaper) {
             // The wallpaper travel width is how far, from left to right, the wallpaper will move
             // at this orientation. On tablets in portrait mode we don't move all the way to the
             // edges of the wallpaper, or otherwise the parallax effect would be too strong.
@@ -1038,7 +1038,7 @@ public class Workspace extends SmoothPagedView
                 Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
 
             // Don't have any lag between workspace and wallpaper on non-large devices
-            if (!LauncherApplication.isScreenLarge() || jumpToFinalValue) {
+            if (!LauncherAppState.isScreenLarge() || jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
                 mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
             } else {
@@ -2400,7 +2400,7 @@ public class Workspace extends SmoothPagedView
 
         // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
         // don't need to show the outlines
-        if (LauncherApplication.isScreenLarge()) {
+        if (LauncherAppState.isScreenLarge()) {
             showOutlines();
         }
     }
@@ -3587,7 +3587,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public boolean onEnterScrollArea(int x, int y, int direction) {
         // Ignore the scroll area if we are dragging over the hot seat
-        boolean isPortrait = !LauncherApplication.isScreenLandscape(getContext());
+        boolean isPortrait = !LauncherAppState.isScreenLandscape(getContext());
         if (mLauncher.getHotseat() != null && isPortrait) {
             Rect r = new Rect();
             mLauncher.getHotseat().getHitRect(r);
@@ -3876,7 +3876,7 @@ public class Workspace extends SmoothPagedView
         post(new Runnable() {
             @Override
             public void run() {
-                String spKey = LauncherApplication.getSharedPreferencesKey();
+                String spKey = LauncherAppState.getSharedPreferencesKey();
                 SharedPreferences sp = context.getSharedPreferences(spKey,
                         Context.MODE_PRIVATE);
                 Set<String> newApps = sp.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
