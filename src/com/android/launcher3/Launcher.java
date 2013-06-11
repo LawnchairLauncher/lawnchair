@@ -826,6 +826,34 @@ public class Launcher extends Activity
         mDragController.resetLastGestureUpTime();
     }
 
+    protected void onFinishBindingItems() {
+    }
+
+    // Add a fullscreen unpadded view to the workspace to the left all other screens.
+    public void addCustomContentToLeft(View customContent) {
+        CellLayout customScreen = (CellLayout)
+                getLayoutInflater().inflate(R.layout.workspace_custom_content, null);
+
+        int spanX = customScreen.getCountX();
+        int spanY = customScreen.getCountY();
+
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
+        lp.canReorder  = false;
+
+        customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
+
+        mWorkspace.addView(customScreen, 0);
+
+        // We don't want to change the current or the default screen
+        mWorkspace.post(new Runnable() {
+            @Override
+            public void run() {
+                mWorkspace.incrementDefaultScreen();
+                mWorkspace.setCurrentPage(mWorkspace.getCurrentPage() + 1);
+            }
+        });
+    }
+
     @Override
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
@@ -3617,6 +3645,12 @@ public class Launcher extends Activity
             mWorkspace.stripDuplicateApps();
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps();
         }
+        mWorkspace.post(new Runnable() {
+            @Override
+            public void run() {
+                onFinishBindingItems();
+            }
+        });
     }
 
     private boolean canRunNewAppsAnimation() {

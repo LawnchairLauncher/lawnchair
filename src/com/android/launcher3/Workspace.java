@@ -398,6 +398,12 @@ public class Workspace extends SmoothPagedView
         UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
     }
 
+    // Just a hack so that if a custom content screen is added to the left, we adjust the
+    // default screen accordingly so that it stays the same.
+    void incrementDefaultScreen() {
+        mDefaultPage++;
+    }
+
     /**
      * Initializes various states for this workspace.
      */
