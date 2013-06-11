@@ -3159,7 +3159,6 @@ public class Launcher extends Activity
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
-        final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
 
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -3185,9 +3184,7 @@ public class Launcher extends Activity
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
-            if (voiceButtonProxy != null) {
-                voiceButtonProxy.setVisibility(View.GONE);
-            }
+            setVoiceButtonProxyVisible(false);
             return false;
         }
     }
@@ -3202,7 +3199,6 @@ public class Launcher extends Activity
     private boolean updateVoiceSearchIcon(boolean searchVisible) {
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
-        final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
 
         // We only show/update the voice search icon if the search icon is enabled as well
         final SearchManager searchManager =
@@ -3235,17 +3231,13 @@ public class Launcher extends Activity
             }
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
-            if (voiceButtonProxy != null) {
-                voiceButtonProxy.setVisibility(View.VISIBLE);
-            }
+            setVoiceButtonProxyVisible(true);
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
-            if (voiceButtonProxy != null) {
-                voiceButtonProxy.setVisibility(View.GONE);
-            }
+            setVoiceButtonProxyVisible(false);
             return false;
         }
     }
@@ -3257,6 +3249,12 @@ public class Launcher extends Activity
         invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
     }
 
+    public void setVoiceButtonProxyVisible(boolean visible) {
+        final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
+        if (voiceButtonProxy != null) {
+            voiceButtonProxy.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
     /**
      * Sets the app market icon
      */
