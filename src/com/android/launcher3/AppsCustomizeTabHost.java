@@ -184,7 +184,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     private void reloadCurrentPage() {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (!LauncherAppState.isScreenLarge()) {
             mAppsCustomizePane.flashScrollingIndicator(true);
         }
         mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
@@ -383,7 +383,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // transition to prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
 
-            if (!LauncherApplication.isScreenLarge()) {
+            if (!LauncherAppState.isScreenLarge()) {
                 mAppsCustomizePane.showScrollingIndicator(true);
             }
         }
@@ -423,7 +423,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
 
-            if (!LauncherApplication.isScreenLarge()) {
+            if (!LauncherAppState.isScreenLarge()) {
                 mAppsCustomizePane.hideScrollingIndicator(false);
             }
 

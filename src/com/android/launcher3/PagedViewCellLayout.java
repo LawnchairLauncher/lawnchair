@@ -472,7 +472,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                     topMargin - bottomMargin;
 
-            if (LauncherApplication.isScreenLarge()) {
+            if (LauncherAppState.isScreenLarge()) {
                 x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
                 y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
             } else {

@@ -251,7 +251,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mPackageManager = context.getPackageManager();
         mApps = new ArrayList<ApplicationInfo>();
         mWidgets = new ArrayList<Object>();
-        mIconCache = ((LauncherApplication) context.getApplicationContext()).getIconCache();
+        mIconCache = (LauncherAppState.getInstance()).getIconCache();
         mCanvas = new Canvas();
         mRunningTasks = new ArrayList<AppsCustomizeAsyncTask>();
 
@@ -362,7 +362,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Configuration.ORIENTATION_LANDSCAPE;
         int maxCellCountX = Integer.MAX_VALUE;
         int maxCellCountY = Integer.MAX_VALUE;
-        if (LauncherApplication.isScreenLarge()) {
+        if (LauncherAppState.isScreenLarge()) {
             maxCellCountX = (isLandscape ? LauncherModel.getCellCountX() :
                 LauncherModel.getCellCountY());
             maxCellCountY = (isLandscape ? LauncherModel.getCellCountY() :

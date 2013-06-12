@@ -204,7 +204,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         info.icon = icon;
         info.iconResource = iconResource;
         if (mUseInstallQueue || launcherNotLoaded) {
-            String spKey = LauncherApplication.getSharedPreferencesKey();
+            String spKey = LauncherAppState.getSharedPreferencesKey();
             SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
             addToInstallQueue(sp, info);
         } else {
@@ -220,7 +220,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         flushInstallQueue(context);
     }
     static void flushInstallQueue(Context context) {
-        String spKey = LauncherApplication.getSharedPreferencesKey();
+        String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
         ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp);
         Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();
@@ -231,7 +231,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static void processInstallShortcut(Context context,
             PendingInstallShortcutInfo pendingInfo) {
-        String spKey = LauncherApplication.getSharedPreferencesKey();
+        String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         final Intent data = pendingInfo.data;
@@ -239,7 +239,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         final String name = pendingInfo.name;
 
         // Lock on the app so that we don't try and get the items while apps are being added
-        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+        LauncherAppState app = LauncherAppState.getInstance();
         final int[] result = {INSTALL_SHORTCUT_SUCCESSFUL};
         boolean found = false;
         synchronized (app) {
@@ -313,7 +313,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     }.start();
 
                     // Update the Launcher db
-                    LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+                    LauncherAppState app = LauncherAppState.getInstance();
                     ShortcutInfo info = app.getModel().addShortcut(context, data,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
                             tmpCoordinates[0], tmpCoordinates[1], true);

@@ -143,7 +143,7 @@ public class WidgetPreviewLoader {
         mContext = mLauncher = launcher;
         mPackageManager = mContext.getPackageManager();
         mAppIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.app_icon_size);
-        LauncherApplication app = (LauncherApplication) launcher.getApplicationContext();
+        LauncherAppState app = LauncherAppState.getInstance();
         mIconCache = app.getIconCache();
         mDb = app.getWidgetPreviewCacheDb();
         mLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();

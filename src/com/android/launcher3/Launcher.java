@@ -70,29 +70,15 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
-import android.view.Display;
-import android.view.HapticFeedbackConstants;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Advanceable;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.android.launcher3.R;
 import com.android.launcher3.DropTarget.DragObject;
@@ -121,10 +107,11 @@ public class Launcher extends Activity
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
-    static final boolean PROFILE_STARTUP = false;
+    static final boolean PROFILE_STARTUP = true;
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
-    static final boolean DEBUG_RESUME_TIME = false;
+    static final boolean DEBUG_RESUME_TIME = true;
+    static final boolean DEBUG_MEMORY = true;
 
     private static final int MENU_GROUP_WALLPAPER = 1;
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -357,8 +344,8 @@ public class Launcher extends Activity
         }
 
         super.onCreate(savedInstanceState);
-        LauncherApplication app = ((LauncherApplication)getApplication());
-        mSharedPrefs = getSharedPreferences(LauncherApplication.getSharedPreferencesKey(),
+        LauncherAppState app = LauncherAppState.getInstance();
+        mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
@@ -740,6 +727,7 @@ public class Launcher extends Activity
         long startTime = 0;
         if (DEBUG_RESUME_TIME) {
             startTime = System.currentTimeMillis();
+            Log.v(TAG, "Launcher.onResume()");
         }
         super.onResume();
 
@@ -1044,6 +1032,16 @@ public class Launcher extends Activity
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
+        }
+
+        if (DEBUG_MEMORY) {
+            Log.v(TAG, "adding WeightWatcher");
+            ((FrameLayout) mLauncherView).addView(new WeightWatcher(this),
+                    new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.MATCH_PARENT,
+                            44,
+                            Gravity.BOTTOM)
+            );
         }
     }
 
@@ -1590,7 +1588,7 @@ public class Launcher extends Activity
         mWorkspace.removeCallbacks(mBuildLayersRunnable);
 
         // Stop callbacks from LauncherModel
-        LauncherApplication app = ((LauncherApplication) getApplication());
+        LauncherAppState app = (LauncherAppState.getInstance());
         mModel.stopLoader();
         app.setLauncher(null);
 
@@ -2670,7 +2668,7 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
-                    if (mWorkspace != null && !springLoaded && !LauncherApplication.isScreenLarge()) {
+                    if (mWorkspace != null && !springLoaded && !LauncherAppState.isScreenLarge()) {
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
                         hideDockDivider();
@@ -2740,7 +2738,7 @@ public class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             toView.bringToFront();
 
-            if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+            if (!springLoaded && !LauncherAppState.isScreenLarge()) {
                 // Hide the workspace scrollbar
                 mWorkspace.hideScrollingIndicator(true);
                 hideDockDivider();
@@ -3031,7 +3029,7 @@ public class Launcher extends Activity
      * Shows the hotseat area.
      */
     void showHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (!LauncherAppState.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
                     int duration = 0;
@@ -3050,7 +3048,7 @@ public class Launcher extends Activity
      * Hides the hotseat area.
      */
     void hideHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (!LauncherAppState.isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
                     int duration = 0;

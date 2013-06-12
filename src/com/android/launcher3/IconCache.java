@@ -45,13 +45,13 @@ public class IconCache {
     }
 
     private final Bitmap mDefaultIcon;
-    private final LauncherApplication mContext;
+    private final Context mContext;
     private final PackageManager mPackageManager;
     private final HashMap<ComponentName, CacheEntry> mCache =
             new HashMap<ComponentName, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
     private int mIconDpi;
 
-    public IconCache(LauncherApplication context) {
+    public IconCache(Context context) {
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 

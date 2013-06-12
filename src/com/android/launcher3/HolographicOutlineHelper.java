@@ -44,7 +44,7 @@ public class HolographicOutlineHelper {
     private static final int EXTRA_THICK = 2;
 
     static {
-        final float scale = LauncherApplication.getScreenDensity();
+        final float scale = LauncherAppState.getScreenDensity();
 
         MIN_OUTER_BLUR_RADIUS = (int) (scale * 1.0f);
         MAX_OUTER_BLUR_RADIUS = (int) (scale * 12.0f);

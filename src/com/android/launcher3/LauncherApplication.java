@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2013 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,126 +26,18 @@ import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
 
-import com.android.launcher3.R;
-
 import java.lang.ref.WeakReference;
 
 public class LauncherApplication extends Application {
-    private LauncherModel mModel;
-    private IconCache mIconCache;
-    private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
-    private static boolean sIsScreenLarge;
-    private static float sScreenDensity;
-    private static int sLongPressTimeout = 300;
-    private static final String sSharedPreferencesKey = "com.android.launcher3.prefs";
-    WeakReference<LauncherProvider> mLauncherProvider;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
-        sIsScreenLarge = getResources().getBoolean(R.bool.is_large_screen);
-        sScreenDensity = getResources().getDisplayMetrics().density;
-
-        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(this);
-        mIconCache = new IconCache(this);
-        mModel = new LauncherModel(this, mIconCache);
-
-        // Register intent receivers
-        IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        filter.addDataScheme("package");
-        registerReceiver(mModel, filter);
-        filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
-        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
-        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
-        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
-        registerReceiver(mModel, filter);
-        filter = new IntentFilter();
-        filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
-        registerReceiver(mModel, filter);
-        filter = new IntentFilter();
-        filter.addAction(SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED);
-        registerReceiver(mModel, filter);
-
-        // Register for changes to the favorites
-        ContentResolver resolver = getContentResolver();
-        resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
-                mFavoritesObserver);
+        LauncherAppState.getInstance().init(getApplicationContext());
     }
 
-    /**
-     * There's no guarantee that this function is ever called.
-     */
     @Override
     public void onTerminate() {
         super.onTerminate();
-
-        unregisterReceiver(mModel);
-
-        ContentResolver resolver = getContentResolver();
-        resolver.unregisterContentObserver(mFavoritesObserver);
-    }
-
-    /**
-     * Receives notifications whenever the user favorites have changed.
-     */
-    private final ContentObserver mFavoritesObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            // If the database has ever changed, then we really need to force a reload of the
-            // workspace on the next load
-            mModel.resetLoadedState(false, true);
-            mModel.startLoaderFromBackground();
-        }
-    };
-
-    LauncherModel setLauncher(Launcher launcher) {
-        mModel.initialize(launcher);
-        return mModel;
-    }
-
-    IconCache getIconCache() {
-        return mIconCache;
-    }
-
-    LauncherModel getModel() {
-        return mModel;
-    }
-
-    WidgetPreviewLoader.CacheDb getWidgetPreviewCacheDb() {
-        return mWidgetPreviewCacheDb;
-    }
-
-   void setLauncherProvider(LauncherProvider provider) {
-        mLauncherProvider = new WeakReference<LauncherProvider>(provider);
-    }
-
-    LauncherProvider getLauncherProvider() {
-        return mLauncherProvider.get();
-    }
-
-    public static String getSharedPreferencesKey() {
-        return sSharedPreferencesKey;
-    }
-
-    public static boolean isScreenLarge() {
-        return sIsScreenLarge;
-    }
-
-    public static boolean isScreenLandscape(Context context) {
-        return context.getResources().getConfiguration().orientation ==
-            Configuration.ORIENTATION_LANDSCAPE;
-    }
-
-    public static float getScreenDensity() {
-        return sScreenDensity;
-    }
-
-    public static int getLongPressTimeout() {
-        return sLongPressTimeout;
+        LauncherAppState.getInstance().onTerminate();
     }
 }

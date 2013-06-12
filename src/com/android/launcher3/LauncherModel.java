@@ -78,7 +78,7 @@ public class LauncherModel extends BroadcastReceiver {
     private int mBatchSize; // 0 is all apps at once
     private int mAllAppsLoadDelay; // milliseconds between batches
 
-    private final LauncherApplication mApp;
+    private final LauncherAppState mApp;
     private final Object mLock = new Object();
     private DeferredHandler mHandler = new DeferredHandler();
     private LoaderTask mLoaderTask;
@@ -169,16 +169,16 @@ public class LauncherModel extends BroadcastReceiver {
         public void onPageBoundSynchronously(int page);
     }
 
-    LauncherModel(LauncherApplication app, IconCache iconCache) {
+    LauncherModel(Context context, IconCache iconCache) {
         mAppsCanBeOnExternalStorage = !Environment.isExternalStorageEmulated();
-        mApp = app;
+        mApp = LauncherAppState.getInstance();
         mBgAllAppsList = new AllAppsList(iconCache);
         mIconCache = iconCache;
 
         mDefaultIcon = Utilities.createIconBitmap(
-                mIconCache.getFullResDefaultActivityIcon(), app);
+                mIconCache.getFullResDefaultActivityIcon(), context);
 
-        final Resources res = app.getResources();
+        final Resources res = context.getResources();
         mAllAppsLoadDelay = res.getInteger(R.integer.config_allAppsBatchLoadDelay);
         mBatchSize = res.getInteger(R.integer.config_allAppsBatchSize);
         Configuration config = res.getConfiguration();
@@ -681,7 +681,7 @@ public class LauncherModel extends BroadcastReceiver {
         final ContentResolver cr = context.getContentResolver();
         item.onAddToDatabase(values);
 
-        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+        LauncherAppState app = LauncherAppState.getInstance();
         item.id = app.getLauncherProvider().generateNewId();
         values.put(LauncherSettings.Favorites._ID, item.id);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
@@ -997,7 +997,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // If there is already one running, tell it to stop.
                 // also, don't downgrade isLaunching if we're already running
                 isLaunching = isLaunching || stopLoaderLocked();
-                mLoaderTask = new LoaderTask(mApp, isLaunching);
+                mLoaderTask = new LoaderTask(mApp.getContext(), isLaunching);
                 if (synchronousBindPage > -1 && mAllAppsLoaded && mWorkspaceLoaded) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
                 } else {
@@ -1150,7 +1150,7 @@ public class LauncherModel extends BroadcastReceiver {
             //      data structures, we can't allow any other thread to touch that data, but because
             //      this call is synchronous, we can get away with not locking).
 
-            // The LauncherModel is static in the LauncherApplication and mHandler may have queued
+            // The LauncherModel is static in the LauncherAppState and mHandler may have queued
             // operations from the previous activity.  We need to ensure that all queued operations
             // are executed before any synchronous binding work is done.
             mHandler.flush();
@@ -2108,7 +2108,7 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         public void run() {
-            final Context context = mApp;
+            final Context context = mApp.getContext();
 
             final String[] packages = mPackages;
             final int N = packages.length;
@@ -2123,8 +2123,8 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         mBgAllAppsList.updatePackage(context, packages[i]);
-                        LauncherApplication app =
-                                (LauncherApplication) context.getApplicationContext();
+                        LauncherAppState app =
+                                LauncherAppState.getInstance();
                         WidgetPreviewLoader.removeFromDb(
                                 app.getWidgetPreviewCacheDb(), packages[i]);
                     }
@@ -2134,8 +2134,8 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mBgAllAppsList.removePackage(packages[i]);
-                        LauncherApplication app =
-                                (LauncherApplication) context.getApplicationContext();
+                        LauncherAppState app =
+                                LauncherAppState.getInstance();
                         WidgetPreviewLoader.removeFromDb(
                                 app.getWidgetPreviewCacheDb(), packages[i]);
                     }

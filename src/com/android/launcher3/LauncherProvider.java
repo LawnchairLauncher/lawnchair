@@ -94,7 +94,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mOpenHelper = new DatabaseHelper(getContext());
-        ((LauncherApplication) getContext()).setLauncherProvider(this);
+        LauncherAppState.getInstance().setLauncherProvider(this);
         return true;
     }
 
@@ -210,7 +210,7 @@ public class LauncherProvider extends ContentProvider {
      * @param Should we load the old db for upgrade? first run only.
      */
     synchronized public boolean shouldLoadOldDb() {
-        String spKey = LauncherApplication.getSharedPreferencesKey();
+        String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         boolean loadOldDb = false;
@@ -228,7 +228,7 @@ public class LauncherProvider extends ContentProvider {
      * @param workspaceResId that can be 0 to use default or non-zero for specific resource
      */
     synchronized public void loadDefaultFavoritesIfNecessary(int origWorkspaceResId) {
-        String spKey = LauncherApplication.getSharedPreferencesKey();
+        String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
@@ -328,7 +328,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private void setFlagToLoadDefaultWorkspaceLater() {
-            String spKey = LauncherApplication.getSharedPreferencesKey();
+            String spKey = LauncherAppState.getSharedPreferencesKey();
             SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
             editor.putBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, true);
