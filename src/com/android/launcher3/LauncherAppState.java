@@ -36,7 +36,7 @@ public class LauncherAppState {
     private static float sScreenDensity;
     private static int sLongPressTimeout = 300;
     private static final String sSharedPreferencesKey = "com.android.launcher3.prefs";
-    private long mUptime;
+    private long mStarttime;
 
     WeakReference<LauncherProvider> mLauncherProvider;
 
@@ -59,7 +59,7 @@ public class LauncherAppState {
     private void initialize(Context context) {
         mContext = context;
 
-        mUptime = System.currentTimeMillis();
+        mStarttime = System.currentTimeMillis();
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
         sIsScreenLarge = context.getResources().getBoolean(R.bool.is_large_screen);
@@ -146,7 +146,7 @@ public class LauncherAppState {
      * @return Milliseconds since the application state was created.
      */
     public long getUptime() {
-        return System.currentTimeMillis() - mUptime;
+        return System.currentTimeMillis() - mStarttime;
     }
 
     public static String getSharedPreferencesKey() {
