@@ -15,7 +15,21 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_copyright">Kopiereg \u00A9 CyanogenMod 2013</string>
+    <string name="menu">Kielys</string>
+    <string name="cancel_target_label">Kanselleer</string>
+    <string name="edit_target_label">Redigeer</string>
+    <string name="menu_lock_workspace">Sluit tuisskerm</string>
+    <string name="menu_unlock_workspace">Ontsluit tuisskerm</string>
+    <string name="menu_preferences">Trebuchet instellings</string>
+    <string name="menu_apps_sort_title">Naam</string>
+    <string name="menu_apps_sort_install_date">Installeringsdatum</string>
+    <string name="menu_apps_filter_system">Stelsel</string>
+    <string name="menu_apps_filter_downloaded">Afgelaai</string>
+    <string name="menu_hidden_apps_delete">Herstel</string>
+    <string name="all_apps_sort_cling_title">Sorteer jou programme</string>
+    <string name="all_apps_sort_cling_add_item">Raak &amp; hou die program oortjie om jou sorteer metode to selekteer</string>
     <string name="hidden_apps_title">Versteekte prgramme</string>
+    <string name="workspace_locked">Tuisskerm is gesluit, ontsluit om instellings te herrangskik</string>
     <string name="preferences_title">Instellings</string>
     <string name="preferences_interface_title">Koppelvlak</string>
     <string name="preferences_application_title">Program</string>
@@ -86,6 +100,8 @@
     <string name="preferences_interface_dock_default_page_summary">Kies die standaard bladsy</string>
     <string name="preferences_interface_dock_icons_title">Ikone</string>
     <string name="preferences_interface_dock_icons_summary">Aantal ikone/kolomme in die dok</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Ikoon etikette</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Verberg dok ikoon etikette</string>
     <string name="preferences_interface_dock_icon_scale_title">Ikoon skaal</string>
     <string name="preferences_interface_dock_icon_scale_summary">Skaal van ikone in die dok</string>
     <string name="preferences_interface_dock_divider_title">Wys dok-verdeler</string>
@@ -93,6 +109,8 @@
     <string name="preferences_interface_icons_title">Ikone</string>
     <string name="preferences_interface_general_title">Algemeen</string>
     <string name="preferences_interface_general_orientation_title">Outo-roteer skerm</string>
+    <string name="preferences_interface_general_lock_workspace_title">Sluit tuisskerm</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Sluit kortpaaie en vouer posisies op die tuisskerm, dok, programme en legstuk-laai</string>
     <string name="preferences_interface_general_fullscreen_title">Volskerm</string>
     <string name="preferences_interface_general_fullscreen_summary">Versteek die statusbalk om die tuisskerm te vergroot</string>
     <string name="effects_standard">Standaard</string>
@@ -109,4 +127,6 @@
     <string name="effects_flip">Flip</string>
     <string name="effects_stack">Stapel</string>
     <string name="effects_accordion">Konsertina</string>
+    <string name="effects_carousel_left">Rondomtalie links</string>
+    <string name="effects_carousel_right">Rondomtalie regs</string>
 </resources>
