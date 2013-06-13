@@ -45,7 +45,7 @@ public class BubbleTextView extends TextView {
 
     private int mPrevAlpha = -1;
 
-    private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
+    private final HolographicOutlineHelper mOutlineHelper = HolographicOutlineHelper.obtain();
     private final Canvas mTempCanvas = new Canvas();
     private final Rect mTempRect = new Rect();
     private boolean mDidInvalidateForPressedState;

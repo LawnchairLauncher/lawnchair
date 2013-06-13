@@ -167,7 +167,7 @@ public class Workspace extends SmoothPagedView
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
-    private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
+    private final HolographicOutlineHelper mOutlineHelper = HolographicOutlineHelper.obtain();
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];

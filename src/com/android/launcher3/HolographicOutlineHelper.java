@@ -43,6 +43,8 @@ public class HolographicOutlineHelper {
     private static final int MEDIUM = 1;
     private static final int EXTRA_THICK = 2;
 
+    static HolographicOutlineHelper INSTANCE;
+
     static {
         final float scale = LauncherAppState.getScreenDensity();
 
@@ -56,9 +58,11 @@ public class HolographicOutlineHelper {
         sExtraThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.NORMAL);
         sThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
         sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
+
+        INSTANCE = new HolographicOutlineHelper();
     }
 
-    HolographicOutlineHelper() {
+    private HolographicOutlineHelper() {
         mHolographicPaint.setFilterBitmap(true);
         mHolographicPaint.setAntiAlias(true);
         mBlurPaint.setFilterBitmap(true);
@@ -66,6 +70,10 @@ public class HolographicOutlineHelper {
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         mErasePaint.setFilterBitmap(true);
         mErasePaint.setAntiAlias(true);
+    }
+
+    public static HolographicOutlineHelper obtain() {
+        return INSTANCE;
     }
 
     /**
