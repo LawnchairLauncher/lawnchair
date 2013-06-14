@@ -3430,19 +3430,18 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    ArrayList<ComponentName> stripDuplicateApps(ArrayList<ComponentName> allApps) {
+    ArrayList<ComponentName> stripDuplicateApps() {
         ArrayList<ComponentName> uniqueIntents = new ArrayList<ComponentName>();
-        stripDuplicateApps((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents, allApps);
+        stripDuplicateApps((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-            stripDuplicateApps(cl, uniqueIntents, allApps);
+            stripDuplicateApps(cl, uniqueIntents);
         }
         return uniqueIntents;
     }
 
-    void stripDuplicateApps(CellLayout cl, ArrayList<ComponentName> uniqueIntents,
-            ArrayList<ComponentName> allApps) {
+    void stripDuplicateApps(CellLayout cl, ArrayList<ComponentName> uniqueIntents) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
 
         ArrayList<View> children = new ArrayList<View>();
@@ -3458,15 +3457,11 @@ public class Workspace extends SmoothPagedView
             if (info instanceof ShortcutInfo) {
                 ShortcutInfo si = (ShortcutInfo) info;
                 ComponentName cn = si.intent.getComponent();
-                Uri dataUri = si.intent.getData();
 
-                // If dataUri is not null / empty or if this component isn't one that would
-                // have previously showed up in the AllApps list, then this is a widget-type
-                // shortcut, so ignore it.
-                if ((dataUri != null && !dataUri.equals(Uri.EMPTY))
-                        || !allApps.contains(cn)) {
+                if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                     continue;
                 }
+
                 if (!uniqueIntents.contains(cn)) {
                     uniqueIntents.add(cn);
                 } else {
@@ -3481,13 +3476,8 @@ public class Workspace extends SmoothPagedView
                     if (items.get(j).getTag() instanceof ShortcutInfo) {
                         ShortcutInfo si = (ShortcutInfo) items.get(j).getTag();
                         ComponentName cn = si.intent.getComponent();
-                        Uri dataUri = si.intent.getData();
 
-                        // If dataUri is not null / empty or if this component isn't one that would
-                        // have previously showed up in the AllApps list, then this is a widget-type
-                        // shortcut, so ignore it.
-                        if (dataUri != null && !dataUri.equals(Uri.EMPTY)
-                                || !allApps.contains(cn)) {
+                        if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                             continue;
                         }
                         if (!uniqueIntents.contains(cn)) {

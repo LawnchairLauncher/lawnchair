@@ -3643,9 +3643,8 @@ public class Launcher extends Activity
         mWorkspaceLoading = false;
         if (upgradePath) {
             mWorkspace.saveWorkspaceToDb();
-            ArrayList<ComponentName> allApps = constructAllAppsComponents();
-            mWorkspace.stripDuplicateApps(allApps);
-            mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps(allApps);
+            mWorkspace.stripDuplicateApps();
+            mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps();
         }
 
         mWorkspace.post(new Runnable() {
@@ -3654,25 +3653,6 @@ public class Launcher extends Activity
                 onFinishBindingItems();
             }
         });
-    }
-
-    private ArrayList<ComponentName> constructAllAppsComponents() {
-        // Run through this twice... a little hackleberry, but the right solution is complex.
-        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-        List<ResolveInfo> apps = getPackageManager().queryIntentActivities(mainIntent, 0);
-        ArrayList<ComponentName> allApps = new ArrayList<ComponentName>();
-
-        int count = apps.size();
-        for (int i = 0; i < count; i++) {
-            ActivityInfo ai = apps.get(i).activityInfo;
-
-            ComponentName cn =
-                    new ComponentName(ai.applicationInfo.packageName, ai.name);
-            allApps.add(cn);
-        }
-        return allApps;
     }
 
     private boolean canRunNewAppsAnimation() {
