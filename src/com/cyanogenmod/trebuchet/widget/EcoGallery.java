@@ -36,8 +36,6 @@ import android.view.animation.Transformation;
 import android.widget.Scroller;
 import com.cyanogenmod.trebuchet.R;
 
-import java.lang.reflect.Field;
-
 public class EcoGallery extends CustomAbsSpinner implements GestureDetector.OnGestureListener {
 
     private static final String TAG = "Gallery";
@@ -448,7 +446,7 @@ public class EcoGallery extends CustomAbsSpinner implements GestureDetector.OnGe
                     break;
                 } else {
                     count++;
-                    mRecycler.add(firstPosition + i, child);
+                    mRecycler.add(child);
                 }
             }
         } else {
@@ -460,7 +458,7 @@ public class EcoGallery extends CustomAbsSpinner implements GestureDetector.OnGe
                 } else {
                     start = i;
                     count++;
-                    mRecycler.add(firstPosition + i, child);
+                    mRecycler.add(child);
                 }
             }
         }

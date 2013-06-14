@@ -27,7 +27,6 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import com.cyanogenmod.trebuchet.R;
@@ -44,8 +43,6 @@ public abstract class CustomAbsSpinner extends CustomAdapterView<SpinnerAdapter>
     int mSelectionRightPadding = 0;
     int mSelectionBottomPadding = 0;
     Rect mSpinnerPadding = new Rect();
-    View mSelectedView = null;
-    Interpolator mInterpolator;
 
     RecycleBin mRecycler = new RecycleBin();
     private DataSetObserver mDataSetObserver;
@@ -200,7 +197,7 @@ public abstract class CustomAbsSpinner extends CustomAdapterView<SpinnerAdapter>
 
             if (view != null) {
                 // Put in recycler for re-measuring and/or layout
-                mRecycler.add(selectedPosition, view);
+                mRecycler.add(view);
             }
 
             if (view != null) {
@@ -249,7 +246,7 @@ public abstract class CustomAbsSpinner extends CustomAdapterView<SpinnerAdapter>
     @Override
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
@@ -458,7 +455,7 @@ public abstract class CustomAbsSpinner extends CustomAdapterView<SpinnerAdapter>
             mScrapHeap.put(position, v);
         }
 
-        public void add(int position, View v) {
+        public void add(View v) {
             mScrapHeap.put(mScrapHeap.size(), v);
         }
         public View get() {
@@ -474,19 +471,14 @@ public abstract class CustomAbsSpinner extends CustomAdapterView<SpinnerAdapter>
         }
 
         View get(int position) {
-            // System.out.print("Looking for " + position);
             View result = mScrapHeap.get(position);
             if (result != null) {
-                // System.out.println(" HIT");
                 mScrapHeap.delete(position);
-            } else {
-                // System.out.println(" MISS");
             }
             return result;
         }
 
         View peek(int position) {
-            // System.out.print("Looking for " + position);
             return mScrapHeap.get(position);
         }
 
