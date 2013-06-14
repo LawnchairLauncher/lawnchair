@@ -4460,7 +4460,7 @@ public class Workspace extends PagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        if (!isSmall()) {
+        if (!isSmall() && !mIsSwitchingState) {
             if (animate) {
                 snapToPage(mDefaultHomescreen);
             } else {

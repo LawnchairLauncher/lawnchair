@@ -1573,6 +1573,10 @@ public final class Launcher extends Activity
                     boolean waitForPendingTranstions = true;
                     if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                             openFolder == null) {
+                        if (mStateAnimation != null) {
+                            mStateAnimation.end();
+                            mStateAnimation = null;
+                        }
                         mWorkspace.moveToDefaultScreen(true);
                         mHotseat.moveToDefaultScreen(true);
                         waitForPendingTranstions = false;
