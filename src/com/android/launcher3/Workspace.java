@@ -29,6 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -60,6 +62,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -3427,18 +3430,19 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    ArrayList<ComponentName> stripDuplicateApps() {
+    ArrayList<ComponentName> stripDuplicateApps(ArrayList<ComponentName> allApps) {
         ArrayList<ComponentName> uniqueIntents = new ArrayList<ComponentName>();
-        stripDuplicateApps((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents);
+        stripDuplicateApps((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents, allApps);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-            stripDuplicateApps(cl, uniqueIntents);
+            stripDuplicateApps(cl, uniqueIntents, allApps);
         }
         return uniqueIntents;
     }
 
-    void stripDuplicateApps(CellLayout cl,  ArrayList<ComponentName> uniqueIntents) {
+    void stripDuplicateApps(CellLayout cl, ArrayList<ComponentName> uniqueIntents,
+            ArrayList<ComponentName> allApps) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
 
         ArrayList<View> children = new ArrayList<View>();
@@ -3454,7 +3458,15 @@ public class Workspace extends SmoothPagedView
             if (info instanceof ShortcutInfo) {
                 ShortcutInfo si = (ShortcutInfo) info;
                 ComponentName cn = si.intent.getComponent();
+                Uri dataUri = si.intent.getData();
 
+                // If dataUri is not null / empty or if this component isn't one that would
+                // have previously showed up in the AllApps list, then this is a widget-type
+                // shortcut, so ignore it.
+                if ((dataUri != null && !dataUri.equals(Uri.EMPTY))
+                        || !allApps.contains(cn)) {
+                    continue;
+                }
                 if (!uniqueIntents.contains(cn)) {
                     uniqueIntents.add(cn);
                 } else {
@@ -3469,7 +3481,15 @@ public class Workspace extends SmoothPagedView
                     if (items.get(j).getTag() instanceof ShortcutInfo) {
                         ShortcutInfo si = (ShortcutInfo) items.get(j).getTag();
                         ComponentName cn = si.intent.getComponent();
+                        Uri dataUri = si.intent.getData();
 
+                        // If dataUri is not null / empty or if this component isn't one that would
+                        // have previously showed up in the AllApps list, then this is a widget-type
+                        // shortcut, so ignore it.
+                        if (dataUri != null && !dataUri.equals(Uri.EMPTY)
+                                || !allApps.contains(cn)) {
+                            continue;
+                        }
                         if (!uniqueIntents.contains(cn)) {
                             uniqueIntents.add(cn);
                         } else {

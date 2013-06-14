@@ -44,6 +44,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -2042,7 +2043,8 @@ public class Launcher extends Activity
             final Intent intent = ((ShortcutInfo) tag).intent;
 
             ComponentName widgetComp = new ComponentName(this, WidgetAdder.class);
-            if (intent.getComponent().getClassName().equals(widgetComp.getClassName())) {
+            if (intent.getComponent() != null &&
+                    intent.getComponent().getClassName().equals(widgetComp.getClassName())) {
                 showAllApps(true);
                 return;
             }
@@ -3641,17 +3643,36 @@ public class Launcher extends Activity
         mWorkspaceLoading = false;
         if (upgradePath) {
             mWorkspace.saveWorkspaceToDb();
-
-            // Run through this twice... a little hackleberry, but the right solution is complex.
-            mWorkspace.stripDuplicateApps();
-            mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps();
+            ArrayList<ComponentName> allApps = constructAllAppsComponents();
+            mWorkspace.stripDuplicateApps(allApps);
+            mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps(allApps);
         }
+
         mWorkspace.post(new Runnable() {
             @Override
             public void run() {
                 onFinishBindingItems();
             }
         });
+    }
+
+    private ArrayList<ComponentName> constructAllAppsComponents() {
+        // Run through this twice... a little hackleberry, but the right solution is complex.
+        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> apps = getPackageManager().queryIntentActivities(mainIntent, 0);
+        ArrayList<ComponentName> allApps = new ArrayList<ComponentName>();
+
+        int count = apps.size();
+        for (int i = 0; i < count; i++) {
+            ActivityInfo ai = apps.get(i).activityInfo;
+
+            ComponentName cn =
+                    new ComponentName(ai.applicationInfo.packageName, ai.name);
+            allApps.add(cn);
+        }
+        return allApps;
     }
 
     private boolean canRunNewAppsAnimation() {
