@@ -177,8 +177,6 @@ public class Workspace extends PagedView
     boolean mIsDragOccuring = false;
     boolean mChildrenLayersEnabled = true;
 
-    private boolean mIsLandscape;
-
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
@@ -305,7 +303,6 @@ public class Workspace extends PagedView
     private boolean mStretchScreens;
     private boolean mShowSearchBar;
     private boolean mShowHotseat;
-    private boolean mResizeAnyWidget;
     private boolean mHideIconLabels;
     private boolean mHideDockIconLabels;
     private boolean mScrollWallpaper;
@@ -4016,8 +4013,6 @@ public class Workspace extends PagedView
         // needed
         updateChildrenLayersEnabled(false);
         setupWallpaper();
-
-        mIsLandscape = LauncherApplication.isScreenLandscape(mLauncher);
     }
 
     void setupWallpaper() {
