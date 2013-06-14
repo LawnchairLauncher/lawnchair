@@ -128,6 +128,12 @@ public class Launcher extends Activity
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
 
+    /**
+     * IntentStarter uses request codes starting with this. This must be greater than all activity
+     * request codes used internally.
+     */
+    protected static final int REQUEST_LAST = 100;
+
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
     static final int SCREEN_COUNT = 5;
