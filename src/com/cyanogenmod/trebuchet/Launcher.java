@@ -258,9 +258,6 @@ public final class Launcher extends Activity
     private boolean mWaitingForResult;
     private boolean mOnResumeNeedsLoad;
 
-    private final List<Runnable> mNewPendingIntents = new ArrayList<Runnable>();
-    private boolean mOnNewIntentProcessing;
-
     // Keep track of whether the user has left launcher
     private static boolean sPausedFromUserAction = false;
 
@@ -1562,20 +1559,15 @@ public final class Launcher extends Activity
                 public void run() {
                     if (mWorkspace == null) {
                         // Can be cases where mWorkspace is null, this prevents a NPE
-                        synchronized (mNewPendingIntents) {
-                            mOnNewIntentProcessing = false;
-                        }
                         return;
                     }
                     Folder openFolder = mWorkspace.getOpenFolder();
                     // In all these cases, only animate if we're already on home
                     mWorkspace.exitWidgetResizeMode();
-                    boolean waitForPendingTranstions = true;
                     if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                             openFolder == null) {
                         mWorkspace.moveToDefaultScreen(true);
                         mHotseat.moveToDefaultScreen(true);
-                        waitForPendingTranstions = false;
                     }
 
                     closeFolder();
@@ -1584,20 +1576,9 @@ public final class Launcher extends Activity
                     // If we are already on home, then just animate back to the workspace,
                     // otherwise, just wait until onResume to set the state back to Workspace
                     if (alreadyOnHome) {
-                        showWorkspace(true, new Runnable() {
-                            @Override
-                            public void run() {
-                                processNewPendingIntents();
-                            }
-                        });
-                        // onCompleteRunnable is not called if there is no pending animations
-                        // so we must ensure that processNewPendingIntents is called.
-                        if (!waitForPendingTranstions) {
-                            processNewPendingIntents();
-                        }
+                        showWorkspace(true);
                     } else {
                         mOnResumeState = State.WORKSPACE;
-                        processNewPendingIntents();
                     }
 
                     final View v = getWindow().peekDecorView();
@@ -1614,43 +1595,15 @@ public final class Launcher extends Activity
                 }
             };
 
-            boolean markAsPending = false;
-            synchronized (mNewPendingIntents) {
-                if (mOnNewIntentProcessing) {
-                    mNewPendingIntents.add(processIntent);
-                    markAsPending = true;
-                } else {
-                    mOnNewIntentProcessing = true;
-                }
-            }
-
-            if (!markAsPending) {
-                if (alreadyOnHome && !mWorkspace.hasWindowFocus()) {
-                    // Delay processing of the intent to allow the status bar animation to finish
-                    // first in order to avoid janky animations.
-                    mWorkspace.postDelayed(processIntent, 350);
-                } else {
-                    // Process the intent immediately.
-                    processIntent.run();
-                }
-            }
-
-        }
-    }
-
-    private void processNewPendingIntents() {
-        Runnable newIntent = null;
-        synchronized (mNewPendingIntents) {
-            if (mNewPendingIntents.size() > 0) {
-                if (mWorkspace != null) {
-                    newIntent = mNewPendingIntents.remove(0);
-                    mWorkspace.post(newIntent);
-                } else {
-                    mOnNewIntentProcessing = false;
-                }
+            if (alreadyOnHome && !mWorkspace.hasWindowFocus()) {
+                // Delay processing of the intent to allow the status bar animation to finish
+                // first in order to avoid janky animations.
+                mWorkspace.postDelayed(processIntent, 350);
             } else {
-                mOnNewIntentProcessing = false;
+                // Process the intent immediately.
+                processIntent.run();
             }
+
         }
     }
 
