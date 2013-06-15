@@ -17,16 +17,15 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,9 +62,20 @@ public class LauncherAppState {
     private LauncherAppState() { }
 
     private void initialize(Context context) {
+        Log.v(Launcher.TAG, "LauncherAppState initialize() called in process " + android.os.Process.myPid());
+
         mContext = context;
 
         mStarttime = System.currentTimeMillis();
+
+        if (context.getResources().getBoolean(R.bool.debug_memory_enabled)) {
+            context.startService(new Intent(context, MemoryTracker.class)
+                    .setAction(MemoryTracker.ACTION_START_TRACKING)
+                    .putExtra("pid", android.os.Process.myPid())
+                    .putExtra("name", "L")
+                    );
+        }
+
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
         sIsScreenLarge = context.getResources().getBoolean(R.bool.is_large_screen);

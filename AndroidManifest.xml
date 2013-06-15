@@ -125,6 +125,11 @@
             </intent-filter>
         </activity>
 
+        <service android:name="com.android.launcher3.MemoryTracker"
+            android:enabled="@bool/debug_memory_enabled"
+            >
+        </service>
+
         <!-- Intent received used to prepopulate the default workspace. -->
         <receiver
             android:name="com.android.launcher3.PreloadReceiver"

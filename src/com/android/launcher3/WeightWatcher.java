@@ -16,32 +16,35 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Debug;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class WeightWatcher extends LinearLayout {
-    private static final long UPDATE_RATE = 5000;
+    private static final int RAM_GRAPH_RSS_COLOR = 0xFF990000;
+    private static final int RAM_GRAPH_PSS_COLOR = 0xFF99CC00;
+    private static final int TEXT_COLOR = 0xFFFFFFFF;
+    private static final int BACKGROUND_COLOR = 0xa0000000;
 
-    private static final int RAM_GRAPH_COLOR = 0x9099CC00;
-    private static final int TEXT_COLOR = 0x90FFFFFF;
-    private static final int BACKGROUND_COLOR = 0x40000000;
+    private static final int UPDATE_RATE = 5000;
 
     private static final int MSG_START = 1;
     private static final int MSG_STOP = 2;
     private static final int MSG_UPDATE = 3;
-
-    TextView mRamText;
-    GraphView mRamGraph;
-    TextView mUptimeText;
 
     Handler mHandler = new Handler() {
         @Override
@@ -54,46 +57,45 @@ public class WeightWatcher extends LinearLayout {
                     mHandler.removeMessages(MSG_UPDATE);
                     break;
                 case MSG_UPDATE:
-                    update();
+                    final int N = getChildCount();
+                    for (int i=0; i<N; i++) {
+                        ((ProcessWatcher) getChildAt(i)).update();
+                    }
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE, UPDATE_RATE);
                     break;
             }
         }
     };
+    private MemoryTracker mMemoryService;
 
     public WeightWatcher(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        final float dp = getResources().getDisplayMetrics().density;
+        ServiceConnection connection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                mMemoryService = ((MemoryTracker.MemoryTrackerInterface)service).getService();
+                initViews();
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mMemoryService = null;
+            }
+        };
+        context.bindService(new Intent(context, MemoryTracker.class),
+                connection, Context.BIND_AUTO_CREATE);
+
+        setOrientation(LinearLayout.VERTICAL);
 
         setBackgroundColor(BACKGROUND_COLOR);
+    }
 
-        mRamText = new TextView(getContext());
-        mUptimeText = new TextView(getContext());
-        mRamText.setTextColor(TEXT_COLOR);
-        mUptimeText.setTextColor(TEXT_COLOR);
-
-        final int p = (int)(4*dp);
-        setPadding(p, 0, p, 0);
-
-        mRamGraph = new GraphView(getContext());
-
-        LinearLayout.LayoutParams wrapParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        wrapParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
-        wrapParams.setMarginEnd((int)(8*dp));
-
-        LinearLayout.LayoutParams fillParams = new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1.0f
-        );
-
-        addView(mUptimeText, wrapParams);
-        addView(mRamText, wrapParams);
-        addView(mRamGraph, fillParams);
+    public void initViews() {
+        int[] processes = mMemoryService.getTrackedProcesses();
+        for (int i=0; i<processes.length; i++) {
+            final ProcessWatcher v = new ProcessWatcher(getContext());
+            v.setPid(processes[i]);
+            addView(v);
+        }
     }
 
     public WeightWatcher(Context context) {
@@ -104,12 +106,6 @@ public class WeightWatcher extends LinearLayout {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mHandler.sendEmptyMessage(MSG_START);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        mRamText.setTextSize(h * 0.25f);
-        mUptimeText.setTextSize(h * 0.25f);
     }
 
     @Override
@@ -147,51 +143,98 @@ public class WeightWatcher extends LinearLayout {
         return sb.toString();
     }
 
-    void update() {
-        final long pss = Debug.getPss();
+    public class ProcessWatcher extends LinearLayout {
+        GraphView mRamGraph;
+        TextView mText;
+        int mPid;
+        private MemoryTracker.ProcessMemInfo mMemInfo;
 
-        mRamGraph.add(pss);
-        mRamText.setText("pss=" + pss);
-        mUptimeText.setText("uptime=" + getUptimeString());
-
-        postInvalidate();
-    }
-
-    public static class GraphView extends View {
-        final long[] data = new long[256];
-        long max = 1;
-        int head = 0;
-
-        Paint paint;
-
-        public GraphView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-
-            paint = new Paint();
-            paint.setColor(RAM_GRAPH_COLOR);
-        }
-
-        public GraphView(Context context) {
+        public ProcessWatcher(Context context) {
             this(context, null);
         }
 
-        public void add(long dat) {
-            head = (head+1) % data.length;
-            data[head] = dat;
-            if (dat > max) max = dat;
-            invalidate();
+        public ProcessWatcher(Context context, AttributeSet attrs) {
+            super(context, attrs);
+
+            final float dp = getResources().getDisplayMetrics().density;
+
+            mText = new TextView(getContext());
+            mText.setTextColor(TEXT_COLOR);
+            mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, 10 * dp);
+            mText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+
+            final int p = (int)(2*dp);
+            setPadding(p, 0, p, 0);
+
+            mRamGraph = new GraphView(getContext());
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    0,
+                    (int)(22 * dp),
+                    1f
+            );
+
+            addView(mText, params);
+            params.leftMargin = (int)(4*dp);
+            params.weight = 0f;
+            params.width = (int)(200 * dp);
+            addView(mRamGraph, params);
         }
 
-        @Override
-        public void onDraw(Canvas c) {
-            int w = c.getWidth();
-            int h = c.getHeight();
+        public void setPid(int pid) {
+            mPid = pid;
+            mMemInfo = mMemoryService.getMemInfo(mPid);
+        }
 
-            final float barWidth = (float) w / data.length;
-            final float scale = (float) h / max;
+        public void update() {
+            //Log.v("WeightWatcher.ProcessWatcher",
+            //        "MSG_UPDATE pss=" + mMemInfo.currentPss);
+            mText.setText("(" + mMemInfo.name + "/" + mPid + ") up " + getUptimeString()
+                          + " P=" + mMemInfo.currentPss
+                          + " U=" + mMemInfo.currentUss
+                          );
+            mRamGraph.invalidate();
+        }
 
-            for (int i=0; i<data.length; i++) {
-                c.drawRect(i * barWidth, h - scale * data[i], (i+1) * barWidth, h, paint);
+        public class GraphView extends View {
+            Paint pssPaint, ussPaint, headPaint;
+
+            public GraphView(Context context, AttributeSet attrs) {
+                super(context, attrs);
+
+                pssPaint = new Paint();
+                pssPaint.setColor(RAM_GRAPH_PSS_COLOR);
+                ussPaint = new Paint();
+                ussPaint.setColor(RAM_GRAPH_RSS_COLOR);
+                headPaint = new Paint();
+                headPaint.setColor(Color.WHITE);
+            }
+
+            public GraphView(Context context) {
+                this(context, null);
+            }
+
+            @Override
+            public void onDraw(Canvas c) {
+                int w = c.getWidth();
+                int h = c.getHeight();
+
+                if (mMemInfo == null) return;
+
+                final int N = mMemInfo.pss.length;
+                final float barStep = (float) w / N;
+                final float barWidth = Math.max(1, barStep);
+                final float scale = (float) h / mMemInfo.max;
+
+                int i;
+                float x;
+                for (i=0; i<N; i++) {
+                    x = i * barStep;
+                    c.drawRect(x, h - scale * mMemInfo.pss[i], x + barWidth, h, pssPaint);
+                    c.drawRect(x, h - scale * mMemInfo.uss[i], x + barWidth, h, ussPaint);
+                }
+                x = mMemInfo.head * barStep;
+                c.drawRect(x, 0, x + barWidth, h, headPaint);
             }
         }
     }

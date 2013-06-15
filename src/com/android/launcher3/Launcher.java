@@ -1043,10 +1043,12 @@ public class Launcher extends Activity
 
         if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
             Log.v(TAG, "adding WeightWatcher");
-            ((FrameLayout) mLauncherView).addView(new WeightWatcher(this),
+            final View ww = new WeightWatcher(this);
+            ww.setAlpha(0.5f);
+            ((FrameLayout) mLauncherView).addView(ww,
                     new FrameLayout.LayoutParams(
                             FrameLayout.LayoutParams.MATCH_PARENT,
-                            44,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
                             Gravity.BOTTOM)
             );
         }
