@@ -840,7 +840,7 @@ public class Launcher extends Activity
         mWorkspace.addView(customScreen, 0);
 
         // Ensure that the current page and default page are maintained.
-        mWorkspace.incrementDefaultScreen();
+        mWorkspace.incrementNumScreensToLeft();
         mWorkspace.setCurrentPage(mWorkspace.getCurrentPage() + 1);
     }
 
@@ -1162,7 +1162,8 @@ public class Launcher extends Activity
             return;
         }
 
-        LauncherModel.addItemToDatabase(this, info, container, screen, cellXY[0], cellXY[1], false);
+        int adjustedScreen = screen - getWorkspace().mNumPagesToLeft;
+        LauncherModel.addItemToDatabase(this, info, container, adjustedScreen, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
             mWorkspace.addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1,
@@ -1262,8 +1263,9 @@ public class Launcher extends Activity
         launcherInfo.minSpanX = mPendingAddInfo.minSpanX;
         launcherInfo.minSpanY = mPendingAddInfo.minSpanY;
 
+        int adjustedScreen = screen - getWorkspace().mNumPagesToLeft;
         LauncherModel.addItemToDatabase(this, launcherInfo,
-                container, screen, cellXY[0], cellXY[1], false);
+                container, adjustedScreen, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
             if (hostView == null) {

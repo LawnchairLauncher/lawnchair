@@ -105,6 +105,7 @@ public class Workspace extends SmoothPagedView
     private IBinder mWindowToken;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
 
+    public int mNumPagesToLeft = 0;
     private int mDefaultPage;
 
     /**
@@ -403,8 +404,9 @@ public class Workspace extends SmoothPagedView
 
     // Just a hack so that if a custom content screen is added to the left, we adjust the
     // default screen accordingly so that it stays the same.
-    void incrementDefaultScreen() {
+    void incrementNumScreensToLeft() {
         mDefaultPage++;
+        mNumPagesToLeft++;
     }
 
     /**
@@ -1963,7 +1965,9 @@ public class Workspace extends SmoothPagedView
         final int[] cellXY = new int[2];
         target.findCellForSpanThatIntersects(cellXY, 1, 1, intersectX, intersectY);
         addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1, insertAtFirst);
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screen, cellXY[0],
+
+        int adjustedScreen = screen - mNumPagesToLeft;
+        LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, adjustedScreen, cellXY[0],
                 cellXY[1]);
     }
 
@@ -2315,7 +2319,10 @@ public class Workspace extends SmoothPagedView
                         }
                     }
 
-                    LauncherModel.moveItemInDatabase(mLauncher, info, container, screen, lp.cellX,
+                    //TODO: This is a hack on top of a hack, but items aren't being saved
+                    // to the correct screen due to the extra screen.
+                    int adjustedScreen = screen - mNumPagesToLeft;
+                    LauncherModel.moveItemInDatabase(mLauncher, info, container, adjustedScreen, lp.cellX,
                             lp.cellY);
                 } else {
                     // If we can't find a drop location, we return the item to its original position
@@ -3176,8 +3183,8 @@ public class Workspace extends SmoothPagedView
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getShortcutsAndWidgets().measureChild(view);
 
-
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screen,
+            int adjustedScreen = screen - mNumPagesToLeft;
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, adjustedScreen,
                     lp.cellX, lp.cellY);
 
             if (d.dragView != null) {
@@ -3424,7 +3431,8 @@ public class Workspace extends SmoothPagedView
             // Null check required as the AllApps button doesn't have an item info
             if (info != null && info.requiresDbUpdate) {
                 info.requiresDbUpdate = false;
-                LauncherModel.modifyItemInDatabase(mLauncher, info, container, screen, info.cellX,
+                int adjustedScreen = screen - mNumPagesToLeft;
+                LauncherModel.modifyItemInDatabase(mLauncher, info, container, adjustedScreen, info.cellX,
                         info.cellY, info.spanX, info.spanY);
             }
         }

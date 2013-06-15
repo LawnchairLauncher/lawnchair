@@ -444,6 +444,9 @@ public class DragController {
                 mLastTouchUpTime = System.currentTimeMillis();
                 if (mDragging) {
                     PointF vec = isFlingingToDelete(mDragObject.dragSource);
+                    if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragInfo)) {
+                        vec = null;
+                    }
                     if (vec != null) {
                         dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
                     } else {
@@ -597,8 +600,7 @@ public class DragController {
 
             if (mDragging) {
                 PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                if (!(mDragObject.dragInfo instanceof LauncherAppWidgetInfo) &&
-                        !(mDragObject.dragInfo instanceof PendingAddWidgetInfo)) {
+                if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragInfo)) {
                     vec = null;
                 }
                 if (vec != null) {
