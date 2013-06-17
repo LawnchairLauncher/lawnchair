@@ -62,3 +62,7 @@
 -keep class com.android.launcher3.ClippedImageView {
   *;
 }
+
+-keep class com.android.launcher3.MemoryDumpActivity {
+  *;
+}

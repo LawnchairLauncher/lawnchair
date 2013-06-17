@@ -90,4 +90,7 @@
     <integer name="hotseat_all_apps_index">2</integer>
     <!-- must be between 0 and 100 -->
     <integer name="hotseat_item_scale_percentage">100</integer>
+
+    <!-- Memory debugging, including a memory dump icon -->
+    <bool name="debug_memory_enabled">true</bool>
 </resources>

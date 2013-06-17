@@ -110,6 +110,21 @@
                 android:resource="@xml/wallpaper_picker_preview" />
         </activity>
 
+        <!-- Debugging tools -->
+        <activity
+            android:name="com.android.launcher3.MemoryDumpActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:label="@string/debug_memory_activity"
+            android:enabled="@bool/debug_memory_enabled"
+            android:icon="@null"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <!-- Intent received used to prepopulate the default workspace. -->
         <receiver
             android:name="com.android.launcher3.PreloadReceiver"

@@ -1041,7 +1041,7 @@ public class Launcher extends Activity
             mSearchDropTargetBar.setup(this, dragController);
         }
 
-        if (DEBUG_MEMORY) {
+        if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
             Log.v(TAG, "adding WeightWatcher");
             ((FrameLayout) mLauncherView).addView(new WeightWatcher(this),
                     new FrameLayout.LayoutParams(

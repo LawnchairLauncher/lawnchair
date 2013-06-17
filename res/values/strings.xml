@@ -277,4 +277,7 @@ s -->
     <!-- Dummy string [CHAR_LIMIT=60] -->
     <string name="custom_workspace_cling_description_2"></string>
 
+    <!-- Debug-only activity name. [DO NOT TRANSLATE] -->
+    <string name="debug_memory_activity">* HPROF</string>
+
 </resources>

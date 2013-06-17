@@ -23,9 +23,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Debug;
+import android.os.Environment;
 import android.os.Handler;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class LauncherAppState {
     private Context mContext;
@@ -60,6 +66,10 @@ public class LauncherAppState {
         mContext = context;
 
         mStarttime = System.currentTimeMillis();
+
+        if (context.getResources().getBoolean(R.bool.debug_memory_enabled)) {
+            WeightWatcher.sUpdateThread.start();
+        }
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
         sIsScreenLarge = context.getResources().getBoolean(R.bool.is_large_screen);
