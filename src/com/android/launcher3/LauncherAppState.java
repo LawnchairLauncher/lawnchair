@@ -67,10 +67,6 @@ public class LauncherAppState {
 
         mStarttime = System.currentTimeMillis();
 
-        if (context.getResources().getBoolean(R.bool.debug_memory_enabled)) {
-            WeightWatcher.sUpdateThread.start();
-        }
-
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
         sIsScreenLarge = context.getResources().getBoolean(R.bool.is_large_screen);
         sScreenDensity = context.getResources().getDisplayMetrics().density;
