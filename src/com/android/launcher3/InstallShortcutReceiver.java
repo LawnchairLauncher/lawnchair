@@ -333,6 +333,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return false;
     }
 
+    // TODO: this needs to be updated to take a screenId instead of a screen index
     private static boolean findEmptyCell(Context context, ArrayList<ItemInfo> items, int[] xy,
             int screen) {
         final int xCount = LauncherModel.getCellCountX();
@@ -344,7 +345,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         for (int i = 0; i < items.size(); ++i) {
             item = items.get(i);
             if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (item.screen == screen) {
+                if (item.screenId == screen) {
                     cellX = item.cellX;
                     cellY = item.cellY;
                     spanX = item.spanX;

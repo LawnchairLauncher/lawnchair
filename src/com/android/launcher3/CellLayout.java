@@ -709,7 +709,10 @@ public class CellLayout extends ViewGroup {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mCellInfo.screen = ((ViewGroup) getParent()).indexOfChild(this);
+        if (getParent() instanceof Workspace) {
+            Workspace workspace = (Workspace) getParent();
+            mCellInfo.screenId = workspace.getIdForScreen(this);
+        }
     }
 
     public void setTagToCellInfoForPoint(int touchX, int touchY) {
@@ -3334,7 +3337,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int cellY = -1;
         int spanX;
         int spanY;
-        int screen;
+        long screenId;
         long container;
 
         @Override

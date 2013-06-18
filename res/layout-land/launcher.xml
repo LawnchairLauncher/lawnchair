@@ -46,11 +46,6 @@
             launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
             launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height">
 
-            <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
-            <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
-            <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
-            <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
-            <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
         </com.android.launcher3.Workspace>
 
         <include

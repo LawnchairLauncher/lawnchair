@@ -55,7 +55,7 @@ class ItemInfo {
     /**
      * Iindicates the screen in which the shortcut appears.
      */
-    int screen = -1;
+    long screenId = -1;
     
     /**
      * Indicates the X position of the associated cell.
@@ -111,7 +111,7 @@ class ItemInfo {
         cellY = info.cellY;
         spanX = info.spanX;
         spanY = info.spanY;
-        screen = info.screen;
+        screenId = info.screenId;
         itemType = info.itemType;
         container = info.container;
         // tempdebug:
@@ -141,7 +141,7 @@ class ItemInfo {
     void onAddToDatabase(ContentValues values) { 
         values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
         values.put(LauncherSettings.Favorites.CONTAINER, container);
-        values.put(LauncherSettings.Favorites.SCREEN, screen);
+        values.put(LauncherSettings.Favorites.SCREEN, screenId);
         values.put(LauncherSettings.Favorites.CELLX, cellX);
         values.put(LauncherSettings.Favorites.CELLY, cellY);
         values.put(LauncherSettings.Favorites.SPANX, spanX);
@@ -188,7 +188,7 @@ class ItemInfo {
     @Override
     public String toString() {
         return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
-            + " screen=" + screen + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
+            + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
             + " spanY=" + spanY + " dropPos=" + dropPos + ")";
     }
 }

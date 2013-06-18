@@ -48,14 +48,13 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.android.launcher3.R;
 import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.text.Collator;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -63,6 +62,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -138,6 +138,10 @@ public class LauncherModel extends BroadcastReceiver {
 
     // sBgDbIconCache is the set of ItemInfos that need to have their icons updated in the database
     static final HashMap<Object, byte[]> sBgDbIconCache = new HashMap<Object, byte[]>();
+
+    // sBgWorkspaceScreens is the ordered set of workspace screens.
+    static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
+
     // </ only access in worker thread >
 
     private IconCache mIconCache;
@@ -153,6 +157,7 @@ public class LauncherModel extends BroadcastReceiver {
         public int getCurrentWorkspaceScreen();
         public void startBinding();
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end);
+        public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void bindFolders(HashMap<Long,FolderInfo> folders);
         public void finishBindingItems(boolean upgradePath);
         public void bindAppWidget(LauncherAppWidgetInfo info);
@@ -257,13 +262,13 @@ public class LauncherModel extends BroadcastReceiver {
      * <container, screen, cellX, cellY>
      */
     static void addOrMoveItemInDatabase(Context context, ItemInfo item, long container,
-            int screen, int cellX, int cellY) {
+            long screenId, int cellX, int cellY) {
         if (item.container == ItemInfo.NO_ID) {
             // From all apps
-            addItemToDatabase(context, item, container, screen, cellX, cellY, false);
+            addItemToDatabase(context, item, container, screenId, cellX, cellY, false);
         } else {
             // From somewhere else
-            moveItemInDatabase(context, item, container, screen, cellX, cellY);
+            moveItemInDatabase(context, item, container, screenId, cellX, cellY);
         }
     }
 
@@ -280,7 +285,7 @@ public class LauncherModel extends BroadcastReceiver {
                         modelShortcut.id == shortcut.id &&
                         modelShortcut.itemType == shortcut.itemType &&
                         modelShortcut.container == shortcut.container &&
-                        modelShortcut.screen == shortcut.screen &&
+                        modelShortcut.screenId == shortcut.screenId &&
                         modelShortcut.cellX == shortcut.cellX &&
                         modelShortcut.cellY == shortcut.cellY &&
                         modelShortcut.spanX == shortcut.spanX &&
@@ -444,10 +449,10 @@ public class LauncherModel extends BroadcastReceiver {
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
     static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
-            final int screen, final int cellX, final int cellY) {
+            final long screenId, final int cellX, final int cellY) {
         String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
-                " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY +
-                ") --> " + "(" + container + ", " + screen + ", " + cellX + ", " + cellY + ")";
+                " (" + item.container + ", " + item.screenId + ", " + item.cellX + ", " + item.cellY +
+                ") --> " + "(" + container + ", " + screenId + ", " + cellX + ", " + cellY + ")";
         Launcher.sDumpLogs.add(transaction);
         Log.d(TAG, transaction);
         item.container = container;
@@ -456,18 +461,18 @@ public class LauncherModel extends BroadcastReceiver {
 
         // We store hotseat items in canonical form which is this orientation invariant position
         // in the hotseat
-        if (context instanceof Launcher && screen < 0 &&
+        if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
         } else {
-            item.screen = screen;
+            item.screenId = screenId;
         }
 
         final ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
         values.put(LauncherSettings.Favorites.CELLX, item.cellX);
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-        values.put(LauncherSettings.Favorites.SCREEN, item.screen);
+        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
         updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
     }
@@ -485,7 +490,7 @@ public class LauncherModel extends BroadcastReceiver {
         for (int i = 0; i < count; i++) {
             ItemInfo item = items.get(i);
             String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: "
-                    + item.id + " (" + item.container + ", " + item.screen + ", " + item.cellX
+                    + item.id + " (" + item.container + ", " + item.screenId + ", " + item.cellX
                     + ", " + item.cellY + ") --> " + "(" + container + ", " + screen + ", "
                     + item.cellX + ", " + item.cellY + ")";
             Launcher.sDumpLogs.add(transaction);
@@ -495,17 +500,17 @@ public class LauncherModel extends BroadcastReceiver {
             // in the hotseat
             if (context instanceof Launcher && screen < 0 &&
                     container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(item.cellX,
+                item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(item.cellX,
                         item.cellY);
             } else {
-                item.screen = screen;
+                item.screenId = screen;
             }
 
             final ContentValues values = new ContentValues();
             values.put(LauncherSettings.Favorites.CONTAINER, item.container);
             values.put(LauncherSettings.Favorites.CELLX, item.cellX);
             values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-            values.put(LauncherSettings.Favorites.SCREEN, item.screen);
+            values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
             contentValues.add(values);
         }
@@ -516,10 +521,10 @@ public class LauncherModel extends BroadcastReceiver {
      * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
      */
     static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
-            final int screen, final int cellX, final int cellY, final int spanX, final int spanY) {
+            final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
         String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
-                " (" + item.container + ", " + item.screen + ", " + item.cellX + ", " + item.cellY +
-                ") --> " + "(" + container + ", " + screen + ", " + cellX + ", " + cellY + ")";
+                " (" + item.container + ", " + item.screenId + ", " + item.cellX + ", " + item.cellY +
+                ") --> " + "(" + container + ", " + screenId + ", " + cellX + ", " + cellY + ")";
         Launcher.sDumpLogs.add(transaction);
         Log.d(TAG, transaction);
         item.cellX = cellX;
@@ -529,11 +534,11 @@ public class LauncherModel extends BroadcastReceiver {
 
         // We store hotseat items in canonical form which is this orientation invariant position
         // in the hotseat
-        if (context instanceof Launcher && screen < 0 &&
+        if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
         } else {
-            item.screen = screen;
+            item.screenId = screenId;
         }
 
         final ContentValues values = new ContentValues();
@@ -542,7 +547,7 @@ public class LauncherModel extends BroadcastReceiver {
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
         values.put(LauncherSettings.Favorites.SPANX, item.spanX);
         values.put(LauncherSettings.Favorites.SPANY, item.spanY);
-        values.put(LauncherSettings.Favorites.SCREEN, item.screen);
+        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
         updateItemInDatabaseHelper(context, values, item, "modifyItemInDatabase");
     }
@@ -604,7 +609,7 @@ public class LauncherModel extends BroadcastReceiver {
                 item.spanY = c.getInt(spanYIndex);
                 item.container = c.getInt(containerIndex);
                 item.itemType = c.getInt(itemTypeIndex);
-                item.screen = c.getInt(screenIndex);
+                item.screenId = c.getInt(screenIndex);
 
                 items.add(item);
             }
@@ -646,7 +651,7 @@ public class LauncherModel extends BroadcastReceiver {
                 folderInfo.title = c.getString(titleIndex);
                 folderInfo.id = id;
                 folderInfo.container = c.getInt(containerIndex);
-                folderInfo.screen = c.getInt(screenIndex);
+                folderInfo.screenId = c.getInt(screenIndex);
                 folderInfo.cellX = c.getInt(cellXIndex);
                 folderInfo.cellY = c.getInt(cellYIndex);
 
@@ -664,17 +669,17 @@ public class LauncherModel extends BroadcastReceiver {
      * cellY fields of the item. Also assigns an ID to the item.
      */
     static void addItemToDatabase(Context context, final ItemInfo item, final long container,
-            final int screen, final int cellX, final int cellY, final boolean notify) {
+            final long screenId, final int cellX, final int cellY, final boolean notify) {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
         // We store hotseat items in canonical form which is this orientation invariant position
         // in the hotseat
-        if (context instanceof Launcher && screen < 0 &&
+        if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+            item.screenId = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
         } else {
-            item.screen = screen;
+            item.screenId = screenId;
         }
 
         final ContentValues values = new ContentValues();
@@ -682,14 +687,14 @@ public class LauncherModel extends BroadcastReceiver {
         item.onAddToDatabase(values);
 
         LauncherAppState app = LauncherAppState.getInstance();
-        item.id = app.getLauncherProvider().generateNewId();
+        item.id = app.getLauncherProvider().generateNewItemId();
         values.put(LauncherSettings.Favorites._ID, item.id);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
         Runnable r = new Runnable() {
             public void run() {
                 String transaction = "DbDebug    Add item (" + item.title + ") to db, id: "
-                        + item.id + " (" + container + ", " + screen + ", " + cellX + ", "
+                        + item.id + " (" + container + ", " + screenId + ", " + cellX + ", "
                         + cellY + ")";
                 Launcher.sDumpLogs.add(transaction);
                 Log.d(TAG, transaction);
@@ -734,9 +739,9 @@ public class LauncherModel extends BroadcastReceiver {
      * Creates a new unique child id, for a given cell span across all layouts.
      */
     static int getCellLayoutChildId(
-            long container, int screen, int localCellX, int localCellY, int spanX, int spanY) {
+            long container, long screen, int localCellX, int localCellY, int spanX, int spanY) {
         return (((int) container & 0xFF) << 24)
-                | (screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
+                | ((int) screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
     static int getCellCountX() {
@@ -768,7 +773,7 @@ public class LauncherModel extends BroadcastReceiver {
         Runnable r = new Runnable() {
             public void run() {
                 String transaction = "DbDebug    Delete item (" + item.title + ") from db, id: "
-                        + item.id + " (" + item.container + ", " + item.screen + ", " + item.cellX +
+                        + item.id + " (" + item.container + ", " + item.screenId + ", " + item.cellX +
                         ", " + item.cellY + ")";
                 Launcher.sDumpLogs.add(transaction);
                 Log.d(TAG, transaction);
@@ -803,6 +808,48 @@ public class LauncherModel extends BroadcastReceiver {
                     sBgItemsIdMap.remove(item.id);
                     sBgDbIconCache.remove(item);
                 }
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    /**
+     * Update the order of the workspace screens in the database. The array list contains
+     * a list of screen ids in the order that they should appear.
+     */
+    static void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
+        final ContentResolver cr = context.getContentResolver();
+        final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+
+        // Remove any negative screen ids -- these aren't persisted
+        Iterator<Long> iter = screens.iterator();
+        while (iter.hasNext()) {
+            long id = iter.next();
+            if (id < 0) {
+                iter.remove();
+            }
+        }
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<Long> screensCopy = new ArrayList<Long>();
+
+                // Clear the table
+                cr.delete(uri, null, null);
+                int count = screens.size();
+                ContentValues[] values = new ContentValues[count];
+                for (int i = 0; i < count; i++) {
+                    ContentValues v = new ContentValues();
+                    long screenId = screens.get(i);
+                    v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+                    v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                    screensCopy.add(screenId);
+                    values[i] = v;
+                }
+                cr.bulkInsert(uri, values);
+                sBgWorkspaceScreens.clear();
+                sBgWorkspaceScreens.addAll(screensCopy);
             }
         };
         runOnWorkerThread(r);
@@ -1219,7 +1266,6 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
 
-
             // Update the saved icons if necessary
             if (DEBUG_LOADERS) Log.d(TAG, "Comparing loaded icons to database icons");
             synchronized (sBgLock) {
@@ -1280,23 +1326,23 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
-            int containerIndex = item.screen;
+        private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item) {
+            long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // Return early if we detect that an item is under the hotseat button
-                if (mCallbacks == null || mCallbacks.get().isAllAppsButtonRank(item.screen)) {
-                    return false;
-                }
-
-                // We use the last index to refer to the hotseat and the screen as the rank, so
-                // test and update the occupied state accordingly
-                if (occupied[Launcher.SCREEN_COUNT][item.screen][0] != null) {
-                    Log.e(TAG, "Error loading shortcut into hotseat " + item
-                        + " into position (" + item.screen + ":" + item.cellX + "," + item.cellY
-                        + ") occupied by " + occupied[Launcher.SCREEN_COUNT][item.screen][0]);
-                    return false;
+                if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
+                    if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                            [(int) item.screenId][0] != null) {
+                        Log.e(TAG, "Error loading shortcut into hotseat " + item
+                                + " into position (" + item.screenId + ":" + item.cellX + ","
+                                + item.cellY + ") occupied by "
+                                + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                                [(int) item.screenId][0]);
+                            return false;
+                    }
                 } else {
-                    occupied[Launcher.SCREEN_COUNT][item.screen][0] = item;
+                    ItemInfo[][] items = new ItemInfo[mCellCountX + 1][mCellCountY + 1];
+                    items[(int) item.screenId][0] = item;
+                    occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
                     return true;
                 }
             } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
@@ -1304,22 +1350,28 @@ public class LauncherModel extends BroadcastReceiver {
                 return true;
             }
 
+            if (!occupied.containsKey(item.screenId)) {
+                ItemInfo[][] items = new ItemInfo[mCellCountX + 1][mCellCountY + 1];
+                occupied.put(item.screenId, items);
+            }
+
+            ItemInfo[][] screens = occupied.get(item.screenId);
             // Check if any workspace icons overlap with each other
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    if (occupied[containerIndex][x][y] != null) {
+                    if (screens[x][y] != null) {
                         Log.e(TAG, "Error loading shortcut " + item
-                            + " into cell (" + containerIndex + "-" + item.screen + ":"
+                            + " into cell (" + containerIndex + "-" + item.screenId + ":"
                             + x + "," + y
                             + ") occupied by "
-                            + occupied[containerIndex][x][y]);
+                            + screens[x][y]);
                         return false;
                     }
                 }
             }
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    occupied[containerIndex][x][y] = item;
+                    screens[x][y] = item;
                 }
             }
 
@@ -1348,6 +1400,7 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgFolders.clear();
                 sBgItemsIdMap.clear();
                 sBgDbIconCache.clear();
+                sBgWorkspaceScreens.clear();
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
@@ -1356,8 +1409,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // +1 for the hotseat (it can be larger than the workspace)
                 // Load workspace in reverse order to ensure that latest items are loaded first (and
                 // before any earlier duplicates)
-                final ItemInfo occupied[][][] =
-                        new ItemInfo[Launcher.SCREEN_COUNT + 1][mCellCountX + 1][mCellCountY + 1];
+                final HashMap<Long, ItemInfo[][]> occupied = new HashMap<Long, ItemInfo[][]>();
 
                 try {
                     final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -1439,7 +1491,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     info.id = c.getLong(idIndex);
                                     container = c.getInt(containerIndex);
                                     info.container = container;
-                                    info.screen = c.getInt(screenIndex);
+                                    info.screenId = c.getInt(screenIndex);
                                     info.cellX = c.getInt(cellXIndex);
                                     info.cellY = c.getInt(cellYIndex);
                                     // check & update map of what's occupied
@@ -1461,7 +1513,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                     if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
                                             loadOldDb) {
-                                        info.screen = permuteScreens(info.screen);
+                                        info.screenId = permuteScreens(info.screenId);
                                     }
                                     sBgItemsIdMap.put(info.id, info);
 
@@ -1488,7 +1540,7 @@ public class LauncherModel extends BroadcastReceiver {
                                 folderInfo.id = id;
                                 container = c.getInt(containerIndex);
                                 folderInfo.container = container;
-                                folderInfo.screen = c.getInt(screenIndex);
+                                folderInfo.screenId = c.getInt(screenIndex);
                                 folderInfo.cellX = c.getInt(cellXIndex);
                                 folderInfo.cellY = c.getInt(cellYIndex);
 
@@ -1504,7 +1556,7 @@ public class LauncherModel extends BroadcastReceiver {
                                 }
                                 if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
                                         loadOldDb) {
-                                    folderInfo.screen = permuteScreens(folderInfo.screen);
+                                    folderInfo.screenId = permuteScreens(folderInfo.screenId);
                                 }
 
                                 sBgItemsIdMap.put(folderInfo.id, folderInfo);
@@ -1530,7 +1582,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                             provider.provider);
                                     appWidgetInfo.id = id;
-                                    appWidgetInfo.screen = c.getInt(screenIndex);
+                                    appWidgetInfo.screenId = c.getInt(screenIndex);
                                     appWidgetInfo.cellX = c.getInt(cellXIndex);
                                     appWidgetInfo.cellY = c.getInt(cellYIndex);
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
@@ -1548,7 +1600,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                     if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
                                             loadOldDb) {
-                                        appWidgetInfo.screen = permuteScreens(appWidgetInfo.screen);
+                                        appWidgetInfo.screenId =
+                                                permuteScreens(appWidgetInfo.screenId);
                                     }
 
                                     appWidgetInfo.container = c.getInt(containerIndex);
@@ -1587,17 +1640,86 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
 
+                if (loadOldDb) {
+                    long maxScreenId = 0;
+                    // If we're importing we use the old screen order.
+                    for (ItemInfo item: sBgItemsIdMap.values()) {
+                        long screenId = item.screenId;
+                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                                !sBgWorkspaceScreens.contains(screenId)) {
+                            sBgWorkspaceScreens.add(screenId);
+                            if (screenId > maxScreenId) {
+                                maxScreenId = screenId;
+                            }
+                        }
+                    }
+                    Collections.sort(sBgWorkspaceScreens);
+                    mApp.getLauncherProvider().updateMaxScreenId(maxScreenId);
+                    updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
+                } else {
+                    Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+                    final Cursor sc = contentResolver.query(screensUri, null, null, null, null);
+                    TreeMap<Integer, Long> orderedScreens = new TreeMap<Integer, Long>();
+
+                    try {
+                        final int idIndex = sc.getColumnIndexOrThrow(
+                                LauncherSettings.WorkspaceScreens._ID);
+                        final int rankIndex = sc.getColumnIndexOrThrow(
+                                LauncherSettings.WorkspaceScreens.SCREEN_RANK);
+                        while (sc.moveToNext()) {
+                            try {
+                                long screenId = sc.getLong(idIndex);
+                                int rank = sc.getInt(rankIndex);
+
+                                orderedScreens.put(rank, screenId);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Desktop items loading interrupted:", e);
+                            }
+                        }
+                    } finally {
+                        sc.close();
+                    }
+
+                    Iterator<Integer> iter = orderedScreens.keySet().iterator();
+                    while (iter.hasNext()) {
+                        sBgWorkspaceScreens.add(orderedScreens.get(iter.next()));
+                    }
+
+                    // Remove any empty screens
+                    ArrayList<Long> unusedScreens = new ArrayList<Long>();
+                    unusedScreens.addAll(sBgWorkspaceScreens);
+
+                    for (ItemInfo item: sBgItemsIdMap.values()) {
+                        long screenId = item.screenId;
+
+                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                                unusedScreens.contains(screenId)) {
+                            unusedScreens.remove(screenId);
+                        }
+                    }
+
+                    // If there are any empty screens remove them, and update.
+                    if (unusedScreens.size() != 0) {
+                        sBgWorkspaceScreens.removeAll(unusedScreens);
+                        updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
+                    }
+                }
+
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
                     Log.d(TAG, "workspace layout: ");
+                    Iterator<Long> iter = occupied.keySet().iterator();
+                    int nScreens = occupied.size();
                     for (int y = 0; y < mCellCountY; y++) {
                         String line = "";
-                        for (int s = 0; s < Launcher.SCREEN_COUNT; s++) {
+
+                        for (int s = 0; s < nScreens; s++) {
+                            long screenId = iter.next();
                             if (s > 0) {
                                 line += " | ";
                             }
                             for (int x = 0; x < mCellCountX; x++) {
-                                line += ((occupied[s][x][y] != null) ? "#" : ".");
+                                line += ((occupied.get(screenId)[x][y] != null) ? "#" : ".");
                             }
                         }
                         Log.d(TAG, "[ " + line + " ]");
@@ -1608,7 +1730,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         // We rearrange the screens from the old launcher
         // 12345 -> 34512
-        private int permuteScreens(int screen) {
+        private long permuteScreens(long screen) {
             if (screen >= 2) {
                 return screen - 2;
             } else {
@@ -1649,7 +1771,7 @@ public class LauncherModel extends BroadcastReceiver {
             });
             for (ItemInfo info : allWorkspaceItems) {
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    if (info.screen == currentScreen) {
+                    if (info.screenId == currentScreen) {
                         currentScreenItems.add(info);
                         itemsOnScreen.add(info.id);
                     } else {
@@ -1683,7 +1805,7 @@ public class LauncherModel extends BroadcastReceiver {
             for (LauncherAppWidgetInfo widget : appWidgets) {
                 if (widget == null) continue;
                 if (widget.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        widget.screen == currentScreen) {
+                        widget.screenId == currentScreen) {
                     currentScreenWidgets.add(widget);
                 } else {
                     otherScreenWidgets.add(widget);
@@ -1708,7 +1830,7 @@ public class LauncherModel extends BroadcastReceiver {
                 FolderInfo folder = folders.get(id);
                 if (info == null || folder == null) continue;
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        info.screen == currentScreen) {
+                        info.screenId == currentScreen) {
                     currentScreenFolders.put(id, folder);
                 } else {
                     otherScreenFolders.put(id, folder);
@@ -1727,13 +1849,28 @@ public class LauncherModel extends BroadcastReceiver {
                     int cellCountY = LauncherModel.getCellCountY();
                     int screenOffset = cellCountX * cellCountY;
                     int containerOffset = screenOffset * (Launcher.SCREEN_COUNT + 1); // +1 hotseat
-                    long lr = (lhs.container * containerOffset + lhs.screen * screenOffset +
+                    long lr = (lhs.container * containerOffset + lhs.screenId * screenOffset +
                             lhs.cellY * cellCountX + lhs.cellX);
-                    long rr = (rhs.container * containerOffset + rhs.screen * screenOffset +
+                    long rr = (rhs.container * containerOffset + rhs.screenId * screenOffset +
                             rhs.cellY * cellCountX + rhs.cellX);
                     return (int) (lr - rr);
                 }
             });
+        }
+
+        private void bindWorkspaceScreens(final Callbacks oldCallbacks,
+                final ArrayList<Long> orderedScreens) {
+
+            final Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                    if (callbacks != null) {
+                        callbacks.bindScreens(orderedScreens);
+                    }
+                }
+            };
+            runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
         }
 
         private void bindWorkspaceItems(final Callbacks oldCallbacks,
@@ -1830,11 +1967,13 @@ public class LauncherModel extends BroadcastReceiver {
                     new ArrayList<LauncherAppWidgetInfo>();
             HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
             HashMap<Long, ItemInfo> itemsIdMap = new HashMap<Long, ItemInfo>();
+            ArrayList<Long> orderedScreenIds = new ArrayList<Long>();
             synchronized (sBgLock) {
                 workspaceItems.addAll(sBgWorkspaceItems);
                 appWidgets.addAll(sBgAppWidgets);
                 folders.putAll(sBgFolders);
                 itemsIdMap.putAll(sBgItemsIdMap);
+                orderedScreenIds.addAll(sBgWorkspaceScreens);
             }
 
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<ItemInfo>();
@@ -1866,6 +2005,8 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             };
             runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
+
+            bindWorkspaceScreens(oldCallbacks, orderedScreenIds);
 
             // Load items on the current page
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets,

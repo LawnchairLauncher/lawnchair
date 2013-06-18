@@ -91,6 +91,26 @@ class LauncherSettings {
     }
 
     /**
+     * Workspace Screens.
+     *
+     * Tracks the order of workspace screens.
+     */
+    static final class WorkspaceScreens implements BaseColumns {
+        /**
+         * The content:// style URL for this table
+         */
+        static final Uri CONTENT_URI = Uri.parse("content://" +
+                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_WORKSPACE_SCREENS +
+                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+
+        /**
+         * The rank of this screen -- ie. how it is ordered relative to the other screens.
+         * <P>Type: INTEGER</P>
+         */
+        static final String SCREEN_RANK = "screenRank";
+    }
+
+    /**
      * Favorites.
      */
     static final class Favorites implements BaseLauncherColumns {
