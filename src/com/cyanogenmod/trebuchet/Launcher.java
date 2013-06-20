@@ -1567,7 +1567,6 @@ public final class Launcher extends Activity
                     if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                             openFolder == null) {
                         if (mStateAnimation != null) {
-                            mStateAnimation.end();
                             mStateAnimation = null;
                         }
                         mWorkspace.moveToDefaultScreen(true);
