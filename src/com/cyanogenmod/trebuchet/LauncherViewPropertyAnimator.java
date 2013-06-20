@@ -79,16 +79,7 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public void end() {
-        if (mViewPropertyAnimator != null) {
-            mViewPropertyAnimator.cancel();
-            mTarget.setTranslationX(mTranslationX);
-            mTarget.setTranslationY(mTranslationY);
-            mTarget.setScaleX(mScaleX);
-            mTarget.setScaleY(mScaleY);
-            mTarget.setRotation(mRotation);
-            mTarget.setRotationY(mRotationY);
-            mTarget.setAlpha(mAlpha);
-        }
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
