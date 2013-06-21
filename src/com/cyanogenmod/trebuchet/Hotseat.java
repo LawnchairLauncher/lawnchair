@@ -38,6 +38,8 @@ public class Hotseat extends PagedView {
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
 
+    private static final int DEFAULT_PAGE = 0;
+
     private static final int DEFAULT_CELL_COUNT = 5;
 
     public Hotseat(Context context) {
@@ -57,7 +59,7 @@ public class Hotseat extends PagedView {
         mHandleScrollIndicator = true;
 
         int hotseatPages = PreferencesProvider.Interface.Dock.getNumberPages();
-        int defaultPage = PreferencesProvider.Interface.Dock.getDefaultPage(hotseatPages / 2);
+        int defaultPage = PreferencesProvider.Interface.Dock.getDefaultPage(DEFAULT_PAGE);
         if (defaultPage >= hotseatPages) {
             defaultPage = hotseatPages / 2;
         }
