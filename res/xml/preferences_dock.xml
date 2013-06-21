@@ -34,7 +34,7 @@
         android:summary="@string/preferences_interface_dock_default_page_summary"
         android:defaultValue="1"
         launcher:maxExternal="ui_dock_pages"
-        launcher:max="3"
+        launcher:max="1"
         launcher:min="1" />
     <!-- android:dependency="ui_dock_enabled" /-->
     <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_dock_icons"
