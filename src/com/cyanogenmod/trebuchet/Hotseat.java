@@ -30,6 +30,7 @@ import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 public class Hotseat extends PagedView {
     private int mCellCount;
 
+    private int mHotseatPages;
     private int mDefaultPage;
 
     private boolean mTransposeLayoutWithOrientation;
@@ -58,10 +59,10 @@ public class Hotseat extends PagedView {
         mFadeInAdjacentScreens = false;
         mHandleScrollIndicator = true;
 
-        int hotseatPages = PreferencesProvider.Interface.Dock.getNumberPages();
+        mHotseatPages = PreferencesProvider.Interface.Dock.getNumberPages();
         int defaultPage = PreferencesProvider.Interface.Dock.getDefaultPage(DEFAULT_PAGE);
-        if (defaultPage >= hotseatPages) {
-            defaultPage = hotseatPages / 2;
+        if (defaultPage >= mHotseatPages) {
+            defaultPage = mHotseatPages / 2;
         }
 
         mCurrentPage = mDefaultPage = defaultPage;
@@ -91,7 +92,7 @@ public class Hotseat extends PagedView {
 
         LayoutInflater inflater =
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        for (int i = 0; i < hotseatPages; i++) {
+        for (int i = 0; i < mHotseatPages; i++) {
             CellLayout cl = (CellLayout) inflater.inflate(R.layout.hotseat_page, null);
             cl.setChildrenScale(childrenScale);
             cl.setGridSize((!hasVerticalHotseat() ? mCellCount : 1), (hasVerticalHotseat() ? mCellCount : 1));
@@ -263,12 +264,13 @@ public class Hotseat extends PagedView {
     }
 
     void moveToDefaultScreen(boolean animate) {
+        int page = hasVerticalHotseat() ? (mHotseatPages - mDefaultPage - 1) : mDefaultPage;
         if (animate) {
-            snapToPage(mDefaultPage);
+            snapToPage(page);
         } else {
-            setCurrentPage(mDefaultPage);
+            setCurrentPage(page);
         }
-        getChildAt(mDefaultPage).requestFocus();
+        getChildAt(page).requestFocus();
     }
 
     @Override
