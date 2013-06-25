@@ -263,6 +263,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private ArrayList<ApplicationInfo> mApps;
     private ArrayList<ApplicationInfo> mFilteredApps;
     private ArrayList<ComponentName> mHiddenApps;
+    private ArrayList<String> mHiddenAppsPackages;
     private ArrayList<Object> mWidgets;
 
     // Cling
@@ -370,6 +371,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mApps = new ArrayList<ApplicationInfo>();
         mFilteredApps = new ArrayList<ApplicationInfo>();
         mHiddenApps = new ArrayList<ComponentName>();
+        mHiddenAppsPackages = new ArrayList<String>();
         mWidgets = new ArrayList<Object>();
         mIconCache = ((LauncherApplication) context.getApplicationContext()).getIconCache();
         mCanvas = new Canvas();
@@ -392,7 +394,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         String[] flattened = PreferencesProvider.Interface.Drawer.getHiddenApps().split("\\|");
         for (String flat : flattened) {
-            mHiddenApps.add(ComponentName.unflattenFromString(flat));
+            ComponentName cmp = ComponentName.unflattenFromString(flat);
+            mHiddenApps.add(cmp);
+            mHiddenAppsPackages.add(cmp.getPackageName());
         }
 
 
@@ -658,7 +662,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int minSpanY = Math.min(spanXY[1], minSpanXY[1]);
                 if (minSpanX <= LauncherModel.getWorkspaceCellCountX() &&
                         minSpanY <= LauncherModel.getWorkspaceCellCountY()) {
-                    mWidgets.add(widget);
+                    if (widget.provider != null) {
+                        if (!mHiddenAppsPackages.contains(widget.provider.getPackageName())) {
+                            mWidgets.add(widget);
+                        }
+                    }
                 } else {
                     Log.e(TAG, "Widget " + widget.provider + " can not fit on this device (" +
                             widget.minWidth + ", " + widget.minHeight + ")");

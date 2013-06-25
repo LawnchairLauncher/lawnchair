@@ -144,11 +144,17 @@ public final class PreferencesProvider {
             public static boolean getVertical() {
                 return getString("ui_drawer_orientation", "horizontal").equals("vertical");
             }
-            public static boolean getJoinWidgetsApps() {
-                return getBoolean("ui_drawer_widgets_join_apps", true);
-            }
             public static String getHiddenApps() {
                 return getString("ui_drawer_hidden_apps", "");
+            }
+            public static boolean getRemoveShortcutsOfHiddenApps() {
+                return getBoolean("ui_drawer_remove_hidden_apps_shortcuts", true);
+            }
+            public static boolean getRemoveWidgetsOfHiddenApps() {
+                return getBoolean("ui_drawer_remove_hidden_apps_widgets", true);
+            }
+            public static boolean getJoinWidgetsApps() {
+                return getBoolean("ui_drawer_widgets_join_apps", true);
             }
             public static class Scrolling {
                 public static AppsCustomizePagedView.TransitionEffect getTransitionEffect(String def) {
