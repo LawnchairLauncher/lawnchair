@@ -91,7 +91,8 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
             View child = getChildAt(i);
             PagedViewCellLayout.LayoutParams lp =
                 (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
-            lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
+            lp.setup(getContext(),
+                    mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                     getPaddingLeft(),
                     getPaddingTop());
 

@@ -24,8 +24,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 
-import com.android.launcher3.R;
-
 /**
  * An abstraction of the original CellLayout which supports laying out items
  * which span multiple cells into a grid-like layout.  Also supports dimming
@@ -459,8 +457,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             this.cellVSpan = cellVSpan;
         }
 
-        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap,
-                int hStartPadding, int vStartPadding) {
+        public void setup(Context context,
+                          int cellWidth, int cellHeight, int widthGap, int heightGap,
+                          int hStartPadding, int vStartPadding) {
 
             final int myCellHSpan = cellHSpan;
             final int myCellVSpan = cellVSpan;
@@ -472,7 +471,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                     topMargin - bottomMargin;
 
-            if (LauncherAppState.isScreenLarge()) {
+            if (LauncherAppState.getInstance().isScreenLarge()) {
                 x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
                 y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
             } else {

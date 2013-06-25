@@ -20,92 +20,85 @@ import android.app.SearchManager;
 import android.content.*;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
-import android.net.Uri;
-import android.os.Debug;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 public class LauncherAppState {
-    private Context mContext;
+    private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
+
     private LauncherModel mModel;
     private IconCache mIconCache;
     private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
-    private static boolean sIsScreenLarge;
-    private static float sScreenDensity;
-    private static int sLongPressTimeout = 300;
-    private static final String sSharedPreferencesKey = "com.android.launcher3.prefs";
-    private long mStarttime;
+    private boolean mIsScreenLarge;
+    private float mScreenDensity;
+    private int mLongPressTimeout = 300;
 
-    WeakReference<LauncherProvider> mLauncherProvider;
+    private static WeakReference<LauncherProvider> sLauncherProvider;
+    private static Context sContext;
 
-    private static final LauncherAppState INSTANCE = new LauncherAppState();
+    private static Object mLock = new Object();
+    private static LauncherAppState INSTANCE;
 
     public static LauncherAppState getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LauncherAppState();
+        }
         return INSTANCE;
     }
 
-    public static void init(Context context) {
-        INSTANCE.initialize(context);
-    }
-
     public Context getContext() {
-        return mContext;
+        return sContext;
     }
 
-    private LauncherAppState() { }
+    public static void setApplicationContext(Context context) {
+        if (sContext != null) {
+            throw new IllegalStateException("setApplicationContext called twice! old=" + sContext + " new=" + context);
+        }
+        sContext = context.getApplicationContext();
+    }
 
-    private void initialize(Context context) {
-        Log.v(Launcher.TAG, "LauncherAppState initialize() called in process " + android.os.Process.myPid());
-
-        mContext = context;
-
-        mStarttime = System.currentTimeMillis();
-
-        if (context.getResources().getBoolean(R.bool.debug_memory_enabled)) {
-            context.startService(new Intent(context, MemoryTracker.class)
-                    .setAction(MemoryTracker.ACTION_START_TRACKING)
-                    .putExtra("pid", android.os.Process.myPid())
-                    .putExtra("name", "L")
-                    );
+    private LauncherAppState() {
+        if (sContext == null) {
+            throw new IllegalStateException("LauncherAppState inited before app context set");
         }
 
+        Log.v(Launcher.TAG, "LauncherAppState inited");
 
-        // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
-        sIsScreenLarge = context.getResources().getBoolean(R.bool.is_large_screen);
-        sScreenDensity = context.getResources().getDisplayMetrics().density;
+        if (sContext.getResources().getBoolean(R.bool.debug_memory_enabled)) {
+            MemoryTracker.startTrackingMe(sContext, "L");
+        }
 
-        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(context);
-        mIconCache = new IconCache(context);
-        mModel = new LauncherModel(context, mIconCache);
+        // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
+        mIsScreenLarge = sContext.getResources().getBoolean(R.bool.is_large_screen);
+        mScreenDensity = sContext.getResources().getDisplayMetrics().density;
+
+        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
+        mIconCache = new IconCache(sContext);
+        mModel = new LauncherModel(this, mIconCache);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");
-        context.registerReceiver(mModel, filter);
+        sContext.registerReceiver(mModel, filter);
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
-        context.registerReceiver(mModel, filter);
+        sContext.registerReceiver(mModel, filter);
         filter = new IntentFilter();
         filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
-        context.registerReceiver(mModel, filter);
+        sContext.registerReceiver(mModel, filter);
         filter = new IntentFilter();
         filter.addAction(SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED);
-        context.registerReceiver(mModel, filter);
+        sContext.registerReceiver(mModel, filter);
 
         // Register for changes to the favorites
-        ContentResolver resolver = context.getContentResolver();
+        ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
     }
@@ -114,9 +107,9 @@ public class LauncherAppState {
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     public void onTerminate() {
-        mContext.unregisterReceiver(mModel);
+        sContext.unregisterReceiver(mModel);
 
-        ContentResolver resolver = mContext.getContentResolver();
+        ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
     }
 
@@ -134,6 +127,9 @@ public class LauncherAppState {
     };
 
     LauncherModel setLauncher(Launcher launcher) {
+        if (mModel == null) {
+            throw new IllegalStateException("setLauncher() called before init()");
+        }
         mModel.initialize(launcher);
         return mModel;
     }
@@ -150,27 +146,20 @@ public class LauncherAppState {
         return mWidgetPreviewCacheDb;
     }
 
-    void setLauncherProvider(LauncherProvider provider) {
-        mLauncherProvider = new WeakReference<LauncherProvider>(provider);
+    static void setLauncherProvider(LauncherProvider provider) {
+        sLauncherProvider = new WeakReference<LauncherProvider>(provider);
     }
 
-    LauncherProvider getLauncherProvider() {
-        return mLauncherProvider.get();
-    }
-
-    /**
-     * @return Milliseconds since the application state was created.
-     */
-    public long getUptime() {
-        return System.currentTimeMillis() - mStarttime;
+    static LauncherProvider getLauncherProvider() {
+        return sLauncherProvider.get();
     }
 
     public static String getSharedPreferencesKey() {
-        return sSharedPreferencesKey;
+        return SHARED_PREFERENCES_KEY;
     }
 
-    public static boolean isScreenLarge() {
-        return sIsScreenLarge;
+    public boolean isScreenLarge() {
+        return mIsScreenLarge;
     }
 
     public static boolean isScreenLandscape(Context context) {
@@ -178,11 +167,11 @@ public class LauncherAppState {
             Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    public static float getScreenDensity() {
-        return sScreenDensity;
+    public float getScreenDensity() {
+        return mScreenDensity;
     }
 
-    public static int getLongPressTimeout() {
-        return sLongPressTimeout;
+    public int getLongPressTimeout() {
+        return mLongPressTimeout;
     }
 }

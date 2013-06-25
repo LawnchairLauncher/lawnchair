@@ -34,13 +34,10 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.android.launcher3.R;
 
 import java.util.ArrayList;
 
@@ -779,7 +776,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        if (mInScrollArea && !LauncherAppState.isScreenLarge()) {
+        if (mInScrollArea && !LauncherAppState.getInstance().isScreenLarge()) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = workspace.getWidth();
             Rect childRect = new Rect();

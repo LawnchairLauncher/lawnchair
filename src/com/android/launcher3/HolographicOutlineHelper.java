@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -28,16 +29,16 @@ public class HolographicOutlineHelper {
     private final Paint mBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
 
-    public static final int MAX_OUTER_BLUR_RADIUS;
-    public static final int MIN_OUTER_BLUR_RADIUS;
+    public int mMaxOuterBlurRadius;
+    public int mMinOuterBlurRadius;
 
-    private static final BlurMaskFilter sExtraThickOuterBlurMaskFilter;
-    private static final BlurMaskFilter sThickOuterBlurMaskFilter;
-    private static final BlurMaskFilter sMediumOuterBlurMaskFilter;
-    private static final BlurMaskFilter sThinOuterBlurMaskFilter;
-    private static final BlurMaskFilter sThickInnerBlurMaskFilter;
-    private static final BlurMaskFilter sExtraThickInnerBlurMaskFilter;
-    private static final BlurMaskFilter sMediumInnerBlurMaskFilter;
+    private BlurMaskFilter mExtraThickOuterBlurMaskFilter;
+    private BlurMaskFilter mThickOuterBlurMaskFilter;
+    private BlurMaskFilter mMediumOuterBlurMaskFilter;
+    private BlurMaskFilter mThinOuterBlurMaskFilter;
+    private BlurMaskFilter mThickInnerBlurMaskFilter;
+    private BlurMaskFilter mExtraThickInnerBlurMaskFilter;
+    private BlurMaskFilter mMediumInnerBlurMaskFilter;
 
     private static final int THICK = 0;
     private static final int MEDIUM = 1;
@@ -45,24 +46,20 @@ public class HolographicOutlineHelper {
 
     static HolographicOutlineHelper INSTANCE;
 
-    static {
-        final float scale = LauncherAppState.getScreenDensity();
+    private HolographicOutlineHelper(Context context) {
+        final float scale = LauncherAppState.getInstance().getScreenDensity();
 
-        MIN_OUTER_BLUR_RADIUS = (int) (scale * 1.0f);
-        MAX_OUTER_BLUR_RADIUS = (int) (scale * 12.0f);
+        mMinOuterBlurRadius = (int) (scale * 1.0f);
+        mMaxOuterBlurRadius = (int) (scale * 12.0f);
 
-        sExtraThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 12.0f, BlurMaskFilter.Blur.OUTER);
-        sThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.OUTER);
-        sMediumOuterBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.OUTER);
-        sThinOuterBlurMaskFilter = new BlurMaskFilter(scale * 1.0f, BlurMaskFilter.Blur.OUTER);
-        sExtraThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.NORMAL);
-        sThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
-        sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
+        mExtraThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 12.0f, BlurMaskFilter.Blur.OUTER);
+        mThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.OUTER);
+        mMediumOuterBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.OUTER);
+        mThinOuterBlurMaskFilter = new BlurMaskFilter(scale * 1.0f, BlurMaskFilter.Blur.OUTER);
+        mExtraThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.NORMAL);
+        mThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
+        mMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
 
-        INSTANCE = new HolographicOutlineHelper();
-    }
-
-    private HolographicOutlineHelper() {
         mHolographicPaint.setFilterBitmap(true);
         mHolographicPaint.setAntiAlias(true);
         mBlurPaint.setFilterBitmap(true);
@@ -72,7 +69,10 @@ public class HolographicOutlineHelper {
         mErasePaint.setAntiAlias(true);
     }
 
-    public static HolographicOutlineHelper obtain() {
+    public static HolographicOutlineHelper obtain(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new HolographicOutlineHelper(context);
+        }
         return INSTANCE;
     }
 
@@ -130,13 +130,13 @@ public class HolographicOutlineHelper {
         BlurMaskFilter outerBlurMaskFilter;
         switch (thickness) {
             case EXTRA_THICK:
-                outerBlurMaskFilter = sExtraThickOuterBlurMaskFilter;
+                outerBlurMaskFilter = mExtraThickOuterBlurMaskFilter;
                 break;
             case THICK:
-                outerBlurMaskFilter = sThickOuterBlurMaskFilter;
+                outerBlurMaskFilter = mThickOuterBlurMaskFilter;
                 break;
             case MEDIUM:
-                outerBlurMaskFilter = sMediumOuterBlurMaskFilter;
+                outerBlurMaskFilter = mMediumOuterBlurMaskFilter;
                 break;
             default:
                 throw new RuntimeException("Invalid blur thickness");
@@ -145,9 +145,9 @@ public class HolographicOutlineHelper {
         int[] outerBlurOffset = new int[2];
         Bitmap thickOuterBlur = glowShape.extractAlpha(mBlurPaint, outerBlurOffset);
         if (thickness == EXTRA_THICK) {
-            mBlurPaint.setMaskFilter(sMediumOuterBlurMaskFilter);
+            mBlurPaint.setMaskFilter(mMediumOuterBlurMaskFilter);
         } else {
-            mBlurPaint.setMaskFilter(sThinOuterBlurMaskFilter);
+            mBlurPaint.setMaskFilter(mThinOuterBlurMaskFilter);
         }
 
         int[] brightOutlineOffset = new int[2];
@@ -159,13 +159,13 @@ public class HolographicOutlineHelper {
         BlurMaskFilter innerBlurMaskFilter;
         switch (thickness) {
             case EXTRA_THICK:
-                innerBlurMaskFilter = sExtraThickInnerBlurMaskFilter;
+                innerBlurMaskFilter = mExtraThickInnerBlurMaskFilter;
                 break;
             case THICK:
-                innerBlurMaskFilter = sThickInnerBlurMaskFilter;
+                innerBlurMaskFilter = mThickInnerBlurMaskFilter;
                 break;
             case MEDIUM:
-                innerBlurMaskFilter = sMediumInnerBlurMaskFilter;
+                innerBlurMaskFilter = mMediumInnerBlurMaskFilter;
                 break;
             default:
                 throw new RuntimeException("Invalid blur thickness");

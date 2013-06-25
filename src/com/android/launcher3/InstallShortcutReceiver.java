@@ -28,8 +28,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.launcher3.R;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;

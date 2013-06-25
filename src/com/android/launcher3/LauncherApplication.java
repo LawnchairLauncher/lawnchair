@@ -17,22 +17,13 @@
 package com.android.launcher3;
 
 import android.app.Application;
-import android.app.SearchManager;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.database.ContentObserver;
-import android.os.Handler;
-
-import java.lang.ref.WeakReference;
 
 public class LauncherApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LauncherAppState.getInstance().init(getApplicationContext());
+        LauncherAppState.setApplicationContext(this);
+        LauncherAppState.getInstance();
     }
 
     @Override

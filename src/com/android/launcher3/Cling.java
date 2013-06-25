@@ -33,8 +33,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.R;
-
 public class Cling extends FrameLayout {
 
     static final String WORKSPACE_CLING_DISMISSED_KEY = "cling.workspace.dismissed";
@@ -126,7 +124,7 @@ public class Cling extends FrameLayout {
         } else if (mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
             return new int[]{getMeasuredWidth() - (mButtonBarHeight / 2), getMeasuredHeight() / 2};
         } else if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
-            final float scale = LauncherAppState.getScreenDensity();
+            final float scale = LauncherAppState.getInstance().getScreenDensity();
             final int cornerXOffset = (int) (scale * 15);
             final int cornerYOffset = (int) (scale * 10);
             return new int[]{getMeasuredWidth() - cornerXOffset, cornerYOffset};

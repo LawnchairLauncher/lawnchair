@@ -24,8 +24,6 @@ import android.view.ViewParent;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 
-import com.android.launcher3.R;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -437,7 +435,7 @@ public class FocusHelper {
      * Handles key events in the tab widget.
      */
     static boolean handleTabKeyEvent(AccessibleTabView v, int keyCode, KeyEvent e) {
-        if (!LauncherAppState.isScreenLarge()) return false;
+        if (!LauncherAppState.getInstance().isScreenLarge()) return false;
 
         final FocusOnlyTabWidget parent = (FocusOnlyTabWidget) v.getParent();
         final TabHost tabHost = findTabHostParent(parent);
