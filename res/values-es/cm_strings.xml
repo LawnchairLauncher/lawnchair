@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="menu">Menú</string>
     <string name="cancel_target_label">Cancelar</string>
     <string name="edit_target_label">Editar</string>
@@ -73,8 +74,13 @@
     <string name="preferences_interface_drawer_summary">Establecer la configuración de las aplicaciones y widgets</string>
     <string name="preferences_interface_drawer_orientation_title">Orientación</string>
     <string name="preferences_interface_drawer_orientation_summary">Establecer la dirección de desplazamiento</string>
+    <string name="preferences_interface_drawer_apps_category">Aplicaciones</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Aplicaciones ocultas</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Establecer las aplicaciones que se ocultarán en la pestaña aplicaciones</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Ocultar iconos</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Quitar del escritorio los iconos de las aplicaciones ocultas</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Ocultar widgets</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Quitar del escritorio los widgets de las aplicaciones ocultas</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Transición entre pestañas</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Pasar de la pestaña Aplicaciones a la pestaña Widgets automáticamente</string>
