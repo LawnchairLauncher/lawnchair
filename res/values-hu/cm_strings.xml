@@ -73,8 +73,13 @@
     <string name="preferences_interface_drawer_summary">Alkalmazások és modulok</string>
     <string name="preferences_interface_drawer_orientation_title">Tájolás</string>
     <string name="preferences_interface_drawer_orientation_summary">Válassza ki az alkalmazásképernyők közötti váltás irányát</string>
+    <string name="preferences_interface_drawer_apps_category">Alkalmazások</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Rejtett alkalmazások</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Alkalmazások elrejtése az alkalmazásképernyőről</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Rejtett alkalmazások (parancsikonok)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Rejtett alkalmazások ikonjainak eltávolítása</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Rejtett alkalmazások (modulok)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Rejtett alkalmazás moduljának eltávolítása</string>
     <string name="preferences_interface_drawer_widgets_category">Általános</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Folyamatos lapozás</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Alkalmazások és modulok között folyamatos lapozással való váltás</string>
