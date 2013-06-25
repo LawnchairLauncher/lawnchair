@@ -130,11 +130,12 @@ public class MemoryTracker extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
 
-        if (ACTION_START_TRACKING.equals(intent.getAction())) {
-            final Uri uri = intent.getData();
-            final int pid = intent.getIntExtra("pid", -1);
-            final String name = intent.getStringExtra("name");
-            startTrackingProcess(pid, name);
+        if (intent != null) {
+            if (ACTION_START_TRACKING.equals(intent.getAction())) {
+                final int pid = intent.getIntExtra("pid", -1);
+                final String name = intent.getStringExtra("name");
+                startTrackingProcess(pid, name);
+            }
         }
 
         mHandler.sendEmptyMessage(MSG_START);
