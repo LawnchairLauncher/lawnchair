@@ -491,7 +491,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (!mIsDataReady) {
+        if (!mIsDataReady || getChildCount() == 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
@@ -650,7 +650,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (!mIsDataReady) {
+        if (!mIsDataReady || getChildCount() == 0) {
             return;
         }
 

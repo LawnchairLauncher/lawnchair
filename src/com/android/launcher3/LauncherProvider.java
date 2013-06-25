@@ -66,12 +66,13 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = "com.android.launcher3.settings";
 
     static final String TABLE_FAVORITES = "favorites";
+    static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
     static final String PARAMETER_NOTIFY = "notify";
     static final String DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED =
             "DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED";
@@ -90,6 +91,7 @@ public class LauncherProvider extends ContentProvider {
             Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
 
     private DatabaseHelper mOpenHelper;
+    private static boolean sLoadOldDb;
 
     @Override
     public boolean onCreate() {
@@ -202,8 +204,18 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
-    public long generateNewId() {
-        return mOpenHelper.generateNewId();
+    public long generateNewItemId() {
+        return mOpenHelper.generateNewItemId();
+    }
+
+    public long generateNewScreenId() {
+        return mOpenHelper.generateNewScreenId();
+    }
+
+    // This is only required one time while loading the workspace during the
+    // upgrade path, and should never be called from anywhere else.
+    public void updateMaxScreenId(long maxScreenId) {
+        mOpenHelper.updateMaxScreenId(maxScreenId);
     }
 
     /**
@@ -213,7 +225,9 @@ public class LauncherProvider extends ContentProvider {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
-        boolean loadOldDb = false;
+        boolean loadOldDb = false || sLoadOldDb;
+
+        sLoadOldDb = false;
         if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
 
             SharedPreferences.Editor editor = sp.edit();
@@ -263,7 +277,8 @@ public class LauncherProvider extends ContentProvider {
 
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
-        private long mMaxId = -1;
+        private long mMaxItemId = -1;
+        private long mMaxScreenId = -1;
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -272,8 +287,11 @@ public class LauncherProvider extends ContentProvider {
 
             // In the case where neither onCreate nor onUpgrade gets called, we read the maxId from
             // the DB here
-            if (mMaxId == -1) {
-                mMaxId = initializeMaxId(getWritableDatabase());
+            if (mMaxItemId == -1) {
+                mMaxItemId = initializeMaxItemId(getWritableDatabase());
+            }
+            if (mMaxScreenId == -1) {
+                mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
             }
         }
 
@@ -292,7 +310,8 @@ public class LauncherProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             if (LOGD) Log.d(TAG, "creating new launcher database");
 
-            mMaxId = 1;
+            mMaxItemId = 1;
+            mMaxScreenId = 0;
 
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
@@ -314,6 +333,7 @@ public class LauncherProvider extends ContentProvider {
                     "uri TEXT," +
                     "displayMode INTEGER" +
                     ");");
+            addWorkspacesTable(db);
 
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
@@ -325,6 +345,13 @@ public class LauncherProvider extends ContentProvider {
                 // Set a shared pref so that we know we need to load the default workspace later
                 setFlagToLoadDefaultWorkspaceLater();
             }
+        }
+
+        private void addWorkspacesTable(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE " + TABLE_WORKSPACE_SCREENS + " (" +
+                    LauncherSettings.WorkspaceScreens._ID + " INTEGER," +
+                    LauncherSettings.WorkspaceScreens.SCREEN_RANK + " INTEGER" +
+                    ");");
         }
 
         private void setFlagToLoadDefaultWorkspaceLater() {
@@ -504,8 +531,8 @@ public class LauncherProvider extends ContentProvider {
             if (version < 9) {
                 // The max id is not yet set at this point (onUpgrade is triggered in the ctor
                 // before it gets a change to get set, so we need to read it here when we use it)
-                if (mMaxId == -1) {
-                    mMaxId = initializeMaxId(db);
+                if (mMaxItemId == -1) {
+                    mMaxItemId = initializeMaxItemId(db);
                 }
 
                 // Add default hotseat icons
@@ -524,9 +551,24 @@ public class LauncherProvider extends ContentProvider {
                 version = 12;
             }
 
+            if (version < 13) {
+                // With the new shrink-wrapped and re-orderable workspaces, it makes sense
+                // to persist workspace screens and their relative order.
+                mMaxScreenId = 0;
+
+                // This will never happen in the wild, but when we switch to using workspace
+                // screen ids, redo the import from old launcher.
+                sLoadOldDb = true;
+
+                addWorkspacesTable(db);
+                version = 13;
+            }
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
+
                 onCreate(db);
             }
         }
@@ -672,15 +714,15 @@ public class LauncherProvider extends ContentProvider {
         // constructor from the worker thread; however, this doesn't extend until after the
         // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
         // after that point
-        public long generateNewId() {
-            if (mMaxId < 0) {
-                throw new RuntimeException("Error: max id was not initialized");
+        public long generateNewItemId() {
+            if (mMaxItemId < 0) {
+                throw new RuntimeException("Error: max item id was not initialized");
             }
-            mMaxId += 1;
-            return mMaxId;
+            mMaxItemId += 1;
+            return mMaxItemId;
         }
 
-        private long initializeMaxId(SQLiteDatabase db) {
+        private long initializeMaxItemId(SQLiteDatabase db) {
             Cursor c = db.rawQuery("SELECT MAX(_id) FROM favorites", null);
 
             // get the result
@@ -694,7 +736,44 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (id == -1) {
-                throw new RuntimeException("Error: could not query max id");
+                throw new RuntimeException("Error: could not query max item id");
+            }
+
+            return id;
+        }
+
+        // Generates a new ID to use for an workspace screen in your database. This method
+        // should be only called from the main UI thread. As an exception, we do call it when we
+        // call the constructor from the worker thread; however, this doesn't extend until after the
+        // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
+        // after that point
+        public long generateNewScreenId() {
+            if (mMaxScreenId < 0) {
+                throw new RuntimeException("Error: max screen id was not initialized");
+            }
+            mMaxScreenId += 1;
+            return mMaxScreenId;
+        }
+
+        public void updateMaxScreenId(long maxScreenId) {
+            mMaxScreenId = maxScreenId;
+        }
+
+        private long initializeMaxScreenId(SQLiteDatabase db) {
+            Cursor c = db.rawQuery("SELECT MAX(" + LauncherSettings.WorkspaceScreens._ID + ") FROM " + TABLE_WORKSPACE_SCREENS, null);
+
+            // get the result
+            final int maxIdIndex = 0;
+            long id = -1;
+            if (c != null && c.moveToNext()) {
+                id = c.getLong(maxIdIndex);
+            }
+            if (c != null) {
+                c.close();
+            }
+
+            if (id == -1) {
+                throw new RuntimeException("Error: could not query max screen id");
             }
 
             return id;
@@ -959,7 +1038,7 @@ public class LauncherProvider extends ContentProvider {
                     cn = new ComponentName(packages[0], className);
                     info = packageManager.getActivityInfo(cn, 0);
                 }
-                id = generateNewId();
+                id = generateNewItemId();
                 intent.setComponent(cn);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                         Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
@@ -968,7 +1047,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
                 values.put(Favorites.SPANX, 1);
                 values.put(Favorites.SPANY, 1);
-                values.put(Favorites._ID, generateNewId());
+                values.put(Favorites._ID, generateNewItemId());
                 if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) < 0) {
                     return -1;
                 }
@@ -983,7 +1062,7 @@ public class LauncherProvider extends ContentProvider {
             values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_FOLDER);
             values.put(Favorites.SPANX, 1);
             values.put(Favorites.SPANY, 1);
-            long id = generateNewId();
+            long id = generateNewItemId();
             values.put(Favorites._ID, id);
             if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) <= 0) {
                 return -1;
@@ -1088,7 +1167,6 @@ public class LauncherProvider extends ContentProvider {
 
             return false;
         }
-
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, ComponentName cn,
                 int spanX, int spanY, Bundle extras) {
             boolean allocatedAppWidgets = false;
@@ -1101,7 +1179,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.SPANX, spanX);
                 values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.APPWIDGET_ID, appWidgetId);
-                values.put(Favorites._ID, generateNewId());
+                values.put(Favorites._ID, generateNewItemId());
                 dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
 
                 allocatedAppWidgets = true;
@@ -1146,7 +1224,7 @@ public class LauncherProvider extends ContentProvider {
                 return -1;
             }
 
-            long id = generateNewId();
+            long id = generateNewItemId();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             values.put(Favorites.INTENT, intent.toUri(0));
             values.put(Favorites.TITLE, r.getString(titleResId));

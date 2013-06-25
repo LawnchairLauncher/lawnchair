@@ -1066,7 +1066,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         Runnable onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
+                CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screenId);
 
                View child = null;
                 // Move the item from the folder to the workspace, in the position of the folder
@@ -1075,7 +1075,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     child = mLauncher.createShortcut(R.layout.application, cellLayout,
                             finalItem);
                     LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                            mInfo.screen, mInfo.cellX, mInfo.cellY);
+                            mInfo.screenId, mInfo.cellX, mInfo.cellY);
                 }
                 if (getItemCount() <= 1) {
                     // Remove the folder
@@ -1089,7 +1089,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 // We add the child after removing the folder to prevent both from existing at
                 // the same time in the CellLayout.
                 if (child != null) {
-                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen,
+                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screenId,
                             mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
                 }
             }

@@ -295,7 +295,7 @@ public class Launcher extends Activity
 
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
-    private int mNewShortcutAnimatePage = -1;
+    private long mNewShortcutAnimateScreenId = -1;
     private ArrayList<View> mNewShortcutAnimateViews = new ArrayList<View>();
     private ImageView mFolderIconImageView;
     private Bitmap mFolderIconBitmap;
@@ -324,7 +324,7 @@ public class Launcher extends Activity
         int requestCode;
         Intent intent;
         long container;
-        int screen;
+        long screenId;
         int cellX;
         int cellY;
     }
@@ -592,20 +592,20 @@ public class Launcher extends Activity
         boolean result = false;
         switch (args.requestCode) {
             case REQUEST_PICK_APPLICATION:
-                completeAddApplication(args.intent, args.container, args.screen, args.cellX,
+                completeAddApplication(args.intent, args.container, args.screenId, args.cellX,
                         args.cellY);
                 break;
             case REQUEST_PICK_SHORTCUT:
                 processShortcut(args.intent);
                 break;
             case REQUEST_CREATE_SHORTCUT:
-                completeAddShortcut(args.intent, args.container, args.screen, args.cellX,
+                completeAddShortcut(args.intent, args.container, args.screenId, args.cellX,
                         args.cellY);
                 result = true;
                 break;
             case REQUEST_CREATE_APPWIDGET:
                 int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                completeAddAppWidget(appWidgetId, args.container, args.screen, null, null);
+                completeAddAppWidget(appWidgetId, args.container, args.screenId, null, null);
                 result = true;
                 break;
             case REQUEST_PICK_WALLPAPER:
@@ -661,7 +661,7 @@ public class Launcher extends Activity
             args.requestCode = requestCode;
             args.intent = data;
             args.container = mPendingAddInfo.container;
-            args.screen = mPendingAddInfo.screen;
+            args.screenId = mPendingAddInfo.screenId;
             args.cellX = mPendingAddInfo.cellX;
             args.cellY = mPendingAddInfo.cellY;
             if (isWorkspaceLocked()) {
@@ -678,7 +678,7 @@ public class Launcher extends Activity
 
     private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
         CellLayout cellLayout =
-                (CellLayout) mWorkspace.getChildAt(mPendingAddInfo.screen);
+                (CellLayout) mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
         Runnable onCompleteRunnable = null;
         int animationType = 0;
 
@@ -692,7 +692,7 @@ public class Launcher extends Activity
                 @Override
                 public void run() {
                     completeAddAppWidget(appWidgetId, mPendingAddInfo.container,
-                            mPendingAddInfo.screen, layout, null);
+                            mPendingAddInfo.screenId, layout, null);
                     exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), false,
                             null);
                 }
@@ -826,22 +826,7 @@ public class Launcher extends Activity
 
     // Add a fullscreen unpadded view to the workspace to the left all other screens.
     public void addCustomContentToLeft(View customContent) {
-        CellLayout customScreen = (CellLayout)
-                getLayoutInflater().inflate(R.layout.workspace_custom_content, null);
-
-        int spanX = customScreen.getCountX();
-        int spanY = customScreen.getCountY();
-
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
-        lp.canReorder  = false;
-
-        customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
-
-        mWorkspace.addView(customScreen, 0);
-
-        // Ensure that the current page and default page are maintained.
-        mWorkspace.incrementNumScreensToLeft();
-        mWorkspace.setCurrentPage(mWorkspace.getCurrentPage() + 1);
+        mWorkspace.addCustomContentToLeft(customContent);
     }
 
     @Override
@@ -955,11 +940,11 @@ public class Launcher extends Activity
         }
 
         final long pendingAddContainer = savedState.getLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, -1);
-        final int pendingAddScreen = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
+        final long pendingAddScreen = savedState.getLong(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
 
         if (pendingAddContainer != ItemInfo.NO_ID && pendingAddScreen > -1) {
             mPendingAddInfo.container = pendingAddContainer;
-            mPendingAddInfo.screen = pendingAddScreen;
+            mPendingAddInfo.screenId = pendingAddScreen;
             mPendingAddInfo.cellX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_X);
             mPendingAddInfo.cellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
             mPendingAddInfo.spanX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_X);
@@ -969,14 +954,12 @@ public class Launcher extends Activity
             mRestoring = true;
         }
 
-
         boolean renameFolder = savedState.getBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, false);
         if (renameFolder) {
             long id = savedState.getLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID);
             mFolderInfo = mModel.getFolderById(this, sFolders, id);
             mRestoring = true;
         }
-
 
         // Restore the AppsCustomize tab
         if (mAppsCustomizeTabHost != null) {
@@ -1088,9 +1071,9 @@ public class Launcher extends Activity
      * @param data The intent describing the application.
      * @param cellInfo The position on screen where to create the shortcut.
      */
-    void completeAddApplication(Intent data, long container, int screen, int cellX, int cellY) {
+    void completeAddApplication(Intent data, long container, long screenId, int cellX, int cellY) {
         final int[] cellXY = mTmpAddItemCellCoordinates;
-        final CellLayout layout = getCellLayout(container, screen);
+        final CellLayout layout = getCellLayout(container, screenId);
 
         // First we check if we already know the exact location where we want to add this item.
         if (cellX >= 0 && cellY >= 0) {
@@ -1107,7 +1090,7 @@ public class Launcher extends Activity
             info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             info.container = ItemInfo.NO_ID;
-            mWorkspace.addApplicationShortcut(info, layout, container, screen, cellXY[0], cellXY[1],
+            mWorkspace.addApplicationShortcut(info, layout, container, screenId, cellXY[0], cellXY[1],
                     isWorkspaceLocked(), cellX, cellY);
         } else {
             Log.e(TAG, "Couldn't find ActivityInfo for selected application: " + data);
@@ -1120,11 +1103,11 @@ public class Launcher extends Activity
      * @param data The intent describing the shortcut.
      * @param cellInfo The position on screen where to create the shortcut.
      */
-    private void completeAddShortcut(Intent data, long container, int screen, int cellX,
+    private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
             int cellY) {
         int[] cellXY = mTmpAddItemCellCoordinates;
         int[] touchXY = mPendingAddInfo.dropPos;
-        CellLayout layout = getCellLayout(container, screen);
+        CellLayout layout = getCellLayout(container, screenId);
 
         boolean foundCellSpan = false;
 
@@ -1164,11 +1147,10 @@ public class Launcher extends Activity
             return;
         }
 
-        int adjustedScreen = screen - getWorkspace().mNumPagesToLeft;
-        LauncherModel.addItemToDatabase(this, info, container, adjustedScreen, cellXY[0], cellXY[1], false);
+        LauncherModel.addItemToDatabase(this, info, container, screenId, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
-            mWorkspace.addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1,
+            mWorkspace.addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1,
                     isWorkspaceLocked());
         }
     }
@@ -1206,14 +1188,14 @@ public class Launcher extends Activity
      * @param appWidgetId The app widget id
      * @param cellInfo The position on screen where to create the widget.
      */
-    private void completeAddAppWidget(final int appWidgetId, long container, int screen,
+    private void completeAddAppWidget(final int appWidgetId, long container, long screenId,
             AppWidgetHostView hostView, AppWidgetProviderInfo appWidgetInfo) {
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
         }
 
         // Calculate the grid spans needed to fit this widget
-        CellLayout layout = getCellLayout(container, screen);
+        CellLayout layout = getCellLayout(container, screenId);
 
         int[] minSpanXY = getMinSpanForWidget(this, appWidgetInfo);
         int[] spanXY = getSpanForWidget(this, appWidgetInfo);
@@ -1265,9 +1247,8 @@ public class Launcher extends Activity
         launcherInfo.minSpanX = mPendingAddInfo.minSpanX;
         launcherInfo.minSpanY = mPendingAddInfo.minSpanY;
 
-        int adjustedScreen = screen - getWorkspace().mNumPagesToLeft;
         LauncherModel.addItemToDatabase(this, launcherInfo,
-                container, adjustedScreen, cellXY[0], cellXY[1], false);
+                container, screenId, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
             if (hostView == null) {
@@ -1283,7 +1264,7 @@ public class Launcher extends Activity
             launcherInfo.hostView.setVisibility(View.VISIBLE);
             launcherInfo.notifyWidgetSizeChanged(this);
 
-            mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
+            mWorkspace.addInScreen(launcherInfo.hostView, container, screenId, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
             addWidgetToAutoAdvanceIfNeeded(launcherInfo.hostView, appWidgetInfo);
@@ -1562,10 +1543,10 @@ public class Launcher extends Activity
         // this state is reflected.
         closeFolder();
 
-        if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screen > -1 &&
+        if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
             outState.putLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, mPendingAddInfo.container);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_SCREEN, mPendingAddInfo.screen);
+            outState.putLong(RUNTIME_STATE_PENDING_ADD_SCREEN, mPendingAddInfo.screenId);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_X, mPendingAddInfo.cellX);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_Y, mPendingAddInfo.cellY);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_X, mPendingAddInfo.spanX);
@@ -1791,7 +1772,7 @@ public class Launcher extends Activity
 
     private void resetAddInfo() {
         mPendingAddInfo.container = ItemInfo.NO_ID;
-        mPendingAddInfo.screen = -1;
+        mPendingAddInfo.screenId = -1;
         mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
         mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
         mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = -1;
@@ -1810,7 +1791,7 @@ public class Launcher extends Activity
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
         } else {
             // Otherwise just add it
-            completeAddAppWidget(appWidgetId, info.container, info.screen, boundWidget,
+            completeAddAppWidget(appWidgetId, info.container, info.screenId, boundWidget,
                     appWidgetInfo);
             // Exit spring loaded mode if necessary after adding the widget
             exitSpringLoadedDragModeDelayed(true, false, null);
@@ -1821,15 +1802,15 @@ public class Launcher extends Activity
      * Process a shortcut drop.
      *
      * @param componentName The name of the component
-     * @param screen The screen where it should be added
+     * @param screenId The ID of the screen where it should be added
      * @param cell The cell it should be added to, optional
      * @param position The location on the screen where it was dropped, optional
      */
-    void processShortcutFromDrop(ComponentName componentName, long container, int screen,
+    void processShortcutFromDrop(ComponentName componentName, long container, long screenId,
             int[] cell, int[] loc) {
         resetAddInfo();
         mPendingAddInfo.container = container;
-        mPendingAddInfo.screen = screen;
+        mPendingAddInfo.screenId = screenId;
         mPendingAddInfo.dropPos = loc;
 
         if (cell != null) {
@@ -1846,15 +1827,15 @@ public class Launcher extends Activity
      * Process a widget drop.
      *
      * @param info The PendingAppWidgetInfo of the widget being added.
-     * @param screen The screen where it should be added
+     * @param screenId The ID of the screen where it should be added
      * @param cell The cell it should be added to, optional
      * @param position The location on the screen where it was dropped, optional
      */
-    void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, int screen,
+    void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, long screenId,
             int[] cell, int[] span, int[] loc) {
         resetAddInfo();
         mPendingAddInfo.container = info.container = container;
-        mPendingAddInfo.screen = info.screen = screen;
+        mPendingAddInfo.screenId = info.screenId = screenId;
         mPendingAddInfo.dropPos = loc;
         mPendingAddInfo.minSpanX = info.minSpanX;
         mPendingAddInfo.minSpanY = info.minSpanY;
@@ -1923,20 +1904,20 @@ public class Launcher extends Activity
         startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
     }
 
-    FolderIcon addFolder(CellLayout layout, long container, final int screen, int cellX,
+    FolderIcon addFolder(CellLayout layout, long container, final long screenId, int cellX,
             int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
 
         // Update the model
-        LauncherModel.addItemToDatabase(Launcher.this, folderInfo, container, screen, cellX, cellY,
+        LauncherModel.addItemToDatabase(Launcher.this, folderInfo, container, screenId, cellX, cellY,
                 false);
         sFolders.put(folderInfo.id, folderInfo);
 
         // Create the view
         FolderIcon newFolder =
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
-        mWorkspace.addInScreen(newFolder, container, screen, cellX, cellY, 1, 1,
+        mWorkspace.addInScreen(newFolder, container, screenId, cellX, cellY, 1, 1,
                 isWorkspaceLocked());
         return newFolder;
     }
@@ -2233,7 +2214,7 @@ public class Launcher extends Activity
         // it is actually opened. There have been a few instances where this gets out of sync.
         if (info.opened && openFolder == null) {
             Log.d(TAG, "Folder info marked as open, but associated folder is not open. Screen: "
-                    + info.screen + " (" + info.cellX + ", " + info.cellY + ")");
+                    + info.screenId + " (" + info.cellX + ", " + info.cellY + ")");
             info.opened = false;
         }
 
@@ -2471,7 +2452,7 @@ public class Launcher extends Activity
     /**
      * Returns the CellLayout of the specified container at the specified screen.
      */
-    CellLayout getCellLayout(long container, int screen) {
+    CellLayout getCellLayout(long container, long screenId) {
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             if (mHotseat != null) {
                 return mHotseat.getLayout();
@@ -2479,7 +2460,7 @@ public class Launcher extends Activity
                 return null;
             }
         } else {
-            return (CellLayout) mWorkspace.getChildAt(screen);
+            return (CellLayout) mWorkspace.getScreenWithId(screenId);
         }
     }
 
@@ -3442,7 +3423,7 @@ public class Launcher extends Activity
         mOnResumeCallbacks.clear();
 
         final Workspace workspace = mWorkspace;
-        mNewShortcutAnimatePage = -1;
+        mNewShortcutAnimateScreenId = -1;
         mNewShortcutAnimateViews.clear();
         mWorkspace.clearDropTargets();
         int count = workspace.getChildCount();
@@ -3455,6 +3436,15 @@ public class Launcher extends Activity
         if (mHotseat != null) {
             mHotseat.resetLayout();
         }
+    }
+
+    @Override
+    public void bindScreens(ArrayList<Long> orderedScreenIds) {
+        int count = orderedScreenIds.size();
+        for (int i = 0; i < count; i++) {
+            mWorkspace.insertNewWorkspaceScreenOnBind(orderedScreenIds.get(i));
+        }
+        mWorkspace.addExtraEmptyScreen();
     }
 
     /**
@@ -3491,8 +3481,9 @@ public class Launcher extends Activity
                     ShortcutInfo info = (ShortcutInfo) item;
                     String uri = info.intent.toUri(0).toString();
                     View shortcut = createShortcut(info);
-                    workspace.addInScreen(shortcut, item.container, item.screen, item.cellX,
-                            item.cellY, 1, 1, false);
+
+                    workspace.addInScreenFromBind(shortcut, item.container, item.screenId, item.cellX,
+                            item.cellY, 1, 1);
                     boolean animateIconUp = false;
                     synchronized (newApps) {
                         if (newApps.contains(uri)) {
@@ -3504,7 +3495,7 @@ public class Launcher extends Activity
                         shortcut.setAlpha(0f);
                         shortcut.setScaleX(0f);
                         shortcut.setScaleY(0f);
-                        mNewShortcutAnimatePage = item.screen;
+                        mNewShortcutAnimateScreenId = item.screenId;
                         if (!mNewShortcutAnimateViews.contains(shortcut)) {
                             mNewShortcutAnimateViews.add(shortcut);
                         }
@@ -3514,8 +3505,8 @@ public class Launcher extends Activity
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item, mIconCache);
-                    workspace.addInScreen(newFolder, item.container, item.screen, item.cellX,
-                            item.cellY, 1, 1, false);
+                    workspace.addInScreenFromBind(newFolder, item.container, item.screenId, item.cellX,
+                            item.cellY, 1, 1);
                     break;
             }
         }
@@ -3569,7 +3560,7 @@ public class Launcher extends Activity
         item.hostView.setTag(item);
         item.onBindAppWidget(this);
 
-        workspace.addInScreen(item.hostView, item.container, item.screen, item.cellX,
+        workspace.addInScreen(item.hostView, item.container, item.screenId, item.cellX,
                 item.cellY, item.spanX, item.spanY, false);
         addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
 
@@ -3627,13 +3618,13 @@ public class Launcher extends Activity
                 }
             };
 
-            boolean willSnapPage = mNewShortcutAnimatePage > -1 &&
-                    mNewShortcutAnimatePage != mWorkspace.getCurrentPage();
+            boolean willSnapPage = mNewShortcutAnimateScreenId > -1 &&
+                    mNewShortcutAnimateScreenId != mWorkspace.getCurrentPage();
             if (canRunNewAppsAnimation()) {
                 // If the user has not interacted recently, then either snap to the new page to show
                 // the new-apps animation or just run them if they are to appear on the current page
                 if (willSnapPage) {
-                    mWorkspace.snapToPage(mNewShortcutAnimatePage, newAppsRunnable);
+                    mWorkspace.snapToScreenId(mNewShortcutAnimateScreenId, newAppsRunnable);
                 } else {
                     runNewAppsAnimation(false);
                 }
@@ -3717,7 +3708,7 @@ public class Launcher extends Activity
         }
 
         // Clean up
-        mNewShortcutAnimatePage = -1;
+        mNewShortcutAnimateScreenId = -1;
         mNewShortcutAnimateViews.clear();
         new Thread("clearNewAppsThread") {
             public void run() {

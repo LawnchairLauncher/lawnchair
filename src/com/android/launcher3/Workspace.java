@@ -60,6 +60,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -105,8 +106,14 @@ public class Workspace extends SmoothPagedView
     private IBinder mWindowToken;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
 
-    public int mNumPagesToLeft = 0;
     private int mDefaultPage;
+
+    // The screen id used for the empty screen always present to the right.
+    private final static long EXTRA_EMPTY_SCREEN_ID = -201;
+    private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
+
+    private HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
+    private ArrayList<Long> mScreenOrder = new ArrayList<Long>();
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -254,6 +261,7 @@ public class Workspace extends SmoothPagedView
     private float[] mNewBackgroundAlphas;
     private float[] mNewAlphas;
     private float[] mNewRotationYs;
+    private int mLastChildCount = -1;
     private float mTransitionProgress;
 
     private final Runnable mBindPages = new Runnable() {
@@ -375,6 +383,7 @@ public class Workspace extends SmoothPagedView
             return size;
         }
     }
+
     public Rect estimateItemPosition(CellLayout cl, ItemInfo pendingInfo,
             int hCell, int vCell, int hSpan, int vSpan) {
         Rect r = new Rect();
@@ -400,13 +409,6 @@ public class Workspace extends SmoothPagedView
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
         UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
-    }
-
-    // Just a hack so that if a custom content screen is added to the left, we adjust the
-    // default screen accordingly so that it stays the same.
-    void incrementNumScreensToLeft() {
-        mDefaultPage++;
-        mNumPagesToLeft++;
     }
 
     /**
@@ -489,19 +491,131 @@ public class Workspace extends SmoothPagedView
         return mTouchState != TOUCH_STATE_REST;
     }
 
-    /**
-     * Adds the specified child in the specified screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param screen The screen in which to add the child.
-     * @param x The X position of the child in the screen's grid.
-     * @param y The Y position of the child in the screen's grid.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void addInScreen(View child, long container, int screen, int x, int y, int spanX, int spanY) {
-        addInScreen(child, container, screen, x, y, spanX, spanY, false);
+    public long insertNewWorkspaceScreen(long screenId) {
+        return insertNewWorkspaceScreen(screenId, true);
+    }
+
+    public long insertNewWorkspaceScreenOnBind(long screenId) {
+        return insertNewWorkspaceScreen(screenId, false);
+    }
+
+    // If screen id is -1, this indicates there is no screen assigned, so we generate
+    // a new screen id.
+    public long insertNewWorkspaceScreen(long screenId, boolean updateDb) {
+        CellLayout newScreen = (CellLayout)
+                mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
+
+        addView(newScreen, getChildCount());
+        mWorkspaceScreens.put(screenId, newScreen);
+        mScreenOrder.add(screenId);
+        if (updateDb) {
+            // On bind we don't need to update the screens in the database.
+            LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+        }
+        return screenId;
+    }
+
+    public void addCustomContentToLeft(View customContent) {
+        CellLayout customScreen = (CellLayout)
+                mLauncher.getLayoutInflater().inflate(R.layout.workspace_custom_content, null);
+
+        int spanX = customScreen.getCountX();
+        int spanY = customScreen.getCountY();
+
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
+        lp.canReorder  = false;
+
+        customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
+
+        addView(customScreen, 0);
+
+        mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
+        mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
+
+        // Ensure that the current page and default page are maintained.
+        mDefaultPage++;
+        setCurrentPage(getCurrentPage() + 1);
+    }
+
+    public long commitExtraEmptyScreen() {
+        CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
+        mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
+
+        long newId = LauncherAppState.getInstance().getLauncherProvider().generateNewScreenId();
+        mWorkspaceScreens.put(newId, cl);
+        mScreenOrder.add(newId);
+
+        addExtraEmptyScreen();
+        return newId;
+    }
+
+    public void addExtraEmptyScreen() {
+        insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID, false);
+    }
+
+    public CellLayout getScreenWithId(long screenId) {
+        CellLayout layout = mWorkspaceScreens.get(screenId);
+        return layout;
+    }
+
+    public long getIdForScreen(CellLayout layout) {
+        Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
+        while (iter.hasNext()) {
+            long id = iter.next();
+            if (mWorkspaceScreens.get(id) == layout) {
+                return id;
+            }
+        }
+        return -1;
+    }
+
+    public int getPageIndexForScreenId(long screenId) {
+        return indexOfChild(mWorkspaceScreens.get(screenId));
+    }
+
+    public long getScreenIdForPageIndex(int index) {
+        return mScreenOrder.get(index);
+    }
+
+    public void stripEmptyScreens() {
+        ArrayList<Long> removeScreens = new ArrayList<Long>();
+        for (Long id: mWorkspaceScreens.keySet()) {
+            CellLayout cl = mWorkspaceScreens.get(id);
+            if (id != EXTRA_EMPTY_SCREEN_ID && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+                removeScreens.add(id);
+            }
+        }
+
+        int pageShift = 0;
+        for (Long id: removeScreens) {
+            CellLayout cl = mWorkspaceScreens.get(id);
+            mWorkspaceScreens.remove(id);
+            mScreenOrder.remove(id);
+            if (indexOfChild(cl) < mCurrentPage) {
+                pageShift++;
+            }
+            removeView(cl);
+        }
+        setCurrentPage(mCurrentPage - pageShift);
+    }
+
+    // See implementation for parameter definition.
+    void addInScreen(View child, long container, long screenId,
+            int x, int y, int spanX, int spanY) {
+        addInScreen(child, container, screenId, x, y, spanX, spanY, false, false);
+    }
+
+    // At bind time, we use the rank (screenId) to compute x and y for hotseat items.
+    // See implementation for parameter definition.
+    void addInScreenFromBind(View child, long container, long screenId, int x, int y,
+            int spanX, int spanY) {
+        addInScreen(child, container, screenId, x, y, spanX, spanY, false, true);
+    }
+
+    // See implementation for parameter definition.
+    void addInScreen(View child, long container, long screenId, int x, int y, int spanX, int spanY,
+            boolean insert) {
+        addInScreen(child, container, screenId, x, y, spanX, spanY, insert, false);
     }
 
     /**
@@ -509,21 +623,28 @@ public class Workspace extends SmoothPagedView
      * the child are defined by x, y, spanX and spanY.
      *
      * @param child The child to add in one of the workspace's screens.
-     * @param screen The screen in which to add the child.
+     * @param screenId The screen in which to add the child.
      * @param x The X position of the child in the screen's grid.
      * @param y The Y position of the child in the screen's grid.
      * @param spanX The number of cells spanned horizontally by the child.
      * @param spanY The number of cells spanned vertically by the child.
      * @param insert When true, the child is inserted at the beginning of the children list.
+     * @param computeXYFromRank When true, we use the rank (stored in screenId) to compute
+     *                          the x and y position in which to place hotseat items. Otherwise
+     *                          we use the x and y position to compute the rank.
      */
-    void addInScreen(View child, long container, int screen, int x, int y, int spanX, int spanY,
-            boolean insert) {
+    void addInScreen(View child, long container, long screenId, int x, int y, int spanX, int spanY,
+            boolean insert, boolean computeXYFromRank) {
         if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-            if (screen < 0 || screen >= getChildCount()) {
-                Log.e(TAG, "The screen must be >= 0 and < " + getChildCount()
-                    + " (was " + screen + "); skipping child");
+            if (getScreenWithId(screenId) == null) {
+                Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
                 return;
             }
+        }
+
+        // If an item is added to the extra empty screen, we convert it to a real
+        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+            screenId = commitExtraEmptyScreen();
         }
 
         final CellLayout layout;
@@ -536,21 +657,18 @@ public class Workspace extends SmoothPagedView
                 ((FolderIcon) child).setTextVisible(false);
             }
 
-            if (screen < 0) {
-                screen = mLauncher.getHotseat().getOrderInHotseat(x, y);
+            if (computeXYFromRank) {
+                x = mLauncher.getHotseat().getCellXFromOrder((int) screenId);
+                y = mLauncher.getHotseat().getCellYFromOrder((int) screenId);
             } else {
-                // Note: We do this to ensure that the hotseat is always laid out in the orientation
-                // of the hotseat in order regardless of which orientation they were added
-                x = mLauncher.getHotseat().getCellXFromOrder(screen);
-                y = mLauncher.getHotseat().getCellYFromOrder(screen);
+                screenId = mLauncher.getHotseat().getOrderInHotseat(x, y);
             }
         } else {
             // Show folder title if not in the hotseat
             if (child instanceof FolderIcon) {
                 ((FolderIcon) child).setTextVisible(true);
             }
-
-            layout = (CellLayout) getChildAt(screen);
+            layout = getScreenWithId(screenId);
             child.setOnKeyListener(new IconKeyEventListener());
         }
 
@@ -571,7 +689,7 @@ public class Workspace extends SmoothPagedView
         }
 
         // Get the canonical child id to uniquely represent this view in this screen
-        int childId = LauncherModel.getCellLayoutChildId(container, screen, x, y, spanX, spanY);
+        int childId = LauncherModel.getCellLayoutChildId(container, screenId, x, y, spanX, spanY);
         boolean markCellsAsOccupied = !(child instanceof Folder);
         if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp, markCellsAsOccupied)) {
             // TODO: This branch occurs when the workspace is adding views
@@ -912,7 +1030,8 @@ public class Workspace extends SmoothPagedView
     private void syncWallpaperOffsetWithScroll() {
         final boolean enableWallpaperEffects = isHardwareAccelerated();
         if (enableWallpaperEffects) {
-            mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
+            // TODO: figure out what to do about parallax, for now disable it
+            //mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
         }
     }
 
@@ -966,6 +1085,10 @@ public class Workspace extends SmoothPagedView
         }
         mDelayedSnapToPageRunnable = r;
         snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION);
+    }
+
+    protected void snapToScreenId(long screenId, Runnable r) {
+        snapToPage(getPageIndexForScreenId(screenId), r);
     }
 
     private void computeWallpaperScrollRatio(int page) {
@@ -1558,7 +1681,7 @@ public class Workspace extends SmoothPagedView
 
     private void initAnimationArrays() {
         final int childCount = getChildCount();
-        if (mOldTranslationXs != null) return;
+        if (mLastChildCount == childCount) return;
         mOldTranslationXs = new float[childCount];
         mOldTranslationYs = new float[childCount];
         mOldScaleXs = new float[childCount];
@@ -1958,16 +2081,15 @@ public class Workspace extends SmoothPagedView
         showScrollingIndicator(false);
     }
 
-    void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, int screen,
+    void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, long screenId,
             int cellX, int cellY, boolean insertAtFirst, int intersectX, int intersectY) {
         View view = mLauncher.createShortcut(R.layout.application, target, (ShortcutInfo) info);
 
         final int[] cellXY = new int[2];
         target.findCellForSpanThatIntersects(cellXY, 1, 1, intersectX, intersectY);
-        addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1, insertAtFirst);
+        addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1, insertAtFirst);
 
-        int adjustedScreen = screen - mNumPagesToLeft;
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, adjustedScreen, cellXY[0],
+        LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId, cellXY[0],
                 cellXY[1]);
     }
 
@@ -2122,7 +2244,7 @@ public class Workspace extends SmoothPagedView
 
         if (v == null || hasntMoved || !mCreateUserFolderOnDrop) return false;
         mCreateUserFolderOnDrop = false;
-        final int screen = (targetCell == null) ? mDragInfo.screen : indexOfChild(target);
+        final long screenId = (targetCell == null) ? mDragInfo.screenId : getIdForScreen(target);
 
         boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
         boolean willBecomeShortcut = (newView.getTag() instanceof ShortcutInfo);
@@ -2140,7 +2262,7 @@ public class Workspace extends SmoothPagedView
             target.removeView(v);
 
             FolderIcon fi =
-                mLauncher.addFolder(target, container, screen, targetCell[0], targetCell[1]);
+                mLauncher.addFolder(target, container, screenId, targetCell[0], targetCell[1]);
             destInfo.cellX = -1;
             destInfo.cellY = -1;
             sourceInfo.cellX = -1;
@@ -2215,8 +2337,8 @@ public class Workspace extends SmoothPagedView
                 long container = hasMovedIntoHotseat ?
                         LauncherSettings.Favorites.CONTAINER_HOTSEAT :
                         LauncherSettings.Favorites.CONTAINER_DESKTOP;
-                int screen = (mTargetCell[0] < 0) ?
-                        mDragInfo.screen : indexOfChild(dropTargetLayout);
+                long screenId = (mTargetCell[0] < 0) ?
+                        mDragInfo.screenId : getIdForScreen(dropTargetLayout);
                 int spanX = mDragInfo != null ? mDragInfo.spanX : 1;
                 int spanY = mDragInfo != null ? mDragInfo.spanY : 1;
                 // First we find the cell nearest to point at which the item is
@@ -2267,9 +2389,9 @@ public class Workspace extends SmoothPagedView
                             resultSpan[1]);
                 }
 
-                if (mCurrentPage != screen && !hasMovedIntoHotseat) {
-                    snapScreen = screen;
-                    snapToPage(screen);
+                if (getScreenIdForPageIndex(mCurrentPage) != screenId && !hasMovedIntoHotseat) {
+                    snapScreen = getPageIndexForScreenId(screenId);
+                    snapToPage(snapScreen);
                 }
 
                 if (foundCell) {
@@ -2277,7 +2399,7 @@ public class Workspace extends SmoothPagedView
                     if (hasMovedLayouts) {
                         // Reparent the view
                         getParentCellLayoutForView(cell).removeView(cell);
-                        addInScreen(cell, container, screen, mTargetCell[0], mTargetCell[1],
+                        addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
                                 info.spanX, info.spanY);
                     }
 
@@ -2288,7 +2410,7 @@ public class Workspace extends SmoothPagedView
                     lp.cellHSpan = item.spanX;
                     lp.cellVSpan = item.spanY;
                     lp.isLockedToGrid = true;
-                    cell.setId(LauncherModel.getCellLayoutChildId(container, mDragInfo.screen,
+                    cell.setId(LauncherModel.getCellLayoutChildId(container, mDragInfo.screenId,
                             mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
                     if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
@@ -2319,10 +2441,7 @@ public class Workspace extends SmoothPagedView
                         }
                     }
 
-                    //TODO: This is a hack on top of a hack, but items aren't being saved
-                    // to the correct screen due to the extra screen.
-                    int adjustedScreen = screen - mNumPagesToLeft;
-                    LauncherModel.moveItemInDatabase(mLauncher, info, container, adjustedScreen, lp.cellX,
+                    LauncherModel.moveItemInDatabase(mLauncher, info, container, screenId, lp.cellX,
                             lp.cellY);
                 } else {
                     // If we can't find a drop location, we return the item to its original position
@@ -2369,22 +2488,22 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void setFinalScrollForPageChange(int screen) {
-        if (screen >= 0) {
+    public void setFinalScrollForPageChange(int pageIndex) {
+        CellLayout cl = (CellLayout) getChildAt(pageIndex);
+        if (cl != null) {
             mSavedScrollX = getScrollX();
-            CellLayout cl = (CellLayout) getChildAt(screen);
             mSavedTranslationX = cl.getTranslationX();
             mSavedRotationY = cl.getRotationY();
-            final int newX = getChildOffset(screen) - getRelativeChildOffset(screen);
+            final int newX = getChildOffset(pageIndex) - getRelativeChildOffset(pageIndex);
             setScrollX(newX);
             cl.setTranslationX(0f);
             cl.setRotationY(0f);
         }
     }
 
-    public void resetFinalScrollForPageChange(int screen) {
-        if (screen >= 0) {
-            CellLayout cl = (CellLayout) getChildAt(screen);
+    public void resetFinalScrollForPageChange(int pageIndex) {
+        if (pageIndex >= 0) {
+            CellLayout cl = (CellLayout) getChildAt(pageIndex);
             setScrollX(mSavedScrollX);
             cl.setTranslationX(mSavedTranslationX);
             cl.setRotationY(mSavedRotationY);
@@ -3047,10 +3166,11 @@ public class Workspace extends SmoothPagedView
         final long container = mLauncher.isHotseatLayout(cellLayout) ?
                 LauncherSettings.Favorites.CONTAINER_HOTSEAT :
                     LauncherSettings.Favorites.CONTAINER_DESKTOP;
-        final int screen = indexOfChild(cellLayout);
-        if (!mLauncher.isHotseatLayout(cellLayout) && screen != mCurrentPage
+        final long screenId = getIdForScreen(cellLayout);
+        if (!mLauncher.isHotseatLayout(cellLayout)
+                && screenId != getScreenIdForPageIndex(mCurrentPage)
                 && mState != State.SPRING_LOADED) {
-            snapToPage(screen);
+            snapToScreenId(screenId, null);
         }
 
         if (info instanceof PendingAddItemInfo) {
@@ -3101,11 +3221,11 @@ public class Workspace extends SmoothPagedView
                         span[0] = item.spanX;
                         span[1] = item.spanY;
                         mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) pendingInfo,
-                                container, screen, mTargetCell, span, null);
+                                container, screenId, mTargetCell, span, null);
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         mLauncher.processShortcutFromDrop(pendingInfo.componentName,
-                                container, screen, mTargetCell, null);
+                                container, screenId, mTargetCell, null);
                         break;
                     default:
                         throw new IllegalStateException("Unknown item type: " +
@@ -3177,14 +3297,13 @@ public class Workspace extends SmoothPagedView
             } else {
                 cellLayout.findCellForSpan(mTargetCell, 1, 1);
             }
-            addInScreen(view, container, screen, mTargetCell[0], mTargetCell[1], info.spanX,
+            addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1], info.spanX,
                     info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getShortcutsAndWidgets().measureChild(view);
 
-            int adjustedScreen = screen - mNumPagesToLeft;
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, adjustedScreen,
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId,
                     lp.cellX, lp.cellY);
 
             if (d.dragView != null) {
@@ -3400,7 +3519,7 @@ public class Workspace extends SmoothPagedView
             if (mLauncher.isHotseatLayout(target)) {
                 cellLayout = mLauncher.getHotseat().getLayout();
             } else {
-                cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
+                cellLayout = getScreenWithId(mDragInfo.screenId);
             }
             cellLayout.onDropChild(mDragInfo.cell);
         }
@@ -3410,6 +3529,8 @@ public class Workspace extends SmoothPagedView
         mDragOutline = null;
         mDragInfo = null;
 
+        stripEmptyScreens();
+
         // Hide the scrolling indicator after you pick up an item
         hideScrollingIndicator(false);
     }
@@ -3417,11 +3538,11 @@ public class Workspace extends SmoothPagedView
     void updateItemLocationsInDatabase(CellLayout cl) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
 
-        int screen = indexOfChild(cl);
+        long screenId = getIdForScreen(cl);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mLauncher.isHotseatLayout(cl)) {
-            screen = -1;
+            screenId = -1;
             container = Favorites.CONTAINER_HOTSEAT;
         }
 
@@ -3431,8 +3552,7 @@ public class Workspace extends SmoothPagedView
             // Null check required as the AllApps button doesn't have an item info
             if (info != null && info.requiresDbUpdate) {
                 info.requiresDbUpdate = false;
-                int adjustedScreen = screen - mNumPagesToLeft;
-                LauncherModel.modifyItemInDatabase(mLauncher, info, container, adjustedScreen, info.cellX,
+                LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, info.cellX,
                         info.cellY, info.spanX, info.spanY);
             }
         }
@@ -3512,11 +3632,11 @@ public class Workspace extends SmoothPagedView
     void saveWorkspaceScreenToDb(CellLayout cl) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
 
-        int screen = indexOfChild(cl);
+        long screenId = getIdForScreen(cl);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mLauncher.isHotseatLayout(cl)) {
-            screen = -1;
+            screenId = -1;
             container = Favorites.CONTAINER_HOTSEAT;
         }
 
@@ -3525,7 +3645,7 @@ public class Workspace extends SmoothPagedView
             ItemInfo info = (ItemInfo) v.getTag();
             // Null check required as the AllApps button doesn't have an item info
             if (info != null) {
-                LauncherModel.addItemToDatabase(mLauncher, info, container, screen, info.cellX,
+                LauncherModel.addItemToDatabase(mLauncher, info, container, screenId, info.cellX,
                         info.cellY, false);
             }
             if (v instanceof FolderIcon) {

@@ -122,10 +122,10 @@ public class Hotseat extends FrameLayout {
         fi.spanX = 1;
         fi.spanY = 1;
         fi.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-        fi.screen = mAllAppsButtonRank;
+        fi.screenId = mAllAppsButtonRank;
         fi.itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
         fi.title = "All Apps";
-        LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screen, fi.cellX,
+        LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screenId, fi.cellX,
                 fi.cellY, false);
         FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
                 getLayout(), fi, iconCache);
