@@ -395,8 +395,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         String[] flattened = PreferencesProvider.Interface.Drawer.getHiddenApps().split("\\|");
         for (String flat : flattened) {
             ComponentName cmp = ComponentName.unflattenFromString(flat);
-            mHiddenApps.add(cmp);
-            mHiddenAppsPackages.add(cmp.getPackageName());
+            if (cmp != null) {
+                mHiddenApps.add(cmp);
+                mHiddenAppsPackages.add(cmp.getPackageName());
+            }
         }
 
 
