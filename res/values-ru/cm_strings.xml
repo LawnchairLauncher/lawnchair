@@ -85,8 +85,13 @@
     <string name="preferences_interface_drawer_summary">Настройки главного меню и виджетов</string>
     <string name="preferences_interface_drawer_orientation_title">Ориентация</string>
     <string name="preferences_interface_drawer_orientation_summary">Выбор типа прокрутки главного меню</string>
+    <string name="preferences_interface_drawer_apps_category">Приложения</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Скрытые приложения</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Список скрытых приложений в главном меню</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Ярлыки</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Удалить ярлыки скрытых приложений на главном экране</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Виджеты</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Удалить виджеты скрытых приложений на главном экране</string>
     <string name="preferences_interface_drawer_widgets_category">ВИДЖЕТЫ</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Вместе с приложениями</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Пролистывать из меню \"Приложения\" в меню \"Виджеты\" без смены вкладок</string>
