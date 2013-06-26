@@ -2027,12 +2027,20 @@ public class Launcher extends Activity
             // Open shortcut
             final Intent intent = ((ShortcutInfo) tag).intent;
 
-            ComponentName widgetComp = new ComponentName(this, WidgetAdder.class);
-            if (intent.getComponent() != null &&
-                    intent.getComponent().getClassName().equals(widgetComp.getClassName())) {
-                showAllApps(true);
-                return;
+            // Check for special shortcuts
+            if (intent.getComponent() != null) {
+                final String shortcutClass = intent.getComponent().getClassName();
+
+                if (shortcutClass.equals(WidgetAdder.class.getName())) {
+                    showAllApps(true);
+                    return;
+                } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
+                    MemoryDumpActivity.startDump(this);
+                    return;
+                }
             }
+
+            // Start activities
             int[] pos = new int[2];
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(new Rect(pos[0], pos[1],

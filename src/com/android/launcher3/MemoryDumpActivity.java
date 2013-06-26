@@ -133,20 +133,33 @@ public class MemoryDumpActivity extends Activity {
     public void onStart() {
         super.onStart();
 
+        startDump(this, new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        });
+    }
+
+    public static void startDump(final Context context) {
+        startDump(context, null);
+    }
+
+    public static void startDump(final Context context, final Runnable andThen) {
         final ServiceConnection connection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 Log.v(TAG, "service connected, dumping...");
-                dumpHprofAndShare(MemoryDumpActivity.this,
-                        ((MemoryTracker.MemoryTrackerInterface)service).getService());
-                unbindService(this);
-                finish();
+                dumpHprofAndShare(context,
+                        ((MemoryTracker.MemoryTrackerInterface) service).getService());
+                context.unbindService(this);
+                if (andThen != null) andThen.run();
             }
 
             public void onServiceDisconnected(ComponentName className) {
             }
         };
         Log.v(TAG, "attempting to bind to memory tracker");
-        bindService(new Intent(this, MemoryTracker.class),
+        context.bindService(new Intent(context, MemoryTracker.class),
                 connection, Context.BIND_AUTO_CREATE);
     }
 }
