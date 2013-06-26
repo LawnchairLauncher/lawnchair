@@ -73,8 +73,13 @@
     <string name="preferences_interface_drawer_summary">Contenitore delle applicazioni e dei widget</string>
     <string name="preferences_interface_drawer_orientation_title">Orientamento</string>
     <string name="preferences_interface_drawer_orientation_summary">Scegli in quale verso far scorrere il drawer</string>
+    <string name="preferences_interface_drawer_apps_category">Applicazioni</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Applicazioni nascoste</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Nascondi le applicazioni dal drawer</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Applicazioni nascoste (scorciatoie)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Rimuovere le scorciatoie delle applicazioni nascoste dalla schermata Home</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Applicazioni nascoste (widget)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Rimuovere i widget delle applicazioni nascoste dalla schermata Home</string>
     <string name="preferences_interface_drawer_widgets_category">Widget</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Unisci alle applicazioni</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Scorri dalla schermata applicazioni a quella dei widget senza cambiare scheda</string>
