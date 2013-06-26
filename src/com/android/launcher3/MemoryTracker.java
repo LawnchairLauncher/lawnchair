@@ -40,6 +40,7 @@ public class MemoryTracker extends Service {
     public static class ProcessMemInfo {
         public int pid;
         public String name;
+        public long startTime;
         public long currentPss, currentUss;
         public long[] pss = new long[256];
         public long[] uss = new long[256];
@@ -49,6 +50,10 @@ public class MemoryTracker extends Service {
         public ProcessMemInfo(int pid, String name) {
             this.pid = pid;
             this.name = name;
+            this.startTime = System.currentTimeMillis();
+        }
+        public long getUptime() {
+            return System.currentTimeMillis() - startTime;
         }
     };
     public final LongSparseArray<ProcessMemInfo> mData = new LongSparseArray<ProcessMemInfo>();
@@ -77,6 +82,14 @@ public class MemoryTracker extends Service {
 
     ActivityManager mAm;
 
+    public static void startTrackingMe(Context context, String name) {
+        context.startService(new Intent(context, MemoryTracker.class)
+                .setAction(MemoryTracker.ACTION_START_TRACKING)
+                .putExtra("pid", android.os.Process.myPid())
+                .putExtra("name", name)
+        );
+    }
+
     public ProcessMemInfo getMemInfo(int pid) {
         return mData.get(pid);
     }
@@ -86,7 +99,11 @@ public class MemoryTracker extends Service {
     }
 
     public void startTrackingProcess(int pid, String name) {
-        mPids.add(new Long(pid));
+        final Long lpid = new Long(pid);
+
+        if (mPids.contains(lpid)) return;
+
+        mPids.add(lpid);
         final int N = mPids.size();
         mPidsArray = new int[N];
         StringBuffer sb = new StringBuffer("Now tracking processes: ");
@@ -110,7 +127,7 @@ public class MemoryTracker extends Service {
             info.uss[info.head] = info.currentUss = dinfo.getTotalPrivateDirty();
             if (info.currentPss > info.max) info.max = info.currentPss;
             if (info.currentUss > info.max) info.max = info.currentUss;
-            //Log.v(TAG, "update: pid " + pid + " pss=" + info.currentPss + " uss=" + info.currentUss);
+            Log.v(TAG, "update: pid " + pid + " pss=" + info.currentPss + " uss=" + info.currentUss);
         }
 
         // XXX: notify listeners

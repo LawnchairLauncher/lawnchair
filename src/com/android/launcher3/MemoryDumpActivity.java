@@ -17,66 +17,136 @@
 package com.android.launcher3;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Debug;
-import android.os.Environment;
+import android.os.*;
 import android.util.Log;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class MemoryDumpActivity extends Activity {
+    private static final String TAG = "MemoryDumpActivity";
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    public static void dumpHprofAndShare(final Context context) {
+    public static String zipUp(ArrayList<String> paths) {
+        final int BUFSIZ = 256 * 1024; // 256K
+        final byte[] buf = new byte[BUFSIZ];
+        final String zipfilePath = String.format("%s/hprof-%d.zip",
+                Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis());
+        ZipOutputStream zos = null;
         try {
+            OutputStream os = new FileOutputStream(zipfilePath);
+            zos = new ZipOutputStream(new BufferedOutputStream(os));
+            for (String filename : paths) {
+                InputStream is = null;
+                try {
+                    is = new BufferedInputStream(new FileInputStream(filename));
+                    ZipEntry entry = new ZipEntry(filename);
+                    zos.putNextEntry(entry);
+                    int len;
+                    while ( 0 < (len = is.read(buf, 0, BUFSIZ)) ) {
+                        zos.write(buf, 0, len);
+                    }
+                    zos.closeEntry();
+                } finally {
+                    is.close();
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "error zipping up profile data", e);
+            return null;
+        } finally {
+            if (zos != null) {
+                try {
+                    zos.close();
+                } catch (IOException e) {
+                    // ugh, whatever
+                }
+            }
+        }
+        return zipfilePath;
+    }
+
+    public static void dumpHprofAndShare(final Context context, MemoryTracker tracker) {
+        final StringBuilder body = new StringBuilder();
+
+        final ArrayList<String> paths = new ArrayList<String>();
+        for (int pid : tracker.getTrackedProcesses()) {
             final String path = String.format("%s/launcher-memory-%d.ahprof",
                     Environment.getExternalStorageDirectory(),
-                    System.currentTimeMillis());
-            Log.v(Launcher.TAG, "Dumping memory info to " + path);
-
-            android.os.Debug.dumpHprofData(path); // will block
-
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("application/vnd.android.bugreport");
-
-            final long pss = Debug.getPss();
-            final PackageManager pm = context.getPackageManager();
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, String.format("Launcher memory dump (PSS=%d)", pss));
-            String appVersion;
+                    pid);
+            Log.v(TAG, "Dumping memory info for process " + pid + " to " + path);
+            MemoryTracker.ProcessMemInfo info = tracker.getMemInfo(pid);
+            body.append("pid ").append(pid).append(":")
+                .append(" up=").append(info.getUptime())
+                .append(" pss=").append(info.currentPss)
+                .append(" uss=").append(info.currentUss)
+                .append("\n");
             try {
-                appVersion = pm.getPackageInfo(context.getPackageName(), 0).versionName;
-            } catch (PackageManager.NameNotFoundException e) {
-                appVersion = "?";
+                android.os.Debug.dumpHprofData(path); // will block
+            } catch (IOException e) {
+                Log.e(TAG, "error dumping memory:", e);
             }
-            shareIntent.putExtra(Intent.EXTRA_TEXT, String.format("App version: %s\nBuild: %s",
-                    appVersion, Build.DISPLAY));
-            shareIntent.setType("application/vnd.android.hprof");
 
-            //shareIntent.putExtra(Intent.EXTRA_TEXT, android.os.SystemProperties.get("ro.build.description"));
-
-            final File pathFile = new File(path);
-            final Uri pathUri = Uri.fromFile(pathFile);
-
-            shareIntent.putExtra(Intent.EXTRA_STREAM, pathUri);
-            context.startActivity(shareIntent);
-        } catch (IOException e) {
-            e.printStackTrace();
+            paths.add(path);
         }
+
+        String zipfile = zipUp(paths);
+
+        if (zipfile == null) return;
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("application/zip");
+
+        final PackageManager pm = context.getPackageManager();
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, String.format("Launcher memory dump"));
+        String appVersion;
+        try {
+            appVersion = pm.getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            appVersion = "?";
+        }
+
+        body.append("\nApp version: ").append(appVersion).append("\nBuild: ").append(Build.DISPLAY).append("\n");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, body.toString());
+
+        final File pathFile = new File(zipfile);
+        final Uri pathUri = Uri.fromFile(pathFile);
+
+        shareIntent.putExtra(Intent.EXTRA_STREAM, pathUri);
+        context.startActivity(shareIntent);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        dumpHprofAndShare(this);
-        finish();
+
+        final ServiceConnection connection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                Log.v(TAG, "service connected, dumping...");
+                dumpHprofAndShare(MemoryDumpActivity.this,
+                        ((MemoryTracker.MemoryTrackerInterface)service).getService());
+                unbindService(this);
+                finish();
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+            }
+        };
+        Log.v(TAG, "attempting to bind to memory tracker");
+        bindService(new Intent(this, MemoryTracker.class),
+                connection, Context.BIND_AUTO_CREATE);
     }
 }
