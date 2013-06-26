@@ -457,10 +457,8 @@ public class Workspace extends SmoothPagedView
         cl.setClickable(true);
         cl.setContentDescription(getContext().getString(
                 R.string.workspace_description_format, getChildCount()));
-    }
 
-    @Override
-    public void onChildViewRemoved(View parent, View child) {
+        super.onChildViewAdded(parent, child);
     }
 
     protected boolean shouldDrawChild(View child) {
@@ -3635,6 +3633,7 @@ public class Workspace extends SmoothPagedView
         long screenId = getIdForScreen(cl);
         int container = Favorites.CONTAINER_DESKTOP;
 
+        Hotseat hotseat = mLauncher.getHotseat();
         if (mLauncher.isHotseatLayout(cl)) {
             screenId = -1;
             container = Favorites.CONTAINER_HOTSEAT;
@@ -3645,8 +3644,14 @@ public class Workspace extends SmoothPagedView
             ItemInfo info = (ItemInfo) v.getTag();
             // Null check required as the AllApps button doesn't have an item info
             if (info != null) {
-                LauncherModel.addItemToDatabase(mLauncher, info, container, screenId, info.cellX,
-                        info.cellY, false);
+                int cellX = info.cellX;
+                int cellY = info.cellY;
+                if (container == Favorites.CONTAINER_HOTSEAT) {
+                    cellX = hotseat.getCellXFromOrder((int) info.screenId);
+                    cellY = hotseat.getCellYFromOrder((int) info.screenId);
+                }
+                LauncherModel.addItemToDatabase(mLauncher, info, container, screenId, cellX,
+                        cellY, false);
             }
             if (v instanceof FolderIcon) {
                 FolderIcon fi = (FolderIcon) v;
