@@ -1708,11 +1708,11 @@ public class LauncherModel extends BroadcastReceiver {
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
                     Log.d(TAG, "workspace layout: ");
-                    Iterator<Long> iter = occupied.keySet().iterator();
                     int nScreens = occupied.size();
                     for (int y = 0; y < mCellCountY; y++) {
                         String line = "";
 
+                        Iterator<Long> iter = occupied.keySet().iterator();
                         for (int s = 0; s < nScreens; s++) {
                             long screenId = iter.next();
                             if (s > 0) {
