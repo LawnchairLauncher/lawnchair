@@ -116,7 +116,8 @@
             android:theme="@android:style/Theme.NoDisplay"
             android:label="@string/debug_memory_activity"
             android:enabled="@bool/debug_memory_enabled"
-            android:icon="@null"
+            android:excludeFromRecents="true"
+            android:icon="@mipmap/ic_launcher_home"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
