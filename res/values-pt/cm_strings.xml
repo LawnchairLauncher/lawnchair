@@ -127,4 +127,9 @@
     <string name="preferences_interface_general_lock_workspace_summary">Bloqueia posições dos atalhos e pastas na tela inicial, dock e aplicativos e gaveta de widgets</string>
     <string name="preferences_interface_dock_hide_icon_labels_title">Esconder rótulos dos ícones</string>
     <string name="preferences_interface_dock_hide_icon_labels_summary">Esconder rótulos dos ícones do dock</string>
+    <string name="preferences_interface_drawer_apps_category">Aplicativos</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Aplicativos ocultos (atalhos)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remover atalhos dos aplicativos ocultos da área de trabalho</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Aplicativos ocultos (widgets)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remover widgets dos aplicativos ocultos da área de trabalho</string>
 </resources>
