@@ -253,7 +253,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Try adding to the workspace screens incrementally, starting at the default or center
             // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
             final int screen = Launcher.DEFAULT_SCREEN;
-            for (int i = 0; i < Launcher.SCREEN_COUNT; i++) {
+            for (int i = 0; i < Launcher.SCREEN_COUNT && !found; i++) {
                 int si = i;
                 if (0 <= si && si < Launcher.SCREEN_COUNT) {
                     found = installShortcut(context, data, items, name, intent, si, exists, sp,

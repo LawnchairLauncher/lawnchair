@@ -497,8 +497,6 @@ public class Workspace extends SmoothPagedView
         return insertNewWorkspaceScreen(screenId, false);
     }
 
-    // If screen id is -1, this indicates there is no screen assigned, so we generate
-    // a new screen id.
     public long insertNewWorkspaceScreen(long screenId, boolean updateDb) {
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
@@ -508,7 +506,7 @@ public class Workspace extends SmoothPagedView
         mScreenOrder.add(screenId);
         if (updateDb) {
             // On bind we don't need to update the screens in the database.
-            LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+            mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
         }
         return screenId;
     }
@@ -537,6 +535,7 @@ public class Workspace extends SmoothPagedView
 
     public long commitExtraEmptyScreen() {
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
+        mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
 
         long newId = LauncherAppState.getInstance().getLauncherProvider().generateNewScreenId();
@@ -575,11 +574,15 @@ public class Workspace extends SmoothPagedView
         return mScreenOrder.get(index);
     }
 
+    ArrayList<Long> getScreenOrder() {
+        return mScreenOrder;
+    }
+
     public void stripEmptyScreens() {
         ArrayList<Long> removeScreens = new ArrayList<Long>();
         for (Long id: mWorkspaceScreens.keySet()) {
             CellLayout cl = mWorkspaceScreens.get(id);
-            if (id != EXTRA_EMPTY_SCREEN_ID && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+            if (id >= 0 && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
         }

@@ -71,6 +71,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
+import android.util.Pair;
 import android.view.*;
 import android.view.View.OnLongClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -96,6 +97,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -3590,6 +3592,7 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(final boolean upgradePath) {
+
         if (waitUntilResume(new Runnable() {
                 public void run() {
                     finishBindingItems(upgradePath);
@@ -3663,6 +3666,17 @@ public class Launcher extends Activity
         return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
     }
 
+    private ValueAnimator createNewAppBounceAnimation(View v, int i) {
+        ValueAnimator bounceAnim = LauncherAnimUtils.ofPropertyValuesHolder(v,
+                PropertyValuesHolder.ofFloat("alpha", 1f),
+                PropertyValuesHolder.ofFloat("scaleX", 1f),
+                PropertyValuesHolder.ofFloat("scaleY", 1f));
+        bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
+        bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
+        bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
+        return bounceAnim;
+    }
+
     /**
      * Runs a new animation that scales up icons that were added while Launcher was in the
      * background.
@@ -3694,14 +3708,7 @@ public class Launcher extends Activity
         } else {
             for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
                 View v = mNewShortcutAnimateViews.get(i);
-                ValueAnimator bounceAnim = LauncherAnimUtils.ofPropertyValuesHolder(v,
-                        PropertyValuesHolder.ofFloat("alpha", 1f),
-                        PropertyValuesHolder.ofFloat("scaleX", 1f),
-                        PropertyValuesHolder.ofFloat("scaleY", 1f));
-                bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
-                bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
-                bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
-                bounceAnims.add(bounceAnim);
+                bounceAnims.add(createNewAppBounceAnimation(v, i));
             }
             anim.playTogether(bounceAnims);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -3789,6 +3796,69 @@ public class Launcher extends Activity
             return;
         }
 
+        final Launcher launcher = this;
+        final Context context = this;
+        final ArrayList<ApplicationInfo> appsCopy = new ArrayList<ApplicationInfo>();
+        appsCopy.addAll(apps);
+
+        // Process newly added apps
+        mWorkspace.post(new Runnable() {
+            @Override
+            public void run() {
+                // Process newly added apps
+                LauncherModel model = getModel();
+                Iterator<ApplicationInfo> iter = appsCopy.iterator();
+                ArrayList<View> animatedShortcuts = new ArrayList<View>();
+
+                while (iter.hasNext()) {
+                    ApplicationInfo a = iter.next();
+                    Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
+                            a.title.toString(), a.intent);
+                    if (coords == null) {
+                        // If we can't find a valid position, then just add a new screen.
+                        // This takes time so we need to re-queue the add until the new
+                        // page is added.
+                        long screenId = LauncherAppState.getInstance().getLauncherProvider().generateNewScreenId();
+                        mWorkspace.insertNewWorkspaceScreen(screenId, false);
+                        model.updateWorkspaceScreenOrder(launcher, mWorkspace.getScreenOrder(),
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    bindAppsAdded(appsCopy);
+                                }
+                            });
+                        return;
+                    } else {
+                        final ShortcutInfo shortcutInfo = a.makeShortcut();
+                        final View shortcut = createShortcut(shortcutInfo);
+                        // Add the view to the screen
+                        mWorkspace.addInScreenFromBind(shortcut,
+                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                coords.first, coords.second[0], coords.second[1], 1, 1);
+                        // Add the shortcut to the db
+                        model.addItemToDatabase(context, shortcutInfo,
+                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                coords.first, coords.second[0], coords.second[1], false);
+                        // Animate the shortcut
+                        animatedShortcuts.add(shortcut);
+                    }
+                    iter.remove();
+                }
+
+                // Animate all the applications up
+                AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+                Collection<Animator> bounceAnims = new ArrayList<Animator>();
+                for (int i = 0; i < animatedShortcuts.size(); ++i) {
+                    View shortcut = animatedShortcuts.get(i);
+                    shortcut.setAlpha(0f);
+                    shortcut.setScaleX(0f);
+                    shortcut.setScaleY(0f);
+                    bounceAnims.add(createNewAppBounceAnimation(shortcut, i));
+                }
+                anim.playTogether(bounceAnims);
+                anim.start();
+            }
+        });
 
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(apps);
