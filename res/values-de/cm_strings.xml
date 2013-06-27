@@ -74,8 +74,13 @@
     <string name="preferences_interface_drawer_summary">Apps und Widgets</string>
     <string name="preferences_interface_drawer_orientation_title">Ausrichtung</string>
     <string name="preferences_interface_drawer_orientation_summary">Scrollrichtung der App-Seiten auswählen</string>
+    <string name="preferences_interface_drawer_apps_category">Apps</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Versteckte Apps</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Apps auf den App-Seiten verstecken.</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Versteckte App-Verknüpfungen</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Verknüpfungen für versteckte Apps vom Startbildschirm entfernen</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Versteckte App-Widgets</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Widgets von versteckten Apps vom Startbildschirm entfernen</string>
     <string name="preferences_interface_drawer_widgets_category">Widget-Seiten</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Mit App-Seiten verbinden</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Blättern auch zwischen App- und Widget-Seiten</string>
