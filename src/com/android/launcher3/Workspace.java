@@ -513,7 +513,7 @@ public class Workspace extends SmoothPagedView
 
     public void addCustomContentToLeft(View customContent) {
         CellLayout customScreen = (CellLayout)
-                mLauncher.getLayoutInflater().inflate(R.layout.workspace_custom_content, null);
+                mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
         int spanX = customScreen.getCountX();
         int spanY = customScreen.getCountY();
@@ -522,6 +522,10 @@ public class Workspace extends SmoothPagedView
         lp.canReorder  = false;
 
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
+
+        Rect p = new Rect();
+        AppWidgetHostView.getDefaultPaddingForWidget(mLauncher, mLauncher.getComponentName(), p);
+        customContent.setPadding(p.left, p.top, p.right, p.bottom);
 
         addView(customScreen, 0);
 
