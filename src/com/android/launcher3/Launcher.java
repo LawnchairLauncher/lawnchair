@@ -110,11 +110,10 @@ public class Launcher extends Activity
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
-    static final boolean PROFILE_STARTUP = true;
+    static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
-    static final boolean DEBUG_RESUME_TIME = true;
-    static final boolean DEBUG_MEMORY = true;
+    static final boolean DEBUG_RESUME_TIME = false;
 
     private static final int MENU_GROUP_WALLPAPER = 1;
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
