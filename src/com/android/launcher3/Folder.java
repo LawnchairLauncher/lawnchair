@@ -40,6 +40,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -107,9 +109,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     FolderEditText mFolderName;
     private float mFolderIconPivotX;
     private float mFolderIconPivotY;
+    private long mDragScrollStart;
+
+    /** Interpolator used to scale velocity with touch position, may be null. */
+    private Interpolator mEdgeInterpolator = new AccelerateInterpolator();
 
     private static final int SCROLL_CUT_OFF_AMOUNT = 60;
-    private static final int SCROLL_BAND_HEIGHT = 110;
+
+    private final float mDurationToMax = 300f;
+    private final float mMaxVelocity = 100000f/1000f;
+
+    // Aim for this amount of target area to trigger scrolling
+    private static float sScrollBandFactor = -1f;
+    private static float sScrollBandMaxFactor = -1f;
+
+    // Min size for the target area to trigger scrolling
+    private static int sMinScrollBandHeight = -1;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -177,6 +192,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
         if (sHintText == null) {
             sHintText = res.getString(R.string.folder_hint_text);
+        }
+        if (sMinScrollBandHeight == -1) {
+            sMinScrollBandHeight = res.getDimensionPixelSize(R.dimen.min_scroll_band_size);
+        }
+        if (sScrollBandFactor == -1f) {
+            sScrollBandFactor = res.getInteger(R.integer.scroll_band_factor)/100f;
+        }
+        if (sScrollBandMaxFactor == -1f) {
+            sScrollBandMaxFactor = res.getInteger(R.integer.scroll_band_max_factor)/100f;
         }
         mLauncher = (Launcher) context;
         // We need this view to be focusable in touch mode so that when text editing of the folder
@@ -653,7 +677,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void onDragOver(DragObject d) {
         int scrollOffset = mScrollView.getScrollY();
-
+        int height = getMeasuredHeight();
+        int scrollBandHeight = Math.min((int) (height * sScrollBandMaxFactor),
+            (Math.max(sMinScrollBandHeight, (int) (height * sScrollBandFactor))));
         float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView, null);
         r[0] -= getPaddingLeft();
         r[1] -= getPaddingTop();
@@ -665,17 +691,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
         }
 
-        if (r[1] < SCROLL_BAND_HEIGHT && mScrollView.getScrollY() > 0) {
+        if (r[1] < scrollBandHeight && mScrollView.getScrollY() > 0) {
             // Scroll up
             if (mDragMode != DRAG_MODE_SCROLL_UP) {
                 mDragMode = DRAG_MODE_SCROLL_UP;
+                mDragScrollStart = System.currentTimeMillis();
                 scrollUp();
             }
             mReorderAlarm.cancelAlarm();
-        } else if (r[1] > (getFolderHeight() - SCROLL_BAND_HEIGHT) && mScrollView.getScrollY() <
+        } else if (r[1] > (getFolderHeight() - scrollBandHeight) && mScrollView.getScrollY() <
                 (mContent.getMeasuredHeight() - mScrollView.getMeasuredHeight())) {
             if (mDragMode != DRAG_MODE_SCROLL_DOWN) {
                 mDragMode = DRAG_MODE_SCROLL_DOWN;
+                mDragScrollStart = System.currentTimeMillis();
                 scrollDown();
             }
             mReorderAlarm.cancelAlarm();
@@ -705,9 +733,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     };
 
+    private int getVelocity() {
+        float duration = (System.currentTimeMillis() - mDragScrollStart)/mDurationToMax;
+        return (int) Math.min(mMaxVelocity,
+        		(int) (mEdgeInterpolator.getInterpolation(duration) * mMaxVelocity));
+    }
+
     private void scrollUp() {
         if (mDragMode == DRAG_MODE_SCROLL_UP) {
-            mScrollView.setScrollY(mScrollView.getScrollY() - 7);
+            mScrollView.setScrollY(mScrollView.getScrollY() - getVelocity());
             invalidate();
             post(mScrollUpRunnable);
         }
@@ -715,7 +749,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private void scrollDown() {
         if (mDragMode == DRAG_MODE_SCROLL_DOWN) {
-            mScrollView.setScrollY(mScrollView.getScrollY() + 7);
+            mScrollView.setScrollY(mScrollView.getScrollY() + getVelocity());
             invalidate();
             post(mScrollDownRunnable);
         }
