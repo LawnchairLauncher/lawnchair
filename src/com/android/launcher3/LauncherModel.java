@@ -19,14 +19,7 @@ package com.android.launcher3;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentProviderClient;
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
@@ -47,7 +40,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
-
+import android.util.Pair;
 import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 import java.lang.ref.WeakReference;
@@ -213,6 +206,61 @@ public class LauncherModel extends BroadcastReceiver {
             // If we are not on the worker thread, then post to the worker handler
             sWorker.post(r);
         }
+    }
+
+    static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> items, int[] xy,
+                                 long screen) {
+        final int xCount = LauncherModel.getCellCountX();
+        final int yCount = LauncherModel.getCellCountY();
+        boolean[][] occupied = new boolean[xCount][yCount];
+
+        int cellX, cellY, spanX, spanY;
+        for (int i = 0; i < items.size(); ++i) {
+            final ItemInfo item = items.get(i);
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                if (item.screenId == screen) {
+                    cellX = item.cellX;
+                    cellY = item.cellY;
+                    spanX = item.spanX;
+                    spanY = item.spanY;
+                    for (int x = cellX; 0 <= x && x < cellX + spanX && x < xCount; x++) {
+                        for (int y = cellY; 0 <= y && y < cellY + spanY && y < yCount; y++) {
+                            occupied[x][y] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return CellLayout.findVacantCell(xy, 1, 1, xCount, yCount, occupied);
+    }
+    static Pair<Long, int[]> findNextAvailableIconSpace(Context context, String name,
+                                                        Intent launchIntent) {
+        // Lock on the app so that we don't try and get the items while apps are being added
+        LauncherAppState app = LauncherAppState.getInstance();
+        LauncherModel model = app.getModel();
+        boolean found = false;
+        synchronized (app) {
+            // Flush the LauncherModel worker thread, so that if we just did another
+            // processInstallShortcut, we give it time for its shortcut to get added to the
+            // database (getItemsInLocalCoordinates reads the database)
+            model.flushWorkerThread();
+            final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
+            final boolean shortcutExists = LauncherModel.shortcutExists(context, name, launchIntent);
+
+            // Try adding to the workspace screens incrementally, starting at the default or center
+            // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
+            for (int screen = 0; screen < sBgWorkspaceScreens.size() && !found; screen++) {
+                int[] tmpCoordinates = new int[2];
+                if (findNextAvailableIconSpaceInScreen(items, tmpCoordinates,
+                        sBgWorkspaceScreens.get(screen))) {
+                    // Update the Launcher db
+                    return new Pair<Long, int[]>(sBgWorkspaceScreens.get(screen), tmpCoordinates);
+                }
+            }
+        }
+        // XXX: Create a new page and add it to the first spot
+        return null;
     }
 
     public Bitmap getFallbackIcon() {
@@ -817,7 +865,10 @@ public class LauncherModel extends BroadcastReceiver {
      * Update the order of the workspace screens in the database. The array list contains
      * a list of screen ids in the order that they should appear.
      */
-    static void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
+    void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
+        updateWorkspaceScreenOrder(context, screens, null);
+    }
+    void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens, final Runnable mainThreadCb) {
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
@@ -853,6 +904,14 @@ public class LauncherModel extends BroadcastReceiver {
             }
         };
         runOnWorkerThread(r);
+        if (mainThreadCb != null) {
+            runOnWorkerThread(new Runnable() {
+                @Override
+                public void run() {
+                    runOnMainThread(mainThreadCb);
+                }
+            });
+        }
     }
 
     /**
@@ -1713,9 +1772,9 @@ public class LauncherModel extends BroadcastReceiver {
                         String line = "";
 
                         Iterator<Long> iter = occupied.keySet().iterator();
-                        for (int s = 0; s < nScreens; s++) {
+                        while (iter.hasNext()) {
                             long screenId = iter.next();
-                            if (s > 0) {
+                            if (screenId > 0) {
                                 line += " | ";
                             }
                             for (int x = 0; x < mCellCountX; x++) {
