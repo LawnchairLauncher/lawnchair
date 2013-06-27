@@ -65,8 +65,13 @@
     <string name="preferences_interface_drawer_summary">App- en widgetoverzicht</string>
     <string name="preferences_interface_drawer_orientation_title">Oriëntatie</string>
     <string name="preferences_interface_drawer_orientation_summary">Kies naar welke kant het overzicht bladert</string>
+    <string name="preferences_interface_drawer_apps_category">Apps</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Verborgen apps</string>
-    <string name="preferences_interface_drawer_hidden_apps_summary">Apps verbergen van het app-overzicht</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Apps verbergen in het app-overzicht</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Verborgen apps (snelkoppelingen)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Snelkoppelingen van verborgen apps niet weergeven op thuisscherm</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Verborgen apps (widgets)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Widgets van verborgen apps niet weergeven op thuisscherm</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Automatisch overgaan</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Van apps naar widgets overgaan zonder van tabblad te wisselen</string>

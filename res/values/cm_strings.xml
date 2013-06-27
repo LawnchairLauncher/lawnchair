@@ -115,9 +115,9 @@
     <string name="preferences_interface_drawer_hidden_apps_title">Hidden apps</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Hide apps from the drawer</string>
     <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Hidden apps (shortcuts)</string>
-    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remove hidden apps\'s shortcuts from homescreen</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remove hidden apps\' shortcuts from homescreen</string>
     <string name="preferences_interface_drawer_hidden_apps_widgets_title">Hidden apps (widgets)</string>
-    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remove hidden apps\'s widgets from homescreen</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remove hidden apps\' widgets from homescreen</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Join with apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
