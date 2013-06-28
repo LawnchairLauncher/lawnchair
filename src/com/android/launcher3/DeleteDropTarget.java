@@ -34,8 +34,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.android.launcher3.R;
-
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
     private static int FLING_DELETE_ANIMATION_DURATION = 350;
@@ -82,7 +80,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (!LauncherAppState.isScreenLarge()) {
+            if (!LauncherAppState.getInstance().isScreenLarge()) {
                 setText("");
             }
         }

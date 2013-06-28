@@ -25,8 +25,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.android.launcher3.R;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.ref.SoftReference;

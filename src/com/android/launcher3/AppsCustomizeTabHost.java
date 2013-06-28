@@ -33,8 +33,6 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.android.launcher3.R;
-
 import java.util.ArrayList;
 
 public class AppsCustomizeTabHost extends TabHost implements LauncherTransitionable,
@@ -184,7 +182,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     private void reloadCurrentPage() {
-        if (!LauncherAppState.isScreenLarge()) {
+        if (!LauncherAppState.getInstance().isScreenLarge()) {
             mAppsCustomizePane.flashScrollingIndicator(true);
         }
         mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
@@ -383,7 +381,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // transition to prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
 
-            if (!LauncherAppState.isScreenLarge()) {
+            if (!LauncherAppState.getInstance().isScreenLarge()) {
                 mAppsCustomizePane.showScrollingIndicator(true);
             }
         }
@@ -423,7 +421,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
 
-            if (!LauncherAppState.isScreenLarge()) {
+            if (!LauncherAppState.getInstance().isScreenLarge()) {
                 mAppsCustomizePane.hideScrollingIndicator(false);
             }
 

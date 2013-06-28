@@ -23,7 +23,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -51,7 +50,6 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.launcher3.R;
 import com.android.launcher3.DropTarget.DragObject;
 
 import java.util.ArrayList;
@@ -362,7 +360,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Configuration.ORIENTATION_LANDSCAPE;
         int maxCellCountX = Integer.MAX_VALUE;
         int maxCellCountY = Integer.MAX_VALUE;
-        if (LauncherAppState.isScreenLarge()) {
+        if (LauncherAppState.getInstance().isScreenLarge()) {
             maxCellCountX = (isLandscape ? LauncherModel.getCellCountX() :
                 LauncherModel.getCellCountY());
             maxCellCountY = (isLandscape ? LauncherModel.getCellCountY() :

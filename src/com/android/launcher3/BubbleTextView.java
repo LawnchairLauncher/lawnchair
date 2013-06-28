@@ -45,7 +45,7 @@ public class BubbleTextView extends TextView {
 
     private int mPrevAlpha = -1;
 
-    private final HolographicOutlineHelper mOutlineHelper = HolographicOutlineHelper.obtain();
+    private HolographicOutlineHelper mOutlineHelper;
     private final Canvas mTempCanvas = new Canvas();
     private final Rect mTempRect = new Rect();
     private boolean mDidInvalidateForPressedState;
@@ -79,6 +79,8 @@ public class BubbleTextView extends TextView {
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mBackground = getBackground();
+
+        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
 
         final Resources res = getContext().getResources();
         mFocusedOutlineColor = mFocusedGlowColor = mPressedOutlineColor = mPressedGlowColor =
@@ -189,7 +191,7 @@ public class BubbleTextView extends TextView {
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createGlowingOutline(Canvas canvas, int outlineColor, int glowColor) {
-        final int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
+        final int padding = mOutlineHelper.mMaxOuterBlurRadius;
         final Bitmap b = Bitmap.createBitmap(
                 getWidth() + padding, getHeight() + padding, Bitmap.Config.ARGB_8888);
 
@@ -269,7 +271,7 @@ public class BubbleTextView extends TextView {
     }
 
     int getPressedOrFocusedBackgroundPadding() {
-        return HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
+        return mOutlineHelper.mMaxOuterBlurRadius / 2;
     }
 
     @Override

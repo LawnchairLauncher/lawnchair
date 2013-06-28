@@ -49,7 +49,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 
-import com.android.launcher3.R;
 import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -95,8 +94,9 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new DatabaseHelper(getContext());
-        LauncherAppState.getInstance().setLauncherProvider(this);
+        final Context context = getContext();
+        mOpenHelper = new DatabaseHelper(context);
+        LauncherAppState.setLauncherProvider(this);
         return true;
     }
 

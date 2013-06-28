@@ -44,17 +44,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -82,7 +79,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
-import com.android.launcher3.R;
 import com.android.launcher3.DropTarget.DragObject;
 
 import java.io.DataInputStream;
@@ -2670,7 +2666,9 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
-                    if (mWorkspace != null && !springLoaded && !LauncherAppState.isScreenLarge()) {
+                    if (mWorkspace != null
+                            && !springLoaded
+                            && !LauncherAppState.getInstance().isScreenLarge()) {
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
                         hideDockDivider();
@@ -2740,7 +2738,7 @@ public class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             toView.bringToFront();
 
-            if (!springLoaded && !LauncherAppState.isScreenLarge()) {
+            if (!springLoaded && !LauncherAppState.getInstance().isScreenLarge()) {
                 // Hide the workspace scrollbar
                 mWorkspace.hideScrollingIndicator(true);
                 hideDockDivider();
@@ -3031,7 +3029,7 @@ public class Launcher extends Activity
      * Shows the hotseat area.
      */
     void showHotseat(boolean animated) {
-        if (!LauncherAppState.isScreenLarge()) {
+        if (!LauncherAppState.getInstance().isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
                     int duration = 0;
@@ -3050,7 +3048,7 @@ public class Launcher extends Activity
      * Hides the hotseat area.
      */
     void hideHotseat(boolean animated) {
-        if (!LauncherAppState.isScreenLarge()) {
+        if (!LauncherAppState.getInstance().isScreenLarge()) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
                     int duration = 0;
@@ -3817,7 +3815,8 @@ public class Launcher extends Activity
                         // If we can't find a valid position, then just add a new screen.
                         // This takes time so we need to re-queue the add until the new
                         // page is added.
-                        long screenId = LauncherAppState.getInstance().getLauncherProvider().generateNewScreenId();
+                        long screenId = LauncherAppState.getInstance().getLauncherProvider()
+                                .generateNewScreenId();
                         mWorkspace.insertNewWorkspaceScreen(screenId, false);
                         model.updateWorkspaceScreenOrder(launcher, mWorkspace.getScreenOrder(),
                             new Runnable() {

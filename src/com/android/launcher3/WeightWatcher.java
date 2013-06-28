@@ -130,35 +130,6 @@ public class WeightWatcher extends LinearLayout {
         mHandler.sendEmptyMessage(MSG_STOP);
     }
 
-    public String getUptimeString() {
-        long sec = LauncherAppState.getInstance().getUptime() / 1000;
-        StringBuilder sb = new StringBuilder();
-        long days = sec / 86400;
-        if (days > 0) {
-            sec -= days * 86400;
-            sb.append(days);
-            sb.append("d");
-        }
-
-        long hours = sec / 3600;
-        if (hours > 0) {
-            sec -= hours * 3600;
-            sb.append(hours);
-            sb.append("h");
-        }
-
-        long mins = sec / 60;
-        if (mins > 0) {
-            sec -= mins * 60;
-            sb.append(mins);
-            sb.append("m");
-        }
-
-        sb.append(sec);
-        sb.append("s");
-        return sb.toString();
-    }
-
     public class ProcessWatcher extends LinearLayout {
         GraphView mRamGraph;
         TextView mText;
@@ -208,6 +179,35 @@ public class WeightWatcher extends LinearLayout {
 
         public int getPid() {
             return mPid;
+        }
+
+        public String getUptimeString() {
+            long sec = mMemInfo.getUptime() / 1000;
+            StringBuilder sb = new StringBuilder();
+            long days = sec / 86400;
+            if (days > 0) {
+                sec -= days * 86400;
+                sb.append(days);
+                sb.append("d");
+            }
+
+            long hours = sec / 3600;
+            if (hours > 0) {
+                sec -= hours * 3600;
+                sb.append(hours);
+                sb.append("h");
+            }
+
+            long mins = sec / 60;
+            if (mins > 0) {
+                sec -= mins * 60;
+                sb.append(mins);
+                sb.append("m");
+            }
+
+            sb.append(sec);
+            sb.append("s");
+            return sb.toString();
         }
 
         public void update() {

@@ -26,8 +26,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.R;
-
 public class InfoDropTarget extends ButtonDropTarget {
 
     private ColorStateList mOriginalTextColor;
@@ -58,7 +56,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (!LauncherAppState.isScreenLarge()) {
+            if (!LauncherAppState.getInstance().isScreenLarge()) {
                 setText("");
             }
         }

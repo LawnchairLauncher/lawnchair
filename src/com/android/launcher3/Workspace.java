@@ -29,7 +29,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -40,7 +39,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -54,7 +52,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.launcher3.R;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.LauncherSettings.Favorites;
 
@@ -63,7 +60,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -178,7 +174,7 @@ public class Workspace extends SmoothPagedView
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
-    private final HolographicOutlineHelper mOutlineHelper = HolographicOutlineHelper.obtain();
+    private HolographicOutlineHelper mOutlineHelper;
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
@@ -293,6 +289,8 @@ public class Workspace extends SmoothPagedView
         mContentIsRefreshable = false;
         mOriginalPageSpacing = mPageSpacing;
 
+        mOutlineHelper = HolographicOutlineHelper.obtain(context);
+
         mDragEnforcer = new DropTarget.DragEnforcer(context);
         // With workspace, data is available straight from the get-go
         setDataIsReady();
@@ -309,7 +307,7 @@ public class Workspace extends SmoothPagedView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
 
-        if (LauncherAppState.isScreenLarge()) {
+        if (LauncherAppState.getInstance().isScreenLarge()) {
             // Determine number of rows/columns dynamically
             // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
             // Around that ratio we should make cells the same size in portrait and
@@ -734,7 +732,7 @@ public class Workspace extends SmoothPagedView
 
         // Only allow tap to next page on large devices, where there's significant margin outside
         // the active workspace
-        return LauncherAppState.isScreenLarge() && hitsPage(current - 1, x, y);
+        return LauncherAppState.getInstance().isScreenLarge() && hitsPage(current - 1, x, y);
     }
 
     @Override
@@ -745,7 +743,7 @@ public class Workspace extends SmoothPagedView
 
         // Only allow tap to next page on large devices, where there's significant margin outside
         // the active workspace
-        return LauncherAppState.isScreenLarge() && hitsPage(current + 1, x, y);
+        return LauncherAppState.getInstance().isScreenLarge() && hitsPage(current + 1, x, y);
     }
 
     /**
@@ -880,7 +878,7 @@ public class Workspace extends SmoothPagedView
         }
 
         // Only show page outlines as we pan if we are on large screen
-        if (LauncherAppState.isScreenLarge()) {
+        if (LauncherAppState.getInstance().isScreenLarge()) {
             showOutlines();
             mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
         }
@@ -915,7 +913,7 @@ public class Workspace extends SmoothPagedView
             }
         } else {
             // If we are not mid-dragging, hide the page outlines if we are on a large screen
-            if (LauncherAppState.isScreenLarge()) {
+            if (LauncherAppState.getInstance().isScreenLarge()) {
                 hideOutlines();
             }
 
@@ -984,7 +982,7 @@ public class Workspace extends SmoothPagedView
 
         // We need to ensure that there is enough extra space in the wallpaper for the intended
         // parallax effects
-        if (LauncherAppState.isScreenLarge()) {
+        if (LauncherAppState.getInstance().isScreenLarge()) {
             mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
             mWallpaperHeight = maxDim;
         } else {
@@ -1017,7 +1015,7 @@ public class Workspace extends SmoothPagedView
         float scrollProgress =
             adjustedScrollX / (float) scrollRange;
 
-        if (LauncherAppState.isScreenLarge() && mIsStaticWallpaper) {
+        if (LauncherAppState.getInstance().isScreenLarge() && mIsStaticWallpaper) {
             // The wallpaper travel width is how far, from left to right, the wallpaper will move
             // at this orientation. On tablets in portrait mode we don't move all the way to the
             // edges of the wallpaper, or otherwise the parallax effect would be too strong.
@@ -1177,7 +1175,7 @@ public class Workspace extends SmoothPagedView
                 Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
 
             // Don't have any lag between workspace and wallpaper on non-large devices
-            if (!LauncherAppState.isScreenLarge() || jumpToFinalValue) {
+            if (!LauncherAppState.getInstance().isScreenLarge() || jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
                 mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
             } else {
@@ -2540,7 +2538,7 @@ public class Workspace extends SmoothPagedView
 
         // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
         // don't need to show the outlines
-        if (LauncherAppState.isScreenLarge()) {
+        if (LauncherAppState.getInstance().isScreenLarge()) {
             showOutlines();
         }
     }

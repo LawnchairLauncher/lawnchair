@@ -167,9 +167,11 @@ public class LauncherModel extends BroadcastReceiver {
         public void onPageBoundSynchronously(int page);
     }
 
-    LauncherModel(Context context, IconCache iconCache) {
+    LauncherModel(LauncherAppState app, IconCache iconCache) {
+        final Context context = app.getContext();
+
         mAppsCanBeOnExternalStorage = !Environment.isExternalStorageEmulated();
-        mApp = LauncherAppState.getInstance();
+        mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache);
         mIconCache = iconCache;
 
@@ -2323,10 +2325,8 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         mBgAllAppsList.updatePackage(context, packages[i]);
-                        LauncherAppState app =
-                                LauncherAppState.getInstance();
                         WidgetPreviewLoader.removeFromDb(
-                                app.getWidgetPreviewCacheDb(), packages[i]);
+                                mApp.getWidgetPreviewCacheDb(), packages[i]);
                     }
                     break;
                 case OP_REMOVE:
@@ -2334,10 +2334,8 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mBgAllAppsList.removePackage(packages[i]);
-                        LauncherAppState app =
-                                LauncherAppState.getInstance();
                         WidgetPreviewLoader.removeFromDb(
-                                app.getWidgetPreviewCacheDb(), packages[i]);
+                                mApp.getWidgetPreviewCacheDb(), packages[i]);
                     }
                     break;
             }

@@ -25,8 +25,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.android.launcher3.R;
-
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -87,7 +85,7 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
         final Intent data = pendingInfo.data;
 
         LauncherAppState app = LauncherAppState.getInstance();
-        synchronized (app) {
+        synchronized (app) { // TODO: make removeShortcut internally threadsafe
             removeShortcut(context, data, sharedPrefs);
         }
     }
