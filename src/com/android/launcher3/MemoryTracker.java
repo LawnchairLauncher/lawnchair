@@ -127,7 +127,17 @@ public class MemoryTracker extends Service {
             info.uss[info.head] = info.currentUss = dinfo.getTotalPrivateDirty();
             if (info.currentPss > info.max) info.max = info.currentPss;
             if (info.currentUss > info.max) info.max = info.currentUss;
-            Log.v(TAG, "update: pid " + pid + " pss=" + info.currentPss + " uss=" + info.currentUss);
+            // Log.v(TAG, "update: pid " + pid + " pss=" + info.currentPss + " uss=" + info.currentUss);
+            if (info.currentPss == 0) {
+                Log.v(TAG, "update: pid " + pid + " has pss=0, it probably died");
+                mData.remove(pid);
+            }
+        }
+        for (int i=mPids.size()-1; i>=0; i--) {
+            final long pid = mPids.get(i).intValue();
+            if (mData.get(pid) == null) {
+                mPids.remove(i);
+            }
         }
 
         // XXX: notify listeners

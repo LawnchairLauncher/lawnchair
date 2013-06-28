@@ -38,7 +38,7 @@ public class WeightWatcher extends LinearLayout {
     private static final int RAM_GRAPH_RSS_COLOR = 0xFF990000;
     private static final int RAM_GRAPH_PSS_COLOR = 0xFF99CC00;
     private static final int TEXT_COLOR = 0xFFFFFFFF;
-    private static final int BACKGROUND_COLOR = 0xa0000000;
+    private static final int BACKGROUND_COLOR = 0xc0000000;
 
     private static final int UPDATE_RATE = 5000;
 
@@ -157,7 +157,7 @@ public class WeightWatcher extends LinearLayout {
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     0,
-                    (int)(22 * dp),
+                    (int)(14 * dp),
                     1f
             );
 
