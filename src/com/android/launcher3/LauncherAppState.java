@@ -54,7 +54,7 @@ public class LauncherAppState {
 
     public static void setApplicationContext(Context context) {
         if (sContext != null) {
-            throw new IllegalStateException("setApplicationContext called twice! old=" + sContext + " new=" + context);
+            Log.w(Launcher.TAG, "setApplicationContext called twice! old=" + sContext + " new=" + context);
         }
         sContext = context.getApplicationContext();
     }

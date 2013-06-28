@@ -348,6 +348,9 @@ public class Launcher extends Activity
         }
 
         super.onCreate(savedInstanceState);
+
+        // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
+        LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
