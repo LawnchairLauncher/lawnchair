@@ -59,6 +59,7 @@ public class MemoryTracker extends Service {
     public final LongSparseArray<ProcessMemInfo> mData = new LongSparseArray<ProcessMemInfo>();
     public final ArrayList<Long> mPids = new ArrayList<Long>();
     private int[] mPidsArray = new int[0];
+    private final Object mLock = new Object();
 
     Handler mHandler = new Handler() {
         @Override
@@ -99,48 +100,50 @@ public class MemoryTracker extends Service {
     }
 
     public void startTrackingProcess(int pid, String name) {
-        final Long lpid = new Long(pid);
+        synchronized (mLock) {
+            final Long lpid = new Long(pid);
 
-        if (mPids.contains(lpid)) return;
+            if (mPids.contains(lpid)) return;
 
-        mPids.add(lpid);
-        final int N = mPids.size();
-        mPidsArray = new int[N];
-        StringBuffer sb = new StringBuffer("Now tracking processes: ");
-        for (int i=0; i<N; i++) {
-            final int p = mPids.get(i).intValue();
-            mPidsArray[i] = p;
-            sb.append(p); sb.append(" ");
+            mPids.add(lpid);
+            final int N = mPids.size();
+            mPidsArray = new int[N];
+            StringBuffer sb = new StringBuffer("Now tracking processes: ");
+            for (int i=0; i<N; i++) {
+                final int p = mPids.get(i).intValue();
+                mPidsArray[i] = p;
+                sb.append(p); sb.append(" ");
+            }
+            mData.put(pid, new ProcessMemInfo(pid, name));
+            Log.v(TAG, sb.toString());
         }
-        mData.put(pid, new ProcessMemInfo(pid, name));
-        Log.v(TAG, sb.toString());
     }
 
     void update() {
-        Debug.MemoryInfo[] dinfos = mAm.getProcessMemoryInfo(mPidsArray);
-        for (int i=0; i<dinfos.length; i++) {
-            Debug.MemoryInfo dinfo = dinfos[i];
-            final long pid = mPids.get(i).intValue();
-            final ProcessMemInfo info = mData.get(pid);
-            info.head = (info.head+1) % info.pss.length;
-            info.pss[info.head] = info.currentPss = dinfo.getTotalPss();
-            info.uss[info.head] = info.currentUss = dinfo.getTotalPrivateDirty();
-            if (info.currentPss > info.max) info.max = info.currentPss;
-            if (info.currentUss > info.max) info.max = info.currentUss;
-            // Log.v(TAG, "update: pid " + pid + " pss=" + info.currentPss + " uss=" + info.currentUss);
-            if (info.currentPss == 0) {
-                Log.v(TAG, "update: pid " + pid + " has pss=0, it probably died");
-                mData.remove(pid);
+        synchronized (mLock) {
+            Debug.MemoryInfo[] dinfos = mAm.getProcessMemoryInfo(mPidsArray);
+            for (int i=0; i<dinfos.length; i++) {
+                Debug.MemoryInfo dinfo = dinfos[i];
+                final long pid = mPids.get(i).intValue();
+                final ProcessMemInfo info = mData.get(pid);
+                info.head = (info.head+1) % info.pss.length;
+                info.pss[info.head] = info.currentPss = dinfo.getTotalPss();
+                info.uss[info.head] = info.currentUss = dinfo.getTotalPrivateDirty();
+                if (info.currentPss > info.max) info.max = info.currentPss;
+                if (info.currentUss > info.max) info.max = info.currentUss;
+                // Log.v(TAG, "update: pid " + pid + " pss=" + info.currentPss + " uss=" + info.currentUss);
+                if (info.currentPss == 0) {
+                    Log.v(TAG, "update: pid " + pid + " has pss=0, it probably died");
+                    mData.remove(pid);
+                }
+            }
+            for (int i=mPids.size()-1; i>=0; i--) {
+                final long pid = mPids.get(i).intValue();
+                if (mData.get(pid) == null) {
+                    mPids.remove(i);
+                }
             }
         }
-        for (int i=mPids.size()-1; i>=0; i--) {
-            final long pid = mPids.get(i).intValue();
-            if (mData.get(pid) == null) {
-                mPids.remove(i);
-            }
-        }
-
-        // XXX: notify listeners
     }
 
     @Override
