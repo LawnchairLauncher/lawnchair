@@ -509,10 +509,6 @@ public class DragController {
 
     private void checkTouchMove(DropTarget dropTarget) {
         if (dropTarget != null) {
-            DropTarget delegate = dropTarget.getDropTargetDelegate(mDragObject);
-            if (delegate != null) {
-                dropTarget = delegate;
-            }
             if (mLastDropTarget != dropTarget) {
                 if (mLastDropTarget != null) {
                     mLastDropTarget.onDragExit(mDragObject);
@@ -701,24 +697,15 @@ public class DragController {
             if (!target.isDropEnabled())
                 continue;
 
-            target.getHitRect(r);
-
-            // Convert the hit rect to DragLayer coordinates
-            target.getLocationInDragLayer(dropCoordinates);
-            r.offset(dropCoordinates[0] - target.getLeft(), dropCoordinates[1] - target.getTop());
+            target.getHitRectRelativeToDragLayer(r);
 
             mDragObject.x = x;
             mDragObject.y = y;
             if (r.contains(x, y)) {
-                DropTarget delegate = target.getDropTargetDelegate(mDragObject);
-                if (delegate != null) {
-                    target = delegate;
-                    target.getLocationInDragLayer(dropCoordinates);
-                }
 
-                // Make dropCoordinates relative to the DropTarget
-                dropCoordinates[0] = x - dropCoordinates[0];
-                dropCoordinates[1] = y - dropCoordinates[1];
+                dropCoordinates[0] = x;
+                dropCoordinates[1] = y;
+                mLauncher.getDragLayer().mapCoordInSelfToDescendent((View) target, dropCoordinates);
 
                 return target;
             }

@@ -1696,7 +1696,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return windowMaxIndex;
     }
 
-    @Override
     protected String getCurrentPageDescription() {
         int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
         int stringId = R.string.default_scroll_format;

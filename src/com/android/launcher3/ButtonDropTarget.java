@@ -112,7 +112,7 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     }
 
     @Override
-    public void getHitRect(android.graphics.Rect outRect) {
+    public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
         super.getHitRect(outRect);
         outRect.bottom += mBottomDragPadding;
     }
@@ -153,11 +153,6 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
         to.offset(xOffset, yOffset);
 
         return to;
-    }
-
-    @Override
-    public DropTarget getDropTargetDelegate(DragObject d) {
-        return null;
     }
 
     public void getLocationInDragLayer(int[] loc) {

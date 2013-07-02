@@ -141,25 +141,6 @@ public interface DropTarget {
     void onFlingToDelete(DragObject dragObject, int x, int y, PointF vec);
 
     /**
-     * Allows a DropTarget to delegate drag and drop events to another object.
-     *
-     * Most subclasses will should just return null from this method.
-     *
-     * @param source DragSource where the drag started
-     * @param x X coordinate of the drop location
-     * @param y Y coordinate of the drop location
-     * @param xOffset Horizontal offset with the object being dragged where the original
-     *          touch happened
-     * @param yOffset Vertical offset with the object being dragged where the original
-     *          touch happened
-     * @param dragView The DragView that's being dragged around on screen.
-     * @param dragInfo Data associated with the object being dragged
-     *
-     * @return The DropTarget to delegate to, or null to not delegate to another object.
-     */
-    DropTarget getDropTargetDelegate(DragObject dragObject);
-
-    /**
      * Check if a drop action can occur at, or near, the requested location.
      * This will be called just before onDrop.
      * 
@@ -177,7 +158,7 @@ public interface DropTarget {
     boolean acceptDrop(DragObject dragObject);
 
     // These methods are implemented in Views
-    void getHitRect(Rect outRect);
+    void getHitRectRelativeToDragLayer(Rect outRect);
     void getLocationInDragLayer(int[] loc);
     int getLeft();
     int getTop();
