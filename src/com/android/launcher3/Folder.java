@@ -107,22 +107,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     FolderEditText mFolderName;
     private float mFolderIconPivotX;
     private float mFolderIconPivotY;
-    private long mDragScrollStart;
-
-    /** Interpolator used to scale velocity with touch position, may be null. */
-    private Interpolator mEdgeInterpolator = new AccelerateInterpolator();
 
     private static final int SCROLL_CUT_OFF_AMOUNT = 60;
 
-    private final float mDurationToMax = 300f;
-    private final float mMaxVelocity = 100000f/1000f;
-
-    // Aim for this amount of target area to trigger scrolling
-    private static float sScrollBandFactor = -1f;
-    private static float sScrollBandMaxFactor = -1f;
-
-    // Min size for the target area to trigger scrolling
-    private static int sMinScrollBandHeight = -1;
+    private static final float MAX_SCROLL_VELOCITY = 1500f;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -132,11 +120,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private int DRAG_MODE_NONE = 0;
     private int DRAG_MODE_REORDER = 1;
-    private int DRAG_MODE_SCROLL_UP = 2;
-    private int DRAG_MODE_SCROLL_DOWN = 3;
     private int mDragMode = DRAG_MODE_NONE;
 
     private boolean mDestroyed;
+
+    private AutoScroller mAutoScroller;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -191,15 +179,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (sHintText == null) {
             sHintText = res.getString(R.string.folder_hint_text);
         }
-        if (sMinScrollBandHeight == -1) {
-            sMinScrollBandHeight = res.getDimensionPixelSize(R.dimen.min_scroll_band_size);
-        }
-        if (sScrollBandFactor == -1f) {
-            sScrollBandFactor = res.getInteger(R.integer.scroll_band_factor)/100f;
-        }
-        if (sScrollBandMaxFactor == -1f) {
-            sScrollBandMaxFactor = res.getInteger(R.integer.scroll_band_max_factor)/100f;
-        }
         mLauncher = (Launcher) context;
         // We need this view to be focusable in touch mode so that when text editing of the folder
         // name is complete, we have something to focus on, thus hiding the cursor and giving
@@ -236,6 +215,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        mAutoScroller = new AutoScroller(mScrollView);
+        mAutoScroller.setMaximumVelocityAbsolute(MAX_SCROLL_VELOCITY, MAX_SCROLL_VELOCITY);
+        mAutoScroller.setExtendsBeyondEdges(false);
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -673,83 +655,38 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
+    private Rect getDragObjectDrawingRect(View dragView, float[] r) {
+        final Rect drawingRect = mTempRect;
+        drawingRect.left = (int) r[0];
+        drawingRect.top = (int) r[1];
+        drawingRect.right = drawingRect.left + dragView.getMeasuredWidth();
+        drawingRect.bottom = drawingRect.top + dragView.getMeasuredHeight();
+        return drawingRect;
+    }
+
     public void onDragOver(DragObject d) {
         int scrollOffset = mScrollView.getScrollY();
-        int height = getMeasuredHeight();
-        int scrollBandHeight = Math.min((int) (height * sScrollBandMaxFactor),
-            (Math.max(sMinScrollBandHeight, (int) (height * sScrollBandFactor))));
         float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView, null);
         r[0] -= getPaddingLeft();
         r[1] -= getPaddingTop();
+        if (!mAutoScroller.onTouch(this, getDragObjectDrawingRect(d.dragView, r))) {
+            mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1] + scrollOffset, 1, 1,
+                    mTargetCell);
 
-        mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1] + scrollOffset,
-                1, 1, mTargetCell);
-
-        if (isLayoutRtl()) {
-            mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
-        }
-
-        if (r[1] < scrollBandHeight && mScrollView.getScrollY() > 0) {
-            // Scroll up
-            if (mDragMode != DRAG_MODE_SCROLL_UP) {
-                mDragMode = DRAG_MODE_SCROLL_UP;
-                mDragScrollStart = System.currentTimeMillis();
-                scrollUp();
+            if (isLayoutRtl()) {
+                mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
             }
-            mReorderAlarm.cancelAlarm();
-        } else if (r[1] > (getFolderHeight() - scrollBandHeight) && mScrollView.getScrollY() <
-                (mContent.getMeasuredHeight() - mScrollView.getMeasuredHeight())) {
-            if (mDragMode != DRAG_MODE_SCROLL_DOWN) {
-                mDragMode = DRAG_MODE_SCROLL_DOWN;
-                mDragScrollStart = System.currentTimeMillis();
-                scrollDown();
+            if (mTargetCell[0] != mPreviousTargetCell[0]
+                    || mTargetCell[1] != mPreviousTargetCell[1]) {
+                mReorderAlarm.cancelAlarm();
+                mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
+                mReorderAlarm.setAlarm(REORDER_DELAY);
+                mPreviousTargetCell[0] = mTargetCell[0];
+                mPreviousTargetCell[1] = mTargetCell[1];
+                mDragMode = DRAG_MODE_REORDER;
+            } else {
+                mDragMode = DRAG_MODE_NONE;
             }
-            mReorderAlarm.cancelAlarm();
-        } else if (mTargetCell[0] != mPreviousTargetCell[0] || mTargetCell[1] != mPreviousTargetCell[1]) {
-            mReorderAlarm.cancelAlarm();
-            mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
-            mReorderAlarm.setAlarm(REORDER_DELAY);
-            mPreviousTargetCell[0] = mTargetCell[0];
-            mPreviousTargetCell[1] = mTargetCell[1];
-            mDragMode = DRAG_MODE_REORDER;
-        } else {
-            mDragMode = DRAG_MODE_NONE;
-        }
-    }
-
-    Runnable mScrollUpRunnable = new Runnable() {
-        @Override
-        public void run() {
-            scrollUp();
-        }
-    };
-
-    Runnable mScrollDownRunnable = new Runnable() {
-        @Override
-        public void run() {
-            scrollDown();
-        }
-    };
-
-    private int getVelocity() {
-        float duration = (System.currentTimeMillis() - mDragScrollStart)/mDurationToMax;
-        return (int) Math.min(mMaxVelocity,
-        		(int) (mEdgeInterpolator.getInterpolation(duration) * mMaxVelocity));
-    }
-
-    private void scrollUp() {
-        if (mDragMode == DRAG_MODE_SCROLL_UP) {
-            mScrollView.setScrollY(mScrollView.getScrollY() - getVelocity());
-            invalidate();
-            post(mScrollUpRunnable);
-        }
-    }
-
-    private void scrollDown() {
-        if (mDragMode == DRAG_MODE_SCROLL_DOWN) {
-            mScrollView.setScrollY(mScrollView.getScrollY() + getVelocity());
-            invalidate();
-            post(mScrollDownRunnable);
         }
     }
 
@@ -794,8 +731,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onDragExit(DragObject d) {
-        // We only close the folder if this is a true drag exit, ie. not because a drop
-        // has occurred above the folder.
+        // Exiting folder; stop the auto scroller.
+        mAutoScroller.stop();
+        // We only close the folder if this is a true drag exit, ie. not because
+        // a drop has occurred above the folder.
         if (!d.dragComplete) {
             mOnExitAlarm.setOnAlarmListener(mOnExitAlarmListener);
             mOnExitAlarm.setAlarm(ON_EXIT_CLOSE_DELAY);

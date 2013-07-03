@@ -123,7 +123,7 @@ public interface DropTarget {
      *          touch happened
      * @param dragView The DragView that's being dragged around on screen.
      * @param dragInfo Data associated with the object being dragged
-     * 
+     *
      */
     void onDrop(DragObject dragObject);
 

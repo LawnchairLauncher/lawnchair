@@ -123,17 +123,16 @@ public class DragController {
      * Interface to receive notifications when a drag starts or stops
      */
     interface DragListener {
-        
         /**
          * A drag has begun
-         * 
+         *
          * @param source An object representing where the drag originated
          * @param info The data associated with the object that is being dragged
          * @param dragAction The drag action: either {@link DragController#DRAG_ACTION_MOVE}
          *        or {@link DragController#DRAG_ACTION_COPY}
          */
         void onDragStart(DragSource source, Object info, int dragAction);
-        
+
         /**
          * The drag has ended
          */
@@ -514,7 +513,6 @@ public class DragController {
             if (delegate != null) {
                 dropTarget = delegate;
             }
-
             if (mLastDropTarget != dropTarget) {
                 if (mLastDropTarget != null) {
                     mLastDropTarget.onDragExit(mDragObject);
@@ -589,6 +587,7 @@ public class DragController {
             } else {
                 mScrollState = SCROLL_OUTSIDE_ZONE;
             }
+            handleMoveEvent(dragLayerX, dragLayerY);
             break;
         case MotionEvent.ACTION_MOVE:
             handleMoveEvent(dragLayerX, dragLayerY);
