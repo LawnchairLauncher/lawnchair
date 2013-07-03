@@ -102,9 +102,6 @@
     <!--  When dragging an item, how much bigger (fixed dps) the dragged view
           should be. If 0, it will not be scaled at all. -->
     <dimen name="dragViewScale">12dp</dimen>
-    <dimen name="min_scroll_band_size">48dp</dimen>
-    <integer name="scroll_band_factor">20</integer>
-    <integer name="scroll_band_max_factor">30</integer>
 
     <!-- Padding applied to AppWidget previews -->
     <dimen name="app_widget_preview_padding_left">16dp</dimen>
