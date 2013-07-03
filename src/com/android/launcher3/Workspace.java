@@ -499,9 +499,9 @@ public class Workspace extends SmoothPagedView
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
-        addView(newScreen, getChildCount());
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(screenId);
+        addView(newScreen, getChildCount());
         if (updateDb) {
             // On bind we don't need to update the screens in the database.
             mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
@@ -525,10 +525,10 @@ public class Workspace extends SmoothPagedView
         AppWidgetHostView.getDefaultPaddingForWidget(mLauncher, mLauncher.getComponentName(), p);
         customContent.setPadding(p.left, p.top, p.right, p.bottom);
 
-        addView(customScreen, 0);
-
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
+        addView(customScreen, 0);
+
 
         // Ensure that the current page and default page are maintained.
         mDefaultPage++;
