@@ -57,7 +57,7 @@
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Rol agtergrond wanneer Tuisskerms gerol word</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Rol agtergrond \'hack\'</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Gebruik agtergrond \'hack\' wat beter werkverigting gee tydens die rol van statiese agtergronde</string>
-    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Agtergrond grootte</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Agtergrond groote</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Hoeveel skerms wyd die agtergrond moet wees</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Verdof kant skerms</string>
     <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Verdof die kant skerms wanneer Tuisskerms gerol word</string>
@@ -74,8 +74,13 @@
     <string name="preferences_interface_drawer_summary">Programme- en legstukke-laai</string>
     <string name="preferences_interface_drawer_orientation_title">Oriëntasie</string>
     <string name="preferences_interface_drawer_orientation_summary">Kies in watter rigting die laai rol</string>
-    <string name="preferences_interface_drawer_hidden_apps_title">Versteekde programme</string>
+    <string name="preferences_interface_drawer_apps_category">Programme</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Versteekte programme</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Steek programme in die laai weg</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Versteekte programme (kortpaaie)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Verwyder versteekte programme se kortpaaie van die Tuisskerm af</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Versteekte programme (legstukke)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Verwyder versteekte programme se legstukke van die Tuisskerm af</string>
     <string name="preferences_interface_drawer_widgets_category">Legstukke</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Saam met programme</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Rol vanaf die programme na die legstukke laai sonder om oortjie te kies</string>
