@@ -75,8 +75,13 @@
     <string name="preferences_interface_drawer_summary">Složka aplikací a widgetů</string>
     <string name="preferences_interface_drawer_orientation_title">Orientace</string>
     <string name="preferences_interface_drawer_orientation_summary">Zvolte směr posunu složky</string>
+    <string name="preferences_interface_drawer_apps_category">Aplikace</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Skryté aplikace</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Skrýt aplikace ze složky</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Skryté aplikace (zástupci)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Odstranit zástupce skrytých aplikací z plochy</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Skryté aplikace (widgety)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Odstranit widgety skrytých aplikací z plochy</string>
     <string name="preferences_interface_drawer_widgets_category">Widgety</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Spojit s aplikacemi</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Přecházet mezi aplikacemi a widgety bez změny záložek</string>
