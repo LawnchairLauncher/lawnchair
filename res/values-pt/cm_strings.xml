@@ -132,4 +132,6 @@
     <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remover atalhos dos aplicativos ocultos da área de trabalho</string>
     <string name="preferences_interface_drawer_hidden_apps_widgets_title">Aplicativos ocultos (widgets)</string>
     <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remover widgets dos aplicativos ocultos da área de trabalho</string>
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Menu</string>
 </resources>
