@@ -83,24 +83,29 @@ public class MemoryDumpActivity extends Activity {
         final StringBuilder body = new StringBuilder();
 
         final ArrayList<String> paths = new ArrayList<String>();
-        for (int pid : tracker.getTrackedProcesses()) {
-            final String path = String.format("%s/launcher-memory-%d.ahprof",
-                    Environment.getExternalStorageDirectory(),
-                    pid);
-            Log.v(TAG, "Dumping memory info for process " + pid + " to " + path);
-            MemoryTracker.ProcessMemInfo info = tracker.getMemInfo(pid);
-            body.append("pid ").append(pid).append(":")
-                .append(" up=").append(info.getUptime())
-                .append(" pss=").append(info.currentPss)
-                .append(" uss=").append(info.currentUss)
-                .append("\n");
-            try {
-                android.os.Debug.dumpHprofData(path); // will block
-            } catch (IOException e) {
-                Log.e(TAG, "error dumping memory:", e);
-            }
+        final int myPid = android.os.Process.myPid();
 
-            paths.add(path);
+        for (int pid : tracker.getTrackedProcesses()) {
+            MemoryTracker.ProcessMemInfo info = tracker.getMemInfo(pid);
+            if (info != null) {
+                body.append("pid ").append(pid).append(":")
+                    .append(" up=").append(info.getUptime())
+                    .append(" pss=").append(info.currentPss)
+                    .append(" uss=").append(info.currentUss)
+                    .append("\n");
+            }
+            if (pid == myPid) {
+                final String path = String.format("%s/launcher-memory-%d.ahprof",
+                        Environment.getExternalStorageDirectory(),
+                        pid);
+                Log.v(TAG, "Dumping memory info for process " + pid + " to " + path);
+                try {
+                    android.os.Debug.dumpHprofData(path); // will block
+                } catch (IOException e) {
+                    Log.e(TAG, "error dumping memory:", e);
+                }
+                paths.add(path);
+            }
         }
 
         String zipfile = zipUp(paths);
@@ -111,7 +116,7 @@ public class MemoryDumpActivity extends Activity {
         shareIntent.setType("application/zip");
 
         final PackageManager pm = context.getPackageManager();
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, String.format("Launcher memory dump"));
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, String.format("Launcher memory dump (%d)", myPid));
         String appVersion;
         try {
             appVersion = pm.getPackageInfo(context.getPackageName(), 0).versionName;
