@@ -26,6 +26,7 @@ import android.util.Log;
 import android.util.LongSparseArray;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MemoryTracker extends Service {
     public static final String TAG = MemoryTracker.class.getSimpleName();
@@ -47,10 +48,10 @@ public class MemoryTracker extends Service {
             //= new Meminfo[(int) (30 * 60 / (UPDATE_RATE / 1000))]; // 30 minutes
         public long max = 1;
         public int head = 0;
-        public ProcessMemInfo(int pid, String name) {
+        public ProcessMemInfo(int pid, String name, long start) {
             this.pid = pid;
             this.name = name;
-            this.startTime = System.currentTimeMillis();
+            this.startTime = start;
         }
         public long getUptime() {
             return System.currentTimeMillis() - startTime;
@@ -99,7 +100,7 @@ public class MemoryTracker extends Service {
         return mPidsArray;
     }
 
-    public void startTrackingProcess(int pid, String name) {
+    public void startTrackingProcess(int pid, String name, long start) {
         synchronized (mLock) {
             final Long lpid = new Long(pid);
 
@@ -114,7 +115,7 @@ public class MemoryTracker extends Service {
                 mPidsArray[i] = p;
                 sb.append(p); sb.append(" ");
             }
-            mData.put(pid, new ProcessMemInfo(pid, name));
+            mData.put(pid, new ProcessMemInfo(pid, name, start));
             Log.v(TAG, sb.toString());
         }
     }
@@ -149,6 +150,22 @@ public class MemoryTracker extends Service {
     @Override
     public void onCreate() {
         mAm = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        // catch up in case we crashed but other processes are still running
+        List<ActivityManager.RunningServiceInfo> svcs = mAm.getRunningServices(256);
+        for (ActivityManager.RunningServiceInfo svc : svcs) {
+            if (svc.service.getPackageName().equals(getPackageName())) {
+                startTrackingProcess(svc.pid, svc.process, System.currentTimeMillis() - (SystemClock.elapsedRealtime() - svc.activeSince));
+            }
+        }
+
+        List<ActivityManager.RunningAppProcessInfo> procs = mAm.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo proc : procs) {
+            final String pname = proc.processName;
+            if (pname.startsWith(getPackageName())) {
+                startTrackingProcess(proc.pid, pname, System.currentTimeMillis());
+            }
+        }
     }
 
     @Override
@@ -164,7 +181,8 @@ public class MemoryTracker extends Service {
             if (ACTION_START_TRACKING.equals(intent.getAction())) {
                 final int pid = intent.getIntExtra("pid", -1);
                 final String name = intent.getStringExtra("name");
-                startTrackingProcess(pid, name);
+                final long start = intent.getLongExtra("start", System.currentTimeMillis());
+                startTrackingProcess(pid, name, start);
             }
         }
 
