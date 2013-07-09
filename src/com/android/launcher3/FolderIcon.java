@@ -427,10 +427,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable, d);
     }
 
-    public DropTarget getDropTargetDelegate(DragObject d) {
-        return null;
-    }
-
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize) {
             mIntrinsicIconSize = drawableSize;

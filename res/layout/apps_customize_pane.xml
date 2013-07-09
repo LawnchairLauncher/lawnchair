@@ -55,6 +55,7 @@
                 android:id="@+id/apps_customize_pane_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 launcher:maxAppCellCountX="@integer/apps_customize_maxCellCountX"
                 launcher:maxAppCellCountY="@integer/apps_customize_maxCellCountY"
                 launcher:pageLayoutWidthGap="@dimen/apps_customize_pageLayoutWidthGap"

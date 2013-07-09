@@ -832,10 +832,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return true;
     }
 
-    public DropTarget getDropTargetDelegate(DragObject d) {
-        return null;
-    }
-
     private void setupContentDimensions(int count) {
         ArrayList<View> list = getItemsInReadingOrder();
 
@@ -1207,5 +1203,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (v == mFolderName && hasFocus) {
             startEditingFolderName();
         }
+    }
+
+    @Override
+    public void getHitRectRelativeToDragLayer(Rect outRect) {
+        getHitRect(outRect);
     }
 }
