@@ -58,6 +58,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     int[] mDirectionVector = new int[2];
     int[] mLastDirectionVector = new int[2];
+    int[] mTmpPt = new int[2];
 
     final int SNAP_DURATION = 150;
     final int BACKGROUND_PADDING = 24;
@@ -399,18 +400,17 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     public void snapToWidget(boolean animate) {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        int xOffset = mCellLayout.getLeft() + mCellLayout.getPaddingLeft()
-                + mDragLayer.getPaddingLeft() - mWorkspace.getScrollX();
-        int yOffset = mCellLayout.getTop() + mCellLayout.getPaddingTop()
-                + mDragLayer.getPaddingTop() - mWorkspace.getScrollY();
-
         int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding - mWidgetPaddingLeft -
                 mWidgetPaddingRight;
         int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding - mWidgetPaddingTop -
                 mWidgetPaddingBottom;
 
-        int newX = mWidgetView.getLeft() - mBackgroundPadding + xOffset + mWidgetPaddingLeft;
-        int newY = mWidgetView.getTop() - mBackgroundPadding + yOffset + mWidgetPaddingTop;
+        mTmpPt[0] = mWidgetView.getLeft();
+        mTmpPt[1] = mWidgetView.getTop();
+        mDragLayer.getDescendantCoordRelativeToSelf(mCellLayout.getShortcutsAndWidgets(), mTmpPt);
+
+        int newX = mTmpPt[0] - mBackgroundPadding + mWidgetPaddingLeft;
+        int newY = mTmpPt[1] - mBackgroundPadding + mWidgetPaddingTop;
 
         // We need to make sure the frame's touchable regions lie fully within the bounds of the 
         // DragLayer. We allow the actual handles to be clipped, but we shift the touch regions

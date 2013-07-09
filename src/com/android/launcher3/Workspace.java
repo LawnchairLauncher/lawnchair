@@ -2384,6 +2384,7 @@ public class Workspace extends SmoothPagedView
                     if (finalResizeRunnable != null) {
                         finalResizeRunnable.run();
                     }
+                    stripEmptyScreens();
                 }
             };
             mAnimatingViewIntoPlace = true;
@@ -3364,6 +3365,10 @@ public class Workspace extends SmoothPagedView
                         mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
                     }
                 }
+                // If we move the item to anything not on the Workspace, check if any empty
+                // screens need to be removed. If we dropped back on the workspace, this will
+                // be done post drop animation.
+                stripEmptyScreens();
             }
         } else if (mDragInfo != null) {
             CellLayout cellLayout;
@@ -3379,8 +3384,6 @@ public class Workspace extends SmoothPagedView
         }
         mDragOutline = null;
         mDragInfo = null;
-
-        stripEmptyScreens();
 
         // Hide the scrolling indicator after you pick up an item
         hideScrollingIndicator(false);
