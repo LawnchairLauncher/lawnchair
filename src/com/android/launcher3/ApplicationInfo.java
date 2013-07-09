@@ -114,7 +114,10 @@ class ApplicationInfo extends ItemInfo {
 
     @Override
     public String toString() {
-        return "ApplicationInfo(title=" + title.toString() + ")";
+        return "ApplicationInfo(title=" + title.toString() + " id=" + this.id
+                + " type=" + this.itemType + " container=" + this.container
+                + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY
+                + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + dropPos + ")";
     }
 
     public static void dumpApplicationInfoList(String tag, String label,

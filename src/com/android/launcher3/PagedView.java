@@ -1680,7 +1680,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             break;
         }
 
-        System.out.println("onTouch, return true");
         return true;
     }
 

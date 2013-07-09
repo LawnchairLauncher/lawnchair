@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -136,7 +137,7 @@ public class Hotseat extends FrameLayout {
         for (ApplicationInfo info: allApps) {
             ComponentName cn = info.intent.getComponent();
             if (!onWorkspace.contains(cn)) {
-                System.out.println("Adding to all apps: " + info.intent);
+                Log.d(TAG, "Adding to all apps: " + info.intent);
                 ShortcutInfo si = info.makeShortcut();
                 fi.add(si);
             }

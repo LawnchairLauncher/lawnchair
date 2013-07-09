@@ -193,6 +193,7 @@ public class Launcher extends Activity
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 10;
+    private static int NEW_APPS_ANIMATION_DELAY = 500;
 
     private final BroadcastReceiver mCloseSystemDialogsReceiver
             = new CloseSystemDialogsIntentReceiver();
@@ -405,11 +406,6 @@ public class Launcher extends Activity
                 // configuration change) while launcher is in the foreground
                 mModel.startLoader(true, mWorkspace.getCurrentPage());
             }
-        }
-
-        if (!mModel.isAllAppsLoaded()) {
-            ViewGroup appsCustomizeContentParent = (ViewGroup) mAppsCustomizeContent.getParent();
-            mInflater.inflate(R.layout.apps_customize_progressbar, appsCustomizeContentParent);
         }
 
         // For handling default keys
@@ -2479,15 +2475,8 @@ public class Launcher extends Activity
         return mWorkspace;
     }
 
-    // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
-    @Override
     public boolean isAllAppsVisible() {
         return (mState == State.APPS_CUSTOMIZE) || (mOnResumeState == State.APPS_CUSTOMIZE);
-    }
-
-    @Override
-    public boolean isAllAppsButtonRank(int rank) {
-        return mHotseat.isAllAppsButtonRank(rank);
     }
 
     /**
@@ -3453,11 +3442,16 @@ public class Launcher extends Activity
 
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
+        bindAddScreens(orderedScreenIds);
+        mWorkspace.addExtraEmptyScreen();
+    }
+
+    @Override
+    public void bindAddScreens(ArrayList<Long> orderedScreenIds) {
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
-            mWorkspace.insertNewWorkspaceScreenOnBind(orderedScreenIds.get(i));
+            mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i), false);
         }
-        mWorkspace.addExtraEmptyScreen();
     }
 
     /**
@@ -3465,10 +3459,11 @@ public class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end) {
+    public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end,
+                          final boolean forceAnimateIcons) {
         if (waitUntilResume(new Runnable() {
                 public void run() {
-                    bindItems(shortcuts, start, end);
+                    bindItems(shortcuts, start, end, forceAnimateIcons);
                 }
             })) {
             return;
@@ -3478,6 +3473,8 @@ public class Launcher extends Activity
         Set<String> newApps = new HashSet<String>();
         newApps = mSharedPrefs.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, newApps);
 
+        final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+        final Collection<Animator> bounceAnims = new ArrayList<Animator>();
         Workspace workspace = mWorkspace;
         for (int i = start; i < end; i++) {
             final ItemInfo item = shortcuts.get(i);
@@ -3495,6 +3492,14 @@ public class Launcher extends Activity
                     String uri = info.intent.toUri(0).toString();
                     View shortcut = createShortcut(info);
 
+                    /*
+                     * TODO: FIX collision case
+                     */
+                    CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
+                    if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
+                        throw new RuntimeException("OCCUPIED");
+                    }
+
                     workspace.addInScreenFromBind(shortcut, item.container, item.screenId, item.cellX,
                             item.cellY, 1, 1);
                     boolean animateIconUp = false;
@@ -3503,7 +3508,13 @@ public class Launcher extends Activity
                             animateIconUp = newApps.remove(uri);
                         }
                     }
-                    if (animateIconUp) {
+                    if (forceAnimateIcons) {
+                        // Animate all the applications up now
+                        shortcut.setAlpha(0f);
+                        shortcut.setScaleX(0f);
+                        shortcut.setScaleY(0f);
+                        bounceAnims.add(createNewAppBounceAnimation(shortcut, i));
+                    } else if (animateIconUp) {
                         // Prepare the view to be animated up
                         shortcut.setAlpha(0f);
                         shortcut.setScaleX(0f);
@@ -3524,6 +3535,16 @@ public class Launcher extends Activity
             }
         }
 
+        if (forceAnimateIcons) {
+            // We post the animation slightly delayed to prevent slowdowns when we are loading
+            // right after we return to launcher.
+            mWorkspace.postDelayed(new Runnable() {
+                public void run() {
+                    anim.playTogether(bounceAnims);
+                    anim.start();
+                }
+            }, NEW_APPS_ANIMATION_DELAY);
+        }
         workspace.requestLayout();
     }
 
@@ -3595,7 +3616,6 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(final boolean upgradePath) {
-
         if (waitUntilResume(new Runnable() {
                 public void run() {
                     finishBindingItems(upgradePath);
@@ -3753,119 +3773,10 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<ApplicationInfo> apps) {
-        Runnable setAllAppsRunnable = new Runnable() {
-            public void run() {
-                if (mAppsCustomizeContent != null) {
-                    mAppsCustomizeContent.setApps(apps);
-
-                    if (mIntentsOnWorkspaceFromUpgradePath != null) {
-                        getHotseat().addAllAppsFolder(mIconCache, apps,
-                                mIntentsOnWorkspaceFromUpgradePath, Launcher.this);
-                        mIntentsOnWorkspaceFromUpgradePath = null;
-                    }
-                }
-            }
-        };
-
-        // Remove the progress bar entirely; we could also make it GONE
-        // but better to remove it since we know it's not going to be used
-        View progressBar = mAppsCustomizeTabHost.
-            findViewById(R.id.apps_customize_progress_bar);
-        if (progressBar != null) {
-            ((ViewGroup)progressBar.getParent()).removeView(progressBar);
-
-            // We just post the call to setApps so the user sees the progress bar
-            // disappear-- otherwise, it just looks like the progress bar froze
-            // which doesn't look great
-            mAppsCustomizeTabHost.post(setAllAppsRunnable);
-        } else {
-            // If we did not initialize the spinner in onCreate, then we can directly set the
-            // list of applications without waiting for any progress bars views to be hidden.
-            setAllAppsRunnable.run();
-        }
-    }
-
-    /**
-     * A package was installed.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
-    public void bindAppsAdded(final ArrayList<ApplicationInfo> apps) {
-        if (waitUntilResume(new Runnable() {
-                public void run() {
-                    bindAppsAdded(apps);
-                }
-            })) {
-            return;
-        }
-
-        final Launcher launcher = this;
-        final Context context = this;
-        final ArrayList<ApplicationInfo> appsCopy = new ArrayList<ApplicationInfo>();
-        appsCopy.addAll(apps);
-
-        // Process newly added apps
-        mWorkspace.post(new Runnable() {
-            @Override
-            public void run() {
-                // Process newly added apps
-                LauncherModel model = getModel();
-                Iterator<ApplicationInfo> iter = appsCopy.iterator();
-                ArrayList<View> animatedShortcuts = new ArrayList<View>();
-
-                while (iter.hasNext()) {
-                    ApplicationInfo a = iter.next();
-                    Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
-                            a.title.toString(), a.intent);
-                    if (coords == null) {
-                        // If we can't find a valid position, then just add a new screen.
-                        // This takes time so we need to re-queue the add until the new
-                        // page is added.
-                        long screenId = LauncherAppState.getInstance().getLauncherProvider()
-                                .generateNewScreenId();
-                        mWorkspace.insertNewWorkspaceScreen(screenId, false);
-                        model.updateWorkspaceScreenOrder(launcher, mWorkspace.getScreenOrder(),
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    bindAppsAdded(appsCopy);
-                                }
-                            });
-                        return;
-                    } else {
-                        final ShortcutInfo shortcutInfo = a.makeShortcut();
-                        final View shortcut = createShortcut(shortcutInfo);
-                        // Add the view to the screen
-                        mWorkspace.addInScreenFromBind(shortcut,
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                                coords.first, coords.second[0], coords.second[1], 1, 1);
-                        // Add the shortcut to the db
-                        model.addItemToDatabase(context, shortcutInfo,
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                                coords.first, coords.second[0], coords.second[1], false);
-                        // Animate the shortcut
-                        animatedShortcuts.add(shortcut);
-                    }
-                    iter.remove();
-                }
-
-                // Animate all the applications up
-                AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-                Collection<Animator> bounceAnims = new ArrayList<Animator>();
-                for (int i = 0; i < animatedShortcuts.size(); ++i) {
-                    View shortcut = animatedShortcuts.get(i);
-                    shortcut.setAlpha(0f);
-                    shortcut.setScaleX(0f);
-                    shortcut.setScaleY(0f);
-                    bounceAnims.add(createNewAppBounceAnimation(shortcut, i));
-                }
-                anim.playTogether(bounceAnims);
-                anim.start();
-            }
-        });
-
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.addApps(apps);
+        if (mIntentsOnWorkspaceFromUpgradePath != null) {
+            getHotseat().addAllAppsFolder(mIconCache, apps,
+                    mIntentsOnWorkspaceFromUpgradePath, Launcher.this);
+            mIntentsOnWorkspaceFromUpgradePath = null;
         }
     }
 
@@ -3886,10 +3797,6 @@ public class Launcher extends Activity
         if (mWorkspace != null) {
             mWorkspace.updateShortcuts(apps);
         }
-
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.updateApps(apps);
-        }
     }
 
     /**
@@ -3903,23 +3810,19 @@ public class Launcher extends Activity
      */
     public void bindComponentsRemoved(final ArrayList<String> packageNames,
                                       final ArrayList<ApplicationInfo> appInfos,
-                                      final boolean matchPackageNamesOnly) {
+                                      final boolean packageRemoved) {
         if (waitUntilResume(new Runnable() {
             public void run() {
-                bindComponentsRemoved(packageNames, appInfos, matchPackageNamesOnly);
+                bindComponentsRemoved(packageNames, appInfos, packageRemoved);
             }
         })) {
             return;
         }
 
-        if (matchPackageNamesOnly) {
+        if (packageRemoved) {
             mWorkspace.removeItemsByPackageName(packageNames);
         } else {
             mWorkspace.removeItemsByApplicationInfo(appInfos);
-        }
-
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.removeApps(appInfos);
         }
 
         // Notify the drag controller
@@ -3929,7 +3832,6 @@ public class Launcher extends Activity
     /**
      * A number of packages were updated.
      */
-
     private ArrayList<Object> mWidgetsAndShortcuts;
     private Runnable mBindPackagesUpdatedRunnable = new Runnable() {
             public void run() {
@@ -3944,6 +3846,7 @@ public class Launcher extends Activity
             return;
         }
 
+        // Update the widgets pane
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated(widgetsAndShortcuts);
         }
