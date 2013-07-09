@@ -16,13 +16,17 @@
 
 package com.android.launcher3;
 
-import java.util.ArrayList;
-
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -57,11 +61,14 @@ class ShortcutInfo extends ItemInfo {
      */
     private Bitmap mIcon;
 
+    long firstInstallTime;
+    int flags = 0;
+
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
     
-    public ShortcutInfo(ShortcutInfo info) {
+    public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
         title = info.title.toString();
         intent = new Intent(info.intent);
@@ -72,6 +79,7 @@ class ShortcutInfo extends ItemInfo {
         }
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
         customIcon = info.customIcon;
+        initFlagsAndFirstInstallTime(getPackageInfo(context, intent.getComponent().getPackageName()));
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
@@ -80,6 +88,24 @@ class ShortcutInfo extends ItemInfo {
         title = info.title.toString();
         intent = new Intent(info.intent);
         customIcon = false;
+        flags = info.flags;
+        firstInstallTime = info.firstInstallTime;
+    }
+
+    public static PackageInfo getPackageInfo(Context context, String packageName) {
+        PackageInfo pi = null;
+        try {
+            PackageManager pm = context.getPackageManager();
+            pi = pm.getPackageInfo(packageName, 0);
+        } catch (NameNotFoundException e) {
+            Log.d("ShortcutInfo", "PackageManager.getPackageInfo failed for " + packageName);
+        }
+        return pi;
+    }
+
+    void initFlagsAndFirstInstallTime(PackageInfo pi) {
+        flags = ApplicationInfo.initFlags(pi);
+        firstInstallTime = ApplicationInfo.initFirstInstallTime(pi);
     }
 
     public void setIcon(Bitmap b) {
@@ -105,12 +131,13 @@ class ShortcutInfo extends ItemInfo {
      * @param className the class name of the component representing the intent
      * @param launchFlags the launch flags
      */
-    final void setActivity(ComponentName className, int launchFlags) {
+    final void setActivity(Context context, ComponentName className, int launchFlags) {
         intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setComponent(className);
         intent.setFlags(launchFlags);
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION;
+        initFlagsAndFirstInstallTime(getPackageInfo(context, intent.getComponent().getPackageName()));
     }
 
     @Override

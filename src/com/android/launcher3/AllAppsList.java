@@ -166,7 +166,7 @@ class AllAppsList {
     /**
      * Query the package manager for MAIN/LAUNCHER activities in the supplied package.
      */
-    private static List<ResolveInfo> findActivitiesForPackage(Context context, String packageName) {
+    static List<ResolveInfo> findActivitiesForPackage(Context context, String packageName) {
         final PackageManager packageManager = context.getPackageManager();
 
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);

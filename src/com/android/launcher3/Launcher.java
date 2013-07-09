@@ -255,6 +255,7 @@ public class Launcher extends Activity
     private boolean mWaitingForResult;
     private boolean mOnResumeNeedsLoad;
 
+    private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
     private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
 
     // Keep track of whether the user has left launcher
@@ -770,7 +771,7 @@ public class Launcher extends Activity
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
-        if (mOnResumeCallbacks.size() > 0) {
+        if (mBindOnResumeCallbacks.size() > 0) {
             // We might have postponed some bind calls until onResume (see waitUntilResume) --
             // execute them here
             long startTimeCallbacks = 0;
@@ -781,13 +782,13 @@ public class Launcher extends Activity
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setBulkBind(true);
             }
-            for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
-                mOnResumeCallbacks.get(i).run();
+            for (int i = 0; i < mBindOnResumeCallbacks.size(); i++) {
+                mBindOnResumeCallbacks.get(i).run();
             }
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setBulkBind(false);
             }
-            mOnResumeCallbacks.clear();
+            mBindOnResumeCallbacks.clear();
             if (DEBUG_RESUME_TIME) {
                 Log.d(TAG, "Time spent processing callbacks in onResume: " +
                     (System.currentTimeMillis() - startTimeCallbacks));
@@ -1101,7 +1102,7 @@ public class Launcher extends Activity
         final ShortcutInfo info = mModel.getShortcutInfo(getPackageManager(), data, this);
 
         if (info != null) {
-            info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
+            info.setActivity(this, data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             info.container = ItemInfo.NO_ID;
             mWorkspace.addApplicationShortcut(info, layout, container, screenId, cellXY[0], cellXY[1],
@@ -2160,20 +2161,23 @@ public class Launcher extends Activity
         startActivitySafely(null, intent, "startApplicationDetailsActivity");
     }
 
-    void startApplicationUninstallActivity(ApplicationInfo appInfo) {
-        if ((appInfo.flags & ApplicationInfo.DOWNLOADED_FLAG) == 0) {
+    // returns true if the activity was started
+    boolean startApplicationUninstallActivity(ComponentName componentName, int flags) {
+        if ((flags & ApplicationInfo.DOWNLOADED_FLAG) == 0) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
             int messageId = R.string.uninstall_system_app_text;
             Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
+            return false;
         } else {
-            String packageName = appInfo.componentName.getPackageName();
-            String className = appInfo.componentName.getClassName();
+            String packageName = componentName.getPackageName();
+            String className = componentName.getClassName();
             Intent intent = new Intent(
                     Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
+            return true;
         }
     }
 
@@ -3370,10 +3374,10 @@ public class Launcher extends Activity
         if (mPaused) {
             Log.i(TAG, "Deferring update until onResume");
             if (deletePreviousRunnables) {
-                while (mOnResumeCallbacks.remove(run)) {
+                while (mBindOnResumeCallbacks.remove(run)) {
                 }
             }
-            mOnResumeCallbacks.add(run);
+            mBindOnResumeCallbacks.add(run);
             return true;
         } else {
             return false;
@@ -3382,6 +3386,14 @@ public class Launcher extends Activity
 
     private boolean waitUntilResume(Runnable run) {
         return waitUntilResume(run, false);
+    }
+
+    public void addOnResumeCallback(Runnable run) {
+        mBindOnResumeCallbacks.add(run);
+    }
+
+    public void removeOnResumeCallback(Runnable run) {
+        mBindOnResumeCallbacks.remove(run);
     }
 
     /**
@@ -3428,7 +3440,7 @@ public class Launcher extends Activity
         // If we're starting binding all over again, clear any bind calls we'd postponed in
         // the past (see waitUntilResume) -- we don't need them since we're starting binding
         // from scratch again
-        mOnResumeCallbacks.clear();
+        mBindOnResumeCallbacks.clear();
 
         final Workspace workspace = mWorkspace;
         mNewShortcutAnimateScreenId = -1;

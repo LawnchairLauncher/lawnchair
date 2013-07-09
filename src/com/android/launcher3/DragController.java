@@ -379,9 +379,11 @@ public class DragController {
     void onDeferredEndDrag(DragView dragView) {
         dragView.remove();
 
-        // If we skipped calling onDragEnd() before, do it now
-        for (DragListener listener : mListeners) {
-            listener.onDragEnd();
+        if (mDragObject.deferDragViewCleanupPostAnimation) {
+            // If we skipped calling onDragEnd() before, do it now
+            for (DragListener listener : mListeners) {
+                listener.onDragEnd();
+            }
         }
     }
 

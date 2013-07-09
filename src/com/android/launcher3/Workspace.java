@@ -250,6 +250,10 @@ public class Workspace extends SmoothPagedView
     private int mLastChildCount = -1;
     private float mTransitionProgress;
 
+    private Runnable mDeferredAction;
+    private boolean mDeferDropAfterUninstall;
+    private boolean mUninstallSuccessful;
+
     private final Runnable mBindPages = new Runnable() {
         @Override
         public void run() {
@@ -2305,7 +2309,7 @@ public class Workspace extends SmoothPagedView
             final View cell = mDragInfo.cell;
 
             Runnable resizeRunnable = null;
-            if (dropTargetLayout != null) {
+            if (dropTargetLayout != null && !d.cancelled) {
                 // Move internally
                 boolean hasMovedLayouts = (getParentCellLayoutForView(cell) != dropTargetLayout);
                 boolean hasMovedIntoHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
@@ -3411,15 +3415,25 @@ public class Workspace extends SmoothPagedView
     /**
      * Called at the end of a drag which originated on the workspace.
      */
-    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (success) {
-            if (target != this) {
-                if (mDragInfo != null) {
-                    getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
-                    if (mDragInfo.cell instanceof DropTarget) {
-                        mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
+    public void onDropCompleted(final View target, final DragObject d,
+            final boolean isFlingToDelete, final boolean success) {
+        if (mDeferDropAfterUninstall) {
+            mDeferredAction = new Runnable() {
+                    public void run() {
+                        onDropCompleted(target, d, isFlingToDelete, success);
+                        mDeferredAction = null;
                     }
+                };
+            return;
+        }
+
+        boolean beingCalledAfterUninstall = mDeferredAction != null;
+
+        if (success && !(beingCalledAfterUninstall && !mUninstallSuccessful)) {
+            if (target != this && mDragInfo != null) {
+                getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
+                if (mDragInfo.cell instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
                 }
                 // If we move the item to anything not on the Workspace, check if any empty
                 // screens need to be removed. If we dropped back on the workspace, this will
@@ -3435,11 +3449,25 @@ public class Workspace extends SmoothPagedView
             }
             cellLayout.onDropChild(mDragInfo.cell);
         }
-        if (d.cancelled &&  mDragInfo.cell != null) {
-                mDragInfo.cell.setVisibility(VISIBLE);
+        if ((d.cancelled || (beingCalledAfterUninstall && !mUninstallSuccessful))
+                && mDragInfo.cell != null) {
+            mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragOutline = null;
         mDragInfo = null;
+    }
+
+    public void deferCompleteDropAfterUninstallActivity() {
+        mDeferDropAfterUninstall = true;
+    }
+
+    /// maybe move this into a smaller part
+    public void onUninstallActivityReturned(boolean success) {
+        mDeferDropAfterUninstall = false;
+        mUninstallSuccessful = success;
+        if (mDeferredAction != null) {
+            mDeferredAction.run();
+        }
     }
 
     void updateItemLocationsInDatabase(CellLayout cl) {

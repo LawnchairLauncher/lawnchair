@@ -118,21 +118,6 @@ class ItemInfo {
         LauncherModel.checkItemInfo(this);
     }
 
-    /** Returns the package name that the intent will resolve to, or an empty string if
-     *  none exists. */
-    static String getPackageName(Intent intent) {
-        if (intent != null) {
-            String packageName = intent.getPackage();
-            if (packageName == null && intent.getComponent() != null) {
-                packageName = intent.getComponent().getPackageName();
-            }
-            if (packageName != null) {
-                return packageName;
-            }
-        }
-        return "";
-    }
-
     /**
      * Write the fields of this item to the DB
      * 

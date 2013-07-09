@@ -126,6 +126,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private AutoScroller mAutoScroller;
 
+    private Runnable mDeferredAction;
+    private boolean mDeferDropAfterUninstall;
+    private boolean mUninstallSuccessful;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -743,9 +747,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mDragMode = DRAG_MODE_NONE;
     }
 
-    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (success) {
+    public void onDropCompleted(final View target, final DragObject d,
+            final boolean isFlingToDelete, final boolean success) {
+        if (mDeferDropAfterUninstall) {
+            mDeferredAction = new Runnable() {
+                    public void run() {
+                        onDropCompleted(target, d, isFlingToDelete, success);
+                        mDeferredAction = null;
+                    }
+                };
+            return;
+        }
+
+        boolean beingCalledAfterUninstall = mDeferredAction != null;
+        boolean successfulDrop =
+                success && (!beingCalledAfterUninstall || mUninstallSuccessful);
+        if (successfulDrop) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon) {
                 replaceFolderWithFinalItem();
             }
@@ -758,7 +775,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (target != this) {
             if (mOnExitAlarm.alarmPending()) {
                 mOnExitAlarm.cancelAlarm();
-                if (!success) {
+                if (successfulDrop) {
                     mSuppressFolderDeletion = true;
                 }
                 completeDragExit();
@@ -774,6 +791,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Reordering may have occured, and we need to save the new item locations. We do this once
         // at the end to prevent unnecessary database operations.
         updateItemLocationsInDatabaseBatch();
+    }
+
+    public void deferCompleteDropAfterUninstallActivity() {
+        mDeferDropAfterUninstall = true;
+    }
+
+    public void onUninstallActivityReturned(boolean success) {
+        mDeferDropAfterUninstall = false;
+        mUninstallSuccessful = success;
+        if (mDeferredAction != null) {
+            mDeferredAction.run();
+        }
     }
 
     @Override

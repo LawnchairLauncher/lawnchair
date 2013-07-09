@@ -19,7 +19,11 @@ package com.android.launcher3;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -27,12 +31,15 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+
+import java.util.List;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
@@ -136,6 +143,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
                     item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                 return true;
             }
+            if (AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
+                item instanceof ShortcutInfo) {
+                ShortcutInfo shortcutInfo = (ShortcutInfo) info;
+                return (shortcutInfo.flags & ApplicationInfo.DOWNLOADED_FLAG) != 0;
+            }
         }
         return false;
     }
@@ -198,20 +211,22 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private void animateToTrashAndCompleteDrop(final DragObject d) {
-        DragLayer dragLayer = mLauncher.getDragLayer();
-        Rect from = new Rect();
+        final DragLayer dragLayer = mLauncher.getDragLayer();
+        final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-        Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
+        final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
                 mCurrentDrawable.getIntrinsicWidth(), mCurrentDrawable.getIntrinsicHeight());
-        float scale = (float) to.width() / from.width();
+        final float scale = (float) to.width() / from.width();
 
         mSearchDropTargetBar.deferOnDragEnd();
+        deferCompleteDropIfUninstalling(d);
+
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override
             public void run() {
+                completeDrop(d);
                 mSearchDropTargetBar.onDragEnd();
                 mLauncher.exitSpringLoadedDragMode();
-                completeDrop(d);
             }
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
@@ -220,12 +235,40 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
-    private void completeDrop(DragObject d) {
-        ItemInfo item = (ItemInfo) d.dragInfo;
+    private void deferCompleteDropIfUninstalling(DragObject d) {
+        mWaitingForUninstall = false;
+        if (isUninstall(d)) {
+            if (d.dragSource instanceof Folder) {
+                ((Folder) d.dragSource).deferCompleteDropAfterUninstallActivity();
+            } else if (d.dragSource instanceof Workspace) {
+                ((Workspace) d.dragSource).deferCompleteDropAfterUninstallActivity();
+            }
+            mWaitingForUninstall = true;
+        }
+    }
 
+    private boolean isUninstall(DragObject d) {
+         return AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d);
+    }
+
+    private boolean mWaitingForUninstall = false;
+    private void completeDrop(final DragObject d) {
+        ItemInfo item = (ItemInfo) d.dragInfo;
+        boolean wasWaitingForUninstall = mWaitingForUninstall;
+        mWaitingForUninstall = false;
         if (isAllAppsApplication(d.dragSource, item)) {
             // Uninstall the application if it is being dragged from AppsCustomize
-            mLauncher.startApplicationUninstallActivity((ApplicationInfo) item);
+            ApplicationInfo appInfo = (ApplicationInfo) item;
+            mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags);
+        } else if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
+            ShortcutInfo shortcut = (ShortcutInfo) item;
+            if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
+                ComponentName componentName = shortcut.intent.getComponent();
+                int flags = ApplicationInfo.initFlags(
+                    ShortcutInfo.getPackageInfo(getContext(), componentName.getPackageName()));
+                mWaitingForUninstall =
+                    mLauncher.startApplicationUninstallActivity(componentName, flags);
+            }
         } else if (isWorkspaceOrFolderApplication(d)) {
             LauncherModel.deleteItemFromDatabase(mLauncher, item);
         } else if (isWorkspaceFolder(d)) {
@@ -249,6 +292,37 @@ public class DeleteDropTarget extends ButtonDropTarget {
                     }
                 }.start();
             }
+        }
+        if (wasWaitingForUninstall && !mWaitingForUninstall) {
+            if (d.dragSource instanceof Folder) {
+                ((Folder) d.dragSource).onUninstallActivityReturned(false);
+            } else if (d.dragSource instanceof Workspace) {
+                ((Workspace) d.dragSource).onUninstallActivityReturned(false);
+            }
+        }
+        if (mWaitingForUninstall) {
+            final Runnable checkIfUninstallWasSuccess = new Runnable() {
+                    @Override
+                        public void run() {
+                        mWaitingForUninstall = false;
+                        ShortcutInfo shortcut = (ShortcutInfo) d.dragInfo;
+                        if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
+                            String packageName = shortcut.intent.getComponent().getPackageName();
+                            List<ResolveInfo> activities =
+                                AllAppsList.findActivitiesForPackage(getContext(), packageName);
+                            boolean uninstallSuccessful = activities.size() == 0;
+                              mLauncher.removeOnResumeCallback(this);
+                              if (d.dragSource instanceof Folder) {
+                                  ((Folder) d.dragSource).
+                                      onUninstallActivityReturned(uninstallSuccessful);
+                              } else if (d.dragSource instanceof Workspace) {
+                                  ((Workspace) d.dragSource).
+                                      onUninstallActivityReturned(uninstallSuccessful);
+                              }
+                        }
+                    }
+                };
+            mLauncher.addOnResumeCallback(checkIfUninstallWasSuccess);
         }
     }
 
@@ -422,6 +496,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
             updateCb = createFlingAlongVectorAnimatorListener(dragLayer, d, vel, startTime,
                     duration, config);
         }
+        deferCompleteDropIfUninstalling(d);
+
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override
             public void run() {

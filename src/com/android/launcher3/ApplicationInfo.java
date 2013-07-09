@@ -20,6 +20,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -72,20 +73,31 @@ class ApplicationInfo extends ItemInfo {
                 Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
         try {
-            int appFlags = pm.getApplicationInfo(packageName, 0).flags;
-            if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
-                flags |= DOWNLOADED_FLAG;
-
-                if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
-                    flags |= UPDATED_SYSTEM_APP_FLAG;
-                }
-            }
-            firstInstallTime = pm.getPackageInfo(packageName, 0).firstInstallTime;
+            PackageInfo pi = pm.getPackageInfo(packageName, 0);
+            flags = initFlags(pi);
+            firstInstallTime = initFirstInstallTime(pi);
         } catch (NameNotFoundException e) {
             Log.d(TAG, "PackageManager.getApplicationInfo failed for " + packageName);
         }
 
         iconCache.getTitleAndIcon(this, info, labelCache);
+    }
+
+    public static int initFlags(PackageInfo pi) {
+        int appFlags = pi.applicationInfo.flags;
+        int flags = 0;
+        if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
+            flags |= DOWNLOADED_FLAG;
+
+            if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+                flags |= UPDATED_SYSTEM_APP_FLAG;
+            }
+        }
+        return flags;
+    }
+
+    public static long initFirstInstallTime(PackageInfo pi) {
+        return pi.firstInstallTime;
     }
 
     public ApplicationInfo(ApplicationInfo info) {

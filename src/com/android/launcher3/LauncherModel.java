@@ -2494,6 +2494,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // db and will not appear in the workspace.
                 return null;
             }
+            info.initFlagsAndFirstInstallTime(pi);
         } catch (NameNotFoundException e) {
             Log.d(TAG, "getPackInfo failed for package " + componentName.getPackageName());
         }
