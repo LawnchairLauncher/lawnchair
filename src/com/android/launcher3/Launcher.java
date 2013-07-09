@@ -2040,20 +2040,9 @@ public class Launcher extends Activity
     private void startWallpaper() {
         showWorkspace(true);
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-        Intent chooser = Intent.createChooser(pickWallpaper,
-                getText(R.string.chooser_wallpaper));
-        // NOTE: Adds a configure option to the chooser if the wallpaper supports it
-        //       Removed in Eclair MR1
-//        WallpaperManager wm = (WallpaperManager)
-//                getSystemService(Context.WALLPAPER_SERVICE);
-//        WallpaperInfo wi = wm.getWallpaperInfo();
-//        if (wi != null && wi.getSettingsActivity() != null) {
-//            LabeledIntent li = new LabeledIntent(getPackageName(),
-//                    R.string.configure_wallpaper, 0);
-//            li.setClassName(wi.getPackageName(), wi.getSettingsActivity());
-//            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { li });
-//        }
-        startActivityForResult(chooser, REQUEST_PICK_WALLPAPER);
+        pickWallpaper.setComponent(
+                new ComponentName(getPackageName(), WallpaperPickerActivity.class.getName()));
+        startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
     }
 
     /**
@@ -4122,6 +4111,9 @@ public class Launcher extends Activity
             removeCling(R.id.folder_cling);
             return null;
         }
+    }
+    protected SharedPreferences getSharedPrefs() {
+        return mSharedPrefs;
     }
     public boolean isFolderClingVisible() {
         Cling cling = (Cling) findViewById(R.id.folder_cling);

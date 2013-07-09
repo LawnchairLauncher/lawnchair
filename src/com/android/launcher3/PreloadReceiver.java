@@ -31,8 +31,7 @@ public class PreloadReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        final LauncherAppState app = LauncherAppState.getInstance();
-        final LauncherProvider provider = app.getLauncherProvider();
+        final LauncherProvider provider = LauncherAppState.getLauncherProvider();
         if (provider != null) {
             String name = intent.getStringExtra(EXTRA_WORKSPACE_NAME);
             final int workspaceResId = !TextUtils.isEmpty(name)

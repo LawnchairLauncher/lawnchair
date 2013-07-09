@@ -30,8 +30,10 @@
     <string name="folder_name"></string>
     <!-- Title of dialog that appears after user selects Wallpaper from menu -->
     <string name="chooser_wallpaper">Choose wallpaper from</string>
-    <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
+    <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
+    <!-- Label on button in Wallpaper Picker that launches Gallery app -->
+    <string name="gallery">Gallery</string>
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpapers</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->

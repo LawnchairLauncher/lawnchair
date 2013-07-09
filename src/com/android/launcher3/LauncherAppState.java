@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.app.SearchManager;
 import android.content.*;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.provider.Settings;
@@ -76,7 +77,7 @@ public class LauncherAppState {
         }
 
         // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
-        mIsScreenLarge = sContext.getResources().getBoolean(R.bool.is_large_tablet);
+        mIsScreenLarge = isScreenLarge(sContext.getResources());
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
 
         mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
@@ -186,6 +187,11 @@ public class LauncherAppState {
 
     public boolean isScreenLarge() {
         return mIsScreenLarge;
+    }
+
+    // Need a version that doesn't require an instance of LauncherAppState for the wallpaper picker
+    public static boolean isScreenLarge(Resources res) {
+        return res.getBoolean(R.bool.is_large_tablet);
     }
 
     public static boolean isScreenLandscape(Context context) {
