@@ -79,7 +79,8 @@ class ShortcutInfo extends ItemInfo {
         }
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
         customIcon = info.customIcon;
-        initFlagsAndFirstInstallTime(getPackageInfo(context, intent.getComponent().getPackageName()));
+        initFlagsAndFirstInstallTime(
+                getPackageInfo(context, intent.getComponent().getPackageName()));
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
@@ -137,7 +138,8 @@ class ShortcutInfo extends ItemInfo {
         intent.setComponent(className);
         intent.setFlags(launchFlags);
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-        initFlagsAndFirstInstallTime(getPackageInfo(context, intent.getComponent().getPackageName()));
+        initFlagsAndFirstInstallTime(
+                getPackageInfo(context, intent.getComponent().getPackageName()));
     }
 
     @Override
