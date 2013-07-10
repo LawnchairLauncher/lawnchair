@@ -454,9 +454,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * the previous tab page.
      */
     protected void updateCurrentPageScroll() {
-        int offset = getChildOffset(mCurrentPage);
-        int relOffset = getRelativeChildOffset(mCurrentPage);
-        int newX = offset - relOffset;
+        // If the current page is invalid, just reset the scroll position to zero
+        int newX = 0;
+        if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
+            int offset = getChildOffset(mCurrentPage);
+            int relOffset = getRelativeChildOffset(mCurrentPage);
+            newX = offset - relOffset;
+        }
         scrollTo(newX, 0);
         mScroller.setFinalX(newX);
         mScroller.forceFinished(true);
@@ -553,17 +557,28 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public void scrollTo(int x, int y) {
+        final boolean isRtl = isLayoutRtl();
         mUnboundedScrollX = x;
 
-        if (x < 0) {
+        boolean isXBeforeFirstPage = isRtl ? (x > mMaxScrollX) : (x < 0);
+        boolean isXAfterLastPage = isRtl ? (x < 0) : (x > mMaxScrollX);
+        if (isXBeforeFirstPage) {
             super.scrollTo(0, y);
             if (mAllowOverScroll) {
-                overScroll(x);
+                if (isRtl) {
+                    overScroll(x - mMaxScrollX);
+                } else {
+                    overScroll(x);
+                }
             }
-        } else if (x > mMaxScrollX) {
+        } else if (isXAfterLastPage) {
             super.scrollTo(mMaxScrollX, y);
             if (mAllowOverScroll) {
-                overScroll(x - mMaxScrollX);
+                if (isRtl) {
+                    overScroll(x);
+                } else {
+                    overScroll(x - mMaxScrollX);
+                }
             }
         } else {
             mOverScrollX = x;
@@ -605,6 +620,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             onPostReorderingAnimationCompleted();
+            // Notify the user when the page changes
+            AccessibilityManager accessibilityManager = (AccessibilityManager)
+                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            if (accessibilityManager.isEnabled()) {
+                AccessibilityEvent ev =
+                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+                ev.getText().add(getCurrentPageDescription());
+                sendAccessibilityEventUnchecked(ev);
+            }
             return true;
         }
         return false;
@@ -729,7 +753,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         updateScrollingIndicatorPosition();
 
         if (childCount > 0) {
-            mMaxScrollX = getChildOffset(childCount - 1) - getRelativeChildOffset(childCount - 1);
+            final int index = isLayoutRtl() ? 0 : childCount - 1;
+            mMaxScrollX = getChildOffset(index) - getRelativeChildOffset(index);
         } else {
             mMaxScrollX = 0;
         }
@@ -755,9 +780,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the viewport offsets
         mViewport.offset(offsetX,  offsetY);
 
+        final boolean isRtl = isLayoutRtl();
+
+        final int startIndex = isRtl ? childCount - 1 : 0;
+        final int endIndex = isRtl ? -1 : childCount;
+        final int delta = isRtl ? -1 : 1;
+
         int verticalPadding = getPaddingTop() + getPaddingBottom();
-        int childLeft = offsetX + getRelativeChildOffset(0);
-        for (int i = 0; i < childCount; i++) {
+        int childLeft = offsetX + getRelativeChildOffset(startIndex);
+        for (int i = startIndex; i != endIndex; i += delta) {
             final View child = getPageAt(i);
             int childTop = offsetY + getPaddingTop();
             if (mCenterPagesVertically) {
@@ -840,6 +871,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int getChildOffset(int index) {
         if (index < 0 || index > getChildCount() - 1) return 0;
 
+        final boolean isRtl = isLayoutRtl();
         int[] childOffsets = Float.compare(mLayoutScale, 1f) == 0 ?
                 mChildOffsets : mChildOffsetsWithLayoutScale;
 
@@ -849,8 +881,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             if (getChildCount() == 0)
                 return 0;
 
-            int offset = getRelativeChildOffset(0);
-            for (int i = 0; i < index; ++i) {
+
+            final int startIndex = isRtl ? getChildCount() - 1 : 0;
+            final int endIndex = isRtl ? index : index;
+            final int delta = isRtl ? -1 : 1;
+
+            int offset = getRelativeChildOffset(startIndex);
+            for (int i = startIndex; i != endIndex; i += delta) {
                 offset += getScaledMeasuredWidth(getPageAt(i)) + mPageSpacing;
             }
             if (childOffsets != null) {
@@ -1007,6 +1044,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
+        // XXX-RTL: This will be fixed in a future CL
         if (direction == View.FOCUS_LEFT) {
             if (getCurrentPage() > 0) {
                 snapToPage(getCurrentPage() - 1);
@@ -1023,6 +1061,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+        // XXX-RTL: This will be fixed in a future CL
         if (mCurrentPage >= 0 && mCurrentPage < getPageCount()) {
             getPageAt(mCurrentPage).addFocusables(views, direction, focusableMode);
         }
@@ -1083,6 +1122,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Return true if a tap at (x, y) should trigger a flip to the previous page.
      */
     protected boolean hitsPreviousPage(float x, float y) {
+        if (isLayoutRtl()) {
+            return (x > (getViewportOffsetX() + getViewportWidth() -
+                    getRelativeChildOffset(mCurrentPage) + mPageSpacing));
+        }
         return (x < getViewportOffsetX() + getRelativeChildOffset(mCurrentPage) - mPageSpacing);
     }
 
@@ -1090,7 +1133,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Return true if a tap at (x, y) should trigger a flip to the next page.
      */
     protected boolean hitsNextPage(float x, float y) {
-        return  (x > (getViewportOffsetX() + getViewportWidth() - getRelativeChildOffset(mCurrentPage) + mPageSpacing));
+        if (isLayoutRtl()) {
+            return (x < getViewportOffsetX() + getRelativeChildOffset(mCurrentPage) - mPageSpacing);
+        }
+        return  (x > (getViewportOffsetX() + getViewportWidth() -
+                getRelativeChildOffset(mCurrentPage) + mPageSpacing));
     }
 
     /** Returns whether x and y originated within the buffered viewport */
@@ -1602,19 +1649,21 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 // We give flings precedence over large moves, which is why we short-circuit our
                 // test for a large move if a fling has been registered. That is, a large
                 // move to the left and fling to the right will register as a fling to the right.
-                if (((isSignificantMove && deltaX > 0 && !isFling) ||
-                        (isFling && velocityX > 0)) && mCurrentPage > 0) {
+                final boolean isRtl = isLayoutRtl();
+                boolean isDeltaXLeft = isRtl ? deltaX > 0 : deltaX < 0;
+                boolean isVelocityXLeft = isRtl ? velocityX > 0 : velocityX < 0;
+                if (((isSignificantMove && !isDeltaXLeft && !isFling) ||
+                        (isFling && !isVelocityXLeft)) && mCurrentPage > 0) {
                     finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage - 1;
                     snapToPageWithVelocity(finalPage, velocityX);
-                } else if (((isSignificantMove && deltaX < 0 && !isFling) ||
-                        (isFling && velocityX < 0)) &&
+                } else if (((isSignificantMove && isDeltaXLeft && !isFling) ||
+                        (isFling && isVelocityXLeft)) &&
                         mCurrentPage < getChildCount() - 1) {
                     finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + 1;
                     snapToPageWithVelocity(finalPage, velocityX);
                 } else {
                     snapToDestination();
-                }
-            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
+                }            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
@@ -1715,7 +1764,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
                     }
                     if (hscroll != 0 || vscroll != 0) {
-                        if (hscroll > 0 || vscroll > 0) {
+                        boolean isForwardScroll = isLayoutRtl() ? (hscroll < 0 || vscroll < 0)
+                                                         : (hscroll > 0 || vscroll > 0);
+                        if (isForwardScroll) {
                             scrollRight();
                         } else {
                             scrollLeft();
@@ -1771,10 +1822,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected int getChildIndexForRelativeOffset(int relativeOffset) {
+        final boolean isRtl = isLayoutRtl();
         final int childCount = getChildCount();
         int left;
         int right;
-        for (int i = 0; i < childCount; ++i) {
+        final int startIndex = isRtl ? childCount - 1 : 0;
+        final int endIndex = isRtl ? -1 : childCount;
+        final int delta = isRtl ? -1 : 1;
+        for (int i = startIndex; i != endIndex; i += delta) {
             left = getRelativeChildOffset(i);
             right = (left + getScaledMeasuredWidth(getPageAt(i)));
             if (left <= relativeOffset && relativeOffset <= right) {
@@ -2235,6 +2290,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     private void updateScrollingIndicatorPosition() {
+        final boolean isRtl = isLayoutRtl();
         if (!isScrollingIndicatorEnabled()) return;
         if (mScrollIndicator == null) return;
         int numPages = getChildCount();
@@ -2245,7 +2301,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
                 mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
 
-        float offset = Math.max(0f, Math.min(1f, (float) getScrollX() / maxScrollX));
+        float scrollPos = isRtl ? mMaxScrollX - getScrollX() : getScrollX();
+        float offset = Math.max(0f, Math.min(1f, (float) scrollPos / mMaxScrollX));
+        if (isRtl) {
+            offset = 1f - offset;
+        }
         int indicatorSpace = trackWidth / numPages;
         int indicatorPos = (int) (offset * (trackWidth - indicatorSpace)) + mScrollIndicatorPaddingLeft;
         if (hasElasticScrollIndicator()) {
@@ -2769,6 +2829,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             } break;
         }
         return false;
+    }
+
+    protected String getCurrentPageDescription() {
+        return String.format(getContext().getString(R.string.default_scroll_format),
+                getNextPage() + 1, getChildCount());
     }
 
     @Override
