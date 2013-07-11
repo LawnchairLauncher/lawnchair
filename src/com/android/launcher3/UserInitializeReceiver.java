@@ -34,37 +34,6 @@ import android.content.res.Resources;
 public class UserInitializeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        final Resources resources = context.getResources();
-        // Context.getPackageName() may return the "original" package name,
-        // com.android.launcher3; Resources needs the real package name,
-        // com.android.launcher3. So we ask Resources for what it thinks the
-        // package name should be.
-        final String packageName = resources.getResourcePackageName(R.array.wallpapers);
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        addWallpapers(resources, packageName, R.array.wallpapers, list);
-        addWallpapers(resources, packageName, R.array.extra_wallpapers, list);
-        WallpaperManager wpm = (WallpaperManager) context.getSystemService(
-                Context.WALLPAPER_SERVICE);
-        for (int i=1; i<list.size(); i++) {
-            int resid = list.get(i);
-            if (!wpm.hasResourceWallpaper(resid)) {
-                try {
-                    wpm.setResource(resid);
-                } catch (IOException e) {
-                }
-                return;
-            }
-        }
-    }
-
-    private void addWallpapers(Resources resources, String packageName, int resid,
-            ArrayList<Integer> outList) {
-        final String[] extras = resources.getStringArray(resid);
-        for (String extra : extras) {
-            int res = resources.getIdentifier(extra, "drawable", packageName);
-            if (res != 0) {
-                outList.add(res);
-            }
-        }
+        // TODO: initial wallpaper now that wallpapers are owned by another app
     }
 }
