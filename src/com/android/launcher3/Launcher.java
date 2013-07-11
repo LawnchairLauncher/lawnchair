@@ -2432,9 +2432,11 @@ public class Launcher extends Activity
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 // Disabling reordering until we sort out some issues.
-                //mWorkspace.startReordering();
-                // TODO: need to have a new way to set wallpaper or start reordering
-                startWallpaper();
+                if (mWorkspace.getIdForScreen((CellLayout) v) >= 0) {
+                    mWorkspace.startReordering();
+                } else {
+                    startWallpaper();
+                }
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
                     // User long pressed on an item

@@ -113,6 +113,7 @@ public class CellLayout extends ViewGroup {
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
     private final Point mDragCenter = new Point();
+    boolean mUseActiveGlowBackground = false;
 
     // These arrays are used to implement the drag visualization on x-large screens.
     // They are used as circular arrays, indexed by mDragOutlineCurrent.
@@ -383,8 +384,13 @@ public class CellLayout extends ViewGroup {
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
+            setUseActiveGlowBackground(mIsDragOverlapping);
             invalidate();
         }
+    }
+
+    void setUseActiveGlowBackground(boolean use) {
+        mUseActiveGlowBackground = use;
     }
 
     boolean getIsDragOverlapping() {
@@ -437,7 +443,7 @@ public class CellLayout extends ViewGroup {
         if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
 
-            if (mIsDragOverlapping) {
+            if (mUseActiveGlowBackground) {
                 // In the mini case, we draw the active_glow bg *over* the active background
                 bg = mActiveGlowBackground;
             } else {

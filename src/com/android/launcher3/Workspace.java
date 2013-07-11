@@ -650,10 +650,9 @@ public class Workspace extends SmoothPagedView
                 return;
             }
         }
-
-        // If an item is added to the extra empty screen, we convert it to a real
         if (screenId == EXTRA_EMPTY_SCREEN_ID) {
-            screenId = commitExtraEmptyScreen();
+            // This should never happen
+            throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
         }
 
         final CellLayout layout;
@@ -1666,6 +1665,49 @@ public class Workspace extends SmoothPagedView
         return getChangeStateAnimation(state, animated, 0);
     }
 
+    void boundByReorderablePages(boolean isReordering, int[] range) {
+        int count = mScreenOrder.size();
+
+        int start = -1;
+        int end = -1;
+        //
+        for (int i = 0; i < count; i++) {
+            if (start < 0 && mScreenOrder.get(i) >= 0) {
+                start = i;
+            }
+            if (start >=0 && mScreenOrder.get(i) >= 0) {
+                end = i;
+            }
+        }
+        range[0] = start;
+        range[1] = end;
+     }
+
+    protected void onStartReordering() {
+        super.onStartReordering();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            ((CellLayout) getChildAt(i)).setUseActiveGlowBackground(true);
+        }
+        showOutlines();
+    }
+
+    protected void onEndReordering() {
+        super.onEndReordering();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            ((CellLayout) getChildAt(i)).setUseActiveGlowBackground(false);
+        }
+        hideOutlines();
+
+        mScreenOrder.clear();
+        for (int i = 0; i < count; i++) {
+            CellLayout cl = ((CellLayout) getChildAt(i));
+            mScreenOrder.add(getIdForScreen(cl));
+        }
+        mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+    }
+
     Animator getChangeStateAnimation(final State state, boolean animated, int delay) {
         if (mState == state) {
             return null;
@@ -2113,6 +2155,12 @@ public class Workspace extends SmoothPagedView
                 return false;
             }
         }
+
+        long screenId = getIdForScreen(dropTargetLayout);
+        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+            commitExtraEmptyScreen();
+        }
+
         return true;
     }
 
