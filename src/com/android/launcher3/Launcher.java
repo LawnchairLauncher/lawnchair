@@ -3495,9 +3495,11 @@ public class Launcher extends Activity
                     /*
                      * TODO: FIX collision case
                      */
-                    CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
-                    if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
-                        throw new RuntimeException("OCCUPIED");
+                    if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                        CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
+                        if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
+                            throw new RuntimeException("OCCUPIED");
+                        }
                     }
 
                     workspace.addInScreenFromBind(shortcut, item.container, item.screenId, item.cellX,
