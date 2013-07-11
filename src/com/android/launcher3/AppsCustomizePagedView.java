@@ -1592,8 +1592,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
     public void removeApps(ArrayList<ApplicationInfo> appInfos) {
-        removeAppsWithoutInvalidate(appInfos);
-        updatePageCountsAndInvalidateData();
+        if (!DISABLE_ALL_APPS) {
+            removeAppsWithoutInvalidate(appInfos);
+            updatePageCountsAndInvalidateData();
+        }
     }
     public void updateApps(ArrayList<ApplicationInfo> list) {
         // We remove and re-add the updated applications list because it's properties may have

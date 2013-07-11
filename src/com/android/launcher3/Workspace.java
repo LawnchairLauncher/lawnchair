@@ -474,22 +474,31 @@ public class Workspace extends SmoothPagedView
     }
 
     public long insertNewWorkspaceScreen(long screenId) {
-        return insertNewWorkspaceScreen(screenId, true);
+        return insertNewWorkspaceScreen(screenId, getChildCount(), true);
     }
 
-    public long insertNewWorkspaceScreenOnBind(long screenId) {
-        return insertNewWorkspaceScreen(screenId, false);
+    public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId, boolean updateDb) {
+        // Find the index to insert this view into.  If the empty screen exists, then
+        // insert it before that.
+        int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
+        if (insertIndex < 0) {
+            insertIndex = mScreenOrder.size();
+        }
+        return insertNewWorkspaceScreen(screenId, insertIndex, updateDb);
     }
 
     public long insertNewWorkspaceScreen(long screenId, boolean updateDb) {
+        return insertNewWorkspaceScreen(screenId, getChildCount(), updateDb);
+    }
+
+    public long insertNewWorkspaceScreen(long screenId, int insertIndex, boolean updateDb) {
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
-
         newScreen.setOnLongClickListener(mLongClickListener);
         mWorkspaceScreens.put(screenId, newScreen);
-        mScreenOrder.add(screenId);
-        addView(newScreen, getChildCount());
+        mScreenOrder.add(insertIndex, screenId);
+        addView(newScreen, insertIndex);
         if (updateDb) {
             // On bind we don't need to update the screens in the database.
             mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
@@ -533,6 +542,10 @@ public class Workspace extends SmoothPagedView
         mScreenOrder.add(newId);
 
         addExtraEmptyScreen();
+
+        // Update the model for the new screen
+        mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+
         return newId;
     }
 
@@ -588,6 +601,11 @@ public class Workspace extends SmoothPagedView
             removeView(cl);
         }
         setCurrentPage(mCurrentPage - pageShift);
+
+        if (!removeScreens.isEmpty()) {
+            // Update the model if we have changed any screens
+            mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+        }
     }
 
     // See implementation for parameter definition.
@@ -3741,44 +3759,35 @@ public class Workspace extends SmoothPagedView
     // has been removed and we want to remove all components (widgets, shortcuts, apps) that
     // belong to that package.
     void removeItemsByPackageName(final ArrayList<String> packages) {
-        HashSet<String> packageNames = new HashSet<String>();
+        final HashSet<String> packageNames = new HashSet<String>();
         packageNames.addAll(packages);
 
-        // Just create a hash table of all the specific components that this will affect
-        HashSet<ComponentName> cns = new HashSet<ComponentName>();
+        // Filter out all the ItemInfos that this is going to affect
+        final HashSet<ItemInfo> infos = new HashSet<ItemInfo>();
+        final HashSet<ComponentName> cns = new HashSet<ComponentName>();
         ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
         for (CellLayout layoutParent : cellLayouts) {
             ViewGroup layout = layoutParent.getShortcutsAndWidgets();
             int childCount = layout.getChildCount();
             for (int i = 0; i < childCount; ++i) {
                 View view = layout.getChildAt(i);
-                Object tag = view.getTag();
-
-                if (tag instanceof ShortcutInfo) {
-                    ShortcutInfo info = (ShortcutInfo) tag;
-                    ComponentName cn = info.intent.getComponent();
-                    if ((cn != null) && packageNames.contains(cn.getPackageName())) {
-                        cns.add(cn);
-                    }
-                } else if (tag instanceof FolderInfo) {
-                    FolderInfo info = (FolderInfo) tag;
-                    for (ShortcutInfo s : info.contents) {
-                        ComponentName cn = s.intent.getComponent();
-                        if ((cn != null) && packageNames.contains(cn.getPackageName())) {
-                            cns.add(cn);
-                        }
-                    }
-                } else if (tag instanceof LauncherAppWidgetInfo) {
-                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
-                    ComponentName cn = info.providerName;
-                    if ((cn != null) && packageNames.contains(cn.getPackageName())) {
-                        cns.add(cn);
-                    }
-                }
+                infos.add((ItemInfo) view.getTag());
             }
         }
+        LauncherModel.ItemInfoFilter filter = new LauncherModel.ItemInfoFilter() {
+            @Override
+            public boolean filterItem(ItemInfo parent, ItemInfo info,
+                                      ComponentName cn) {
+                if (packageNames.contains(cn.getPackageName())) {
+                    cns.add(cn);
+                    return true;
+                }
+                return false;
+            }
+        };
+        LauncherModel.filterItemInfos(infos, filter);
 
-        // Remove all the things
+        // Remove the affected components
         removeItemsByComponentName(cns);
     }
 
@@ -3801,80 +3810,69 @@ public class Workspace extends SmoothPagedView
         for (final CellLayout layoutParent: cellLayouts) {
             final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
 
-            // Avoid ANRs by treating each screen separately
-            post(new Runnable() {
-                public void run() {
-                    final ArrayList<View> childrenToRemove = new ArrayList<View>();
-                    childrenToRemove.clear();
+            final HashMap<ItemInfo, View> children = new HashMap<ItemInfo, View>();
+            for (int j = 0; j < layout.getChildCount(); j++) {
+                final View view = layout.getChildAt(j);
+                children.put((ItemInfo) view.getTag(), view);
+            }
 
-                    int childCount = layout.getChildCount();
-                    for (int j = 0; j < childCount; j++) {
-                        final View view = layout.getChildAt(j);
-                        Object tag = view.getTag();
-
-                        if (tag instanceof ShortcutInfo) {
-                            final ShortcutInfo info = (ShortcutInfo) tag;
-                            final Intent intent = info.intent;
-                            final ComponentName name = intent.getComponent();
-
-                            if (name != null) {
-                                if (componentNames.contains(name)) {
-                                    LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                    childrenToRemove.add(view);
-                                }
+            final ArrayList<View> childrenToRemove = new ArrayList<View>();
+            final HashMap<FolderInfo, ArrayList<ShortcutInfo>> folderAppsToRemove =
+                    new HashMap<FolderInfo, ArrayList<ShortcutInfo>>();
+            LauncherModel.ItemInfoFilter filter = new LauncherModel.ItemInfoFilter() {
+                @Override
+                public boolean filterItem(ItemInfo parent, ItemInfo info,
+                                          ComponentName cn) {
+                    if (parent instanceof FolderInfo) {
+                        if (componentNames.contains(cn)) {
+                            FolderInfo folder = (FolderInfo) parent;
+                            ArrayList<ShortcutInfo> appsToRemove;
+                            if (folderAppsToRemove.containsKey(folder)) {
+                                appsToRemove = folderAppsToRemove.get(folder);
+                            } else {
+                                appsToRemove = new ArrayList<ShortcutInfo>();
+                                folderAppsToRemove.put(folder, appsToRemove);
                             }
-                        } else if (tag instanceof FolderInfo) {
-                            final FolderInfo info = (FolderInfo) tag;
-                            final ArrayList<ShortcutInfo> contents = info.contents;
-                            final int contentsCount = contents.size();
-                            final ArrayList<ShortcutInfo> appsToRemoveFromFolder =
-                                    new ArrayList<ShortcutInfo>();
-
-                            for (int k = 0; k < contentsCount; k++) {
-                                final ShortcutInfo appInfo = contents.get(k);
-                                final Intent intent = appInfo.intent;
-                                final ComponentName name = intent.getComponent();
-
-                                if (name != null) {
-                                    if (componentNames.contains(name)) {
-                                        appsToRemoveFromFolder.add(appInfo);
-                                    }
-                                }
-                            }
-                            for (ShortcutInfo item: appsToRemoveFromFolder) {
-                                info.remove(item);
-                                LauncherModel.deleteItemFromDatabase(mLauncher, item);
-                            }
-                        } else if (tag instanceof LauncherAppWidgetInfo) {
-                            final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
-                            final ComponentName provider = info.providerName;
-                            if (provider != null) {
-                                if (componentNames.contains(provider)) {
-                                    LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                    childrenToRemove.add(view);
-                                }
-                            }
+                            appsToRemove.add((ShortcutInfo) info);
+                            return true;
+                        }
+                    } else {
+                        if (componentNames.contains(cn)) {
+                            childrenToRemove.add(children.get(info));
+                            return true;
                         }
                     }
-
-                    childCount = childrenToRemove.size();
-                    for (int j = 0; j < childCount; j++) {
-                        View child = childrenToRemove.get(j);
-                        // Note: We can not remove the view directly from CellLayoutChildren as this
-                        // does not re-mark the spaces as unoccupied.
-                        layoutParent.removeViewInLayout(child);
-                        if (child instanceof DropTarget) {
-                            mDragController.removeDropTarget((DropTarget)child);
-                        }
-                    }
-
-                    if (childCount > 0) {
-                        layout.requestLayout();
-                        layout.invalidate();
-                    }
+                    return false;
                 }
-            });
+            };
+            LauncherModel.filterItemInfos(children.keySet(), filter);
+
+            // Remove all the apps from their folders
+            for (FolderInfo folder : folderAppsToRemove.keySet()) {
+                ArrayList<ShortcutInfo> appsToRemove = folderAppsToRemove.get(folder);
+                for (ShortcutInfo info : appsToRemove) {
+                    folder.remove(info);
+                }
+            }
+
+            // Remove all the other children
+            for (View child : childrenToRemove) {
+                // Note: We can not remove the view directly from CellLayoutChildren as this
+                // does not re-mark the spaces as unoccupied.
+                layoutParent.removeViewInLayout(child);
+                if (child instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget) child);
+                }
+            }
+
+            if (childrenToRemove.size() > 0) {
+                layout.requestLayout();
+                layout.invalidate();
+            }
         }
+
+        // Strip all the empty screens
+        stripEmptyScreens();
 
         // Clean up new-apps animation list
         final Context context = getContext();
@@ -3897,15 +3895,6 @@ public class Workspace extends SmoothPagedView
                                 if (componentNames.contains(intent.getComponent())) {
                                     iter.remove();
                                 }
-
-                                // It is possible that we've queued an item to be loaded, yet it has
-                                // not been added to the workspace, so remove those items as well.
-                                ArrayList<ItemInfo> shortcuts;
-                                shortcuts = LauncherModel.getWorkspaceShortcutItemInfosWithIntent(
-                                        intent);
-                                for (ItemInfo info : shortcuts) {
-                                    LauncherModel.deleteItemFromDatabase(context, info);
-                                }
                             } catch (URISyntaxException e) {}
                         }
                     }
@@ -3921,24 +3910,20 @@ public class Workspace extends SmoothPagedView
             for (int j = 0; j < childCount; j++) {
                 final View view = layout.getChildAt(j);
                 Object tag = view.getTag();
-                if (tag instanceof ShortcutInfo) {
+
+                if (LauncherModel.isShortcutInfoUpdateable((ItemInfo) tag)) {
                     ShortcutInfo info = (ShortcutInfo) tag;
-                    // We need to check for ACTION_MAIN otherwise getComponent() might
-                    // return null for some shortcuts (for instance, for shortcuts to
-                    // web pages.)
+
                     final Intent intent = info.intent;
                     final ComponentName name = intent.getComponent();
-                    if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                            Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
-                        final int appCount = apps.size();
-                        for (int k = 0; k < appCount; k++) {
-                            ApplicationInfo app = apps.get(k);
-                            if (app.componentName.equals(name)) {
-                                BubbleTextView shortcut = (BubbleTextView) view;
-                                info.updateIcon(mIconCache);
-                                info.title = app.title.toString();
-                                shortcut.applyFromShortcutInfo(info, mIconCache);
-                            }
+                    final int appCount = apps.size();
+                    for (int k = 0; k < appCount; k++) {
+                        ApplicationInfo app = apps.get(k);
+                        if (app.componentName.equals(name)) {
+                            BubbleTextView shortcut = (BubbleTextView) view;
+                            info.updateIcon(mIconCache);
+                            info.title = app.title.toString();
+                            shortcut.applyFromShortcutInfo(info, mIconCache);
                         }
                     }
                 }
@@ -3954,7 +3939,10 @@ public class Workspace extends SmoothPagedView
                 setCurrentPage(mDefaultPage);
             }
         }
-        getChildAt(mDefaultPage).requestFocus();
+        View child = getChildAt(mDefaultPage);
+        if (child != null) {
+            child.requestFocus();
+        }
     }
 
     @Override

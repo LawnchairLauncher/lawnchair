@@ -108,4 +108,12 @@ class FolderInfo extends ItemInfo {
         public void onTitleChanged(CharSequence title);
         public void onItemsChanged();
     }
+
+    @Override
+    public String toString() {
+        return "FolderInfo(id=" + this.id + " type=" + this.itemType
+                + " container=" + this.container + " screen=" + screenId
+                + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
+                + " spanY=" + spanY + " dropPos=" + dropPos + ")";
+    }
 }
