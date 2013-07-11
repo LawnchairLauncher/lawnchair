@@ -28,6 +28,7 @@ import android.util.Log;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -85,7 +86,9 @@ public class MemoryDumpActivity extends Activity {
         final ArrayList<String> paths = new ArrayList<String>();
         final int myPid = android.os.Process.myPid();
 
-        for (int pid : tracker.getTrackedProcesses()) {
+        final int[] pids_orig = tracker.getTrackedProcesses();
+        final int[] pids_copy = Arrays.copyOf(pids_orig, pids_orig.length);
+        for (int pid : pids_copy) {
             MemoryTracker.ProcessMemInfo info = tracker.getMemInfo(pid);
             if (info != null) {
                 body.append("pid ").append(pid).append(":")

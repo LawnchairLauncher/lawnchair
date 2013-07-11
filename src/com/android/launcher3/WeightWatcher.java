@@ -213,7 +213,11 @@ public class WeightWatcher extends LinearLayout {
         public void update() {
             //Log.v("WeightWatcher.ProcessWatcher",
             //        "MSG_UPDATE pss=" + mMemInfo.currentPss);
-            mText.setText("(" + mMemInfo.name + "/" + mPid + ") up " + getUptimeString()
+            mText.setText("(" + mPid
+                          + (mPid == android.os.Process.myPid()
+                                ? "/A"  // app
+                                : "/S") // service
+                          + ") up " + getUptimeString()
                           + " P=" + mMemInfo.currentPss
                           + " U=" + mMemInfo.currentUss
                           );
