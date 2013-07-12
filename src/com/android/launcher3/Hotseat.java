@@ -114,8 +114,9 @@ public class Hotseat extends FrameLayout {
         mContent.removeAllViewsInLayout();
     }
 
-    void addAllAppsFolder(IconCache iconCache, ArrayList<ApplicationInfo> allApps,
-            ArrayList<ComponentName> onWorkspace, Launcher launcher) {
+    void addAllAppsFolder(IconCache iconCache,
+            ArrayList<ApplicationInfo> allApps, ArrayList<ComponentName> onWorkspace,
+            Launcher launcher, Workspace workspace) {
         FolderInfo fi = new FolderInfo();
 
         fi.cellX = getCellXFromOrder(mAllAppsButtonRank);
@@ -130,9 +131,8 @@ public class Hotseat extends FrameLayout {
                 fi.cellY, false);
         FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
                 getLayout(), fi, iconCache);
-
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(fi.cellX,fi.cellY,1,1);
-        mContent.addViewToCellLayout(folder, -1, 0, lp, true);
+        workspace.addInScreen(folder, fi.container, fi.screenId, fi.cellX, fi.cellY,
+                fi.spanX, fi.spanY);
 
         for (ApplicationInfo info: allApps) {
             ComponentName cn = info.intent.getComponent();

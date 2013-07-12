@@ -115,6 +115,10 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
         super.getHitRect(outRect);
         outRect.bottom += mBottomDragPadding;
+
+        int[] coords = new int[2];
+        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, coords);
+        outRect.offsetTo(coords[0], coords[1]);
     }
 
     private boolean isRtl() {

@@ -2710,9 +2710,7 @@ public class Workspace extends SmoothPagedView
        mTempPt[0] = (int) xy[0];
        mTempPt[1] = (int) xy[1];
        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempPt, true);
-
-       mTempPt[0] -= hotseat.getLeft();
-       mTempPt[1] -= hotseat.getTop();
+       mLauncher.getDragLayer().mapCoordInSelfToDescendent(hotseat.getLayout(), mTempPt);
 
        xy[0] = mTempPt[0];
        xy[1] = mTempPt[1];
