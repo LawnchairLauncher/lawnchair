@@ -171,6 +171,8 @@ public class Workspace extends SmoothPagedView
     boolean mIsDragOccuring = false;
     boolean mChildrenLayersEnabled = true;
 
+    private boolean mStripScreensOnPageStopMoving = false;
+
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
@@ -582,6 +584,12 @@ public class Workspace extends SmoothPagedView
     }
 
     public void stripEmptyScreens() {
+        if (isPageMoving()) {
+            mStripScreensOnPageStopMoving = true;
+            return;
+        }
+
+        int currentPage = getNextPage();
         ArrayList<Long> removeScreens = new ArrayList<Long>();
         for (Long id: mWorkspaceScreens.keySet()) {
             CellLayout cl = mWorkspaceScreens.get(id);
@@ -595,16 +603,19 @@ public class Workspace extends SmoothPagedView
             CellLayout cl = mWorkspaceScreens.get(id);
             mWorkspaceScreens.remove(id);
             mScreenOrder.remove(id);
-            if (indexOfChild(cl) < mCurrentPage) {
+            if (indexOfChild(cl) < currentPage) {
                 pageShift++;
             }
             removeView(cl);
         }
-        setCurrentPage(mCurrentPage - pageShift);
 
         if (!removeScreens.isEmpty()) {
             // Update the model if we have changed any screens
             mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+        }
+
+        if (pageShift >= 0) {
+            setCurrentPage(currentPage - pageShift);
         }
     }
 
@@ -900,6 +911,10 @@ public class Workspace extends SmoothPagedView
         if (mDelayedSnapToPageRunnable != null) {
             mDelayedSnapToPageRunnable.run();
             mDelayedSnapToPageRunnable = null;
+        }
+        if (mStripScreensOnPageStopMoving) {
+            stripEmptyScreens();
+            mStripScreensOnPageStopMoving = false;
         }
     }
 

@@ -652,7 +652,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         // We measure the dimensions of the PagedView to be larger than the pages so that when we
         // zoom out (and scale down), the view is still contained in the parent
-        View parent = (View) getParent();
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -727,8 +726,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // ensure that the cache is filled with good values.
         invalidateCachedOffsets();
 
-        if (mChildCountOnLastMeasure != getChildCount() && !mDeferringForDelete) {
-            setCurrentPage(mCurrentPage);
+        if (mScroller.isFinished() && mChildCountOnLastMeasure != getChildCount() &&
+                !mDeferringForDelete) {
+            setCurrentPage(getNextPage());
         }
         mChildCountOnLastMeasure = getChildCount();
 
