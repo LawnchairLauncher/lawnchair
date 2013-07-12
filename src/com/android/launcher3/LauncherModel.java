@@ -237,7 +237,8 @@ public class LauncherModel extends BroadcastReceiver {
         return CellLayout.findVacantCell(xy, 1, 1, xCount, yCount, occupied);
     }
     static Pair<Long, int[]> findNextAvailableIconSpace(Context context, String name,
-                                                        Intent launchIntent) {
+                                                        Intent launchIntent,
+                                                        int firstScreenIndex) {
         // Lock on the app so that we don't try and get the items while apps are being added
         LauncherAppState app = LauncherAppState.getInstance();
         LauncherModel model = app.getModel();
@@ -253,7 +254,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Try adding to the workspace screens incrementally, starting at the default or center
             // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
-            for (int screen = 0; screen < sBgWorkspaceScreens.size() && !found; screen++) {
+            firstScreenIndex = Math.min(firstScreenIndex, sBgWorkspaceScreens.size());
+            int count = sBgWorkspaceScreens.size();
+            for (int screen = firstScreenIndex; screen < count && !found; screen++) {
                 int[] tmpCoordinates = new int[2];
                 if (findNextAvailableIconSpaceInScreen(items, tmpCoordinates,
                         sBgWorkspaceScreens.get(screen))) {
@@ -287,8 +290,9 @@ public class LauncherModel extends BroadcastReceiver {
                         }
 
                         // Add this icon to the db, creating a new page if necessary
+                        int startSearchPageIndex = 1;
                         Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
-                                name, launchIntent);
+                                name, launchIntent, startSearchPageIndex);
                         if (coords == null) {
                             // If we can't find a valid position, then just add a new screen.
                             // This takes time so we need to re-queue the add until the new
@@ -303,7 +307,7 @@ public class LauncherModel extends BroadcastReceiver {
                             addedWorkspaceScreensFinal.add(screenId);
                             // Find the coordinate again
                             coords = LauncherModel.findNextAvailableIconSpace(context,
-                                    a.title.toString(), a.intent);
+                                    a.title.toString(), a.intent, startSearchPageIndex);
                         }
                         if (coords == null) {
                             throw new RuntimeException("Coordinates should not be null");

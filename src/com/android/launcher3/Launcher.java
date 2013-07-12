@@ -3779,7 +3779,7 @@ public class Launcher extends Activity
     public void bindAllApplications(final ArrayList<ApplicationInfo> apps) {
         if (mIntentsOnWorkspaceFromUpgradePath != null) {
             getHotseat().addAllAppsFolder(mIconCache, apps,
-                    mIntentsOnWorkspaceFromUpgradePath, Launcher.this);
+                    mIntentsOnWorkspaceFromUpgradePath, Launcher.this, mWorkspace);
             mIntentsOnWorkspaceFromUpgradePath = null;
         }
     }
