@@ -1,24 +1,29 @@
 #!/usr/bin/env python2.5
 
 import cgi
+import codecs
 import os
+import pprint
 import shutil
 import sys
 import sqlite3
 
-SCREENS = 5
+SCREENS = 0
 COLUMNS = 4
 ROWS = 4
-HOTSEAT_SIZE = 5
+HOTSEAT_SIZE = 4
 CELL_SIZE = 110
+
+CONTAINER_DESKTOP = -100
+CONTAINER_HOTSEAT = -101
 
 DIR = "db_files"
 AUTO_FILE = DIR + "/launcher.db"
 INDEX_FILE = DIR + "/index.html"
 
 def usage():
-  print "usage: print_db.py launcher.db -- prints a launcher.db"
-  print "usage: print_db.py -- adb pulls a launcher.db from a device"
+  print "usage: print_db.py launcher.db <sw600|sw720> -- prints a launcher.db"
+  print "usage: print_db.py <sw600|sw720> -- adb pulls a launcher.db from a device"
   print "       and prints it"
   print
   print "The dump will be created in a directory called db_files in cwd."
@@ -32,7 +37,7 @@ def make_dir():
 def pull_file(fn):
   print "pull_file: " + fn
   rv = os.system("adb pull"
-    + " /data/data/com.android.launcher/databases/launcher.db"
+    + " /data/data/com.google.android.googlequicksearchbox/databases/launcher.db"
     + " " + fn);
   if rv != 0:
     print "adb pull failed"
@@ -57,18 +62,31 @@ def print_intent(out, id, i, cell):
 def print_icon(out, id, i, cell):
   if cell:
     icon_fn = "icon_%d.png" % id
-    out.write("""<img src="%s">""" % ( icon_fn ))
+    out.write("""<img style="width: 3em; height: 3em;" src="%s">""" % ( icon_fn ))
     f = file(DIR + "/" + icon_fn, "w")
     f.write(cell)
     f.close()
 
+def print_icon_type(out, id, i, cell):
+  if cell == 0:
+    out.write("Application (%d)" % cell)
+  elif cell == 1:
+    out.write("Shortcut (%d)" % cell)
+  elif cell == 2:
+    out.write("Folder (%d)" % cell)
+  elif cell == 4:
+    out.write("Widget (%d)" % cell)
+  elif cell:
+    out.write("%d" % cell)
+
 def print_cell(out, id, i, cell):
   if not cell is None:
-    out.write(cgi.escape(str(cell)))
+    out.write(cgi.escape(unicode(cell)))
 
 FUNCTIONS = {
   "intent": print_intent,
-  "icon": print_icon
+  "icon": print_icon,
+  "iconType": print_icon_type
 }
 
 def render_cell_info(out, cell, occupied):
@@ -94,36 +112,45 @@ def render_cell_info(out, cell, occupied):
           title))
     itemType = cell["itemType"]
     if itemType == 0:
-      out.write("""<img src="icon_%d.png">\n""" % ( cell["_id"] ))
+      out.write("""<img style="width: 4em; height: 4em;" src="icon_%d.png">\n""" % ( cell["_id"] ))
       out.write("<br/>\n")
       out.write(cgi.escape(cell["title"]) + " <br/><i>(app)</i>")
     elif itemType == 1:
-      out.write("""<img src="icon_%d.png">\n""" % ( cell["_id"] ))
+      out.write("""<img style="width: 4em; height: 4em;" src="icon_%d.png">\n""" % ( cell["_id"] ))
       out.write("<br/>\n")
       out.write(cgi.escape(cell["title"]) + " <br/><i>(shortcut)</i>")
     elif itemType == 2:
       out.write("""<i>folder</i>""")
-    elif itemType == 3:
-      out.write("""<i>live folder</i>""")
     elif itemType == 4:
       out.write("<i>widget %d</i><br/>\n" % cell["appWidgetId"])
-    elif itemType == 1000:
-      out.write("""<i>clock</i>""")
-    elif itemType == 1001:
-      out.write("""<i>search</i>""")
-    elif itemType == 1002:
-      out.write("""<i>photo frame</i>""")
     else:
       out.write("<b>unknown type: %d</b>" % itemType)
     out.write("</td>\n")
 
 def process_file(fn):
+  global SCREENS, COLUMNS, ROWS, HOTSEAT_SIZE
   print "process_file: " + fn
   conn = sqlite3.connect(fn)
   columns,rows = get_favorites(conn)
+
   data = [dict(zip(columns,row)) for row in rows]
 
-  out = file(INDEX_FILE, "w")
+  # Calculate the proper number of screens, columns, and rows in this db
+  screensIdMap = []
+  hotseatIdMap = []
+  HOTSEAT_SIZE = 0
+  for d in data:
+    if d["container"] == CONTAINER_DESKTOP:
+      if d["screen"] not in screensIdMap:
+        screensIdMap.append(d["screen"])
+      COLUMNS = max(COLUMNS, d["cellX"] + d["spanX"])
+      ROWS = max(ROWS, d["cellX"] + d["spanX"])
+    elif d["container"] == CONTAINER_HOTSEAT:
+      hotseatIdMap.append(d["screen"])
+      HOTSEAT_SIZE = max(HOTSEAT_SIZE, d["screen"] + 1)
+  SCREENS = len(screensIdMap)
+
+  out = codecs.open(INDEX_FILE, encoding="utf-8", mode="w")
   out.write("""<html>
 <head>
 <style type="text/css">
@@ -151,6 +178,7 @@ def process_file(fn):
   out.write("""
 </tr>
 """)
+
   for row in rows:
     out.write("""<tr>
 """)
@@ -171,7 +199,7 @@ def process_file(fn):
   for i in range(0, HOTSEAT_SIZE):
     hotseat.append(None)
   for row in data:
-    if row["container"] != -101:
+    if row["container"] != CONTAINER_HOTSEAT:
       continue
     screen = row["screen"]
     hotseat[screen] = row
@@ -193,10 +221,10 @@ def process_file(fn):
     screens.append(screen)
   occupied = "occupied"
   for row in data:
-    screen = screens[row["screen"]]
     # desktop
-    if row["container"] != -100:
+    if row["container"] != CONTAINER_DESKTOP:
       continue
+    screen = screens[screensIdMap.index(row["screen"])]
     cellX = row["cellX"]
     cellY = row["cellY"]
     spanX = row["spanX"]
@@ -224,12 +252,27 @@ def process_file(fn):
 
   out.close()
 
+def updateDeviceClassConstants(str):
+  global SCREENS, COLUMNS, ROWS, HOTSEAT_SIZE
+  devClass = str.lower()
+  if devClass == "sw600":
+    COLUMNS = 6
+    ROWS = 6
+    HOTSEAT_SIZE = 6
+    return True
+  elif devClass == "sw720":
+    COLUMNS = 8
+    ROWS = 6
+    HOTSEAT_SIZE = 8
+    return True
+  return False
+
 def main(argv):
-  if len(argv) == 1:
+  if len(argv) == 1 or (len(argv) == 2 and updateDeviceClassConstants(argv[1])):
     make_dir()
     pull_file(AUTO_FILE)
     process_file(AUTO_FILE)
-  elif len(argv) == 2:
+  elif len(argv) == 2 or (len(argv) == 3 and updateDeviceClassConstants(argv[2])):
     make_dir()
     process_file(argv[1])
   else:
