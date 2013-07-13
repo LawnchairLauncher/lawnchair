@@ -59,8 +59,13 @@
     <string name="preferences_interface_drawer_summary">Lista aplikacji i widżetów</string>
     <string name="preferences_interface_drawer_orientation_title">Orientacja</string>
     <string name="preferences_interface_drawer_orientation_summary">Wybierz, w którą stronę przewijana będzie lista</string>
+    <string name="preferences_interface_drawer_apps_category">Aplikacje</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Ukryte aplikacje</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Ukrywa aplikacje na liście</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Ukryte aplikacje (skróty)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Usuń skróty ukrytych aplikacji z ekranu głównego</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Ukryte aplikacje (widżety)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Usuń widżety ukrytych aplikacji z ekranu głównego</string>
     <string name="preferences_interface_drawer_widgets_category">Widżety</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Podłącz do aplikacji</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Pozwala na przewijanie z listy aplikacji bezpośrednio do widżetów</string>
@@ -108,12 +113,22 @@
     <string name="effects_flip">Przerzucanie</string>
     <string name="effects_stack">Układanie</string>
     <string name="effects_accordion">Akordeonowo</string>
+    <string name="effects_carousel_left">Karuzela w lewo</string>
+    <string name="effects_carousel_right">Karuzela w prawo</string>
     <string name="edit_target_label">Edytuj</string>
     <string name="preferences_interface_dock_hide_icon_labels_title">Ukryj nazwy aplikacji w doku</string>
     <string name="preferences_interface_dock_hide_icon_labels_summary">Ukrywa podpisy pod ikonami w doku</string>
     <string name="menu_lock_workspace">Zablokuj ekran główny</string>
     <string name="menu_unlock_workspace">Odblokuj ekran główny</string>
+    <string name="menu_preferences">Ustawienia</string>
+    <string name="menu_apps_sort_title">Nazwa</string>
+    <string name="menu_apps_sort_install_date">Data instalacji</string>
+    <string name="menu_apps_filter_system">Systemowe</string>
+    <string name="menu_apps_filter_downloaded">Pobrane</string>
     <string name="workspace_locked">Ekran główny jest zablokowany, w celu edycji odblokuj go w ustawieniach</string>
     <string name="preferences_interface_general_lock_workspace_title">Blokada ekranu głównego</string>
     <string name="preferences_interface_general_lock_workspace_summary">Zablokuj edycję ikon na ekranie głównym, w doku oraz na liście aplikacji i widżetów</string>
+    <string name="cancel_target_label">Anuluj</string>
+    <string name="all_apps_sort_cling_title">Sortuj aplikacje</string>
+    <string name="all_apps_sort_cling_add_item">Przytrzymaj kartę aplikacji aby wybrać tryb sortowania</string>
 </resources>
