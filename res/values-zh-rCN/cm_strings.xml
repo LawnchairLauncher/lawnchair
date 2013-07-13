@@ -74,9 +74,14 @@
     <string name="preferences_interface_drawer_summary">应用与小部件抽屉</string>
     <string name="preferences_interface_drawer_orientation_title">方向</string>
     <string name="preferences_interface_drawer_orientation_summary">选择抽屉的滚动方向</string>
+    <string name="preferences_interface_drawer_apps_category">应用</string>
     <string name="preferences_interface_drawer_hidden_apps_title">隐藏应用</string>
-    <string name="preferences_interface_drawer_hidden_apps_summary">从抽屉里隐藏应用程序</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">从抽屉里隐藏应用</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">已隐藏应用 (快捷方式)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">删除在主屏幕上已隐藏应用的快捷方式</string>
     <string name="preferences_interface_drawer_widgets_category">小部件</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">已隐藏应用 (小部件)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">删除在主屏幕上已隐藏应用的小部件</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">与应用关联</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">从应用程序菜单直接滑动到小部件菜单</string>
     <string name="preferences_interface_drawer_scrolling_category">滚动</string>
