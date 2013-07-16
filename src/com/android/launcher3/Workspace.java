@@ -329,6 +329,7 @@ public class Workspace extends SmoothPagedView
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
         cellCountY = a.getInt(R.styleable.Workspace_cellCountY, cellCountY);
         mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
+
         a.recycle();
 
         setOnHierarchyChangeListener(this);
@@ -870,9 +871,6 @@ public class Workspace extends SmoothPagedView
                 ((CellLayout) getPageAt(i)).setShortcutAndWidgetAlpha(1f);
             }
         }
-
-        // Show the scroll indicator as you pan the page
-        showScrollingIndicator(false);
     }
 
     protected void onPageEndMoving() {
@@ -895,11 +893,6 @@ public class Workspace extends SmoothPagedView
             // If we are not mid-dragging, hide the page outlines if we are on a large screen
             if (LauncherAppState.getInstance().isScreenLarge()) {
                 hideOutlines();
-            }
-
-            // Hide the scroll indicator as you pan the page
-            if (!mDragController.isDragging()) {
-                hideScrollingIndicator(false);
             }
         }
 
@@ -1853,7 +1846,6 @@ public class Workspace extends SmoothPagedView
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = true;
         updateChildrenLayersEnabled(false);
-        cancelScrollingIndicatorAnimations();
     }
 
     @Override
@@ -2070,9 +2062,6 @@ public class Workspace extends SmoothPagedView
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
         b.recycle();
-
-        // Show the scrolling indicator when you pick up an item
-        showScrollingIndicator(false);
     }
 
     void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, long screenId,
@@ -2353,11 +2342,13 @@ public class Workspace extends SmoothPagedView
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
+                    stripEmptyScreens();
                     return;
                 }
 
                 if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                         distance, d, false)) {
+                    stripEmptyScreens();
                     return;
                 }
 
@@ -3463,9 +3454,6 @@ public class Workspace extends SmoothPagedView
         }
         mDragOutline = null;
         mDragInfo = null;
-
-        // Hide the scrolling indicator after you pick up an item
-        hideScrollingIndicator(false);
     }
 
     void updateItemLocationsInDatabase(CellLayout cl) {
@@ -4025,18 +4013,11 @@ public class Workspace extends SmoothPagedView
     }
 
     void setFadeForOverScroll(float fade) {
-        if (!isScrollingIndicatorEnabled()) return;
-
         mOverscrollFade = fade;
         float reducedFade = 0.5f + 0.5f * (1 - fade);
         final ViewGroup parent = (ViewGroup) getParent();
         final ImageView qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
-        final ImageView dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
-        final View scrollIndicator = getScrollingIndicator();
 
-        cancelScrollingIndicatorAnimations();
         if (qsbDivider != null) qsbDivider.setAlpha(reducedFade);
-        if (dockDivider != null) dockDivider.setAlpha(reducedFade);
-        scrollIndicator.setAlpha(1 - fade);
     }
 }

@@ -192,18 +192,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected boolean mAllowLongPress = true;
 
-    // Scrolling indicator
-    private ValueAnimator mScrollIndicatorAnimator;
-    private View mScrollIndicator;
-    private int mScrollIndicatorPaddingLeft;
-    private int mScrollIndicatorPaddingRight;
-    private boolean mHasScrollIndicator = true;
-    private boolean mShouldShowScrollIndicator = false;
-    private boolean mShouldShowScrollIndicatorImmediately = false;
-    protected static final int sScrollIndicatorFadeInDuration = 150;
-    protected static final int sScrollIndicatorFadeOutDuration = 650;
-    protected static final int sScrollIndicatorFlashDuration = 650;
-    private boolean mScrollingPaused = false;
+    // Page Indicator
+    private int mPageIndicatorViewId;
+    private PageIndicator mPageIndicator;
 
     // The viewport whether the pages are to be contained (the actual view may be larger than the
     // viewport)
@@ -296,10 +287,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 R.styleable.PagedView_pageLayoutWidthGap, 0);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutHeightGap, 0);
-        mScrollIndicatorPaddingLeft =
-            a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingLeft, 0);
-        mScrollIndicatorPaddingRight =
-            a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingRight, 0);
+        mPageIndicatorViewId = a.getResourceId(R.styleable.PagedView_pageIndicator, -1);
         a.recycle();
 
         setHapticFeedbackEnabled(false);
@@ -330,6 +318,21 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * mDensity);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * mDensity);
         setOnHierarchyChangeListener(this);
+    }
+
+    protected void onAttachedToWindow() {
+        // Hook up the page indicator
+        ViewGroup parent = (ViewGroup) getParent();
+        if (mPageIndicator == null && mPageIndicatorViewId > -1) {
+            mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
+            mPageIndicator.removeAllMarkers();
+            mPageIndicator.addMarkers(getChildCount());
+        }
+    }
+
+    protected void onDetachedFromWindow() {
+        // Unhook the page indicator
+        mPageIndicator = null;
     }
 
     void setDeleteDropTarget(View v) {
@@ -473,8 +476,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      */
     void pauseScrolling() {
         mScroller.forceFinished(true);
-        cancelScrollingIndicatorAnimations();
-        mScrollingPaused = true;
     }
 
     /**
@@ -482,7 +483,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * @see #pauseScrolling()
      */
     void resumeScrolling() {
-        mScrollingPaused = false;
     }
     /**
      * Sets the current page.
@@ -499,8 +499,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         mForceScreenScrolled = true;
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
-        updateCurrentPageScroll();
-        updateScrollingIndicator();
         notifyPageSwitchListener();
         invalidate();
     }
@@ -508,6 +506,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected void notifyPageSwitchListener() {
         if (mPageSwitchListener != null) {
             mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
+        }
+
+        // Update the page indicator (when we aren't reordering)
+        if (mPageIndicator != null && !isReordering(false)) {
+            mPageIndicator.setActiveMarker(getNextPage());
         }
     }
     protected void pageBeginMoving() {
@@ -750,8 +753,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
         }
 
-        updateScrollingIndicatorPosition();
-
         if (childCount > 0) {
             final int index = isLayoutRtl() ? 0 : childCount - 1;
             mMaxScrollX = getChildOffset(index) - getRelativeChildOffset(index);
@@ -814,9 +815,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void screenScrolled(int screenCenter) {
-        if (isScrollingIndicatorEnabled()) {
-            updateScrollingIndicator();
-        }
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
 
         if (mFadeInAdjacentScreens && !isInOverscroll) {
@@ -834,6 +832,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public void onChildViewAdded(View parent, View child) {
+        // Update the page indicator, we don't update the page indicator as we
+        // add/remove pages
+        if (mPageIndicator != null && !isReordering(false)) {
+            mPageIndicator.addMarker(indexOfChild(child));
+        }
+
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.
         mForceScreenScrolled = true;
@@ -847,6 +851,46 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mForceScreenScrolled = true;
         invalidate();
         invalidateCachedOffsets();
+    }
+
+    private void removeMarkerForView(int index) {
+        // Update the page indicator, we don't update the page indicator as we
+        // add/remove pages
+        if (mPageIndicator != null && !isReordering(false)) {
+            mPageIndicator.removeMarker(index);
+        }
+    }
+
+    @Override
+    public void removeView(View v) {
+        // XXX: We should find a better way to hook into this before the view
+        // gets removed form its parent...
+        removeMarkerForView(indexOfChild(v));
+        super.removeView(v);
+    }
+    @Override
+    public void removeViewInLayout(View v) {
+        // XXX: We should find a better way to hook into this before the view
+        // gets removed form its parent...
+        removeMarkerForView(indexOfChild(v));
+        super.removeViewInLayout(v);
+    }
+    @Override
+    public void removeViewAt(int index) {
+        // XXX: We should find a better way to hook into this before the view
+        // gets removed form its parent...
+        removeViewAt(index);
+        super.removeViewAt(index);
+    }
+    @Override
+    public void removeAllViewsInLayout() {
+        // Update the page indicator, we don't update the page indicator as we
+        // add/remove pages
+        if (mPageIndicator != null) {
+            mPageIndicator.removeAllMarkers();
+        }
+
+        super.removeAllViewsInLayout();
     }
 
     protected void invalidateCachedOffsets() {
@@ -1605,6 +1649,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                                 addView(mDragView, pageUnderPointIndex);
                                 onAddView(mDragView, pageUnderPointIndex);
                                 mSidePageHoverIndex = -1;
+                                mPageIndicator.setActiveMarker(getNextPage());
                             }
                         };
                         postDelayed(mSidePageHoverRunnable, REORDERING_SIDE_PAGE_HOVER_TIMEOUT);
@@ -2170,153 +2215,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             loadAssociatedPages(mCurrentPage, immediateAndOnly);
             requestLayout();
         }
-    }
-
-    protected View getScrollingIndicator() {
-        // We use mHasScrollIndicator to prevent future lookups if there is no sibling indicator
-        // found
-        if (mHasScrollIndicator && mScrollIndicator == null) {
-            ViewGroup parent = (ViewGroup) getParent();
-            if (parent != null) {
-                mScrollIndicator = (View) (parent.findViewById(R.id.paged_view_indicator));
-                mHasScrollIndicator = mScrollIndicator != null;
-                if (mHasScrollIndicator) {
-                    mScrollIndicator.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-        return mScrollIndicator;
-    }
-
-    protected boolean isScrollingIndicatorEnabled() {
-        return true;
-    }
-
-    Runnable hideScrollingIndicatorRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hideScrollingIndicator(false);
-        }
-    };
-
-    protected void flashScrollingIndicator(boolean animated) {
-        removeCallbacks(hideScrollingIndicatorRunnable);
-        showScrollingIndicator(!animated);
-        postDelayed(hideScrollingIndicatorRunnable, sScrollIndicatorFlashDuration);
-    }
-
-    protected void showScrollingIndicator(boolean immediately) {
-        mShouldShowScrollIndicator = true;
-        mShouldShowScrollIndicatorImmediately = true;
-        if (getChildCount() <= 1) return;
-        if (!isScrollingIndicatorEnabled()) return;
-
-        mShouldShowScrollIndicator = false;
-        getScrollingIndicator();
-        if (mScrollIndicator != null) {
-            // Fade the indicator in
-            updateScrollingIndicatorPosition();
-            mScrollIndicator.setVisibility(View.VISIBLE);
-            cancelScrollingIndicatorAnimations();
-            if (immediately) {
-                mScrollIndicator.setAlpha(1f);
-            } else {
-                mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 1f);
-                mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
-                mScrollIndicatorAnimator.start();
-            }
-        }
-    }
-
-    protected void cancelScrollingIndicatorAnimations() {
-        if (mScrollIndicatorAnimator != null) {
-            mScrollIndicatorAnimator.cancel();
-        }
-    }
-
-    protected void hideScrollingIndicator(boolean immediately) {
-        if (getChildCount() <= 1) return;
-        if (!isScrollingIndicatorEnabled()) return;
-
-        getScrollingIndicator();
-        if (mScrollIndicator != null) {
-            // Fade the indicator out
-            updateScrollingIndicatorPosition();
-            cancelScrollingIndicatorAnimations();
-            if (immediately) {
-                mScrollIndicator.setVisibility(View.INVISIBLE);
-                mScrollIndicator.setAlpha(0f);
-            } else {
-                mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 0f);
-                mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeOutDuration);
-                mScrollIndicatorAnimator.addListener(new AnimatorListenerAdapter() {
-                    private boolean cancelled = false;
-                    @Override
-                    public void onAnimationCancel(android.animation.Animator animation) {
-                        cancelled = true;
-                    }
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (!cancelled) {
-                            mScrollIndicator.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                });
-                mScrollIndicatorAnimator.start();
-            }
-        }
-    }
-
-    /**
-     * To be overridden by subclasses to determine whether the scroll indicator should stretch to
-     * fill its space on the track or not.
-     */
-    protected boolean hasElasticScrollIndicator() {
-        return true;
-    }
-
-    private void updateScrollingIndicator() {
-        if (getChildCount() <= 1) return;
-        if (!isScrollingIndicatorEnabled()) return;
-
-        getScrollingIndicator();
-        if (mScrollIndicator != null) {
-            updateScrollingIndicatorPosition();
-        }
-        if (mShouldShowScrollIndicator) {
-            showScrollingIndicator(mShouldShowScrollIndicatorImmediately);
-        }
-    }
-
-    private void updateScrollingIndicatorPosition() {
-        final boolean isRtl = isLayoutRtl();
-        if (!isScrollingIndicatorEnabled()) return;
-        if (mScrollIndicator == null) return;
-        int numPages = getChildCount();
-        int pageWidth = getViewportWidth();
-        int lastChildIndex = Math.max(0, getChildCount() - 1);
-        int maxScrollX = getChildOffset(lastChildIndex) - getRelativeChildOffset(lastChildIndex);
-        int trackWidth = pageWidth - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
-        int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
-                mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
-
-        float scrollPos = isRtl ? mMaxScrollX - getScrollX() : getScrollX();
-        float offset = Math.max(0f, Math.min(1f, (float) scrollPos / mMaxScrollX));
-        if (isRtl) {
-            offset = 1f - offset;
-        }
-        int indicatorSpace = trackWidth / numPages;
-        int indicatorPos = (int) (offset * (trackWidth - indicatorSpace)) + mScrollIndicatorPaddingLeft;
-        if (hasElasticScrollIndicator()) {
-            if (mScrollIndicator.getMeasuredWidth() != indicatorSpace) {
-                mScrollIndicator.getLayoutParams().width = indicatorSpace;
-                mScrollIndicator.requestLayout();
-            }
-        } else {
-            int indicatorCenterOffset = indicatorSpace / 2 - indicatorWidth / 2;
-            indicatorPos += indicatorCenterOffset;
-        }
-        mScrollIndicator.setTranslationX(indicatorPos);
     }
 
     // Animate the drag view back to the original position

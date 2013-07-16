@@ -45,9 +45,7 @@
             launcher:cellCountY="@integer/cell_count_y"
             launcher:pageSpacing="@dimen/workspace_page_spacing"
             launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
-            launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height">
-
-        </com.android.launcher3.Workspace>
+            launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height" />
 
         <include
             android:id="@+id/qsb_divider"
@@ -56,21 +54,6 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/qsb_bar_height"
             android:layout_gravity="start" />
-
-        <include
-            android:id="@+id/dock_divider"
-            layout="@layout/workspace_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/button_bar_height"
-            android:layout_gravity="end" />
-
-        <include
-            android:id="@+id/paged_view_indicator"
-            layout="@layout/scroll_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
 
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"

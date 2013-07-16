@@ -97,6 +97,8 @@
         <attr name="pageLayoutPaddingRight" format="dimension" />
         <!-- The space between adjacent pages of the PagedView. -->
         <attr name="pageSpacing" format="dimension" />
+        <!-- The page indicator for this workspace -->
+        <attr name="pageIndicator" format="reference" />
         <!-- The padding for the scroll indicator area -->
         <attr name="scrollIndicatorPaddingLeft" format="dimension" />
         <attr name="scrollIndicatorPaddingRight" format="dimension" />

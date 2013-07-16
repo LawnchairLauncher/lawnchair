@@ -30,15 +30,12 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <!-- Keep these behind the workspace so that they are not visible when
-             we go into AllApps -->
         <include
             android:id="@+id/page_indicator"
             layout="@layout/page_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/button_bar_height_plus_padding" />
+            android:layout_gravity="bottom|center_horizontal" />
 
         <!-- The workspace contains 5 screens of cells -->
         <com.android.launcher3.Workspace
@@ -55,15 +52,22 @@
             launcher:cellCountY="@integer/cell_count_y"
             launcher:pageSpacing="@dimen/workspace_page_spacing"
             launcher:pageIndicator="@id/page_indicator"
-            launcher:scrollIndicatorPaddingLeft="@dimen/workspace_divider_padding_left"
-            launcher:scrollIndicatorPaddingRight="@dimen/workspace_divider_padding_right">
-        </com.android.launcher3.Workspace>
+            launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
+            launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height" />
+
+        <include
+            android:id="@+id/qsb_divider"
+            layout="@layout/workspace_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/qsb_bar_height"
+            android:layout_gravity="start" />
 
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_bar_height_plus_padding"
-            android:layout_gravity="bottom" />
+            android:layout_width="@dimen/button_bar_height_plus_padding"
+            android:layout_height="match_parent"
+            android:layout_gravity="end" />
 
         <include
             android:id="@+id/qsb_bar"
@@ -86,9 +90,10 @@
 
         <com.android.launcher3.DrawableStateProxyView
             android:id="@+id/voice_button_proxy"
-            android:layout_width="80dp"
-            android:layout_height="@dimen/qsb_bar_height"
-            android:layout_gravity="top|end"
+            android:layout_width="@dimen/qsb_bar_height"
+            android:layout_height="@dimen/app_icon_size"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="64dp"
             android:clickable="true"
             android:onClick="onClickVoiceButton"
             android:importantForAccessibility="no"

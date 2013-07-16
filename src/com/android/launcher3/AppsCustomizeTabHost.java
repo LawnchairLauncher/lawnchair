@@ -178,13 +178,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     private void onTabChangedStart() {
-        mAppsCustomizePane.hideScrollingIndicator(false);
     }
 
     private void reloadCurrentPage() {
-        if (!LauncherAppState.getInstance().isScreenLarge()) {
-            mAppsCustomizePane.flashScrollingIndicator(true);
-        }
         mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
         mAppsCustomizePane.requestFocus();
     }
@@ -370,9 +366,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         if (toWorkspace) {
             // Going from All Apps -> Workspace
             setVisibilityOfSiblingsWithLowerZOrder(VISIBLE);
-            // Stop the scrolling indicator - we don't want All Apps to be invalidating itself
-            // during the transition, especially since it has a hardware layer set on it
-            mAppsCustomizePane.cancelScrollingIndicatorAnimations();
         } else {
             // Going from Workspace -> All Apps
             mContent.setVisibility(VISIBLE);
@@ -380,10 +373,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // Make sure the current page is loaded (we start loading the side pages after the
             // transition to prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
-
-            if (!LauncherAppState.getInstance().isScreenLarge()) {
-                mAppsCustomizePane.showScrollingIndicator(true);
-            }
         }
 
         if (mResetAfterTransition) {
@@ -420,10 +409,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // Make sure adjacent pages are loaded (we wait until after the transition to
             // prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
-
-            if (!LauncherAppState.getInstance().isScreenLarge()) {
-                mAppsCustomizePane.hideScrollingIndicator(false);
-            }
 
             // Going from Workspace -> All Apps
             // NOTE: We should do this at the end since we check visibility state in some of the

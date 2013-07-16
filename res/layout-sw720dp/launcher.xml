@@ -33,19 +33,11 @@
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
         <include
-            android:id="@+id/dock_divider"
-            layout="@layout/workspace_divider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/button_bar_height_plus_padding"
-            android:layout_gravity="bottom|center_horizontal" />
-
-        <include
-            android:id="@+id/paged_view_indicator"
-            layout="@layout/scroll_indicator"
+            android:id="@+id/page_indicator"
+            layout="@layout/page_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/button_bar_height_plus_padding" />
 
         <!-- The workspace contains 5 screens of cells -->
@@ -62,6 +54,7 @@
             launcher:cellCountX="@integer/cell_count_x"
             launcher:cellCountY="@integer/cell_count_y"
             launcher:pageSpacing="@dimen/workspace_page_spacing"
+            launcher:pageIndicator="@id/page_indicator"
             launcher:scrollIndicatorPaddingLeft="@dimen/workspace_divider_padding_left"
             launcher:scrollIndicatorPaddingRight="@dimen/workspace_divider_padding_right">
         </com.android.launcher3.Workspace>

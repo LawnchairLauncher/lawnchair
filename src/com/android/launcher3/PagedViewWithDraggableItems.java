@@ -167,12 +167,4 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         cancelDragging();
         super.onDetachedFromWindow();
     }
-
-    /** Show the scrolling indicators when we move the page */
-    protected void onPageBeginMoving() {
-        showScrollingIndicator(false);
-    }
-    protected void onPageEndMoving() {
-        hideScrollingIndicator(false);
-    }
 }

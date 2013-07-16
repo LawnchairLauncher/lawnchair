@@ -203,7 +203,6 @@ public class Launcher extends Activity
 
     private Workspace mWorkspace;
     private View mQsbDivider;
-    private View mDockDivider;
     private View mLauncherView;
     private DragLayer mDragLayer;
     private DragController mDragController;
@@ -982,7 +981,6 @@ public class Launcher extends Activity
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
         mQsbDivider = findViewById(R.id.qsb_divider);
-        mDockDivider = findViewById(R.id.dock_divider);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
@@ -2666,8 +2664,6 @@ public class Launcher extends Activity
                     if (mWorkspace != null
                             && !springLoaded
                             && !LauncherAppState.getInstance().isScreenLarge()) {
-                        // Hide the workspace scrollbar
-                        mWorkspace.hideScrollingIndicator(true);
                         hideDockDivider();
                     }
                     if (!animationCancelled) {
@@ -2736,8 +2732,6 @@ public class Launcher extends Activity
             toView.bringToFront();
 
             if (!springLoaded && !LauncherAppState.getInstance().isScreenLarge()) {
-                // Hide the workspace scrollbar
-                mWorkspace.hideScrollingIndicator(true);
                 hideDockDivider();
 
                 // Hide the search bar
@@ -2825,9 +2819,6 @@ public class Launcher extends Activity
                     fromView.setVisibility(View.GONE);
                     dispatchOnLauncherTransitionEnd(fromView, animated, true);
                     dispatchOnLauncherTransitionEnd(toView, animated, true);
-                    if (mWorkspace != null) {
-                        mWorkspace.hideScrollingIndicator(false);
-                    }
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
@@ -2851,7 +2842,6 @@ public class Launcher extends Activity
             dispatchOnLauncherTransitionPrepare(toView, animated, true);
             dispatchOnLauncherTransitionStart(toView, animated, true);
             dispatchOnLauncherTransitionEnd(toView, animated, true);
-            mWorkspace.hideScrollingIndicator(false);
         }
     }
 
@@ -2904,8 +2894,6 @@ public class Launcher extends Activity
                 mAllAppsButton.requestFocus();
             }
         }
-
-        mWorkspace.flashScrollingIndicator(animated);
 
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
@@ -2984,26 +2972,22 @@ public class Launcher extends Activity
     }
 
     void hideDockDivider() {
-        if (mQsbDivider != null && mDockDivider != null) {
+        if (mQsbDivider != null) {
             mQsbDivider.setVisibility(View.INVISIBLE);
-            mDockDivider.setVisibility(View.INVISIBLE);
         }
     }
 
     void showDockDivider(boolean animated) {
-        if (mQsbDivider != null && mDockDivider != null) {
+        if (mQsbDivider != null) {
             mQsbDivider.setVisibility(View.VISIBLE);
-            mDockDivider.setVisibility(View.VISIBLE);
             if (mDividerAnimator != null) {
                 mDividerAnimator.cancel();
                 mQsbDivider.setAlpha(1f);
-                mDockDivider.setAlpha(1f);
                 mDividerAnimator = null;
             }
             if (animated) {
                 mDividerAnimator = LauncherAnimUtils.createAnimatorSet();
-                mDividerAnimator.playTogether(LauncherAnimUtils.ofFloat(mQsbDivider, "alpha", 1f),
-                        LauncherAnimUtils.ofFloat(mDockDivider, "alpha", 1f));
+                mDividerAnimator.playTogether(LauncherAnimUtils.ofFloat(mQsbDivider, "alpha", 1f));
                 int duration = 0;
                 if (mSearchDropTargetBar != null) {
                     duration = mSearchDropTargetBar.getTransitionInDuration();
