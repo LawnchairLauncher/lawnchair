@@ -496,6 +496,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         mForceScreenScrolled = true;
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
+        updateCurrentPageScroll();
         notifyPageSwitchListener();
         invalidate();
     }
