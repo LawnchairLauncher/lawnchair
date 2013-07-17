@@ -528,7 +528,6 @@ public class Workspace extends SmoothPagedView
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
         addView(customScreen, 0);
 
-
         // Ensure that the current page and default page are maintained.
         mDefaultPage++;
         setCurrentPage(getCurrentPage() + 1);
@@ -691,7 +690,7 @@ public class Workspace extends SmoothPagedView
             child.setOnKeyListener(new IconKeyEventListener());
         }
 
-        LayoutParams genericLp = child.getLayoutParams();
+        ViewGroup.LayoutParams genericLp = child.getLayoutParams();
         CellLayout.LayoutParams lp;
         if (genericLp == null || !(genericLp instanceof CellLayout.LayoutParams)) {
             lp = new CellLayout.LayoutParams(x, y, spanX, spanY);
@@ -984,17 +983,10 @@ public class Workspace extends SmoothPagedView
         // Set wallpaper offset steps (1 / (number of screens - 1))
         mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
 
-        // For the purposes of computing the scrollRange and overScrollOffset, we assume
-        // that mLayoutScale is 1. This means that when we're in spring-loaded mode,
-        // there's no discrepancy between the wallpaper offset for a given page.
-        float layoutScale = mLayoutScale;
-        mLayoutScale = 1f;
         int scrollRange = getScrollRange();
 
-        // Again, we adjust the wallpaper offset to be consistent between values of mLayoutScale
         float adjustedScrollX = Math.max(0, Math.min(getScrollX(), mMaxScrollX));
         adjustedScrollX *= mWallpaperScrollRatio;
-        mLayoutScale = layoutScale;
 
         float scrollProgress =
             adjustedScrollX / (float) scrollRange;
@@ -1048,24 +1040,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    @Override
-    protected void updateCurrentPageScroll() {
-        super.updateCurrentPageScroll();
-        computeWallpaperScrollRatio(mCurrentPage);
-    }
-
-    @Override
-    protected void snapToPage(int whichPage) {
-        super.snapToPage(whichPage);
-        computeWallpaperScrollRatio(whichPage);
-    }
-
-    @Override
-    protected void snapToPage(int whichPage, int duration) {
-        super.snapToPage(whichPage, duration);
-        computeWallpaperScrollRatio(whichPage);
-    }
-
     protected void snapToPage(int whichPage, Runnable r) {
         if (mDelayedSnapToPageRunnable != null) {
             mDelayedSnapToPageRunnable.run();
@@ -1076,22 +1050,6 @@ public class Workspace extends SmoothPagedView
 
     protected void snapToScreenId(long screenId, Runnable r) {
         snapToPage(getPageIndexForScreenId(screenId), r);
-    }
-
-    private void computeWallpaperScrollRatio(int page) {
-        // Here, we determine what the desired scroll would be with and without a layout scale,
-        // and compute a ratio between the two. This allows us to adjust the wallpaper offset
-        // as though there is no layout scale.
-        float layoutScale = mLayoutScale;
-        int scaled = getChildOffset(page) - getRelativeChildOffset(page);
-        mLayoutScale = 1.0f;
-        float unscaled = getChildOffset(page) - getRelativeChildOffset(page);
-        mLayoutScale = layoutScale;
-        if (scaled > 0) {
-            mWallpaperScrollRatio = (1.0f * unscaled) / scaled;
-        } else {
-            mWallpaperScrollRatio = 1f;
-        }
     }
 
     class WallpaperOffsetInterpolator {
