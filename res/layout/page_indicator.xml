@@ -16,5 +16,6 @@
 <com.android.launcher3.PageIndicator
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    launcher:windowSize="@integer/config_maxNumberOfPageIndicatorsToShow">
 </com.android.launcher3.PageIndicator>

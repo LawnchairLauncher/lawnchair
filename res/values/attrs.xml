@@ -32,6 +32,13 @@
         <attr name="drawIdentifier" format="string"  />
     </declare-styleable>
 
+    <!-- Page Indicator specific attributes. These attributes are used to customize
+         the cling in XML files. -->
+    <declare-styleable name="PageIndicator">
+        <!-- Used to identify how to draw the cling bg -->
+        <attr name="windowSize" format="integer"  />
+    </declare-styleable>
+
     <!-- Workspace specific attributes. These attributes are used to customize
          the workspace in XML files. -->
     <declare-styleable name="Workspace">

@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
+import android.animation.TimeInterpolator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -37,8 +38,22 @@ import java.util.ArrayList;
 public class PageIndicator extends LinearLayout {
     @SuppressWarnings("unused")
     private static final String TAG = "PageIndicator";
+    // Want this to look good? Keep it odd
+    private static final boolean MODULATE_ALPHA_ENABLED = false;
 
     private LayoutInflater mLayoutInflater;
+    private int[] mWindowRange = new int[2];
+    private int mMaxWindowSize;
+
+    private ArrayList<PageIndicatorMarker> mMarkers =
+            new ArrayList<PageIndicatorMarker>();
+    private int mActiveMarkerIndex;
+
+    private TimeInterpolator mAlphaInterpolator = new TimeInterpolator() {
+        public float getInterpolation(float t) {
+            return t;
+        }
+    };
 
     public PageIndicator(Context context) {
         this(context, null);
@@ -50,16 +65,110 @@ public class PageIndicator extends LinearLayout {
 
     public PageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.PageIndicator, defStyle, 0);
+        mMaxWindowSize = a.getInteger(R.styleable.PageIndicator_windowSize, 15);
+        mWindowRange[0] = 0;
+        mWindowRange[1] = 0;
         mLayoutInflater = LayoutInflater.from(context);
+        a.recycle();
 
+        // Set the layout transition properties
         LayoutTransition transition = getLayoutTransition();
-        transition.setDuration(250);
+        transition.setDuration(175);
+    }
+
+    private void enableLayoutTransitions() {
+        LayoutTransition transition = getLayoutTransition();
+        transition.enableTransitionType(LayoutTransition.APPEARING);
+        transition.enableTransitionType(LayoutTransition.DISAPPEARING);
+        transition.enableTransitionType(LayoutTransition.CHANGE_APPEARING);
+        transition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+    }
+
+    private void disableLayoutTransitions() {
+        LayoutTransition transition = getLayoutTransition();
+        transition.disableTransitionType(LayoutTransition.APPEARING);
+        transition.disableTransitionType(LayoutTransition.DISAPPEARING);
+        transition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
+        transition.disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+    }
+
+    void offsetWindowCenterTo(int activeIndex, boolean allowAnimations) {
+        if (activeIndex < 0) {
+            new Throwable().printStackTrace();
+        }
+        int windowSize = Math.min(mMarkers.size(), mMaxWindowSize);
+        int hWindowSize = (int) windowSize / 2;
+        float hfWindowSize = windowSize / 2f;
+        int windowStart = Math.max(0, activeIndex - hWindowSize);
+        int windowEnd = Math.min(mMarkers.size(), windowStart + mMaxWindowSize);
+        windowStart = windowEnd - Math.min(mMarkers.size(), windowSize);
+        int windowMid = windowStart + (windowEnd - windowStart) / 2;
+        boolean windowAtStart = (windowStart == 0);
+        boolean windowAtEnd = (windowEnd == mMarkers.size());
+        boolean windowMoved = (mWindowRange[0] != windowStart) ||
+                (mWindowRange[1] != windowEnd);
+
+        if (!allowAnimations) {
+            disableLayoutTransitions();
+        }
+
+        // Remove all the previous children that are no longer in the window
+        for (int i = getChildCount() - 1; i >= 0; --i) {
+            PageIndicatorMarker marker = (PageIndicatorMarker) getChildAt(i);
+            int markerIndex = mMarkers.indexOf(marker);
+            if (markerIndex < windowStart || markerIndex >= windowEnd) {
+                removeView(marker);
+            }
+        }
+
+        // Add all the new children that belong in the window
+        for (int i = 0; i < mMarkers.size(); ++i) {
+            PageIndicatorMarker marker = (PageIndicatorMarker) mMarkers.get(i);
+            if (windowStart <= i && i < windowEnd) {
+                if (indexOfChild(marker) < 0) {
+                    addView(marker, i - windowStart);
+                }
+                if (i == activeIndex) {
+                    marker.activate(windowMoved);
+                } else {
+                    marker.inactivate(windowMoved);
+                }
+            } else {
+                marker.inactivate(true);
+            }
+
+            if (MODULATE_ALPHA_ENABLED) {
+                // Update the marker's alpha
+                float alpha = 1f;
+                if (mMarkers.size() > windowSize) {
+                    if ((windowAtStart && i > hWindowSize) ||
+                        (windowAtEnd && i < (mMarkers.size() - hWindowSize)) ||
+                        (!windowAtStart && !windowAtEnd)) {
+                        alpha = 1f - Math.abs((i - windowMid) / hfWindowSize);
+                    }
+                }
+                marker.animate().alpha(alpha).setDuration(500).start();
+            }
+        }
+
+        if (!allowAnimations) {
+            enableLayoutTransitions();
+        }
+
+        mWindowRange[0] = windowStart;
+        mWindowRange[1] = windowEnd;
     }
 
     void addMarker(int index) {
-        index = Math.max(0, Math.min(index, getChildCount()));
-        View marker = mLayoutInflater.inflate(R.layout.page_indicator_marker, this, false);
-        addView(marker, index);
+        index = Math.max(0, Math.min(index, mMarkers.size()));
+
+        int mLayoutId = R.layout.page_indicator_marker;
+        PageIndicatorMarker marker =
+            (PageIndicatorMarker) mLayoutInflater.inflate(mLayoutId, this, false);
+        mMarkers.add(index, marker);
+        offsetWindowCenterTo(mActiveMarkerIndex, true);
     }
     void addMarkers(int count) {
         for (int i = 0; i < count; ++i) {
@@ -68,25 +177,37 @@ public class PageIndicator extends LinearLayout {
     }
 
     void removeMarker(int index) {
-        if (getChildCount() > 0) {
-            index = Math.max(0, Math.min(index, getChildCount() - 1));
-            removeViewAt(index);
+        if (mMarkers.size() > 0) {
+            index = Math.max(0, Math.min(mMarkers.size() - 1, index));
+            mMarkers.remove(index);
+            offsetWindowCenterTo(mActiveMarkerIndex, true);
         }
     }
     void removeAllMarkers() {
-        while (getChildCount() > 0) {
+        while (mMarkers.size() > 0) {
             removeMarker(Integer.MAX_VALUE);
         }
     }
 
     void setActiveMarker(int index) {
-        for (int i = 0; i < getChildCount(); ++i) {
-            PageIndicatorMarker marker = (PageIndicatorMarker) getChildAt(i);
-            if (index == i) {
-                marker.activate();
-            } else {
-                marker.inactivate();
-            }
+        // Center the active marker
+        mActiveMarkerIndex = index;
+        offsetWindowCenterTo(index, false);
+    }
+
+    void dumpState(String txt) {
+        System.out.println(txt);
+        System.out.println("\tmMarkers: " + mMarkers.size());
+        for (int i = 0; i < mMarkers.size(); ++i) {
+            PageIndicatorMarker m = mMarkers.get(i);
+            System.out.println("\t\t(" + i + ") " + m);
         }
+        System.out.println("\twindow: [" + mWindowRange[0] + ", " + mWindowRange[1] + "]");
+        System.out.println("\tchildren: " + getChildCount());
+        for (int i = 0; i < getChildCount(); ++i) {
+            PageIndicatorMarker m = (PageIndicatorMarker) getChildAt(i);
+            System.out.println("\t\t(" + i + ") " + m);
+        }
+        System.out.println("\tactive: " + mActiveMarkerIndex);
     }
 }

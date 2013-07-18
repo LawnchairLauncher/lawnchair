@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -29,10 +30,11 @@ public class PageIndicatorMarker extends FrameLayout {
     @SuppressWarnings("unused")
     private static final String TAG = "PageIndicator";
 
-    private static final int MARKER_FADE_DURATION = 150;
+    private static final int MARKER_FADE_DURATION = 175;
 
     private View mActiveMarker;
     private View mInactiveMarker;
+    private boolean mIsActive = false;
 
     public PageIndicatorMarker(Context context) {
         this(context, null);
@@ -51,16 +53,36 @@ public class PageIndicatorMarker extends FrameLayout {
         mInactiveMarker = findViewById(R.id.inactive);
     }
 
-    public void activate() {
-        mActiveMarker.animate().alpha(1f)
-                .setDuration(MARKER_FADE_DURATION).start();
-        mInactiveMarker.animate().alpha(0f)
-                .setDuration(MARKER_FADE_DURATION).start();
+    void activate(boolean immediate) {
+        if (immediate) {
+            mActiveMarker.animate().cancel();
+            mActiveMarker.setAlpha(1f);
+            mInactiveMarker.animate().cancel();
+            mInactiveMarker.setAlpha(0f);
+        } else {
+            mActiveMarker.animate().alpha(1f)
+                    .setDuration(MARKER_FADE_DURATION).start();
+            mInactiveMarker.animate().alpha(0f)
+                    .setDuration(MARKER_FADE_DURATION).start();
+        }
+        mIsActive = true;
     }
-    public void inactivate() {
-        mInactiveMarker.animate().alpha(1f)
-                .setDuration(MARKER_FADE_DURATION).start();
-        mActiveMarker.animate().alpha(0f)
-                .setDuration(MARKER_FADE_DURATION).start();
+    void inactivate(boolean immediate) {
+        if (immediate) {
+            mInactiveMarker.animate().cancel();
+            mInactiveMarker.setAlpha(1f);
+            mActiveMarker.animate().cancel();
+            mActiveMarker.setAlpha(0f);
+        } else {
+            mInactiveMarker.animate().alpha(1f)
+                    .setDuration(MARKER_FADE_DURATION).start();
+            mActiveMarker.animate().alpha(0f)
+                    .setDuration(MARKER_FADE_DURATION).start();
+        }
+        mIsActive = false;
+    }
+
+    boolean isActive() {
+        return mIsActive;
     }
 }

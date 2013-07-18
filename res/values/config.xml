@@ -3,6 +3,9 @@
     <bool name="is_large_screen">false</bool>
     <bool name="allow_rotation">false</bool>
 
+    <!-- Max number of page indicators to show -->
+    <integer name="config_maxNumberOfPageIndicatorsToShow">21</integer>
+
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
 
