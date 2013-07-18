@@ -104,7 +104,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mFirstLayout = true;
 
     protected int mCurrentPage;
-    protected int mChildCountOnLastMeasure;
+    protected int mChildCountOnLastLayout;
 
     protected int mNextPage = INVALID_PAGE;
     protected int mMaxScrollX;
@@ -783,19 +783,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 mRecomputePageSpacing = false;
             }
         }
-
-        if (mScroller.isFinished() && mChildCountOnLastMeasure != getChildCount() &&
-                !mDeferringForDelete) {
-            setCurrentPage(getNextPage());
-        }
-        mChildCountOnLastMeasure = getChildCount();
-
-        if (childCount > 0) {
-            final int index = isLayoutRtl() ? 0 : childCount - 1;
-            mMaxScrollX = getChildOffset(index) - getRelativeChildOffset(index);
-        } else {
-            mMaxScrollX = 0;
-        }
     }
 
     public void setPageSpacing(int pageSpacing) {
@@ -857,6 +844,19 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             setHorizontalScrollBarEnabled(true);
             mFirstLayout = false;
         }
+
+        if (childCount > 0) {
+            final int index = isLayoutRtl() ? 0 : childCount - 1;
+            mMaxScrollX = getChildOffset(index) - getRelativeChildOffset(index);
+        } else {
+            mMaxScrollX = 0;
+        }
+
+        if (mScroller.isFinished() && mChildCountOnLastLayout != getChildCount() &&
+                !mDeferringForDelete) {
+            setCurrentPage(getNextPage());
+        }
+        mChildCountOnLastLayout = getChildCount();
     }
 
     protected void screenScrolled(int screenCenter) {
@@ -942,15 +942,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected void invalidateCachedOffsets() {
         int count = getChildCount();
         if (count == 0) {
-            mChildOffsets = null;
             mChildRelativeOffsets = null;
             return;
         }
 
-        mChildOffsets = new int[count];
         mChildRelativeOffsets = new int[count];
         for (int i = 0; i < count; i++) {
-            mChildOffsets[i] = -1;
             mChildRelativeOffsets[i] = -1;
         }
     }
@@ -959,28 +956,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (index < 0 || index > getChildCount() - 1) return 0;
 
         final boolean isRtl = isLayoutRtl();
-        int[] childOffsets = mChildOffsets;
 
-        if (childOffsets != null && childOffsets[index] != -1) {
-            return childOffsets[index];
-        } else {
-            if (getChildCount() == 0)
-                return 0;
+        if (isRtl) index = getChildCount() - index - 1;
+        int offset = getPageAt(index).getLeft() - getViewportOffsetX();
 
-            final int startIndex = isRtl ? getChildCount() - 1 : 0;
-            final int endIndex = isRtl ? index : index;
-            final int delta = isRtl ? -1 : 1;
-
-            int offset = getRelativeChildOffset(startIndex);
-            for (int i = startIndex; i != endIndex; i += delta) {
-                offset += getPageAt(i).getMeasuredWidth() + mPageSpacing;
-            }
-            if (childOffsets != null) {
-                childOffsets[index] = offset;
-            }
-            return offset;
-        }
-
+        return offset;
     }
 
     protected int getRelativeChildOffset(int index) {
