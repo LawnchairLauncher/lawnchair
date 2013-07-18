@@ -121,8 +121,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected float mLastMotionY;
     protected float mTotalMotionX;
     private int mLastScreenCenter = -1;
-    private int[] mChildOffsets;
-    private int[] mChildRelativeOffsets;
+
+    private int[] mPageScrolls;
 
     protected final static int TOUCH_STATE_REST = 0;
     protected final static int TOUCH_STATE_SCROLLING = 1;
@@ -397,6 +397,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return (getMeasuredHeight() - getViewportHeight()) / 2;
     }
 
+    PageIndicator getPageIndicator() {
+        return mPageIndicator;
+    }
+
     public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
         mPageSwitchListener = pageSwitchListener;
         if (mPageSwitchListener != null) {
@@ -457,9 +461,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // If the current page is invalid, just reset the scroll position to zero
         int newX = 0;
         if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
-            int offset = getChildOffset(mCurrentPage);
-            int relOffset = getRelativeChildOffset(mCurrentPage);
-            newX = offset - relOffset;
+            newX = getScrollForPage(mCurrentPage);
         }
         scrollTo(newX, 0);
         mScroller.setFinalX(newX);
@@ -663,7 +665,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     }
 
-    public void addFullScreenPage(View page, int width, int height) {
+    public void addFullScreenPage(View page) {
         LayoutParams lp = generateDefaultLayoutParams();
         lp.isFullScreenPage = true;
         super.addView(page, 0, lp);
@@ -761,22 +763,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
         setMeasuredDimension(scaledWidthSize, scaledHeightSize);
 
-        // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions.
-        // We also wait until we set the measured dimensions before flushing the cache as well, to
-        // ensure that the cache is filled with good values.
-        invalidateCachedOffsets();
-
         if (childCount > 0) {
-            if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getViewportWidth() + ", "
-                    + getChildWidth(0));
-
             // Calculate the variable page spacing if necessary
             if (mAutoComputePageSpacing && mRecomputePageSpacing) {
                 // The gap between pages in the PagedView should be equal to the gap from the page
                 // to the edge of the screen (so it is not visible in the current screen).  To
                 // account for unequal padding on each side of the paged view, we take the maximum
                 // of the left/right gap and use that as the gap between each page.
-                int offset = getRelativeChildOffset(0);
+                int offset = (getViewportWidth() - getChildWidth(0)) / 2;
                 int spacing = Math.max(offset, widthSize - offset -
                         getChildAt(0).getMeasuredWidth());
                 setPageSpacing(spacing);
@@ -787,7 +781,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     public void setPageSpacing(int pageSpacing) {
         mPageSpacing = pageSpacing;
-        invalidateCachedOffsets();
+        requestLayout();
     }
 
     @Override
@@ -798,6 +792,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         final int childCount = getChildCount();
+
+        int screenWidth = getViewportWidth();
 
         int offsetX = getViewportOffsetX();
         int offsetY = getViewportOffsetY();
@@ -812,7 +808,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int delta = isRtl ? -1 : 1;
 
         int verticalPadding = getPaddingTop() + getPaddingBottom();
-        int childLeft = offsetX + getRelativeChildOffset(startIndex);
+        int childLeft = offsetX + (screenWidth - getChildWidth(startIndex)) / 2;
+
+        if (mPageScrolls == null || getChildCount() != mChildCountOnLastLayout) {
+            mPageScrolls = new int[getChildCount()];
+        }
+
         for (int i = startIndex; i != endIndex; i += delta) {
             final View child = getPageAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
@@ -834,6 +835,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 if (DEBUG) Log.d(TAG, "\tlayout-child" + i + ": " + childLeft + ", " + childTop);
                 child.layout(childLeft, childTop,
                         childLeft + child.getMeasuredWidth(), childTop + childHeight);
+
+                // We assume the left and right padding are equal, and hence center the pages
+                // horizontally
+                int scrollOffset = false ? 0 : (getViewportWidth() - childWidth) / 2;
+                mPageScrolls[i] = childLeft - scrollOffset - offsetX;
+
                 childLeft += childWidth + mPageSpacing;
             }
         }
@@ -847,7 +854,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (childCount > 0) {
             final int index = isLayoutRtl() ? 0 : childCount - 1;
-            mMaxScrollX = getChildOffset(index) - getRelativeChildOffset(index);
+            mMaxScrollX = getScrollForPage(index);
         } else {
             mMaxScrollX = 0;
         }
@@ -889,14 +896,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mRecomputePageSpacing = true;
 
         invalidate();
-        invalidateCachedOffsets();
     }
 
     @Override
     public void onChildViewRemoved(View parent, View child) {
         mForceScreenScrolled = true;
         invalidate();
-        invalidateCachedOffsets();
     }
 
     private void removeMarkerForView(int index) {
@@ -939,19 +944,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         super.removeAllViewsInLayout();
     }
 
-    protected void invalidateCachedOffsets() {
-        int count = getChildCount();
-        if (count == 0) {
-            mChildRelativeOffsets = null;
-            return;
-        }
-
-        mChildRelativeOffsets = new int[count];
-        for (int i = 0; i < count; i++) {
-            mChildRelativeOffsets[i] = -1;
-        }
-    }
-
     protected int getChildOffset(int index) {
         if (index < 0 || index > getChildCount() - 1) return 0;
 
@@ -961,22 +953,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int offset = getPageAt(index).getLeft() - getViewportOffsetX();
 
         return offset;
-    }
-
-    protected int getRelativeChildOffset(int index) {
-        if (index < 0 || index > getChildCount() - 1) return 0;
-
-        if (mChildRelativeOffsets != null && mChildRelativeOffsets[index] != -1) {
-            return mChildRelativeOffsets[index];
-        } else {
-            final int padding = getPaddingLeft() + getPaddingRight();
-            final int offset = getPaddingLeft() +
-                    (getViewportWidth() - padding - getChildWidth(index)) / 2;
-            if (mChildRelativeOffsets != null) {
-                mChildRelativeOffsets[index] = offset;
-            }
-            return offset;
-        }
     }
 
     void boundByReorderablePages(boolean isReordering, int[] range) {
@@ -1179,22 +1155,24 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Return true if a tap at (x, y) should trigger a flip to the previous page.
      */
     protected boolean hitsPreviousPage(float x, float y) {
+        int offset = (getViewportWidth() - getChildWidth(mCurrentPage)) / 2;
         if (isLayoutRtl()) {
             return (x > (getViewportOffsetX() + getViewportWidth() -
-                    getRelativeChildOffset(mCurrentPage) + mPageSpacing));
+                    offset + mPageSpacing));
         }
-        return (x < getViewportOffsetX() + getRelativeChildOffset(mCurrentPage) - mPageSpacing);
+        return (x < getViewportOffsetX() + offset - mPageSpacing);
     }
 
     /**
      * Return true if a tap at (x, y) should trigger a flip to the next page.
      */
     protected boolean hitsNextPage(float x, float y) {
+        int offset = (getViewportWidth() - getChildWidth(mCurrentPage)) / 2;
         if (isLayoutRtl()) {
-            return (x < getViewportOffsetX() + getRelativeChildOffset(mCurrentPage) - mPageSpacing);
+            return (x < getViewportOffsetX() + offset - mPageSpacing);
         }
         return  (x > (getViewportOffsetX() + getViewportWidth() -
-                getRelativeChildOffset(mCurrentPage) + mPageSpacing));
+                offset + mPageSpacing));
     }
 
     /** Returns whether x and y originated within the buffered viewport */
@@ -1412,13 +1390,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int halfScreenSize = getViewportWidth() / 2;
 
         int totalDistance = v.getMeasuredWidth() + mPageSpacing;
-        int delta = screenCenter - (getChildOffset(page) -
-                getRelativeChildOffset(page) + halfScreenSize);
+        int delta = screenCenter - (getScrollForPage(page) + halfScreenSize);
 
         float scrollProgress = delta / (totalDistance * 1.0f);
         scrollProgress = Math.min(scrollProgress, getMaxScrollProgress());
         scrollProgress = Math.max(scrollProgress, - getMaxScrollProgress());
         return scrollProgress;
+    }
+
+    public int getScrollForPage(int index) {
+        if (mPageScrolls == null || index >= mPageScrolls.length) {
+            return 0;
+        } else {
+            return mPageScrolls[index];
+        }
     }
 
     // This curve determines how the effect of scrolling over the limits of the page dimishes
@@ -1619,8 +1604,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                             public void run() {
                                 // Update the down scroll position to account for the fact that the
                                 // current page is moved
-                                mDownScrollX = getChildOffset(pageUnderPointIndex)
-                                        - getRelativeChildOffset(pageUnderPointIndex);
+                                mDownScrollX = getScrollForPage(pageUnderPointIndex);
 
                                 // Setup the scroll to the correct page before we swap the views
                                 snapToPage(pageUnderPointIndex);
@@ -1941,10 +1925,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
         int halfScreenSize = getViewportWidth() / 2;
 
-        if (DEBUG) Log.d(TAG, "snapToPage.getChildOffset(): " + getChildOffset(whichPage));
-        if (DEBUG) Log.d(TAG, "snapToPageWithVelocity.getRelativeChildOffset(): "
-                + getViewportWidth() + ", " + getChildWidth(whichPage));
-        final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
+        final int newX = getScrollForPage(whichPage);
         int delta = newX - mUnboundedScrollX;
         int duration = 0;
 
@@ -1989,10 +1970,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected void snapToPage(int whichPage, int duration, boolean immediate) {
         whichPage = Math.max(0, Math.min(whichPage, getPageCount() - 1));
 
-        if (DEBUG) Log.d(TAG, "snapToPage.getChildOffset(): " + getChildOffset(whichPage));
-        if (DEBUG) Log.d(TAG, "snapToPage.getRelativeChildOffset(): " + getViewportWidth() + ", "
-                + getChildWidth(whichPage));
-        int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
+        int newX = getScrollForPage(whichPage);
         final int sX = mUnboundedScrollX;
         final int delta = newX - sX;
         snapToPage(whichPage, delta, duration, immediate);
