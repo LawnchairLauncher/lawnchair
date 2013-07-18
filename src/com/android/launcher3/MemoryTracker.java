@@ -107,17 +107,22 @@ public class MemoryTracker extends Service {
             if (mPids.contains(lpid)) return;
 
             mPids.add(lpid);
-            final int N = mPids.size();
-            mPidsArray = new int[N];
-            StringBuffer sb = new StringBuffer("Now tracking processes: ");
-            for (int i=0; i<N; i++) {
-                final int p = mPids.get(i).intValue();
-                mPidsArray[i] = p;
-                sb.append(p); sb.append(" ");
-            }
+            updatePidsArrayL();
+
             mData.put(pid, new ProcessMemInfo(pid, name, start));
-            Log.v(TAG, sb.toString());
         }
+    }
+
+    void updatePidsArrayL() {
+        final int N = mPids.size();
+        mPidsArray = new int[N];
+        StringBuffer sb = new StringBuffer("Now tracking processes: ");
+        for (int i=0; i<N; i++) {
+            final int p = mPids.get(i).intValue();
+            mPidsArray[i] = p;
+            sb.append(p); sb.append(" ");
+        }
+        Log.v(TAG, sb.toString());
     }
 
     void update() {
@@ -125,6 +130,10 @@ public class MemoryTracker extends Service {
             Debug.MemoryInfo[] dinfos = mAm.getProcessMemoryInfo(mPidsArray);
             for (int i=0; i<dinfos.length; i++) {
                 Debug.MemoryInfo dinfo = dinfos[i];
+                if (i > mPids.size()) {
+                    Log.e(TAG, "update: unknown process info received: " + dinfo);
+                    break;
+                }
                 final long pid = mPids.get(i).intValue();
                 final ProcessMemInfo info = mData.get(pid);
                 info.head = (info.head+1) % info.pss.length;
@@ -142,6 +151,7 @@ public class MemoryTracker extends Service {
                 final long pid = mPids.get(i).intValue();
                 if (mData.get(pid) == null) {
                     mPids.remove(i);
+                    updatePidsArrayL();
                 }
             }
         }
@@ -155,7 +165,9 @@ public class MemoryTracker extends Service {
         List<ActivityManager.RunningServiceInfo> svcs = mAm.getRunningServices(256);
         for (ActivityManager.RunningServiceInfo svc : svcs) {
             if (svc.service.getPackageName().equals(getPackageName())) {
-                startTrackingProcess(svc.pid, svc.process, System.currentTimeMillis() - (SystemClock.elapsedRealtime() - svc.activeSince));
+                Log.v(TAG, "discovered running service: " + svc.process + " (" + svc.pid + ")");
+                startTrackingProcess(svc.pid, svc.process,
+                        System.currentTimeMillis() - (SystemClock.elapsedRealtime() - svc.activeSince));
             }
         }
 
@@ -163,6 +175,7 @@ public class MemoryTracker extends Service {
         for (ActivityManager.RunningAppProcessInfo proc : procs) {
             final String pname = proc.processName;
             if (pname.startsWith(getPackageName())) {
+                Log.v(TAG, "discovered other running process: " + pname + " (" + proc.pid + ")");
                 startTrackingProcess(proc.pid, pname, System.currentTimeMillis());
             }
         }
@@ -175,7 +188,7 @@ public class MemoryTracker extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Received start id " + startId + ": " + intent);
+        Log.v(TAG, "Received start id " + startId + ": " + intent);
 
         if (intent != null) {
             if (ACTION_START_TRACKING.equals(intent.getAction())) {
