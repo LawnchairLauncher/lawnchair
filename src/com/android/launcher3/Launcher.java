@@ -191,6 +191,8 @@ public class Launcher extends Activity
     private static final String TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME =
             "com.android.launcher.toolbar_voice_search_icon";
 
+    public static final String SHOW_WEIGHT_WATCHER = "debug.show_mem";
+
     /** The different states that Launcher can be in. */
     private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
@@ -221,6 +223,7 @@ public class Launcher extends Activity
     private View mLauncherView;
     private DragLayer mDragLayer;
     private DragController mDragController;
+    private View mWeightWatcher;
 
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -1040,14 +1043,17 @@ public class Launcher extends Activity
 
         if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
             Log.v(TAG, "adding WeightWatcher");
-            final View ww = new WeightWatcher(this);
-            ww.setAlpha(0.5f);
-            ((FrameLayout) mLauncherView).addView(ww,
+            mWeightWatcher = new WeightWatcher(this);
+            mWeightWatcher.setAlpha(0.5f);
+            ((FrameLayout) mLauncherView).addView(mWeightWatcher,
                     new FrameLayout.LayoutParams(
                             FrameLayout.LayoutParams.MATCH_PARENT,
                             FrameLayout.LayoutParams.WRAP_CONTENT,
                             Gravity.BOTTOM)
             );
+
+            boolean show = shouldShowWeightWatcher();
+            mWeightWatcher.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -2050,6 +2056,9 @@ public class Launcher extends Activity
                     return;
                 } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
                     MemoryDumpActivity.startDump(this);
+                    return;
+                } else if (shortcutClass.equals(ToggleWeightWatcher.class.getName())) {
+                    toggleShowWeightWatcher();
                     return;
                 }
             }
@@ -3457,6 +3466,30 @@ public class Launcher extends Activity
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i), false);
+        }
+    }
+
+    private boolean shouldShowWeightWatcher() {
+        String spKey = LauncherAppState.getSharedPreferencesKey();
+        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, true);
+
+        return show;
+    }
+
+    private void toggleShowWeightWatcher() {
+        String spKey = LauncherAppState.getSharedPreferencesKey();
+        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, true);
+
+        show = !show;
+
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(SHOW_WEIGHT_WATCHER, show);
+        editor.commit();
+
+        if (mWeightWatcher != null) {
+            mWeightWatcher.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 

@@ -41,6 +41,8 @@
 
     <string name="widget_adder">Widgets</string>
 
+    <string name="toggle_weight_watcher">Show Mem</string>
+
     <!-- AppsCustomize pane -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
