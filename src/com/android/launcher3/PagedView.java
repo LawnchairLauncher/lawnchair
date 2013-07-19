@@ -229,6 +229,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Convenience/caching
     private Matrix mTmpInvMatrix = new Matrix();
     private float[] mTmpPoint = new float[2];
+    private int[] mTmpIntPoint = new int[2];
     private Rect mTmpRect = new Rect();
     private Rect mAltTmpRect = new Rect();
 
@@ -266,6 +267,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     public PagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.PagedView, defStyle, 0);
         setPageSpacing(a.getDimensionPixelSize(R.styleable.PagedView_pageSpacing, 0));
@@ -955,47 +957,46 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return offset;
     }
 
-    void boundByReorderablePages(boolean isReordering, int[] range) {
-        // Do nothing
+    void getReorderablePages(int[] range) {
+        range[0] = 0;
+        range[1] = getChildCount() - 1;
     }
 
-    // TODO: Fix this
     protected void getVisiblePages(int[] range) {
-        range[0] = 0;
-        range[1] = getPageCount() - 1;
-
-        /*
         final int pageCount = getChildCount();
+        mTmpIntPoint[0] = mTmpIntPoint[1] = 0;
 
         if (pageCount > 0) {
-            final int screenWidth = getViewportWidth();
+            int viewportWidth = getViewportWidth();
             int leftScreen = 0;
             int rightScreen = 0;
-            int offsetX = getViewportOffsetX() + getScrollX();
-            View currPage = getPageAt(leftScreen);
-            while (leftScreen < pageCount - 1 &&
-                    currPage.getX() + currPage.getWidth() -
-                    currPage.getPaddingRight() < offsetX) {
-                leftScreen++;
-                currPage = getPageAt(leftScreen);
-            }
-            rightScreen = leftScreen;
-            currPage = getPageAt(rightScreen + 1);
-            while (rightScreen < pageCount - 1 &&
-                    currPage.getX() - currPage.getPaddingLeft() < offsetX + screenWidth) {
-                rightScreen++;
-                currPage = getPageAt(rightScreen + 1);
-            }
 
-            // TEMP: this is a hacky way to ensure that animations to new pages are not clipped
-            // because we don't draw them while scrolling?
-            range[0] = Math.max(0, leftScreen - 1);
-            range[1] = Math.min(rightScreen + 1, getChildCount() - 1);
+            for (leftScreen = getNextPage(); leftScreen >= 0; --leftScreen) {
+                View currPage = getPageAt(leftScreen);
+
+                // Check if the right edge of the page is in the viewport
+                mTmpIntPoint[0] = currPage.getMeasuredWidth();
+                DragLayer.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
+                if (mTmpIntPoint[0] < 0) {
+                    break;
+                }
+            }
+            for (rightScreen = getNextPage(); rightScreen < getChildCount(); ++rightScreen) {
+                View currPage = getPageAt(rightScreen);
+
+                // Check if the left edge of the page is in the viewport
+                mTmpIntPoint[0] = 0;
+                DragLayer.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
+                if (mTmpIntPoint[0] >= viewportWidth) {
+                    break;
+                }
+            }
+            range[0] = Math.max(0, leftScreen);
+            range[1] = Math.min(rightScreen, getChildCount() - 1);
         } else {
             range[0] = -1;
             range[1] = -1;
         }
-        */
     }
 
     protected boolean shouldDrawChild(View child) {
@@ -1594,7 +1595,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 if (pageUnderPointIndex > -1 && !isHoveringOverDelete) {
                     mTempVisiblePagesRange[0] = 0;
                     mTempVisiblePagesRange[1] = getPageCount() - 1;
-                    boundByReorderablePages(true, mTempVisiblePagesRange);
+                    getReorderablePages(mTempVisiblePagesRange);
                     if (mTempVisiblePagesRange[0] <= pageUnderPointIndex &&
                             pageUnderPointIndex <= mTempVisiblePagesRange[1] &&
                             pageUnderPointIndex != mSidePageHoverIndex && mScroller.isFinished()) {
@@ -2232,6 +2233,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                             });
                     }
                 }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Update the visible pages
+                    invalidate();
+                }
             });
             mZoomInOutAnim.start();
             return true;
@@ -2245,8 +2251,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mIsReordering = true;
 
         // Mark all the non-widget pages as invisible
-        getVisiblePages(mTempVisiblePagesRange);
-        boundByReorderablePages(true, mTempVisiblePagesRange);
+        getReorderablePages(mTempVisiblePagesRange);
         for (int i = 0; i < getPageCount(); ++i) {
             if (i < mTempVisiblePagesRange[0] || i > mTempVisiblePagesRange[1]) {
                 getPageAt(i).setAlpha(0f);
@@ -2272,8 +2277,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mIsReordering = false;
 
         // Mark all the non-widget pages as visible again
-        getVisiblePages(mTempVisiblePagesRange);
-        boundByReorderablePages(true, mTempVisiblePagesRange);
+        getReorderablePages(mTempVisiblePagesRange);
         for (int i = 0; i < getPageCount(); ++i) {
             if (i < mTempVisiblePagesRange[0] || i > mTempVisiblePagesRange[1]) {
                 getPageAt(i).setAlpha(1f);
@@ -2285,7 +2289,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int dragViewIndex = getPageNearestToCenterOfScreen();
         mTempVisiblePagesRange[0] = 0;
         mTempVisiblePagesRange[1] = getPageCount() - 1;
-        boundByReorderablePages(true, mTempVisiblePagesRange);
+        getReorderablePages(mTempVisiblePagesRange);
         mReorderingStarted = true;
 
         // Check if we are within the reordering range
@@ -2377,6 +2381,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
+                    // Update the visible pages
+                    invalidate();
                 }
             });
             mZoomInOutAnim.start();
@@ -2464,8 +2470,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 // in the layout)
                 // NOTE: We can make an assumption here because we have side-bound pages that we
                 //       will always have pages to animate in from the left
-                getVisiblePages(mTempVisiblePagesRange);
-                boundByReorderablePages(true, mTempVisiblePagesRange);
+                getReorderablePages(mTempVisiblePagesRange);
                 boolean isLastWidgetPage = (mTempVisiblePagesRange[0] == mTempVisiblePagesRange[1]);
                 boolean slideFromLeft = (isLastWidgetPage ||
                         dragViewIndex > mTempVisiblePagesRange[0]);
