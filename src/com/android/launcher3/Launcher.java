@@ -839,6 +839,11 @@ public class Launcher extends Activity
         mWorkspace.addCustomContentToLeft(customContent);
     }
 
+    // The custom content needs to offset its content to account for the QSB
+    public int getTopOffsetForCustomContent() {
+        return mWorkspace.getPaddingTop();
+    }
+
     @Override
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching

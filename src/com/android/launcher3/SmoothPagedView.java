@@ -130,7 +130,7 @@ public abstract class SmoothPagedView extends PagedView {
         whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
 
         final int screenDelta = Math.max(1, Math.abs(whichPage - mCurrentPage));
-        final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
+        final int newX = getScrollForPage(whichPage);
         final int delta = newX - mUnboundedScrollX;
         int duration = (screenDelta + 1) * 100;
 

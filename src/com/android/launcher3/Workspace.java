@@ -523,11 +523,17 @@ public class Workspace extends SmoothPagedView
 
         Rect p = new Rect();
         AppWidgetHostView.getDefaultPaddingForWidget(mLauncher, mLauncher.getComponentName(), p);
-        customContent.setPadding(p.left, p.top, p.right, p.bottom);
+
+        // For now we force top padding on the entire custom content screen. The intention
+        // is for the hosted content to get this offset and account for it so that upon scrolling
+        // it can use the entire space.
+        customContent.setPadding(p.left, mLauncher.getTopOffsetForCustomContent(),
+                p.right, p.bottom);
 
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
-        addView(customScreen, 0);
+
+        addFullScreenPage(customScreen);
 
         // Ensure that the current page and default page are maintained.
         mDefaultPage++;
@@ -1290,15 +1296,37 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    private boolean hasCustomContent() {
+        return (mScreenOrder.size() > 0 && mScreenOrder.get(0) == CUSTOM_CONTENT_SCREEN_ID);
+    }
+
+    private void updateStateForCustomContent(int screenCenter) {
+        if (hasCustomContent()) {
+            CellLayout customContent = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
+            int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
+
+            int scrollDelta = getScrollForPage(index + 1) - getScrollX();
+            float translationX = Math.max(scrollDelta, 0);
+
+            float progress = (1.0f * scrollDelta) /
+                    (getScrollForPage(index + 1) - getScrollForPage(index));
+
+            setBackgroundAlpha(progress * 0.8f);
+            mLauncher.getHotseat().setTranslationX(translationX);
+            getPageIndicator().setTranslationX(translationX);
+        }
+    }
+
     @Override
     protected void screenScrolled(int screenCenter) {
         final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
 
         updatePageAlphaValues(screenCenter);
+        updateStateForCustomContent(screenCenter);
         enableHwLayersOnVisiblePages();
 
-        if (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) {
+        if ((mOverScrollX < 0 && !hasCustomContent()) || mOverScrollX > mMaxScrollX) {
             int index = 0;
             float pivotX = 0f;
             final float leftBiasedPivot = 0.25f;
@@ -2444,7 +2472,7 @@ public class Workspace extends SmoothPagedView
             mSavedScrollX = getScrollX();
             mSavedTranslationX = cl.getTranslationX();
             mSavedRotationY = cl.getRotationY();
-            final int newX = getChildOffset(pageIndex) - getRelativeChildOffset(pageIndex);
+            final int newX = getScrollForPage(pageIndex);
             setScrollX(newX);
             cl.setTranslationX(0f);
             cl.setRotationY(0f);
