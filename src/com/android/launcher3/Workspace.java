@@ -1323,14 +1323,16 @@ public class Workspace extends SmoothPagedView
 
             float progress = (1.0f * scrollDelta) /
                     (getScrollForPage(index + 1) - getScrollForPage(index));
+            progress = Math.max(0, progress);
 
             setBackgroundAlpha(progress * 0.8f);
+            float transY = progress * (getViewportHeight() - getPageIndicator().getTop());
 
             if (mLauncher.getHotseat() != null) {
-                mLauncher.getHotseat().setTranslationX(translationX);
+                mLauncher.getHotseat().setTranslationY(transY);
             }
             if (getPageIndicator() != null) {
-                getPageIndicator().setTranslationX(translationX);
+                getPageIndicator().setAlpha(1 - progress);
             }
         }
     }
