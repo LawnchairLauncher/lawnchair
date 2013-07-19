@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -99,6 +100,7 @@ public class Workspace extends SmoothPagedView
 
     private float mWallpaperScrollRatio = 1.0f;
 
+    private LayoutTransition mLayoutTransition;
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
@@ -415,6 +417,7 @@ public class Workspace extends SmoothPagedView
         setClipToPadding(false);
         setChildrenDrawnWithCacheEnabled(true);
         setMinScale(0.5f);
+        setupLayoutTransition();
 
         final Resources res = getResources();
         try {
@@ -431,6 +434,16 @@ public class Workspace extends SmoothPagedView
 
         mMaxDistanceForFolderCreation = (0.55f * res.getDimensionPixelSize(R.dimen.app_icon_size));
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
+    }
+
+    private void setupLayoutTransition() {
+        // We want to show layout transitions when pages are deleted, to close the gap.
+        mLayoutTransition = new LayoutTransition();
+        mLayoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
+        mLayoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        mLayoutTransition.disableTransitionType(LayoutTransition.APPEARING);
+        mLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
+        setLayoutTransition(mLayoutTransition);
     }
 
     @Override
@@ -1316,8 +1329,13 @@ public class Workspace extends SmoothPagedView
                     (getScrollForPage(index + 1) - getScrollForPage(index));
 
             setBackgroundAlpha(progress * 0.8f);
-            mLauncher.getHotseat().setTranslationX(translationX);
-            getPageIndicator().setTranslationX(translationX);
+
+            if (mLauncher.getHotseat() != null) {
+                mLauncher.getHotseat().setTranslationX(translationX);
+            }
+            if (getPageIndicator() != null) {
+                getPageIndicator().setTranslationX(translationX);
+            }
         }
     }
 
@@ -1688,6 +1706,9 @@ public class Workspace extends SmoothPagedView
             ((CellLayout) getChildAt(i)).setUseActiveGlowBackground(true);
         }
         showOutlines();
+
+        // Reordering handles its own animations, disable the automatic ones.
+        setLayoutTransition(null);
     }
 
     protected void onEndReordering() {
@@ -1704,6 +1725,9 @@ public class Workspace extends SmoothPagedView
             mScreenOrder.add(getIdForScreen(cl));
         }
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+
+        // Re-enable auto layout transitions for page deletion.
+        setLayoutTransition(mLayoutTransition);
     }
 
     Animator getChangeStateAnimation(final State state, boolean animated, int delay) {
