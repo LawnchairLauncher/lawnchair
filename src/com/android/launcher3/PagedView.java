@@ -181,6 +181,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // If true, the subclass should directly update scrollX itself in its computeScroll method
     // (SmoothPagedView does this)
     protected boolean mDeferScrollUpdate = false;
+    protected boolean mDeferLoadAssociatedPagesUntilScrollCompletes = false;
 
     protected boolean mIsPageMoving = false;
 
@@ -617,6 +618,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
+
+            // Load the associated pages if necessary
+            if (mDeferLoadAssociatedPagesUntilScrollCompletes) {
+                loadAssociatedPages(mCurrentPage);
+                mDeferLoadAssociatedPagesUntilScrollCompletes = false;
+            }
 
             // We don't want to trigger a page end moving unless the page has settled
             // and the user has stopped scrolling
@@ -2006,6 +2013,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (immediate) {
             computeScroll();
         }
+
+        // Defer loading associated pages until the scroll settles
+        mDeferLoadAssociatedPagesUntilScrollCompletes = true;
 
         mForceScreenScrolled = true;
         invalidate();
