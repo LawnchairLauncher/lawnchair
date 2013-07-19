@@ -265,7 +265,6 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
         }
-        // XXX: Create a new page and add it to the first spot
         return null;
     }
 
@@ -294,20 +293,27 @@ public class LauncherModel extends BroadcastReceiver {
                         Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
                                 name, launchIntent, startSearchPageIndex);
                         if (coords == null) {
-                            // If we can't find a valid position, then just add a new screen.
-                            // This takes time so we need to re-queue the add until the new
-                            // page is added.
                             LauncherAppState appState = LauncherAppState.getInstance();
                             LauncherProvider lp = appState.getLauncherProvider();
-                            long screenId = lp.generateNewScreenId();
-                            // Update the model
-                            sBgWorkspaceScreens.add(screenId);
-                            updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
-                            // Save the screen id for binding in the workspace
-                            addedWorkspaceScreensFinal.add(screenId);
+
+                            // If we can't find a valid position, then just add a new screen.
+                            // This takes time so we need to re-queue the add until the new
+                            // page is added.  Create as many screens as necessary to satisfy
+                            // the startSearchPageIndex.
+                            int numPagesToAdd = Math.max(1, startSearchPageIndex + 1 -
+                                    sBgWorkspaceScreens.size());
+                            while (numPagesToAdd > 0) {
+                                long screenId = lp.generateNewScreenId();
+                                // Update the model
+                                sBgWorkspaceScreens.add(screenId);
+                                updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
+                                // Save the screen id for binding in the workspace
+                                addedWorkspaceScreensFinal.add(screenId);
+                                numPagesToAdd--;
+                            }
                             // Find the coordinate again
                             coords = LauncherModel.findNextAvailableIconSpace(context,
-                                    a.title.toString(), a.intent, startSearchPageIndex);
+                                    name, launchIntent, startSearchPageIndex);
                         }
                         if (coords == null) {
                             throw new RuntimeException("Coordinates should not be null");
@@ -1219,7 +1225,6 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
-        private boolean mIsUpgradePath;
 
         private HashMap<Object, CharSequence> mLabelCache;
 
@@ -1237,7 +1242,8 @@ public class LauncherModel extends BroadcastReceiver {
             return mIsLoadingAndBindingWorkspace;
         }
 
-        private void loadAndBindWorkspace() {
+        /** Returns whether this is an upgrade path */
+        private boolean loadAndBindWorkspace() {
             mIsLoadingAndBindingWorkspace = true;
 
             // Load the workspace
@@ -1245,18 +1251,20 @@ public class LauncherModel extends BroadcastReceiver {
                 Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
             }
 
+            boolean isUpgradePath = false;
             if (!mWorkspaceLoaded) {
-                loadWorkspace();
+                isUpgradePath = loadWorkspace();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
-                        return;
+                        return isUpgradePath;
                     }
                     mWorkspaceLoaded = true;
                 }
             }
 
             // Bind the workspace
-            bindWorkspace(-1);
+            bindWorkspace(-1, isUpgradePath);
+            return isUpgradePath;
         }
 
         private void waitForIdle() {
@@ -1325,13 +1333,15 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Divide the set of loaded items into those that we are binding synchronously, and
             // everything else that is to be bound normally (asynchronously).
-            bindWorkspace(synchronousBindPage);
+            bindWorkspace(synchronousBindPage, false);
             // XXX: For now, continue posting the binding of AllApps as there are other issues that
             //      arise from that.
             onlyBindAllApps();
         }
 
         public void run() {
+            boolean isUpgrade = false;
+
             synchronized (mLock) {
                 mIsLoaderTaskRunning = true;
             }
@@ -1349,7 +1359,7 @@ public class LauncherModel extends BroadcastReceiver {
                             ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
                 }
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
-                loadAndBindWorkspace();
+                isUpgrade = loadAndBindWorkspace();
 
                 if (mStopped) {
                     break keep_running;
@@ -1382,6 +1392,12 @@ public class LauncherModel extends BroadcastReceiver {
                     updateSavedIcon(mContext, (ShortcutInfo) key, sBgDbIconCache.get(key));
                 }
                 sBgDbIconCache.clear();
+            }
+
+            // Ensure that all the applications that are in the system are represented on the home
+            // screen.
+            if (!isUpgrade) {
+                verifyApplications();
             }
 
             // Clear out this reference, otherwise we end up holding it until all of the
@@ -1431,6 +1447,29 @@ public class LauncherModel extends BroadcastReceiver {
                 }
 
                 return callbacks;
+            }
+        }
+
+        private void verifyApplications() {
+            final Context context = mApp.getContext();
+
+            // Cross reference all the applications in our apps list with items in the workspace
+            ArrayList<ItemInfo> tmpInfos;
+            ArrayList<ApplicationInfo> added = new ArrayList<ApplicationInfo>();
+            synchronized (sBgLock) {
+                for (ApplicationInfo app : mBgAllAppsList.data) {
+                    tmpInfos = getItemInfoForComponentName(app.componentName);
+                    if (tmpInfos.isEmpty()) {
+                        // We are missing an application icon, so add this to the workspace
+                        added.add(app);
+                        // This is a rare event, so lets log it
+                        Log.e(TAG, "Missing Application on load: " + app);
+                    }
+                }
+            }
+            if (!added.isEmpty()) {
+                Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                addAndBindAddedApps(context, added, cb);
             }
         }
 
@@ -1487,7 +1526,8 @@ public class LauncherModel extends BroadcastReceiver {
             return true;
         }
 
-        private void loadWorkspace() {
+        /** Returns whether this is an upgradge path */
+        private boolean loadWorkspace() {
             final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Context context = mContext;
@@ -1497,11 +1537,10 @@ public class LauncherModel extends BroadcastReceiver {
             final boolean isSafeMode = manager.isSafeMode();
 
             // Make sure the default workspace is loaded, if needed
-            boolean loadOldDb = mApp.getLauncherProvider().shouldLoadOldDb();
-            Uri contentUri = loadOldDb ? LauncherSettings.Favorites.OLD_CONTENT_URI :
-                    LauncherSettings.Favorites.CONTENT_URI;
+            mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
 
-            mIsUpgradePath = loadOldDb;
+            // Check if we need to do any upgrade-path logic
+            boolean loadedOldDb = mApp.getLauncherProvider().justLoadedOldDb();
 
             synchronized (sBgLock) {
                 sBgWorkspaceItems.clear();
@@ -1512,7 +1551,7 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgWorkspaceScreens.clear();
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
-
+                final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
 
                 // +1 for the hotseat (it can be larger than the workspace)
@@ -1620,10 +1659,6 @@ public class LauncherModel extends BroadcastReceiver {
                                         folderInfo.add(info);
                                         break;
                                     }
-                                    if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                                            loadOldDb) {
-                                        info.screenId = permuteScreens(info.screenId);
-                                    }
                                     sBgItemsIdMap.put(info.id, info);
 
                                     // now that we've loaded everthing re-save it with the
@@ -1662,10 +1697,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
                                         sBgWorkspaceItems.add(folderInfo);
                                         break;
-                                }
-                                if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                                        loadOldDb) {
-                                    folderInfo.screenId = permuteScreens(folderInfo.screenId);
                                 }
 
                                 sBgItemsIdMap.put(folderInfo.id, folderInfo);
@@ -1707,11 +1738,6 @@ public class LauncherModel extends BroadcastReceiver {
                                             "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
                                         continue;
                                     }
-                                    if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                                            loadOldDb) {
-                                        appWidgetInfo.screenId =
-                                                permuteScreens(appWidgetInfo.screenId);
-                                    }
 
                                     appWidgetInfo.container = c.getInt(containerIndex);
                                     // check & update map of what's occupied
@@ -1749,7 +1775,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
 
-                if (loadOldDb) {
+                if (loadedOldDb) {
                     long maxScreenId = 0;
                     // If we're importing we use the old screen order.
                     for (ItemInfo item: sBgItemsIdMap.values()) {
@@ -1765,6 +1791,15 @@ public class LauncherModel extends BroadcastReceiver {
                     Collections.sort(sBgWorkspaceScreens);
                     mApp.getLauncherProvider().updateMaxScreenId(maxScreenId);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
+
+                    // Update the max item id after we load an old db
+                    long maxItemId = 0;
+                    // If we're importing we use the old screen order.
+                    for (ItemInfo item: sBgItemsIdMap.values()) {
+                        maxItemId = Math.max(maxItemId, item.id);
+                    }
+                    LauncherAppState app = LauncherAppState.getInstance();
+                    app.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
                     Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
                     final Cursor sc = contentResolver.query(screensUri, null, null, null, null);
@@ -1835,16 +1870,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
             }
-        }
-
-        // We rearrange the screens from the old launcher
-        // 12345 -> 34512
-        private long permuteScreens(long screen) {
-            if (screen >= 2) {
-                return screen - 2;
-            } else {
-                return screen + 3;
-            }
+            return loadedOldDb;
         }
 
         /** Filters the set of items who are directly or indirectly (via another container) on the
@@ -2052,7 +2078,7 @@ public class LauncherModel extends BroadcastReceiver {
         /**
          * Binds all loaded data to actual views on the main thread.
          */
-        private void bindWorkspace(int synchronizeBindPage) {
+        private void bindWorkspace(int synchronizeBindPage, final boolean isUpgradePath) {
             final long t = SystemClock.uptimeMillis();
             Runnable r;
 
@@ -2144,7 +2170,7 @@ public class LauncherModel extends BroadcastReceiver {
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
-                        callbacks.finishBindingItems(mIsUpgradePath);
+                        callbacks.finishBindingItems(isUpgradePath);
                     }
 
                     // If we're profiling, ensure this is the last thing in the queue.
