@@ -123,6 +123,16 @@ public class Hotseat extends PagedView {
         return (mIsLandscape && mTransposeLayoutWithOrientation);
     }
 
+    @Override
+    protected boolean hitsPreviousPage(float x, float y) {
+        return !hasVerticalHotseat() && super.hitsPreviousPage(x, y);
+    }
+
+    @Override
+    protected boolean hitsNextPage(float x, float y) {
+        return !hasVerticalHotseat() && super.hitsNextPage(x, y);
+    }
+
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
         return hasVerticalHotseat() ? (mCellCount - y - 1) : x;
