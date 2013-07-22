@@ -1683,7 +1683,7 @@ public class Workspace extends SmoothPagedView
         return getChangeStateAnimation(state, animated, 0);
     }
 
-    void boundByReorderablePages(boolean isReordering, int[] range) {
+    void getReorderablePages(int[] range) {
         int count = mScreenOrder.size();
 
         int start = -1;

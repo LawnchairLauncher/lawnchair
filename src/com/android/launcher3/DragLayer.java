@@ -327,16 +327,22 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
      */
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
             boolean includeRootScroll) {
+        return DragLayer.getDescendantCoordRelativeToParent(descendant, this,
+                coord, includeRootScroll);
+    }
+
+    public static float getDescendantCoordRelativeToParent(View descendant, View root,
+            int[] coord, boolean includeRootScroll) {
         ArrayList<View> ancestorChain = new ArrayList<View>();
 
         float[] pt = {coord[0], coord[1]};
 
         View v = descendant;
-        while(v != this && v != null) {
+        while(v != root && v != null) {
             ancestorChain.add(v);
             v = (View) v.getParent();
         }
-        ancestorChain.add(this);
+        ancestorChain.add(root);
 
         float scale = 1.0f;
         int count = ancestorChain.size();
