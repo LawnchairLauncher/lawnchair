@@ -537,6 +537,7 @@ public class Workspace extends SmoothPagedView
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
         lp.canReorder  = false;
+        lp.isFullscreen = true;
 
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
 

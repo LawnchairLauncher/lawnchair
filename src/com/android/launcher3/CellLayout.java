@@ -3231,6 +3231,11 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         public boolean isLockedToGrid = true;
 
         /**
+         * Indicates that this item should use the full extents of its parent.
+         */
+        public boolean isFullscreen = false;
+
+        /**
          * Indicates whether this item can be reordered. Always true except in the case of the
          * the AllApps button.
          */

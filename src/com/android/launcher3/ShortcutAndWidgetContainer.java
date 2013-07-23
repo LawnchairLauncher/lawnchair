@@ -92,13 +92,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int count = getChildCount();
+
+        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(widthSpecSize, heightSpecSize);
+
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             measureChild(child);
         }
-        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
-        setMeasuredDimension(widthSpecSize, heightSpecSize);
     }
 
     public void setupLp(CellLayout.LayoutParams lp) {
@@ -115,8 +117,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-        lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(), mCountX);
+        if (!lp.isFullscreen) {
+            lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
+                    mCountX);
+        } else {
+            lp.x = 0;
+            lp.y = 0;
+            lp.width = getMeasuredWidth();
+            lp.height = getMeasuredHeight();
+        }
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
         int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
                 MeasureSpec.EXACTLY);
