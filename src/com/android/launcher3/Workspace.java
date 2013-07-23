@@ -56,6 +56,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
+import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
 
 import java.net.URISyntaxException;
@@ -98,8 +99,6 @@ public class Workspace extends SmoothPagedView
     boolean mDrawBackground = true;
     private float mBackgroundAlpha = 0;
 
-    private float mWallpaperScrollRatio = 1.0f;
-
     private LayoutTransition mLayoutTransition;
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
@@ -128,6 +127,9 @@ public class Workspace extends SmoothPagedView
 
     static Rect mLandscapeCellLayoutMetrics = null;
     static Rect mPortraitCellLayoutMetrics = null;
+
+    CustomContentCallbacks mCustomContentCallbacks;
+    boolean mCustomContentShowing;
 
     /**
      * The CellLayout that is currently being dragged over
@@ -526,7 +528,7 @@ public class Workspace extends SmoothPagedView
         return screenId;
     }
 
-    public void addCustomContentToLeft(View customContent) {
+    public void addCustomContentToLeft(View customContent, CustomContentCallbacks callbacks) {
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -541,16 +543,12 @@ public class Workspace extends SmoothPagedView
         Rect p = new Rect();
         AppWidgetHostView.getDefaultPaddingForWidget(mLauncher, mLauncher.getComponentName(), p);
 
-        // For now we force top padding on the entire custom content screen. The intention
-        // is for the hosted content to get this offset and account for it so that upon scrolling
-        // it can use the entire space.
-        customContent.setPadding(p.left, mLauncher.getTopOffsetForCustomContent(),
-                p.right, p.bottom);
-
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
 
         addFullScreenPage(customScreen);
+
+        mCustomContentCallbacks = callbacks;
 
         // Ensure that the current page and default page are maintained.
         mDefaultPage++;
@@ -937,6 +935,19 @@ public class Workspace extends SmoothPagedView
     protected void notifyPageSwitchListener() {
         super.notifyPageSwitchListener();
         Launcher.setScreen(mCurrentPage);
+
+        if (hasCustomContent() && mCurrentPage == 0) {
+            mCustomContentShowing = true;
+            if (mCustomContentCallbacks != null) {
+                mCustomContentCallbacks.onShow();
+            }
+        } else if (hasCustomContent() && mCustomContentShowing) {
+            mCustomContentShowing = false;
+            if (mCustomContentCallbacks != null) {
+                mCustomContentCallbacks.onHide();
+                mLauncher.resetQSBScroll();
+            }
+        }
     };
 
     // As a ratio of screen height, the total distance we want the parallax effect to span
@@ -966,11 +977,6 @@ public class Workspace extends SmoothPagedView
         return x * aspectRatio + y;
     }
 
-    // The range of scroll values for Workspace
-    private int getScrollRange() {
-        return getChildOffset(getChildCount() - 1) - getChildOffset(0);
-    }
-
     protected void setWallpaperDimension() {
         Point minDims = new Point();
         Point maxDims = new Point();
@@ -993,33 +999,6 @@ public class Workspace extends SmoothPagedView
                 mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
             }
         }.start();
-    }
-
-    private float wallpaperOffsetForCurrentScroll() {
-        // Set wallpaper offset steps (1 / (number of screens - 1))
-        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
-
-        int scrollRange = getScrollRange();
-
-        float adjustedScrollX = Math.max(0, Math.min(getScrollX(), mMaxScrollX));
-        adjustedScrollX *= mWallpaperScrollRatio;
-
-        float scrollProgress =
-            adjustedScrollX / (float) scrollRange;
-
-        if (LauncherAppState.getInstance().isScreenLarge() && mIsStaticWallpaper) {
-            // The wallpaper travel width is how far, from left to right, the wallpaper will move
-            // at this orientation. On tablets in portrait mode we don't move all the way to the
-            // edges of the wallpaper, or otherwise the parallax effect would be too strong.
-            int wallpaperTravelWidth = Math.min(mWallpaperTravelWidth, mWallpaperWidth);
-
-            float offsetInDips = wallpaperTravelWidth * scrollProgress +
-                (mWallpaperWidth - wallpaperTravelWidth) / 2; // center it
-            float offset = offsetInDips / (float) mWallpaperWidth;
-            return offset;
-        } else {
-            return scrollProgress;
-        }
     }
 
     private void syncWallpaperOffsetWithScroll() {
@@ -1315,6 +1294,10 @@ public class Workspace extends SmoothPagedView
 
     private boolean hasCustomContent() {
         return (mScreenOrder.size() > 0 && mScreenOrder.get(0) == CUSTOM_CONTENT_SCREEN_ID);
+    }
+
+    public boolean isOnOrMovingToCustomContent() {
+        return hasCustomContent() && getNextPage() == 0;
     }
 
     private void updateStateForCustomContent(int screenCenter) {

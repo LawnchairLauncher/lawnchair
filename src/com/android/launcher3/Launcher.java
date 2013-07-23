@@ -838,9 +838,44 @@ public class Launcher extends Activity
     protected void onFinishBindingItems() {
     }
 
+    QSBScroller mQsbScroller = new QSBScroller() {
+        int scrollY = 0;
+
+        @Override
+        public void setScrollY(int scroll) {
+            scrollY = scroll;
+
+            if (mWorkspace.isOnOrMovingToCustomContent()) {
+                mSearchDropTargetBar.setTranslationY(- scrollY);
+            }
+        }
+    };
+
+    public void resetQSBScroll() {
+        mSearchDropTargetBar.animate().translationY(0).start();
+    }
+
+    public interface CustomContentCallbacks {
+        // Custom content is completely shown
+        public void onShow();
+
+        // Custom content is completely hidden
+        public void onHide();
+    }
+
+    public interface QSBScroller {
+        public void setScrollY(int scrollY);
+    }
+
     // Add a fullscreen unpadded view to the workspace to the left all other screens.
-    public void addCustomContentToLeft(View customContent) {
-        mWorkspace.addCustomContentToLeft(customContent);
+    public QSBScroller addCustomContentToLeft(View customContent) {
+        return addCustomContentToLeft(customContent, null);
+    }
+
+    public QSBScroller addCustomContentToLeft(View customContent,
+            CustomContentCallbacks callbacks) {
+        mWorkspace.addCustomContentToLeft(customContent, callbacks);
+        return mQsbScroller;
     }
 
     // The custom content needs to offset its content to account for the QSB
