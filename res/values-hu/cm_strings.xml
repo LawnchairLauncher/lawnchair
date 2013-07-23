@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="menu">Menü</string>
     <string name="cancel_target_label">Mégsem</string>
     <string name="edit_target_label">Szerkesztés</string>
@@ -31,7 +32,7 @@
     <string name="workspace_locked">A kezdőképernyő zárolva van, szerkesztéshez oldja fel a beállításokban</string>
     <string name="preferences_title">Beállítások</string>
     <string name="preferences_interface_title">Felület</string>
-    <string name="preferences_application_title">Alkalmazás</string>
+    <string name="preferences_application_title">Névjegy</string>
     <string name="preferences_interface_homescreen_title">Kezdőképernyő</string>
     <string name="preferences_interface_homescreen_summary">Kezdőképernyők és háttérkép</string>
     <string name="preferences_interface_homescreen_general_category">Általános</string>
