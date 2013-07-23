@@ -79,6 +79,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -236,6 +237,8 @@ public class Launcher extends Activity
     private FolderInfo mFolderInfo;
 
     private Hotseat mHotseat;
+    private View mOverviewPanel;
+
     private View mAllAppsButton;
 
     private SearchDropTargetBar mSearchDropTargetBar;
@@ -1065,6 +1068,20 @@ public class Launcher extends Activity
             mHotseat.setup(this);
         }
 
+        mOverviewPanel = findViewById(R.id.overview_panel);
+        findViewById(R.id.widget_button).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                showAllApps(true);
+            }
+        });
+        findViewById(R.id.wallpaper_button).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                startWallpaper();
+            }
+        });
+
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
@@ -1560,6 +1577,9 @@ public class Launcher extends Activity
                     // otherwise, just wait until onResume to set the state back to Workspace
                     if (alreadyOnHome) {
                         showWorkspace(true);
+                        if (mWorkspace.isInOverviewMode()) {
+                            mWorkspace.exitOverviewMode();
+                        }
                     } else {
                         mOnResumeState = State.WORKSPACE;
                     }
@@ -2050,6 +2070,8 @@ public class Launcher extends Activity
     public void onBackPressed() {
         if (isAllAppsVisible()) {
             showWorkspace(true);
+        } else if (mWorkspace.isInOverviewMode()) {
+            mWorkspace.exitOverviewMode();
         } else if (mWorkspace.getOpenFolder() != null) {
             Folder openFolder = mWorkspace.getOpenFolder();
             if (openFolder.isEditingName()) {
@@ -2088,6 +2110,19 @@ public class Launcher extends Activity
 
         if (!mWorkspace.isFinishedSwitchingState()) {
             return;
+        }
+
+        if (v instanceof PageIndicator) {
+            if (!mWorkspace.isInOverviewMode()) {
+                mWorkspace.enterOverviewMode();
+            }
+            return;
+        }
+
+        if (v instanceof CellLayout) {
+            if (mWorkspace.isInOverviewMode()) {
+                mWorkspace.exitOverviewMode(mWorkspace.indexOfChild(v));
+            }
         }
 
         Object tag = v.getTag();
@@ -2138,11 +2173,6 @@ public class Launcher extends Activity
     }
 
     public boolean onTouch(View v, MotionEvent event) {
-        // this is an intercepted event being forwarded from mWorkspace;
-        // clicking anywhere on the workspace causes the customization drawer to slide down
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            showWorkspace(true);
-        }
         return false;
     }
 
@@ -2510,10 +2540,10 @@ public class Launcher extends Activity
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 // Disabling reordering until we sort out some issues.
-                if (mWorkspace.getIdForScreen((CellLayout) v) >= 0) {
-                    mWorkspace.startReordering();
+                if (mWorkspace.isInOverviewMode()) {
+                    mWorkspace.startReordering(v);
                 } else {
-                    startWallpaper();
+                    mWorkspace.enterOverviewMode();
                 }
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
@@ -2531,6 +2561,9 @@ public class Launcher extends Activity
     }
     Hotseat getHotseat() {
         return mHotseat;
+    }
+    View getOverviewPanel() {
+        return mOverviewPanel;
     }
     SearchDropTargetBar getSearchBar() {
         return mSearchDropTargetBar;
@@ -2852,11 +2885,10 @@ public class Launcher extends Activity
         final View fromView = mAppsCustomizeTabHost;
         final View toView = mWorkspace;
         Animator workspaceAnim = null;
-
         if (toState == State.WORKSPACE) {
             int stagger = res.getInteger(R.integer.config_appsCustomizeWorkspaceAnimationStagger);
             workspaceAnim = mWorkspace.getChangeStateAnimation(
-                    Workspace.State.NORMAL, animated, stagger);
+                    Workspace.State.NORMAL, animated, stagger, -1);
         } else if (toState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
             workspaceAnim = mWorkspace.getChangeStateAnimation(
                     Workspace.State.SPRING_LOADED, animated);

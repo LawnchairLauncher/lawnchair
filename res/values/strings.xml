@@ -282,4 +282,9 @@ s -->
     <!-- Debug-only activity name. [DO NOT TRANSLATE] -->
     <string name="debug_memory_activity">* HPROF</string>
 
+    <!-- Strings for the customization mode -->
+    <!-- Text for widget add button -->
+    <string name="widget_button_text">Add Widget</string>
+    <!-- Text for wallpaper change button -->
+    <string name="wallpaper_button_text">Wallpaper</string>
 </resources>
