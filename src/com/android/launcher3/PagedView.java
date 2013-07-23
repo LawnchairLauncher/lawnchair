@@ -104,6 +104,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mFirstLayout = true;
 
     protected int mCurrentPage;
+    protected int mRestorePage = -1;
     protected int mChildCountOnLastLayout;
 
     protected int mNextPage = INVALID_PAGE;
@@ -506,6 +507,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         invalidate();
     }
 
+    /**
+     * The restore page will be set in place of the current page at the next (likely first)
+     * layout.
+     */
+    void setRestorePage(int restorePage) {
+        mRestorePage = restorePage;
+    }
+
     protected void notifyPageSwitchListener() {
         if (mPageSwitchListener != null) {
             mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
@@ -870,7 +879,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (mScroller.isFinished() && mChildCountOnLastLayout != getChildCount() &&
                 !mDeferringForDelete) {
-            setCurrentPage(getNextPage());
+            if (mRestorePage > -1) {
+                setCurrentPage(mRestorePage);
+                mRestorePage = -1;
+            } else {
+                setCurrentPage(getNextPage());
+            }
         }
         mChildCountOnLastLayout = getChildCount();
     }

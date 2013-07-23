@@ -990,7 +990,7 @@ public class Launcher extends Activity
 
         int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
         if (currentScreen > -1) {
-            mWorkspace.setCurrentPage(currentScreen);
+            mWorkspace.setRestorePage(currentScreen);
         }
 
         final long pendingAddContainer = savedState.getLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, -1);
