@@ -930,25 +930,25 @@ public class Workspace extends SmoothPagedView
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
         }
-    }
 
-    @Override
-    protected void notifyPageSwitchListener() {
-        super.notifyPageSwitchListener();
-        Launcher.setScreen(mCurrentPage);
-
-        if (hasCustomContent() && mCurrentPage == 0) {
+        if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onShow();
             }
-        } else if (hasCustomContent() && mCustomContentShowing) {
+        } else if (hasCustomContent() && getNextPage() != 0 && mCustomContentShowing) {
             mCustomContentShowing = false;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onHide();
                 mLauncher.resetQSBScroll();
             }
         }
+    }
+
+    @Override
+    protected void notifyPageSwitchListener() {
+        super.notifyPageSwitchListener();
+        Launcher.setScreen(mCurrentPage);
     };
 
     // As a ratio of screen height, the total distance we want the parallax effect to span
@@ -1303,11 +1303,9 @@ public class Workspace extends SmoothPagedView
 
     private void updateStateForCustomContent(int screenCenter) {
         if (hasCustomContent()) {
-            CellLayout customContent = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
 
             int scrollDelta = getScrollForPage(index + 1) - getScrollX();
-            float translationX = Math.max(scrollDelta, 0);
 
             float progress = (1.0f * scrollDelta) /
                     (getScrollForPage(index + 1) - getScrollForPage(index));
@@ -1318,6 +1316,7 @@ public class Workspace extends SmoothPagedView
 
             if (mLauncher.getHotseat() != null) {
                 mLauncher.getHotseat().setTranslationY(transY);
+                mLauncher.getHotseat().setAlpha(1 - progress);
             }
             if (getPageIndicator() != null) {
                 getPageIndicator().setAlpha(1 - progress);

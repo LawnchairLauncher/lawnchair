@@ -833,6 +833,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
 
         for (int i = startIndex; i != endIndex; i += delta) {
+
             final View child = getPageAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int childTop;
@@ -856,10 +857,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 // We assume the left and right padding are equal, and hence center the pages
                 // horizontally
-                int scrollOffset = false ? 0 : (getViewportWidth() - childWidth) / 2;
+                int scrollOffset = (getViewportWidth() - childWidth) / 2;
                 mPageScrolls[i] = childLeft - scrollOffset - offsetX;
 
-                childLeft += childWidth + mPageSpacing;
+                if (i != endIndex - delta) {
+                    int nextScrollOffset = (getViewportWidth() - getChildWidth(i + delta)) / 2;
+                    childLeft += childWidth + nextScrollOffset;
+                }
             }
         }
 
