@@ -584,6 +584,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Restore the page
         int page = getPageForComponent(mSaveInstanceStateItemIndex);
         invalidatePageData(Math.max(0, page), hostIsTransitioning);
+        // The function above will switch the page but not check the
+        // status of TabHost, so updateCurrentTab here to make sure
+        // the status of TabHost is correct.
+        updateCurrentTab(getCurrentPage());
 
         // Show All Apps cling if we are finished transitioning, otherwise, we will try again when
         // the transition completes in AppsCustomizeTabHost (otherwise the wrong offsets will be
