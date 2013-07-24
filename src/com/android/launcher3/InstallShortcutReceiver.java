@@ -38,8 +38,6 @@ import org.json.*;
 public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher3.action.INSTALL_SHORTCUT";
-    public static final String NEW_APPS_PAGE_KEY = "apps.new.page";
-    public static final String NEW_APPS_LIST_KEY = "apps.new.list";
 
     public static final String DATA_INTENT_KEY = "intent.data";
     public static final String LAUNCH_INTENT_KEY = "intent.launch";
@@ -51,11 +49,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String APPS_PENDING_INSTALL = "apps_to_install";
 
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
-    public static final int NEW_SHORTCUT_STAGGER_DELAY = 75;
+    public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
 
     private static final int INSTALL_SHORTCUT_SUCCESSFUL = 0;
     private static final int INSTALL_SHORTCUT_IS_DUPLICATE = -1;
-    private static final int INSTALL_SHORTCUT_NO_SPACE = -2;
 
     // A mime-type representing shortcut data
     public static final String SHORTCUT_MIMETYPE =
@@ -201,12 +198,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, name, intent);
         info.icon = icon;
         info.iconResource = iconResource;
-        if (mUseInstallQueue || launcherNotLoaded) {
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            addToInstallQueue(sp, info);
-        } else {
-            processInstallShortcut(context, info);
+
+        String spKey = LauncherAppState.getSharedPreferencesKey();
+        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        addToInstallQueue(sp, info);
+        if (!mUseInstallQueue && !launcherNotLoaded) {
+            flushInstallQueue(context);
         }
     }
 
@@ -221,142 +218,59 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
         ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp);
-        Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();
-        while (iter.hasNext()) {
-            processInstallShortcut(context, iter.next());
+        if (!installQueue.isEmpty()) {
+            Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();
+            ArrayList<ItemInfo> addShortcuts = new ArrayList<ItemInfo>();
+            int result = INSTALL_SHORTCUT_SUCCESSFUL;
+            String duplicateName = "";
+            while (iter.hasNext()) {
+                final PendingInstallShortcutInfo pendingInfo = iter.next();
+                final Intent data = pendingInfo.data;
+                final Intent intent = pendingInfo.launchIntent;
+                final String name = pendingInfo.name;
+                final boolean exists = LauncherModel.shortcutExists(context, name, intent);
+                final boolean allowDuplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
+
+                // TODO-XXX: Disable duplicates for now
+                if (!exists /* && allowDuplicate */) {
+                    // Generate a shortcut info to add into the model
+                    ShortcutInfo info = getShortcutInfo(context, pendingInfo.data,
+                            pendingInfo.launchIntent);
+                    addShortcuts.add(info);
+                }
+                /*
+                else if (exists && !allowDuplicate) {
+                    result = INSTALL_SHORTCUT_IS_DUPLICATE;
+                    duplicateName = name;
+                }
+                */
+            }
+
+            // Notify the user once if we weren't able to place any duplicates
+            if (result == INSTALL_SHORTCUT_IS_DUPLICATE) {
+                Toast.makeText(context, context.getString(R.string.shortcut_duplicate,
+                        duplicateName), Toast.LENGTH_SHORT).show();
+            }
+
+            // Add the new apps to the model and bind them
+            if (!addShortcuts.isEmpty()) {
+                LauncherAppState app = LauncherAppState.getInstance();
+                app.getModel().addAndBindAddedApps(context, addShortcuts);
+            }
         }
     }
 
-    private static void processInstallShortcut(Context context,
-            PendingInstallShortcutInfo pendingInfo) {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-
-        final Intent data = pendingInfo.data;
-        final Intent intent = pendingInfo.launchIntent;
-        final String name = pendingInfo.name;
-
-        // Lock on the app so that we don't try and get the items while apps are being added
+    private static ShortcutInfo getShortcutInfo(Context context, Intent data,
+                                                Intent launchIntent) {
+        if (launchIntent.getAction() == null) {
+            launchIntent.setAction(Intent.ACTION_VIEW);
+        } else if (launchIntent.getAction().equals(Intent.ACTION_MAIN) &&
+                launchIntent.getCategories() != null &&
+                launchIntent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
+            launchIntent.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        }
         LauncherAppState app = LauncherAppState.getInstance();
-        final int[] result = {INSTALL_SHORTCUT_SUCCESSFUL};
-        boolean found = false;
-        synchronized (app) {
-            // Flush the LauncherModel worker thread, so that if we just did another
-            // processInstallShortcut, we give it time for its shortcut to get added to the
-            // database (getItemsInLocalCoordinates reads the database)
-            app.getModel().flushWorkerThread();
-            final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
-            final boolean exists = LauncherModel.shortcutExists(context, name, intent);
-
-            // Try adding to the workspace screens incrementally, starting at the default or center
-            // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
-            final int screen = Launcher.DEFAULT_SCREEN;
-            for (int i = 0; i < Launcher.SCREEN_COUNT && !found; i++) {
-                int si = i;
-                if (0 <= si && si < Launcher.SCREEN_COUNT) {
-                    found = installShortcut(context, data, items, name, intent, si, exists, sp,
-                            result);
-                }
-            }
-        }
-
-        // We only report error messages (duplicate shortcut or out of space) as the add-animation
-        // will provide feedback otherwise
-        if (!found) {
-            if (result[0] == INSTALL_SHORTCUT_NO_SPACE) {
-                Toast.makeText(context, context.getString(R.string.completely_out_of_space),
-                        Toast.LENGTH_SHORT).show();
-            } else if (result[0] == INSTALL_SHORTCUT_IS_DUPLICATE) {
-                Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private static boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
-            String name, final Intent intent, final int screen, boolean shortcutExists,
-            final SharedPreferences sharedPrefs, int[] result) {
-        int[] tmpCoordinates = new int[2];
-        if (findEmptyCell(context, items, tmpCoordinates, screen)) {
-            if (intent != null) {
-                if (intent.getAction() == null) {
-                    intent.setAction(Intent.ACTION_VIEW);
-                } else if (intent.getAction().equals(Intent.ACTION_MAIN) &&
-                        intent.getCategories() != null &&
-                        intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
-                    intent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                }
-
-                // By default, we allow for duplicate entries (located in
-                // different places)
-                boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
-                if (duplicate || !shortcutExists) {
-                    new Thread("setNewAppsThread") {
-                        public void run() {
-                            synchronized (sLock) {
-                                // If the new app is going to fall into the same page as before,
-                                // then just continue adding to the current page
-                                final int newAppsScreen = sharedPrefs.getInt(
-                                        NEW_APPS_PAGE_KEY, screen);
-                                SharedPreferences.Editor editor = sharedPrefs.edit();
-                                if (newAppsScreen == -1 || newAppsScreen == screen) {
-                                    addToStringSet(sharedPrefs,
-                                        editor, NEW_APPS_LIST_KEY, intent.toUri(0));
-                                }
-                                editor.putInt(NEW_APPS_PAGE_KEY, screen);
-                                editor.commit();
-                            }
-                        }
-                    }.start();
-
-                    // Update the Launcher db
-                    LauncherAppState app = LauncherAppState.getInstance();
-                    ShortcutInfo info = app.getModel().addShortcut(context, data,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
-                            tmpCoordinates[0], tmpCoordinates[1], true);
-                    if (info == null) {
-                        return false;
-                    }
-                } else {
-                    result[0] = INSTALL_SHORTCUT_IS_DUPLICATE;
-                }
-
-                return true;
-            }
-        } else {
-            result[0] = INSTALL_SHORTCUT_NO_SPACE;
-        }
-
-        return false;
-    }
-
-    // TODO: this needs to be updated to take a screenId instead of a screen index
-    private static boolean findEmptyCell(Context context, ArrayList<ItemInfo> items, int[] xy,
-            int screen) {
-        final int xCount = LauncherModel.getCellCountX();
-        final int yCount = LauncherModel.getCellCountY();
-        boolean[][] occupied = new boolean[xCount][yCount];
-
-        ItemInfo item = null;
-        int cellX, cellY, spanX, spanY;
-        for (int i = 0; i < items.size(); ++i) {
-            item = items.get(i);
-            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (item.screenId == screen) {
-                    cellX = item.cellX;
-                    cellY = item.cellY;
-                    spanX = item.spanX;
-                    spanY = item.spanY;
-                    for (int x = cellX; 0 <= x && x < cellX + spanX && x < xCount; x++) {
-                        for (int y = cellY; 0 <= y && y < cellY + spanY && y < yCount; y++) {
-                            occupied[x][y] = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return CellLayout.findVacantCell(xy, 1, 1, xCount, yCount, occupied);
+        return app.getModel().infoFromShortcutIntent(context, data, null);
     }
 }

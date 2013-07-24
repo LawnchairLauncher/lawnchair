@@ -118,6 +118,10 @@ class ItemInfo {
         LauncherModel.checkItemInfo(this);
     }
 
+    protected Intent getIntent() {
+        throw new RuntimeException("Unexpected Intent");
+    }
+
     /**
      * Write the fields of this item to the DB
      * 

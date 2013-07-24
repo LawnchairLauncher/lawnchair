@@ -265,12 +265,18 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
         }
-        // XXX: Create a new page and add it to the first spot
         return null;
     }
 
-    public void addAndBindAddedApps(final Context context, final ArrayList<ApplicationInfo> added,
+    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added) {
+        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+        addAndBindAddedApps(context, added, cb);
+    }
+    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
                                     final Callbacks callbacks) {
+        if (added.isEmpty()) {
+            throw new RuntimeException("EMPTY ADDED ARRAY?");
+        }
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
             public void run() {
@@ -278,11 +284,11 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
 
                 synchronized(sBgLock) {
-                    Iterator<ApplicationInfo> iter = added.iterator();
+                    Iterator<ItemInfo> iter = added.iterator();
                     while (iter.hasNext()) {
-                        ApplicationInfo a = iter.next();
+                        ItemInfo a = iter.next();
                         final String name = a.title.toString();
-                        final Intent launchIntent = a.intent;
+                        final Intent launchIntent = a.getIntent();
 
                         // Short-circuit this logic if the icon exists somewhere on the workspace
                         if (LauncherModel.shortcutExists(context, name, launchIntent)) {
@@ -307,13 +313,20 @@ public class LauncherModel extends BroadcastReceiver {
                             addedWorkspaceScreensFinal.add(screenId);
                             // Find the coordinate again
                             coords = LauncherModel.findNextAvailableIconSpace(context,
-                                    a.title.toString(), a.intent, startSearchPageIndex);
+                                    name, launchIntent, startSearchPageIndex);
                         }
                         if (coords == null) {
                             throw new RuntimeException("Coordinates should not be null");
                         }
 
-                        final ShortcutInfo shortcutInfo = a.makeShortcut();
+                        ShortcutInfo shortcutInfo;
+                        if (a instanceof ShortcutInfo) {
+                            shortcutInfo = (ShortcutInfo) a;
+                        } else if (a instanceof ApplicationInfo) {
+                            shortcutInfo = ((ApplicationInfo) a).makeShortcut();
+                        } else {
+                            throw new RuntimeException("Unexpected info type");
+                        }
                         // Add the shortcut to the db
                         addItemToDatabase(context, shortcutInfo,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
@@ -323,16 +336,38 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
 
-                runOnMainThread(new Runnable() {
-                    public void run() {
-                        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                        if (callbacks == cb && cb != null) {
-                            callbacks.bindAddScreens(addedWorkspaceScreensFinal);
-                            callbacks.bindItems(addedShortcutsFinal, 0,
-                                    addedShortcutsFinal.size(), true);
+                if (!addedShortcutsFinal.isEmpty()) {
+                    runOnMainThread(new Runnable() {
+                        public void run() {
+                            Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                            if (callbacks == cb && cb != null) {
+                                callbacks.bindAddScreens(addedWorkspaceScreensFinal);
+
+                                ItemInfo info = addedShortcutsFinal.get(addedShortcutsFinal.size() - 1);
+                                long lastScreenId = info.screenId;
+                                final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
+                                final ArrayList<ItemInfo> addNotAnimated = new ArrayList<ItemInfo>();
+                                for (ItemInfo i : addedShortcutsFinal) {
+                                    if (i.screenId == lastScreenId) {
+                                        addAnimated.add(i);
+                                    } else {
+                                        addNotAnimated.add(i);
+                                    }
+                                }
+                                // We add the items without animation on non-visible pages, and with
+                                // animations on the new page (which we will try and snap to).
+                                if (!addNotAnimated.isEmpty()) {
+                                    callbacks.bindItems(addNotAnimated, 0,
+                                            addNotAnimated.size(), false);
+                                }
+                                if (!addAnimated.isEmpty()) {
+                                    callbacks.bindItems(addAnimated, 0,
+                                            addAnimated.size(), true);
+                                }
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         };
         runOnWorkerThread(r);
@@ -2374,8 +2409,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             if (added != null) {
                 // Ensure that we add all the workspace applications to the db
+                final ArrayList<ItemInfo> addedInfos = new ArrayList<ItemInfo>(added);
                 Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                addAndBindAddedApps(context, added, cb);
+                addAndBindAddedApps(context, addedInfos, cb);
             }
             if (modified != null) {
                 final ArrayList<ApplicationInfo> modifiedFinal = modified;
