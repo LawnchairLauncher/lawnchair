@@ -1090,9 +1090,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                             !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
                 }
             }
-            if (showOutOfSpaceMessage) {
-                mLauncher.showOutOfSpaceMessage(false);
-            }
 
             d.deferDragViewCleanupPostAnimation = false;
         }
