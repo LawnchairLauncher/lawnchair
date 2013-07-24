@@ -994,6 +994,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderIcon.requestFocus();
 
         if (mRearrangeOnClose) {
+            mItemsInvalidated = true;
             setupContentForNumItems(getItemCount());
             mRearrangeOnClose = false;
         }
