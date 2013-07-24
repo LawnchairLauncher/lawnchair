@@ -107,7 +107,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private InputMethodManager mInputMethodManager;
 
     private static String sDefaultFolderName;
-    private static String sHintText;
+    private String mHintText;
     private ObjectAnimator mOpenCloseAnimator;
 
     private boolean mDestroyed;
@@ -146,8 +146,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (sDefaultFolderName == null) {
             sDefaultFolderName = res.getString(R.string.folder_name);
         }
-        if (sHintText == null) {
-            sHintText = res.getString(R.string.folder_hint_text);
+        if (mHintText == null) {
+            mHintText = res.getString(R.string.folder_hint_text);
         }
         mLauncher = (Launcher) context;
         // We need this view to be focusable in touch mode so that when text editing of the folder
@@ -302,7 +302,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void doneEditingFolderName(boolean commit) {
-        mFolderName.setHint(sHintText);
+        mFolderName.setHint(mHintText);
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
