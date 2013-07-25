@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 
@@ -817,7 +818,8 @@ public class FocusHelper {
     static boolean handleFolderKeyEvent(View v, int keyCode, KeyEvent e) {
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout layout = (CellLayout) parent.getParent();
-        final Folder folder = (Folder) layout.getParent();
+        final ScrollView scrollView = (ScrollView) layout.getParent();
+        final Folder folder = (Folder) scrollView.getParent();
         View title = folder.mFolderName;
 
         final int action = e.getAction();
