@@ -1728,7 +1728,9 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     }
                 } finally {
-                    c.close();
+                    if (c != null) {
+                        c.close();
+                    }
                 }
 
                 if (itemsToRemove.size() > 0) {
