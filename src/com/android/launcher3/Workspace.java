@@ -4018,6 +4018,14 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
+    protected int getPageIndicatorMarker(int pageIndex) {
+        if (getScreenIdForPageIndex(pageIndex) == CUSTOM_CONTENT_SCREEN_ID) {
+            return R.layout.now_page_indicator_marker;
+        }
+        return super.getPageIndicatorMarker(pageIndex);
+    }
+
+    @Override
     public void syncPages() {
     }
 
