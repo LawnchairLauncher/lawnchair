@@ -3698,6 +3698,11 @@ public class Workspace extends SmoothPagedView
             final int page = getNextPage() +
                        (direction == DragController.SCROLL_LEFT ? -1 : 1);
 
+            // Ensure that we are not dragging over to the custom content screen
+            if (getScreenIdForPageIndex(page) == CUSTOM_CONTENT_SCREEN_ID) {
+                return false;
+            }
+
             // We always want to exit the current layout to ensure parity of enter / exit
             setCurrentDropLayout(null);
 
