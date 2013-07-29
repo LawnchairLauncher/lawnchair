@@ -444,6 +444,11 @@ public class Launcher extends Activity
         sPausedFromUserAction = true;
     }
 
+    /** To be overriden by subclasses to hint to Launcher that we have custom content */
+    protected boolean hasCustomContentToLeft() {
+        return false;
+    }
+
     private void updateGlobalIcons() {
         boolean searchVisible = false;
         boolean voiceVisible = false;
@@ -868,13 +873,13 @@ public class Launcher extends Activity
     }
 
     // Add a fullscreen unpadded view to the workspace to the left all other screens.
-    public QSBScroller addCustomContentToLeft(View customContent) {
-        return addCustomContentToLeft(customContent, null);
+    public QSBScroller addToCustomContentPage(View customContent) {
+        return addToCustomContentPage(customContent, null);
     }
 
-    public QSBScroller addCustomContentToLeft(View customContent,
+    public QSBScroller addToCustomContentPage(View customContent,
             CustomContentCallbacks callbacks) {
-        mWorkspace.addCustomContentToLeft(customContent, callbacks);
+        mWorkspace.addToCustomContentPage(customContent, callbacks);
         return mQsbScroller;
     }
 
@@ -3716,6 +3721,11 @@ public class Launcher extends Activity
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
             }
             mSavedState = null;
+        }
+
+        // Create the custom content page here before onLayout to prevent flashing
+        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
+            mWorkspace.createCustomContentPage();
         }
 
         mWorkspace.restoreInstanceStateForRemainingPages();
