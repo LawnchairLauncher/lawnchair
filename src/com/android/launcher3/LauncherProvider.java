@@ -73,8 +73,10 @@ public class LauncherProvider extends ContentProvider {
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
     static final String PARAMETER_NOTIFY = "notify";
-    static final String DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED =
-            "DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED";
+    static final String UPGRADED_FROM_OLD_DATABASE =
+            "UPGRADED_FROM_OLD_DATABASE";
+    static final String EMPTY_DATABASE_CREATED =
+            "EMPTY_DATABASE_CREATED";
     static final String DEFAULT_WORKSPACE_RESOURCE_ID =
             "DEFAULT_WORKSPACE_RESOURCE_ID";
 
@@ -90,7 +92,7 @@ public class LauncherProvider extends ContentProvider {
             Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
 
     private DatabaseHelper mOpenHelper;
-    private static boolean sLoadOldDb;
+    private static boolean sJustLoadedFromOldDb;
 
     @Override
     public boolean onCreate() {
@@ -208,6 +210,10 @@ public class LauncherProvider extends ContentProvider {
         return mOpenHelper.generateNewItemId();
     }
 
+    public void updateMaxItemId(long id) {
+        mOpenHelper.updateMaxItemId(id);
+    }
+
     public long generateNewScreenId() {
         return mOpenHelper.generateNewScreenId();
     }
@@ -221,21 +227,21 @@ public class LauncherProvider extends ContentProvider {
     /**
      * @param Should we load the old db for upgrade? first run only.
      */
-    synchronized public boolean shouldLoadOldDb() {
+    synchronized public boolean justLoadedOldDb() {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
-        boolean loadOldDb = false || sLoadOldDb;
+        boolean loadedOldDb = false || sJustLoadedFromOldDb;
 
-        sLoadOldDb = false;
-        if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
+        sJustLoadedFromOldDb = false;
+        if (sp.getBoolean(UPGRADED_FROM_OLD_DATABASE, false)) {
 
             SharedPreferences.Editor editor = sp.edit();
-            editor.remove(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED);
+            editor.remove(UPGRADED_FROM_OLD_DATABASE);
             editor.commit();
-            loadOldDb = true;
+            loadedOldDb = true;
         }
-        return loadOldDb;
+        return loadedOldDb;
     }
 
     /**
@@ -245,7 +251,7 @@ public class LauncherProvider extends ContentProvider {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
-        if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
+        if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             int workspaceResId = origWorkspaceResId;
 
             // Use default workspace resource if none provided
@@ -255,14 +261,19 @@ public class LauncherProvider extends ContentProvider {
 
             // Populate favorites table with initial favorites
             SharedPreferences.Editor editor = sp.edit();
-            editor.remove(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED);
+            editor.remove(EMPTY_DATABASE_CREATED);
             if (origWorkspaceResId != 0) {
                 editor.putInt(DEFAULT_WORKSPACE_RESOURCE_ID, origWorkspaceResId);
             }
 
             mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), workspaceResId);
+            mOpenHelper.setFlagJustLoadedOldDb();
             editor.commit();
         }
+    }
+
+    private static interface ContentValuesCallback {
+        public void onRow(ContentValues values);
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -341,10 +352,32 @@ public class LauncherProvider extends ContentProvider {
                 sendAppWidgetResetNotify();
             }
 
-            if (!convertDatabase(db)) {
-                // Set a shared pref so that we know we need to load the default workspace later
-                setFlagToLoadDefaultWorkspaceLater();
+            // Try converting the old database
+            ContentValuesCallback permuteScreensCb = new ContentValuesCallback() {
+                public void onRow(ContentValues values) {
+                    int container = values.getAsInteger(LauncherSettings.Favorites.CONTAINER);
+                    if (container == Favorites.CONTAINER_DESKTOP) {
+                        int screen = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
+                        screen = (int) upgradeLauncherDb_permuteScreens(screen);
+                        values.put(LauncherSettings.Favorites.SCREEN, screen);
+                    }
+                }
+            };
+            Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
+                    "/old_favorites?notify=true");
+            if (!convertDatabase(db, uri, permuteScreensCb, true)) {
+                // Try and upgrade from the Launcher2 db
+                uri = LauncherSettings.Favorites.OLD_CONTENT_URI;
+                if (!convertDatabase(db, uri, permuteScreensCb, false)) {
+                    // If we fail, then set a flag to load the default workspace
+                    setFlagEmptyDbCreated();
+                    return;
+                }
             }
+            // Right now, in non-default workspace cases, we want to run the final
+            // upgrade code (ie. to fix workspace screen indices -> ids, etc.), so
+            // set that flag too.
+            setFlagJustLoadedOldDb();
         }
 
         private void addWorkspacesTable(SQLiteDatabase db) {
@@ -354,20 +387,39 @@ public class LauncherProvider extends ContentProvider {
                     ");");
         }
 
-        private void setFlagToLoadDefaultWorkspaceLater() {
+        private void setFlagJustLoadedOldDb() {
             String spKey = LauncherAppState.getSharedPreferencesKey();
             SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, true);
+            editor.putBoolean(UPGRADED_FROM_OLD_DATABASE, true);
+            editor.putBoolean(EMPTY_DATABASE_CREATED, false);
             editor.commit();
         }
 
-        private boolean convertDatabase(SQLiteDatabase db) {
+        private void setFlagEmptyDbCreated() {
+            String spKey = LauncherAppState.getSharedPreferencesKey();
+            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean(EMPTY_DATABASE_CREATED, true);
+            editor.putBoolean(UPGRADED_FROM_OLD_DATABASE, false);
+            editor.commit();
+        }
+
+        // We rearrange the screens from the old launcher
+        // 12345 -> 34512
+        private long upgradeLauncherDb_permuteScreens(long screen) {
+            if (screen >= 2) {
+                return screen - 2;
+            } else {
+                return screen + 3;
+            }
+        }
+
+        private boolean convertDatabase(SQLiteDatabase db, Uri uri,
+                                        ContentValuesCallback cb, boolean deleteRows) {
             if (LOGD) Log.d(TAG, "converting database from an older format, but not onUpgrade");
             boolean converted = false;
 
-            final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
-                    "/old_favorites?notify=true");
             final ContentResolver resolver = mContext.getContentResolver();
             Cursor cursor = null;
 
@@ -378,15 +430,16 @@ public class LauncherProvider extends ContentProvider {
             }
 
             // We already have a favorites database in the old provider
-            if (cursor != null && cursor.getCount() > 0) {
+            if (cursor != null) {
                 try {
-                    converted = copyFromCursor(db, cursor) > 0;
+                     if (cursor.getCount() > 0) {
+                        converted = copyFromCursor(db, cursor, cb) > 0;
+                        if (converted && deleteRows) {
+                            resolver.delete(uri, null, null);
+                        }
+                    }
                 } finally {
                     cursor.close();
-                }
-
-                if (converted) {
-                    resolver.delete(uri, null, null);
                 }
             }
 
@@ -394,12 +447,16 @@ public class LauncherProvider extends ContentProvider {
                 // Convert widgets from this import into widgets
                 if (LOGD) Log.d(TAG, "converted and now triggering widget upgrade");
                 convertWidgets(db);
+
+                // Update max item id
+                mMaxItemId = initializeMaxItemId(db);
+                if (LOGD) Log.d(TAG, "mMaxItemId: " + mMaxItemId);
             }
 
             return converted;
         }
 
-        private int copyFromCursor(SQLiteDatabase db, Cursor c) {
+        private int copyFromCursor(SQLiteDatabase db, Cursor c, ContentValuesCallback cb) {
             final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
             final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
@@ -434,23 +491,28 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
                 values.put(LauncherSettings.Favorites.URI, c.getString(uriIndex));
                 values.put(LauncherSettings.Favorites.DISPLAY_MODE, c.getInt(displayModeIndex));
+                if (cb != null) {
+                    cb.onRow(values);
+                }
                 rows[i++] = values;
             }
 
-            db.beginTransaction();
             int total = 0;
-            try {
-                int numValues = rows.length;
-                for (i = 0; i < numValues; i++) {
-                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, rows[i]) < 0) {
-                        return 0;
-                    } else {
-                        total++;
+            if (i > 0) {
+                db.beginTransaction();
+                try {
+                    int numValues = rows.length;
+                    for (i = 0; i < numValues; i++) {
+                        if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, rows[i]) < 0) {
+                            return 0;
+                        } else {
+                            total++;
+                        }
                     }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
                 }
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
             }
 
             return total;
@@ -458,7 +520,7 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (LOGD) Log.d(TAG, "onUpgrade triggered");
+            if (LOGD) Log.d(TAG, "onUpgrade triggered: " + oldVersion);
 
             int version = oldVersion;
             if (version < 3) {
@@ -558,7 +620,7 @@ public class LauncherProvider extends ContentProvider {
 
                 // This will never happen in the wild, but when we switch to using workspace
                 // screen ids, redo the import from old launcher.
-                sLoadOldDb = true;
+                sJustLoadedFromOldDb = true;
 
                 addWorkspacesTable(db);
                 version = 13;
@@ -722,6 +784,10 @@ public class LauncherProvider extends ContentProvider {
             return mMaxItemId;
         }
 
+        public void updateMaxItemId(long id) {
+            mMaxItemId = id + 1;
+        }
+
         private long initializeMaxItemId(SQLiteDatabase db) {
             Cursor c = db.rawQuery("SELECT MAX(_id) FROM favorites", null);
 
@@ -861,6 +927,10 @@ public class LauncherProvider extends ContentProvider {
                     c.close();
                 }
             }
+
+            // Update max item id
+            mMaxItemId = initializeMaxItemId(db);
+            if (LOGD) Log.d(TAG, "mMaxItemId: " + mMaxItemId);
         }
 
         private static final void beginDocument(XmlPullParser parser, String firstElementName)
@@ -1016,6 +1086,11 @@ public class LauncherProvider extends ContentProvider {
                 Log.w(TAG, "Got exception parsing favorites.", e);
             } catch (RuntimeException e) {
                 Log.w(TAG, "Got exception parsing favorites.", e);
+            }
+
+            // Update the max item id after we have loaded the database
+            if (mMaxItemId == -1) {
+                mMaxItemId = initializeMaxItemId(db);
             }
 
             return i;

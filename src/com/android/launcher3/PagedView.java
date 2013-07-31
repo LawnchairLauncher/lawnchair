@@ -1010,7 +1010,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 // Check if the right edge of the page is in the viewport
                 mTmpIntPoint[0] = currPage.getMeasuredWidth();
-                DragLayer.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
+                Utilities.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
                 if (mTmpIntPoint[0] < 0) {
                     break;
                 }
@@ -1020,7 +1020,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 // Check if the left edge of the page is in the viewport
                 mTmpIntPoint[0] = 0;
-                DragLayer.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
+                Utilities.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
                 if (mTmpIntPoint[0] >= viewportWidth) {
                     break;
                 }

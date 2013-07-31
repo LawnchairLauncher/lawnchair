@@ -3620,6 +3620,8 @@ public class Launcher extends Activity
                     workspace.addInScreenFromBind(newFolder, item.container, item.screenId, item.cellX,
                             item.cellY, 1, 1);
                     break;
+                default:
+                    throw new RuntimeException("Invalid Item Type");
             }
         }
 
@@ -3759,7 +3761,6 @@ public class Launcher extends Activity
 
         mWorkspaceLoading = false;
         if (upgradePath) {
-            mWorkspace.saveWorkspaceToDb();
             mWorkspace.stripDuplicateApps();
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.stripDuplicateApps();
         }

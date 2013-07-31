@@ -1319,7 +1319,13 @@ public class Workspace extends SmoothPagedView
             progress = Math.max(0, progress);
 
             setBackgroundAlpha(progress * 0.8f);
-            float transY = progress * (getViewportHeight() - getPageIndicator().getTop());
+            float height = getViewportHeight();
+            if (getPageIndicator() != null) {
+                height -= getPageIndicator().getTop();
+            } else if (mLauncher.getHotseat() != null) {
+                height -= mLauncher.getHotseat().getTop();
+            }
+            float transY = progress * height;
 
             if (mLauncher.getHotseat() != null) {
                 mLauncher.getHotseat().setTranslationY(transY);
