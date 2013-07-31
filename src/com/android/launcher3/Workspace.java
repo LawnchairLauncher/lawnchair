@@ -528,18 +528,9 @@ public class Workspace extends SmoothPagedView
         return screenId;
     }
 
-    public void addCustomContentToLeft(View customContent, CustomContentCallbacks callbacks) {
+    public void createCustomContentPage() {
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
-
-        int spanX = customScreen.getCountX();
-        int spanY = customScreen.getCountY();
-
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
-        lp.canReorder  = false;
-        lp.isFullscreen = true;
-
-        customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
 
         Rect p = new Rect();
         AppWidgetHostView.getDefaultPaddingForWidget(mLauncher, mLauncher.getComponentName(), p);
@@ -549,11 +540,26 @@ public class Workspace extends SmoothPagedView
 
         addFullScreenPage(customScreen);
 
-        mCustomContentCallbacks = callbacks;
-
         // Ensure that the current page and default page are maintained.
         mDefaultPage++;
         setCurrentPage(getCurrentPage() + 1);
+    }
+
+    public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks) {
+        if (getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID) < 0) {
+            throw new RuntimeException("Expected custom content screen to exist");
+        }
+
+        // Add the custom content to the full screen custom page
+        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
+        int spanX = customScreen.getCountX();
+        int spanY = customScreen.getCountY();
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
+        lp.canReorder  = false;
+        lp.isFullscreen = true;
+        customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
+
+        mCustomContentCallbacks = callbacks;
     }
 
     public long commitExtraEmptyScreen() {
@@ -1300,7 +1306,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private boolean hasCustomContent() {
+    public boolean hasCustomContent() {
         return (mScreenOrder.size() > 0 && mScreenOrder.get(0) == CUSTOM_CONTENT_SCREEN_ID);
     }
 
