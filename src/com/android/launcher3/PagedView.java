@@ -327,7 +327,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mPageIndicator == null && mPageIndicatorViewId > -1) {
             mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.removeAllMarkers();
-            mPageIndicator.addMarkers(getChildCount());
+
+            ArrayList<Integer> markers = new ArrayList<Integer>();
+            for (int i = 0; i < getChildCount(); ++i) {
+                markers.add(getPageIndicatorMarker(i));
+            }
+            mPageIndicator.addMarkers(markers);
         }
     }
 
@@ -403,6 +408,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     PageIndicator getPageIndicator() {
         return mPageIndicator;
+    }
+    protected int getPageIndicatorMarker(int pageIndex) {
+        return R.layout.page_indicator_marker;
     }
 
     public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
@@ -914,7 +922,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.addMarker(indexOfChild(child));
+            int pageIndex = indexOfChild(child);
+            mPageIndicator.addMarker(pageIndex, getPageIndicatorMarker(pageIndex));
         }
 
         // This ensures that when children are added, they get the correct transforms / alphas

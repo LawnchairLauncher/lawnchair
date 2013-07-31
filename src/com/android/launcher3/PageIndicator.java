@@ -161,18 +161,17 @@ public class PageIndicator extends LinearLayout {
         mWindowRange[1] = windowEnd;
     }
 
-    void addMarker(int index) {
+    void addMarker(int index, int layoutId) {
         index = Math.max(0, Math.min(index, mMarkers.size()));
 
-        int mLayoutId = R.layout.page_indicator_marker;
         PageIndicatorMarker marker =
-            (PageIndicatorMarker) mLayoutInflater.inflate(mLayoutId, this, false);
+            (PageIndicatorMarker) mLayoutInflater.inflate(layoutId, this, false);
         mMarkers.add(index, marker);
         offsetWindowCenterTo(mActiveMarkerIndex, true);
     }
-    void addMarkers(int count) {
-        for (int i = 0; i < count; ++i) {
-            addMarker(Integer.MAX_VALUE);
+    void addMarkers(ArrayList<Integer> layoutIds) {
+        for (int i = 0; i < layoutIds.size(); ++i) {
+            addMarker(Integer.MAX_VALUE, layoutIds.get(i));
         }
     }
 
