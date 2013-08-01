@@ -802,6 +802,12 @@ public class Launcher extends Activity
                     (System.currentTimeMillis() - startTimeCallbacks));
             }
         }
+        if (mOnResumeCallbacks.size() > 0) {
+            for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
+                mOnResumeCallbacks.get(i).run();
+            }
+            mOnResumeCallbacks.clear();
+        }
 
         // Reset the pressed state of icons that were locked in the press state while activities
         // were launching
@@ -3438,11 +3444,11 @@ public class Launcher extends Activity
     }
 
     public void addOnResumeCallback(Runnable run) {
-        mBindOnResumeCallbacks.add(run);
+        mOnResumeCallbacks.add(run);
     }
 
     public void removeOnResumeCallback(Runnable run) {
-        mBindOnResumeCallbacks.remove(run);
+        mOnResumeCallbacks.remove(run);
     }
 
     /**
