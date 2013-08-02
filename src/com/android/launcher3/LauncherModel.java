@@ -68,7 +68,7 @@ public class LauncherModel extends BroadcastReceiver {
     static final String TAG = "Launcher.Model";
 
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
-    private final boolean mAppsCanBeOnExternalStorage;
+    private final boolean mAppsCanBeOnRemoveableStorage;
 
     private final LauncherAppState mApp;
     private final Object mLock = new Object();
@@ -172,7 +172,7 @@ public class LauncherModel extends BroadcastReceiver {
     LauncherModel(LauncherAppState app, IconCache iconCache) {
         final Context context = app.getContext();
 
-        mAppsCanBeOnExternalStorage = !Environment.isExternalStorageEmulated();
+        mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache);
         mIconCache = iconCache;
@@ -1642,9 +1642,24 @@ public class LauncherModel extends BroadcastReceiver {
                             switch (itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                                id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
                                 try {
                                     intent = Intent.parseUri(intentDescription, 0);
+                                    ComponentName cn = intent.getComponent();
+                                    if (!isValidPackage(manager, cn)) {
+                                        if (!mAppsCanBeOnRemoveableStorage) {
+                                            // Log the invalid package, and remove it from the database
+                                            Uri uri = LauncherSettings.Favorites.getContentUri(id, false);
+                                            contentResolver.delete(uri, null, null);
+                                            Log.e(TAG, "Invalid package removed in loadWorkspace: " + cn);
+                                        } else {
+                                            // If apps can be on external storage, then we just leave
+                                            // them for the user to remove (maybe add treatment to it)
+                                            Log.e(TAG, "Invalid package found in loadWorkspace: " + cn);
+                                        }
+                                        continue;
+                                    }
                                 } catch (URISyntaxException e) {
                                     continue;
                                 }
@@ -1671,8 +1686,8 @@ public class LauncherModel extends BroadcastReceiver {
                                 }
 
                                 if (info != null) {
+                                    info.id = id;
                                     info.intent = intent;
-                                    info.id = c.getLong(idIndex);
                                     container = c.getInt(containerIndex);
                                     info.container = container;
                                     info.screenId = c.getInt(screenIndex);
@@ -1700,15 +1715,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     // now that we've loaded everthing re-save it with the
                                     // icon in case it disappears somehow.
                                     queueIconToBeChecked(sBgDbIconCache, info, c, iconIndex);
-                                } else {
-                                    // Failed to load the shortcut, probably because the
-                                    // activity manager couldn't resolve it (maybe the app
-                                    // was uninstalled), or the db row was somehow screwed up.
-                                    // Delete it.
-                                    id = c.getLong(idIndex);
-                                    Log.e(TAG, "Error loading shortcut " + id + ", removing it");
-                                    contentResolver.delete(LauncherSettings.Favorites.getContentUri(
-                                                id, false), null, null);
                                 }
                                 break;
 
@@ -2529,6 +2535,18 @@ public class LauncherModel extends BroadcastReceiver {
         return widgetsAndShortcuts;
     }
 
+    private boolean isValidPackage(PackageManager pm, ComponentName cn) {
+        if (cn == null) {
+            return false;
+        }
+
+        try {
+            return (pm.getActivityInfo(cn, 0) != null);
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
+
     /**
      * This is called from the code that adds shortcuts from the intent receiver.  This
      * doesn't have a Cursor, but
@@ -2544,24 +2562,10 @@ public class LauncherModel extends BroadcastReceiver {
      */
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,
             Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache) {
-        Bitmap icon = null;
-        final ShortcutInfo info = new ShortcutInfo();
-
         ComponentName componentName = intent.getComponent();
-        if (componentName == null) {
+        if (!isValidPackage(manager, componentName)) {
+            Log.d(TAG, "Invalid package found in getShortcutInfo: " + componentName);
             return null;
-        }
-
-        try {
-            PackageInfo pi = manager.getPackageInfo(componentName.getPackageName(), 0);
-            if (!pi.applicationInfo.enabled) {
-                // If we return null here, the corresponding item will be removed from the launcher
-                // db and will not appear in the workspace.
-                return null;
-            }
-            info.initFlagsAndFirstInstallTime(pi);
-        } catch (NameNotFoundException e) {
-            Log.d(TAG, "getPackInfo failed for package " + componentName.getPackageName());
         }
 
         // TODO: See if the PackageManager knows about this case.  If it doesn't
@@ -2575,6 +2579,8 @@ public class LauncherModel extends BroadcastReceiver {
         // Attempt to use queryIntentActivities to get the ResolveInfo (with IntentFilter info) and
         // if that fails, or is ambiguious, fallback to the standard way of getting the resolve info
         // via resolveActivity().
+        final ShortcutInfo info = new ShortcutInfo();
+        Bitmap icon = null;
         ResolveInfo resolveInfo = null;
         ComponentName oldComponent = intent.getComponent();
         Intent newIntent = new Intent(intent.getAction(), null);
@@ -2901,7 +2907,7 @@ public class LauncherModel extends BroadcastReceiver {
     boolean queueIconToBeChecked(HashMap<Object, byte[]> cache, ShortcutInfo info, Cursor c,
             int iconIndex) {
         // If apps can't be on SD, don't even bother.
-        if (!mAppsCanBeOnExternalStorage) {
+        if (!mAppsCanBeOnRemoveableStorage) {
             return false;
         }
         // If this icon doesn't have a custom icon, check to see
