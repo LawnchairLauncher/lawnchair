@@ -55,6 +55,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private TransitionDrawable mRemoveDrawable;
     private TransitionDrawable mCurrentDrawable;
 
+    private boolean mWaitingForUninstall = false;
+
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -251,7 +253,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
          return AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d);
     }
 
-    private boolean mWaitingForUninstall = false;
     private void completeDrop(final DragObject d) {
         ItemInfo item = (ItemInfo) d.dragInfo;
         boolean wasWaitingForUninstall = mWaitingForUninstall;
