@@ -775,7 +775,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (target != this) {
             if (mOnExitAlarm.alarmPending()) {
                 mOnExitAlarm.cancelAlarm();
-                if (successfulDrop) {
+                if (!successfulDrop) {
                     mSuppressFolderDeletion = true;
                 }
                 completeDragExit();
