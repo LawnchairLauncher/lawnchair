@@ -3770,6 +3770,10 @@ public class Workspace extends PagedView
                         mLauncher.processShortcutFromDrop(pendingInfo.componentName,
                                 container, screen, mTargetCell, null);
                         break;
+                    case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+                        mLauncher.processLiveFolderFromDrop(pendingInfo.componentName,
+                                container, screen, mTargetCell, null);
+                        break;
                     default:
                         throw new IllegalStateException("Unknown item type: " +
                                 pendingInfo.itemType);
@@ -3807,6 +3811,7 @@ public class Workspace extends PagedView
                 view = mLauncher.createShortcut(R.layout.application, cellLayout,
                         (ShortcutInfo) info);
                 break;
+            case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
                         (FolderInfo) info);
@@ -4350,6 +4355,13 @@ public class Workspace extends PagedView
                                     LauncherModel.deleteItemFromDatabase(mLauncher, info);
                                     childrenToRemove.add(view);
                                 }
+                            }
+                        } else if (tag instanceof LiveFolderInfo) {
+                            final LiveFolderInfo info = (LiveFolderInfo) tag;
+                            String folderPkg = info.receiver.getPackageName();
+                            if (packageNames.contains(folderPkg)) {
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);
                             }
                         } else if (tag instanceof FolderInfo) {
                             final FolderInfo info = (FolderInfo) tag;

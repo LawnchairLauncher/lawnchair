@@ -52,6 +52,11 @@
         android:protectionLevel="normal"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings" />
+    <permission
+        android:name="com.cyanogenmod.trebuchet.permission.MANAGE_LIVE_FOLDERS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="system|signature" />
+
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
@@ -61,6 +66,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.cyanogenmod.trebuchet.permission.MANAGE_LIVE_FOLDERS"/>
 
     <application
         android:name="com.cyanogenmod.trebuchet.LauncherApplication"
@@ -105,6 +111,13 @@
             android:permission="com.android.launcher.permission.PRELOAD_WORKSPACE">
             <intent-filter>
                 <action android:name="com.android.launcher.action.PRELOAD_WORKSPACE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.cyanogenmod.trebuchet.LiveFoldersReceiver">
+            <intent-filter>
+                <action android:name="cyanogenmod.intent.action.UPDATE_LIVE_FOLDER" />
             </intent-filter>
         </receiver>
 

@@ -286,7 +286,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) &&
-                !mFolder.isFull() && item != mInfo && !mInfo.opened);
+                !mFolder.isFull() && item != mInfo && !mInfo.opened && !(mFolder.getInfo() instanceof LiveFolderInfo));
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {

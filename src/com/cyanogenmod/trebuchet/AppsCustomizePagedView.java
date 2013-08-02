@@ -59,6 +59,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.cyanogenmod.support.ui.LiveFolder;
 import com.cyanogenmod.trebuchet.DropTarget.DragObject;
 import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
@@ -679,6 +680,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
         mWidgets.addAll(shortcuts);
+
+        Intent createLiveFolder = new Intent(LiveFolder.Constants.CREATE_LIVE_FOLDER);
+        List<ResolveInfo> lst = mPackageManager.queryIntentActivities(createLiveFolder,
+                PackageManager.GET_RESOLVED_FILTER);
+        mWidgets.addAll(lst);
+
         Collections.sort(mWidgets,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
         updatePageCounts();
@@ -1614,6 +1621,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 ResolveInfo info = (ResolveInfo) rawInfo;
                 createItemInfo = new PendingAddShortcutInfo(info.activityInfo);
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+                if (info.filter != null && info.filter.hasAction(LiveFolder.Constants.CREATE_LIVE_FOLDER)) {
+                    createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER;
+                }
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);
                 widget.applyFromResolveInfo(mPackageManager, info);

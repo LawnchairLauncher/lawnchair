@@ -31,6 +31,12 @@ class LauncherSettings {
         static final String TITLE = "title";
 
         /**
+         * Flattened component name of the package bound to receive
+         * updates for live folder
+         */
+        static final String RECEIVER_COMPONENT = "receiverComponent";
+
+        /**
          * The Intent URL of the gesture, describing what it points to. This
          * value is given to {@link android.content.Intent#parseUri(String, int)} to create
          * an Intent that can be launched.
@@ -181,6 +187,13 @@ class LauncherSettings {
          * The favorite is a widget
          */
         static final int ITEM_TYPE_APPWIDGET = 4;
+
+        /**
+         * The favorite is a user created live folder
+         * It's contents are non persistent, and the
+         * receiver is responsible for populating its contents
+         */
+        static final int ITEM_TYPE_LIVE_FOLDER = 6;
 
         /**
          * The appWidgetId of the widget
