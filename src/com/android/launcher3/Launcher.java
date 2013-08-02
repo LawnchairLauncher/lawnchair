@@ -311,8 +311,6 @@ public class Launcher extends Activity
 
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
-    private long mNewShortcutAnimateScreenId = -1;
-    private ArrayList<View> mNewShortcutAnimateViews = new ArrayList<View>();
     private ImageView mFolderIconImageView;
     private Bitmap mFolderIconBitmap;
     private Canvas mFolderIconCanvas;
@@ -769,7 +767,7 @@ public class Launcher extends Activity
         setWorkspaceBackground(mState == State.WORKSPACE);
 
         // Process any items that were added while Launcher was away
-        InstallShortcutReceiver.flushInstallQueue(this);
+        InstallShortcutReceiver.disableAndFlushInstallQueue(this);
 
         mPaused = false;
         sPausedFromUserAction = false;
@@ -839,6 +837,9 @@ public class Launcher extends Activity
         // to be consistent.  So re-enable the flag here, and we will re-disable it as necessary
         // when Launcher resumes and we are still in AllApps.
         updateWallpaperVisibility(true);
+
+        // Ensure that items added to Launcher are queued until Launcher returns
+        InstallShortcutReceiver.enableInstallQueue();
 
         super.onPause();
         mPaused = true;
@@ -3498,8 +3499,6 @@ public class Launcher extends Activity
         mBindOnResumeCallbacks.clear();
 
         final Workspace workspace = mWorkspace;
-        mNewShortcutAnimateScreenId = -1;
-        mNewShortcutAnimateViews.clear();
         mWorkspace.clearDropTargets();
         int count = workspace.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -3567,12 +3566,11 @@ public class Launcher extends Activity
         }
 
         // Get the list of added shortcuts and intersect them with the set of shortcuts here
-        Set<String> newApps = new HashSet<String>();
-        newApps = mSharedPrefs.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, newApps);
-
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         final Collection<Animator> bounceAnims = new ArrayList<Animator>();
+        final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
+        long newShortcutsScreenId = -1;
         for (int i = start; i < end; i++) {
             final ItemInfo item = shortcuts.get(i);
 
@@ -3586,7 +3584,6 @@ public class Launcher extends Activity
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     ShortcutInfo info = (ShortcutInfo) item;
-                    String uri = info.intent.toUri(0).toString();
                     View shortcut = createShortcut(info);
 
                     /*
@@ -3601,27 +3598,13 @@ public class Launcher extends Activity
 
                     workspace.addInScreenFromBind(shortcut, item.container, item.screenId, item.cellX,
                             item.cellY, 1, 1);
-                    boolean animateIconUp = false;
-                    synchronized (newApps) {
-                        if (newApps.contains(uri)) {
-                            animateIconUp = newApps.remove(uri);
-                        }
-                    }
-                    if (forceAnimateIcons) {
+                    if (animateIcons) {
                         // Animate all the applications up now
                         shortcut.setAlpha(0f);
                         shortcut.setScaleX(0f);
                         shortcut.setScaleY(0f);
                         bounceAnims.add(createNewAppBounceAnimation(shortcut, i));
-                    } else if (animateIconUp) {
-                        // Prepare the view to be animated up
-                        shortcut.setAlpha(0f);
-                        shortcut.setScaleX(0f);
-                        shortcut.setScaleY(0f);
-                        mNewShortcutAnimateScreenId = item.screenId;
-                        if (!mNewShortcutAnimateViews.contains(shortcut)) {
-                            mNewShortcutAnimateViews.add(shortcut);
-                        }
+                        newShortcutsScreenId = item.screenId;
                     }
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -3636,7 +3619,16 @@ public class Launcher extends Activity
             }
         }
 
-        if (forceAnimateIcons) {
+        if (animateIcons) {
+            // Animate to the correct page
+            if (newShortcutsScreenId > -1) {
+                long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
+                int newScreenIndex = mWorkspace.getPageIndexForScreenId(newShortcutsScreenId);
+                if (newShortcutsScreenId != currentScreenId) {
+                    mWorkspace.snapToPage(newScreenIndex);
+                }
+            }
+
             // We post the animation slightly delayed to prevent slowdowns when we are loading
             // right after we return to launcher.
             mWorkspace.postDelayed(new Runnable() {
@@ -3749,32 +3741,6 @@ public class Launcher extends Activity
         // package changes in bindSearchablesChanged()
         updateAppMarketIcon();
 
-        // Animate up any icons as necessary
-        if (mVisible || mWorkspaceLoading) {
-            Runnable newAppsRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    runNewAppsAnimation(false);
-                }
-            };
-
-            boolean willSnapPage = mNewShortcutAnimateScreenId > -1 &&
-                    mNewShortcutAnimateScreenId != mWorkspace.getCurrentPage();
-            if (canRunNewAppsAnimation()) {
-                // If the user has not interacted recently, then either snap to the new page to show
-                // the new-apps animation or just run them if they are to appear on the current page
-                if (willSnapPage) {
-                    mWorkspace.snapToScreenId(mNewShortcutAnimateScreenId, newAppsRunnable);
-                } else {
-                    runNewAppsAnimation(false);
-                }
-            } else {
-                // If the user has interacted recently, then just add the items in place if they
-                // are on another page (or just normally if they are added to the current page)
-                runNewAppsAnimation(willSnapPage);
-            }
-        }
-
         mWorkspaceLoading = false;
         if (upgradePath) {
             mWorkspace.stripDuplicateApps();
@@ -3803,64 +3769,6 @@ public class Launcher extends Activity
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
         bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
         return bounceAnim;
-    }
-
-    /**
-     * Runs a new animation that scales up icons that were added while Launcher was in the
-     * background.
-     *
-     * @param immediate whether to run the animation or show the results immediately
-     */
-    private void runNewAppsAnimation(boolean immediate) {
-        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-        Collection<Animator> bounceAnims = new ArrayList<Animator>();
-
-        // Order these new views spatially so that they animate in order
-        Collections.sort(mNewShortcutAnimateViews, new Comparator<View>() {
-            @Override
-            public int compare(View a, View b) {
-                CellLayout.LayoutParams alp = (CellLayout.LayoutParams) a.getLayoutParams();
-                CellLayout.LayoutParams blp = (CellLayout.LayoutParams) b.getLayoutParams();
-                int cellCountX = LauncherModel.getCellCountX();
-                return (alp.cellY * cellCountX + alp.cellX) - (blp.cellY * cellCountX + blp.cellX);
-            }
-        });
-
-        // Animate each of the views in place (or show them immediately if requested)
-        if (immediate) {
-            for (View v : mNewShortcutAnimateViews) {
-                v.setAlpha(1f);
-                v.setScaleX(1f);
-                v.setScaleY(1f);
-            }
-        } else {
-            for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
-                View v = mNewShortcutAnimateViews.get(i);
-                bounceAnims.add(createNewAppBounceAnimation(v, i));
-            }
-            anim.playTogether(bounceAnims);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mWorkspace != null) {
-                        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
-                    }
-                }
-            });
-            anim.start();
-        }
-
-        // Clean up
-        mNewShortcutAnimateScreenId = -1;
-        mNewShortcutAnimateViews.clear();
-        new Thread("clearNewAppsThread") {
-            public void run() {
-                mSharedPrefs.edit()
-                            .putInt(InstallShortcutReceiver.NEW_APPS_PAGE_KEY, -1)
-                            .putStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, null)
-                            .commit();
-            }
-        }.start();
     }
 
     @Override

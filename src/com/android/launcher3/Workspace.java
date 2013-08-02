@@ -3969,34 +3969,6 @@ public class Workspace extends SmoothPagedView
 
         // Strip all the empty screens
         stripEmptyScreens();
-
-        // Clean up new-apps animation list
-        final Context context = getContext();
-        post(new Runnable() {
-            @Override
-            public void run() {
-                String spKey = LauncherAppState.getSharedPreferencesKey();
-                SharedPreferences sp = context.getSharedPreferences(spKey,
-                        Context.MODE_PRIVATE);
-                Set<String> newApps = sp.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
-                        null);
-
-                // Remove all queued items that match the same package
-                if (newApps != null) {
-                    synchronized (newApps) {
-                        Iterator<String> iter = newApps.iterator();
-                        while (iter.hasNext()) {
-                            try {
-                                Intent intent = Intent.parseUri(iter.next(), 0);
-                                if (componentNames.contains(intent.getComponent())) {
-                                    iter.remove();
-                                }
-                            } catch (URISyntaxException e) {}
-                        }
-                    }
-                }
-            }
-        });
     }
 
     void updateShortcuts(ArrayList<ApplicationInfo> apps) {

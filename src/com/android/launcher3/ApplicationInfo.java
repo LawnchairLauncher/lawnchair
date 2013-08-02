@@ -60,6 +60,10 @@ class ApplicationInfo extends ItemInfo {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
+    protected Intent getIntent() {
+        return intent;
+    }
+
     /**
      * Must not hold the Context.
      */

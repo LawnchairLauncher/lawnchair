@@ -67,6 +67,10 @@ class ShortcutInfo extends ItemInfo {
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
+
+    protected Intent getIntent() {
+        return intent;
+    }
     
     public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
