@@ -1491,7 +1491,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Cross reference all the applications in our apps list with items in the workspace
             ArrayList<ItemInfo> tmpInfos;
-            ArrayList<ApplicationInfo> added = new ArrayList<ApplicationInfo>();
+            ArrayList<ItemInfo> added = new ArrayList<ItemInfo>();
             synchronized (sBgLock) {
                 for (ApplicationInfo app : mBgAllAppsList.data) {
                     tmpInfos = getItemInfoForComponentName(app.componentName);
