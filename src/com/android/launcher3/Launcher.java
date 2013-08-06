@@ -343,6 +343,8 @@ public class Launcher extends Activity
         int cellY;
     }
 
+    private Stats mStats;
+
     private static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
@@ -375,6 +377,8 @@ public class Launcher extends Activity
         mIconCache = app.getIconCache();
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
+
+        mStats = new Stats(this);
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
@@ -2093,7 +2097,8 @@ public class Launcher extends Activity
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             // Open shortcut
-            final Intent intent = ((ShortcutInfo) tag).intent;
+            final ShortcutInfo shortcut = (ShortcutInfo) tag;
+            final Intent intent = shortcut.intent;
 
             // Check for special shortcuts
             if (intent.getComponent() != null) {
@@ -2118,6 +2123,8 @@ public class Launcher extends Activity
                     pos[0] + v.getWidth(), pos[1] + v.getHeight()));
 
             boolean success = startActivitySafely(v, intent, tag);
+
+            mStats.recordLaunch(intent, shortcut);
 
             if (success && v instanceof BubbleTextView) {
                 mWaitingForResume = (BubbleTextView) v;
