@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -167,8 +168,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         public float mOuterRingSize;
         public float mInnerRingSize;
         public FolderIcon mFolderIcon = null;
-        public Drawable mOuterRingDrawable = null;
-        public Drawable mInnerRingDrawable = null;
         public static Drawable sSharedOuterRingDrawable = null;
         public static Drawable sSharedInnerRingDrawable = null;
         public static int sPreviewSize = -1;
@@ -180,12 +179,14 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         public FolderRingAnimator(Launcher launcher, FolderIcon folderIcon) {
             mFolderIcon = folderIcon;
             Resources res = launcher.getResources();
-            mOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
-            mInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_holo);
 
             // We need to reload the static values when configuration changes in case they are
             // different in another configuration
             if (sStaticValuesDirty) {
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    throw new RuntimeException("FolderRingAnimator loading drawables on non-UI thread "
+                            + Thread.currentThread());
+                }
                 sPreviewSize = res.getDimensionPixelSize(R.dimen.folder_preview_size);
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
                 sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
