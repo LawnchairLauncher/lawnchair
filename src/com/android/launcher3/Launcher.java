@@ -245,6 +245,7 @@ public class Launcher extends Activity
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
     private boolean mAutoAdvanceRunning = false;
+    private View mQsbBar;
 
     private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
@@ -413,8 +414,8 @@ public class Launcher extends Activity
 
         checkForLocaleChange();
         setContentView(R.layout.launcher);
-        grid.layout(this);
         setupViews();
+        grid.layout(this);
         showFirstRunWorkspaceCling();
 
         registerContentObservers();
@@ -3247,7 +3248,14 @@ public class Launcher extends Activity
         }
     }
 
-    private boolean updateGlobalSearchIcon() {
+    public View getQsbBar() {
+        if (mQsbBar == null) {
+            mQsbBar = mInflater.inflate(R.layout.qsb_bar, mSearchDropTargetBar);
+        }
+        return mQsbBar;
+    }
+
+    protected boolean updateGlobalSearchIcon() {
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
@@ -3282,14 +3290,14 @@ public class Launcher extends Activity
         }
     }
 
-    private void updateGlobalSearchIcon(Drawable.ConstantState d) {
+    protected void updateGlobalSearchIcon(Drawable.ConstantState d) {
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final View searchButton = (ImageView) findViewById(R.id.search_button);
         updateButtonWithDrawable(R.id.search_button, d);
         invalidatePressedFocusedStates(searchButtonContainer, searchButton);
     }
 
-    private boolean updateVoiceSearchIcon(boolean searchVisible) {
+    protected boolean updateVoiceSearchIcon(boolean searchVisible) {
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
 
@@ -3335,7 +3343,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void updateVoiceSearchIcon(Drawable.ConstantState d) {
+    protected void updateVoiceSearchIcon(Drawable.ConstantState d) {
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         updateButtonWithDrawable(R.id.voice_button, d);

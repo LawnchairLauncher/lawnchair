@@ -58,8 +58,10 @@ public class DrawableStateProxyView extends LinearLayout {
             View parent = (View) getParent();
             mView = parent.findViewById(mViewId);
         }
-        mView.setPressed(isPressed());
-        mView.setHovered(isHovered());
+        if (mView != null) {
+            mView.setPressed(isPressed());
+            mView.setHovered(isHovered());
+        }
     }
 
     @Override

@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
@@ -71,6 +72,14 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
+        mQSBSearchBar = launcher.getQsbBar();
+        if (mEnableDropDownDropTargets) {
+            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "translationY", 0,
+                    -mBarHeight);
+        } else {
+            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
+        }
+        setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
     }
 
     private void prepareStartAnimation(View v) {
@@ -95,7 +104,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         super.onFinishInflate();
 
         // Get the individual components
-        mQSBSearchBar = findViewById(R.id.qsb_search_bar);
         mDropTargetBar = findViewById(R.id.drag_target_bar);
         mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target_text);
         mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target_text);
@@ -114,15 +122,12 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             mDropTargetBar.setTranslationY(-mBarHeight);
             mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "translationY",
                     -mBarHeight, 0f);
-            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "translationY", 0,
-                    -mBarHeight);
+
         } else {
             mDropTargetBar.setAlpha(0f);
             mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
-            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
         }
         setupAnimation(mDropTargetBarAnim, mDropTargetBar);
-        setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
     }
 
     public void finishAnimations() {
