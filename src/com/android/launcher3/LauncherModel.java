@@ -1647,16 +1647,18 @@ public class LauncherModel extends BroadcastReceiver {
                                 try {
                                     intent = Intent.parseUri(intentDescription, 0);
                                     ComponentName cn = intent.getComponent();
-                                    if (!isValidPackage(manager, cn)) {
+                                    if (!isValidPackageComponent(manager, cn)) {
                                         if (!mAppsCanBeOnRemoveableStorage) {
-                                            // Log the invalid package, and remove it from the database
-                                            Uri uri = LauncherSettings.Favorites.getContentUri(id, false);
+                                            // Log the invalid package, and remove it from the db
+                                            Uri uri = LauncherSettings.Favorites.getContentUri(id,
+                                                    false);
                                             contentResolver.delete(uri, null, null);
-                                            Log.e(TAG, "Invalid package removed in loadWorkspace: " + cn);
+                                            Log.e(TAG, "Invalid package removed: " + cn);
                                         } else {
-                                            // If apps can be on external storage, then we just leave
-                                            // them for the user to remove (maybe add treatment to it)
-                                            Log.e(TAG, "Invalid package found in loadWorkspace: " + cn);
+                                            // If apps can be on external storage, then we just
+                                            // leave them for the user to remove (maybe add
+                                            // visual treatment to it)
+                                            Log.e(TAG, "Invalid package found: " + cn);
                                         }
                                         continue;
                                     }
@@ -1715,6 +1717,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     // now that we've loaded everthing re-save it with the
                                     // icon in case it disappears somehow.
                                     queueIconToBeChecked(sBgDbIconCache, info, c, iconIndex);
+                                } else {
+                                    throw new RuntimeException("Unexpected null ShortcutInfo");
                                 }
                                 break;
 
@@ -2535,7 +2539,7 @@ public class LauncherModel extends BroadcastReceiver {
         return widgetsAndShortcuts;
     }
 
-    private boolean isValidPackage(PackageManager pm, ComponentName cn) {
+    private boolean isValidPackageComponent(PackageManager pm, ComponentName cn) {
         if (cn == null) {
             return false;
         }
@@ -2563,9 +2567,18 @@ public class LauncherModel extends BroadcastReceiver {
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,
             Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache) {
         ComponentName componentName = intent.getComponent();
-        if (!isValidPackage(manager, componentName)) {
+        final ShortcutInfo info = new ShortcutInfo();
+        if (!isValidPackageComponent(manager, componentName)) {
             Log.d(TAG, "Invalid package found in getShortcutInfo: " + componentName);
             return null;
+        } else {
+            try {
+                PackageInfo pi = manager.getPackageInfo(componentName.getPackageName(), 0);
+                info.initFlagsAndFirstInstallTime(pi);
+            } catch (NameNotFoundException e) {
+                Log.d(TAG, "getPackInfo failed for package " +
+                        componentName.getPackageName());
+            }
         }
 
         // TODO: See if the PackageManager knows about this case.  If it doesn't
@@ -2579,7 +2592,6 @@ public class LauncherModel extends BroadcastReceiver {
         // Attempt to use queryIntentActivities to get the ResolveInfo (with IntentFilter info) and
         // if that fails, or is ambiguious, fallback to the standard way of getting the resolve info
         // via resolveActivity().
-        final ShortcutInfo info = new ShortcutInfo();
         Bitmap icon = null;
         ResolveInfo resolveInfo = null;
         ComponentName oldComponent = intent.getComponent();
