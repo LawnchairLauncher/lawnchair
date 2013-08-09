@@ -68,7 +68,7 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
 
                     LiveFolderInfo fInfo = (LiveFolderInfo) folder;
 
-                    if (!fInfo.isOwner(getSendingPackage(intent))) {
+                    if (!fInfo.isOwner(context, getSendingPackage(intent))) {
                         Log.e(TAG, "Cannot modify a folder that belongs to another package");
                         return;
                     }
@@ -91,7 +91,7 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
                     if (info instanceof LiveFolderInfo) {
                         LiveFolderInfo fInfo = (LiveFolderInfo) info;
 
-                        if (fInfo.isOwner(getSendingPackage(intent))) {
+                        if (fInfo.isOwner(context, getSendingPackage(intent))) {
                             fInfo.populateWithItems(items);
                         }
                     }
