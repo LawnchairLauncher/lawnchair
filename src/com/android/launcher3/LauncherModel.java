@@ -311,6 +311,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     sBgWorkspaceScreens.size());
                             while (numPagesToAdd > 0) {
                                 long screenId = lp.generateNewScreenId();
+                                Log.d(TAG, "10249126 - addAndBindAddedApps(" + screenId + ")");
                                 // Update the model
                                 sBgWorkspaceScreens.add(screenId);
                                 updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
@@ -1008,6 +1009,7 @@ public class LauncherModel extends BroadcastReceiver {
                     long screenId = screens.get(i);
                     v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
                     v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                    Log.d(TAG, "10249126 - updateWorkspaceScreenOrder(" + screenId + ", " + i + ")");
                     values[i] = v;
                 }
                 cr.bulkInsert(uri, values);
@@ -1585,6 +1587,7 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgItemsIdMap.clear();
                 sBgDbIconCache.clear();
                 sBgWorkspaceScreens.clear();
+                Log.d(TAG, "10249126 - loadWorkspace()");
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
@@ -1830,6 +1833,7 @@ public class LauncherModel extends BroadcastReceiver {
                         long screenId = item.screenId;
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                 !sBgWorkspaceScreens.contains(screenId)) {
+                            Log.d(TAG, "10249126 - loadWorkspace-loadedOldDb(" + screenId + ")");
                             sBgWorkspaceScreens.add(screenId);
                             if (screenId > maxScreenId) {
                                 maxScreenId = screenId;
@@ -1878,6 +1882,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
 
                     // Remove any empty screens
+                    Log.d(TAG, "10249126 - loadWorkspace-!loadedOldDb()");
                     ArrayList<Long> unusedScreens = new ArrayList<Long>();
                     unusedScreens.addAll(sBgWorkspaceScreens);
 
@@ -2043,7 +2048,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         private void bindWorkspaceScreens(final Callbacks oldCallbacks,
                 final ArrayList<Long> orderedScreens) {
-
+            Log.d(TAG, "10249126 - bindWorkspaceScreens()");
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {

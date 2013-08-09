@@ -514,6 +514,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public long insertNewWorkspaceScreen(long screenId, int insertIndex, boolean updateDb) {
+        Log.d(TAG, "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ", " + updateDb + ")");
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -529,6 +530,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void createCustomContentPage() {
+        Log.d(TAG, "10249126 - createCustomContentPage()");
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -563,6 +565,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public long commitExtraEmptyScreen() {
+        Log.d(TAG, "10249126 - commitExtraEmptyScreen()");
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
         mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
@@ -584,11 +587,13 @@ public class Workspace extends SmoothPagedView
     }
 
     public CellLayout getScreenWithId(long screenId) {
+        Log.d(TAG, "10249126 - getScreenWithId(" + screenId + ")");
         CellLayout layout = mWorkspaceScreens.get(screenId);
         return layout;
     }
 
     public long getIdForScreen(CellLayout layout) {
+        Log.d(TAG, "10249126 - getIdForScreen()");
         Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
         while (iter.hasNext()) {
             long id = iter.next();
@@ -600,6 +605,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public int getPageIndexForScreenId(long screenId) {
+        Log.d(TAG, "10249126 - getPageIndexForScreenId(" + screenId + ")");
         return indexOfChild(mWorkspaceScreens.get(screenId));
     }
 
@@ -616,6 +622,8 @@ public class Workspace extends SmoothPagedView
             mStripScreensOnPageStopMoving = true;
             return;
         }
+
+        Log.d(TAG, "10249126 - stripEmptyScreens()");
 
         int currentPage = getNextPage();
         ArrayList<Long> removeScreens = new ArrayList<Long>();
@@ -686,6 +694,8 @@ public class Workspace extends SmoothPagedView
         if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             if (getScreenWithId(screenId) == null) {
                 Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
+                // DEBUGGING - Print out the stack trace to see where we are adding from
+                new Throwable().printStackTrace();
                 return;
             }
         }

@@ -140,6 +140,10 @@ def process_file(fn):
   hotseatIdMap = []
   HOTSEAT_SIZE = 0
   for d in data:
+    if d["spanX"] is None:
+      d["spanX"] = 1
+    if d["spanY"] is None:
+      d["spanY"] = 1
     if d["container"] == CONTAINER_DESKTOP:
       if d["screen"] not in screensIdMap:
         screensIdMap.append(d["screen"])

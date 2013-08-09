@@ -3529,6 +3529,7 @@ public class Launcher extends Activity
     public void bindAddScreens(ArrayList<Long> orderedScreenIds) {
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
+            Log.d(TAG, "10249126 - bindAddScreens(" + orderedScreenIds.get(i) + ")");
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i), false);
         }
     }
