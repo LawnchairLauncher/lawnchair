@@ -116,4 +116,21 @@
     <string name="effects_flip">Käännä</string>
     <string name="effects_stack">Pino</string>
     <string name="effects_accordion">Harmonikka</string>
+    <string name="effects_carousel_left">Karuselli vasen</string>
+    <string name="effects_carousel_right">Karuselli oikea</string>
+    <string name="menu_lock_workspace">Lukitse kotinäyttö</string>
+    <string name="menu_unlock_workspace">Poista kotinäytön lukitus</string>
+    <string name="menu_preferences">Trebuchetin asetukset</string>
+    <string name="all_apps_sort_cling_title">Järjestä sovellukset</string>
+    <string name="all_apps_sort_cling_add_item">Pidä Sovellukset-välilehteä pohjassa valitaksesi järjestyksen</string>
+    <string name="workspace_locked">Kotinäyttö on lukittu, poista lukitus asetuksista järjestääksesi uudelleen</string>
+    <string name="preferences_interface_drawer_apps_category">Sovellukset</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Piilotetut sovellukset (kuvakkeet)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Poista piilotettujen sovellusten kuvakkeet kotinäytöltä</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Piilotetut sovellukset (widgetit)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Poista piilotettujen sovellusten widgetit kotinäytöltä</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Piilota kuvakkeiden tekstit</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Piilota kuvakkeiden tekstit alapalkissa</string>
+    <string name="preferences_interface_general_lock_workspace_title">Lukitse kotinäyttö</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Lukitse kuvakkeet ja kansiot paikoilleen kotinäytöllä, alapalkissa ja sovellusvalikossa</string>
 </resources>
