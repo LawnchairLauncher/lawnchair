@@ -1,25 +1,14 @@
 <resources>
-    <integer name="cell_count_x">8</integer>
-    <integer name="cell_count_y">5</integer>
-    <integer name="hotseat_cell_count">9</integer>
-    <integer name="hotseat_all_apps_index">4</integer>
     <bool name="config_largeHeap">true</bool>
-    <bool name="is_large_screen">true</bool>
+    <bool name="is_large_tablet">true</bool>
 
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
-<!-- Folder max bounds and max number of items. Note: folder_max_count_x * folder_max_count_y
-     >= folder_max_num_items. If any values are set to 0, the values will be determined automatically.
-     A value of -1 indicates unbounded -->
-    <integer name="folder_max_count_x">0</integer>
-    <integer name="folder_max_count_y">-1</integer>
-    <integer name="folder_max_num_items">-1</integer>
-
 <!-- Workspace -->
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
-    <bool name="config_useDropTargetDownTransition">true</bool>
+    <bool name="config_useDropTargetDownTransition">false</bool>
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceFadeAdjacentScreens">true</bool>
 

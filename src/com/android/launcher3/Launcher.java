@@ -51,6 +51,7 @@ import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -199,7 +200,6 @@ public class Launcher extends Activity
     private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
-    private AnimatorSet mDividerAnimator;
 
     static final int APPWIDGET_HOST_ID = 1024;
     private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
@@ -221,7 +221,6 @@ public class Launcher extends Activity
     private LayoutInflater mInflater;
 
     private Workspace mWorkspace;
-    private View mQsbDivider;
     private View mLauncherView;
     private DragLayer mDragLayer;
     private DragController mDragController;
@@ -372,9 +371,23 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
+
+        // Determine the dynamic grid properties
+        Point smallestSize = new Point();
+        Point largestSize = new Point();
+        Point realSize = new Point();
+        Display display = getWindowManager().getDefaultDisplay();
+        display.getCurrentSizeRange(smallestSize, largestSize);
+        display.getRealSize(realSize);
+        // Lazy-initialize the dynamic grid
+        DeviceProfile grid = app.initDynamicGrid(this,
+                Math.min(smallestSize.x, smallestSize.y),
+                Math.min(largestSize.x, largestSize.y),
+                realSize.x, realSize.y);
+
+        // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
@@ -400,6 +413,7 @@ public class Launcher extends Activity
 
         checkForLocaleChange();
         setContentView(R.layout.launcher);
+        grid.layout(this);
         setupViews();
         showFirstRunWorkspaceCling();
 
@@ -1061,7 +1075,6 @@ public class Launcher extends Activity
         mLauncherView = findViewById(R.id.launcher);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mQsbDivider = findViewById(R.id.qsb_divider);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
@@ -2014,6 +2027,9 @@ public class Launcher extends Activity
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
         mWorkspace.addInScreen(newFolder, container, screenId, cellX, cellY, 1, 1,
                 isWorkspaceLocked());
+        // Force measure the new folder icon
+        CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
+        parent.getShortcutsAndWidgets().measureChild(newFolder);
         return newFolder;
     }
 
@@ -2784,11 +2800,6 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
-                    if (mWorkspace != null
-                            && !springLoaded
-                            && !LauncherAppState.getInstance().isScreenLarge()) {
-                        hideDockDivider();
-                    }
                     if (!animationCancelled) {
                         updateWallpaperVisibility(false);
                     }
@@ -2855,8 +2866,6 @@ public class Launcher extends Activity
             toView.bringToFront();
 
             if (!springLoaded && !LauncherAppState.getInstance().isScreenLarge()) {
-                hideDockDivider();
-
                 // Hide the search bar
                 if (mSearchDropTargetBar != null) {
                     mSearchDropTargetBar.hideSearchBar(false);
@@ -3008,9 +3017,6 @@ public class Launcher extends Activity
                 mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
             }
 
-            // We only need to animate in the dock divider if we're going from spring loaded mode
-            showDockDivider(animated && wasInSpringLoadedMode);
-
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
                 mAllAppsButton.requestFocus();
@@ -3056,7 +3062,6 @@ public class Launcher extends Activity
     void enterSpringLoadedDragMode() {
         if (isAllAppsVisible()) {
             hideAppsCustomizeHelper(State.APPS_CUSTOMIZE_SPRING_LOADED, true, true, null);
-            hideDockDivider();
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
     }
@@ -3091,33 +3096,6 @@ public class Launcher extends Activity
             mState = State.APPS_CUSTOMIZE;
         }
         // Otherwise, we are not in spring loaded mode, so don't do anything.
-    }
-
-    void hideDockDivider() {
-        if (mQsbDivider != null) {
-            mQsbDivider.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    void showDockDivider(boolean animated) {
-        if (mQsbDivider != null) {
-            mQsbDivider.setVisibility(View.VISIBLE);
-            if (mDividerAnimator != null) {
-                mDividerAnimator.cancel();
-                mQsbDivider.setAlpha(1f);
-                mDividerAnimator = null;
-            }
-            if (animated) {
-                mDividerAnimator = LauncherAnimUtils.createAnimatorSet();
-                mDividerAnimator.playTogether(LauncherAnimUtils.ofFloat(mQsbDivider, "alpha", 1f));
-                int duration = 0;
-                if (mSearchDropTargetBar != null) {
-                    duration = mSearchDropTargetBar.getTransitionInDuration();
-                }
-                mDividerAnimator.setDuration(duration);
-                mDividerAnimator.start();
-            }
-        }
     }
 
     void lockAllApps() {

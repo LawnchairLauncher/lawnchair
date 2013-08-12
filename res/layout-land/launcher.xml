@@ -36,28 +36,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:paddingStart="@dimen/workspace_left_padding"
-            android:paddingEnd="@dimen/workspace_right_padding"
-            android:paddingTop="@dimen/workspace_top_padding"
-            android:paddingBottom="@dimen/workspace_bottom_padding"
             launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
-            launcher:cellCountX="@integer/cell_count_x"
-            launcher:cellCountY="@integer/cell_count_y"
             launcher:pageSpacing="@dimen/workspace_page_spacing"
-            launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
-            launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height" />
-
-        <include
-            android:id="@+id/qsb_divider"
-            layout="@layout/workspace_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/qsb_bar_height"
-            android:layout_gravity="start" />
+            launcher:pageIndicator="@id/page_indicator" />
 
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
-            android:layout_width="@dimen/button_bar_height_plus_padding"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="end" />
 
@@ -84,16 +69,18 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
+        <!-- TODO: Fix
         <com.android.launcher3.DrawableStateProxyView
             android:id="@+id/voice_button_proxy"
-            android:layout_width="@dimen/qsb_bar_height"
-            android:layout_height="@dimen/app_icon_size"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="top|start"
             android:layout_marginTop="64dp"
             android:clickable="true"
             android:onClick="onClickVoiceButton"
             android:importantForAccessibility="no"
             launcher:sourceViewId="@+id/voice_button" />
+            -->
 
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"

@@ -13,11 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<ImageView
+<com.android.launcher3.Hotseat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingStart="@dimen/workspace_divider_padding_left"
-    android:paddingEnd="@dimen/workspace_divider_padding_right"
-    android:paddingTop="@dimen/workspace_divider_padding_top"
-    android:paddingBottom="@dimen/workspace_divider_padding_bottom"
-    android:scaleType="fitXY"
-    android:src="@drawable/hotseat_track_holo" />
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
+    <com.android.launcher3.CellLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+</com.android.launcher3.Hotseat>

@@ -59,11 +59,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         setAlwaysDrawnWithCacheEnabled(false);
 
         // setup default cell parameters
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         Resources resources = context.getResources();
-        mOriginalCellWidth = mCellWidth =
-            resources.getDimensionPixelSize(R.dimen.apps_customize_cell_width);
-        mOriginalCellHeight = mCellHeight =
-            resources.getDimensionPixelSize(R.dimen.apps_customize_cell_height);
+        mOriginalCellWidth = mCellWidth = grid.cellWidthPx;
+        mOriginalCellHeight = mCellHeight = grid.cellHeightPx;
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
         mOriginalWidthGap = mOriginalHeightGap = mWidthGap = mHeightGap = -1;

@@ -132,10 +132,18 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         }
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
-
+        icon.setClipToPadding(false);
         icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        // Offset the preview background to center this view accordingly
+        LinearLayout.LayoutParams lp =
+                (LinearLayout.LayoutParams) icon.mPreviewBackground.getLayoutParams();
+        lp.topMargin = grid.folderBackgroundOffset;
+        lp.width = grid.folderIconSizePx;
+        lp.height = grid.folderIconSizePx;
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
@@ -187,7 +195,10 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                     throw new RuntimeException("FolderRingAnimator loading drawables on non-UI thread "
                             + Thread.currentThread());
                 }
-                sPreviewSize = res.getDimensionPixelSize(R.dimen.folder_preview_size);
+
+                LauncherAppState app = LauncherAppState.getInstance();
+                DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+                sPreviewSize = grid.folderIconSizePx;
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
                 sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
                 sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_holo);
@@ -392,7 +403,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
-                    center[1] - animateView.getMeasuredHeight() / 2);
+                      center[1] - animateView.getMeasuredHeight() / 2);
 
             float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
@@ -430,10 +441,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize) {
+            LauncherAppState app = LauncherAppState.getInstance();
+            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
 
-            final int previewSize = FolderRingAnimator.sPreviewSize;
+            final int previewSize = mPreviewBackground.getLayoutParams().height;
             final int previewPadding = FolderRingAnimator.sPreviewPadding;
 
             mAvailableSpaceInPreview = (previewSize - 2 * previewPadding);
@@ -447,7 +461,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             mMaxPerspectiveShift = mBaselineIconSize * PERSPECTIVE_SHIFT_FACTOR;
 
             mPreviewOffsetX = (mTotalWidth - mAvailableSpaceInPreview) / 2;
-            mPreviewOffsetY = previewPadding;
+            mPreviewOffsetY = previewPadding + grid.folderBackgroundOffset;
         }
     }
 
@@ -494,7 +508,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         // We want to imagine our coordinates from the bottom left, growing up and to the
         // right. This is natural for the x-axis, but for the y-axis, we have to invert things.
-        float transY = mAvailableSpaceInPreview - (offset + scaledSize + scaleOffsetCorrection);
+        float transY = mAvailableSpaceInPreview - (offset + scaledSize + scaleOffsetCorrection) + getPaddingTop();
         float transX = offset + scaleOffsetCorrection;
         float totalScale = mBaselineIconScale * scale;
         final int overlayAlpha = (int) (80 * (1 - r));
@@ -569,7 +583,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         final float scale0 = 1.0f;
         final float transX0 = (mAvailableSpaceInPreview - d.getIntrinsicWidth()) / 2;
-        final float transY0 = (mAvailableSpaceInPreview - d.getIntrinsicHeight()) / 2;
+        final float transY0 = (mAvailableSpaceInPreview - d.getIntrinsicHeight()) / 2 + getPaddingTop();
         mAnimParams.drawable = d;
 
         ValueAnimator va = LauncherAnimUtils.ofFloat(this, 0f, 1.0f);

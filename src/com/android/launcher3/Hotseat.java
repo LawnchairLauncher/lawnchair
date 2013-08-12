@@ -37,11 +37,8 @@ public class Hotseat extends FrameLayout {
     @SuppressWarnings("unused")
     private static final String TAG = "Hotseat";
 
-    private Launcher mLauncher;
     private CellLayout mContent;
 
-    private int mCellCountX;
-    private int mCellCountY;
     private int mAllAppsButtonRank;
 
     private boolean mTransposeLayoutWithOrientation;
@@ -61,9 +58,6 @@ public class Hotseat extends FrameLayout {
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
         Resources r = context.getResources();
-        mCellCountX = a.getInt(R.styleable.Hotseat_cellCountX, -1);
-        mCellCountY = a.getInt(R.styleable.Hotseat_cellCountY, -1);
-        mAllAppsButtonRank = r.getInteger(R.integer.hotseat_all_apps_index);
         mTransposeLayoutWithOrientation = 
                 r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
@@ -71,7 +65,6 @@ public class Hotseat extends FrameLayout {
     }
 
     public void setup(Launcher launcher) {
-        mLauncher = launcher;
         setOnKeyListener(new HotseatIconKeyEventListener());
     }
 
@@ -101,10 +94,16 @@ public class Hotseat extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (mCellCountX < 0) mCellCountX = LauncherModel.getCellCountX();
-        if (mCellCountY < 0) mCellCountY = LauncherModel.getCellCountY();
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
+        mAllAppsButtonRank = (int) (grid.numHotseatIcons / 2);
         mContent = (CellLayout) findViewById(R.id.layout);
-        mContent.setGridSize(mCellCountX, mCellCountY);
+        if (grid.isLandscape && !grid.isLargeTablet()) {
+            mContent.setGridSize(1, (int) grid.numHotseatIcons);
+        } else {
+            mContent.setGridSize((int) grid.numHotseatIcons, 1);
+        }
         mContent.setIsHotseat(true);
 
         resetLayout();

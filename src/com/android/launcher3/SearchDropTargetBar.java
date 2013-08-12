@@ -99,7 +99,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDropTargetBar = findViewById(R.id.drag_target_bar);
         mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target_text);
         mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target_text);
-        mBarHeight = getResources().getDimensionPixelSize(R.dimen.qsb_bar_height);
 
         mInfoDropTarget.setSearchDropTargetBar(this);
         mDeleteDropTarget.setSearchDropTargetBar(this);
@@ -109,6 +108,9 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
 
         // Create the various fade animations
         if (mEnableDropDownDropTargets) {
+            LauncherAppState app = LauncherAppState.getInstance();
+            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            mBarHeight = grid.searchBarSpaceHeightPx;
             mDropTargetBar.setTranslationY(-mBarHeight);
             mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "translationY",
                     -mBarHeight, 0f);

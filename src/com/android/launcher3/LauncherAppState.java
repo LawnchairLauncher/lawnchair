@@ -21,11 +21,14 @@ import android.content.*;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.Display;
 
 import java.lang.ref.WeakReference;
 
 public class LauncherAppState {
+    private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
     private LauncherModel mModel;
@@ -40,6 +43,8 @@ public class LauncherAppState {
 
     private static Object mLock = new Object();
     private static LauncherAppState INSTANCE;
+
+    private DynamicGrid mDynamicGrid;
 
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
@@ -71,7 +76,7 @@ public class LauncherAppState {
         }
 
         // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
-        mIsScreenLarge = sContext.getResources().getBoolean(R.bool.is_large_screen);
+        mIsScreenLarge = sContext.getResources().getBoolean(R.bool.is_large_tablet);
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
 
         mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
@@ -156,6 +161,27 @@ public class LauncherAppState {
 
     public static String getSharedPreferencesKey() {
         return SHARED_PREFERENCES_KEY;
+    }
+
+    DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight, int width, int height) {
+        boolean created = false;
+        if (mDynamicGrid == null) {
+            mDynamicGrid = new DynamicGrid(context.getResources(),
+                    minWidth, minHeight, width, height);
+            created = true;
+        }
+
+        DeviceProfile grid = mDynamicGrid.getDeviceProfile();
+        if (created) {
+            LauncherModel.updateWorkspaceLayoutCells((int) grid.numColumns, (int) grid.numRows);
+        }
+        // Update the icon size
+        Utilities.setIconSize(grid.iconSizePx);
+        grid.updateFromConfiguration(context.getResources(), width, height);
+        return grid;
+    }
+    DynamicGrid getDynamicGrid() {
+        return mDynamicGrid;
     }
 
     public boolean isScreenLarge() {

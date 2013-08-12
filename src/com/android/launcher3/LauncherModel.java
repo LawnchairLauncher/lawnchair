@@ -1556,6 +1556,11 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
+        private boolean checkItemDimensions(ItemInfo info) {
+            return (info.cellX + info.spanX) > mCellCountX ||
+                    (info.cellY + info.spanY) > mCellCountY;
+        }
+
         // check & update map of what's occupied; used to discard overlapping/invalid items
         private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item) {
             long containerIndex = item.screenId;
@@ -1743,6 +1748,16 @@ public class LauncherModel extends BroadcastReceiver {
                                     info.screenId = c.getInt(screenIndex);
                                     info.cellX = c.getInt(cellXIndex);
                                     info.cellY = c.getInt(cellYIndex);
+                                    info.spanX = 1;
+                                    info.spanY = 1;
+                                    // Skip loading items that are out of bounds
+                                    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                        if (checkItemDimensions(info)) {
+                                            Log.d(TAG, "Skipped loading out of bounds shortcut: "
+                                                    + info.intent);
+                                            continue;
+                                        }
+                                    }
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, info)) {
                                         break;
@@ -1781,11 +1796,22 @@ public class LauncherModel extends BroadcastReceiver {
                                 folderInfo.screenId = c.getInt(screenIndex);
                                 folderInfo.cellX = c.getInt(cellXIndex);
                                 folderInfo.cellY = c.getInt(cellYIndex);
+                                folderInfo.spanX = 1;
+                                folderInfo.spanY = 1;
 
+                                // Skip loading items that are out of bounds
+                                if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                    int iconSpan = 1;
+                                    if (checkItemDimensions(folderInfo)) {
+                                        Log.d(TAG, "Skipped loading out of bounds folder");
+                                        continue;
+                                    }
+                                }
                                 // check & update map of what's occupied
                                 if (!checkItemPlacement(occupied, folderInfo)) {
                                     break;
                                 }
+
                                 switch (container) {
                                     case LauncherSettings.Favorites.CONTAINER_DESKTOP:
                                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
@@ -1834,6 +1860,13 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
 
                                     appWidgetInfo.container = c.getInt(containerIndex);
+                                    // Skip loading items that are out of bounds
+                                    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                        if (checkItemDimensions(appWidgetInfo)) {
+                                            Log.d(TAG, "Skipped loading out of bounds app widget");
+                                            continue;
+                                        }
+                                    }
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, appWidgetInfo)) {
                                         break;

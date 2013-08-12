@@ -1,6 +1,7 @@
 <resources>
     <bool name="config_largeHeap">false</bool>
-    <bool name="is_large_screen">false</bool>
+    <bool name="is_tablet">false</bool>
+    <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
 
     <!-- Max number of page indicators to show -->
@@ -40,7 +41,7 @@
 
 <!-- Workspace -->
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
-    <bool name="config_useDropTargetDownTransition">true</bool>
+    <bool name="config_useDropTargetDownTransition">false</bool>
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceFadeAdjacentScreens">false</bool>
 
@@ -72,25 +73,11 @@
     <!-- Camera distance for the overscroll effect -->
     <integer name="config_cameraDistance">6500</integer>
 
-    <!-- Folder max bounds and max number of items. Note: folder_max_count_x * folder_max_count_y
-         >= folder_max_num_items. If any values are set to 0, the values will be determined automatically.
-         A value of -1 indicates unbounded -->
-    <integer name="folder_max_count_x">4</integer>
-    <integer name="folder_max_count_y">-1</integer>
-    <integer name="folder_max_num_items">-1</integer>
-
-    <integer name="cell_count_x">4</integer>
-    <integer name="cell_count_y">4</integer>
-
     <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
     <bool name="config_useCustomClings">false</bool>
 
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
-    <integer name="hotseat_cell_count">5</integer>
-    <integer name="hotseat_all_apps_index">2</integer>
-    <!-- must be between 0 and 100 -->
-    <integer name="hotseat_item_scale_percentage">100</integer>
 
     <!-- Memory debugging, including a memory dump icon -->
     <bool name="debug_memory_enabled">true</bool>

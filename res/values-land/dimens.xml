@@ -20,39 +20,9 @@
     <dimen name="toolbar_button_horizontal_padding">0dip</dimen>
 
 <!-- Workspace -->
-    <dimen name="hotseat_cell_width">64dp</dimen>
-    <dimen name="hotseat_cell_height">58dp</dimen>
     <!-- We really want the page spacing to be the max of either the button bar
      height or the qsb bar height -->
     <dimen name="workspace_page_spacing">-1dp</dimen>
-    <dimen name="workspace_divider_padding_left">0dp</dimen>
-    <dimen name="workspace_divider_padding_right">0dp</dimen>
-    <dimen name="workspace_divider_padding_top">12dp</dimen>
-    <dimen name="workspace_divider_padding_bottom">12dp</dimen>
-
-    <!-- Block spacing on each side of the screen.  And also padding
-         for the portals to look right. -->
-    <dimen name="cell_layout_left_padding">@dimen/cell_layout_left_padding_land</dimen>
-    <dimen name="cell_layout_right_padding">@dimen/cell_layout_right_padding_land</dimen>
-    <dimen name="cell_layout_top_padding">@dimen/cell_layout_top_padding_land</dimen>
-    <dimen name="cell_layout_bottom_padding">@dimen/cell_layout_bottom_padding_land</dimen>
-    <!-- Workspace padding -->
-    <dimen name="workspace_left_padding">@dimen/workspace_left_padding_land</dimen>
-    <dimen name="workspace_right_padding">@dimen/workspace_right_padding_land</dimen>
-    <dimen name="workspace_top_padding">@dimen/workspace_top_padding_land</dimen>
-    <dimen name="workspace_bottom_padding">@dimen/workspace_bottom_padding_land</dimen>
-
-    <dimen name="app_icon_padding_top">6dp</dimen>
-
-    <!-- height of the bottom row of controls -->
-    <dimen name="button_bar_height">68dip</dimen>
-    <!-- Because portal animations go beyond the bounds of an icon, we need
-         to make the dock layout slightly larger than the button_bar_height -->
-    <dimen name="button_bar_height_top_padding">8dp</dimen>
-    <dimen name="button_bar_height_bottom_padding">0dp</dimen>
-    <dimen name="button_bar_width_left_padding">0dp</dimen>
-    <dimen name="button_bar_width_right_padding">0dp</dimen>
-    <dimen name="button_bar_height_plus_padding">76dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">80dp</dimen>
@@ -71,14 +41,4 @@
     <integer name="apps_customize_widget_cell_count_y">2</integer>
     <integer name="apps_customize_cling_focused_x">2</integer>
     <integer name="apps_customize_cling_focused_y">1</integer>
-
-<!-- Folders -->
-    <!-- The size of the image which sits behind the preview of the folder contents -->
-    <dimen name="folder_preview_size">58dp</dimen>
-
-<!-- Workspace cell size -->
-    <dimen name="workspace_cell_width">@dimen/workspace_cell_width_land</dimen>
-    <dimen name="workspace_cell_height">@dimen/workspace_cell_height_land</dimen>
-    <dimen name="workspace_width_gap">@dimen/workspace_width_gap_land</dimen>
-    <dimen name="workspace_height_gap">@dimen/workspace_height_gap_land</dimen>
 </resources>
