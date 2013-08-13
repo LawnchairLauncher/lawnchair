@@ -1434,6 +1434,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Ensure that all the applications that are in the system are represented on the home
             // screen.
+            Log.d(TAG, "10249126 - verifyApplications(" + isUpgrade + ")");
             if (!isUpgrade) {
                 verifyApplications();
             }
@@ -1497,6 +1498,7 @@ public class LauncherModel extends BroadcastReceiver {
             synchronized (sBgLock) {
                 for (ApplicationInfo app : mBgAllAppsList.data) {
                     tmpInfos = getItemInfoForComponentName(app.componentName);
+                    Log.d(TAG, "10249126 - \t" + app.componentName.getPackageName() + ", " + tmpInfos.isEmpty());
                     if (tmpInfos.isEmpty()) {
                         // We are missing an application icon, so add this to the workspace
                         added.add(app);
