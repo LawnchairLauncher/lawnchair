@@ -22,9 +22,9 @@
         launcher:packageName="com.andrew.apollo"
         launcher:className="com.andrew.apollo.appwidgets.AppWidgetLarge"
         launcher:screen="1"
-        launcher:x="1"
+        launcher:x="0"
         launcher:y="0"
-        launcher:spanX="4"
+        launcher:spanX="6"
         launcher:spanY="2" />
 
     <!-- Middle screen [2] -->
@@ -32,7 +32,7 @@
         launcher:packageName="com.cyanogenmod.lockclock"
         launcher:className="com.cyanogenmod.lockclock.ClockWidgetProvider"
         launcher:screen="2"
-        launcher:x="0"
+        launcher:x="1"
         launcher:y="0"
         launcher:spanX="4"
         launcher:spanY="3" />
@@ -48,14 +48,14 @@
         launcher:packageName="com.android.gallery3d"
         launcher:className="com.android.gallery3d.app.Gallery"
         launcher:screen="3"
-        launcher:x="1"
-        launcher:y="3" />
+        launcher:x="2"
+        launcher:y="5" />
     <favorite
         launcher:packageName="com.android.settings"
         launcher:className="com.android.settings.Settings"
         launcher:screen="3"
-        launcher:x="2"
-        launcher:y="3" />
+        launcher:x="3"
+        launcher:y="5" />
 
     <!-- Far-right screen [4] -->
 
