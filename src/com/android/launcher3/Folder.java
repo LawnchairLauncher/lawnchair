@@ -691,6 +691,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             } else {
                 mDragMode = DRAG_MODE_NONE;
             }
+        } else {
+            mReorderAlarm.cancelAlarm();
         }
     }
 

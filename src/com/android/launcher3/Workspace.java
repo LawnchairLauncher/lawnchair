@@ -3815,12 +3815,11 @@ public class Workspace extends SmoothPagedView
         }
 
         boolean result = false;
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!isSmall() && !mIsSwitchingState && getOpenFolder() == null) {
             mInScrollArea = true;
 
             final int page = getNextPage() +
                        (direction == DragController.SCROLL_LEFT ? -1 : 1);
-
             // We always want to exit the current layout to ensure parity of enter / exit
             setCurrentDropLayout(null);
 

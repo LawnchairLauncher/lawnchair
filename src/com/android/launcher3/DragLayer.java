@@ -779,7 +779,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
         if (mInScrollArea && !LauncherAppState.getInstance().isScreenLarge()) {
             Workspace workspace = mLauncher.getWorkspace();
-            int width = workspace.getWidth();
+            int width = getMeasuredWidth();
             Rect childRect = new Rect();
             getDescendantRectRelativeToSelf(workspace.getChildAt(0), childRect);
 
