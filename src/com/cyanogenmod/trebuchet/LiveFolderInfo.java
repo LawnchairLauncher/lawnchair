@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 /**
@@ -70,14 +71,18 @@ class LiveFolderInfo extends FolderInfo {
         }
     }
 
-    public void populateWithItems(ArrayList<LiveFolder.Item> items) {
+    public void populateWithItems(Context ctx, ArrayList<LiveFolder.Item> items) {
         lastUpdate = System.currentTimeMillis();
         removeAll();
+        Bitmap icon = null;
         for (LiveFolder.Item item : items) {
             LiveFolderItemInfo cInfo = new LiveFolderItemInfo();
             cInfo.title = item.getLabel();
             cInfo.intent = item.getIntent();
-            cInfo.setIcon(item.getIcon());
+            icon = item.getIcon();
+            if (icon != null) {
+                cInfo.setIcon(Utilities.createIconBitmap(icon, ctx));
+            }
             cInfo.item_id = item.getId();
             cInfo.container = id;
             add(cInfo);

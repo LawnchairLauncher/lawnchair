@@ -73,7 +73,7 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
                         return;
                     }
 
-                    fInfo.populateWithItems(items);
+                    fInfo.populateWithItems(context, items);
 
                     // Update folder title provided
                     if (intent.hasExtra(LiveFolder.Constants.FOLDER_TITLE_EXTRA)) {
@@ -92,7 +92,7 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
                         LiveFolderInfo fInfo = (LiveFolderInfo) info;
 
                         if (fInfo.isOwner(context, getSendingPackage(intent))) {
-                            fInfo.populateWithItems(items);
+                            fInfo.populateWithItems(context, items);
                         }
                     }
                 }
