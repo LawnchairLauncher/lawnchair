@@ -17,6 +17,8 @@
 package com.android.launcher3;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
@@ -86,6 +88,8 @@ public class Workspace extends SmoothPagedView
     private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
     private static final int FLING_THRESHOLD_VELOCITY = 500;
+
+    private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
     // These animators are used to fade the children's outlines
     private ObjectAnimator mChildrenOutlineFadeInAnimation;
@@ -160,6 +164,7 @@ public class Workspace extends SmoothPagedView
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
+    private float mOverviewModeShrinkFactor;
 
     private static final int DEFAULT_CELL_COUNT_X = 4;
     private static final int DEFAULT_CELL_COUNT_Y = 4;
@@ -167,7 +172,7 @@ public class Workspace extends SmoothPagedView
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
-    enum State { NORMAL, SPRING_LOADED, SMALL };
+    enum State { NORMAL, SPRING_LOADED, SMALL, OVERVIEW};
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
 
@@ -331,13 +336,14 @@ public class Workspace extends SmoothPagedView
 
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
+        mOverviewModeShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
 
         // if the value is manually specified, use that instead
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
         cellCountY = a.getInt(R.styleable.Workspace_cellCountY, cellCountY);
         mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
-
         a.recycle();
 
         setOnHierarchyChangeListener(this);
@@ -519,6 +525,7 @@ public class Workspace extends SmoothPagedView
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
         newScreen.setOnLongClickListener(mLongClickListener);
+        newScreen.setOnClickListener(mLauncher);
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
@@ -772,7 +779,8 @@ public class Workspace extends SmoothPagedView
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return (isSmall() || !isFinishedSwitchingState());
+        return (isSmall() || !isFinishedSwitchingState())
+                || (!isSmall() && indexOfChild(v) != mCurrentPage);
     }
 
     public boolean isSwitchingState() {
@@ -821,11 +829,6 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
-
-        if (mLauncher != null && mLauncher.onTouch(this, ev)) {
-            return true;
-        }
-
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -854,7 +857,6 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
-        if (isSmall()) return;
         if (!isFinishedSwitchingState()) return;
 
         float deltaX = Math.abs(ev.getX() - mXDown);
@@ -1326,11 +1328,9 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateStateForCustomContent(int screenCenter) {
-        if (hasCustomContent()) {
+        if (hasCustomContent() && !isSmall() && !isSwitchingState()) {
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
-
             int scrollDelta = getScrollForPage(index + 1) - getScrollX();
-
             float progress = (1.0f * scrollDelta) /
                     (getScrollForPage(index + 1) - getScrollForPage(index));
             progress = Math.max(0, progress);
@@ -1349,7 +1349,14 @@ public class Workspace extends SmoothPagedView
                 mLauncher.getHotseat().setAlpha(1 - progress);
             }
             if (getPageIndicator() != null) {
-                getPageIndicator().setAlpha(1 - progress);
+                final float alpha = 1 - progress;
+                final View pi = getPageIndicator();
+                getPageIndicator().setAlpha(alpha);
+                if (alpha < ALPHA_CUTOFF_THRESHOLD && pi.getVisibility() != INVISIBLE) {
+                    pi.setVisibility(INVISIBLE);
+                } else if (alpha > ALPHA_CUTOFF_THRESHOLD && pi.getVisibility() != VISIBLE) {
+                    pi.setVisibility(VISIBLE);
+                }
             }
         }
     }
@@ -1486,7 +1493,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean isSmall() {
-        return mState == State.SMALL || mState == State.SPRING_LOADED;
+        return mState == State.SMALL || mState == State.SPRING_LOADED || mState == State.OVERVIEW;
     }
 
     void enableChildrenCache(int fromPage, int toPage) {
@@ -1520,9 +1527,8 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-
     private void updateChildrenLayersEnabled(boolean force) {
-        boolean small = mState == State.SMALL || mIsSwitchingState;
+        boolean small = mState == State.SMALL || mState == State.OVERVIEW || mIsSwitchingState;
         boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageMoving();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
@@ -1694,10 +1700,11 @@ public class Workspace extends SmoothPagedView
     }
 
     Animator getChangeStateAnimation(final State state, boolean animated) {
-        return getChangeStateAnimation(state, animated, 0);
+        return getChangeStateAnimation(state, animated, 0, -1);
     }
 
-    void getReorderablePages(int[] range) {
+    @Override
+    protected void getOverviewModePages(int[] range) {
         int count = mScreenOrder.size();
 
         int start = -1;
@@ -1746,7 +1753,43 @@ public class Workspace extends SmoothPagedView
         setLayoutTransition(mLayoutTransition);
     }
 
-    Animator getChangeStateAnimation(final State state, boolean animated, int delay) {
+    public boolean isInOverviewMode() {
+        return mState == State.OVERVIEW;
+    }
+
+    public void enterOverviewMode() {
+        enableOverviewMode(true, -1);
+    }
+
+    public void exitOverviewMode() {
+        exitOverviewMode(-1);
+    }
+
+    public void exitOverviewMode(int snapPage) {
+        enableOverviewMode(false, snapPage);
+    }
+
+    private void enableOverviewMode(boolean enable, int snapPage) {
+        State finalState = Workspace.State.OVERVIEW;
+        if (!enable) {
+            finalState = Workspace.State.NORMAL;
+        }
+
+        Animator workspaceAnim = getChangeStateAnimation(finalState, true, 0, snapPage);
+        workspaceAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator arg0) {
+                mIsSwitchingState = false;
+            }
+            @Override
+            public void onAnimationStart(Animator arg0) {
+                mIsSwitchingState = true;
+            }
+        });
+        workspaceAnim.start();
+    }
+
+    Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
         if (mState == state) {
             return null;
         }
@@ -1756,23 +1799,37 @@ public class Workspace extends SmoothPagedView
 
         AnimatorSet anim = animated ? LauncherAnimUtils.createAnimatorSet() : null;
 
-        // Stop any scrolling, move to the current page right away
-        setCurrentPage(getNextPage());
-
         final State oldState = mState;
         final boolean oldStateIsNormal = (oldState == State.NORMAL);
         final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
         final boolean oldStateIsSmall = (oldState == State.SMALL);
+        final boolean oldStateIsOverview = (oldState == State.OVERVIEW);
         mState = state;
         final boolean stateIsNormal = (state == State.NORMAL);
         final boolean stateIsSpringLoaded = (state == State.SPRING_LOADED);
         final boolean stateIsSmall = (state == State.SMALL);
+        final boolean stateIsOverview = (state == State.OVERVIEW);
         float finalBackgroundAlpha = stateIsSpringLoaded ? 1.0f : 0f;
+        float finalHotseatAndPageIndicatorAlpha = (stateIsOverview || stateIsSmall) ? 0f : 1f;
+        float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
+
         boolean zoomIn = true;
         mNewScale = 1.0f;
 
+        if (oldStateIsOverview) {
+            disableFreeScroll(snapPage);
+        } else if (stateIsOverview) {
+            enableFreeScroll();
+        }
+
         if (state != State.NORMAL) {
-            mNewScale = mSpringLoadedShrinkFactor - (stateIsSmall ? 0.1f : 0);
+            if (stateIsSpringLoaded) {
+                mNewScale = mSpringLoadedShrinkFactor;
+            } else if (stateIsOverview) {
+                mNewScale = mOverviewModeShrinkFactor;
+            } else if (stateIsSmall){
+                mNewScale = mOverviewModeShrinkFactor - 0.1f;
+            }
             if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
                 updateChildrenLayersEnabled(false);
@@ -1856,7 +1913,24 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             }
+            ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(mLauncher.getHotseat(), "alpha",
+                    finalHotseatAndPageIndicatorAlpha);
+            ObjectAnimator pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
+                    finalHotseatAndPageIndicatorAlpha);
+            ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
+                    "alpha", finalOverviewPanelAlpha);
+            overviewPanelAlpha.addUpdateListener(new AlphaUpdateListener(
+                    mLauncher.getOverviewPanel()));
+            hotseatAlpha.addUpdateListener(new AlphaUpdateListener(mLauncher.getHotseat()));
+            pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
+            anim.play(overviewPanelAlpha);
+            anim.play(hotseatAlpha);
+            anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
+        } else {
+            mLauncher.getOverviewPanel().setAlpha(finalOverviewPanelAlpha);
+            mLauncher.getHotseat().setAlpha(finalHotseatAndPageIndicatorAlpha);
+            getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
         }
 
         if (stateIsSpringLoaded) {
@@ -1870,6 +1944,24 @@ public class Workspace extends SmoothPagedView
             animateBackgroundGradient(0f, true);
         }
         return anim;
+    }
+
+    class AlphaUpdateListener implements AnimatorUpdateListener {
+        View view;
+        public AlphaUpdateListener(View v) {
+            view = v;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator arg0) {
+            if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != INVISIBLE) {
+                view.setVisibility(INVISIBLE);
+            } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
+                    && view.getVisibility() != VISIBLE) {
+                view.setVisibility(VISIBLE);
+            }
+        }
+
     }
 
     @Override

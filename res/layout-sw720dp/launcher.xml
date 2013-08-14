@@ -30,16 +30,6 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <!-- Keep these behind the workspace so that they are not visible when
-             we go into AllApps -->
-        <include
-            android:id="@+id/page_indicator"
-            layout="@layout/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/button_bar_height_plus_padding" />
-
         <!-- The workspace contains 5 screens of cells -->
         <com.android.launcher3.Workspace
             android:id="@+id/workspace"
@@ -68,6 +58,20 @@
         <include
             android:id="@+id/qsb_bar"
             layout="@layout/qsb_bar" />
+
+        <include layout="@layout/overview_panel"
+            android:id="@+id/overview_panel"
+            android:visibility="gone" />
+
+        <!-- Keep these behind the workspace so that they are not visible when
+             we go into AllApps -->
+        <include
+            android:id="@+id/page_indicator"
+            layout="@layout/page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/button_bar_height_plus_padding" />
 
         <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
              that it is still visible during the transition to AllApps and doesn't overlay on
