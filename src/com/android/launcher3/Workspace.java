@@ -103,6 +103,10 @@ public class Workspace extends SmoothPagedView
     boolean mDrawBackground = true;
     private float mBackgroundAlpha = 0;
 
+    private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
+    private long mTouchDownTime = -1;
+    private long mCustomContentShowTime = -1;
+
     private LayoutTransition mLayoutTransition;
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
@@ -819,6 +823,7 @@ public class Workspace extends SmoothPagedView
         case MotionEvent.ACTION_DOWN:
             mXDown = ev.getX();
             mYDown = ev.getY();
+            mTouchDownTime = System.currentTimeMillis();
             break;
         case MotionEvent.ACTION_POINTER_UP:
         case MotionEvent.ACTION_UP:
@@ -859,16 +864,26 @@ public class Workspace extends SmoothPagedView
     protected void determineScrollingStart(MotionEvent ev) {
         if (!isFinishedSwitchingState()) return;
 
-        float deltaX = Math.abs(ev.getX() - mXDown);
-        float deltaY = Math.abs(ev.getY() - mYDown);
+        float deltaX = ev.getX() - mXDown;
+        float absDeltaX = Math.abs(deltaX);
+        float absDeltaY = Math.abs(ev.getY() - mYDown);
 
-        if (Float.compare(deltaX, 0f) == 0) return;
+        if (Float.compare(absDeltaX, 0f) == 0) return;
 
-        float slope = deltaY / deltaX;
+        float slope = absDeltaY / absDeltaX;
         float theta = (float) Math.atan(slope);
 
-        if (deltaX > mTouchSlop || deltaY > mTouchSlop) {
+        if (absDeltaX > mTouchSlop || absDeltaY > mTouchSlop) {
             cancelCurrentPageLongPress();
+        }
+
+        boolean passRightSwipesToCustomContent =
+                (mTouchDownTime - mCustomContentShowTime) > CUSTOM_CONTENT_GESTURE_DELAY;
+
+        if (deltaX > 0 && getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID
+                && passRightSwipesToCustomContent) {
+            // Pass swipes to the right to the custom content page.
+            return;
         }
 
         if (theta > MAX_SWIPE_ANGLE) {
@@ -961,6 +976,7 @@ public class Workspace extends SmoothPagedView
             mCustomContentShowing = true;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onShow();
+                mCustomContentShowTime = System.currentTimeMillis();
             }
         } else if (hasCustomContent() && getNextPage() != 0 && mCustomContentShowing) {
             mCustomContentShowing = false;
