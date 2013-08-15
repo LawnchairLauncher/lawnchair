@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -31,14 +30,11 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -61,12 +57,10 @@ import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -545,11 +539,11 @@ public class Workspace extends SmoothPagedView
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
-        Rect p = new Rect();
-        AppWidgetHostView.getDefaultPaddingForWidget(mLauncher, mLauncher.getComponentName(), p);
-
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
+
+        // We want no padding on the custom content
+        customScreen.setPadding(0, 0, 0, 0);
 
         addFullScreenPage(customScreen);
 
