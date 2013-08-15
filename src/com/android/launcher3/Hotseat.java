@@ -126,7 +126,7 @@ public class Hotseat extends FrameLayout {
         fi.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
         fi.screenId = mAllAppsButtonRank;
         fi.itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-        fi.title = "All Apps";
+        fi.title = "More Apps";
         LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screenId, fi.cellX,
                 fi.cellY, false);
         FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
@@ -137,7 +137,7 @@ public class Hotseat extends FrameLayout {
         for (ApplicationInfo info: allApps) {
             ComponentName cn = info.intent.getComponent();
             if (!onWorkspace.contains(cn)) {
-                Log.d(TAG, "Adding to all apps: " + info.intent);
+                Log.d(TAG, "Adding to 'more apps': " + info.intent);
                 ShortcutInfo si = info.makeShortcut();
                 fi.add(si);
             }
