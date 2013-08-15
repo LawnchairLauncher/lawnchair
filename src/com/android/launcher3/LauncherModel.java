@@ -67,6 +67,10 @@ public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = false;
     static final String TAG = "Launcher.Model";
 
+    // true = use a "More Apps" folder for non-workspace apps on upgrade
+    // false = strew non-workspace apps across the workspace on upgrade
+    public static final boolean UPGRADE_USE_MORE_APPS_FOLDER = false;
+
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private final boolean mAppsCanBeOnRemoveableStorage;
 
@@ -1473,8 +1477,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Ensure that all the applications that are in the system are represented on the home
             // screen.
-            Log.w(TAG, "10249126 - verifyApplications(" + isUpgrade + ")");
-            if (!isUpgrade) {
+            Log.w(TAG, "10249126 - verifyApplications - useMoreApps="
+                    + UPGRADE_USE_MORE_APPS_FOLDER + " isUpgrade=" + isUpgrade);
+            if (!UPGRADE_USE_MORE_APPS_FOLDER || !isUpgrade) {
                 verifyApplications();
             }
 
