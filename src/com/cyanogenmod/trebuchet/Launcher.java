@@ -4320,11 +4320,30 @@ public final class Launcher extends Activity
             removeCling(R.id.all_apps_sort_cling);
         }
     }
-    public Cling showFirstRunFoldersCling() {
+    public Cling showFirstRunFoldersCling(boolean isLiveFolder) {
+        String key = null;
+        if (isLiveFolder) {
+            key = Cling.LIVE_FOLDER_CLING_DISMISSED_KEY;
+        } else {
+            key = Cling.FOLDER_CLING_DISMISSED_KEY;
+        }
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
-            return initCling(R.id.folder_cling, null, true, 0);
+                !mSharedPrefs.getBoolean(key, false)) {
+            Cling cling = initCling(R.id.folder_cling, null, true, 0);
+            cling.findViewById(R.id.cling_dismiss).setTag(isLiveFolder);
+            int titleRes = 0;
+            int textRes = 0;
+            if (isLiveFolder) {
+                titleRes = R.string.live_folder_cling_title;
+                textRes = R.string.live_folder_cling_create_folder;
+            } else {
+                titleRes = R.string.folder_cling_title;
+                textRes = R.string.folder_cling_create_folder;
+            }
+            ((TextView) cling.findViewById(R.id.folder_cling_title)).setText(titleRes);
+            ((TextView) cling.findViewById(R.id.folder_cling_text)).setText(textRes);
+            return cling;
         } else {
             removeCling(R.id.folder_cling);
             return null;
@@ -4347,8 +4366,17 @@ public final class Launcher extends Activity
         dismissCling(cling, Cling.ALLAPPS_SORT_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
     }
     public void dismissFolderCling(View v) {
-        Cling cling = (Cling) findViewById(R.id.folder_cling);
-        dismissCling(cling, Cling.FOLDER_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+        if (v != null && v.getTag() != null) {
+            Cling cling = (Cling) findViewById(R.id.folder_cling);
+            Boolean isLiveFolder = (Boolean) v.getTag();
+            String key = null;
+            if (isLiveFolder) {
+                key = Cling.LIVE_FOLDER_CLING_DISMISSED_KEY;
+            } else {
+                key = Cling.FOLDER_CLING_DISMISSED_KEY;
+            }
+            dismissCling(cling, key, DISMISS_CLING_DURATION);
+        }
     }
 
     public boolean preferencesChanged() {

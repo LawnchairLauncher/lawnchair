@@ -39,6 +39,7 @@ public class Cling extends FrameLayout {
     static final String ALLAPPS_CLING_DISMISSED_KEY = "cling.allapps.dismissed";
     static final String ALLAPPS_SORT_CLING_DISMISSED_KEY = "cling.allappssort.dismissed";
     static final String FOLDER_CLING_DISMISSED_KEY = "cling.folder.dismissed";
+    static final String LIVE_FOLDER_CLING_DISMISSED_KEY = "cling.live_folder.dismissed";
 
     private static String WORKSPACE_PORTRAIT = "workspace_portrait";
     private static String WORKSPACE_LANDSCAPE = "workspace_landscape";
