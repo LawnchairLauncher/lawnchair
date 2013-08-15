@@ -192,6 +192,7 @@ public class Launcher extends Activity
             "com.android.launcher.toolbar_voice_search_icon";
 
     public static final String SHOW_WEIGHT_WATCHER = "debug.show_mem";
+    public static final boolean SHOW_WEIGHT_WATCHER_DEFAULT = false;
 
     /** The different states that Launcher can be in. */
     private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
@@ -3537,7 +3538,7 @@ public class Launcher extends Activity
     private boolean shouldShowWeightWatcher() {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
-        boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, true);
+        boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, SHOW_WEIGHT_WATCHER_DEFAULT);
 
         return show;
     }
