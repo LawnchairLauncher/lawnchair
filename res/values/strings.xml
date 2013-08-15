@@ -46,10 +46,11 @@
          in the Phone UI. [CHAR LIMIT=32] -->
     <string name="market">Shop</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
-    <string name="widget_dims_format" translatable="false">%1$d x %2$d</string>
+    <!-- There is a special version of this format string for Farsi -->
+    <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
 
     <!-- External-drop widget pick label format string [CHAR_LIMIT=25] -->
-    <string name="external_drop_widget_pick_format" translatable="false">%1$s (%2$d x %3$d)</string>
+    <string name="external_drop_widget_pick_format" translatable="false">%1$s (%2$d \u00d7 %3$d)</string>
     <!-- External-drop widget error string.  This is the error that is shown
          when you drag and item into the homescreen and it is unable to fit,
          or an error is encountered. [CHAR_LIMIT=50] -->
