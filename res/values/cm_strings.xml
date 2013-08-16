@@ -161,6 +161,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Lock shortcuts and folders positions in the homescreen, dock and apps and widgets drawer</string>
     <string name="preferences_interface_general_fullscreen_title">Fullscreen mode</string>
     <string name="preferences_interface_general_fullscreen_summary">Hide the status bar to extend the homescreen</string>
+    <string name="folder_empty_contents_title">No items found</string>
 
     <!-- Effects -->
     <string name="effects_standard">Standard</string>
