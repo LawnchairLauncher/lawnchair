@@ -1123,7 +1123,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             findAndSetEmptyCells(item);
         }
         createAndAddShortcut(item);
-        if (item instanceof LiveFolderItemInfo) {
+        if (!(item instanceof LiveFolderItemInfo)) {
             LauncherModel.addOrMoveItemInDatabase(
                     mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
         }
