@@ -89,6 +89,7 @@
     <declare-styleable name="HolographicLinearLayout">
         <!-- The source view to generate and apply the drawable states to/from -->
         <attr name="sourceImageViewId" format="integer" />
+        <attr name="stateHotwordOn" format="boolean" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
