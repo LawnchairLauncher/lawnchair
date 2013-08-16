@@ -87,6 +87,18 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
         return false;
     }
 
+    public boolean onTouchEvent(MotionEvent ev) {
+        // If the widget does not handle touch, then cancel
+        // long press when we release the touch
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mLongPressHelper.cancelLongPress();
+                break;
+        }
+        return false;
+    }
+
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
