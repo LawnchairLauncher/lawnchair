@@ -481,7 +481,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
                 setLayerType(LAYER_TYPE_NONE, null);
-                Cling cling = mLauncher.showFirstRunFoldersCling();
+                Cling cling = mLauncher.showFirstRunFoldersCling(mInfo instanceof LiveFolderInfo);
                 if (cling != null) {
                     cling.bringToFront();
                 }
