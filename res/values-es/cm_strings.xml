@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,13 +14,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="menu">Menú</string>
     <string name="cancel_target_label">Cancelar</string>
     <string name="edit_target_label">Editar</string>
-    <string name="menu_lock_workspace">Bloquear escritorio</string>
-    <string name="menu_unlock_workspace">Desbloquear escritorio</string>
+    <string name="menu_lock_workspace">Bloquear pantalla</string>
+    <string name="menu_unlock_workspace">Desbloquear pantalla</string>
     <string name="menu_preferences">Ajustes de Trebuchet</string>
     <string name="menu_apps_sort_title">Nombre</string>
     <string name="menu_apps_sort_install_date">Fecha</string>
@@ -29,7 +30,7 @@
     <string name="all_apps_sort_cling_title">Ordenar aplicaciones</string>
     <string name="all_apps_sort_cling_add_item">Mantener pulsación sobre la pestaña Aplicaciones para elegir el método de ordenación</string>
     <string name="hidden_apps_title">Aplicaciones ocultas</string>
-    <string name="workspace_locked">El escritorio está bloqueado. Accede a ajustes para permitir reorganizarlo</string>
+    <string name="workspace_locked">La pantalla de inicio está bloqueada. Accede a ajustes para permitir su reorganización</string>
     <string name="preferences_title">Preferencias</string>
     <string name="preferences_interface_title">Interfaz</string>
     <string name="preferences_application_title">Aplicación</string>
@@ -54,7 +55,7 @@
     <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efecto de transición</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efecto de transición al desplazarse entre pantallas</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Desplazar fondo</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Desplazar fondo de escritorio al desplazar las pantallas de inicio</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Desplazar el fondo de la pantalla de inicio al desplazarse entre las pantallas</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Renderizado rápido</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Usar el renderizado rápido, suaviza los fondos de pantalla con imágenes estáticas</string>
     <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Tamaño del fondo</string>
@@ -78,9 +79,9 @@
     <string name="preferences_interface_drawer_hidden_apps_title">Aplicaciones ocultas</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Establecer las aplicaciones que se ocultarán en la pestaña aplicaciones</string>
     <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Ocultar iconos</string>
-    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Quitar del escritorio los iconos de las aplicaciones ocultas</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Quitar de la pantalla de inicio los iconos de las aplicaciones ocultas</string>
     <string name="preferences_interface_drawer_hidden_apps_widgets_title">Ocultar widgets</string>
-    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Quitar del escritorio los widgets de las aplicaciones ocultas</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Quitar de la pantalla de inicio los widgets de las aplicaciones ocultas</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Transición entre pestañas</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Pasar de la pestaña Aplicaciones a la pestaña Widgets automáticamente</string>
@@ -114,8 +115,8 @@
     <string name="preferences_interface_icons_title">Iconos</string>
     <string name="preferences_interface_general_title">General</string>
     <string name="preferences_interface_general_orientation_title">Rotación automática pantalla</string>
-    <string name="preferences_interface_general_lock_workspace_title">Bloquear escritorio</string>
-    <string name="preferences_interface_general_lock_workspace_summary">Bloquear la posición de carpetas y accesos directos en el escritorio, incluyendo los widgets y la barra de aplicaciones</string>
+    <string name="preferences_interface_general_lock_workspace_title">Bloquear pantalla</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Bloquear la posición de carpetas y accesos directos de la pantalla de inicio, incluyendo los widgets y la barra de aplicaciones</string>
     <string name="preferences_interface_general_fullscreen_title">Modo pantalla completa</string>
     <string name="preferences_interface_general_fullscreen_summary">Ocultar la barra de estado para extender la pantalla de inicio</string>
     <string name="effects_standard">Estándar</string>
