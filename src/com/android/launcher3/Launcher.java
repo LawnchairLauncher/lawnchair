@@ -647,6 +647,9 @@ public class Launcher extends Activity
     @Override
     protected void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
+        // Reset the startActivity waiting flag
+        mWaitingForResult = false;
+
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             int appWidgetId = data != null ?
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
@@ -660,7 +663,6 @@ public class Launcher extends Activity
         boolean delayExitSpringLoadedMode = false;
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET);
-        mWaitingForResult = false;
 
         // We have special handling for widgets
         if (isWidgetDrop) {
