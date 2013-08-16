@@ -119,6 +119,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Bloquear la posición de carpetas y accesos directos de la pantalla de inicio, incluyendo los widgets y la barra de aplicaciones</string>
     <string name="preferences_interface_general_fullscreen_title">Modo pantalla completa</string>
     <string name="preferences_interface_general_fullscreen_summary">Ocultar la barra de estado para extender la pantalla de inicio</string>
+    <string name="folder_empty_contents_title">No hay elementos</string>
     <string name="effects_standard">Estándar</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Zoom entrante</string>
@@ -135,4 +136,6 @@
     <string name="effects_accordion">Acordeón</string>
     <string name="effects_carousel_left">Carrusel izquierda</string>
     <string name="effects_carousel_right">Carrusel derecha</string>
+    <string name="live_folder_cling_title">Carpetas dinámicas</string>
+    <string name="live_folder_cling_create_folder">Las carpetas dinámicas permiten a los desarrolladores de aplicaciones, crear carpetas con contenido dinámico. El contenido de las carpetas puede ser eliminado con una pulsación larga sobre un elemento, pero a diferencia de las carpetas normales, los nuevos elementos solo pueden ser añadidos por la aplicación que creó la carpeta</string>
 </resources>
