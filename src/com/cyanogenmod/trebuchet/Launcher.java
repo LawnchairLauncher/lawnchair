@@ -3952,8 +3952,12 @@ public final class Launcher extends Activity
         for (ComponentName receiver : receivers.keySet()) {
             intent.setComponent(receiver);
             ArrayList<Long> ids = receivers.get(receiver);
+            long[] receiverIds = new long[ids.size()];
+            for (int i = 0; i < ids.size(); i++) {
+                receiverIds[i] = ids.get(i);
+            }
             intent.putExtra(LiveFolder.Constants.EXISTING_FOLDER_IDS_EXTRA,
-                    ids.toArray(new Long[ids.size()]));
+                    receiverIds);
             sendBroadcastAsUser(intent, UserHandle.CURRENT_OR_SELF);
         }
     }
