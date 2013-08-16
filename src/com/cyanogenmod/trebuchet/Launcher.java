@@ -3931,17 +3931,29 @@ public final class Launcher extends Activity
         mWorkspaceLoading = false;
 
         // Alert live folder receivers
-        Set<ComponentName> receivers = new HashSet<ComponentName>();
+        HashMap<ComponentName, ArrayList<Long>> receivers =
+                new HashMap<ComponentName, ArrayList<Long>>();
         for (FolderInfo i : getModel().sBgFolders.values()) {
             if (i instanceof LiveFolderInfo) {
-                receivers.add(((LiveFolderInfo) i).receiver);
+                LiveFolderInfo info = (LiveFolderInfo) i;
+                ArrayList<Long> ids = null;
+                if (receivers.containsKey(info.receiver)) {
+                    ids = receivers.get(info.receiver);
+                } else {
+                    ids = new ArrayList<Long>(1);
+                }
+                ids.add(info.id);
+                receivers.put(info.receiver, ids);
             }
         }
         Intent intent = new Intent(LiveFolder.Constants.LIVE_FOLDER_UPDATES);
         intent.putExtra(LiveFolder.Constants.FOLDER_UPDATE_TYPE_EXTRA,
                 LiveFolder.Constants.EXISTING_FOLDERS_CREATED);
-        for (ComponentName i : receivers) {
-            intent.setComponent(i);
+        for (ComponentName receiver : receivers.keySet()) {
+            intent.setComponent(receiver);
+            ArrayList<Long> ids = receivers.get(receiver);
+            intent.putExtra(LiveFolder.Constants.EXISTING_FOLDER_IDS_EXTRA,
+                    ids.toArray(new Long[ids.size()]));
             sendBroadcastAsUser(intent, UserHandle.CURRENT_OR_SELF);
         }
     }
