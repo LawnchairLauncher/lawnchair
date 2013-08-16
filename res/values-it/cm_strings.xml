@@ -14,7 +14,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="menu">Menù</string>
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Menu</string>
     <string name="cancel_target_label">Cancella</string>
     <string name="edit_target_label">Modifica</string>
     <string name="menu_lock_workspace">Blocca schermata Home</string>
@@ -101,7 +102,7 @@
     <string name="preferences_interface_dock_pages_title">Pagine</string>
     <string name="preferences_interface_dock_pages_summary">Numero di pagine nella barra dock</string>
     <string name="preferences_interface_dock_default_page_title">Pagina predefinita</string>
-    <string name="preferences_interface_dock_default_page_summary">Pagina che viene mostrata di default</string>
+    <string name="preferences_interface_dock_default_page_summary">Pagina che viene mostrata in modo predefinito</string>
     <string name="preferences_interface_dock_icons_title">Icone</string>
     <string name="preferences_interface_dock_icons_summary">Numero di icone/colonne nella barra dock</string>
     <string name="preferences_interface_dock_hide_icon_labels_title">Nascondi etichette</string>
