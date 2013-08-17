@@ -134,4 +134,8 @@
     <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remover widgets dos aplicativos ocultos da área de trabalho</string>
     <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="menu">Menu</string>
+    <string name="folder_empty_contents_title">Nenhum item encontrado</string>
+    <string name="live_folder_cling_title">Pastas dinâmicas</string>
+    <string name="live_folder_cling_create_folder">Pastas dinâmicas permitem os desenvolvedores de aplicativos criarem pastas com conteúdo dinâmico.
+    O conteúdo das pastas podem ser removido com um toque desde que seja apenas uma entrada. Ao contrário das pastas normais, os itens só podem ser adicionados pelos aplicativos que criaram as pastas</string>
 </resources>
