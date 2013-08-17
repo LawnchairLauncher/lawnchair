@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2012-2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -118,6 +119,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Κλείδωμα θέσης συντομεύσεων και φακέλων στην αρχική οθόνη, dock και συρταριού εφαρμογών και widget</string>
     <string name="preferences_interface_general_fullscreen_title">Λειτουργία πλήρους οθόνης</string>
     <string name="preferences_interface_general_fullscreen_summary">Απόκρυψη της μπάρας ειδοποιήσεων για επέκταση της αρχικής οθόνης</string>
+    <string name="folder_empty_contents_title">Δεν βρέθηκαν αντικείμενα</string>
     <string name="effects_standard">Κανονικό</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Ζουμ μέσα</string>
@@ -134,4 +136,8 @@
     <string name="effects_accordion">Ακορντεόν</string>
     <string name="effects_carousel_left">Καρουσέλ αριστερά</string>
     <string name="effects_carousel_right">Καρουσέλ δεξιά</string>
+    <string name="live_folder_cling_title">Ζωντανοί φάκελοι</string>
+    <string name="live_folder_cling_create_folder">Οι ζωντανοί φάκελοι επιτρέπουν στους προγραμματιστές εφαρμογών να δημιουργούν φακέλους με
+    δυναμικό περιεχόμενο. Τα περιεχόμενα του φακέλου μπορούν να αφαιρεθούν με παρατεταμένο πάτημα σε καθένα από τα στοιχεία. Σε αντίθεση με
+    τους κανονικούς φακέλους, στοιχεία μπορούν να προστεθούν μόνο από την εφαργμογή που δημιουργεί τον φάκελο</string>
 </resources>
