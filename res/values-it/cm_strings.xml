@@ -118,6 +118,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Blocca le scorciatoie e la posizione delle cartelle nella schermata Home, dock e drawer applicazioni e widget</string>
     <string name="preferences_interface_general_fullscreen_title">Modalità schermo intero</string>
     <string name="preferences_interface_general_fullscreen_summary">Nascondi la barra di stato per estendere la schermata Home</string>
+    <string name="folder_empty_contents_title">Nessun elemento trovato</string>
     <string name="effects_standard">Predefinito</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Riduci</string>
@@ -134,4 +135,6 @@
     <string name="effects_accordion">Fisarmonica</string>
     <string name="effects_carousel_left">Carosello sinistra</string>
     <string name="effects_carousel_right">Carosello destra</string>
+    <string name="live_folder_cling_title">Live folder</string>
+    <string name="live_folder_cling_create_folder">Le \'Live folder\' consentono agli sviluppatori di app la creazione di cartelle con contenuti dinamici. Il contenuto della cartella può essere rimosso con una pressione prolungata su una singola voce. A differenza delle normali cartelle, gli elementi possono essere aggiunti solo dall\'applicazione che ha creato la cartella</string>
 </resources>
