@@ -32,7 +32,7 @@
                 android:text="@string/folder_cling_title" />
             <TextView
                 style="@style/ClingText"
-                android:id="@+id/folder_cling_create_folder"
+                android:id="@+id/folder_cling_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/folder_cling_create_folder" />

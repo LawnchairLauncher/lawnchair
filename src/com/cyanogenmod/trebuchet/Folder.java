@@ -844,16 +844,17 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private void centerAboutIcon() {
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
-        int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
-        int height = getPaddingTop() + getPaddingBottom() + mContent.getDesiredHeight()
-                + mFolderNameHeight;
+        int width = getPaddingLeft() + getPaddingRight();
+        int height = getPaddingTop() + getPaddingBottom() + mFolderNameHeight;
 
-        if (mContent.getDesiredWidth() == 0) {
-            width += Math.min(mEmptyTitleWidth, mFolderNameWidth);
-            height += mEmptyTitle.getMeasuredHeight();
+        if (mContent.getCountX() == 0) {
+            width += mEmptyTitleWidth;
+            height += mEmptyTitleHeight;
             mEmptyTitle.setVisibility(View.VISIBLE);
         } else {
             mEmptyTitle.setVisibility(View.GONE);
+            width += mContent.getDesiredWidth();
+            height += mContent.getDesiredHeight();
         }
 
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
@@ -933,12 +934,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 MeasureSpec.EXACTLY);
         int contentHeightSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredHeight(),
                 MeasureSpec.EXACTLY);
-        mContent.measure(contentWidthSpec, contentHeightSpec);
 
-        if (mContent.getDesiredWidth() == 0) {
-            width += Math.min(mEmptyTitleWidth, mFolderNameWidth);
+        if (mContent.getCountX() == 0) {
+            width += mEmptyTitleWidth;
             contentWidthSpec = MeasureSpec.makeMeasureSpec(
-                    Math.min(mEmptyTitleWidth, mFolderNameWidth), MeasureSpec.EXACTLY);
+                    mEmptyTitleWidth, MeasureSpec.EXACTLY);
+            mContent.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.EXACTLY));
+        } else {
+            mContent.measure(contentWidthSpec, contentHeightSpec);
         }
 
         mFolderName.measure(contentWidthSpec,
