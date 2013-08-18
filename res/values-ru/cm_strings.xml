@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Меню</string>
     <string name="cancel_target_label">Отмена</string>
     <string name="edit_target_label">Изменить</string>
     <string name="menu_lock_workspace">Запретить изменение</string>
@@ -24,6 +25,8 @@
     <string name="menu_apps_filter_system">Системные</string>
     <string name="menu_apps_filter_downloaded">Загруженные</string>
     <string name="menu_hidden_apps_delete">Сброс</string>
+    <string name="all_apps_sort_cling_title">Сортировка</string>
+    <string name="all_apps_sort_cling_add_item">Нажмите и удерживайте вкладку \"Приложения\" для выбора режима сортировки</string>
 
     <!-- Hidden apps -->
     <string name="hidden_apps_title">Скрытые приложения</string>
@@ -31,9 +34,7 @@
     <!-- Workspace is locked -->
     <string name="workspace_locked">Главный экран заблокирован. Для изменения разблокируйте его в настройках</string>
 
-    <!--             -->
     <!-- Preferences -->
-    <!--             -->
     <string name="preferences_title">Настройки</string>
     <!-- UI -->
     <string name="preferences_interface_title">Интерфейс</string>
@@ -110,6 +111,8 @@
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Нижняя панель</string>
+    <string name="preferences_interface_dock_enabled_title">Включить</string>
+    <string name="preferences_interface_dock_enabled_summary">Отображать панель внизу экрана</string>
     <string name="preferences_interface_dock_pages_title">Страницы</string>
     <string name="preferences_interface_dock_pages_summary">Количество страниц в нижней панели</string>
     <string name="preferences_interface_dock_default_page_title">Страница по умолчанию</string>
@@ -133,6 +136,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Запрещать изменение ярлыков, папок, нижней панели и виджетов на главном экране</string>
     <string name="preferences_interface_general_fullscreen_title">Полноэкранный режим</string>
     <string name="preferences_interface_general_fullscreen_summary">Скрывать строку состояния для увеличения площади главных экранов</string>
+    <string name="folder_empty_contents_title">Ничего не найдено</string>
 
     <!-- Effects -->
     <string name="effects_standard">Стандартный</string>
@@ -151,4 +155,9 @@
     <string name="effects_accordion">Аккордеон</string>
     <string name="effects_carousel_left">Карусель влево</string>
     <string name="effects_carousel_right">Карусель вправо</string>
+
+    <!-- Live folder cling -->
+    <string name="live_folder_cling_title">Живые папки</string>
+    <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
+    <string name="live_folder_cling_create_folder">Живые папки позволяют разработчикам приложений создавать папки с динамическим контентом. Содержимое папки можно удалить долгим нажатием на элемент. В отличие от обычных папок, в живую папку элементы могут добавляться только приложением, создавшим её.</string>
 </resources>
