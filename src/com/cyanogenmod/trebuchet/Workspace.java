@@ -4353,6 +4353,12 @@ public class Workspace extends PagedView
                     if ((cn != null) && packageNames.contains(cn.getPackageName())) {
                         cns.add(cn);
                     }
+                } else if (tag instanceof LiveFolderInfo) {
+                    final LiveFolderInfo info = (LiveFolderInfo) tag;
+                    final String packageName = info.receiver.getPackageName();
+                    if (packages.contains(packageName)) {
+                        cns.add(info.receiver);
+                    }
                 } else if (tag instanceof FolderInfo) {
                     FolderInfo info = (FolderInfo) tag;
                     for (ShortcutInfo s : info.contents) {
