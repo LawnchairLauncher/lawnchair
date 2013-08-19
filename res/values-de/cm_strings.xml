@@ -118,6 +118,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Platzierung von Verknüpfungen und Ordnern in Startbildschirm, Dock und App-Liste sperren</string>
     <string name="preferences_interface_general_fullscreen_title">Vollbildmodus</string>
     <string name="preferences_interface_general_fullscreen_summary">Statusleiste für Vollbildansicht ausblenden</string>
+    <string name="folder_empty_contents_title">Keine Inhalte gefunden</string>
     <string name="effects_standard">Standard</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Hineinzoomen</string>
@@ -134,4 +135,6 @@
     <string name="effects_accordion">Akkordeon</string>
     <string name="effects_carousel_left">Karussell links</string>
     <string name="effects_carousel_right">Karussell rechts</string>
+    <string name="live_folder_cling_title">Live-Ordner</string>
+    <string name="live_folder_cling_create_folder">Live-Ordner ermöglichen es App-Entwicklern, Ordner mit dynamischem Inhalt anzulegen. Ordnerinhalte können durch langes Drücken auf ein einzelnes Element entfernt werden. Anders als bei normalen Ordnern können Inhalte nur durch die App hinzugefügt werden, welche den Ordner angelegt hat.</string>
 </resources>
