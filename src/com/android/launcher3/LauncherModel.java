@@ -238,7 +238,8 @@ public class LauncherModel extends BroadcastReceiver {
     }
     static Pair<Long, int[]> findNextAvailableIconSpace(Context context, String name,
                                                         Intent launchIntent,
-                                                        int firstScreenIndex) {
+                                                        int firstScreenIndex,
+                                                        ArrayList<Long> workspaceScreens) {
         // Lock on the app so that we don't try and get the items while apps are being added
         LauncherAppState app = LauncherAppState.getInstance();
         LauncherModel model = app.getModel();
@@ -254,14 +255,14 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Try adding to the workspace screens incrementally, starting at the default or center
             // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
-            firstScreenIndex = Math.min(firstScreenIndex, sBgWorkspaceScreens.size());
-            int count = sBgWorkspaceScreens.size();
+            firstScreenIndex = Math.min(firstScreenIndex, workspaceScreens.size());
+            int count = workspaceScreens.size();
             for (int screen = firstScreenIndex; screen < count && !found; screen++) {
                 int[] tmpCoordinates = new int[2];
                 if (findNextAvailableIconSpaceInScreen(items, tmpCoordinates,
-                        sBgWorkspaceScreens.get(screen))) {
+                        workspaceScreens.get(screen))) {
                     // Update the Launcher db
-                    return new Pair<Long, int[]>(sBgWorkspaceScreens.get(screen), tmpCoordinates);
+                    return new Pair<Long, int[]>(workspaceScreens.get(screen), tmpCoordinates);
                 }
             }
         }
@@ -283,6 +284,16 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<ItemInfo>();
                 final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
 
+                // Get the list of workspace screens.  We need to append to this list and
+                // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
+                // called.
+                ArrayList<Long> workspaceScreens = new ArrayList<Long>();
+                TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(context);
+                for (Integer i : orderedScreens.keySet()) {
+                    long screenId = orderedScreens.get(i);
+                    workspaceScreens.add(screenId);
+                }
+
                 synchronized(sBgLock) {
                     Iterator<ItemInfo> iter = added.iterator();
                     while (iter.hasNext()) {
@@ -298,7 +309,7 @@ public class LauncherModel extends BroadcastReceiver {
                         // Add this icon to the db, creating a new page if necessary
                         int startSearchPageIndex = 1;
                         Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
-                                name, launchIntent, startSearchPageIndex);
+                                name, launchIntent, startSearchPageIndex, workspaceScreens);
                         if (coords == null) {
                             LauncherAppState appState = LauncherAppState.getInstance();
                             LauncherProvider lp = appState.getLauncherProvider();
@@ -308,20 +319,19 @@ public class LauncherModel extends BroadcastReceiver {
                             // page is added.  Create as many screens as necessary to satisfy
                             // the startSearchPageIndex.
                             int numPagesToAdd = Math.max(1, startSearchPageIndex + 1 -
-                                    sBgWorkspaceScreens.size());
+                                    workspaceScreens.size());
                             while (numPagesToAdd > 0) {
                                 long screenId = lp.generateNewScreenId();
-                                Log.d(TAG, "10249126 - addAndBindAddedApps(" + screenId + ")");
-                                // Update the model
-                                sBgWorkspaceScreens.add(screenId);
-                                updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
+                                Log.w(TAG, "10249126 - addAndBindAddedApps(" + screenId + ")");
                                 // Save the screen id for binding in the workspace
+                                workspaceScreens.add(screenId);
                                 addedWorkspaceScreensFinal.add(screenId);
                                 numPagesToAdd--;
                             }
+
                             // Find the coordinate again
                             coords = LauncherModel.findNextAvailableIconSpace(context,
-                                    name, launchIntent, startSearchPageIndex);
+                                    name, launchIntent, startSearchPageIndex, workspaceScreens);
                         }
                         if (coords == null) {
                             throw new RuntimeException("Coordinates should not be null");
@@ -343,6 +353,9 @@ public class LauncherModel extends BroadcastReceiver {
                         addedShortcutsFinal.add(shortcutInfo);
                     }
                 }
+
+                // Update the workspace screens
+                updateWorkspaceScreenOrder(context, workspaceScreens);
 
                 if (!addedShortcutsFinal.isEmpty()) {
                     runOnMainThread(new Runnable() {
@@ -1002,14 +1015,14 @@ public class LauncherModel extends BroadcastReceiver {
             public void run() {
                 // Clear the table
                 cr.delete(uri, null, null);
-                int count = screens.size();
+                int count = screensCopy.size();
                 ContentValues[] values = new ContentValues[count];
                 for (int i = 0; i < count; i++) {
                     ContentValues v = new ContentValues();
-                    long screenId = screens.get(i);
+                    long screenId = screensCopy.get(i);
                     v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
                     v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    Log.d(TAG, "10249126 - updateWorkspaceScreenOrder(" + screenId + ", " + i + ")");
+                    Log.w(TAG, "10249126 - updateWorkspaceScreenOrder(" + screenId + ", " + i + ")");
                     values[i] = v;
                 }
                 cr.bulkInsert(uri, values);
@@ -1238,6 +1251,36 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    /** Loads the workspace screens db into a map of Rank -> ScreenId */
+    private static TreeMap<Integer, Long> loadWorkspaceScreensDb(Context context) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+        final Cursor sc = contentResolver.query(screensUri, null, null, null, null);
+        TreeMap<Integer, Long> orderedScreens = new TreeMap<Integer, Long>();
+
+        try {
+            final int idIndex = sc.getColumnIndexOrThrow(
+                    LauncherSettings.WorkspaceScreens._ID);
+            final int rankIndex = sc.getColumnIndexOrThrow(
+                    LauncherSettings.WorkspaceScreens.SCREEN_RANK);
+            while (sc.moveToNext()) {
+                try {
+                    long screenId = sc.getLong(idIndex);
+                    int rank = sc.getInt(rankIndex);
+
+                    Log.w(TAG, "10249126 - loadWorkspaceScreensDb(" + screenId + ", " + rank + ")");
+
+                    orderedScreens.put(rank, screenId);
+                } catch (Exception e) {
+                    Log.w(TAG, "Desktop items loading interrupted - invalid screens: ", e);
+                }
+            }
+        } finally {
+            sc.close();
+        }
+        return orderedScreens;
+    }
+
     public boolean isAllAppsLoaded() {
         return mAllAppsLoaded;
     }
@@ -1434,7 +1477,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Ensure that all the applications that are in the system are represented on the home
             // screen.
-            Log.d(TAG, "10249126 - verifyApplications(" + isUpgrade + ")");
+            Log.w(TAG, "10249126 - verifyApplications(" + isUpgrade + ")");
             if (!isUpgrade) {
                 verifyApplications();
             }
@@ -1498,7 +1541,7 @@ public class LauncherModel extends BroadcastReceiver {
             synchronized (sBgLock) {
                 for (ApplicationInfo app : mBgAllAppsList.data) {
                     tmpInfos = getItemInfoForComponentName(app.componentName);
-                    Log.d(TAG, "10249126 - \t" + app.componentName.getPackageName() + ", " + tmpInfos.isEmpty());
+                    Log.w(TAG, "10249126 - \t" + app.componentName.getPackageName() + ", " + tmpInfos.isEmpty());
                     if (tmpInfos.isEmpty()) {
                         // We are missing an application icon, so add this to the workspace
                         added.add(app);
@@ -1589,7 +1632,7 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgItemsIdMap.clear();
                 sBgDbIconCache.clear();
                 sBgWorkspaceScreens.clear();
-                Log.d(TAG, "10249126 - loadWorkspace()");
+                Log.w(TAG, "10249126 - loadWorkspace()");
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
@@ -1835,7 +1878,7 @@ public class LauncherModel extends BroadcastReceiver {
                         long screenId = item.screenId;
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                 !sBgWorkspaceScreens.contains(screenId)) {
-                            Log.d(TAG, "10249126 - loadWorkspace-loadedOldDb(" + screenId + ")");
+                            Log.w(TAG, "10249126 - loadWorkspace-loadedOldDb(" + screenId + ")");
                             sBgWorkspaceScreens.add(screenId);
                             if (screenId > maxScreenId) {
                                 maxScreenId = screenId;
@@ -1855,34 +1898,9 @@ public class LauncherModel extends BroadcastReceiver {
                     LauncherAppState app = LauncherAppState.getInstance();
                     app.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
-                    Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-                    final Cursor sc = contentResolver.query(screensUri, null, null, null, null);
-                    TreeMap<Integer, Long> orderedScreens = new TreeMap<Integer, Long>();
-
-                    try {
-                        final int idIndex = sc.getColumnIndexOrThrow(
-                                LauncherSettings.WorkspaceScreens._ID);
-                        final int rankIndex = sc.getColumnIndexOrThrow(
-                                LauncherSettings.WorkspaceScreens.SCREEN_RANK);
-                        while (sc.moveToNext()) {
-                            try {
-                                long screenId = sc.getLong(idIndex);
-                                int rank = sc.getInt(rankIndex);
-
-                                Log.d(TAG, "10249126 - loadWorkspace-!loadedOldDb(" + screenId + ", " + rank + ")");
-
-                                orderedScreens.put(rank, screenId);
-                            } catch (Exception e) {
-                                Log.w(TAG, "Desktop items loading interrupted - invalid screens: ", e);
-                            }
-                        }
-                    } finally {
-                        sc.close();
-                    }
-
-                    Iterator<Integer> iter = orderedScreens.keySet().iterator();
-                    while (iter.hasNext()) {
-                        sBgWorkspaceScreens.add(orderedScreens.get(iter.next()));
+                    TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(mContext);
+                    for (Integer i : orderedScreens.keySet()) {
+                        sBgWorkspaceScreens.add(orderedScreens.get(i));
                     }
 
                     // Remove any empty screens
@@ -2051,7 +2069,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         private void bindWorkspaceScreens(final Callbacks oldCallbacks,
                 final ArrayList<Long> orderedScreens) {
-            Log.d(TAG, "10249126 - bindWorkspaceScreens()");
+            Log.w(TAG, "10249126 - bindWorkspaceScreens()");
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {
