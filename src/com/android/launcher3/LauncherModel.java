@@ -156,6 +156,9 @@ public class LauncherModel extends BroadcastReceiver {
         public void finishBindingItems(boolean upgradePath);
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
+        public void bindAppsAdded(ArrayList<Long> newScreens,
+                                  ArrayList<ItemInfo> addNotAnimated,
+                                  ArrayList<ItemInfo> addAnimated);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<ApplicationInfo> appInfos,
@@ -275,6 +278,7 @@ public class LauncherModel extends BroadcastReceiver {
     }
     public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
                                     final Callbacks callbacks) {
+        Log.w(TAG, "10249126 - addAndBindAddedApps()");
         if (added.isEmpty()) {
             throw new RuntimeException("EMPTY ADDED ARRAY?");
         }
@@ -354,6 +358,8 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
 
+                Log.w(TAG, "10249126 - addAndBindAddedApps - updateWorkspaceScreenOrder(" + workspaceScreens.size() + ")");
+
                 // Update the workspace screens
                 updateWorkspaceScreenOrder(context, workspaceScreens);
 
@@ -362,8 +368,6 @@ public class LauncherModel extends BroadcastReceiver {
                         public void run() {
                             Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                             if (callbacks == cb && cb != null) {
-                                callbacks.bindAddScreens(addedWorkspaceScreensFinal);
-
                                 ItemInfo info = addedShortcutsFinal.get(addedShortcutsFinal.size() - 1);
                                 long lastScreenId = info.screenId;
                                 final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
@@ -375,16 +379,8 @@ public class LauncherModel extends BroadcastReceiver {
                                         addNotAnimated.add(i);
                                     }
                                 }
-                                // We add the items without animation on non-visible pages, and with
-                                // animations on the new page (which we will try and snap to).
-                                if (!addNotAnimated.isEmpty()) {
-                                    callbacks.bindItems(addNotAnimated, 0,
-                                            addNotAnimated.size(), false);
-                                }
-                                if (!addAnimated.isEmpty()) {
-                                    callbacks.bindItems(addAnimated, 0,
-                                            addAnimated.size(), true);
-                                }
+                                callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
+                                        addNotAnimated, addAnimated);
                             }
                         }
                     });
@@ -1905,6 +1901,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
 
                 if (loadedOldDb) {
+                    Log.w(TAG, "10249126 - loadWorkspace - loadedOldDb");
                     long maxScreenId = 0;
                     // If we're importing we use the old screen order.
                     for (ItemInfo item: sBgItemsIdMap.values()) {
@@ -1931,6 +1928,7 @@ public class LauncherModel extends BroadcastReceiver {
                     LauncherAppState app = LauncherAppState.getInstance();
                     app.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
+                    Log.w(TAG, "10249126 - loadWorkspace - !loadedOldDb");
                     TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(mContext);
                     for (Integer i : orderedScreens.keySet()) {
                         sBgWorkspaceScreens.add(orderedScreens.get(i));

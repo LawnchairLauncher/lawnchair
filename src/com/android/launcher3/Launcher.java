@@ -3518,14 +3518,10 @@ public class Launcher extends Activity
         // from scratch again
         mBindOnResumeCallbacks.clear();
 
-        final Workspace workspace = mWorkspace;
+        // Clear the workspace because it's going to be rebound
         mWorkspace.clearDropTargets();
-        int count = workspace.getChildCount();
-        for (int i = 0; i < count; i++) {
-            // Use removeAllViewsInLayout() to avoid an extra requestLayout() and invalidate().
-            final CellLayout layoutParent = (CellLayout) workspace.getChildAt(i);
-            layoutParent.removeAllViewsInLayout();
-        }
+        mWorkspace.removeAllViews();
+
         mWidgetsToAdvance.clear();
         if (mHotseat != null) {
             mHotseat.resetLayout();
@@ -3571,6 +3567,35 @@ public class Launcher extends Activity
         }
     }
 
+    public void bindAppsAdded(final ArrayList<Long> newScreens,
+                              final ArrayList<ItemInfo> addNotAnimated,
+                              final ArrayList<ItemInfo> addAnimated) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindAppsAdded(newScreens, addNotAnimated, addAnimated);
+            }
+        };
+        if (waitUntilResume(r)) {
+            return;
+        }
+
+        Log.w(TAG, "10249126 - bindAppsAdded(" + newScreens.size() + ")");
+
+        // Add the new screens
+        bindAddScreens(newScreens);
+
+        // We add the items without animation on non-visible pages, and with
+        // animations on the new page (which we will try and snap to).
+        if (!addNotAnimated.isEmpty()) {
+            bindItems(addNotAnimated, 0,
+                    addNotAnimated.size(), false);
+        }
+        if (!addAnimated.isEmpty()) {
+            bindItems(addAnimated, 0,
+                    addAnimated.size(), true);
+        }
+    }
+
     /**
      * Bind the items start-end from the list.
      *
@@ -3578,11 +3603,12 @@ public class Launcher extends Activity
      */
     public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end,
                           final boolean forceAnimateIcons) {
-        if (waitUntilResume(new Runnable() {
-                public void run() {
-                    bindItems(shortcuts, start, end, forceAnimateIcons);
-                }
-            })) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindItems(shortcuts, start, end, forceAnimateIcons);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
 
@@ -3666,11 +3692,12 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindFolders(final HashMap<Long, FolderInfo> folders) {
-        if (waitUntilResume(new Runnable() {
-                public void run() {
-                    bindFolders(folders);
-                }
-            })) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindFolders(folders);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
         sFolders.clear();
@@ -3683,11 +3710,12 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAppWidget(final LauncherAppWidgetInfo item) {
-        if (waitUntilResume(new Runnable() {
-                public void run() {
-                    bindAppWidget(item);
-                }
-            })) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindAppWidget(item);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
 
@@ -3730,11 +3758,12 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(final boolean upgradePath) {
-        if (waitUntilResume(new Runnable() {
-                public void run() {
-                    finishBindingItems(upgradePath);
-                }
-            })) {
+        Runnable r = new Runnable() {
+            public void run() {
+                finishBindingItems(upgradePath);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
         if (mSavedState != null) {
@@ -3820,11 +3849,12 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAppsUpdated(final ArrayList<ApplicationInfo> apps) {
-        if (waitUntilResume(new Runnable() {
-                public void run() {
-                    bindAppsUpdated(apps);
-                }
-            })) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindAppsUpdated(apps);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
 
@@ -3845,11 +3875,12 @@ public class Launcher extends Activity
     public void bindComponentsRemoved(final ArrayList<String> packageNames,
                                       final ArrayList<ApplicationInfo> appInfos,
                                       final boolean packageRemoved) {
-        if (waitUntilResume(new Runnable() {
+        Runnable r = new Runnable() {
             public void run() {
                 bindComponentsRemoved(packageNames, appInfos, packageRemoved);
             }
-        })) {
+        };
+        if (waitUntilResume(r)) {
             return;
         }
 

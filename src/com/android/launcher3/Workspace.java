@@ -1718,6 +1718,8 @@ public class Workspace extends SmoothPagedView
             CellLayout cl = ((CellLayout) getChildAt(i));
             mScreenOrder.add(getIdForScreen(cl));
         }
+
+        Log.w(TAG, "10249126 - onEndReordering()");
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.

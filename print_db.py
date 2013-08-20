@@ -34,6 +34,10 @@ def make_dir():
   shutil.rmtree(DIR, True)
   os.makedirs(DIR)
 
+def adb_root_remount():
+  os.system("adb root")
+  os.system("adb remount")
+
 def pull_file(fn):
   print "pull_file: " + fn
   rv = os.system("adb pull"
@@ -46,6 +50,15 @@ def pull_file(fn):
 def get_favorites(conn):
   c = conn.cursor()
   c.execute("SELECT * FROM favorites")
+  columns = [d[0] for d in c.description]
+  rows = []
+  for row in c:
+    rows.append(row)
+  return columns,rows
+
+def get_screens(conn):
+  c = conn.cursor()
+  c.execute("SELECT * FROM workspaceScreens")
   columns = [d[0] for d in c.description]
   rows = []
   for row in c:
@@ -127,13 +140,21 @@ def render_cell_info(out, cell, occupied):
       out.write("<b>unknown type: %d</b>" % itemType)
     out.write("</td>\n")
 
+def render_screen_info(out, screen):
+  out.write("<tr>")
+  out.write("<td>%s</td>" % (screen["_id"]))
+  out.write("<td>%s</td>" % (screen["screenRank"]))
+  out.write("</tr>")
+
 def process_file(fn):
   global SCREENS, COLUMNS, ROWS, HOTSEAT_SIZE
   print "process_file: " + fn
   conn = sqlite3.connect(fn)
   columns,rows = get_favorites(conn)
+  screenCols, screenRows = get_screens(conn)
 
   data = [dict(zip(columns,row)) for row in rows]
+  screenData = [dict(zip(screenCols, screenRow)) for screenRow in screenRows]
 
   # Calculate the proper number of screens, columns, and rows in this db
   screensIdMap = []
@@ -197,6 +218,14 @@ def process_file(fn):
 """)
   out.write("""</table>
 """)
+
+  # Screens
+  out.write("<br/><b>Screens</b><br/>\n")
+  out.write("<table class=layout border=1 cellspacing=0 cellpadding=4>\n")
+  out.write("<tr><td>Screen ID</td><td>Rank</td></tr>\n")
+  for screen in screenData:
+    render_screen_info(out, screen)
+  out.write("</table>\n")
 
   # Hotseat
   hotseat = []
@@ -274,6 +303,7 @@ def updateDeviceClassConstants(str):
 def main(argv):
   if len(argv) == 1 or (len(argv) == 2 and updateDeviceClassConstants(argv[1])):
     make_dir()
+    adb_root_remount()
     pull_file(AUTO_FILE)
     process_file(AUTO_FILE)
   elif len(argv) == 2 or (len(argv) == 3 and updateDeviceClassConstants(argv[2])):
