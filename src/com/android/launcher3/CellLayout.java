@@ -927,12 +927,12 @@ public class CellLayout extends ViewGroup {
         return r;
     }
 
-    static void getMetrics(Rect metrics, Resources res, int measureWidth, int measureHeight,
-            int countX, int countY, int orientation) {
+    static void getMetrics(Rect metrics, int paddedMeasureWidth,
+            int paddedMeasureHeight, int countX, int countY) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        metrics.set(grid.calculateCellWidth(measureWidth, countX),
-                grid.calculateCellHeight(measureHeight, countY), 0, 0);
+        metrics.set(grid.calculateCellWidth(paddedMeasureWidth, countX),
+                grid.calculateCellHeight(paddedMeasureHeight, countY), 0, 0);
     }
 
     public void setFixedSize(int width, int height) {
@@ -2961,18 +2961,22 @@ public class CellLayout extends ViewGroup {
      * @param result An array of length 2 in which to store the result (may be null).
      */
     public int[] rectToCell(int width, int height, int[] result) {
-        return rectToCell(getResources(), width, height, result);
+        return rectToCell(width, height, result);
     }
 
-    public static int[] rectToCell(Resources resources, int width, int height, int[] result) {
+    public static int[] rectToCell(int width, int height, int[] result) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Rect padding = grid.getWorkspacePadding(grid.isLandscape ?
+                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        int actualWidth = grid.cellWidthPx;
-        int actualHeight = grid.cellHeightPx;
-        int smallerSize = Math.min(actualWidth, actualHeight);
+        int parentWidth = grid.calculateCellWidth(grid.widthPx
+                - padding.left - padding.right, (int) grid.numColumns);
+        int parentHeight = grid.calculateCellHeight(grid.heightPx
+                - padding.top - padding.bottom, (int) grid.numRows);
+        int smallerSize = Math.min(parentWidth, parentHeight);
 
         // Always round up to next largest cell
         int spanX = (int) Math.ceil(width / (float) smallerSize);

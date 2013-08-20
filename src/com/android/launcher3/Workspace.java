@@ -1878,16 +1878,21 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             }
+            ObjectAnimator pageIndicatorAlpha = null;
+            if (getPageIndicator() != null) {
+                pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
+                        finalHotseatAndPageIndicatorAlpha);
+            }
             ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(mLauncher.getHotseat(), "alpha",
-                    finalHotseatAndPageIndicatorAlpha);
-            ObjectAnimator pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
                     finalHotseatAndPageIndicatorAlpha);
             ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                     "alpha", finalOverviewPanelAlpha);
             overviewPanelAlpha.addUpdateListener(new AlphaUpdateListener(
                     mLauncher.getOverviewPanel()));
             hotseatAlpha.addUpdateListener(new AlphaUpdateListener(mLauncher.getHotseat()));
-            pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
+            if (getPageIndicator() != null) {
+                pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
+            }
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
             anim.play(pageIndicatorAlpha);
@@ -1895,7 +1900,9 @@ public class Workspace extends SmoothPagedView
         } else {
             mLauncher.getOverviewPanel().setAlpha(finalOverviewPanelAlpha);
             mLauncher.getHotseat().setAlpha(finalHotseatAndPageIndicatorAlpha);
-            getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
+            if (getPageIndicator() != null) {
+                getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
+            }
         }
 
         if (stateIsSpringLoaded) {
@@ -2634,9 +2641,8 @@ public class Workspace extends SmoothPagedView
                 int width = largestSize.x - padding.left - padding.right;
                 int height = smallestSize.y - padding.top - padding.bottom;
                 mLandscapeCellLayoutMetrics = new Rect();
-                CellLayout.getMetrics(mLandscapeCellLayoutMetrics, res,
-                        width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
-                        orientation);
+                CellLayout.getMetrics(mLandscapeCellLayoutMetrics, width, height,
+                        LauncherModel.getCellCountX(), LauncherModel.getCellCountY());
             }
             return mLandscapeCellLayoutMetrics;
         } else if (orientation == CellLayout.PORTRAIT) {
@@ -2645,9 +2651,8 @@ public class Workspace extends SmoothPagedView
                 int width = smallestSize.x - padding.left - padding.right;
                 int height = largestSize.y - padding.top - padding.bottom;
                 mPortraitCellLayoutMetrics = new Rect();
-                CellLayout.getMetrics(mPortraitCellLayoutMetrics, res,
-                        width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
-                        orientation);
+                CellLayout.getMetrics(mPortraitCellLayoutMetrics, width, height,
+                        LauncherModel.getCellCountX(), LauncherModel.getCellCountY());
             }
             return mPortraitCellLayoutMetrics;
         }

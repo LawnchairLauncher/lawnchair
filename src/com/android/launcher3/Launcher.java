@@ -1267,7 +1267,7 @@ public class Launcher extends Activity
         // to ensure that it gets the full amount of space that it has requested
         int requiredWidth = minWidth + padding.left + padding.right;
         int requiredHeight = minHeight + padding.top + padding.bottom;
-        return CellLayout.rectToCell(context.getResources(), requiredWidth, requiredHeight, null);
+        return CellLayout.rectToCell(requiredWidth, requiredHeight, null);
     }
 
     static int[] getSpanForWidget(Context context, AppWidgetProviderInfo info) {
