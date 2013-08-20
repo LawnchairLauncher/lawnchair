@@ -164,9 +164,6 @@ public class Workspace extends SmoothPagedView
     private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
 
-    private static final int DEFAULT_CELL_COUNT_X = 4;
-    private static final int DEFAULT_CELL_COUNT_Y = 4;
-
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
@@ -188,7 +185,6 @@ public class Workspace extends SmoothPagedView
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int[] mTempVisiblePagesRange = new int[2];
-    private float mOverscrollFade = 0;
     private boolean mOverscrollTransformsSet;
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
@@ -301,52 +297,17 @@ public class Workspace extends SmoothPagedView
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
-        int cellCountX = DEFAULT_CELL_COUNT_X;
-        int cellCountY = DEFAULT_CELL_COUNT_Y;
-
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
-
-        if (LauncherAppState.getInstance().isScreenLarge()) {
-            // Determine number of rows/columns dynamically
-            // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
-            // Around that ratio we should make cells the same size in portrait and
-            // landscape
-            TypedArray actionBarSizeTypedArray =
-                context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
-            final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
-
-            Point minDims = new Point();
-            Point maxDims = new Point();
-            mLauncher.getWindowManager().getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
-
-            cellCountX = 1;
-            while (CellLayout.widthInPortrait(res, cellCountX + 1) <= minDims.x) {
-                cellCountX++;
-            }
-
-            cellCountY = 1;
-            while (actionBarHeight + CellLayout.heightInLandscape(res, cellCountY + 1)
-                <= minDims.y) {
-                cellCountY++;
-            }
-        }
-
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
-
-        // if the value is manually specified, use that instead
-        cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
-        cellCountY = a.getInt(R.styleable.Workspace_cellCountY, cellCountY);
         mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
         setOnHierarchyChangeListener(this);
-
-        LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
 
         initWorkspace();
@@ -417,6 +378,7 @@ public class Workspace extends SmoothPagedView
         mCurrentPage = mDefaultPage;
         Launcher.setScreen(mCurrentPage);
         LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         mIconCache = app.getIconCache();
         setWillNotDraw(false);
         setClipChildren(false);
@@ -438,7 +400,7 @@ public class Workspace extends SmoothPagedView
         mWallpaperTravelWidth = (int) (mDisplaySize.x *
                 wallpaperTravelToScreenWidthRatio(mDisplaySize.x, mDisplaySize.y));
 
-        mMaxDistanceForFolderCreation = (0.55f * res.getDimensionPixelSize(R.dimen.app_icon_size));
+        mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
     }
 
@@ -615,7 +577,10 @@ public class Workspace extends SmoothPagedView
     }
 
     public long getScreenIdForPageIndex(int index) {
-        return mScreenOrder.get(index);
+        if (0 <= index && index < mScreenOrder.size()) {
+            return mScreenOrder.get(index);
+        }
+        return -1;
     }
 
     ArrayList<Long> getScreenOrder() {
@@ -1401,7 +1366,6 @@ public class Workspace extends SmoothPagedView
             cl.setOverScrollAmount(Math.abs(scrollProgress), isLeftPage);
             float rotation = -WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
             cl.setRotationY(rotation);
-            setFadeForOverScroll(Math.abs(scrollProgress));
             if (!mOverscrollTransformsSet) {
                 mOverscrollTransformsSet = true;
                 cl.setCameraDistance(mDensity * mCameraDistance);
@@ -1410,9 +1374,6 @@ public class Workspace extends SmoothPagedView
                 cl.setOverscrollTransformsDirty(true);
             }
         } else {
-            if (mOverscrollFade != 0) {
-                setFadeForOverScroll(0);
-            }
             if (mOverscrollTransformsSet) {
                 mOverscrollTransformsSet = false;
                 ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
@@ -2165,11 +2126,12 @@ public class Workspace extends SmoothPagedView
                 Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
                         - DRAG_BITMAP_PADDING / 2);
 
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
         if (child instanceof BubbleTextView || child instanceof PagedViewIcon) {
-            int iconSize = r.getDimensionPixelSize(R.dimen.app_icon_size);
-            int iconPaddingTop = r.getDimensionPixelSize(R.dimen.app_icon_padding_top);
+            int iconSize = grid.iconSizePx;
             int top = child.getPaddingTop();
             int left = (bmpWidth - iconSize) / 2;
             int right = left + iconSize;
@@ -2177,12 +2139,11 @@ public class Workspace extends SmoothPagedView
             dragLayerY += top;
             // Note: The drag region is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-            dragVisualizeOffset = new Point(-DRAG_BITMAP_PADDING / 2,
-                    iconPaddingTop - DRAG_BITMAP_PADDING / 2);
+            dragVisualizeOffset = new Point(-DRAG_BITMAP_PADDING / 2, DRAG_BITMAP_PADDING / 2);
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
-            int previewSize = r.getDimensionPixelSize(R.dimen.folder_preview_size);
-            dragRect = new Rect(0, 0, child.getWidth(), previewSize);
+            int previewSize = grid.folderIconSizePx;
+            dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
         }
 
         // Clear the pressed state if necessary
@@ -2665,6 +2626,9 @@ public class Workspace extends SmoothPagedView
     }
 
     static Rect getCellLayoutMetrics(Launcher launcher, int orientation) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         Resources res = launcher.getResources();
         Display display = launcher.getWindowManager().getDefaultDisplay();
         Point smallestSize = new Point();
@@ -2672,12 +2636,9 @@ public class Workspace extends SmoothPagedView
         display.getCurrentSizeRange(smallestSize, largestSize);
         if (orientation == CellLayout.LANDSCAPE) {
             if (mLandscapeCellLayoutMetrics == null) {
-                int paddingLeft = res.getDimensionPixelSize(R.dimen.workspace_left_padding_land);
-                int paddingRight = res.getDimensionPixelSize(R.dimen.workspace_right_padding_land);
-                int paddingTop = res.getDimensionPixelSize(R.dimen.workspace_top_padding_land);
-                int paddingBottom = res.getDimensionPixelSize(R.dimen.workspace_bottom_padding_land);
-                int width = largestSize.x - paddingLeft - paddingRight;
-                int height = smallestSize.y - paddingTop - paddingBottom;
+                Rect padding = grid.getWorkspacePadding(CellLayout.LANDSCAPE);
+                int width = largestSize.x - padding.left - padding.right;
+                int height = smallestSize.y - padding.top - padding.bottom;
                 mLandscapeCellLayoutMetrics = new Rect();
                 CellLayout.getMetrics(mLandscapeCellLayoutMetrics, res,
                         width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
@@ -2686,12 +2647,9 @@ public class Workspace extends SmoothPagedView
             return mLandscapeCellLayoutMetrics;
         } else if (orientation == CellLayout.PORTRAIT) {
             if (mPortraitCellLayoutMetrics == null) {
-                int paddingLeft = res.getDimensionPixelSize(R.dimen.workspace_left_padding_land);
-                int paddingRight = res.getDimensionPixelSize(R.dimen.workspace_right_padding_land);
-                int paddingTop = res.getDimensionPixelSize(R.dimen.workspace_top_padding_land);
-                int paddingBottom = res.getDimensionPixelSize(R.dimen.workspace_bottom_padding_land);
-                int width = smallestSize.x - paddingLeft - paddingRight;
-                int height = largestSize.y - paddingTop - paddingBottom;
+                Rect padding = grid.getWorkspacePadding(CellLayout.PORTRAIT);
+                int width = smallestSize.x - padding.left - padding.right;
+                int height = largestSize.y - padding.top - padding.bottom;
                 mPortraitCellLayoutMetrics = new Rect();
                 CellLayout.getMetrics(mPortraitCellLayoutMetrics, res,
                         width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
@@ -4129,7 +4087,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected int getPageIndicatorMarker(int pageIndex) {
         if (getScreenIdForPageIndex(pageIndex) == CUSTOM_CONTENT_SCREEN_ID) {
-            return R.layout.now_page_indicator_marker;
+            return R.layout.custom_content_page_indicator_marker;
         }
         return super.getPageIndicatorMarker(pageIndex);
     }
@@ -4150,14 +4108,5 @@ public class Workspace extends SmoothPagedView
 
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
-    }
-
-    void setFadeForOverScroll(float fade) {
-        mOverscrollFade = fade;
-        float reducedFade = 0.5f + 0.5f * (1 - fade);
-        final ViewGroup parent = (ViewGroup) getParent();
-        final ImageView qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
-
-        if (qsbDivider != null) qsbDivider.setAlpha(reducedFade);
     }
 }

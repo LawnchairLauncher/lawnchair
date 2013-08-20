@@ -20,23 +20,10 @@
 <resources>
 <!-- Search Bar -->
     <style name="QSBBar">
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_width">@dimen/qsb_bar_height</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">start</item>
     </style>
     <style name="SearchDropTargetBar">
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
     </style>
     <style name="SearchButton">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingStart">@dimen/toolbar_button_horizontal_padding</item>
-        <item name="android:paddingEnd">@dimen/toolbar_button_horizontal_padding</item>
     </style>
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">match_parent</item>

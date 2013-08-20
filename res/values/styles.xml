@@ -63,38 +63,14 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:textSize">@dimen/workspace_icon_text_size</item>
         <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
     </style>
 
     <style name="WorkspaceIcon.Portrait">
-        <item name="android:drawablePadding">@dimen/app_icon_drawable_padding</item>
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingEnd">4dp</item>
-        <item name="android:paddingTop">@dimen/app_icon_padding_top</item>
-        <item name="android:paddingBottom">4dp</item>
     </style>
-
     <style name="WorkspaceIcon.Landscape">
-        <item name="android:drawablePadding">@dimen/app_icon_drawable_padding_land</item>
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingEnd">4dp</item>
-        <item name="android:paddingTop">@dimen/app_icon_padding_top</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
-
-    <style name="WorkspaceIcon.Portrait.Folder">
-        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
-        <item name="android:drawablePadding">0dp</item>
-        <item name="android:paddingTop">@dimen/folder_icon_padding_top</item>
-    </style>
-    <style name="WorkspaceIcon.Landscape.Folder">
-        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
-        <item name="android:drawablePadding">0dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:layout_marginTop">-2dp</item>
     </style>
 
     <style name="WorkspaceIcon.Portrait.AppsCustomize">
@@ -118,22 +94,10 @@
 
     <style name="QSBBar">
         <item name="android:orientation">horizontal</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/qsb_bar_height</item>
-        <item name="android:layout_gravity">top|center_horizontal</item>
-        <item name="android:paddingStart">@dimen/qsb_padding_left</item>
-        <item name="android:paddingEnd">@dimen/qsb_padding_right</item>
     </style>
     <style name="SearchDropTargetBar">
-        <item name="android:orientation">horizontal</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">bottom|center_horizontal</item>
     </style>
     <style name="SearchButton">
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
     </style>
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">0dp</item>

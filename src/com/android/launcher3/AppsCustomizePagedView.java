@@ -360,12 +360,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Configuration.ORIENTATION_LANDSCAPE;
         int maxCellCountX = Integer.MAX_VALUE;
         int maxCellCountY = Integer.MAX_VALUE;
-        if (LauncherAppState.getInstance().isScreenLarge()) {
-            maxCellCountX = (isLandscape ? LauncherModel.getCellCountX() :
-                LauncherModel.getCellCountY());
-            maxCellCountY = (isLandscape ? LauncherModel.getCellCountY() :
-                LauncherModel.getCellCountX());
-        }
         if (mMaxAppCellCountX > -1) {
             maxCellCountX = Math.min(maxCellCountX, mMaxAppCellCountX);
         }
@@ -1162,7 +1156,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Note: We force a measure here to get around the fact that when we do layout calculations
         // immediately after syncing, we don't have a proper width.
-        int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
+        int workspaceWidth = mLauncher.getWorkspace().getMeasuredWidth();
+        int widthSpec = MeasureSpec.makeMeasureSpec(Math.min(getMeasuredWidth(), workspaceWidth),
+                MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);

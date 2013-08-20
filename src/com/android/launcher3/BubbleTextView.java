@@ -25,6 +25,7 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -34,7 +35,6 @@ import android.widget.TextView;
  * too aggressive.
  */
 public class BubbleTextView extends TextView {
-    static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
     static final float SHADOW_Y_OFFSET = 2.0f;
@@ -55,6 +55,8 @@ public class BubbleTextView extends TextView {
     private int mPressedOutlineColor;
     private int mPressedGlowColor;
 
+    private boolean mIsTextVisible;
+
     private boolean mBackgroundSizeChanged;
     private Drawable mBackground;
 
@@ -74,6 +76,15 @@ public class BubbleTextView extends TextView {
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
+    }
+
+    public void onFinishInflate() {
+        super.onFinishInflate();
+
+        // Ensure we are using the right text size
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
     }
 
     private void init() {
@@ -324,6 +335,20 @@ public class BubbleTextView extends TextView {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (mBackground != null) mBackground.setCallback(null);
+    }
+
+    public void setTextVisibility(boolean visible) {
+        Resources res = getResources();
+        if (visible) {
+            setTextColor(res.getColor(R.color.workspace_icon_text_color));
+        } else {
+            setTextColor(res.getColor(android.R.color.transparent));
+        }
+        mIsTextVisible = visible;
+    }
+
+    public boolean isTextVisible() {
+        return mIsTextVisible;
     }
 
     @Override

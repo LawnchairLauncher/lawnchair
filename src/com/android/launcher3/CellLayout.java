@@ -191,11 +191,11 @@ public class CellLayout extends ViewGroup {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
-        mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
-        mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
-        mWidthGap = mOriginalWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
-        mHeightGap = mOriginalHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
-        mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
+        mCellWidth = -1;
+        mCellHeight = -1;
+        mWidthGap = mOriginalWidthGap = 0;
+        mHeightGap = mOriginalHeightGap = 0;
+        mMaxGap = Integer.MAX_VALUE;
         mCountX = LauncherModel.getCellCountX();
         mCountY = LauncherModel.getCellCountY();
         mOccupied = new boolean[mCountX][mCountY];
@@ -208,7 +208,9 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
-        mHotseatScale = (res.getInteger(R.integer.hotseat_item_scale_percentage) / 100f);
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        mHotseatScale = (float) grid.hotseatIconSize / grid.iconSize;
 
         mNormalBackground = res.getDrawable(R.drawable.homescreen_blue_normal_holo);
         mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_blue_strong_holo);
@@ -219,16 +221,13 @@ public class CellLayout extends ViewGroup {
                 res.getDimensionPixelSize(R.dimen.workspace_overscroll_drawable_padding);
 
         mReorderHintAnimationMagnitude = (REORDER_HINT_MAGNITUDE *
-                res.getDimensionPixelSize(R.dimen.app_icon_size));
+                grid.iconSizePx);
 
         mNormalBackground.setFilterBitmap(true);
         mActiveGlowBackground.setFilterBitmap(true);
 
         // Initialize the data structures used for the drag visualization.
-
         mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
-
-
         mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Rect(-1, -1, -1, -1);
@@ -289,31 +288,9 @@ public class CellLayout extends ViewGroup {
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX);
+                mCountX, mCountY);
 
         addView(mShortcutsAndWidgets);
-    }
-
-    static int widthInPortrait(Resources r, int numCells) {
-        // We use this method from Workspace to figure out how many rows/columns Launcher should
-        // have. We ignore the left/right padding on CellLayout because it turns out in our design
-        // the padding extends outside the visible screen size, but it looked fine anyway.
-        int cellWidth = r.getDimensionPixelSize(R.dimen.workspace_cell_width);
-        int minGap = Math.min(r.getDimensionPixelSize(R.dimen.workspace_width_gap),
-                r.getDimensionPixelSize(R.dimen.workspace_height_gap));
-
-        return  minGap * (numCells - 1) + cellWidth * numCells;
-    }
-
-    static int heightInLandscape(Resources r, int numCells) {
-        // We use this method from Workspace to figure out how many rows/columns Launcher should
-        // have. We ignore the left/right padding on CellLayout because it turns out in our design
-        // the padding extends outside the visible screen size, but it looked fine anyway.
-        int cellHeight = r.getDimensionPixelSize(R.dimen.workspace_cell_height);
-        int minGap = Math.min(r.getDimensionPixelSize(R.dimen.workspace_width_gap),
-                r.getDimensionPixelSize(R.dimen.workspace_height_gap));
-
-        return minGap * (numCells - 1) + cellHeight * numCells;
     }
 
     public void enableHardwareLayers() {
@@ -332,6 +309,13 @@ public class CellLayout extends ViewGroup {
         return mIsHotseat ? mHotseatScale : 1.0f;
     }
 
+    public void setCellDimensions(int width, int height) {
+        mCellWidth = width;
+        mCellHeight = height;
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
+                mCountX, mCountY);
+    }
+
     public void setGridSize(int x, int y) {
         mCountX = x;
         mCountY = y;
@@ -339,7 +323,7 @@ public class CellLayout extends ViewGroup {
         mTmpOccupied = new boolean[mCountX][mCountY];
         mTempRectStack.clear();
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX);
+                mCountX, mCountY);
         requestLayout();
     }
 
@@ -500,17 +484,21 @@ public class CellLayout extends ViewGroup {
         int previewOffset = FolderRingAnimator.sPreviewSize;
 
         // The folder outer / inner ring image(s)
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         for (int i = 0; i < mFolderOuterRings.size(); i++) {
             FolderRingAnimator fra = mFolderOuterRings.get(i);
 
             // Draw outer ring
             Drawable d = FolderRingAnimator.sSharedOuterRingDrawable;
-            int width = (int) fra.getOuterRingSize();
+            int width = (int) (fra.getOuterRingSize() * getChildrenScale());
             int height = width;
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
+            View child = getChildAt(fra.mCellX, fra.mCellY);
 
             int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + previewOffset / 2;
+            int centerY = mTempLocation[1] + previewOffset / 2 +
+                    child.getPaddingTop() + grid.folderBackgroundOffset;
 
             canvas.save();
             canvas.translate(centerX - width / 2, centerY - height / 2);
@@ -520,12 +508,14 @@ public class CellLayout extends ViewGroup {
 
             // Draw inner ring
             d = FolderRingAnimator.sSharedInnerRingDrawable;
-            width = (int) fra.getInnerRingSize();
+            width = (int) (fra.getInnerRingSize() * getChildrenScale());
             height = width;
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
+            child = getChildAt(fra.mCellX, fra.mCellY);
 
             centerX = mTempLocation[0] + mCellWidth / 2;
-            centerY = mTempLocation[1] + previewOffset / 2;
+            centerY = mTempLocation[1] + previewOffset / 2 +
+                    child.getPaddingTop() + grid.folderBackgroundOffset;
             canvas.save();
             canvas.translate(centerX - width / 2, centerY - width / 2);
             d.setBounds(0, 0, width, height);
@@ -539,8 +529,10 @@ public class CellLayout extends ViewGroup {
             int height = d.getIntrinsicHeight();
 
             cellToPoint(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1], mTempLocation);
+            View child = getChildAt(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1]);
             int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + previewOffset / 2;
+            int centerY = mTempLocation[1] + previewOffset / 2 +
+                    child.getPaddingTop() + grid.folderBackgroundOffset;
 
             canvas.save();
             canvas.translate(centerX - width / 2, centerY - width / 2);
@@ -620,6 +612,7 @@ public class CellLayout extends ViewGroup {
 
     public void setIsHotseat(boolean isHotseat) {
         mIsHotseat = isHotseat;
+        mShortcutsAndWidgets.setIsHotseat(isHotseat);
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
@@ -631,11 +624,7 @@ public class CellLayout extends ViewGroup {
             BubbleTextView bubbleChild = (BubbleTextView) child;
 
             Resources res = getResources();
-            if (mIsHotseat) {
-                bubbleChild.setTextColor(res.getColor(android.R.color.transparent));
-            } else {
-                bubbleChild.setTextColor(res.getColor(R.color.workspace_icon_text_color));
-            }
+            bubbleChild.setTextVisibility(!mIsHotseat);
         }
 
         child.setScaleX(getChildrenScale());
@@ -940,49 +929,10 @@ public class CellLayout extends ViewGroup {
 
     static void getMetrics(Rect metrics, Resources res, int measureWidth, int measureHeight,
             int countX, int countY, int orientation) {
-        int numWidthGaps = countX - 1;
-        int numHeightGaps = countY - 1;
-
-        int widthGap;
-        int heightGap;
-        int cellWidth;
-        int cellHeight;
-        int paddingLeft;
-        int paddingRight;
-        int paddingTop;
-        int paddingBottom;
-
-        int maxGap = res.getDimensionPixelSize(R.dimen.workspace_max_gap);
-        if (orientation == LANDSCAPE) {
-            cellWidth = res.getDimensionPixelSize(R.dimen.workspace_cell_width_land);
-            cellHeight = res.getDimensionPixelSize(R.dimen.workspace_cell_height_land);
-            widthGap = res.getDimensionPixelSize(R.dimen.workspace_width_gap_land);
-            heightGap = res.getDimensionPixelSize(R.dimen.workspace_height_gap_land);
-            paddingLeft = res.getDimensionPixelSize(R.dimen.cell_layout_left_padding_land);
-            paddingRight = res.getDimensionPixelSize(R.dimen.cell_layout_right_padding_land);
-            paddingTop = res.getDimensionPixelSize(R.dimen.cell_layout_top_padding_land);
-            paddingBottom = res.getDimensionPixelSize(R.dimen.cell_layout_bottom_padding_land);
-        } else {
-            // PORTRAIT
-            cellWidth = res.getDimensionPixelSize(R.dimen.workspace_cell_width_port);
-            cellHeight = res.getDimensionPixelSize(R.dimen.workspace_cell_height_port);
-            widthGap = res.getDimensionPixelSize(R.dimen.workspace_width_gap_port);
-            heightGap = res.getDimensionPixelSize(R.dimen.workspace_height_gap_port);
-            paddingLeft = res.getDimensionPixelSize(R.dimen.cell_layout_left_padding_port);
-            paddingRight = res.getDimensionPixelSize(R.dimen.cell_layout_right_padding_port);
-            paddingTop = res.getDimensionPixelSize(R.dimen.cell_layout_top_padding_port);
-            paddingBottom = res.getDimensionPixelSize(R.dimen.cell_layout_bottom_padding_port);
-        }
-
-        if (widthGap < 0 || heightGap < 0) {
-            int hSpace = measureWidth - paddingLeft - paddingRight;
-            int vSpace = measureHeight - paddingTop - paddingBottom;
-            int hFreeSpace = hSpace - (countX * cellWidth);
-            int vFreeSpace = vSpace - (countY * cellHeight);
-            widthGap = Math.min(maxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
-            heightGap = Math.min(maxGap, numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-        }
-        metrics.set(cellWidth, cellHeight, widthGap, heightGap);
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        metrics.set(grid.calculateCellWidth(measureWidth, countX),
+                grid.calculateCellHeight(measureHeight, countY), 0, 0);
     }
 
     public void setFixedSize(int width, int height) {
@@ -992,14 +942,22 @@ public class CellLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
+        if (mCellWidth < 0 || mCellHeight < 0) {
+            mCellWidth = grid.calculateCellWidth(widthSize, mCountX);
+            mCellHeight = grid.calculateCellHeight(heightSize, mCountY);
+            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
+                    mHeightGap, mCountX, mCountY);
+        }
 
-        int newWidth = widthSpecSize;
-        int newHeight = heightSpecSize;
+        int newWidth = widthSize;
+        int newHeight = heightSize;
         if (mFixedWidth > 0 && mFixedHeight > 0) {
             newWidth = mFixedWidth;
             newHeight = mFixedHeight;
@@ -1011,29 +969,21 @@ public class CellLayout extends ViewGroup {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
-            int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
+            int hSpace = widthSize - getPaddingLeft() - getPaddingRight();
+            int vSpace = heightSize - getPaddingTop() - getPaddingBottom();
             int hFreeSpace = hSpace - (mCountX * mCellWidth);
             int vFreeSpace = vSpace - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                    mCountX);
+            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
+                    mHeightGap, mCountX, mCountY);
         } else {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
         }
-
-        // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY
-        if (widthSpecMode == MeasureSpec.AT_MOST) {
-            newWidth = getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth) +
-                ((mCountX - 1) * mWidthGap);
-            newHeight = getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight) +
-                ((mCountY - 1) * mHeightGap);
-            setMeasuredDimension(newWidth, newHeight);
-        }
-
         int count = getChildCount();
+        int maxWidth = 0;
+        int maxHeight = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - getPaddingLeft() -
@@ -1041,8 +991,10 @@ public class CellLayout extends ViewGroup {
             int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - getPaddingTop() -
                     getPaddingBottom(), MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
+            maxWidth = Math.max(maxWidth, child.getMeasuredWidth());
+            maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
-        setMeasuredDimension(newWidth, newHeight);
+        setMeasuredDimension(maxWidth, maxHeight);
     }
 
     @Override
@@ -1530,7 +1482,7 @@ public class CellLayout extends ViewGroup {
      *        matches exactly. Otherwise we find the best matching direction.
      * @param occoupied The array which represents which cells in the CellLayout are occupied
      * @param blockOccupied The array which represents which cells in the specified block (cellX,
-     *        cellY, spanX, spanY) are occupied. This is used when try to move a group of views. 
+     *        cellY, spanX, spanY) are occupied. This is used when try to move a group of views.
      * @param result Array in which to place the result, or null (in which case a new array will
      *        be allocated)
      * @return The X, Y cell of a vacant area that can contain this object,
@@ -2003,7 +1955,7 @@ public class CellLayout extends ViewGroup {
     private boolean attemptPushInDirection(ArrayList<View> intersectingViews, Rect occupied,
             int[] direction, View ignoreView, ItemConfiguration solution) {
         if ((Math.abs(direction[0]) + Math.abs(direction[1])) > 1) {
-            // If the direction vector has two non-zero components, we try pushing 
+            // If the direction vector has two non-zero components, we try pushing
             // separately in each of the components.
             int temp = direction[1];
             direction[1] = 0;
@@ -2044,7 +1996,7 @@ public class CellLayout extends ViewGroup {
             direction[0] = temp;
             direction[0] *= -1;
             direction[1] *= -1;
-            
+
         } else {
             // If the direction vector has a single non-zero component, we push first in the
             // direction of the vector
@@ -2062,8 +2014,8 @@ public class CellLayout extends ViewGroup {
             // Switch the direction back
             direction[0] *= -1;
             direction[1] *= -1;
-            
-            // If we have failed to find a push solution with the above, then we try 
+
+            // If we have failed to find a push solution with the above, then we try
             // to find a solution by pushing along the perpendicular axis.
 
             // Swap the components
@@ -2125,7 +2077,7 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        // First we try to find a solution which respects the push mechanic. That is, 
+        // First we try to find a solution which respects the push mechanic. That is,
         // we try to find a solution such that no displaced item travels through another item
         // without also displacing that item.
         if (attemptPushInDirection(mIntersectingViews, mOccupiedRect, direction, ignoreView,
@@ -3013,10 +2965,13 @@ public class CellLayout extends ViewGroup {
     }
 
     public static int[] rectToCell(Resources resources, int width, int height, int[] result) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        int actualWidth = resources.getDimensionPixelSize(R.dimen.workspace_cell_width);
-        int actualHeight = resources.getDimensionPixelSize(R.dimen.workspace_cell_height);
+        int actualWidth = grid.cellWidthPx;
+        int actualHeight = grid.cellHeightPx;
         int smallerSize = Math.min(actualWidth, actualHeight);
 
         // Always round up to next largest cell

@@ -33,6 +33,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     private final WallpaperManager mWallpaperManager;
 
+    private boolean mIsHotseatLayout;
+
     private int mCellWidth;
     private int mCellHeight;
 
@@ -40,6 +42,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private int mHeightGap;
 
     private int mCountX;
+    private int mCountY;
 
     private boolean mInvertIfRtl = false;
 
@@ -49,12 +52,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap,
-            int countX) {
+            int countX, int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
         mWidthGap = widthGap;
         mHeightGap = heightGap;
         mCountX = countX;
+        mCountY = countY;
     }
 
     public View getChildAt(int x, int y) {
@@ -113,13 +117,28 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mInvertIfRtl = invert;
     }
 
+    public void setIsHotseat(boolean isHotseat) {
+        mIsHotseatLayout = isHotseat;
+    }
+
     public void measureChild(View child) {
+        final LauncherAppState app = LauncherAppState.getInstance();
+        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (!lp.isFullscreen) {
             lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
                     mCountX);
+
+            if (child instanceof LauncherAppWidgetHostView) {
+                // Widgets have their own padding, so skip
+            } else {
+                // Otherwise, center the icon
+                int cHeight = mIsHotseatLayout ? grid.hotseatCellHeightPx : Math.min(getMeasuredHeight(), grid.cellHeightPx);
+                int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
+                child.setPadding(0, cellPaddingY, 0, 0);
+            }
         } else {
             lp.x = 0;
             lp.y = 0;
@@ -142,12 +161,14 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
                 int childLeft = lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);

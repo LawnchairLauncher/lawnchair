@@ -120,19 +120,12 @@ final class Utilities {
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
-                // There are intrinsic sizes.
-                if (width < sourceWidth || height < sourceHeight) {
-                    // It's too big, scale it down.
-                    final float ratio = (float) sourceWidth / sourceHeight;
-                    if (sourceWidth > sourceHeight) {
-                        height = (int) (width / ratio);
-                    } else if (sourceHeight > sourceWidth) {
-                        width = (int) (height * ratio);
-                    }
-                } else if (sourceWidth < width && sourceHeight < height) {
-                    // Don't scale up the icon
-                    width = sourceWidth;
-                    height = sourceHeight;
+                // Scale the icon proportionally to the icon dimensions
+                final float ratio = (float) sourceWidth / sourceHeight;
+                if (sourceWidth > sourceHeight) {
+                    height = (int) (width / ratio);
+                } else if (sourceHeight > sourceWidth) {
+                    width = (int) (height * ratio);
                 }
             }
 
@@ -169,34 +162,8 @@ final class Utilities {
         }
     }
 
-    static void drawSelectedAllAppsBitmap(Canvas dest, int destWidth, int destHeight,
-            boolean pressed, Bitmap src) {
-        synchronized (sCanvas) { // we share the statics :-(
-            if (sIconWidth == -1) {
-                // We can't have gotten to here without src being initialized, which
-                // comes from this file already.  So just assert.
-                //initStatics(context);
-                throw new RuntimeException("Assertion failed: Utilities not initialized");
-            }
-
-            dest.drawColor(0, PorterDuff.Mode.CLEAR);
-
-            int[] xy = new int[2];
-            Bitmap mask = src.extractAlpha(sBlurPaint, xy);
-
-            float px = (destWidth - src.getWidth()) / 2;
-            float py = (destHeight - src.getHeight()) / 2;
-            dest.drawBitmap(mask, px + xy[0], py + xy[1],
-                    pressed ? sGlowColorPressedPaint : sGlowColorFocusedPaint);
-
-            mask.recycle();
-        }
-    }
-
     /**
      * Returns a Bitmap representing the thumbnail of the specified Bitmap.
-     * The size of the thumbnail is defined by the dimension
-     * android.R.dimen.launcher_application_icon_size.
      *
      * @param bitmap The bitmap to get a thumbnail of.
      * @param context The application's context.
@@ -216,24 +183,6 @@ final class Utilities {
                 final Resources resources = context.getResources();
                 return createIconBitmap(new BitmapDrawable(resources, bitmap), context);
             }
-        }
-    }
-
-    static Bitmap drawDisabledBitmap(Bitmap bitmap, Context context) {
-        synchronized (sCanvas) { // we share the statics :-(
-            if (sIconWidth == -1) {
-                initStatics(context);
-            }
-            final Bitmap disabled = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
-                    Bitmap.Config.ARGB_8888);
-            final Canvas canvas = sCanvas;
-            canvas.setBitmap(disabled);
-            
-            canvas.drawBitmap(bitmap, 0.0f, 0.0f, sDisabledPaint);
-
-            canvas.setBitmap(null);
-
-            return disabled;
         }
     }
 
@@ -345,26 +294,8 @@ final class Utilities {
         sDisabledPaint.setAlpha(0x88);
     }
 
-    /** Only works for positive numbers. */
-    static int roundToPow2(int n) {
-        int orig = n;
-        n >>= 1;
-        int mask = 0x8000000;
-        while (mask != 0 && (n & mask) == 0) {
-            mask >>= 1;
-        }
-        while (mask != 0) {
-            n |= mask;
-            mask >>= 1;
-        }
-        n += 1;
-        if (n != orig) {
-            n <<= 1;
-        }
-        return n;
-    }
-
-    static int generateRandomId() {
-        return new Random(System.currentTimeMillis()).nextInt(1 << 24);
+    public static void setIconSize(int widthPx) {
+        sIconWidth = sIconHeight = widthPx;
+        sIconTextureWidth = sIconTextureHeight = widthPx;
     }
 }

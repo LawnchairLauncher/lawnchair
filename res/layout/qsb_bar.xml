@@ -16,16 +16,24 @@
 <com.android.launcher3.SearchDropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/QSBBar"
-    android:focusable="false">
+    android:focusable="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- Search buttons container -->
     <include android:id="@+id/qsb_search_bar"
-        layout="@layout/search_bar" />
+        layout="@layout/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
 
     <!-- Drag specific targets container -->
     <LinearLayout
         style="@style/SearchDropTargetBar"
-        android:id="@+id/drag_target_bar">
+        android:id="@+id/drag_target_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
         <include
             layout="@layout/drop_target_bar" />

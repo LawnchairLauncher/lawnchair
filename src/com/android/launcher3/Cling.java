@@ -90,13 +90,15 @@ public class Cling extends FrameLayout {
             mPositionData = positionData;
 
             Resources r = getContext().getResources();
+            LauncherAppState app = LauncherAppState.getInstance();
+            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
             mPunchThroughGraphic = r.getDrawable(R.drawable.cling);
             mPunchThroughGraphicCenterRadius =
                 r.getDimensionPixelSize(R.dimen.clingPunchThroughGraphicCenterRadius);
-            mAppIconSize = r.getDimensionPixelSize(R.dimen.app_icon_size);
-            mRevealRadius = r.getDimensionPixelSize(R.dimen.reveal_radius) * 1f;
-            mButtonBarHeight = r.getDimensionPixelSize(R.dimen.button_bar_height);
+            mAppIconSize = grid.iconSizePx;
+            mRevealRadius = grid.iconSizePx * 1f;
+            mButtonBarHeight = grid.hotseatBarHeightPx;
 
             mErasePaint = new Paint();
             mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));

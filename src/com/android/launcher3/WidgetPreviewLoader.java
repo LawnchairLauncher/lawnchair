@@ -138,10 +138,12 @@ public class WidgetPreviewLoader {
     }
 
     public WidgetPreviewLoader(Launcher launcher) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         mContext = mLauncher = launcher;
         mPackageManager = mContext.getPackageManager();
-        mAppIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.app_icon_size);
-        LauncherAppState app = LauncherAppState.getInstance();
+        mAppIconSize = grid.iconSizePx;
         mIconCache = app.getIconCache();
         mDb = app.getWidgetPreviewCacheDb();
         mLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();

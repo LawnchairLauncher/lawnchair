@@ -28,11 +28,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
+import android.view.*;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
@@ -503,6 +499,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
+            toY += Math.round(scale * (child.getPaddingTop() - dragView.getDragRegionTop()));
             toY -= scale * Workspace.DRAG_BITMAP_PADDING / 2;
             toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
             // Center in the x coordinate about the target's drawable

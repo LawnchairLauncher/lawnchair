@@ -138,39 +138,16 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     public Folder(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         setAlwaysDrawnWithCacheEnabled(false);
         mInflater = LayoutInflater.from(context);
-        mIconCache = (LauncherAppState.getInstance()).getIconCache();
+        mIconCache = app.getIconCache();
 
         Resources res = getResources();
-        mMaxCountX = mMaxVisibleX = res.getInteger(R.integer.folder_max_count_x);
-        mMaxCountY = mMaxVisibleY = res.getInteger(R.integer.folder_max_count_y);
-        mMaxNumItems = res.getInteger(R.integer.folder_max_num_items);
-
-        if (mMaxCountY == -1) {
-            // -2 indicates unlimited
-            mMaxCountY = Integer.MAX_VALUE;
-            mMaxVisibleX = LauncherModel.getCellCountX() + 1;
-        }
-        if (mMaxNumItems == -1) {
-            // -2 indicates unlimited
-            mMaxNumItems = Integer.MAX_VALUE;
-            mMaxVisibleY = LauncherModel.getCellCountY() + 1;
-        }
-        if (mMaxCountX == 0) {
-            mMaxCountX = mMaxVisibleX = LauncherModel.getCellCountX();
-            mMaxVisibleX++;
-        }
-        if (mMaxCountY == 0) {
-            mMaxCountY = mMaxVisibleY = LauncherModel.getCellCountY();
-            mMaxVisibleY++;
-        }
-        if (mMaxNumItems == 0) {
-            mMaxNumItems = mMaxCountX * mMaxCountY;
-            if (mMaxNumItems < 0) {
-                mMaxNumItems = Integer.MAX_VALUE;
-            }
-        }
+        mMaxCountX = mMaxVisibleX = mMaxVisibleY = (int) (grid.numColumns);
+        mMaxCountY = mMaxNumItems = Integer.MAX_VALUE;
 
         mInputMethodManager = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -196,10 +173,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
         mContent = (CellLayout) findViewById(R.id.folder_content);
 
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         // Beyond this height, the area scrolls
+        mContent.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         mContent.setGridSize(mMaxVisibleX, mMaxVisibleY);
         mMaxContentAreaHeight = mContent.getDesiredHeight() - SCROLL_CUT_OFF_AMOUNT;
-
         mContent.setGridSize(0, 0);
         mContent.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         mContent.setInvertIfRtl(true);
@@ -535,13 +515,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         oa.start();
     }
 
-    void notifyDataSetChanged() {
-        // recreate all the children if the data set changes under us. We may want to do this more
-        // intelligently (ie just removing the views that should no longer exist)
-        mContent.removeAllViewsInLayout();
-        bind(mInfo);
-    }
-
     public boolean acceptDrop(DragObject d) {
         final ItemInfo item = (ItemInfo) d.dragInfo;
         final int itemType = item.itemType;
@@ -764,6 +737,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         boolean beingCalledAfterUninstall = mDeferredAction != null;
         boolean successfulDrop =
                 success && (!beingCalledAfterUninstall || mUninstallSuccessful);
+
         if (successfulDrop) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon) {
                 replaceFolderWithFinalItem();
@@ -783,6 +757,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 completeDragExit();
             }
         }
+
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
         mItemAddedBackToSelfViaIcon = false;
@@ -981,7 +956,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         int contentAreaHeight = mContent.getDesiredHeight();
         if (contentAreaHeight >= mMaxContentAreaHeight) {
             // Subtract a bit so the user can see that it's scrollable.

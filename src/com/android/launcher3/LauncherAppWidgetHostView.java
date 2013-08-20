@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

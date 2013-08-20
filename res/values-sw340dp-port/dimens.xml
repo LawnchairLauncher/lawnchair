@@ -18,18 +18,6 @@
 <!-- Clings -->
     <dimen name="folderClingMarginTop">70dp</dimen>
 
-<!-- Workspace -->
-    <dimen name="workspace_divider_padding_left">6dp</dimen>
-    <dimen name="workspace_divider_padding_right">6dp</dimen>
-
-    <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
-         that we put on each page for allowing folders to draw out of bounds -->
-    <dimen name="qsb_bar_height_inset">48dp</dimen>
-    <dimen name="qsb_bar_height">54dp</dimen>
-    <dimen name="qsb_padding_left">6dp</dimen>
-    <dimen name="qsb_padding_right">6dp</dimen>
-    <dimen name="search_bar_height">48dp</dimen>
-
 <!-- AppsCustomize -->
     <dimen name="apps_customize_pageLayoutPaddingTop">16dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingBottom">20dp</dimen>
