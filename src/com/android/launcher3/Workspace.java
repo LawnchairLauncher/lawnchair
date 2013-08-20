@@ -461,26 +461,22 @@ public class Workspace extends SmoothPagedView
         return mTouchState != TOUCH_STATE_REST;
     }
 
-    public long insertNewWorkspaceScreen(long screenId) {
-        return insertNewWorkspaceScreen(screenId, getChildCount(), true);
-    }
-
-    public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId, boolean updateDb) {
+    public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId) {
         // Find the index to insert this view into.  If the empty screen exists, then
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
         if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
-        return insertNewWorkspaceScreen(screenId, insertIndex, updateDb);
+        return insertNewWorkspaceScreen(screenId, insertIndex);
     }
 
-    public long insertNewWorkspaceScreen(long screenId, boolean updateDb) {
-        return insertNewWorkspaceScreen(screenId, getChildCount(), updateDb);
+    public long insertNewWorkspaceScreen(long screenId) {
+        return insertNewWorkspaceScreen(screenId, getChildCount());
     }
 
-    public long insertNewWorkspaceScreen(long screenId, int insertIndex, boolean updateDb) {
-        Log.w(TAG, "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ", " + updateDb + ")");
+    public long insertNewWorkspaceScreen(long screenId, int insertIndex) {
+        Log.w(TAG, "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ")");
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -489,10 +485,6 @@ public class Workspace extends SmoothPagedView
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
-        if (updateDb) {
-            // On bind we don't need to update the screens in the database.
-            mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
-        }
         return screenId;
     }
 
@@ -550,7 +542,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void addExtraEmptyScreen() {
-        insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID, false);
+        insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
     }
 
     public CellLayout getScreenWithId(long screenId) {
