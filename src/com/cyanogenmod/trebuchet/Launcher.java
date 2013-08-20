@@ -389,9 +389,6 @@ public final class Launcher extends Activity
         mInflater = getLayoutInflater();
         final Resources res = getResources();
 
-        // Load all preferences
-        PreferencesProvider.load(this);
-
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();

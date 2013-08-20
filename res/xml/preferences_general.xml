@@ -27,4 +27,7 @@
     <CheckBoxPreference android:key="ui_general_fullscreen"
         android:title="@string/preferences_interface_general_fullscreen_title"
         android:summary="@string/preferences_interface_general_fullscreen_summary" />
+    <Preference android:key="ui_general_iconpack"
+        android:title="@string/preferences_interface_general_iconpack_title"
+        android:summary="@string/preferences_interface_general_iconpack_summary" />
 </PreferenceScreen>

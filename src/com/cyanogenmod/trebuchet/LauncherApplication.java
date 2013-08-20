@@ -27,6 +27,7 @@ import android.database.ContentObserver;
 import android.os.Handler;
 
 import com.cyanogenmod.trebuchet.R;
+import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 import java.lang.ref.WeakReference;
 
@@ -47,6 +48,9 @@ public class LauncherApplication extends Application {
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
         sIsScreenLarge = getResources().getBoolean(R.bool.is_large_screen);
         sScreenDensity = getResources().getDisplayMetrics().density;
+
+        // Load all preferences
+        PreferencesProvider.load(this);
 
         mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(this);
         mIconCache = new IconCache(this);
@@ -108,7 +112,7 @@ public class LauncherApplication extends Application {
         return mModel;
     }
 
-    IconCache getIconCache() {
+    public IconCache getIconCache() {
         return mIconCache;
     }
 
