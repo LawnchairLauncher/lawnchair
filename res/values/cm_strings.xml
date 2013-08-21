@@ -186,6 +186,6 @@
     <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
     <string name="live_folder_cling_create_folder">Live folders allow app developers to create folders with dynamic content.
     Folder contents can be removed with a long press on a single entry. Unlike normal folders, items can only be added by
-    the appplication creating the folder</string>
+    the application creating the folder</string>
 
 </resources>
