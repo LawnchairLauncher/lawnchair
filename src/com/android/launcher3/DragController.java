@@ -687,6 +687,10 @@ public class DragController {
             }
         }
         mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject, false, accepted);
+
+        // Write all the logs to disk
+        Launcher.addDumpLog(TAG, "10249126 - DragController.drop() - dumping logs to disk", true);
+        mLauncher.dumpLogsToLocalData(false);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {

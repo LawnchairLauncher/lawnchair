@@ -40,6 +40,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -455,7 +456,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void removeAllWorkspaceScreens() {
-        Log.w(TAG, "10249126 - removeAllWorkspaceScreens()");
+        Launcher.addDumpLog(TAG, "10249126 - removeAllWorkspaceScreens()", true);
         // Remove the pages and clear the screen models
         removeAllViews();
         mScreenOrder.clear();
@@ -466,7 +467,7 @@ public class Workspace extends SmoothPagedView
         // Find the index to insert this view into.  If the empty screen exists, then
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
-        Log.w(TAG, "10249126 - insertNewWorkspaceScreenBeforeEmptyScreen(" + insertIndex + ")");
+        Launcher.addDumpLog(TAG, "10249126 - insertNewWorkspaceScreenBeforeEmptyScreen(" + insertIndex + ")", true);
         if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
@@ -478,7 +479,9 @@ public class Workspace extends SmoothPagedView
     }
 
     public long insertNewWorkspaceScreen(long screenId, int insertIndex) {
-        Log.w(TAG, "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ")");
+        String log = "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ")";
+        Launcher.addDumpLog(TAG, log, true);
+
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -491,7 +494,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void createCustomContentPage() {
-        Log.w(TAG, "10249126 - createCustomContentPage()");
+        Launcher.addDumpLog(TAG, "10249126 - createCustomContentPage()", true);
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -526,7 +529,12 @@ public class Workspace extends SmoothPagedView
     }
 
     public long commitExtraEmptyScreen() {
-        Log.w(TAG, "10249126 - commitExtraEmptyScreen()");
+        Launcher.addDumpLog(TAG, "10249126 - commitExtraEmptyScreen()", true);
+
+        // Write all the logs to disk
+        Launcher.addDumpLog(TAG, "10249126 - commitExtraEmptyScreen() - dumping logs to disk", true);
+        mLauncher.dumpLogsToLocalData(false);
+
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
         mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
@@ -548,13 +556,13 @@ public class Workspace extends SmoothPagedView
     }
 
     public CellLayout getScreenWithId(long screenId) {
-        Log.w(TAG, "10249126 - getScreenWithId(" + screenId + ")");
+        Launcher.addDumpLog(TAG, "10249126 - getScreenWithId(" + screenId + ")", true);
         CellLayout layout = mWorkspaceScreens.get(screenId);
         return layout;
     }
 
     public long getIdForScreen(CellLayout layout) {
-        Log.w(TAG, "10249126 - getIdForScreen()");
+        Launcher.addDumpLog(TAG, "10249126 - getIdForScreen()", true);
         Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
         while (iter.hasNext()) {
             long id = iter.next();
@@ -566,7 +574,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public int getPageIndexForScreenId(long screenId) {
-        Log.w(TAG, "10249126 - getPageIndexForScreenId(" + screenId + ")");
+        Launcher.addDumpLog(TAG, "10249126 - getPageIndexForScreenId(" + screenId + ")", true);
         return indexOfChild(mWorkspaceScreens.get(screenId));
     }
 
@@ -578,7 +586,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean hasNonCustomEmptyScreens() {
-        Log.w(TAG, "10249126 - hasNonCustomEmptyScreens()");
+        Launcher.addDumpLog(TAG, "10249126 - hasNonCustomEmptyScreens()", true);
         Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
         while (iter.hasNext()) {
             long id = iter.next();
@@ -599,7 +607,7 @@ public class Workspace extends SmoothPagedView
             return;
         }
 
-        Log.w(TAG, "10249126 - stripEmptyScreens()");
+        Launcher.addDumpLog(TAG, "10249126 - stripEmptyScreens()", true);
 
         int currentPage = getNextPage();
         ArrayList<Long> removeScreens = new ArrayList<Long>();
@@ -612,7 +620,7 @@ public class Workspace extends SmoothPagedView
 
         int pageShift = 0;
         for (Long id: removeScreens) {
-            Log.w(TAG, "10249126 - \tremove(" + id + ")");
+            Launcher.addDumpLog(TAG, "10249126 - \tremove(" + id + ")", true);
             CellLayout cl = mWorkspaceScreens.get(id);
             mWorkspaceScreens.remove(id);
             mScreenOrder.remove(id);
@@ -729,7 +737,7 @@ public class Workspace extends SmoothPagedView
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
-            Log.w(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
+            Launcher.addDumpLog(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout", true);
         }
 
         if (!(child instanceof Folder)) {
@@ -1633,7 +1641,7 @@ public class Workspace extends SmoothPagedView
             mScreenOrder.add(getIdForScreen(cl));
         }
 
-        Log.w(TAG, "10249126 - onEndReordering()");
+        Launcher.addDumpLog(TAG, "10249126 - onEndReordering()", true);
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.
@@ -3513,18 +3521,19 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    ArrayList<ComponentName> stripDuplicateApps() {
+    ArrayList<ComponentName> getUniqueComponents(boolean stripDuplicates, ArrayList<ComponentName> duplicates) {
         ArrayList<ComponentName> uniqueIntents = new ArrayList<ComponentName>();
-        stripDuplicateApps((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents);
+        getUniqueIntents((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents, duplicates, false);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-            stripDuplicateApps(cl, uniqueIntents);
+            getUniqueIntents(cl, uniqueIntents, duplicates, false);
         }
         return uniqueIntents;
     }
 
-    void stripDuplicateApps(CellLayout cl, ArrayList<ComponentName> uniqueIntents) {
+    void getUniqueIntents(CellLayout cl, ArrayList<ComponentName> uniqueIntents,
+            ArrayList<ComponentName> duplicates, boolean stripDuplicates) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
 
         ArrayList<View> children = new ArrayList<View>();
@@ -3541,15 +3550,24 @@ public class Workspace extends SmoothPagedView
                 ShortcutInfo si = (ShortcutInfo) info;
                 ComponentName cn = si.intent.getComponent();
 
-                if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                Uri dataUri = si.intent.getData();
+                // If dataUri is not null / empty or if this component isn't one that would
+                // have previously showed up in the AllApps list, then this is a widget-type
+                // shortcut, so ignore it.
+                if (dataUri != null && !dataUri.equals(Uri.EMPTY)) {
                     continue;
                 }
 
                 if (!uniqueIntents.contains(cn)) {
                     uniqueIntents.add(cn);
                 } else {
-                    cl.removeViewInLayout(v);
-                    LauncherModel.deleteItemFromDatabase(mLauncher, si);
+                    if (stripDuplicates) {
+                        cl.removeViewInLayout(v);
+                        LauncherModel.deleteItemFromDatabase(mLauncher, si);
+                    }
+                    if (duplicates != null) {
+                        duplicates.add(cn);
+                    }
                 }
             }
             if (v instanceof FolderIcon) {
@@ -3560,14 +3578,24 @@ public class Workspace extends SmoothPagedView
                         ShortcutInfo si = (ShortcutInfo) items.get(j).getTag();
                         ComponentName cn = si.intent.getComponent();
 
-                        if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                        Uri dataUri = si.intent.getData();
+                        // If dataUri is not null / empty or if this component isn't one that would
+                        // have previously showed up in the AllApps list, then this is a widget-type
+                        // shortcut, so ignore it.
+                        if (dataUri != null && !dataUri.equals(Uri.EMPTY)) {
                             continue;
                         }
+
                         if (!uniqueIntents.contains(cn)) {
                             uniqueIntents.add(cn);
-                        } else {
-                            fi.getFolderInfo().remove(si);
-                            LauncherModel.deleteItemFromDatabase(mLauncher, si);
+                        }  else {
+                            if (stripDuplicates) {
+                                fi.getFolderInfo().remove(si);
+                                LauncherModel.deleteItemFromDatabase(mLauncher, si);
+                            }
+                            if (duplicates != null) {
+                                duplicates.add(cn);
+                            }
                         }
                     }
                 }
