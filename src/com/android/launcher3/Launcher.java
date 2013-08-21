@@ -3457,10 +3457,6 @@ public class Launcher extends Activity
         mOnResumeCallbacks.add(run);
     }
 
-    public void removeOnResumeCallback(Runnable run) {
-        mOnResumeCallbacks.remove(run);
-    }
-
     /**
      * If the activity is currently paused, signal that we need to re-run the loader
      * in onResume.

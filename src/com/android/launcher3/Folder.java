@@ -725,6 +725,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onDropCompleted(final View target, final DragObject d,
             final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
+            Log.d(TAG, "Deferred handling drop because waiting for uninstall.");
             mDeferredAction = new Runnable() {
                     public void run() {
                         onDropCompleted(target, d, isFlingToDelete, success);

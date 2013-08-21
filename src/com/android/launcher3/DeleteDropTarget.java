@@ -253,7 +253,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
          return AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d);
     }
 
-    private void completeDrop(final DragObject d) {
+    private void completeDrop(DragObject d) {
         ItemInfo item = (ItemInfo) d.dragInfo;
         boolean wasWaitingForUninstall = mWaitingForUninstall;
         mWaitingForUninstall = false;
@@ -264,11 +264,32 @@ public class DeleteDropTarget extends ButtonDropTarget {
         } else if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) item;
             if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
-                ComponentName componentName = shortcut.intent.getComponent();
+                final ComponentName componentName = shortcut.intent.getComponent();
+                final DragSource dragSource = d.dragSource;
                 int flags = ApplicationInfo.initFlags(
                     ShortcutInfo.getPackageInfo(getContext(), componentName.getPackageName()));
                 mWaitingForUninstall =
                     mLauncher.startApplicationUninstallActivity(componentName, flags);
+                if (mWaitingForUninstall) {
+                    final Runnable checkIfUninstallWasSuccess = new Runnable() {
+                        @Override
+                        public void run() {
+                            mWaitingForUninstall = false;
+                            String packageName = componentName.getPackageName();
+                            List<ResolveInfo> activities =
+                                    AllAppsList.findActivitiesForPackage(getContext(), packageName);
+                            boolean uninstallSuccessful = activities.size() == 0;
+                            if (dragSource instanceof Folder) {
+                                ((Folder) dragSource).
+                                    onUninstallActivityReturned(uninstallSuccessful);
+                            } else if (dragSource instanceof Workspace) {
+                                ((Workspace) dragSource).
+                                    onUninstallActivityReturned(uninstallSuccessful);
+                            }
+                        }
+                    };
+                    mLauncher.addOnResumeCallback(checkIfUninstallWasSuccess);
+                }
             }
         } else if (isWorkspaceOrFolderApplication(d)) {
             LauncherModel.deleteItemFromDatabase(mLauncher, item);
@@ -300,30 +321,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
             } else if (d.dragSource instanceof Workspace) {
                 ((Workspace) d.dragSource).onUninstallActivityReturned(false);
             }
-        }
-        if (mWaitingForUninstall) {
-            final Runnable checkIfUninstallWasSuccess = new Runnable() {
-                    @Override
-                        public void run() {
-                        mWaitingForUninstall = false;
-                        ShortcutInfo shortcut = (ShortcutInfo) d.dragInfo;
-                        if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
-                            String packageName = shortcut.intent.getComponent().getPackageName();
-                            List<ResolveInfo> activities =
-                                AllAppsList.findActivitiesForPackage(getContext(), packageName);
-                            boolean uninstallSuccessful = activities.size() == 0;
-                              mLauncher.removeOnResumeCallback(this);
-                              if (d.dragSource instanceof Folder) {
-                                  ((Folder) d.dragSource).
-                                      onUninstallActivityReturned(uninstallSuccessful);
-                              } else if (d.dragSource instanceof Workspace) {
-                                  ((Workspace) d.dragSource).
-                                      onUninstallActivityReturned(uninstallSuccessful);
-                              }
-                        }
-                    }
-                };
-            mLauncher.addOnResumeCallback(checkIfUninstallWasSuccess);
         }
     }
 
