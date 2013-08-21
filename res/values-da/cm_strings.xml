@@ -74,8 +74,13 @@
     <string name="preferences_interface_drawer_summary">Skuffe til apps og widgets</string>
     <string name="preferences_interface_drawer_orientation_title">Orientering</string>
     <string name="preferences_interface_drawer_orientation_summary">Vælg hvilken retning, skuffen bladrer</string>
+    <string name="preferences_interface_drawer_apps_category">Apps</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Skjulte apps</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Skjul apps fra skuffen</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Skjulte apps (genveje)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Fjern skjulte apps\' genveje fra startskærmen</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Skjulte apps (widgets)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Fjerne skjulte apps\' widgets fra startskærmen</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Sammen med apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Glid fra applikationer til widgets uden at skifte fane</string>
@@ -113,6 +118,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Lås genvejs- og mappepositioner på startskærmen, startlinjen og apps- og widgetsskuffen</string>
     <string name="preferences_interface_general_fullscreen_title">Fuldskærmstilstand</string>
     <string name="preferences_interface_general_fullscreen_summary">Skjul statuslinjen for at udvide startskærmen</string>
+    <string name="folder_empty_contents_title">Ingen objekter fundet</string>
     <string name="effects_standard">Standard</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Zoom ind</string>
@@ -129,4 +135,8 @@
     <string name="effects_accordion">Harmonika</string>
     <string name="effects_carousel_left">Karrusel venstre</string>
     <string name="effects_carousel_right">Karrusel højre</string>
+    <string name="live_folder_cling_title">Live-mapper</string>
+    <string name="live_folder_cling_create_folder">Live-mapper lader app-udviklere oprette mapper med dynamisk indhold.
+    Mappeindhold kan fjernes med et langt tryk på et enkelt objekt. I modsætning til normale mapper kan objekter kun tilføjes af
+    app\'en, som har oprettet mappen</string>
 </resources>
