@@ -2960,10 +2960,6 @@ public class CellLayout extends ViewGroup {
      * @param height Height in pixels
      * @param result An array of length 2 in which to store the result (may be null).
      */
-    public int[] rectToCell(int width, int height, int[] result) {
-        return rectToCell(width, height, result);
-    }
-
     public static int[] rectToCell(int width, int height, int[] result) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
