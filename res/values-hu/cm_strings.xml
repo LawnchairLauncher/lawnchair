@@ -118,6 +118,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Ikonok, mappák, tálca, alkalmazások és modulok helyzetének zárolása a kezdőképernyőn</string>
     <string name="preferences_interface_general_fullscreen_title">Teljes képernyő</string>
     <string name="preferences_interface_general_fullscreen_summary">Értesítési sáv elrejtése a kezdőképernyő kiterjesztéséhez</string>
+    <string name="folder_empty_contents_title">Ez a mappa üres</string>
     <string name="effects_standard">Csúsztatás</string>
     <string name="effects_tablet">Táblagép</string>
     <string name="effects_zoom_in">Nagyítás befelé</string>
@@ -134,4 +135,6 @@
     <string name="effects_accordion">Harmónika</string>
     <string name="effects_carousel_left">Körhinta balra</string>
     <string name="effects_carousel_right">Körhinta jobbra</string>
+    <string name="live_folder_cling_title">Élő mappák</string>
+    <string name="live_folder_cling_create_folder">Az élő mappák lehetővé teszik az alkalmazás fejlesztők számára, hogy dinamikus tartalmú mappákat hozzanak létre. A mappából elemek hosszú érintéssel távolíthatóak el. Ellentétben a hagyományos mappákkal, ezeket csak az alkalmazások hozhatják létre</string>
 </resources>
