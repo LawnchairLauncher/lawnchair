@@ -50,7 +50,6 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -107,12 +106,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Default launcher application.
@@ -1896,7 +1891,7 @@ public class Launcher extends Activity
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
             intent.setComponent(appWidgetInfo.configure);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
+            Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_APPWIDGET);
         } else {
             // Otherwise just add it
             completeAddAppWidget(appWidgetId, info.container, info.screenId, boundWidget,
@@ -2002,9 +1997,9 @@ public class Launcher extends Activity
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
             pickIntent.putExtra(Intent.EXTRA_TITLE, getText(R.string.title_select_application));
-            startActivityForResultSafely(pickIntent, REQUEST_PICK_APPLICATION);
+            Utilities.startActivityForResultSafely(this, pickIntent, REQUEST_PICK_APPLICATION);
         } else {
-            startActivityForResultSafely(intent, REQUEST_CREATE_SHORTCUT);
+            Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_SHORTCUT);
         }
     }
 
@@ -2318,19 +2313,6 @@ public class Launcher extends Activity
             Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
         }
         return success;
-    }
-
-    void startActivityForResultSafely(Intent intent, int requestCode) {
-        try {
-            startActivityForResult(intent, requestCode);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        } catch (SecurityException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
-                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                    "or use the exported attribute for this activity.", e);
-        }
     }
 
     private void handleFolderClick(FolderIcon folderIcon) {

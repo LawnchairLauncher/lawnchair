@@ -16,9 +16,10 @@
 
 package com.android.launcher3;
 
-import java.util.Random;
-
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -28,18 +29,16 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-
-import com.android.launcher3.R;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -297,5 +296,19 @@ final class Utilities {
     public static void setIconSize(int widthPx) {
         sIconWidth = sIconHeight = widthPx;
         sIconTextureWidth = sIconTextureHeight = widthPx;
+    }
+
+    public static void startActivityForResultSafely(
+            Activity activity, Intent intent, int requestCode) {
+        try {
+            activity.startActivityForResult(intent, requestCode);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+        } catch (SecurityException e) {
+            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
+                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
+                    "or use the exported attribute for this activity.", e);
+        }
     }
 }
