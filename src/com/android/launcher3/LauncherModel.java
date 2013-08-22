@@ -784,8 +784,8 @@ public class LauncherModel extends BroadcastReceiver {
                 ItemInfo item = new ItemInfo();
                 item.cellX = c.getInt(cellXIndex);
                 item.cellY = c.getInt(cellYIndex);
-                item.spanX = c.getInt(spanXIndex);
-                item.spanY = c.getInt(spanYIndex);
+                item.spanX = Math.max(1, c.getInt(spanXIndex));
+                item.spanY = Math.max(1, c.getInt(spanYIndex));
                 item.container = c.getInt(containerIndex);
                 item.itemType = c.getInt(itemTypeIndex);
                 item.screenId = c.getInt(screenIndex);
