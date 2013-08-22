@@ -95,9 +95,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             } else if (meta.mGalleryImageUri != null) {
                 mCropView.setTileSource(new BitmapRegionTileSource(WallpaperPickerActivity.this,
                         meta.mGalleryImageUri, 1024, 0), null);
+                mCropView.setTouchEnabled(true);
             } else {
                 mCropView.setTileSource(new BitmapRegionTileSource(WallpaperPickerActivity.this,
                         meta.mWallpaperResId, 1024, 0), null);
+                mCropView.setTouchEnabled(false);
+                mCropView.moveToUpperLeft();
             }
         }
     };
