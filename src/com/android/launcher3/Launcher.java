@@ -68,6 +68,7 @@ import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -376,11 +377,14 @@ public class Launcher extends Activity
         Display display = getWindowManager().getDefaultDisplay();
         display.getCurrentSizeRange(smallestSize, largestSize);
         display.getRealSize(realSize);
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
         // Lazy-initialize the dynamic grid
         DeviceProfile grid = app.initDynamicGrid(this,
                 Math.min(smallestSize.x, smallestSize.y),
                 Math.min(largestSize.x, largestSize.y),
-                realSize.x, realSize.y);
+                realSize.x, realSize.y,
+                dm.widthPixels, dm.heightPixels);
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),

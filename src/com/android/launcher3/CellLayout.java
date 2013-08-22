@@ -189,6 +189,8 @@ public class CellLayout extends ViewGroup {
         setClipToPadding(false);
         mLauncher = (Launcher) context;
 
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = -1;
@@ -196,8 +198,8 @@ public class CellLayout extends ViewGroup {
         mWidthGap = mOriginalWidthGap = 0;
         mHeightGap = mOriginalHeightGap = 0;
         mMaxGap = Integer.MAX_VALUE;
-        mCountX = LauncherModel.getCellCountX();
-        mCountY = LauncherModel.getCellCountY();
+        mCountX = (int) grid.numColumns;
+        mCountY = (int) grid.numRows;
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
@@ -208,8 +210,6 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         mHotseatScale = (float) grid.hotseatIconSize / grid.iconSize;
 
         mNormalBackground = res.getDrawable(R.drawable.homescreen_blue_normal_holo);
@@ -1203,6 +1203,11 @@ public class CellLayout extends ViewGroup {
 
             int left = topLeft[0];
             int top = topLeft[1];
+
+            // Offset icons by their padding
+            if (v instanceof BubbleTextView) {
+                top += v.getPaddingTop();
+            }
 
             if (v != null && dragOffset == null) {
                 // When drawing the drag outline, it did not account for margin offsets

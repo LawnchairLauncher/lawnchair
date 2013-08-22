@@ -68,6 +68,8 @@ class DeviceProfile {
 
     int widthPx;
     int heightPx;
+    int availableWidthPx;
+    int availableHeightPx;
     int iconSizePx;
     int iconTextSizePx;
     int cellWidthPx;
@@ -100,16 +102,15 @@ class DeviceProfile {
     }
 
     DeviceProfile(ArrayList<DeviceProfile> profiles,
-                  float minWidth, int minWidthPx,
-                  float minHeight, int minHeightPx,
+                  float minWidth, float minHeight,
                   int wPx, int hPx,
+                  int awPx, int ahPx,
                   Resources resources) {
         DisplayMetrics dm = resources.getDisplayMetrics();
         ArrayList<DeviceProfileQuery> points =
                 new ArrayList<DeviceProfileQuery>();
         transposeLayoutWithOrientation =
                 resources.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
-        updateFromConfiguration(resources, wPx, hPx);
         minWidthDps = minWidth;
         minHeightDps = minHeight;
 
@@ -133,16 +134,16 @@ class DeviceProfile {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.iconSize));
         }
         iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
-        iconSizePx = (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                iconSize, dm));
+        iconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
+
         // Interpolate the icon text size
         points.clear();
         for (DeviceProfile p : profiles) {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.iconTextSize));
         }
         iconTextSize = invDistWeightedInterpolate(minWidth, minHeight, points);
-        iconTextSizePx = (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                iconTextSize, dm));
+        iconTextSizePx = DynamicGrid.pxFromSp(iconTextSize, dm);
+
         // Interpolate the hotseat size
         points.clear();
         for (DeviceProfile p : profiles) {
@@ -154,14 +155,12 @@ class DeviceProfile {
         for (DeviceProfile p : profiles) {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.hotseatIconSize));
         }
-
         // Hotseat
         hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
-        hotseatIconSizePx = (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                hotseatIconSize, dm));
-        hotseatBarHeightPx = iconSizePx + 4 * edgeMarginPx;
-        hotseatCellWidthPx = iconSizePx;
-        hotseatCellHeightPx = iconSizePx;
+        hotseatIconSizePx = DynamicGrid.pxFromDp(hotseatIconSize, dm);
+
+        // Calculate other vars based on Configuration
+        updateFromConfiguration(resources, wPx, hPx, awPx, ahPx);
 
         // Search Bar
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
@@ -176,6 +175,27 @@ class DeviceProfile {
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + (int) Math.ceil(fm.bottom - fm.top);
 
+        // At this point, if the cells do not fit into the available height, then we need
+        // to shrink the icon size
+        /*
+        Rect padding = getWorkspacePadding(isLandscape ?
+                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+        int h = (int) (numRows * cellHeightPx) + padding.top + padding.bottom;
+        if (h > availableHeightPx) {
+            float delta = h - availableHeightPx;
+            int deltaPx = (int) Math.ceil(delta / numRows);
+            iconSizePx -= deltaPx;
+            iconSize = DynamicGrid.dpiFromPx(iconSizePx, dm);
+            cellWidthPx = iconSizePx;
+            cellHeightPx = iconSizePx + (int) Math.ceil(fm.bottom - fm.top);
+        }
+        */
+
+        // Hotseat
+        hotseatBarHeightPx = iconSizePx + 4 * edgeMarginPx;
+        hotseatCellWidthPx = iconSizePx;
+        hotseatCellHeightPx = iconSizePx;
+
         // Folder
         folderCellWidthPx = cellWidthPx + 3 * edgeMarginPx;
         folderCellHeightPx = cellHeightPx + edgeMarginPx;
@@ -183,13 +203,17 @@ class DeviceProfile {
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
     }
 
-    void updateFromConfiguration(Resources resources, int wPx, int hPx) {
+    void updateFromConfiguration(Resources resources, int wPx, int hPx,
+                                 int awPx, int ahPx) {
+        DisplayMetrics dm = resources.getDisplayMetrics();
         isLandscape = (resources.getConfiguration().orientation ==
                 Configuration.ORIENTATION_LANDSCAPE);
         isTablet = resources.getBoolean(R.bool.is_tablet);
         isLargeTablet = resources.getBoolean(R.bool.is_large_tablet);
         widthPx = wPx;
         heightPx = hPx;
+        availableWidthPx = awPx;
+        availableHeightPx = ahPx;
     }
 
     private float dist(PointF p0, PointF p1) {
@@ -415,13 +439,22 @@ public class DynamicGrid {
     private float mMinWidth;
     private float mMinHeight;
 
-    public static int dpiFromPx(int size, DisplayMetrics metrics){
+    public static float dpiFromPx(int size, DisplayMetrics metrics){
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
-        return (int) Math.round(size / densityRatio);
+        return (size / densityRatio);
+    }
+    public static int pxFromDp(float size, DisplayMetrics metrics) {
+        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                size, metrics));
+    }
+    public static int pxFromSp(float size, DisplayMetrics metrics) {
+        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                size, metrics));
     }
 
     public DynamicGrid(Resources resources, int minWidthPx, int minHeightPx,
-                       int widthPx, int heightPx) {
+                       int widthPx, int heightPx,
+                       int awPx, int ahPx) {
         DisplayMetrics dm = resources.getDisplayMetrics();
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
@@ -456,9 +489,9 @@ public class DynamicGrid {
         mMinWidth = dpiFromPx(minWidthPx, dm);
         mMinHeight = dpiFromPx(minHeightPx, dm);
         mProfile = new DeviceProfile(deviceProfiles,
-                mMinWidth, minWidthPx,
-                mMinHeight, minHeightPx,
+                mMinWidth, mMinHeight,
                 widthPx, heightPx,
+                awPx, ahPx,
                 resources);
     }
 

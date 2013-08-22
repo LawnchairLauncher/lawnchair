@@ -164,21 +164,22 @@ public class LauncherAppState {
         return SHARED_PREFERENCES_KEY;
     }
 
-    DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight, int width, int height) {
+    DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
+                                  int width, int height,
+                                  int availableWidth, int availableHeight) {
         boolean created = false;
         if (mDynamicGrid == null) {
             mDynamicGrid = new DynamicGrid(context.getResources(),
-                    minWidth, minHeight, width, height);
+                    minWidth, minHeight, width, height,
+                    availableWidth, availableHeight);
             created = true;
         }
 
-        DeviceProfile grid = mDynamicGrid.getDeviceProfile();
-        if (created) {
-            LauncherModel.updateWorkspaceLayoutCells((int) grid.numColumns, (int) grid.numRows);
-        }
         // Update the icon size
+        DeviceProfile grid = mDynamicGrid.getDeviceProfile();
         Utilities.setIconSize(grid.iconSizePx);
-        grid.updateFromConfiguration(context.getResources(), width, height);
+        grid.updateFromConfiguration(context.getResources(), width, height,
+                availableWidth, availableHeight);
         return grid;
     }
     DynamicGrid getDynamicGrid() {
