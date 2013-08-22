@@ -47,9 +47,6 @@ import java.io.InputStream;
 public class WallpaperCropActivity extends Activity {
     private static final String LOGTAG = "Launcher3.CropActivity";
 
-    private int mOutputX = 0;
-    private int mOutputY = 0;
-
     protected static final String WALLPAPER_WIDTH_KEY = "wallpaper.width";
     protected static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
     private static final int DEFAULT_COMPRESS_QUALITY = 90;
@@ -183,14 +180,14 @@ public class WallpaperCropActivity extends Activity {
                     failure = true;
                     return false;
                 }
-                if (mOutputX > 0 && mOutputY > 0) {
+                if (mOutWidth > 0 && mOutHeight > 0) {
                     Matrix m = new Matrix();
                     RectF cropRect = new RectF(0, 0, crop.getWidth(), crop.getHeight());
                     if (mRotation > 0) {
                         m.setRotate(mRotation);
                         m.mapRect(cropRect);
                     }
-                    RectF returnRect = new RectF(0, 0, mOutputX, mOutputY);
+                    RectF returnRect = new RectF(0, 0, mOutWidth, mOutHeight);
                     m.setRectToRect(cropRect, returnRect, Matrix.ScaleToFit.FILL);
                     m.preRotate(mRotation);
                     Bitmap tmp = Bitmap.createBitmap((int) returnRect.width(),

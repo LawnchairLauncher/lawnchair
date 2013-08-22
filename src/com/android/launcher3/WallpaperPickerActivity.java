@@ -398,6 +398,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 // If we have saved a wallpaper width/height, use that instead
                 int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, defaultWidth);
                 int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, defaultHeight);
+                wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
             }
         }.start();
     }
