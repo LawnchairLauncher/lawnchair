@@ -61,6 +61,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private static final String TAG = "Launcher.WallpaperPickerActivity";
 
     private static final int IMAGE_PICK = 5;
+    private static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
 
     private ArrayList<Integer> mThumbs;
@@ -91,7 +92,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             if (meta.mLaunchesGallery) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                startActivityForResult(intent, IMAGE_PICK);
+                Utilities.startActivityForResultSafely(
+                        WallpaperPickerActivity.this, intent, IMAGE_PICK);
             } else if (meta.mGalleryImageUri != null) {
                 mCropView.setTileSource(new BitmapRegionTileSource(WallpaperPickerActivity.this,
                         meta.mGalleryImageUri, 1024, 0), null);
@@ -153,6 +155,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             meta.mGalleryImageUri = uri;
             pickedImageThumbnail.setTag(meta);
             mThumbnailOnClickListener.onClick(pickedImageThumbnail);
+        } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY) {
+            // No result code is returned; just return
+            setResult(RESULT_OK);
+            finish();
         }
     }
 
@@ -245,6 +251,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         frameLayout.setForeground(new ZeroPaddingDrawable(frameLayout.getForeground()));
     }
 
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (item.getIntent() == null) {
+            return super.onMenuItemSelected(featureId, item);
+        } else {
+            Utilities.startActivityForResultSafely(
+                    this, item.getIntent(), PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);
+            return true;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         final Intent pickWallpaperIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
@@ -269,21 +285,25 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
         outerLoop:
         for (ResolveInfo info : apps) {
-            final ComponentName componentName =
+            final ComponentName itemComponentName =
                     new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
+            final String itemPackageName = itemComponentName.getPackageName();
             // Exclude anything from our own package, and the old Launcher
-            if (componentName.getPackageName().equals(getPackageName()) ||
-                    componentName.getPackageName().equals("com.android.launcher")) {
+            if (itemPackageName.equals(getPackageName()) ||
+                    itemPackageName.equals("com.android.launcher")) {
                 continue;
             }
             // Exclude any package that already responds to the image picker intent
             for (ResolveInfo imagePickerActivityInfo : imagePickerActivities) {
-                if (componentName.getPackageName().equals(
+                if (itemPackageName.equals(
                         imagePickerActivityInfo.activityInfo.packageName)) {
                     continue outerLoop;
                 }
             }
             MenuItem mi = sub.add(info.loadLabel(pm));
+            Intent launchIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+            launchIntent.setComponent(itemComponentName);
+            mi.setIntent(launchIntent);
             Drawable icon = info.loadIcon(pm);
             if (icon != null) {
                 mi.setIcon(icon);
