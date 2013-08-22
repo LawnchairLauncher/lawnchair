@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
     <string name="cancel_target_label">Peruuta</string>
     <string name="menu_apps_sort_title">Nimi</string>
     <string name="menu_apps_sort_install_date">Asennuspäivä</string>
@@ -133,4 +134,7 @@
     <string name="preferences_interface_dock_hide_icon_labels_summary">Piilota kuvakkeiden tekstit alapalkissa</string>
     <string name="preferences_interface_general_lock_workspace_title">Lukitse kotinäyttö</string>
     <string name="preferences_interface_general_lock_workspace_summary">Lukitse kuvakkeet ja kansiot paikoilleen kotinäytöllä, alapalkissa ja sovellusvalikossa</string>
+    <string name="folder_empty_contents_title">Kohteita ei löytynyt</string>
+    <string name="live_folder_cling_title">Elävät kansiot</string>
+    <string name="live_folder_cling_create_folder">Elävät kansiot sallii sovelluskehittäjien luoda kansioita jotka sisältävät dynaamista sisältöä. Kansion sisällön voi poistaa painamalla yksittäistä kohdetta pitkään. Toisin kuin normaalit kansiot, vain sovellus joka kansion teki voi lisätä kohteita.</string>
 </resources>
