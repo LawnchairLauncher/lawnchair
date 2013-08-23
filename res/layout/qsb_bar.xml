@@ -20,13 +20,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Search buttons container -->
-    <include android:id="@+id/qsb_search_bar"
-        layout="@layout/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
-
     <!-- Drag specific targets container -->
     <LinearLayout
         style="@style/SearchDropTargetBar"

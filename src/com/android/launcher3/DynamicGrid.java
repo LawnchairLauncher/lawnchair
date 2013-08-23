@@ -321,7 +321,7 @@ class DeviceProfile {
         searchBarSpace.setLayoutParams(lp);
 
         // Layout the search bar
-        View searchBar = searchBarSpace.findViewById(R.id.qsb_search_bar);
+        View searchBar = launcher.getQsbBar();
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         lp.width = LayoutParams.MATCH_PARENT;
         lp.height = LayoutParams.MATCH_PARENT;
