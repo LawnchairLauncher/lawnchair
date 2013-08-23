@@ -2537,14 +2537,16 @@ public class Launcher extends Activity
         boolean allowLongPress = isHotseatLayout(v) || mWorkspace.allowLongPress();
         if (allowLongPress && !mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
-                // User long pressed on empty space
-                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                // Disabling reordering until we sort out some issues.
-                if (mWorkspace.isInOverviewMode()) {
-                    mWorkspace.startReordering(v);
-                } else {
-                    mWorkspace.enterOverviewMode();
+                if (mWorkspace.hasNonCustomEmptyScreens()) {
+                    // User long pressed on empty space
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    // Disabling reordering until we sort out some issues.
+                    if (mWorkspace.isInOverviewMode()) {
+                        mWorkspace.startReordering(v);
+                    } else {
+                        mWorkspace.enterOverviewMode();
+                    }
                 }
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
@@ -3502,7 +3504,15 @@ public class Launcher extends Activity
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         bindAddScreens(orderedScreenIds);
+
+        // Create the new empty page
         mWorkspace.addExtraEmptyScreen();
+
+        // Create the custom content page (this call updates mDefaultScreen which calls
+        // setCurrentPage() so ensure that all pages are added before calling this)
+        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
+            mWorkspace.createCustomContentPage();
+        }
     }
 
     @Override
@@ -3742,11 +3752,6 @@ public class Launcher extends Activity
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
             }
             mSavedState = null;
-        }
-
-        // Create the custom content page here before onLayout to prevent flashing
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            mWorkspace.createCustomContentPage();
         }
 
         mWorkspace.restoreInstanceStateForRemainingPages();
