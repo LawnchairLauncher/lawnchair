@@ -104,6 +104,7 @@
         <activity
             android:name="com.android.launcher3.ToggleWeightWatcher"
             android:label="@string/toggle_weight_watcher"
+            android:enabled="@bool/debug_memory_enabled"
             android:icon="@mipmap/ic_launcher_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

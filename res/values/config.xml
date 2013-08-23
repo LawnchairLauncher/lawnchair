@@ -80,5 +80,5 @@
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
     <!-- Memory debugging, including a memory dump icon -->
-    <bool name="debug_memory_enabled">true</bool>
+    <bool name="debug_memory_enabled">false</bool>
 </resources>
