@@ -91,17 +91,6 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.WidgetAdder"
-            android:label="@string/widget_adder"
-            android:icon="@mipmap/ic_launcher_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.android.launcher3.ToggleWeightWatcher"
             android:label="@string/toggle_weight_watcher"
             android:enabled="@bool/debug_memory_enabled"
