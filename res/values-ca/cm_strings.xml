@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Menú</string>
+    <string name="cancel_target_label">Cancel·la</string>
+    <string name="edit_target_label">Edita</string>
+
+    <string name="menu_lock_workspace">Bloqueja pantalla d\'inici</string>
+    <string name="menu_unlock_workspace">Desbloqueja pantalla d\'inici</string>
+
+    <string name="menu_preferences">Ajustaments Trebuchet</string>
+
+    <string name="menu_apps_sort_title">Nom</string>
+    <string name="menu_apps_sort_install_date">Data d\'instal·lació</string>
+    <string name="menu_apps_filter_system">Sistema</string>
+    <string name="menu_apps_filter_downloaded">Descarregat</string>
+    <string name="menu_hidden_apps_delete">Reestableix</string>
+    <string name="all_apps_sort_cling_title">Ordena les teves aplicacions</string>
+    <string name="all_apps_sort_cling_add_item">Toca &amp; aguanta la pestanya d\'Apps per seleccionar el mode d\'ordenació</string>
+
+    <string name="hidden_apps_title">Apps amagades</string>
+
+    <string name="workspace_locked">La pantalla inicial està bloquejada, desbloqueja-la als ajustaments per reordenar</string>
+
+    <string name="preferences_title">Ajustaments</string>
+    <string name="preferences_interface_title">Interfície</string>
+    <string name="preferences_application_title">App</string>
+
+    <string name="preferences_interface_homescreen_title">Pantalla d\'inici</string>
+    <string name="preferences_interface_homescreen_summary">Pantalles i fons de pantalla</string>
+    <string name="preferences_interface_homescreen_general_category">General</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Pantalles</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Nombre de pantalles a l\'inici</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Pantalla predeterminada</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Escull la pantalla d\'inici</string>
+    <string name="preferences_interface_homescreen_general_search_title">Barra de cerca</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Activa la barra de cerca permanent</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Mida de la quadrícula</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Escull el nombre de files/columnes a la pantalla d\'inici</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Files</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Columnes</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Estira pantalles</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Expandeix les pantalles d\'inici per omplir la mida de la pantalla</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Amaga les etiquetes de les icones</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Amaga les etiquetes de les icones de les pantalles d\'inici</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Moviments</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efecte de transició</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efecte de transició quan es llisca entre pantalles</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Llisca el fons de pantalla</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Llisca el fons de pantalla quan es passi a través de les pantalles d\'inici</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Renderitzat ràpid del fons de pantalla</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Utilitza un truc per incrementar la fluïdesa  en els fons de pantalla estàtics</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Mida del fons de pantalla</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Quantes pantalles d\'ample hauria de ser el fons de pantalla</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Esvaeix el costat de les pàgines</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Esvaeix el costat de les pàgines quan es llisqui entre pantalles</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Mostra contorns</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Mostra els contorns de la pantalla quan es llisqui entre pantalles</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indicador</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Mostra l\'indicador de pàgina</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Mostra l\'indicador de la pàgina actual a la pantalla</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Indicador de esvaïment</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Esvaeix l\'indicador després de que la pàgina hagi canviat</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Posició de l\'indicador</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Escull on mostrar l\'indicador a la pantalla</string>
+
+    <string name="preferences_interface_drawer_title">Apps i widgets</string>
+    <string name="preferences_interface_drawer_summary">Estableix la configuració d\'Apps i widgets</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientació</string>
+    <string name="preferences_interface_drawer_orientation_summary">Estableix la manera de lliscar</string>
+    <string name="preferences_interface_drawer_apps_category">Apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Apps amagades</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Amaga les apps del drawer</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Apps amagades (dreceres)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Treu les dreceres de les apps amagades de la pantalla d\'inici</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Apps amagades (widgets)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Treu els widgets de les apps amagades de la pantalla d\'inici</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgets</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Ajunta amb les apps</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Passa de les apps als widgets sense canviar de pestanya</string>
+    <string name="preferences_interface_drawer_scrolling_category">Desplaçaments</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efecte de transició</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efecte de transició quan es llisca entre pantalles</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Esvaeix el costat de les pàgines</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Esvaeix el costat de les pàgines quan es llisqui entre pantalles</string>
+    <string name="preferences_interface_drawer_indicator_category">Indicador</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Mostra l\'indicador de pàgina</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Mostra l\'indicador de pàgina actual a la base de la pantalla</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Indicador de esvaïment</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Esvaeix l\'indicador després de que la pàgina hagi canviat</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Posició de l\'indicador</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Escull on mostrar l\'indicador a la pantalla</string>
+
+    <string name="preferences_interface_dock_title">Barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_enabled_title">Mostra la barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_enabled_summary">Mostra la barra d\'aplicacions sota les pantalles d\'inici</string>
+    <string name="preferences_interface_dock_pages_title">Pàgines</string>
+    <string name="preferences_interface_dock_pages_summary">Nombre de pàgines a la barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_default_page_title">Pàgina predeterminada</string>
+    <string name="preferences_interface_dock_default_page_summary">Escull la pàgina predeterminada</string>
+    <string name="preferences_interface_dock_icons_title">Icones</string>
+    <string name="preferences_interface_dock_icons_summary">Nombre d\'icones/columnes a la barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Amaga etiquetes de les icones</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Amaga les etiquetes de les icones de la barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_icon_scale_title">Escala de les icones</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Escala les icones de la barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_divider_title">Mostra el separador de la barra d\'aplicacions</string>
+    <string name="preferences_interface_dock_divider_summary">Mostra un separador entre la pantalla d\'inici i la barra d\'aplicacions</string>
+
+    <string name="preferences_interface_icons_title">Icones</string>
+
+    <string name="preferences_interface_general_title">General</string>
+    <string name="preferences_interface_general_orientation_title">Auto-rota la pantalla</string>
+    <string name="preferences_interface_general_lock_workspace_title">Bloqueja pantalla d\'inici</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Bloqueja les posicions de les dreceres i les carpetes a les pantalles, dock i al drawer de les apps i widgets</string>
+    <string name="preferences_interface_general_fullscreen_title">Mode pantalla sencera</string>
+    <string name="preferences_interface_general_fullscreen_summary">Amaga la barra d\'estat per extendre la pantalla d\'inici</string>
+
+    <string name="effects_standard">Estàndard</string>
+    <string name="effects_tablet">Tauleta</string>
+    <string name="effects_zoom_in">Amplia</string>
+    <string name="effects_zoom_out">Redueix</string>
+    <string name="effects_rotate_up">Rota amunt</string>
+    <string name="effects_rotate_down">Rota avall</string>
+    <string name="effects_cylinder_in">Cilíndric endins</string>
+    <string name="effects_cylinder_out">Cilíndric enfora</string>
+    <string name="effects_cube_in">Cubic endins</string>
+    <string name="effects_cube_out">Cubic enfora</string>
+    <string name="effects_spin">Gira</string>
+    <string name="effects_flip">Volteja</string>
+    <string name="effects_stack">Apila</string>
+    <string name="effects_accordion">Acordió</string>
+    <string name="effects_carousel_left">Carrussel esquerra</string>
+    <string name="effects_carousel_right">Carrussel dreta</string>
+</resources>
