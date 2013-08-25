@@ -105,6 +105,7 @@ class FolderInfo extends ItemInfo {
     interface FolderListener {
         public void onAdd(ShortcutInfo item);
         public void onRemove(ShortcutInfo item);
+        public void onAllItemsRemoved();
         public void onTitleChanged(CharSequence title);
         public void onItemsChanged();
     }
