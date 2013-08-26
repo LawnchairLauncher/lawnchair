@@ -119,6 +119,11 @@
     <string name="preferences_interface_general_fullscreen_title">Vollbildmodus</string>
     <string name="preferences_interface_general_fullscreen_summary">Statusleiste für Vollbildansicht ausblenden</string>
     <string name="folder_empty_contents_title">Keine Inhalte gefunden</string>
+    <string name="preferences_interface_general_iconpack_title">Symbolpaket</string>
+    <string name="preferences_interface_general_iconpack_summary">Symbolpakete ersetzen die Standard-Symbole der Apps</string>
+    <string name="dialog_pick_iconpack_title">Symbolpaket auswählen</string>
+    <string name="default_iconpack_title">Standard-Symbole</string>
+    <string name="no_iconpacks_summary">Es sind keine Symbolpakete installiert</string>
     <string name="effects_standard">Standard</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Hineinzoomen</string>
