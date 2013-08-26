@@ -120,6 +120,11 @@
     <string name="preferences_interface_general_fullscreen_title">Modo pantalla completa</string>
     <string name="preferences_interface_general_fullscreen_summary">Ocultar la barra de estado para extender la pantalla de inicio</string>
     <string name="folder_empty_contents_title">No hay elementos</string>
+    <string name="preferences_interface_general_iconpack_title">Paquete de iconos</string>
+    <string name="preferences_interface_general_iconpack_summary">Los paquetes de iconos reemplazan los iconos predeterminados de las aplicaciones</string>
+    <string name="dialog_pick_iconpack_title">Escoger paquete de iconos</string>
+    <string name="default_iconpack_title">Iconos por defecto</string>
+    <string name="no_iconpacks_summary">No hay paquetes de iconos instalados</string>
     <string name="effects_standard">Estándar</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Zoom entrante</string>
