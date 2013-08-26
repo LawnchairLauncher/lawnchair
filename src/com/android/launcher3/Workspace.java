@@ -45,12 +45,13 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
+import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
@@ -189,7 +190,6 @@ public class Workspace extends SmoothPagedView
     private boolean mWorkspaceFadeInAdjacentScreens;
 
     WallpaperOffsetInterpolator mWallpaperOffset;
-    boolean mUpdateWallpaperOffsetImmediately = false;
     private Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
     private Point mDisplaySize = new Point();
@@ -940,38 +940,16 @@ public class Workspace extends SmoothPagedView
                 mLauncher.getSharedPrefs(), mLauncher.getWindowManager(), mWallpaperManager);
     }
 
-    private void syncWallpaperOffsetWithScroll() {
-        final boolean enableWallpaperEffects = isHardwareAccelerated();
-        if (enableWallpaperEffects) {
-            // TODO: figure out what to do about parallax, for now disable it
-            //mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
-        }
-    }
 
-    public void updateWallpaperOffsetImmediately() {
-        mUpdateWallpaperOffsetImmediately = true;
-    }
+    private float wallpaperOffsetForCurrentScroll() {
+        // Set wallpaper offset steps (1 / (number of screens - 1))
+        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
+        if (mMaxScrollX == 0) {
+            return 0;
+        }
 
-    private void updateWallpaperOffsets() {
-        boolean updateNow = false;
-        boolean keepUpdating = true;
-        if (mUpdateWallpaperOffsetImmediately) {
-            updateNow = true;
-            keepUpdating = false;
-            mWallpaperOffset.jumpToFinal();
-            mUpdateWallpaperOffsetImmediately = false;
-        } else {
-            updateNow = keepUpdating = mWallpaperOffset.computeScrollOffset();
-        }
-        if (updateNow) {
-            if (mWindowToken != null) {
-                mWallpaperManager.setWallpaperOffsets(mWindowToken,
-                        mWallpaperOffset.getCurrX(), mWallpaperOffset.getCurrY());
-            }
-        }
-        if (keepUpdating) {
-            invalidate();
-        }
+        // do different behavior if it's  alive wallpaper?
+        return getScrollX() / (float) mMaxScrollX;
     }
 
     protected void snapToPage(int whichPage, Runnable r) {
@@ -986,114 +964,88 @@ public class Workspace extends SmoothPagedView
         snapToPage(getPageIndexForScreenId(screenId), r);
     }
 
-    class WallpaperOffsetInterpolator {
-        float mFinalHorizontalWallpaperOffset = 0.0f;
-        float mFinalVerticalWallpaperOffset = 0.5f;
-        float mHorizontalWallpaperOffset = 0.0f;
-        float mVerticalWallpaperOffset = 0.5f;
-        long mLastWallpaperOffsetUpdateTime;
-        boolean mIsMovingFast;
-        boolean mOverrideHorizontalCatchupConstant;
-        float mHorizontalCatchupConstant = 0.35f;
-        float mVerticalCatchupConstant = 0.35f;
+    class WallpaperOffsetInterpolator implements Choreographer.FrameCallback {
+        float mFinalOffset = 0.0f;
+        float mCurrentOffset = 0.0f;
+        //long mLastWallpaperOffsetUpdateTime;
+        boolean mWaitingForCallback;
+        Choreographer mChoreographer;
+        Interpolator mInterpolator;
+        boolean mAnimating;
+        long mAnimationStartTime;
+        float mAnimationStartOffset;
+        final int ANIMATION_DURATION = 250;
+        int mNumScreens;
 
         public WallpaperOffsetInterpolator() {
+            mChoreographer = Choreographer.getInstance();
+            mInterpolator = new DecelerateInterpolator(1.5f);
         }
 
-        public void setOverrideHorizontalCatchupConstant(boolean override) {
-            mOverrideHorizontalCatchupConstant = override;
-        }
-
-        public void setHorizontalCatchupConstant(float f) {
-            mHorizontalCatchupConstant = f;
-        }
-
-        public void setVerticalCatchupConstant(float f) {
-            mVerticalCatchupConstant = f;
+        @Override
+        public void doFrame(long frameTimeNanos) {
+            mWaitingForCallback = false;
+            if (computeScrollOffset()) {
+                mWallpaperManager.setWallpaperOffsets(mWindowToken,
+                        mWallpaperOffset.getCurrX(), 0f);
+            }
         }
 
         public boolean computeScrollOffset() {
-            if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0 &&
-                    Float.compare(mVerticalWallpaperOffset, mFinalVerticalWallpaperOffset) == 0) {
-                mIsMovingFast = false;
-                return false;
-            }
-            boolean isLandscape = mDisplaySize.x > mDisplaySize.y;
-
-            long currentTime = System.currentTimeMillis();
-            long timeSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
-            timeSinceLastUpdate = Math.min((long) (1000/30f), timeSinceLastUpdate);
-            timeSinceLastUpdate = Math.max(1L, timeSinceLastUpdate);
-
-            float xdiff = Math.abs(mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset);
-            if (!mIsMovingFast && xdiff > 0.07) {
-                mIsMovingFast = true;
-            }
-
-            float fractionToCatchUpIn1MsHorizontal;
-            if (mOverrideHorizontalCatchupConstant) {
-                fractionToCatchUpIn1MsHorizontal = mHorizontalCatchupConstant;
-            } else if (mIsMovingFast) {
-                fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.5f : 0.75f;
+            final float oldOffset = mCurrentOffset;
+            if (mAnimating) {
+                long durationSinceAnimation = System.currentTimeMillis() - mAnimationStartTime;
+                float t0 = durationSinceAnimation / (float) ANIMATION_DURATION;
+                float t1 = mInterpolator.getInterpolation(t0);
+                mCurrentOffset = mAnimationStartOffset +
+                        (mFinalOffset - mAnimationStartOffset) * t1;
+                mAnimating = durationSinceAnimation < ANIMATION_DURATION;
             } else {
-                // slow
-                fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.27f : 0.5f;
-            }
-            float fractionToCatchUpIn1MsVertical = mVerticalCatchupConstant;
-
-            fractionToCatchUpIn1MsHorizontal /= 33f;
-            fractionToCatchUpIn1MsVertical /= 33f;
-
-            final float UPDATE_THRESHOLD = 0.00001f;
-            float hOffsetDelta = mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
-            float vOffsetDelta = mFinalVerticalWallpaperOffset - mVerticalWallpaperOffset;
-            boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD &&
-                Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
-
-            // Don't have any lag between workspace and wallpaper on non-large devices
-            if (!LauncherAppState.getInstance().isScreenLarge() || jumpToFinalValue) {
-                mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
-                mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
-            } else {
-                float percentToCatchUpVertical =
-                    Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsVertical);
-                float percentToCatchUpHorizontal =
-                    Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsHorizontal);
-                mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
-                mVerticalWallpaperOffset += percentToCatchUpVertical * vOffsetDelta;
+                mCurrentOffset = mFinalOffset;
             }
 
-            mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
-            return true;
+            if (Math.abs(oldOffset - mCurrentOffset) > 0.0000001f) {
+                scheduleCallback();
+                return true;
+            }
+            return false;
         }
 
         public float getCurrX() {
-            return mHorizontalWallpaperOffset;
+            return mCurrentOffset;
         }
 
         public float getFinalX() {
-            return mFinalHorizontalWallpaperOffset;
+            return mFinalOffset;
         }
 
-        public float getCurrY() {
-            return mVerticalWallpaperOffset;
-        }
-
-        public float getFinalY() {
-            return mFinalVerticalWallpaperOffset;
+        private void animateToFinal() {
+            mAnimating = true;
+            mAnimationStartOffset = mCurrentOffset;
+            mAnimationStartTime = System.currentTimeMillis();
         }
 
         public void setFinalX(float x) {
-            mFinalHorizontalWallpaperOffset = Math.max(0f, Math.min(x, 1.0f));
+            scheduleCallback();
+            mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
+            if (getChildCount() != mNumScreens) {
+                if (mNumScreens > 0) {
+                    // Don't animate if we're going from 0 screens
+                    animateToFinal();
+                }
+                mNumScreens = getChildCount();
+            }
         }
 
-        public void setFinalY(float y) {
-            mFinalVerticalWallpaperOffset = Math.max(0f, Math.min(y, 1.0f));
+        private void scheduleCallback() {
+            if (!mWaitingForCallback) {
+                mChoreographer.postFrameCallback(this);
+                mWaitingForCallback = true;
+            }
         }
 
         public void jumpToFinal() {
-            mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
-            mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
+            mCurrentOffset = mFinalOffset;
         }
     }
 
@@ -1101,6 +1053,10 @@ public class Workspace extends SmoothPagedView
     public void computeScroll() {
         super.computeScroll();
         syncWallpaperOffsetWithScroll();
+    }
+
+    private void syncWallpaperOffsetWithScroll() {
+        mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
     }
 
     void showOutlines() {
@@ -1339,15 +1295,14 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
-            mUpdateWallpaperOffsetImmediately = true;
+            syncWallpaperOffsetWithScroll();
+            mWallpaperOffset.jumpToFinal();
         }
         super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        updateWallpaperOffsets();
-
         // Draw the background gradient if necessary
         if (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground) {
             int alpha = (int) (mBackgroundAlpha * 255);
@@ -1899,7 +1854,6 @@ public class Workspace extends SmoothPagedView
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = false;
-        mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
         updateChildrenLayersEnabled(false);
         // The code in getChangeStateAnimation to determine initialAlpha and finalAlpha will ensure
         // ensure that only the current page is visible during (and subsequently, after) the
@@ -2057,8 +2011,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void beginDragShared(View child, DragSource source) {
-        Resources r = getResources();
-
         // The drag bitmap follows the touch point around on the screen
         final Bitmap b = createDragBitmap(child, new Canvas(), DRAG_BITMAP_PADDING);
 
