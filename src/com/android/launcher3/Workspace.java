@@ -2532,6 +2532,8 @@ public class Workspace extends SmoothPagedView
         Point smallestSize = new Point();
         Point largestSize = new Point();
         display.getCurrentSizeRange(smallestSize, largestSize);
+        int countX = (int) grid.numColumns;
+        int countY = (int) grid.numRows;
         if (orientation == CellLayout.LANDSCAPE) {
             if (mLandscapeCellLayoutMetrics == null) {
                 Rect padding = grid.getWorkspacePadding(CellLayout.LANDSCAPE);
@@ -2539,7 +2541,7 @@ public class Workspace extends SmoothPagedView
                 int height = smallestSize.y - padding.top - padding.bottom;
                 mLandscapeCellLayoutMetrics = new Rect();
                 CellLayout.getMetrics(mLandscapeCellLayoutMetrics, width, height,
-                        LauncherModel.getCellCountX(), LauncherModel.getCellCountY());
+                        countX, countY);
             }
             return mLandscapeCellLayoutMetrics;
         } else if (orientation == CellLayout.PORTRAIT) {
@@ -2549,7 +2551,7 @@ public class Workspace extends SmoothPagedView
                 int height = largestSize.y - padding.top - padding.bottom;
                 mPortraitCellLayoutMetrics = new Rect();
                 CellLayout.getMetrics(mPortraitCellLayoutMetrics, width, height,
-                        LauncherModel.getCellCountX(), LauncherModel.getCellCountY());
+                        countX, countY);
             }
             return mPortraitCellLayoutMetrics;
         }

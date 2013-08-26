@@ -438,6 +438,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void onPackagesUpdated(ArrayList<Object> widgetsAndShortcuts) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         // Get the list of widgets and shortcuts
         mWidgets.clear();
         for (Object o : widgetsAndShortcuts) {
@@ -450,8 +453,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     int[] minSpanXY = Launcher.getMinSpanForWidget(mLauncher, widget);
                     int minSpanX = Math.min(spanXY[0], minSpanXY[0]);
                     int minSpanY = Math.min(spanXY[1], minSpanXY[1]);
-                    if (minSpanX <= LauncherModel.getCellCountX() &&
-                        minSpanY <= LauncherModel.getCellCountY()) {
+                    if (minSpanX <= (int) grid.numColumns &&
+                        minSpanY <= (int) grid.numRows) {
                         mWidgets.add(widget);
                     } else {
                         Log.e(TAG, "Widget " + widget.provider + " can not fit on this device (" +

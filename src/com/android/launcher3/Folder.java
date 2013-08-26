@@ -29,7 +29,9 @@ import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -85,7 +87,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int mMaxCountY;
     private int mMaxVisibleX;
     private int mMaxVisibleY;
-    private int mMaxContentAreaHeight = 0;
     private int mMaxNumItems;
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
@@ -107,8 +108,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     FolderEditText mFolderName;
     private float mFolderIconPivotX;
     private float mFolderIconPivotY;
-
-    private static final int SCROLL_CUT_OFF_AMOUNT = 60;
 
     private static final float MAX_SCROLL_VELOCITY = 1500f;
 
@@ -146,7 +145,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mIconCache = app.getIconCache();
 
         Resources res = getResources();
-        mMaxCountX = mMaxVisibleX = mMaxVisibleY = (int) (grid.numColumns);
+        mMaxCountX = mMaxVisibleX = (int) grid.numColumns;
+        mMaxVisibleY = (int) grid.numRows;
         mMaxCountY = mMaxNumItems = Integer.MAX_VALUE;
 
         mInputMethodManager = (InputMethodManager)
@@ -175,11 +175,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Rect padding = grid.getWorkspacePadding(grid.isLandscape ?
+                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
 
-        // Beyond this height, the area scrolls
         mContent.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
-        mContent.setGridSize(mMaxVisibleX, mMaxVisibleY);
-        mMaxContentAreaHeight = mContent.getDesiredHeight() - SCROLL_CUT_OFF_AMOUNT;
         mContent.setGridSize(0, 0);
         mContent.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         mContent.setInvertIfRtl(true);
@@ -875,9 +875,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private void centerAboutIcon() {
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
+        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         int height = getFolderHeight();
-        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
         float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
 
@@ -945,31 +945,33 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         centerAboutIcon();
     }
 
+    private int getContentAreaHeight() {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Rect workspacePadding = grid.getWorkspacePadding(grid.isLandscape ?
+                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+        int maxContentAreaHeight = grid.availableHeightPx -
+                4 * grid.edgeMarginPx -
+                workspacePadding.top - workspacePadding.bottom -
+                getPaddingTop() - getPaddingBottom() -
+                mFolderNameHeight;
+        return Math.min(maxContentAreaHeight,
+                mContent.getDesiredHeight());
+    }
+
     private int getFolderHeight() {
-        int contentAreaHeight = mContent.getDesiredHeight();
-        if (contentAreaHeight >= mMaxContentAreaHeight) {
-            // Subtract a bit so the user can see that it's scrollable.
-            contentAreaHeight = mMaxContentAreaHeight;
-        }
-        int height = getPaddingTop() + getPaddingBottom() + contentAreaHeight
-                + mFolderNameHeight;
+        int height = getPaddingTop() + getPaddingBottom()
+                + getContentAreaHeight() + mFolderNameHeight;
         return height;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int contentAreaHeight = mContent.getDesiredHeight();
-        if (contentAreaHeight >= mMaxContentAreaHeight) {
-            // Subtract a bit so the user can see that it's scrollable.
-            contentAreaHeight = mMaxContentAreaHeight;
-        }
-
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         int height = getFolderHeight();
         int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
                 MeasureSpec.EXACTLY);
-        int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(contentAreaHeight,
+        int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(getContentAreaHeight(),
                 MeasureSpec.EXACTLY);
-
         mContent.setFixedSize(mContent.getDesiredWidth(), mContent.getDesiredHeight());
         mScrollView.measure(contentAreaWidthSpec, contentAreaHeightSpec);
         mFolderName.measure(contentAreaWidthSpec,

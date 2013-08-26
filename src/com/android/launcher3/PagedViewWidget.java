@@ -106,6 +106,9 @@ public class PagedViewWidget extends LinearLayout {
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
             int maxWidth, int[] cellSpan, WidgetPreviewLoader loader) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         mIsAppWidget = true;
         mInfo = info;
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
@@ -116,8 +119,8 @@ public class PagedViewWidget extends LinearLayout {
         name.setText(info.label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
-            int hSpan = Math.min(cellSpan[0], LauncherModel.getCellCountX());
-            int vSpan = Math.min(cellSpan[1], LauncherModel.getCellCountY());
+            int hSpan = Math.min(cellSpan[0], (int) grid.numColumns);
+            int vSpan = Math.min(cellSpan[1], (int) grid.numRows);
             dims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         }
         mWidgetPreviewLoader = loader;
