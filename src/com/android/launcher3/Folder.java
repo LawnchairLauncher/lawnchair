@@ -1062,9 +1062,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     mLauncher.removeFolder(mInfo);
                 }
                 // We add the child after removing the folder to prevent both from existing at
-                // the same time in the CellLayout.
+                // the same time in the CellLayout.  We need to add the new item with addInScreenFromBind()
+                // to ensure that hotseat items are placed correctly.
                 if (child != null) {
-                    mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screenId,
+                    mLauncher.getWorkspace().addInScreenFromBind(child, mInfo.container, mInfo.screenId,
                             mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
                 }
             }
