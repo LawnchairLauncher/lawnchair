@@ -120,6 +120,11 @@
     <string name="preferences_interface_general_fullscreen_title">Λειτουργία πλήρους οθόνης</string>
     <string name="preferences_interface_general_fullscreen_summary">Απόκρυψη της μπάρας ειδοποιήσεων για επέκταση της αρχικής οθόνης</string>
     <string name="folder_empty_contents_title">Δεν βρέθηκαν αντικείμενα</string>
+    <string name="preferences_interface_general_iconpack_title">Πακέτο εικονιδίων</string>
+    <string name="preferences_interface_general_iconpack_summary">Τα πακέτα εικονιδίων αντικαθιστούν τα προεπιλεγμένα εικονίδια των εφαρμογών</string>
+    <string name="dialog_pick_iconpack_title">Επιλέξτε πακέτο εικονιδίων</string>
+    <string name="default_iconpack_title">Προεπιλεγμένα εικονίδια</string>
+    <string name="no_iconpacks_summary">Δεν έχουν εγκατασταθεί πακέτα εικονιδίων</string>
     <string name="effects_standard">Κανονικό</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Ζουμ μέσα</string>
