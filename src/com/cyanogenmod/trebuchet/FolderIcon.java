@@ -653,4 +653,9 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         mLongPressHelper.cancelLongPress();
     }
+
+    @Override
+    public void onAllItemsRemoved() {
+        onRemove(null);
+    }
 }

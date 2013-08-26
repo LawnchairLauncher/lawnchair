@@ -46,13 +46,9 @@ class LiveFolderInfo extends FolderInfo {
     }
 
     public void removeAll() {
-        Iterator<ShortcutInfo> iter = contents.iterator();
-        while (iter.hasNext()) {
-            ShortcutInfo info = iter.next();
-            iter.remove();
-            for (FolderListener listener : listeners) {
-                listener.onRemove(info);
-            }
+        contents.clear();
+        for (FolderListener listener : listeners) {
+            listener.onAllItemsRemoved();
         }
         itemsChanged();
     }
