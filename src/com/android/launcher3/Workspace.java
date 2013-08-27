@@ -106,6 +106,7 @@ public class Workspace extends SmoothPagedView
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
 
+    private int mOriginalDefaultPage;
     private int mDefaultPage;
 
     // The screen id used for the empty screen always present to the right.
@@ -298,7 +299,7 @@ public class Workspace extends SmoothPagedView
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
-        mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
+        mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
         setOnHierarchyChangeListener(this);
@@ -453,10 +454,19 @@ public class Workspace extends SmoothPagedView
         return mTouchState != TOUCH_STATE_REST;
     }
 
+    public void removeAllWorkspaceScreens() {
+        Log.w(TAG, "10249126 - removeAllWorkspaceScreens()");
+        // Remove the pages and clear the screen models
+        removeAllViews();
+        mScreenOrder.clear();
+        mWorkspaceScreens.clear();
+    }
+
     public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId) {
         // Find the index to insert this view into.  If the empty screen exists, then
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
+        Log.w(TAG, "10249126 - insertNewWorkspaceScreenBeforeEmptyScreen(" + insertIndex + ")");
         if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
@@ -494,7 +504,7 @@ public class Workspace extends SmoothPagedView
         addFullScreenPage(customScreen);
 
         // Ensure that the current page and default page are maintained.
-        mDefaultPage++;
+        mDefaultPage = mOriginalDefaultPage + 1;
         setCurrentPage(getCurrentPage() + 1);
     }
 

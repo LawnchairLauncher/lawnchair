@@ -3501,7 +3501,7 @@ public class Launcher extends Activity
 
         // Clear the workspace because it's going to be rebound
         mWorkspace.clearDropTargets();
-        mWorkspace.removeAllViews();
+        mWorkspace.removeAllWorkspaceScreens();
 
         mWidgetsToAdvance.clear();
         if (mHotseat != null) {

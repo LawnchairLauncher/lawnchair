@@ -283,7 +283,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     final Callbacks callbacks) {
         Log.w(TAG, "10249126 - addAndBindAddedApps()");
         if (added.isEmpty()) {
-            throw new RuntimeException("EMPTY ADDED ARRAY?");
+            return;
         }
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
@@ -979,6 +979,7 @@ public class LauncherModel extends BroadcastReceiver {
      * a list of screen ids in the order that they should appear.
      */
     void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
+        Log.w(TAG, "10249126 - updateWorkspaceScreenOrder()");
         final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -988,8 +989,15 @@ public class LauncherModel extends BroadcastReceiver {
         while (iter.hasNext()) {
             long id = iter.next();
             if (id < 0) {
+                Log.w(TAG, "10249126 - updateWorkspaceScreenOrder - remove: " + id + ")");
                 iter.remove();
             }
+        }
+
+        // Dump the screens copy
+        Log.w(TAG, "10249126 - updateWorkspaceScreenOrder - screensCopy");
+        for (Long l : screensCopy) {
+            Log.w(TAG, "10249126\t- " + l);
         }
 
         Runnable r = new Runnable() {
@@ -1004,10 +1012,18 @@ public class LauncherModel extends BroadcastReceiver {
                     long screenId = screensCopy.get(i);
                     v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
                     v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    Log.w(TAG, "10249126 - updateWorkspaceScreenOrder(" + screenId + ", " + i + ")");
+                    Log.w(TAG, "10249126 - updateWorkspaceScreenOrder - add: " +
+                            screenId + ", " + i + ")");
                     values[i] = v;
                 }
                 cr.bulkInsert(uri, values);
+
+                // Dump the sBgWorkspaceScreens
+                Log.w(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens");
+                for (Long l : sBgWorkspaceScreens) {
+                    Log.w(TAG, "10249126\t- " + l);
+                }
+
                 sBgWorkspaceScreens.clear();
                 sBgWorkspaceScreens.addAll(screensCopy);
             }
@@ -1915,6 +1931,13 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     }
                     Collections.sort(sBgWorkspaceScreens);
+
+                    // Dump the sBgWorkspaceScreens
+                    Log.w(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens");
+                    for (Long l : sBgWorkspaceScreens) {
+                        Log.w(TAG, "10249126\t- " + l);
+                    }
+
                     mApp.getLauncherProvider().updateMaxScreenId(maxScreenId);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
 
@@ -1948,6 +1971,13 @@ public class LauncherModel extends BroadcastReceiver {
                     // If there are any empty screens remove them, and update.
                     if (unusedScreens.size() != 0) {
                         sBgWorkspaceScreens.removeAll(unusedScreens);
+
+                        // Dump the sBgWorkspaceScreens
+                        Log.w(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens");
+                        for (Long l : sBgWorkspaceScreens) {
+                            Log.w(TAG, "10249126\t- " + l);
+                        }
+
                         updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
                     }
                 }
@@ -2101,6 +2131,13 @@ public class LauncherModel extends BroadcastReceiver {
         private void bindWorkspaceScreens(final Callbacks oldCallbacks,
                 final ArrayList<Long> orderedScreens) {
             Log.w(TAG, "10249126 - bindWorkspaceScreens()");
+
+            // Dump the orderedScreens
+            Log.w(TAG, "10249126 - orderedScreens");
+            for (Long l : sBgWorkspaceScreens) {
+                Log.w(TAG, "10249126\t- " + l);
+            }
+
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {
