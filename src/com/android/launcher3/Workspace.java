@@ -971,16 +971,7 @@ public class Workspace extends SmoothPagedView
     }
 
 
-    private float wallpaperOffsetForCurrentScroll() {
-        // Set wallpaper offset steps (1 / (number of screens - 1))
-        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
-        if (mMaxScrollX == 0) {
-            return 0;
-        }
 
-        // do different behavior if it's  alive wallpaper?
-        return getScrollX() / (float) mMaxScrollX;
-    }
 
     protected void snapToPage(int whichPage, Runnable r) {
         if (mDelayedSnapToPageRunnable != null) {
@@ -998,7 +989,7 @@ public class Workspace extends SmoothPagedView
         float mFinalOffset = 0.0f;
         float mCurrentOffset = 0.0f;
         //long mLastWallpaperOffsetUpdateTime;
-        boolean mWaitingForCallback;
+        boolean mWaitingForUpdate;
         Choreographer mChoreographer;
         Interpolator mInterpolator;
         boolean mAnimating;
@@ -1014,10 +1005,18 @@ public class Workspace extends SmoothPagedView
 
         @Override
         public void doFrame(long frameTimeNanos) {
-            mWaitingForCallback = false;
-            if (computeScrollOffset()) {
-                mWallpaperManager.setWallpaperOffsets(mWindowToken,
-                        mWallpaperOffset.getCurrX(), 0f);
+            updateOffset(false);
+        }
+
+
+        private void updateOffset(boolean force) {
+            if (mWaitingForUpdate || force) {
+                mWaitingForUpdate = false;
+                if (computeScrollOffset()) {
+                    mWallpaperManager.setWallpaperOffsets(mWindowToken,
+                            mWallpaperOffset.getCurrX(), 0.5f);
+                    setWallpaperOffsetSteps();
+                }
             }
         }
 
@@ -1034,11 +1033,36 @@ public class Workspace extends SmoothPagedView
                 mCurrentOffset = mFinalOffset;
             }
 
+            if (Math.abs(mCurrentOffset - mFinalOffset) > 0.0000001f) {
+                scheduleUpdate();
+            }
             if (Math.abs(oldOffset - mCurrentOffset) > 0.0000001f) {
-                scheduleCallback();
                 return true;
             }
             return false;
+        }
+
+        private float wallpaperOffsetForCurrentScroll() {
+            if (getChildCount() <= 1) {
+                return 0;
+            }
+            final int lastIndex = isLayoutRtl() ? 0 : getChildCount() - 1;
+            final int firstIndex = isLayoutRtl() ? getChildCount() - 2 : 1;
+            int firstPageScrollX = getScrollForPage(firstIndex);
+            int scrollRange = getScrollForPage(lastIndex) - firstPageScrollX;
+            if (scrollRange == 0) {
+                return 0;
+            } else {
+                // do different behavior if it's  a live wallpaper?
+                float offset = (getScrollX() - firstPageScrollX) / (float) scrollRange;
+                return offset;
+            }
+        }
+
+        public void syncWithScroll() {
+            float offset = wallpaperOffsetForCurrentScroll();
+            mWallpaperOffset.setFinalX(offset);
+            updateOffset(true);
         }
 
         public float getCurrX() {
@@ -1055,8 +1079,13 @@ public class Workspace extends SmoothPagedView
             mAnimationStartTime = System.currentTimeMillis();
         }
 
+        private void setWallpaperOffsetSteps() {
+            // Set wallpaper offset steps (1 / (number of screens - 1))
+            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
+        }
+
         public void setFinalX(float x) {
-            scheduleCallback();
+            scheduleUpdate();
             mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
             if (getChildCount() != mNumScreens) {
                 if (mNumScreens > 0) {
@@ -1067,10 +1096,10 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        private void scheduleCallback() {
-            if (!mWaitingForCallback) {
+        private void scheduleUpdate() {
+            if (!mWaitingForUpdate) {
                 mChoreographer.postFrameCallback(this);
-                mWaitingForCallback = true;
+                mWaitingForUpdate = true;
             }
         }
 
@@ -1082,11 +1111,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public void computeScroll() {
         super.computeScroll();
-        syncWallpaperOffsetWithScroll();
-    }
-
-    private void syncWallpaperOffsetWithScroll() {
-        mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
+        mWallpaperOffset.syncWithScroll();
     }
 
     void showOutlines() {
@@ -1325,7 +1350,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
-            syncWallpaperOffsetWithScroll();
+            mWallpaperOffset.syncWithScroll();
             mWallpaperOffset.jumpToFinal();
         }
         super.onLayout(changed, left, top, right, bottom);

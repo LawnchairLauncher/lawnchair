@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -79,17 +80,30 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         return new RectF(cropLeft, cropTop, cropRight, cropBottom);
     }
 
+    public Point getSourceDimensions() {
+        return new Point(mRenderer.source.getImageWidth(), mRenderer.source.getImageHeight());
+    }
+
     public void setTileSource(TileSource source, Runnable isReadyCallback) {
         super.setTileSource(source, isReadyCallback);
-        updateMinScale(getWidth(), getHeight(), source);
+        updateMinScale(getWidth(), getHeight(), source, true);
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        updateMinScale(w, h, mRenderer.source);
+        updateMinScale(w, h, mRenderer.source, false);
     }
 
-    private void updateMinScale(int w, int h, TileSource source) {
+    public void setScale(float scale) {
         synchronized (mLock) {
+            mRenderer.scale = scale;
+        }
+    }
+
+    private void updateMinScale(int w, int h, TileSource source, boolean resetScale) {
+        synchronized (mLock) {
+            if (resetScale) {
+                mRenderer.scale = 1;
+            }
             if (source != null) {
                 mMinScale = Math.max(w / (float) source.getImageWidth(),
                         h / (float) source.getImageHeight());

@@ -62,6 +62,7 @@ public class WallpaperCropActivity extends Activity {
 
     protected class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
         Uri mInUri = null;
+        int mInResId = 0;
         InputStream mInStream;
         RectF mCropBounds = null;
         int mOutWidth, mOutHeight;
@@ -71,9 +72,10 @@ public class WallpaperCropActivity extends Activity {
         boolean mSetWallpaper;
         boolean mSaveCroppedBitmap;
         Bitmap mCroppedBitmap;
+        Runnable mOnEndRunnable;
 
         public BitmapCropTask(Uri inUri, RectF cropBounds, int outWidth, int outHeight,
-                boolean setWallpaper, boolean saveCroppedBitmap) {
+                boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInUri = inUri;
             mCropBounds = cropBounds;
             mOutWidth = outWidth;
@@ -81,17 +83,35 @@ public class WallpaperCropActivity extends Activity {
             mWPManager = WallpaperManager.getInstance(getApplicationContext());
             mSetWallpaper = setWallpaper;
             mSaveCroppedBitmap = saveCroppedBitmap;
+            mOnEndRunnable = onEndRunnable;
+        }
+
+        public BitmapCropTask(int inResId, RectF cropBounds, int outWidth, int outHeight,
+                boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            mInResId = inResId;
+            mCropBounds = cropBounds;
+            mOutWidth = outWidth;
+            mOutHeight = outHeight;
+            mWPManager = WallpaperManager.getInstance(getApplicationContext());
+            mSetWallpaper = setWallpaper;
+            mSaveCroppedBitmap = saveCroppedBitmap;
+            mOnEndRunnable = onEndRunnable;
         }
 
         // Helper to setup input stream
         private void regenerateInputStream() {
-            if (mInUri == null) {
-                Log.w(LOGTAG, "cannot read original file, no input URI given");
+            if (mInUri == null && mInResId == 0) {
+                Log.w(LOGTAG, "cannot read original file, no input URI or resource ID given");
             } else {
                 Utils.closeSilently(mInStream);
                 try {
-                    mInStream = new BufferedInputStream(
-                            getContentResolver().openInputStream(mInUri));
+                    if (mInUri != null) {
+                        mInStream = new BufferedInputStream(
+                                getContentResolver().openInputStream(mInUri));
+                    } else {
+                        mInStream = new BufferedInputStream(
+                                getResources().openRawResource(mInResId));
+                    }
                 } catch (FileNotFoundException e) {
                     Log.w(LOGTAG, "cannot read file: " + mInUri.toString(), e);
                 }
@@ -227,12 +247,14 @@ public class WallpaperCropActivity extends Activity {
                             try {
                                 mWPManager.setStream(new ByteArrayInputStream(tmpOut
                                         .toByteArray()));
-                                updateWallpaperDimensions(mOutWidth, mOutHeight);
                             } catch (IOException e) {
                                 Log.w(LOGTAG, "cannot write stream to wallpaper", e);
                                 failure = true;
                             }
                         }
+                    }
+                    if (mOnEndRunnable != null) {
+                        mOnEndRunnable.run();
                     }
                 } else {
                     Log.w(LOGTAG, "cannot compress bitmap");
@@ -266,6 +288,7 @@ public class WallpaperCropActivity extends Activity {
             editor.remove(WALLPAPER_HEIGHT_KEY);
         }
         editor.commit();
+
         WallpaperPickerActivity.suggestWallpaperDimension(getResources(),
                 sp, getWindowManager(), WallpaperManager.getInstance(this));
     }

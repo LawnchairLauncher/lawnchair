@@ -55,10 +55,6 @@
         <item name="android:windowActionModeOverlay">true</item>
     </style>
 
-    <style name="Theme.WallpaperPicker">
-        <item name="android:screenOrientation">unspecified</item>
-    </style>
-
     <style name="WorkspaceIcon.Portrait.AppsCustomize">
         <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
         <item name="android:background">@null</item>
