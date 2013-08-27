@@ -20,14 +20,14 @@
     <string name="edit_target_label">Upraviť</string>
     <string name="menu_lock_workspace">Uzamknúť domovskú obrazovku</string>
     <string name="menu_unlock_workspace">Odomknúť domovskú obrazovku</string>
-    <string name="menu_preferences">Nastavenia spúšťača Trebuchet</string>
+    <string name="menu_preferences">Nastavenia</string>
     <string name="menu_apps_sort_title">Názov</string>
     <string name="menu_apps_sort_install_date">Dátum inštalácie</string>
     <string name="menu_apps_filter_system">Systémové</string>
     <string name="menu_apps_filter_downloaded">Prevzaté</string>
     <string name="menu_hidden_apps_delete">Znovunastaviť</string>
     <string name="all_apps_sort_cling_title">Usporiadanie vašich aplikácií</string>
-    <string name="all_apps_sort_cling_add_item">Ťuknite a podržte záložku Aplikácie na vybratie režimu usporiadania</string>
+    <string name="all_apps_sort_cling_add_item">Kliknite a podržte záložku Aplikácie na vybratie režimu usporiadania</string>
     <string name="hidden_apps_title">Skryté aplikácie</string>
     <string name="workspace_locked">Domovská obrazovka je uzamknutá, odomknite ju v nastaveniach aby ste mohli robiť úpravy</string>
     <string name="preferences_title">Nastavenia</string>
@@ -67,7 +67,7 @@
     <string name="preferences_interface_homescreen_indicator_enable_title">Zobraziť ukazovateľ stránok</string>
     <string name="preferences_interface_homescreen_indicator_enable_summary">Zobrazí ukazovateľ aktuálnej stránky na obrazovke</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Zoslabiť ukazovateľ</string>
-    <string name="preferences_interface_homescreen_indicator_fade_summary">Zoslabí ukazateľ po zmene domovskej obrazovky</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Zoslabí ukazovateľ po zmene domovskej obrazovky</string>
     <string name="preferences_interface_homescreen_indicator_position_title">Pozícia ukazovateľa</string>
     <string name="preferences_interface_homescreen_indicator_position_summary">Určí, kde na obrazovke bude zobrazený ukazovateľ</string>
     <string name="preferences_interface_drawer_title">Ponuka</string>
@@ -76,6 +76,11 @@
     <string name="preferences_interface_drawer_orientation_summary">Určí, ktorým smerom sa bude ponuka posúvať</string>
     <string name="preferences_interface_drawer_hidden_apps_title">Skryté aplikácie</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">Skryje aplikácie v ponuke</string>
+    <string name="preferences_interface_drawer_apps_category">Aplikácie</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Skryté aplikácie (skratky)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Odstrániť skratky skrytých aplikácií z domovskej obrazovky</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Skryté aplikácie (miniaplikácie)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Odstrániť miniaplikácie skrytých aplikácií z domovskej obrazovky</string>
     <string name="preferences_interface_drawer_widgets_category">Miniaplikácie</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Zlúčiť s aplikáciami</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Posunie z ponuky aplikácií do ponuky miniaplikácií bez zmeny karty</string>
@@ -113,6 +118,7 @@
     <string name="preferences_interface_general_lock_workspace_summary">Uzamkne pozície odkazov a priečinkov domovskej obrazovky, doku a ponuky aplikácií a miniaplikácií</string>
     <string name="preferences_interface_general_fullscreen_title">Režim na celú obrazovku</string>
     <string name="preferences_interface_general_fullscreen_summary">Skryje stavovú lištu kvôli zväčšeniu domovskej obrazovky</string>
+    <string name="folder_empty_contents_title">Nenájdené žiadne položky</string>
     <string name="effects_standard">Štandardný</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Priblíženie</string>
@@ -129,4 +135,8 @@
     <string name="effects_accordion">Akordeón</string>
     <string name="effects_carousel_left">Kolotoč doľava</string>
     <string name="effects_carousel_right">Kolotoč doprava</string>
+    <string name="live_folder_cling_title">Živé priečinky</string>
+    <string name="live_folder_cling_create_folder">Živé priečinky umožňujú vývojárom aplikácií vytvárať priečinky s dynamickým obsahom.
+    Obsah priečinka možno odstrániť dlhým stlačením na položku. Na rozdiel od bežných priečinkov, položky môžu byť pridané len
+    aplikáciou, ktorý vytvorila priečinok</string>
 </resources>
