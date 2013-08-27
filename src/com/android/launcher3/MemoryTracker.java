@@ -20,7 +20,6 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.*;
 import android.util.Log;
 import android.util.LongSparseArray;

@@ -19,7 +19,6 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
     private DragLayer mDragLayer;
-    private Workspace mWorkspace;
     private ImageView mLeftHandle;
     private ImageView mRightHandle;
     private ImageView mTopHandle;
@@ -83,7 +82,6 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mWidgetView = widgetView;
         mResizeMode = widgetView.getAppWidgetInfo().resizeMode;
         mDragLayer = dragLayer;
-        mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
 
         final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
         int[] result = Launcher.getMinSpanForWidget(mLauncher, info);

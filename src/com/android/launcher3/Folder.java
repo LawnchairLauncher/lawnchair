@@ -85,8 +85,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private FolderIcon mFolderIcon;
     private int mMaxCountX;
     private int mMaxCountY;
-    private int mMaxVisibleX;
-    private int mMaxVisibleY;
     private int mMaxNumItems;
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
@@ -145,8 +143,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mIconCache = app.getIconCache();
 
         Resources res = getResources();
-        mMaxCountX = mMaxVisibleX = (int) grid.numColumns;
-        mMaxVisibleY = (int) grid.numRows;
+        mMaxCountX = (int) grid.numColumns;
         mMaxCountY = mMaxNumItems = Integer.MAX_VALUE;
 
         mInputMethodManager = (InputMethodManager)
@@ -175,9 +172,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        Rect padding = grid.getWorkspacePadding(grid.isLandscape ?
-                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
 
         mContent.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         mContent.setGridSize(0, 0);

@@ -16,16 +16,9 @@
 
 package com.android.launcher3;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import com.android.launcher3.R;
-
-import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 
 /**
  * Takes care of setting initial wallpaper for a user, by selecting the

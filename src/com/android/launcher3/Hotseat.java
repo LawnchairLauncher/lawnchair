@@ -18,23 +18,16 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-
-import com.android.launcher3.R;
 
 import java.util.ArrayList;
 
 public class Hotseat extends FrameLayout {
-    @SuppressWarnings("unused")
     private static final String TAG = "Hotseat";
 
     private CellLayout mContent;
@@ -55,8 +48,6 @@ public class Hotseat extends FrameLayout {
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.Hotseat, defStyle, 0);
         Resources r = context.getResources();
         mTransposeLayoutWithOrientation = 
                 r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
@@ -155,7 +146,6 @@ public class Hotseat extends FrameLayout {
 
         FolderInfo info = fi.getFolderInfo();
         for (ApplicationInfo a: apps) {
-            ComponentName cn = a.intent.getComponent();
             ShortcutInfo si = a.makeShortcut();
             info.add(si);
         }

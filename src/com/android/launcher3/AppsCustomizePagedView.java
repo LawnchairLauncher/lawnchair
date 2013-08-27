@@ -355,9 +355,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             mWidgetPreviewLoader = new WidgetPreviewLoader(mLauncher);
         }
 
-        // Note that we transpose the counts in portrait so that we get a similar layout
-        boolean isLandscape = getResources().getConfiguration().orientation ==
-            Configuration.ORIENTATION_LANDSCAPE;
         int maxCellCountX = Integer.MAX_VALUE;
         int maxCellCountY = Integer.MAX_VALUE;
         if (mMaxAppCellCountX > -1) {

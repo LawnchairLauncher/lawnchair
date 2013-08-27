@@ -42,7 +42,6 @@ public class LauncherAppState {
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
 
-    private static Object mLock = new Object();
     private static LauncherAppState INSTANCE;
 
     private DynamicGrid mDynamicGrid;
@@ -167,12 +166,10 @@ public class LauncherAppState {
     DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
                                   int width, int height,
                                   int availableWidth, int availableHeight) {
-        boolean created = false;
         if (mDynamicGrid == null) {
             mDynamicGrid = new DynamicGrid(context.getResources(),
                     minWidth, minHeight, width, height,
                     availableWidth, availableHeight);
-            created = true;
         }
 
         // Update the icon size

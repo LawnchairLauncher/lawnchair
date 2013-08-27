@@ -205,7 +205,6 @@ class DeviceProfile {
 
     void updateFromConfiguration(Resources resources, int wPx, int hPx,
                                  int awPx, int ahPx) {
-        DisplayMetrics dm = resources.getDisplayMetrics();
         isLandscape = (resources.getConfiguration().orientation ==
                 Configuration.ORIENTATION_LANDSCAPE);
         isTablet = resources.getBoolean(R.bool.is_tablet);

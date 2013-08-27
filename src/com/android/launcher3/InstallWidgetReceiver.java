@@ -77,18 +77,15 @@ public class InstallWidgetReceiver {
         private String mMimeType;
         private ClipData mClipData;
         private List<WidgetMimeTypeHandlerData> mActivities;
-        private CellLayout mTargetLayout;
         private int mTargetLayoutScreen;
         private int[] mTargetLayoutPos;
 
         public WidgetListAdapter(Launcher l, String mimeType, ClipData data,
-                List<WidgetMimeTypeHandlerData> list, CellLayout target,
-                int targetScreen, int[] targetPos) {
+                List<WidgetMimeTypeHandlerData> list, int targetScreen, int[] targetPos) {
             mLauncher = l;
             mMimeType = mimeType;
             mClipData = data;
             mActivities = list;
-            mTargetLayout = target;
             mTargetLayoutScreen = targetScreen;
             mTargetLayoutPos = targetPos;
         }
@@ -149,7 +146,7 @@ public class InstallWidgetReceiver {
             // Set the text
             final CharSequence component = resolveInfo.loadLabel(packageManager);
             final int[] widgetSpan = new int[2];
-            mTargetLayout.rectToCell(widgetInfo.minWidth, widgetInfo.minHeight, widgetSpan);
+            CellLayout.rectToCell(widgetInfo.minWidth, widgetInfo.minHeight, widgetSpan);
             TextView t = (TextView) convertView.findViewById(R.id.provider);
             t.setText(context.getString(R.string.external_drop_widget_pick_format,
                     component, widgetSpan[0], widgetSpan[1]));

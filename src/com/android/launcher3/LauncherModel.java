@@ -318,8 +318,7 @@ public class LauncherModel extends BroadcastReceiver {
                         Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
                                 name, launchIntent, startSearchPageIndex, workspaceScreens);
                         if (coords == null) {
-                            LauncherAppState appState = LauncherAppState.getInstance();
-                            LauncherProvider lp = appState.getLauncherProvider();
+                            LauncherProvider lp = LauncherAppState.getLauncherProvider();
 
                             // If we can't find a valid position, then just add a new screen.
                             // This takes time so we need to re-queue the add until the new
@@ -864,8 +863,7 @@ public class LauncherModel extends BroadcastReceiver {
         final ContentResolver cr = context.getContentResolver();
         item.onAddToDatabase(values);
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        item.id = app.getLauncherProvider().generateNewItemId();
+        item.id = LauncherAppState.getLauncherProvider().generateNewItemId();
         values.put(LauncherSettings.Favorites._ID, item.id);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
@@ -1427,7 +1425,6 @@ public class LauncherModel extends BroadcastReceiver {
             // Optimize for end-user experience: if the Launcher is up and // running with the
             // All Apps interface in the foreground, load All Apps first. Otherwise, load the
             // workspace first (default).
-            final Callbacks cbk = mCallbacks.get();
             keep_running: {
                 // Elevate priority when Home launches for the first time to avoid
                 // starving at boot time. Staring at a blank home is not cool.
@@ -1636,10 +1633,10 @@ public class LauncherModel extends BroadcastReceiver {
             int countY = (int) grid.numRows;
 
             // Make sure the default workspace is loaded, if needed
-            mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
+            LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
 
             // Check if we need to do any upgrade-path logic
-            boolean loadedOldDb = mApp.getLauncherProvider().justLoadedOldDb();
+            boolean loadedOldDb = LauncherAppState.getLauncherProvider().justLoadedOldDb();
 
             synchronized (sBgLock) {
                 sBgWorkspaceItems.clear();
@@ -1812,7 +1809,6 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 // Skip loading items that are out of bounds
                                 if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    int iconSpan = 1;
                                     if (checkItemDimensions(folderInfo)) {
                                         Log.d(TAG, "Skipped loading out of bounds folder");
                                         continue;
@@ -1938,7 +1934,7 @@ public class LauncherModel extends BroadcastReceiver {
                         Log.w(TAG, "10249126\t- " + l);
                     }
 
-                    mApp.getLauncherProvider().updateMaxScreenId(maxScreenId);
+                    LauncherAppState.getLauncherProvider().updateMaxScreenId(maxScreenId);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
 
                     // Update the max item id after we load an old db
@@ -1947,7 +1943,7 @@ public class LauncherModel extends BroadcastReceiver {
                     for (ItemInfo item: sBgItemsIdMap.values()) {
                         maxItemId = Math.max(maxItemId, item.id);
                     }
-                    app.getLauncherProvider().updateMaxItemId(maxItemId);
+                    LauncherAppState.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
                     Log.w(TAG, "10249126 - loadWorkspace - !loadedOldDb");
                     TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(mContext);
@@ -2422,7 +2418,6 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             // Create the ApplicationInfos
-            final long addTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
             for (int i = 0; i < apps.size(); i++) {
                 // This builds the icon bitmaps.
                 mBgAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i),
