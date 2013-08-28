@@ -114,11 +114,16 @@
     <string name="preferences_interface_icons_title">Ikonok</string>
     <string name="preferences_interface_general_title">Általános</string>
     <string name="preferences_interface_general_orientation_title">Képernyő elforgatása</string>
-    <string name="preferences_interface_general_lock_workspace_title">Kezdőképernyő zárolás</string>
+    <string name="preferences_interface_general_lock_workspace_title">Kezdőképernyő zárolása</string>
     <string name="preferences_interface_general_lock_workspace_summary">Ikonok, mappák, tálca, alkalmazások és modulok helyzetének zárolása a kezdőképernyőn</string>
     <string name="preferences_interface_general_fullscreen_title">Teljes képernyő</string>
     <string name="preferences_interface_general_fullscreen_summary">Értesítési sáv elrejtése a kezdőképernyő kiterjesztéséhez</string>
     <string name="folder_empty_contents_title">Ez a mappa üres</string>
+    <string name="preferences_interface_general_iconpack_title">Ikoncsomag</string>
+    <string name="preferences_interface_general_iconpack_summary">Egyéni ikonok használata</string>
+    <string name="dialog_pick_iconpack_title">Válasszon ikoncsomagot</string>
+    <string name="default_iconpack_title">Alapértelmezett ikonok</string>
+    <string name="no_iconpacks_summary">Nincs telepítve ikoncsomag</string>
     <string name="effects_standard">Csúsztatás</string>
     <string name="effects_tablet">Táblagép</string>
     <string name="effects_zoom_in">Nagyítás befelé</string>
