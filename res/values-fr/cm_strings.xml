@@ -119,6 +119,11 @@
     <string name="preferences_interface_general_fullscreen_title">Plein écran</string>
     <string name="preferences_interface_general_fullscreen_summary">Cacher la barre d\'état pour étendre l\'écran d\'accueil</string>
     <string name="folder_empty_contents_title">Aucun élément trouvé</string>
+    <string name="preferences_interface_general_iconpack_title">Packs d\'icônes</string>
+    <string name="preferences_interface_general_iconpack_summary">Un pack d\'icônes remplace les icônes par défaut des applications</string>
+    <string name="dialog_pick_iconpack_title">Choisissez votre pack d\'icônes</string>
+    <string name="default_iconpack_title">Icônes par défaut</string>
+    <string name="no_iconpacks_summary">Aucun pack installé</string>
     <string name="effects_standard">Standard</string>
     <string name="effects_tablet">Tablette</string>
     <string name="effects_zoom_in">Zoom intérieur</string>
