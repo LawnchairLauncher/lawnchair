@@ -139,4 +139,9 @@
     <string name="live_folder_cling_create_folder">Živé priečinky umožňujú vývojárom aplikácií vytvárať priečinky s dynamickým obsahom.
     Obsah priečinka možno odstrániť dlhým stlačením na položku. Na rozdiel od bežných priečinkov, položky môžu byť pridané len
     aplikáciou, ktorý vytvorila priečinok</string>
+    <string name="preferences_interface_general_iconpack_title">Balík ikôn</string>
+    <string name="preferences_interface_general_iconpack_summary">Balíky ikôn nahradzujú predvolené ikony aplikácií</string>
+    <string name="dialog_pick_iconpack_title">Vyberte balík ikôn</string>
+    <string name="default_iconpack_title">Predvolené ikony</string>
+    <string name="no_iconpacks_summary">Nie sú nainštalované žiadne balíky ikôn</string>
 </resources>
