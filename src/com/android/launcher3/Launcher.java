@@ -919,6 +919,9 @@ public class Launcher extends Activity
 
         // Custom content is completely hidden
         public void onHide();
+
+        // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
+        public void onScrollProgressChanged(float progress);
     }
 
     protected void startSettings() {
