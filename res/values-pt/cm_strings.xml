@@ -138,4 +138,9 @@
     <string name="live_folder_cling_title">Pastas dinâmicas</string>
     <string name="live_folder_cling_create_folder">Pastas dinâmicas permitem os desenvolvedores de aplicativos criarem pastas com conteúdo dinâmico.
     O conteúdo das pastas podem ser removido com um toque desde que seja apenas uma entrada. Ao contrário das pastas normais, os itens só podem ser adicionados pelos aplicativos que criaram as pastas</string>
+    <string name="preferences_interface_general_iconpack_title">Pacote de ícones</string>
+    <string name="preferences_interface_general_iconpack_summary">Os pacotes de ícones substituem os ícones padrões das aplicações</string>
+    <string name="dialog_pick_iconpack_title">Escolhe o pacote de ícones</string>
+    <string name="default_iconpack_title">Ícones padrões</string>
+    <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
 </resources>
