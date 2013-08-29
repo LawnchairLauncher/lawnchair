@@ -921,6 +921,9 @@ public class Launcher extends Activity
         public void onHide();
     }
 
+    protected void startSettings() {
+    }
+
     public interface QSBScroller {
         public void setScrollY(int scrollY);
     }
@@ -1121,6 +1124,12 @@ public class Launcher extends Activity
             @Override
             public void onClick(View arg0) {
                 startWallpaper();
+            }
+        });
+        findViewById(R.id.settings_button).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                startSettings();
             }
         });
 
