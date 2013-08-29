@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
@@ -107,8 +108,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private float mFolderIconPivotX;
     private float mFolderIconPivotY;
 
-    private static final float MAX_SCROLL_VELOCITY = 1500f;
-
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
 
@@ -121,7 +120,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private boolean mDestroyed;
 
-    private AutoScroller mAutoScroller;
+    private AutoScrollHelper mAutoScrollHelper;
 
     private Runnable mDeferredAction;
     private boolean mDeferDropAfterUninstall;
@@ -193,9 +192,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        mAutoScroller = new AutoScroller(mScrollView);
-        mAutoScroller.setMaximumVelocityAbsolute(MAX_SCROLL_VELOCITY, MAX_SCROLL_VELOCITY);
-        mAutoScroller.setExtendsBeyondEdges(false);
+        mAutoScrollHelper = new FolderAutoScrollHelper(mScrollView);
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -626,24 +623,29 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
-    private Rect getDragObjectDrawingRect(View dragView, float[] r) {
-        final Rect drawingRect = mTempRect;
-        drawingRect.left = (int) r[0];
-        drawingRect.top = (int) r[1];
-        drawingRect.right = drawingRect.left + dragView.getMeasuredWidth();
-        drawingRect.bottom = drawingRect.top + dragView.getMeasuredHeight();
-        return drawingRect;
-    }
-
     public void onDragOver(DragObject d) {
-        int scrollOffset = mScrollView.getScrollY();
-        float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView, null);
+        final DragView dragView = d.dragView;
+        final int scrollOffset = mScrollView.getScrollY();
+        final float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, dragView, null);
         r[0] -= getPaddingLeft();
         r[1] -= getPaddingTop();
-        if (!mAutoScroller.onTouch(this, getDragObjectDrawingRect(d.dragView, r))) {
-            mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1] + scrollOffset, 1, 1,
-                    mTargetCell);
 
+        final long downTime = SystemClock.uptimeMillis();
+        final MotionEvent translatedEv = MotionEvent.obtain(
+                downTime, downTime, MotionEvent.ACTION_MOVE, d.x, d.y, 0);
+
+        if (!mAutoScrollHelper.isEnabled()) {
+            mAutoScrollHelper.setEnabled(true);
+        }
+
+        final boolean handled = mAutoScrollHelper.onTouch(this, translatedEv);
+        translatedEv.recycle();
+
+        if (handled) {
+            mReorderAlarm.cancelAlarm();
+        } else {
+            mTargetCell = mContent.findNearestArea(
+                    (int) r[0], (int) r[1] + scrollOffset, 1, 1, mTargetCell);
             if (isLayoutRtl()) {
                 mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
             }
@@ -658,8 +660,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             } else {
                 mDragMode = DRAG_MODE_NONE;
             }
-        } else {
-            mReorderAlarm.cancelAlarm();
         }
     }
 
@@ -705,7 +705,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void onDragExit(DragObject d) {
         // Exiting folder; stop the auto scroller.
-        mAutoScroller.stop();
+        mAutoScrollHelper.setEnabled(false);
         // We only close the folder if this is a true drag exit, ie. not because
         // a drop has occurred above the folder.
         if (!d.dragComplete) {
