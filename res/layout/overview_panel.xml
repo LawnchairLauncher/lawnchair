@@ -36,4 +36,13 @@
         android:layout_height="wrap_content"
         android:text="@string/wallpaper_button_text"
         android:textSize="18dp" />
+    <Space
+        android:layout_width="@dimen/overview_panel_buttonSpacing"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_button_text"
+        android:textSize="18dp" />
 </LinearLayout>

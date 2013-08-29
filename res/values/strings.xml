@@ -289,4 +289,6 @@ s -->
     <string name="widget_button_text">Add Widget</string>
     <!-- Text for wallpaper change button -->
     <string name="wallpaper_button_text">Wallpaper</string>
+    <!-- Text for settings button -->
+    <string name="settings_button_text">Settings</string>
 </resources>
