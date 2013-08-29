@@ -134,6 +134,7 @@ public class Workspace extends SmoothPagedView
 
     CustomContentCallbacks mCustomContentCallbacks;
     boolean mCustomContentShowing;
+    private float mLastCustomContentScrollProgress = -1f;
 
     /**
      * The CellLayout that is currently being dragged over
@@ -1233,6 +1234,9 @@ public class Workspace extends SmoothPagedView
                     (getScrollForPage(index + 1) - getScrollForPage(index));
             progress = Math.max(0, progress);
 
+            if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
+            mLastCustomContentScrollProgress = progress;
+
             setBackgroundAlpha(progress * 0.8f);
             float height = getViewportHeight();
             if (getPageIndicator() != null) {
@@ -1246,6 +1250,7 @@ public class Workspace extends SmoothPagedView
                 mLauncher.getHotseat().setTranslationY(transY);
                 mLauncher.getHotseat().setAlpha(1 - progress);
             }
+
             if (getPageIndicator() != null) {
                 final float alpha = 1 - progress;
                 final View pi = getPageIndicator();
@@ -1255,6 +1260,10 @@ public class Workspace extends SmoothPagedView
                 } else if (alpha > ALPHA_CUTOFF_THRESHOLD && pi.getVisibility() != VISIBLE) {
                     pi.setVisibility(VISIBLE);
                 }
+            }
+
+            if (mCustomContentCallbacks != null) {
+                mCustomContentCallbacks.onScrollProgressChanged(progress);
             }
         }
     }
