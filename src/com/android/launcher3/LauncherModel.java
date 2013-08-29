@@ -1015,7 +1015,7 @@ public class LauncherModel extends BroadcastReceiver {
                 cr.bulkInsert(uri, values);
 
                 // Dump the sBgWorkspaceScreens
-                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens", true);
+                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - pre clear", true);
                 for (Long l : sBgWorkspaceScreens) {
                     Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
                 }
@@ -1024,7 +1024,7 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgWorkspaceScreens.addAll(screensCopy);
 
                 // Dump the sBgWorkspaceScreens
-                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens", true);
+                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - post clear", true);
                 for (Long l : sBgWorkspaceScreens) {
                     Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
                 }
@@ -1719,16 +1719,17 @@ public class LauncherModel extends BroadcastReceiver {
                                             Uri uri = LauncherSettings.Favorites.getContentUri(id,
                                                     false);
                                             contentResolver.delete(uri, null, null);
-                                            Log.e(TAG, "Invalid package removed: " + cn);
+                                            Launcher.addDumpLog(TAG, "Invalid package removed: " + cn, true);
                                         } else {
                                             // If apps can be on external storage, then we just
                                             // leave them for the user to remove (maybe add
                                             // visual treatment to it)
-                                            Log.e(TAG, "Invalid package found: " + cn);
+                                            Launcher.addDumpLog(TAG, "Invalid package found: " + cn, true);
                                         }
                                         continue;
                                     }
                                 } catch (URISyntaxException e) {
+                                    Launcher.addDumpLog(TAG, "Invalid uri: " + intentDescription, true);
                                     continue;
                                 }
 
@@ -1766,8 +1767,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     // Skip loading items that are out of bounds
                                     if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                                         if (checkItemDimensions(info)) {
-                                            Log.d(TAG, "Skipped loading out of bounds shortcut: "
-                                                    + info.intent);
+                                            Launcher.addDumpLog(TAG, "Skipped loading out of bounds shortcut: "
+                                                    + info + ", " + grid.numColumns + "x" + grid.numRows, true);
                                             continue;
                                         }
                                     }
@@ -1950,34 +1951,50 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                     LauncherAppState.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
-                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspace - !loadedOldDb", true);
+                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspace - !loadedOldDb [" + sWorkerThread.getThreadId() + ", " + Process.myTid() + "]", true);
                     TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(mContext);
                     for (Integer i : orderedScreens.keySet()) {
+                        Launcher.addDumpLog(TAG, "10249126 - adding to sBgWorkspaceScreens: " + orderedScreens.get(i), true);
                         sBgWorkspaceScreens.add(orderedScreens.get(i));
                     }
 
                     // Remove any empty screens
-                    ArrayList<Long> unusedScreens = new ArrayList<Long>();
-                    unusedScreens.addAll(sBgWorkspaceScreens);
+                    ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
+                    for (Long l : unusedScreens) {
+                        Launcher.addDumpLog(TAG, "10249126 - unused screens: " + l, true);
+                    }
 
+                    Launcher.addDumpLog(TAG, "10249126 - sBgItemsIdMap [" + sWorkerThread.getThreadId() + ", " + Process.myTid() + "]", true);
                     for (ItemInfo item: sBgItemsIdMap.values()) {
                         long screenId = item.screenId;
+                        Launcher.addDumpLog(TAG, "10249126 - \t" + item.container + ", " + screenId + " - " + unusedScreens.contains(screenId) + " | " + item, true);
 
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                 unusedScreens.contains(screenId)) {
                             unusedScreens.remove(screenId);
+                            Launcher.addDumpLog(TAG, "10249126 - \t\tRemoving " + screenId, true);
+                            for (Long l : unusedScreens) {
+                                Launcher.addDumpLog(TAG, "10249126 - \t\t\t unused screens: " + l, true);
+                            }
                         }
                     }
 
                     // If there are any empty screens remove them, and update.
                     if (unusedScreens.size() != 0) {
-                        sBgWorkspaceScreens.removeAll(unusedScreens);
-
                         // Dump the sBgWorkspaceScreens
-                        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens", true);
+                        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - pre removeAll", true);
                         for (Long l : sBgWorkspaceScreens) {
                             Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
                         }
+
+                        sBgWorkspaceScreens.removeAll(unusedScreens);
+
+                        // Dump the sBgWorkspaceScreens
+                        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - post removeAll", true);
+                        for (Long l : sBgWorkspaceScreens) {
+                            Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
+                        }
+
                         updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
                     }
                 }
