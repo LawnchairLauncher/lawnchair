@@ -1127,15 +1127,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private void updateCurrentTab(int currentPage) {
         AppsCustomizeTabHost tabHost = getTabHost();
         if (tabHost != null) {
-            String tag = tabHost.getCurrentTabTag();
-            if (tag != null) {
-                if (currentPage >= mNumAppsPages &&
-                        !tag.equals(tabHost.getTabTagForContentType(ContentType.Widgets))) {
-                    tabHost.setCurrentTabFromContent(ContentType.Widgets);
-                } else if (currentPage < mNumAppsPages &&
-                        !tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
-                    tabHost.setCurrentTabFromContent(ContentType.Applications);
+            if (mJoinWidgetsApps) {
+                String tag = tabHost.getCurrentTabTag();
+                if (tag != null) {
+                    if (currentPage >= mNumAppsPages &&
+                            !tag.equals(tabHost.getTabTagForContentType(ContentType.Widgets))) {
+                        tabHost.setCurrentTabFromContent(ContentType.Widgets);
+                    } else if (currentPage < mNumAppsPages &&
+                            !tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
+                        tabHost.setCurrentTabFromContent(ContentType.Applications);
+                    }
                 }
+            } else {
+                tabHost.setCurrentTabFromContent(mContentType);
             }
         }
     }
