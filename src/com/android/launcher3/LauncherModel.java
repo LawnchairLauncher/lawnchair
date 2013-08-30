@@ -1014,19 +1014,21 @@ public class LauncherModel extends BroadcastReceiver {
                 }
                 cr.bulkInsert(uri, values);
 
-                // Dump the sBgWorkspaceScreens
-                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - pre clear", true);
-                for (Long l : sBgWorkspaceScreens) {
-                    Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                }
+                synchronized (sBgLock) {
+                    // Dump the sBgWorkspaceScreens
+                    Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - pre clear", true);
+                    for (Long l : sBgWorkspaceScreens) {
+                        Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
+                    }
 
-                sBgWorkspaceScreens.clear();
-                sBgWorkspaceScreens.addAll(screensCopy);
+                    sBgWorkspaceScreens.clear();
+                    sBgWorkspaceScreens.addAll(screensCopy);
 
-                // Dump the sBgWorkspaceScreens
-                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - post clear", true);
-                for (Long l : sBgWorkspaceScreens) {
-                    Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
+                    // Dump the sBgWorkspaceScreens
+                    Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - post clear", true);
+                    for (Long l : sBgWorkspaceScreens) {
+                        Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
+                    }
                 }
             }
         };
@@ -1272,7 +1274,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                     orderedScreens.put(rank, screenId);
                 } catch (Exception e) {
-                    Log.w(TAG, "Desktop items loading interrupted - invalid screens: ", e);
+                    Launcher.addDumpLog(TAG, "Desktop items loading interrupted - invalid screens: " + e, true);
                 }
             }
         } finally {
@@ -1337,6 +1339,7 @@ public class LauncherModel extends BroadcastReceiver {
                 isUpgradePath = loadWorkspace();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
+                        Launcher.addDumpLog(TAG, "10249126 - loadAndBindWorkspace() stopped", true);
                         return isUpgradePath;
                     }
                     mWorkspaceLoaded = true;
@@ -1498,6 +1501,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         public void stopLocked() {
             synchronized (LoaderTask.this) {
+                Launcher.addDumpLog(TAG, "10249126 - STOPPED", true);
                 mStopped = true;
                 this.notify();
             }
@@ -1622,6 +1626,18 @@ public class LauncherModel extends BroadcastReceiver {
             return true;
         }
 
+        /** Clears all the sBg data structures */
+        private void clearSBgDataStructures() {
+            synchronized (sBgLock) {
+                sBgWorkspaceItems.clear();
+                sBgAppWidgets.clear();
+                sBgFolders.clear();
+                sBgItemsIdMap.clear();
+                sBgDbIconCache.clear();
+                sBgWorkspaceScreens.clear();
+            }
+        }
+
         /** Returns whether this is an upgradge path */
         private boolean loadWorkspace() {
             final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
@@ -1644,12 +1660,7 @@ public class LauncherModel extends BroadcastReceiver {
             boolean loadedOldDb = LauncherAppState.getLauncherProvider().justLoadedOldDb();
 
             synchronized (sBgLock) {
-                sBgWorkspaceItems.clear();
-                sBgAppWidgets.clear();
-                sBgFolders.clear();
-                sBgItemsIdMap.clear();
-                sBgDbIconCache.clear();
-                sBgWorkspaceScreens.clear();
+                clearSBgDataStructures();
                 Launcher.addDumpLog(TAG, "10249126 - loadWorkspace()", true);
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
@@ -1701,6 +1712,7 @@ public class LauncherModel extends BroadcastReceiver {
                     long id;
                     Intent intent;
 
+                    Launcher.addDumpLog(TAG, "10249126 - Num rows: " + c.getCount(), true);
                     while (!mStopped && c.moveToNext()) {
                         try {
                             int itemType = c.getInt(itemTypeIndex);
@@ -1890,13 +1902,20 @@ public class LauncherModel extends BroadcastReceiver {
                                 break;
                             }
                         } catch (Exception e) {
-                            Log.w(TAG, "Desktop items loading interrupted:", e);
+                            Launcher.addDumpLog(TAG, "Desktop items loading interrupted: " + e, true);
                         }
                     }
                 } finally {
                     if (c != null) {
                         c.close();
                     }
+                }
+
+                // Break early if we've stopped loading
+                if (mStopped) {
+                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspace() - Stopped", true);
+                    clearSBgDataStructures();
+                    return false;
                 }
 
                 if (itemsToRemove.size() > 0) {
@@ -2150,9 +2169,11 @@ public class LauncherModel extends BroadcastReceiver {
             Launcher.addDumpLog(TAG, "10249126 - bindWorkspaceScreens()", true);
 
             // Dump the orderedScreens
-            Launcher.addDumpLog(TAG, "10249126 - orderedScreens", true);
-            for (Long l : sBgWorkspaceScreens) {
-                Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
+            synchronized (sBgLock) {
+                Launcher.addDumpLog(TAG, "10249126 - orderedScreens", true);
+                for (Long l : sBgWorkspaceScreens) {
+                    Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
+                }
             }
 
             final Runnable r = new Runnable() {
@@ -2238,6 +2259,7 @@ public class LauncherModel extends BroadcastReceiver {
          * Binds all loaded data to actual views on the main thread.
          */
         private void bindWorkspace(int synchronizeBindPage, final boolean isUpgradePath) {
+            Launcher.addDumpLog(TAG, "10249126 - bindWorkspace(" + synchronizeBindPage + ", " + isUpgradePath + ")", true);
             final long t = SystemClock.uptimeMillis();
             Runnable r;
 
@@ -2666,6 +2688,13 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         try {
+            // Skip if the application is disabled
+            PackageInfo pi = pm.getPackageInfo(cn.getPackageName(), 0);
+            if (!pi.applicationInfo.enabled) {
+                return false;
+            }
+
+            // Check the activity
             return (pm.getActivityInfo(cn, 0) != null);
         } catch (NameNotFoundException e) {
             return false;
