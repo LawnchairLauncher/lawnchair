@@ -224,49 +224,69 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                             // shouldn't be selected, but do nothing
                         } else if (meta.mGalleryImageUri != null) {
                             // Get the crop
-                            // TODO: get outwidth/outheight more robustly?
-
                             Point inSize = mCropView.getSourceDimensions();
 
                             Point minDims = new Point();
                             Point maxDims = new Point();
                             Display d = getWindowManager().getDefaultDisplay();
                             d.getCurrentSizeRange(minDims, maxDims);
+
                             Point displaySize = new Point();
                             d.getSize(displaySize);
 
-                            // Get the crop
-                            RectF cropRect = mCropView.getCrop();
+                            int maxDim = Math.max(maxDims.x, maxDims.y);
+                            final int minDim = Math.min(minDims.x, minDims.y);
+                            int defaultWidth;
+                            if (LauncherAppState.isScreenLarge(getResources())) {
+                                defaultWidth = (int) (maxDim *
+                                        wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+                            } else {
+                                defaultWidth = Math.max((int)
+                                        (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
+                            }
 
-                            float cropScale = displaySize.x / (float) cropRect.width();
-                            if (displaySize.x < displaySize.y) { // PORTRAIT
-                                // Save the leftmost position for portrait mode
-                                // Extend the crop all the way to the right, for parallax
-                                float extraSpaceToRight = inSize.x - cropRect.right;
-                                cropRect.right = inSize.x;
-                                // Add some space to the left for the landscape case
-                                //float extraLandscapeWidth = maxDims.x - cropRect.width();
-                                //float shiftLeft = Math.min(
-                                //        Math.min(extraSpaceToRight, cropRect.left),
-                                //        extraLandscapeWidth / 2);
-                                //cropRect.left -= shiftLeft;
-                                // Adjust the "leftMost variable now"
-                                //float leftForPortrait = shiftLeft;
-                            } else { // LANDSCAPE
-                                float leftForPortrait = (cropRect.width() - minDims.x) / 2;
-                                cropRect.right = inSize.x;
+                            boolean isPortrait = displaySize.x < displaySize.y;
+                            int portraitHeight;
+                            if (isPortrait) {
+                                portraitHeight = mCropView.getHeight();
+                            } else {
                                 // TODO: how to actually get the proper portrait height?
                                 // This is not quite right:
-                                float portraitHeight = Math.max(maxDims.x, maxDims.y);
-                                float extraPortraitHeight = portraitHeight - cropRect.height();
+                                portraitHeight = Math.max(maxDims.x, maxDims.y);
+                            }
+                            if (android.os.Build.VERSION.SDK_INT >=
+                                    android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                Point realSize = new Point();
+                                d.getRealSize(realSize);
+                                portraitHeight = Math.max(realSize.x, realSize.y);
+                            }
+                            // Get the crop
+                            RectF cropRect = mCropView.getCrop();
+                            float cropScale = mCropView.getWidth() / (float) cropRect.width();
+
+                            // ADJUST CROP WIDTH
+                            // Extend the crop all the way to the right, for parallax
+                            float extraSpaceToRight = inSize.x - cropRect.right;
+                            // Cap the amount of extra width
+                            float maxExtraSpace = defaultWidth / cropScale - cropRect.width();
+                            extraSpaceToRight = Math.min(extraSpaceToRight, maxExtraSpace);
+
+                            cropRect.right += extraSpaceToRight;
+
+                            // ADJUST CROP HEIGHT
+                            if (isPortrait) {
+                                cropRect.bottom = cropRect.top + portraitHeight / cropScale;
+                            } else { // LANDSCAPE
+                                float extraPortraitHeight =
+                                        portraitHeight / cropScale - cropRect.height();
                                 float expandHeight =
                                         Math.min(Math.min(inSize.y - cropRect.bottom, cropRect.top),
                                                 extraPortraitHeight / 2);
                                 cropRect.top -= expandHeight;
                                 cropRect.bottom += expandHeight;
                             }
-                            final int outWidth = (int) Math.ceil(cropRect.width() * cropScale);
-                            final int outHeight = (int) Math.ceil(cropRect.height() * cropScale);
+                            final int outWidth = (int) Math.round(cropRect.width() * cropScale);
+                            final int outHeight = (int) Math.round(cropRect.height() * cropScale);
 
                             Runnable onEndCrop = new Runnable() {
                                 public void run() {
@@ -432,8 +452,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         Point maxDims = new Point();
         windowManager.getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
 
-        final int maxDim = Math.max(maxDims.x, maxDims.y);
+        int maxDim = Math.max(maxDims.x, maxDims.y);
         final int minDim = Math.min(minDims.x, minDims.y);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Point realSize = new Point();
+            windowManager.getDefaultDisplay().getRealSize(realSize);
+            maxDim = Math.max(realSize.x, realSize.y);
+        }
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended
