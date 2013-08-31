@@ -49,8 +49,7 @@ public class LiveFoldersReceiver extends BroadcastReceiver {
         // Verify item list
         ArrayList<LiveFolder.Item> items = intent.getParcelableArrayListExtra(
                 FOLDER_ENTRIES_EXTRA);
-        if (items == null || items.isEmpty()) {
-            Log.e(TAG, "Cannot populate with empty items");
+        if (items == null) {
             return;
         }
 

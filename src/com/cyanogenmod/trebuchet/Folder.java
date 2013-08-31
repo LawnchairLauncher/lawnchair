@@ -1154,6 +1154,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onAllItemsRemoved() {
         mItemsInvalidated = true;
         mContent.removeAllViews();
+        setupContentForNumItems(getItemCount());
         replaceFolderWithFinalItem();
     }
 
