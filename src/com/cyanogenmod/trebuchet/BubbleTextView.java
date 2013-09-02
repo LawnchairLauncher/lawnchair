@@ -162,12 +162,19 @@ public class BubbleTextView extends TextView implements ShortcutInfo.ShortcutLis
     }
 
     @Override
-    public void onTitleChanged(CharSequence title) {
+    public void onTitleChanged(ShortcutInfo item) {
         if (mTextVisible) {
-            setText(title);
+            setText(item.title);
         } else {
-            mVisibleText = title;
+            mVisibleText = item.title;
         }
+    }
+
+    @Override
+    public void onIconChanged(ShortcutInfo item) {
+        setCompoundDrawablesWithIntrinsicBounds(null,
+                new FastBitmapDrawable(item.getIcon(null)),
+                null, null);
     }
 
     /**

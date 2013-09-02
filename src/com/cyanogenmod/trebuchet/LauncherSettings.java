@@ -99,6 +99,8 @@ class LauncherSettings {
          * <P>Type: BLOB</P>
          */
         static final String ICON = "icon";
+
+        static final String CUSTOM_ICON = "customIcon";
     }
 
     /**

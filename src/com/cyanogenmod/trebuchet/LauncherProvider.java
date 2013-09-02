@@ -62,7 +62,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     static final String AUTHORITY = "com.cyanogenmod.trebuchet.settings";
 
@@ -290,7 +290,8 @@ public class LauncherProvider extends ContentProvider {
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
-                    "receiverComponent TEXT" +
+                    "receiverComponent TEXT," +
+                    "customIcon TEXT" +
                     ");");
 
             // Database was just created, so wipe any previous widgets
@@ -439,6 +440,10 @@ public class LauncherProvider extends ContentProvider {
                 version = 15;
             }
 
+            if (oldVersion < 16) {
+                db.execSQL("ALTER TABLE favorites ADD customIcon TEXT;");
+                version = 16;
+            }
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
