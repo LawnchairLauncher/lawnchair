@@ -96,7 +96,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private boolean isAllAppsApplication(DragSource source, Object info) {
-        return (source instanceof AppsCustomizePagedView) && (info instanceof ApplicationInfo);
+        return (source instanceof AppsCustomizePagedView) && (info instanceof AppInfo);
     }
     private boolean isAllAppsWidget(DragSource source, Object info) {
         if (source instanceof AppsCustomizePagedView) {
@@ -149,7 +149,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                 item instanceof ShortcutInfo) {
                 ShortcutInfo shortcutInfo = (ShortcutInfo) info;
-                return (shortcutInfo.flags & ApplicationInfo.DOWNLOADED_FLAG) != 0;
+                return (shortcutInfo.flags & AppInfo.DOWNLOADED_FLAG) != 0;
             }
         }
         return false;
@@ -259,14 +259,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mWaitingForUninstall = false;
         if (isAllAppsApplication(d.dragSource, item)) {
             // Uninstall the application if it is being dragged from AppsCustomize
-            ApplicationInfo appInfo = (ApplicationInfo) item;
+            AppInfo appInfo = (AppInfo) item;
             mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags);
         } else if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) item;
             if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
                 final ComponentName componentName = shortcut.intent.getComponent();
                 final DragSource dragSource = d.dragSource;
-                int flags = ApplicationInfo.initFlags(
+                int flags = AppInfo.initFlags(
                     ShortcutInfo.getPackageInfo(getContext(), componentName.getPackageName()));
                 mWaitingForUninstall =
                     mLauncher.startApplicationUninstallActivity(componentName, flags);

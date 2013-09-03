@@ -31,8 +31,8 @@ import java.util.HashMap;
 /**
  * Represents an app in AllAppsView.
  */
-class ApplicationInfo extends ItemInfo {
-    private static final String TAG = "Launcher2.ApplicationInfo";
+class AppInfo extends ItemInfo {
+    private static final String TAG = "Launcher3.AppInfo";
 
     /**
      * The intent used to start the application.
@@ -56,7 +56,7 @@ class ApplicationInfo extends ItemInfo {
 
     int flags = 0;
 
-    ApplicationInfo() {
+    AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
@@ -67,7 +67,7 @@ class ApplicationInfo extends ItemInfo {
     /**
      * Must not hold the Context.
      */
-    public ApplicationInfo(PackageManager pm, ResolveInfo info, IconCache iconCache,
+    public AppInfo(PackageManager pm, ResolveInfo info, IconCache iconCache,
             HashMap<Object, CharSequence> labelCache) {
         final String packageName = info.activityInfo.applicationInfo.packageName;
 
@@ -104,7 +104,7 @@ class ApplicationInfo extends ItemInfo {
         return pi.firstInstallTime;
     }
 
-    public ApplicationInfo(ApplicationInfo info) {
+    public AppInfo(AppInfo info) {
         super(info);
         componentName = info.componentName;
         title = info.title.toString();
@@ -136,10 +136,9 @@ class ApplicationInfo extends ItemInfo {
                 + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + dropPos + ")";
     }
 
-    public static void dumpApplicationInfoList(String tag, String label,
-            ArrayList<ApplicationInfo> list) {
+    public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
         Log.d(tag, label + " size=" + list.size());
-        for (ApplicationInfo info: list) {
+        for (AppInfo info: list) {
             Log.d(tag, "   title=\"" + info.title + "\" iconBitmap="
                     + info.iconBitmap + " firstInstallTime="
                     + info.firstInstallTime);

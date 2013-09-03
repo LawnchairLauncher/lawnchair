@@ -52,7 +52,7 @@ public class PagedViewIcon extends TextView {
         super(context, attrs, defStyle);
     }
 
-    public void applyFromApplicationInfo(ApplicationInfo info, boolean scaleUp,
+    public void applyFromApplicationInfo(AppInfo info, boolean scaleUp,
             PagedViewIcon.PressedCallback cb) {
         mIcon = info.iconBitmap;
         mPressedCallback = cb;

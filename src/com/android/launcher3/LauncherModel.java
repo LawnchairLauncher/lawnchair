@@ -156,13 +156,13 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindFolders(HashMap<Long,FolderInfo> folders);
         public void finishBindingItems(boolean upgradePath);
         public void bindAppWidget(LauncherAppWidgetInfo info);
-        public void bindAllApplications(ArrayList<ApplicationInfo> apps);
+        public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
                                   ArrayList<ItemInfo> addAnimated);
-        public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
+        public void bindAppsUpdated(ArrayList<AppInfo> apps);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
-                        ArrayList<ApplicationInfo> appInfos,
+                        ArrayList<AppInfo> appInfos,
                         boolean matchPackageNamesOnly);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public void bindSearchablesChanged();
@@ -347,8 +347,8 @@ public class LauncherModel extends BroadcastReceiver {
                         ShortcutInfo shortcutInfo;
                         if (a instanceof ShortcutInfo) {
                             shortcutInfo = (ShortcutInfo) a;
-                        } else if (a instanceof ApplicationInfo) {
-                            shortcutInfo = ((ApplicationInfo) a).makeShortcut();
+                        } else if (a instanceof AppInfo) {
+                            shortcutInfo = ((AppInfo) a).makeShortcut();
                         } else {
                             throw new RuntimeException("Unexpected info type");
                         }
@@ -1544,7 +1544,7 @@ public class LauncherModel extends BroadcastReceiver {
             ArrayList<ItemInfo> tmpInfos;
             ArrayList<ItemInfo> added = new ArrayList<ItemInfo>();
             synchronized (sBgLock) {
-                for (ApplicationInfo app : mBgAllAppsList.data) {
+                for (AppInfo app : mBgAllAppsList.data) {
                     tmpInfos = getItemInfoForComponentName(app.componentName);
                     Launcher.addDumpLog(TAG, "10249126 - \t" + app.componentName.getPackageName() + ", " + tmpInfos.isEmpty(), true);
                     if (tmpInfos.isEmpty()) {
@@ -2397,8 +2397,8 @@ public class LauncherModel extends BroadcastReceiver {
 
             // shallow copy
             @SuppressWarnings("unchecked")
-            final ArrayList<ApplicationInfo> list
-                    = (ArrayList<ApplicationInfo>) mBgAllAppsList.data.clone();
+            final ArrayList<AppInfo> list
+                    = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
             Runnable r = new Runnable() {
                 public void run() {
                     final long t = SystemClock.uptimeMillis();
@@ -2463,13 +2463,13 @@ public class LauncherModel extends BroadcastReceiver {
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 // This builds the icon bitmaps.
-                mBgAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i),
+                mBgAllAppsList.add(new AppInfo(packageManager, apps.get(i),
                         mIconCache, mLabelCache));
             }
 
             final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-            final ArrayList<ApplicationInfo> added = mBgAllAppsList.added;
-            mBgAllAppsList.added = new ArrayList<ApplicationInfo>();
+            final ArrayList<AppInfo> added = mBgAllAppsList.added;
+            mBgAllAppsList.added = new ArrayList<AppInfo>();
 
             // Post callback on main thread
             mHandler.post(new Runnable() {
@@ -2555,16 +2555,16 @@ public class LauncherModel extends BroadcastReceiver {
                     break;
             }
 
-            ArrayList<ApplicationInfo> added = null;
-            ArrayList<ApplicationInfo> modified = null;
-            final ArrayList<ApplicationInfo> removedApps = new ArrayList<ApplicationInfo>();
+            ArrayList<AppInfo> added = null;
+            ArrayList<AppInfo> modified = null;
+            final ArrayList<AppInfo> removedApps = new ArrayList<AppInfo>();
 
             if (mBgAllAppsList.added.size() > 0) {
-                added = new ArrayList<ApplicationInfo>(mBgAllAppsList.added);
+                added = new ArrayList<AppInfo>(mBgAllAppsList.added);
                 mBgAllAppsList.added.clear();
             }
             if (mBgAllAppsList.modified.size() > 0) {
-                modified = new ArrayList<ApplicationInfo>(mBgAllAppsList.modified);
+                modified = new ArrayList<AppInfo>(mBgAllAppsList.modified);
                 mBgAllAppsList.modified.clear();
             }
             if (mBgAllAppsList.removed.size() > 0) {
@@ -2585,10 +2585,10 @@ public class LauncherModel extends BroadcastReceiver {
                 addAndBindAddedApps(context, addedInfos, cb);
             }
             if (modified != null) {
-                final ArrayList<ApplicationInfo> modifiedFinal = modified;
+                final ArrayList<AppInfo> modifiedFinal = modified;
 
                 // Update the launcher db to reflect the changes
-                for (ApplicationInfo a : modifiedFinal) {
+                for (AppInfo a : modifiedFinal) {
                     ArrayList<ItemInfo> infos =
                             getItemInfoForComponentName(a.componentName);
                     for (ItemInfo i : infos) {
@@ -2625,7 +2625,7 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     }
                 } else {
-                    for (ApplicationInfo a : removedApps) {
+                    for (AppInfo a : removedApps) {
                         ArrayList<ItemInfo> infos =
                                 getItemInfoForComponentName(a.componentName);
                         for (ItemInfo i : infos) {
@@ -3120,10 +3120,10 @@ public class LauncherModel extends BroadcastReceiver {
         return folderInfo;
     }
 
-    public static final Comparator<ApplicationInfo> getAppNameComparator() {
+    public static final Comparator<AppInfo> getAppNameComparator() {
         final Collator collator = Collator.getInstance();
-        return new Comparator<ApplicationInfo>() {
-            public final int compare(ApplicationInfo a, ApplicationInfo b) {
+        return new Comparator<AppInfo>() {
+            public final int compare(AppInfo a, AppInfo b) {
                 int result = collator.compare(a.title.toString(), b.title.toString());
                 if (result == 0) {
                     result = a.componentName.compareTo(b.componentName);
@@ -3132,9 +3132,9 @@ public class LauncherModel extends BroadcastReceiver {
             }
         };
     }
-    public static final Comparator<ApplicationInfo> APP_INSTALL_TIME_COMPARATOR
-            = new Comparator<ApplicationInfo>() {
-        public final int compare(ApplicationInfo a, ApplicationInfo b) {
+    public static final Comparator<AppInfo> APP_INSTALL_TIME_COMPARATOR
+            = new Comparator<AppInfo>() {
+        public final int compare(AppInfo a, AppInfo b) {
             if (a.firstInstallTime < b.firstInstallTime) return 1;
             if (a.firstInstallTime > b.firstInstallTime) return -1;
             return 0;
@@ -3223,10 +3223,10 @@ public class LauncherModel extends BroadcastReceiver {
 
     public void dumpState() {
         Log.d(TAG, "mCallbacks=" + mCallbacks);
-        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mBgAllAppsList.data);
-        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mBgAllAppsList.added);
-        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mBgAllAppsList.removed);
-        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mBgAllAppsList.modified);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mBgAllAppsList.data);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mBgAllAppsList.added);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mBgAllAppsList.removed);
+        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mBgAllAppsList.modified);
         if (mLoaderTask != null) {
             mLoaderTask.dumpState();
         } else {

@@ -327,13 +327,13 @@ public class DragController {
         }
         endDrag();
     }
-    public void onAppsRemoved(ArrayList<ApplicationInfo> appInfos, Context context) {
+    public void onAppsRemoved(ArrayList<AppInfo> appInfos, Context context) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             Object rawDragInfo = mDragObject.dragInfo;
             if (rawDragInfo instanceof ShortcutInfo) {
                 ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
-                for (ApplicationInfo info : appInfos) {
+                for (AppInfo info : appInfos) {
                     // Added null checks to prevent NPE we've seen in the wild
                     if (dragInfo != null &&
                         dragInfo.intent != null) {

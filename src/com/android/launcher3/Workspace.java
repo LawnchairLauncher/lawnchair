@@ -3246,9 +3246,9 @@ public class Workspace extends SmoothPagedView
             switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                if (info.container == NO_ID && info instanceof ApplicationInfo) {
+                if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
-                    info = new ShortcutInfo((ApplicationInfo) info);
+                    info = new ShortcutInfo((AppInfo) info);
                 }
                 view = mLauncher.createShortcut(R.layout.application, cellLayout,
                         (ShortcutInfo) info);
@@ -3943,10 +3943,10 @@ public class Workspace extends SmoothPagedView
     // Removes items that match the application info specified, when applications are removed
     // as a part of an update, this is called to ensure that other widgets and application
     // shortcuts are not removed.
-    void removeItemsByApplicationInfo(final ArrayList<ApplicationInfo> appInfos) {
+    void removeItemsByApplicationInfo(final ArrayList<AppInfo> appInfos) {
         // Just create a hash table of all the specific components that this will affect
         HashSet<ComponentName> cns = new HashSet<ComponentName>();
-        for (ApplicationInfo info : appInfos) {
+        for (AppInfo info : appInfos) {
             cns.add(info.componentName);
         }
 
@@ -4024,7 +4024,7 @@ public class Workspace extends SmoothPagedView
         stripEmptyScreens();
     }
 
-    void updateShortcuts(ArrayList<ApplicationInfo> apps) {
+    void updateShortcuts(ArrayList<AppInfo> apps) {
         ArrayList<ShortcutAndWidgetContainer> childrenLayouts = getAllShortcutAndWidgetContainers();
         for (ShortcutAndWidgetContainer layout: childrenLayouts) {
             int childCount = layout.getChildCount();
@@ -4039,7 +4039,7 @@ public class Workspace extends SmoothPagedView
                     final ComponentName name = intent.getComponent();
                     final int appCount = apps.size();
                     for (int k = 0; k < appCount; k++) {
-                        ApplicationInfo app = apps.get(k);
+                        AppInfo app = apps.get(k);
                         if (app.componentName.equals(name)) {
                             BubbleTextView shortcut = (BubbleTextView) view;
                             info.updateIcon(mIconCache);

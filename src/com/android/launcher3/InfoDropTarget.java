@@ -72,8 +72,8 @@ public class InfoDropTarget extends ButtonDropTarget {
         // in onDrop, because it allows us to reject the drop (by returning false)
         // so that the object being dragged isn't removed from the drag source.
         ComponentName componentName = null;
-        if (d.dragInfo instanceof ApplicationInfo) {
-            componentName = ((ApplicationInfo) d.dragInfo).componentName;
+        if (d.dragInfo instanceof AppInfo) {
+            componentName = ((AppInfo) d.dragInfo).componentName;
         } else if (d.dragInfo instanceof ShortcutInfo) {
             componentName = ((ShortcutInfo) d.dragInfo).intent.getComponent();
         } else if (d.dragInfo instanceof PendingAddItemInfo) {

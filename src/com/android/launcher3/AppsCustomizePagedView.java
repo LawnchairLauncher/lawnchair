@@ -168,7 +168,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private PagedViewIcon mPressedIcon;
 
     // Content
-    private ArrayList<ApplicationInfo> mApps;
+    private ArrayList<AppInfo> mApps;
     private ArrayList<Object> mWidgets;
 
     // Cling
@@ -247,7 +247,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         super(context, attrs);
         mLayoutInflater = LayoutInflater.from(context);
         mPackageManager = context.getPackageManager();
-        mApps = new ArrayList<ApplicationInfo>();
+        mApps = new ArrayList<AppInfo>();
         mWidgets = new ArrayList<Object>();
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
         mCanvas = new Canvas();
@@ -498,7 +498,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         if (v instanceof PagedViewIcon) {
             // Animate some feedback to the click
-            final ApplicationInfo appInfo = (ApplicationInfo) v.getTag();
+            final AppInfo appInfo = (AppInfo) v.getTag();
 
             // Lock the drawable state to pressed until we return to Launcher
             if (mPressedIcon != null) {
@@ -1025,7 +1025,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         ArrayList<Object> items = new ArrayList<Object>();
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
         for (int i = startIndex; i < endIndex; ++i) {
-            ApplicationInfo info = mApps.get(i);
+            AppInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
             icon.applyFromApplicationInfo(info, true, this);
@@ -1541,59 +1541,59 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    public void setApps(ArrayList<ApplicationInfo> list) {
+    public void setApps(ArrayList<AppInfo> list) {
         if (!DISABLE_ALL_APPS) {
             mApps = list;
             Collections.sort(mApps, LauncherModel.getAppNameComparator());
             updatePageCountsAndInvalidateData();
         }
     }
-    private void addAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
+    private void addAppsWithoutInvalidate(ArrayList<AppInfo> list) {
         // We add it in place, in alphabetical order
         int count = list.size();
         for (int i = 0; i < count; ++i) {
-            ApplicationInfo info = list.get(i);
+            AppInfo info = list.get(i);
             int index = Collections.binarySearch(mApps, info, LauncherModel.getAppNameComparator());
             if (index < 0) {
                 mApps.add(-(index + 1), info);
             }
         }
     }
-    public void addApps(ArrayList<ApplicationInfo> list) {
+    public void addApps(ArrayList<AppInfo> list) {
         if (!DISABLE_ALL_APPS) {
             addAppsWithoutInvalidate(list);
             updatePageCountsAndInvalidateData();
         }
     }
-    private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {
+    private int findAppByComponent(List<AppInfo> list, AppInfo item) {
         ComponentName removeComponent = item.intent.getComponent();
         int length = list.size();
         for (int i = 0; i < length; ++i) {
-            ApplicationInfo info = list.get(i);
+            AppInfo info = list.get(i);
             if (info.intent.getComponent().equals(removeComponent)) {
                 return i;
             }
         }
         return -1;
     }
-    private void removeAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
+    private void removeAppsWithoutInvalidate(ArrayList<AppInfo> list) {
         // loop through all the apps and remove apps that have the same component
         int length = list.size();
         for (int i = 0; i < length; ++i) {
-            ApplicationInfo info = list.get(i);
+            AppInfo info = list.get(i);
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
                 mApps.remove(removeIndex);
             }
         }
     }
-    public void removeApps(ArrayList<ApplicationInfo> appInfos) {
+    public void removeApps(ArrayList<AppInfo> appInfos) {
         if (!DISABLE_ALL_APPS) {
             removeAppsWithoutInvalidate(appInfos);
             updatePageCountsAndInvalidateData();
         }
     }
-    public void updateApps(ArrayList<ApplicationInfo> list) {
+    public void updateApps(ArrayList<AppInfo> list) {
         // We remove and re-add the updated applications list because it's properties may have
         // changed (ie. the title), and this will ensure that the items will be in their proper
         // place in the list.
@@ -1627,7 +1627,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void dumpState() {
         // TODO: Dump information related to current list of Applications, Widgets, etc.
-        ApplicationInfo.dumpApplicationInfoList(TAG, "mApps", mApps);
+        AppInfo.dumpApplicationInfoList(TAG, "mApps", mApps);
         dumpAppWidgetProviderInfoList(TAG, "mWidgets", mWidgets);
     }
 

@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -73,8 +74,10 @@ public class WallpaperCropActivity extends Activity {
         boolean mSaveCroppedBitmap;
         Bitmap mCroppedBitmap;
         Runnable mOnEndRunnable;
+        Resources mResources;
 
-        public BitmapCropTask(Uri inUri, RectF cropBounds, int outWidth, int outHeight,
+        public BitmapCropTask(Uri inUri,
+                RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInUri = inUri;
             mCropBounds = cropBounds;
@@ -86,7 +89,8 @@ public class WallpaperCropActivity extends Activity {
             mOnEndRunnable = onEndRunnable;
         }
 
-        public BitmapCropTask(int inResId, RectF cropBounds, int outWidth, int outHeight,
+        public BitmapCropTask(Resources res, int inResId,
+                RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInResId = inResId;
             mCropBounds = cropBounds;
@@ -96,6 +100,7 @@ public class WallpaperCropActivity extends Activity {
             mSetWallpaper = setWallpaper;
             mSaveCroppedBitmap = saveCroppedBitmap;
             mOnEndRunnable = onEndRunnable;
+            mResources = res;
         }
 
         // Helper to setup input stream
@@ -110,7 +115,7 @@ public class WallpaperCropActivity extends Activity {
                                 getContentResolver().openInputStream(mInUri));
                     } else {
                         mInStream = new BufferedInputStream(
-                                getResources().openRawResource(mInResId));
+                                mResources.openRawResource(mInResId));
                     }
                 } catch (FileNotFoundException e) {
                     Log.w(LOGTAG, "cannot read file: " + mInUri.toString(), e);

@@ -17,19 +17,5 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>wallpaper_01</item>
-        <item>wallpaper_02</item>
-        <item>wallpaper_03</item>
-        <item>wallpaper_04</item>
-        <item>wallpaper_05</item>
-        <item>wallpaper_06</item>
-        <item>wallpaper_07</item>
-        <item>wallpaper_08</item>
-        <item>wallpaper_09</item>
-        <item>wallpaper_10</item>
-        <item>wallpaper_11</item>
-        <item>wallpaper_12</item>
-        <item>wallpaper_13</item>
-        <item>wallpaper_14</item>
     </string-array>
 </resources>

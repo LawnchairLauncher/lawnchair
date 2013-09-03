@@ -105,7 +105,7 @@ public class Hotseat extends FrameLayout {
     }
 
     void addAllAppsFolder(IconCache iconCache,
-            ArrayList<ApplicationInfo> allApps, ArrayList<ComponentName> onWorkspace,
+            ArrayList<AppInfo> allApps, ArrayList<ComponentName> onWorkspace,
             Launcher launcher, Workspace workspace) {
         FolderInfo fi = new FolderInfo();
 
@@ -124,7 +124,7 @@ public class Hotseat extends FrameLayout {
         workspace.addInScreen(folder, fi.container, fi.screenId, fi.cellX, fi.cellY,
                 fi.spanX, fi.spanY);
 
-        for (ApplicationInfo info: allApps) {
+        for (AppInfo info: allApps) {
             ComponentName cn = info.intent.getComponent();
             if (!onWorkspace.contains(cn)) {
                 Log.d(TAG, "Adding to 'more apps': " + info.intent);
@@ -134,7 +134,7 @@ public class Hotseat extends FrameLayout {
         }
     }
 
-    void addAppsToAllAppsFolder(ArrayList<ApplicationInfo> apps) {
+    void addAppsToAllAppsFolder(ArrayList<AppInfo> apps) {
         View v = mContent.getChildAt(getCellXFromOrder(mAllAppsButtonRank), getCellYFromOrder(mAllAppsButtonRank));
         FolderIcon fi = null;
 
@@ -145,7 +145,7 @@ public class Hotseat extends FrameLayout {
         }
 
         FolderInfo info = fi.getFolderInfo();
-        for (ApplicationInfo a: apps) {
+        for (AppInfo a: apps) {
             ShortcutInfo si = a.makeShortcut();
             info.add(si);
         }
