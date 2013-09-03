@@ -3560,8 +3560,10 @@ public class Launcher extends Activity
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         bindAddScreens(orderedScreenIds);
 
-        // Create the new empty page
-        mWorkspace.addExtraEmptyScreen();
+        // If there are no screens, we need to have an empty screen
+        if (orderedScreenIds.size() == 0) {
+            mWorkspace.addExtraEmptyScreen();
+        }
 
         // Create the custom content page (this call updates mDefaultScreen which calls
         // setCurrentPage() so ensure that all pages are added before calling this)
