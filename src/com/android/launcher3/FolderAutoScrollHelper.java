@@ -33,7 +33,7 @@ public class FolderAutoScrollHelper extends AutoScrollHelper {
         mTarget = target;
 
         setActivationDelay(0);
-        setEdgeType(EDGE_TYPE_INSIDE);
+        setEdgeType(EDGE_TYPE_INSIDE_EXTEND);
         setExclusive(true);
         setMaximumVelocity(MAX_SCROLL_VELOCITY, MAX_SCROLL_VELOCITY);
     }
