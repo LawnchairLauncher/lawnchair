@@ -42,7 +42,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mOriginalHeightGap;
     private int mWidthGap;
     private int mHeightGap;
-    private int mMaxGap;
     protected PagedViewCellLayoutChildren mChildren;
 
     public PagedViewCellLayout(Context context) {
@@ -67,7 +66,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mCellCountX = (int) grid.numColumns;
         mCellCountY = (int) grid.numRows;
         mOriginalWidthGap = mOriginalHeightGap = mWidthGap = mHeightGap = -1;
-        mMaxGap = resources.getDimensionPixelSize(R.dimen.apps_customize_max_gap);
 
         mChildren = new PagedViewCellLayoutChildren(context);
         mChildren.setCellDimensions(mCellWidth, mCellHeight);
@@ -184,8 +182,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
             int hFreeSpace = hSpace - (mCellCountX * mOriginalCellWidth);
             int vFreeSpace = vSpace - (mCellCountY * mOriginalCellHeight);
-            mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
-            mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
+            mWidthGap = numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0;
+            mHeightGap = numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0;
 
             mChildren.setGap(mWidthGap, mHeightGap);
         } else {
@@ -493,12 +491,4 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
                 this.cellHSpan + ", " + this.cellVSpan + ")";
         }
     }
-}
-
-interface Page {
-    public int getPageChildCount();
-    public View getChildOnPageAt(int i);
-    public void removeAllViewsOnPage();
-    public void removeViewOnPageAt(int i);
-    public int indexOfChildOnPage(View v);
 }

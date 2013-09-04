@@ -54,6 +54,14 @@ import android.widget.Scroller;
 
 import java.util.ArrayList;
 
+interface Page {
+    public int getPageChildCount();
+    public View getChildOnPageAt(int i);
+    public void removeAllViewsOnPage();
+    public void removeViewOnPageAt(int i);
+    public int indexOfChildOnPage(View v);
+}
+
 /**
  * An abstraction of the original Workspace which supports browsing through a
  * sequential list of "pages"
@@ -196,6 +204,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Page Indicator
     private int mPageIndicatorViewId;
     private PageIndicator mPageIndicator;
+    private boolean mAllowPagedViewAnimations = true;
 
     // The viewport whether the pages are to be contained (the actual view may be larger than the
     // viewport)
@@ -209,6 +218,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int REORDERING_ZOOM_IN_OUT_DURATION = 250;
     private int REORDERING_SIDE_PAGE_HOVER_TIMEOUT = 80;
     private float mMinScale = 1f;
+    private boolean mUseMinScale = false;
     protected View mDragView;
     protected AnimatorSet mZoomInOutAnim;
     private Runnable mSidePageHoverRunnable;
@@ -321,14 +331,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         ViewGroup parent = (ViewGroup) getParent();
         if (mPageIndicator == null && mPageIndicatorViewId > -1) {
             mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
-            mPageIndicator.removeAllMarkers();
+            mPageIndicator.removeAllMarkers(mAllowPagedViewAnimations);
 
             ArrayList<Integer> markers = new ArrayList<Integer>();
             for (int i = 0; i < getChildCount(); ++i) {
                 markers.add(getPageIndicatorMarker(i));
             }
 
-            mPageIndicator.addMarkers(markers);
+            mPageIndicator.addMarkers(markers, mAllowPagedViewAnimations);
             mPageIndicator.setOnClickListener((Launcher) getContext());
         }
     }
@@ -374,6 +384,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     public void setMinScale(float f) {
         mMinScale = f;
+        mUseMinScale = true;
         requestLayout();
     }
 
@@ -723,10 +734,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // viewport, we can be at most one and a half screens offset once we scale down
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int maxSize = Math.max(dm.widthPixels, dm.heightPixels);
-        int parentWidthSize = (int) (1.5f * maxSize);
-        int parentHeightSize = maxSize;
-        int scaledWidthSize = (int) (parentWidthSize / mMinScale);
-        int scaledHeightSize = (int) (parentHeightSize / mMinScale);
+        int parentWidthSize, parentHeightSize;
+        int scaledWidthSize, scaledHeightSize;
+        if (mUseMinScale) {
+            parentWidthSize = (int) (1.5f * maxSize);
+            parentHeightSize = maxSize;
+            scaledWidthSize = (int) (parentWidthSize / mMinScale);
+            scaledHeightSize = (int) (parentHeightSize / mMinScale);
+        } else {
+            scaledWidthSize = widthSize;
+            scaledHeightSize = heightSize;
+        }
         mViewport.set(0, 0, widthSize, heightSize);
 
         if (widthMode == MeasureSpec.UNSPECIFIED || heightMode == MeasureSpec.UNSPECIFIED) {
@@ -786,8 +804,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 childWidthMode = MeasureSpec.EXACTLY;
                 childHeightMode = MeasureSpec.EXACTLY;
 
-                childWidth = getViewportWidth();
-                childHeight = getViewportHeight();
+                if (mUseMinScale) {
+                    childWidth = getViewportWidth();
+                    childHeight = getViewportHeight();
+                } else {
+                    childWidth = widthSize - getPaddingLeft() - getPaddingRight();
+                    childHeight = heightSize - getPaddingTop() - getPaddingBottom();
+                }
             }
 
             final int childWidthMeasureSpec =
@@ -930,13 +953,22 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
+    protected void enablePagedViewAnimations() {
+        mAllowPagedViewAnimations = true;
+
+    }
+    protected void disablePagedViewAnimations() {
+        mAllowPagedViewAnimations = false;
+    }
+
     @Override
     public void onChildViewAdded(View parent, View child) {
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
             int pageIndex = indexOfChild(child);
-            mPageIndicator.addMarker(pageIndex, getPageIndicatorMarker(pageIndex));
+            mPageIndicator.addMarker(pageIndex, getPageIndicatorMarker(pageIndex),
+                    mAllowPagedViewAnimations);
         }
 
         // This ensures that when children are added, they get the correct transforms / alphas
@@ -957,7 +989,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.removeMarker(index);
+            mPageIndicator.removeMarker(index, mAllowPagedViewAnimations);
         }
     }
 
@@ -987,7 +1019,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null) {
-            mPageIndicator.removeAllMarkers();
+            mPageIndicator.removeAllMarkers(mAllowPagedViewAnimations);
         }
 
         super.removeAllViewsInLayout();

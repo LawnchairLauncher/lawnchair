@@ -23,6 +23,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -77,6 +78,18 @@ public class PagedViewWidget extends LinearLayout {
         mOriginalImagePadding.top = image.getPaddingTop();
         mOriginalImagePadding.right = image.getPaddingRight();
         mOriginalImagePadding.bottom = image.getPaddingBottom();
+
+        // Ensure we are using the right text size
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        TextView name = (TextView) findViewById(R.id.widget_name);
+        if (name != null) {
+            name.setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+        }
+        TextView dims = (TextView) findViewById(R.id.widget_dims);
+        if (dims != null) {
+            dims.setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+        }
     }
 
     public static void setDeletePreviewsWhenDetachedFromWindow(boolean value) {

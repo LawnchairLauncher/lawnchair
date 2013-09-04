@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.TextView;
 
 /**
@@ -50,6 +51,15 @@ public class PagedViewIcon extends TextView {
 
     public PagedViewIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public void onFinishInflate() {
+        super.onFinishInflate();
+
+        // Ensure we are using the right text size
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
     }
 
     public void applyFromApplicationInfo(AppInfo info, boolean scaleUp,

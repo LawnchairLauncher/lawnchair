@@ -795,7 +795,7 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS_CUSTOMIZE) {
-            showAllApps(false);
+            showAllApps(false, AppsCustomizePagedView.ContentType.Applications);
         }
         mOnResumeState = State.NONE;
 
@@ -1118,7 +1118,7 @@ public class Launcher extends Activity
         findViewById(R.id.widget_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                showAllApps(true);
+                showAllApps(true, AppsCustomizePagedView.ContentType.Widgets);
             }
         });
         findViewById(R.id.wallpaper_button).setOnClickListener(new OnClickListener() {
@@ -2183,7 +2183,7 @@ public class Launcher extends Activity
                 final String shortcutClass = intent.getComponent().getClassName();
 
                 if (shortcutClass.equals(WidgetAdder.class.getName())) {
-                    showAllApps(true);
+                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets);
                     return;
                 } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
                     MemoryDumpActivity.startDump(this);
@@ -2273,7 +2273,7 @@ public class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAllAppsButton(View v) {
-        showAllApps(true);
+        showAllApps(true, AppsCustomizePagedView.ContentType.Applications);
     }
 
     public void onTouchDownAllAppsButton(View v) {
@@ -2742,6 +2742,11 @@ public class Launcher extends Activity
      * of the screen.
      */
     private void showAppsCustomizeHelper(final boolean animated, final boolean springLoaded) {
+        AppsCustomizePagedView.ContentType contentType = mAppsCustomizeContent.getContentType();
+        showAppsCustomizeHelper(animated, springLoaded, contentType);
+    }
+    private void showAppsCustomizeHelper(final boolean animated, final boolean springLoaded,
+                                         final AppsCustomizePagedView.ContentType contentType) {
         if (mStateAnimation != null) {
             mStateAnimation.setDuration(0);
             mStateAnimation.cancel();
@@ -2762,6 +2767,10 @@ public class Launcher extends Activity
         // Shrink workspaces away if going to AppsCustomize from workspace
         Animator workspaceAnim =
                 mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            // Set the content type for the all apps space
+            mAppsCustomizeTabHost.setContentTypeImmediate(contentType);
+        }
 
         if (animated) {
             toView.setScaleX(scale);
@@ -3053,10 +3062,11 @@ public class Launcher extends Activity
     public void onWorkspaceShown(boolean animated) {
     }
 
-    void showAllApps(boolean animated) {
+    void showAllApps(boolean animated,
+                     AppsCustomizePagedView.ContentType contentType) {
         if (mState != State.WORKSPACE) return;
 
-        showAppsCustomizeHelper(animated, false);
+        showAppsCustomizeHelper(animated, false, contentType);
         mAppsCustomizeTabHost.requestFocus();
 
         // Change the state *after* we've called all the transition code
@@ -3609,10 +3619,11 @@ public class Launcher extends Activity
 
     public void bindAppsAdded(final ArrayList<Long> newScreens,
                               final ArrayList<ItemInfo> addNotAnimated,
-                              final ArrayList<ItemInfo> addAnimated) {
+                              final ArrayList<ItemInfo> addAnimated,
+                              final ArrayList<AppInfo> addedApps) {
         Runnable r = new Runnable() {
             public void run() {
-                bindAppsAdded(newScreens, addNotAnimated, addAnimated);
+                bindAppsAdded(newScreens, addNotAnimated, addAnimated, addedApps);
             }
         };
         if (waitUntilResume(r)) {
@@ -3633,6 +3644,11 @@ public class Launcher extends Activity
         if (!addAnimated.isEmpty()) {
             bindItems(addAnimated, 0,
                     addAnimated.size(), true);
+        }
+
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                addedApps != null && mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.addApps(addedApps);
         }
     }
 
@@ -3875,12 +3891,19 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
-        if (mIntentsOnWorkspaceFromUpgradePath != null) {
-            if (LauncherModel.UPGRADE_USE_MORE_APPS_FOLDER) {
-                getHotseat().addAllAppsFolder(mIconCache, apps,
-                        mIntentsOnWorkspaceFromUpgradePath, Launcher.this, mWorkspace);
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            if (mIntentsOnWorkspaceFromUpgradePath != null) {
+                if (LauncherModel.UPGRADE_USE_MORE_APPS_FOLDER) {
+                    getHotseat().addAllAppsFolder(mIconCache, apps,
+                            mIntentsOnWorkspaceFromUpgradePath, Launcher.this, mWorkspace);
+                }
+                mIntentsOnWorkspaceFromUpgradePath = null;
             }
-            mIntentsOnWorkspaceFromUpgradePath = null;
+        } else {
+            if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                    mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.setApps(apps);
+            }
         }
     }
 
@@ -3901,6 +3924,11 @@ public class Launcher extends Activity
 
         if (mWorkspace != null) {
             mWorkspace.updateShortcuts(apps);
+        }
+
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.updateApps(apps);
         }
     }
 
@@ -3933,6 +3961,11 @@ public class Launcher extends Activity
 
         // Notify the drag controller
         mDragController.onAppsRemoved(appInfos, this);
+
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.removeApps(appInfos);
+        }
     }
 
     /**
@@ -3953,7 +3986,8 @@ public class Launcher extends Activity
         }
 
         // Update the widgets pane
-        if (mAppsCustomizeContent != null) {
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated(widgetsAndShortcuts);
         }
     }

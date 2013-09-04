@@ -18,14 +18,8 @@
     <dimen name="app_icon_size">64dp</dimen>
 
 <!-- AppsCustomize -->
-    <dimen name="apps_customize_cell_width">96dp</dimen>
-    <dimen name="apps_customize_cell_height">96dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingLeft">12dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingRight">12dp</dimen>
     <dimen name="apps_customize_tab_bar_height">60dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
-    <dimen name="apps_customize_widget_cell_width_gap">20dp</dimen>
-    <dimen name="apps_customize_widget_cell_height_gap">24dp</dimen>
     <dimen name="app_widget_preview_label_margin_top">8dp</dimen>
     <dimen name="app_widget_preview_label_margin_left">@dimen/app_widget_preview_padding_left</dimen>
     <dimen name="app_widget_preview_label_margin_right">@dimen/app_widget_preview_padding_right</dimen>

@@ -161,30 +161,30 @@ public class PageIndicator extends LinearLayout {
         mWindowRange[1] = windowEnd;
     }
 
-    void addMarker(int index, int layoutId) {
+    void addMarker(int index, int layoutId, boolean allowAnimations) {
         index = Math.max(0, Math.min(index, mMarkers.size()));
 
         PageIndicatorMarker marker =
             (PageIndicatorMarker) mLayoutInflater.inflate(layoutId, this, false);
         mMarkers.add(index, marker);
-        offsetWindowCenterTo(mActiveMarkerIndex, true);
+        offsetWindowCenterTo(mActiveMarkerIndex, allowAnimations);
     }
-    void addMarkers(ArrayList<Integer> layoutIds) {
+    void addMarkers(ArrayList<Integer> layoutIds, boolean allowAnimations) {
         for (int i = 0; i < layoutIds.size(); ++i) {
-            addMarker(Integer.MAX_VALUE, layoutIds.get(i));
+            addMarker(Integer.MAX_VALUE, layoutIds.get(i), allowAnimations);
         }
     }
 
-    void removeMarker(int index) {
+    void removeMarker(int index, boolean allowAnimations) {
         if (mMarkers.size() > 0) {
             index = Math.max(0, Math.min(mMarkers.size() - 1, index));
             mMarkers.remove(index);
-            offsetWindowCenterTo(mActiveMarkerIndex, true);
+            offsetWindowCenterTo(mActiveMarkerIndex, allowAnimations);
         }
     }
-    void removeAllMarkers() {
+    void removeAllMarkers(boolean allowAnimations) {
         while (mMarkers.size() > 0) {
-            removeMarker(Integer.MAX_VALUE);
+            removeMarker(Integer.MAX_VALUE, allowAnimations);
         }
     }
 

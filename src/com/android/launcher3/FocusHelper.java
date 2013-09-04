@@ -119,9 +119,9 @@ public class FocusHelper {
      */
     private static ViewGroup getAppsCustomizePage(ViewGroup container, int index) {
         ViewGroup page = (ViewGroup) ((PagedView) container).getPageAt(index);
-        if (page instanceof PagedViewCellLayout) {
+        if (page instanceof CellLayout) {
             // There are two layers, a PagedViewCellLayout and PagedViewCellLayoutChildren
-            page = (ViewGroup) page.getChildAt(0);
+            page = ((CellLayout) page).getShortcutsAndWidgets();
         }
         return page;
     }
@@ -280,11 +280,11 @@ public class FocusHelper {
         ViewGroup itemContainer;
         int countX;
         int countY;
-        if (v.getParent() instanceof PagedViewCellLayoutChildren) {
+        if (v.getParent() instanceof ShortcutAndWidgetContainer) {
             itemContainer = (ViewGroup) v.getParent();
             parentLayout = (ViewGroup) itemContainer.getParent();
-            countX = ((PagedViewCellLayout) parentLayout).getCellCountX();
-            countY = ((PagedViewCellLayout) parentLayout).getCellCountY();
+            countX = ((CellLayout) parentLayout).getCountX();
+            countY = ((CellLayout) parentLayout).getCountY();
         } else {
             itemContainer = parentLayout = (ViewGroup) v.getParent();
             countX = ((PagedViewGridLayout) parentLayout).getCellCountX();

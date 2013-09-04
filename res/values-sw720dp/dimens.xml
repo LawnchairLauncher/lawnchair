@@ -21,12 +21,6 @@
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">8dip</dimen>
 
-<!-- AppsCustomize -->
-    <dimen name="apps_customize_cell_width">96dp</dimen>
-    <dimen name="apps_customize_cell_height">96dp</dimen>
-    <integer name="apps_customize_maxCellCountX">-1</integer>
-    <integer name="apps_customize_maxCellCountY">-1</integer>
-
     <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
     <dimen name="wallpaper_chooser_grid_width">196dp</dimen>
     <dimen name="wallpaper_chooser_grid_height">140dp</dimen>

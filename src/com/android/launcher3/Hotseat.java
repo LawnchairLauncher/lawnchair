@@ -20,8 +20,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -31,6 +35,8 @@ public class Hotseat extends FrameLayout {
     private static final String TAG = "Hotseat";
 
     private CellLayout mContent;
+
+    private Launcher mLauncher;
 
     private int mAllAppsButtonRank;
 
@@ -56,6 +62,7 @@ public class Hotseat extends FrameLayout {
     }
 
     public void setup(Launcher launcher) {
+        mLauncher = launcher;
         setOnKeyListener(new HotseatIconKeyEventListener());
     }
 
@@ -79,7 +86,11 @@ public class Hotseat extends FrameLayout {
         return hasVerticalHotseat() ? (mContent.getCountY() - (rank + 1)) : 0;
     }
     public boolean isAllAppsButtonRank(int rank) {
-        return false;
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            return false;
+        } else {
+            return rank == mAllAppsButtonRank;
+        }
     }
 
     @Override
@@ -88,7 +99,7 @@ public class Hotseat extends FrameLayout {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-        mAllAppsButtonRank = (int) (grid.numHotseatIcons / 2);
+        mAllAppsButtonRank = grid.hotseatAllAppsRank;
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isLandscape && !grid.isLargeTablet()) {
             mContent.setGridSize(1, (int) grid.numHotseatIcons);
@@ -102,52 +113,99 @@ public class Hotseat extends FrameLayout {
 
     void resetLayout() {
         mContent.removeAllViewsInLayout();
+
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            // Add the Apps button
+            Context context = getContext();
+
+            Drawable rawIcon =
+                    context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+            Bitmap icon = Utilities.createIconBitmap(rawIcon, context);
+
+            LayoutInflater inflater = LayoutInflater.from(context);
+            BubbleTextView allAppsButton = (BubbleTextView)
+                    inflater.inflate(R.layout.application, mContent, false);
+            allAppsButton.setCompoundDrawablesWithIntrinsicBounds(null,
+                    new FastBitmapDrawable(icon), null, null);
+            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+            allAppsButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (mLauncher != null &&
+                            (event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+                        mLauncher.onTouchDownAllAppsButton(v);
+                    }
+                    return false;
+                }
+            });
+
+            allAppsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View v) {
+                    if (mLauncher != null) {
+                        mLauncher.onClickAllAppsButton(v);
+                    }
+                }
+            });
+
+            // Note: We do this to ensure that the hotseat is always laid out in the orientation of
+            // the hotseat in order regardless of which orientation they were added
+            int x = getCellXFromOrder(mAllAppsButtonRank);
+            int y = getCellYFromOrder(mAllAppsButtonRank);
+            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x,y,1,1);
+            lp.canReorder = false;
+            mContent.addViewToCellLayout(allAppsButton, -1, 0, lp, true);
+        }
     }
 
     void addAllAppsFolder(IconCache iconCache,
             ArrayList<AppInfo> allApps, ArrayList<ComponentName> onWorkspace,
             Launcher launcher, Workspace workspace) {
-        FolderInfo fi = new FolderInfo();
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            FolderInfo fi = new FolderInfo();
 
-        fi.cellX = getCellXFromOrder(mAllAppsButtonRank);
-        fi.cellY = getCellYFromOrder(mAllAppsButtonRank);
-        fi.spanX = 1;
-        fi.spanY = 1;
-        fi.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-        fi.screenId = mAllAppsButtonRank;
-        fi.itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-        fi.title = "More Apps";
-        LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screenId, fi.cellX,
-                fi.cellY, false);
-        FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
-                getLayout(), fi, iconCache);
-        workspace.addInScreen(folder, fi.container, fi.screenId, fi.cellX, fi.cellY,
-                fi.spanX, fi.spanY);
+            fi.cellX = getCellXFromOrder(mAllAppsButtonRank);
+            fi.cellY = getCellYFromOrder(mAllAppsButtonRank);
+            fi.spanX = 1;
+            fi.spanY = 1;
+            fi.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+            fi.screenId = mAllAppsButtonRank;
+            fi.itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
+            fi.title = "More Apps";
+            LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screenId, fi.cellX,
+                    fi.cellY, false);
+            FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
+                    getLayout(), fi, iconCache);
+            workspace.addInScreen(folder, fi.container, fi.screenId, fi.cellX, fi.cellY,
+                    fi.spanX, fi.spanY);
 
-        for (AppInfo info: allApps) {
-            ComponentName cn = info.intent.getComponent();
-            if (!onWorkspace.contains(cn)) {
-                Log.d(TAG, "Adding to 'more apps': " + info.intent);
-                ShortcutInfo si = info.makeShortcut();
-                fi.add(si);
+            for (AppInfo info: allApps) {
+                ComponentName cn = info.intent.getComponent();
+                if (!onWorkspace.contains(cn)) {
+                    Log.d(TAG, "Adding to 'more apps': " + info.intent);
+                    ShortcutInfo si = info.makeShortcut();
+                    fi.add(si);
+                }
             }
         }
     }
 
     void addAppsToAllAppsFolder(ArrayList<AppInfo> apps) {
-        View v = mContent.getChildAt(getCellXFromOrder(mAllAppsButtonRank), getCellYFromOrder(mAllAppsButtonRank));
-        FolderIcon fi = null;
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            View v = mContent.getChildAt(getCellXFromOrder(mAllAppsButtonRank), getCellYFromOrder(mAllAppsButtonRank));
+            FolderIcon fi = null;
 
-        if (v instanceof FolderIcon) {
-            fi = (FolderIcon) v;
-        } else {
-            return;
-        }
+            if (v instanceof FolderIcon) {
+                fi = (FolderIcon) v;
+            } else {
+                return;
+            }
 
-        FolderInfo info = fi.getFolderInfo();
-        for (AppInfo a: apps) {
-            ShortcutInfo si = a.makeShortcut();
-            info.add(si);
+            FolderInfo info = fi.getFolderInfo();
+            for (AppInfo a: apps) {
+                ShortcutInfo si = a.makeShortcut();
+                info.add(si);
+            }
         }
     }
 }

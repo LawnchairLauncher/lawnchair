@@ -15,18 +15,6 @@
 -->
 
 <resources>
-<!-- AppsCustomize -->
-    <integer name="apps_customize_maxCellCountX">-1</integer>
-    <integer name="apps_customize_maxCellCountY">7</integer>
-    <dimen name="apps_customize_pageLayoutWidthGap">36dp</dimen>
-    <dimen name="apps_customize_pageLayoutHeightGap">36dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingLeft">24dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingRight">24dp</dimen>
-    <!-- We can also afford to have a slightly wider portrait layout in
-         xlarge -->
-    <integer name="apps_customize_widget_cell_count_x">3</integer>
-    <integer name="apps_customize_widget_cell_count_y">3</integer>
-
 <!-- Workspace -->
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->

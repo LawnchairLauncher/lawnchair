@@ -17,12 +17,4 @@
 <resources>
 <!-- Clings -->
     <dimen name="folderClingMarginTop">70dp</dimen>
-
-<!-- AppsCustomize -->
-    <dimen name="apps_customize_pageLayoutPaddingTop">16dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingBottom">20dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingLeft">8dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingRight">8dp</dimen>
-    <dimen name="apps_customize_cell_height">92dp</dimen>
-    <dimen name="apps_customize_widget_cell_height_gap">16dp</dimen>
 </resources>

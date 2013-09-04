@@ -82,6 +82,9 @@ class DeviceProfile {
     int hotseatCellHeightPx;
     int hotseatIconSizePx;
     int hotseatBarHeightPx;
+    int hotseatAllAppsRank;
+    int allAppsNumRows;
+    int allAppsNumCols;
     int searchBarSpaceWidthPx;
     int searchBarSpaceMaxWidthPx;
     int searchBarSpaceHeightPx;
@@ -90,6 +93,11 @@ class DeviceProfile {
 
     DeviceProfile(String n, float w, float h, float r, float c,
                   float is, float its, float hs, float his) {
+        // Ensure that we have an odd number of hotseat items (since we need to place all apps)
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS && hs % 2 == 0) {
+            throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
+        }
+
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -158,6 +166,7 @@ class DeviceProfile {
         // Hotseat
         hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
         hotseatIconSizePx = DynamicGrid.pxFromDp(hotseatIconSize, dm);
+        hotseatAllAppsRank = (int) (numColumns / 2);
 
         // Calculate other vars based on Configuration
         updateFromConfiguration(resources, wPx, hPx, awPx, ahPx);
@@ -213,6 +222,20 @@ class DeviceProfile {
         heightPx = hPx;
         availableWidthPx = awPx;
         availableHeightPx = ahPx;
+
+        if (isLandscape) {
+            allAppsNumRows = (int) numRows - 1;
+        } else {
+            allAppsNumRows = (int) numRows + 1;
+        }
+        Rect padding = getWorkspacePadding(isLandscape ?
+                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+        int pageIndicatorOffset =
+            resources.getDimensionPixelSize(R.dimen.apps_customize_page_indicator_offset);
+        allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
+                (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+        allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
+                (iconSizePx + 2 * edgeMarginPx);
     }
 
     private float dist(PointF p0, PointF p1) {
@@ -457,19 +480,20 @@ public class DynamicGrid {
         DisplayMetrics dm = resources.getDisplayMetrics();
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
+        boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
-                255, 300,  2, 3,  48, 12,  4, 48));
+                255, 300,  2, 3,  48, 12, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Shorter Stubby",
-                255, 400,  3, 3,  48, 12,  4, 48));
+                255, 400,  3, 3,  48, 12, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Short Stubby",
-                275, 420,  3, 4,  48, 12,  4, 48));
+                275, 420,  3, 4,  48, 12, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Stubby",
-                255, 450,  3, 4,  48, 12,  4, 48));
+                255, 450,  3, 4,  48, 12, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Nexus S",
-                296, 491.33f,  4, 4,  48, 12,  4, 48));
+                296, 491.33f,  4, 4,  48, 12, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
-                359, 518,  4, 4,  60, 12,  5, 56));
+                359, 518,  4, 4,  60, 12, (hasAA ? 5 : 4), 56));
         // The tablet profile is odd in that the landscape orientation
         // also includes the nav bar on the side
         deviceProfiles.add(new DeviceProfile("Nexus 7",
@@ -481,7 +505,7 @@ public class DynamicGrid {
         deviceProfiles.add(new DeviceProfile("Nexus 7",
                 600, 960,  5, 5,  72, 14.4f,  5, 60));
         deviceProfiles.add(new DeviceProfile("Nexus 10",
-                800, 1280,  5, 5,  80, 14.4f,  6, 64));
+                800, 1280,  5, 5,  80, 14.4f, (hasAA ? 7 : 6), 64));
          */
         deviceProfiles.add(new DeviceProfile("20-inch Tablet",
                 1527, 2527,  7, 7,  100, 20,  7, 72));

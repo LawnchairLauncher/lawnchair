@@ -51,23 +51,16 @@
     <dimen name="toolbar_external_icon_height">36dp</dimen>
 
 <!-- AllApps/Customize/AppsCustomize -->
-    <integer name="apps_customize_maxCellCountX">-1</integer>
-    <integer name="apps_customize_maxCellCountY">-1</integer>
     <!-- The height of the tab bar - if this changes, we should update the
          external icon width/height above to compensate -->
     <dimen name="apps_customize_tab_bar_height">52dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">0dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
-    <!-- The width can be 72dp because we don't have L/R padding -->
-    <dimen name="apps_customize_cell_width">74dp</dimen>
-    <dimen name="apps_customize_cell_height">82dp</dimen>
-    <dimen name="apps_customize_max_gap">18dp</dimen>
-    <dimen name="apps_customize_widget_cell_width_gap">10dp</dimen>
-    <dimen name="apps_customize_widget_cell_height_gap">8dp</dimen>
 
     <!-- The AppsCustomize page indicator -->
     <dimen name="apps_customize_page_indicator_height">12dp</dimen>
     <dimen name="apps_customize_page_indicator_margin">4dp</dimen>
+    <dimen name="apps_customize_page_indicator_offset">16dp</dimen>
 
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>

@@ -55,24 +55,6 @@
         <item name="android:windowActionModeOverlay">true</item>
     </style>
 
-    <style name="WorkspaceIcon.Portrait.AppsCustomize">
-        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
-        <item name="android:background">@null</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
-        <item name="android:drawablePadding">4dp</item>
-        <item name="android:textSize">13sp</item>
-    </style>
-    <style name="WorkspaceIcon.Landscape.AppsCustomize">
-        <item name="android:shadowRadius">0.0</item> <!-- Don't use text shadow -->
-        <item name="android:background">@null</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:drawablePadding">4dp</item>
-        <item name="android:textSize">13sp</item>
-    </style>
     <style name="TabIndicator.AppsCustomize">
         <item name="android:paddingStart">32dp</item>
         <item name="android:paddingEnd">32dp</item>

@@ -159,7 +159,8 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated);
+                                  ArrayList<ItemInfo> addAnimated,
+                                  ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos,
@@ -276,12 +277,13 @@ public class LauncherModel extends BroadcastReceiver {
         return null;
     }
 
-    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added) {
+    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
+                                    final ArrayList<AppInfo> addedApps) {
         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-        addAndBindAddedApps(context, added, cb);
+        addAndBindAddedApps(context, added, cb, addedApps);
     }
     public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
-                                    final Callbacks callbacks) {
+                                    final Callbacks callbacks, final ArrayList<AppInfo> addedApps) {
         Launcher.addDumpLog(TAG, "10249126 - addAndBindAddedApps()", true);
         if (added.isEmpty()) {
             return;
@@ -383,7 +385,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                 }
                                 callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
-                                        addNotAnimated, addAnimated);
+                                        addNotAnimated, addAnimated, addedApps);
                             }
                         }
                     });
@@ -1477,13 +1479,15 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgDbIconCache.clear();
             }
 
-            // Ensure that all the applications that are in the system are represented on the home
-            // screen.
-            Launcher.addDumpLog(TAG, "10249126 - verifyApplications - useMoreApps="
-                    + UPGRADE_USE_MORE_APPS_FOLDER + " isUpgrade=" + isUpgrade, true);
-            if (!UPGRADE_USE_MORE_APPS_FOLDER || !isUpgrade) {
-                Launcher.addDumpLog(TAG, "10249126 - verifyApplications(" + isUpgrade + ")", true);
-                verifyApplications();
+            if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+                // Ensure that all the applications that are in the system are
+                // represented on the home screen.
+                Launcher.addDumpLog(TAG, "10249126 - verifyApplications - useMoreApps="
+                        + UPGRADE_USE_MORE_APPS_FOLDER + " isUpgrade=" + isUpgrade, true);
+                if (!UPGRADE_USE_MORE_APPS_FOLDER || !isUpgrade) {
+                    Launcher.addDumpLog(TAG, "10249126 - verifyApplications(" + isUpgrade + ")", true);
+                    verifyApplications();
+                }
             }
 
             // Clear out this reference, otherwise we end up holding it until all of the
@@ -1557,7 +1561,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
             if (!added.isEmpty()) {
                 Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                addAndBindAddedApps(context, added, cb);
+                addAndBindAddedApps(context, added, cb, null);
             }
         }
 
@@ -2582,7 +2586,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // Ensure that we add all the workspace applications to the db
                 final ArrayList<ItemInfo> addedInfos = new ArrayList<ItemInfo>(added);
                 Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                addAndBindAddedApps(context, addedInfos, cb);
+                addAndBindAddedApps(context, addedInfos, cb, added);
             }
             if (modified != null) {
                 final ArrayList<AppInfo> modifiedFinal = modified;
