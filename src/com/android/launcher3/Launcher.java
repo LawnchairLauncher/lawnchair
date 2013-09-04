@@ -113,8 +113,6 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -2071,12 +2069,15 @@ public class Launcher extends Activity
         sFolders.remove(folder.id);
     }
 
-    private void startWallpaper() {
+    protected void startWallpaper() {
         showWorkspace(true);
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-        pickWallpaper.setComponent(
-                new ComponentName(getPackageName(), WallpaperPickerActivity.class.getName()));
+        pickWallpaper.setComponent(getWallpaperPickerComponent());
         startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
+    }
+
+    protected ComponentName getWallpaperPickerComponent() {
+        return new ComponentName(getPackageName(), WallpaperPickerActivity.class.getName());
     }
 
     /**
@@ -2298,7 +2299,7 @@ public class Launcher extends Activity
 
     // returns true if the activity was started
     boolean startApplicationUninstallActivity(ComponentName componentName, int flags) {
-        if ((flags & ApplicationInfo.DOWNLOADED_FLAG) == 0) {
+        if ((flags & AppInfo.DOWNLOADED_FLAG) == 0) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
             int messageId = R.string.uninstall_system_app_text;
@@ -3873,7 +3874,7 @@ public class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAllApplications(final ArrayList<ApplicationInfo> apps) {
+    public void bindAllApplications(final ArrayList<AppInfo> apps) {
         if (mIntentsOnWorkspaceFromUpgradePath != null) {
             if (LauncherModel.UPGRADE_USE_MORE_APPS_FOLDER) {
                 getHotseat().addAllAppsFolder(mIconCache, apps,
@@ -3888,7 +3889,7 @@ public class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsUpdated(final ArrayList<ApplicationInfo> apps) {
+    public void bindAppsUpdated(final ArrayList<AppInfo> apps) {
         Runnable r = new Runnable() {
             public void run() {
                 bindAppsUpdated(apps);
@@ -3913,7 +3914,7 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindComponentsRemoved(final ArrayList<String> packageNames,
-                                      final ArrayList<ApplicationInfo> appInfos,
+                                      final ArrayList<AppInfo> appInfos,
                                       final boolean packageRemoved) {
         Runnable r = new Runnable() {
             public void run() {

@@ -34,15 +34,15 @@ class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
     
     /** The list off all apps. */
-    public ArrayList<ApplicationInfo> data =
-            new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
+    public ArrayList<AppInfo> data =
+            new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been added since the last notify() call. */
-    public ArrayList<ApplicationInfo> added =
-            new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
+    public ArrayList<AppInfo> added =
+            new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been removed since the last notify() call. */
-    public ArrayList<ApplicationInfo> removed = new ArrayList<ApplicationInfo>();
+    public ArrayList<AppInfo> removed = new ArrayList<AppInfo>();
     /** The list of apps that have been modified since the last notify() call. */
-    public ArrayList<ApplicationInfo> modified = new ArrayList<ApplicationInfo>();
+    public ArrayList<AppInfo> modified = new ArrayList<AppInfo>();
 
     private IconCache mIconCache;
 
@@ -59,7 +59,7 @@ class AllAppsList {
      *
      * If the app is already in the list, doesn't add it.
      */
-    public void add(ApplicationInfo info) {
+    public void add(AppInfo info) {
         if (findActivity(data, info.componentName)) {
             return;
         }
@@ -79,7 +79,7 @@ class AllAppsList {
         return data.size();
     }
 
-    public ApplicationInfo get(int index) {
+    public AppInfo get(int index) {
         return data.get(index);
     }
 
@@ -91,7 +91,7 @@ class AllAppsList {
 
         if (matches.size() > 0) {
             for (ResolveInfo info : matches) {
-                add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null));
+                add(new AppInfo(context.getPackageManager(), info, mIconCache, null));
             }
         }
     }
@@ -100,9 +100,9 @@ class AllAppsList {
      * Remove the apps for the given apk identified by packageName.
      */
     public void removePackage(String packageName) {
-        final List<ApplicationInfo> data = this.data;
+        final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
-            ApplicationInfo info = data.get(i);
+            AppInfo info = data.get(i);
             final ComponentName component = info.intent.getComponent();
             if (packageName.equals(component.getPackageName())) {
                 removed.add(info);
@@ -122,7 +122,7 @@ class AllAppsList {
             // Find disabled/removed activities and remove them from data and add them
             // to the removed list.
             for (int i = data.size() - 1; i >= 0; i--) {
-                final ApplicationInfo applicationInfo = data.get(i);
+                final AppInfo applicationInfo = data.get(i);
                 final ComponentName component = applicationInfo.intent.getComponent();
                 if (packageName.equals(component.getPackageName())) {
                     if (!findActivity(matches, component)) {
@@ -138,11 +138,11 @@ class AllAppsList {
             int count = matches.size();
             for (int i = 0; i < count; i++) {
                 final ResolveInfo info = matches.get(i);
-                ApplicationInfo applicationInfo = findApplicationInfoLocked(
+                AppInfo applicationInfo = findApplicationInfoLocked(
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name);
                 if (applicationInfo == null) {
-                    add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null));
+                    add(new AppInfo(context.getPackageManager(), info, mIconCache, null));
                 } else {
                     mIconCache.remove(applicationInfo.componentName);
                     mIconCache.getTitleAndIcon(applicationInfo, info, null);
@@ -152,7 +152,7 @@ class AllAppsList {
         } else {
             // Remove all data for this package.
             for (int i = data.size() - 1; i >= 0; i--) {
-                final ApplicationInfo applicationInfo = data.get(i);
+                final AppInfo applicationInfo = data.get(i);
                 final ComponentName component = applicationInfo.intent.getComponent();
                 if (packageName.equals(component.getPackageName())) {
                     removed.add(applicationInfo);
@@ -194,10 +194,10 @@ class AllAppsList {
     /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
-    private static boolean findActivity(ArrayList<ApplicationInfo> apps, ComponentName component) {
+    private static boolean findActivity(ArrayList<AppInfo> apps, ComponentName component) {
         final int N = apps.size();
         for (int i=0; i<N; i++) {
-            final ApplicationInfo info = apps.get(i);
+            final AppInfo info = apps.get(i);
             if (info.componentName.equals(component)) {
                 return true;
             }
@@ -208,8 +208,8 @@ class AllAppsList {
     /**
      * Find an ApplicationInfo object for the given packageName and className.
      */
-    private ApplicationInfo findApplicationInfoLocked(String packageName, String className) {
-        for (ApplicationInfo info: data) {
+    private AppInfo findApplicationInfoLocked(String packageName, String className) {
+        for (AppInfo info: data) {
             final ComponentName component = info.intent.getComponent();
             if (packageName.equals(component.getPackageName())
                     && className.equals(component.getClassName())) {

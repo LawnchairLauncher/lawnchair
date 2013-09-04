@@ -23,6 +23,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -34,6 +35,7 @@ import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,8 +65,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
 
-    private ArrayList<Integer> mThumbs;
+    private ArrayList<Drawable> mThumbs;
     private ArrayList<Integer> mImages;
+    private Resources mWallpaperResources;
 
     private View mSelectedThumb;
     private CropView mCropView;
@@ -98,7 +101,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         meta.mGalleryImageUri, 1024, 0), null);
                 mCropView.setTouchEnabled(true);
             } else {
-                BitmapRegionTileSource source = new BitmapRegionTileSource(
+                BitmapRegionTileSource source = new BitmapRegionTileSource(mWallpaperResources,
                         WallpaperPickerActivity.this, meta.mWallpaperResId, 1024, 0);
                 mCropView.setTileSource(source, null);
                 Point wallpaperSize = getDefaultWallpaperSize(getResources(), getWindowManager());
@@ -311,8 +314,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                                     updateWallpaperDimensions(0, 0);
                                 }
                             };
-                            BitmapCropTask cropTask = new BitmapCropTask(meta.mWallpaperResId,
-                                    crop, outSize.x, outSize.y,
+                            BitmapCropTask cropTask = new BitmapCropTask(mWallpaperResources,
+                                    meta.mWallpaperResId, crop, outSize.x, outSize.y,
                                     true, false, onEndCrop);
                             cropTask.execute();
                             setResult(Activity.RESULT_OK);
@@ -389,22 +392,35 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private void findWallpapers() {
-        mThumbs = new ArrayList<Integer>(24);
+        mThumbs = new ArrayList<Drawable>(24);
         mImages = new ArrayList<Integer>(24);
 
-        final Resources resources = getResources();
+        Pair<ApplicationInfo, Integer> r = getWallpaperArrayResourceId();
+        if (r != null) {
+            try {
+                mWallpaperResources = getPackageManager().getResourcesForApplication(r.first);
+                addWallpapers(mWallpaperResources, r.first.packageName, r.second);
+            } catch (PackageManager.NameNotFoundException e) {
+            }
+        }
+    }
+
+    public Pair<ApplicationInfo, Integer> getWallpaperArrayResourceId() {
         // Context.getPackageName() may return the "original" package name,
         // com.android.launcher3; Resources needs the real package name,
         // com.android.launcher3. So we ask Resources for what it thinks the
         // package name should be.
-        final String packageName = resources.getResourcePackageName(R.array.wallpapers);
-
-        addWallpapers(resources, packageName, R.array.wallpapers);
-        addWallpapers(resources, packageName, R.array.extra_wallpapers);
+        final String packageName = getResources().getResourcePackageName(R.array.wallpapers);
+        try {
+            ApplicationInfo info = getPackageManager().getApplicationInfo(packageName, 0);
+            return new Pair<ApplicationInfo, Integer>(info, R.array.wallpapers);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 
-    private void addWallpapers(Resources resources, String packageName, int list) {
-        final String[] extras = resources.getStringArray(list);
+    private void addWallpapers(Resources resources, String packageName, int listResId) {
+        final String[] extras = resources.getStringArray(listResId);
         for (String extra : extras) {
             int res = resources.getIdentifier(extra, "drawable", packageName);
             if (res != 0) {
@@ -412,7 +428,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         "drawable", packageName);
 
                 if (thumbRes != 0) {
-                    mThumbs.add(thumbRes);
+                    mThumbs.add(resources.getDrawable(thumbRes));
                     mImages.add(res);
                     // Log.d(TAG, "add: [" + packageName + "]: " + extra + " (" + res + ")");
                 }
@@ -537,14 +553,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
             ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);
 
-            int thumbRes = mThumbs.get(position);
-            image.setImageResource(thumbRes);
-            Drawable thumbDrawable = image.getDrawable();
+            Drawable thumbDrawable = mThumbs.get(position);
             if (thumbDrawable != null) {
+                image.setImageDrawable(thumbDrawable);
                 thumbDrawable.setDither(true);
             } else {
-                Log.e(TAG, "Error decoding thumbnail resId=" + thumbRes + " for wallpaper #"
-                        + position);
+                Log.e(TAG, "Error decoding thumbnail for wallpaper #" + position);
             }
 
             return view;

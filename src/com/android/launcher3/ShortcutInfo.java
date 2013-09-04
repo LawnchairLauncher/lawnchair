@@ -88,7 +88,7 @@ class ShortcutInfo extends ItemInfo {
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
-    public ShortcutInfo(ApplicationInfo info) {
+    public ShortcutInfo(AppInfo info) {
         super(info);
         title = info.title.toString();
         intent = new Intent(info.intent);
@@ -109,8 +109,8 @@ class ShortcutInfo extends ItemInfo {
     }
 
     void initFlagsAndFirstInstallTime(PackageInfo pi) {
-        flags = ApplicationInfo.initFlags(pi);
-        firstInstallTime = ApplicationInfo.initFirstInstallTime(pi);
+        flags = AppInfo.initFlags(pi);
+        firstInstallTime = AppInfo.initFirstInstallTime(pi);
     }
 
     public void setIcon(Bitmap b) {

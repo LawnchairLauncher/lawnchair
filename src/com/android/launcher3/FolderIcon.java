@@ -429,9 +429,9 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     public void onDrop(DragObject d) {
         ShortcutInfo item;
-        if (d.dragInfo instanceof ApplicationInfo) {
+        if (d.dragInfo instanceof AppInfo) {
             // Came from all apps -- make a copy
-            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
+            item = ((AppInfo) d.dragInfo).makeShortcut();
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }

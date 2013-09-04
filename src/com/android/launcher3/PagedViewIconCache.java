@@ -40,7 +40,7 @@ public class PagedViewIconCache {
         private final ComponentName mComponentName;
         private final Type mType;
 
-        public Key(ApplicationInfo info) {
+        public Key(AppInfo info) {
             mComponentName = info.componentName;
             mType = Type.ApplicationInfoKey;
         }
@@ -95,9 +95,9 @@ public class PagedViewIconCache {
         }
     }
     /** Removes all the keys to applications that aren't in the passed in collection */
-    public void retainAllApps(ArrayList<ApplicationInfo> keys) {
+    public void retainAllApps(ArrayList<AppInfo> keys) {
         HashSet<Key> keysSet = new HashSet<Key>();
-        for (ApplicationInfo info : keys) {
+        for (AppInfo info : keys) {
             keysSet.add(new Key(info));
         }
         retainAll(keysSet, Key.Type.ApplicationInfoKey);

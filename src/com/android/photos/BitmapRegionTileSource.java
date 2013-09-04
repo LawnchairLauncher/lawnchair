@@ -18,6 +18,7 @@ package com.android.photos;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -68,18 +69,19 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
     private Canvas mCanvas;
 
     public BitmapRegionTileSource(Context context, String path, int previewSize, int rotation) {
-        this(context, path, null, 0, previewSize, rotation);
+        this(null, context, path, null, 0, previewSize, rotation);
     }
 
     public BitmapRegionTileSource(Context context, Uri uri, int previewSize, int rotation) {
-        this(context, null, uri, 0, previewSize, rotation);
+        this(null, context, null, uri, 0, previewSize, rotation);
     }
 
-    public BitmapRegionTileSource(Context context, int resId, int previewSize, int rotation) {
-        this(context, null, null, resId, previewSize, rotation);
+    public BitmapRegionTileSource(Resources res,
+            Context context, int resId, int previewSize, int rotation) {
+        this(res, context, null, null, resId, previewSize, rotation);
     }
 
-    private BitmapRegionTileSource(
+    private BitmapRegionTileSource(Resources res,
             Context context, String path, Uri uri, int resId, int previewSize, int rotation) {
         mTileSize = TiledImageRenderer.suggestedTileSize(context);
         mRotation = rotation;
@@ -91,7 +93,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 BufferedInputStream bis = new BufferedInputStream(is);
                 mDecoder = BitmapRegionDecoder.newInstance(bis, true);
             } else {
-                InputStream is = context.getResources().openRawResource(resId);
+                InputStream is = res.openRawResource(resId);
                 BufferedInputStream bis = new BufferedInputStream(is);
                 mDecoder = BitmapRegionDecoder.newInstance(bis, true);
             }
@@ -109,7 +111,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
             // Although this is the same size as the Bitmap that is likely already
             // loaded, the lifecycle is different and interactions are on a different
             // thread. Thus to simplify, this source will decode its own bitmap.
-            Bitmap preview = decodePreview(context, path, uri, resId, previewSize);
+            Bitmap preview = decodePreview(res, context, path, uri, resId, previewSize);
             if (preview.getWidth() <= GL_SIZE_LIMIT && preview.getHeight() <= GL_SIZE_LIMIT) {
                 mPreview = new BitmapTexture(preview);
             } else {
@@ -213,7 +215,8 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
      * Note that the returned bitmap may have a long edge that's longer
      * than the targetSize, but it will always be less than 2x the targetSize
      */
-    private Bitmap decodePreview(Context context, String file, Uri uri, int resId, int targetSize) {
+    private Bitmap decodePreview(
+            Resources res, Context context, String file, Uri uri, int resId, int targetSize) {
         float scale = (float) targetSize / Math.max(mWidth, mHeight);
         mOptions.inSampleSize = BitmapUtils.computeSampleSizeLarger(scale);
         mOptions.inJustDecodeBounds = false;
@@ -230,7 +233,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 Log.w("BitmapRegionTileSource", "getting preview failed", e);
             }
         } else {
-            result = BitmapFactory.decodeResource(context.getResources(), resId, mOptions);
+            result = BitmapFactory.decodeResource(res, resId, mOptions);
         }
         if (result == null) {
             return null;
