@@ -1725,7 +1725,7 @@ public class LauncherModel extends BroadcastReceiver {
                                 try {
                                     intent = Intent.parseUri(intentDescription, 0);
                                     ComponentName cn = intent.getComponent();
-                                    if (!isValidPackageComponent(manager, cn)) {
+                                    if (cn != null && !isValidPackageComponent(manager, cn)) {
                                         if (!mAppsCanBeOnRemoveableStorage) {
                                             // Log the invalid package, and remove it from the db
                                             Uri uri = LauncherSettings.Favorites.getContentUri(id,
@@ -2718,7 +2718,7 @@ public class LauncherModel extends BroadcastReceiver {
             Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache) {
         ComponentName componentName = intent.getComponent();
         final ShortcutInfo info = new ShortcutInfo();
-        if (!isValidPackageComponent(manager, componentName)) {
+        if (componentName != null && !isValidPackageComponent(manager, componentName)) {
             Log.d(TAG, "Invalid package found in getShortcutInfo: " + componentName);
             return null;
         } else {
