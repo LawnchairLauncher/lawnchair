@@ -14,6 +14,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Menu</string>
     <string name="hidden_apps_title">Ukryte aplikacje</string>
     <string name="preferences_title">Ustawienia</string>
     <string name="preferences_interface_title">Interfejs</string>
@@ -99,6 +101,12 @@
     <string name="preferences_interface_general_orientation_title">Autoobracanie ekranu</string>
     <string name="preferences_interface_general_fullscreen_title">Tryb pełnoekranowy</string>
     <string name="preferences_interface_general_fullscreen_summary">Ukrywa pasek stanu, by rozszerzyć stronę główną</string>
+    <string name="folder_empty_contents_title">Nie znaleziono treści</string>
+    <string name="preferences_interface_general_iconpack_title">Pakiet ikon</string>
+    <string name="preferences_interface_general_iconpack_summary">Pakiety ikon pozwalają zastąpić standardowe ikony aplikacji</string>
+    <string name="dialog_pick_iconpack_title">Wybierz pakiet ikon</string>
+    <string name="default_iconpack_title">Domyślne ikony</string>
+    <string name="no_iconpacks_summary">Nie ma żadnych zainstalowanych pakietów ikon</string>
     <string name="effects_standard">Standardowo</string>
     <string name="effects_tablet">Jak w tablecie</string>
     <string name="effects_zoom_in">Powiększanie</string>
@@ -131,4 +139,6 @@
     <string name="cancel_target_label">Anuluj</string>
     <string name="all_apps_sort_cling_title">Sortuj aplikacje</string>
     <string name="all_apps_sort_cling_add_item">Przytrzymaj kartę aplikacji aby wybrać tryb sortowania</string>
+    <string name="live_folder_cling_title">Foldery-Live</string>
+    <string name="live_folder_cling_create_folder">Foldery-Live pozwalają deweloperom tworzyć foldery z dynamiczną zawartością. Zawartość folderu może być usunięta, przez długie naciśnięcie na pojedyńczym wpisie. W przeciwieństwie do normalnych folderów, zawartość może być dodana tylko przez aplikację która utowrzyła folder</string>
 </resources>
