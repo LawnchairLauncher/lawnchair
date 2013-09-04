@@ -28,14 +28,10 @@
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
-    <!-- Title of dialog that appears after user selects Wallpaper from menu -->
-    <string name="chooser_wallpaper">Choose wallpaper from</string>
     <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
     <!-- Label on button in Wallpaper Picker that launches Gallery app -->
     <string name="gallery">Gallery</string>
-    <!-- Option in "Select wallpaper from" dialog box -->
-    <string name="pick_wallpaper">Wallpapers</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
     <string name="activity_not_found">App isn\'t installed.</string>
     <!--  Labels for the tabs in the customize drawer -->
@@ -88,8 +84,6 @@ s -->
     <string name="group_shortcuts">Shortcuts</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widgets</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
-    <string name="group_wallpapers">Wallpapers</string>
     <!-- Error message when user has filled all their home screens -->
     <string name="completely_out_of_space">No more room on your Home screens.</string>
     <!-- Error message when user has filled a home screen -->
@@ -141,23 +135,6 @@ s -->
     <!-- Label for trash icon in All Apps, when an updated system app is selected. The update will
          be uninstalled. [CHAR_LIMIT=30] -->
     <string name="delete_zone_label_all_apps_system_app">Uninstall update</string>
-
-    <!-- Menus items: -->
-    <skip />
-    <!-- Verb, menu item used to add an item on the desktop -->
-    <string name="menu_add">Add</string>
-    <!-- Menu item used to manage installed applications -->
-    <string name="menu_manage_apps">Manage apps</string>
-    <!-- Noun, menu item used to set the desktop's wallpaper -->
-    <string name="menu_wallpaper">Wallpaper</string>
-    <!-- Verb, menu item used to initiate global search -->
-    <string name="menu_search">Search</string>
-    <!-- Noun, menu item used to bring down the notifications shade -->
-    <string name="menu_notifications">Notifications</string>
-    <!-- Noun, menu item used to show the system settings -->
-    <string name="menu_settings">System settings</string>
-    <!-- Noun, menu item used to show help. [CHAR_LIMIT=none] -->
-    <string name="menu_help">Help</string>
 
     <!-- URL pointing to help text. If empty, no link to help will be created [DO NOT TRANSLATE] -->
     <string name="help_url" translatable="false"></string>
