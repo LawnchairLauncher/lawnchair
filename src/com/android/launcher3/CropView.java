@@ -22,6 +22,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.ViewConfiguration;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -32,10 +33,18 @@ import com.android.photos.views.TiledImageView;
 public class CropView extends TiledImageView implements OnScaleGestureListener {
 
     private ScaleGestureDetector mScaleGestureDetector;
+    private long mTouchDownTime;
+    private float mFirstX, mFirstY;
     private float mLastX, mLastY;
     private float mMinScale;
     private boolean mTouchEnabled = true;
     private RectF mTempEdges = new RectF();
+    TouchCallback mTouchCallback;
+
+    public interface TouchCallback {
+        void onTouchDown();
+        void onTap();
+    }
 
     public CropView(Context context) {
         this(context, null);
@@ -152,11 +161,12 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         mTouchEnabled = enabled;
     }
 
+    public void setTouchCallback(TouchCallback cb) {
+        mTouchCallback = cb;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mTouchEnabled) {
-            return true;
-        }
         int action = event.getActionMasked();
         final boolean pointerUp = action == MotionEvent.ACTION_POINTER_UP;
         final int skipIndex = pointerUp ? event.getActionIndex() : -1;
@@ -173,6 +183,31 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         final int div = pointerUp ? count - 1 : count;
         float x = sumX / div;
         float y = sumY / div;
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            mFirstX = x;
+            mFirstY = y;
+            mTouchDownTime = System.currentTimeMillis();
+            if (mTouchCallback != null) {
+                mTouchCallback.onTouchDown();
+            }
+        } else if (action == MotionEvent.ACTION_UP) {
+            ViewConfiguration config = ViewConfiguration.get(getContext());
+
+            float squaredDist = (mFirstX - x) * (mFirstX - x) + (mFirstY - y) * (mFirstY - y);
+            float slop = config.getScaledTouchSlop() * config.getScaledTouchSlop();
+            long now = System.currentTimeMillis();
+            // only do this if it's a small movement
+            if (mTouchCallback != null &&
+                    squaredDist < slop &&
+                    now < mTouchDownTime + ViewConfiguration.getTapTimeout()) {
+                mTouchCallback.onTap();
+            }
+        }
+
+        if (!mTouchEnabled) {
+            return true;
+        }
 
         synchronized (mLock) {
             mScaleGestureDetector.onTouchEvent(event);

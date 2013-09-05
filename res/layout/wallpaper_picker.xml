@@ -37,6 +37,7 @@
         android:indeterminateOnly="true"
         android:background="@android:color/transparent" />
     <HorizontalScrollView
+        android:id="@+id/wallpaper_strip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
