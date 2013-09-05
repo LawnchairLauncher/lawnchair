@@ -3493,7 +3493,10 @@ public class Workspace extends SmoothPagedView
 
         if (success && !(beingCalledAfterUninstall && !mUninstallSuccessful)) {
             if (target != this && mDragInfo != null) {
-                getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
+                CellLayout parentCell = getParentCellLayoutForView(mDragInfo.cell);
+                if (parentCell != null) {
+                    parentCell.removeView(mDragInfo.cell);
+                }
                 if (mDragInfo.cell instanceof DropTarget) {
                     mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
                 }
