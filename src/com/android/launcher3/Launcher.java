@@ -3824,6 +3824,13 @@ public class Launcher extends Activity
         });
     }
 
+    public boolean isAllAppsButtonRank(int rank) {
+        if (mHotseat != null) {
+            return mHotseat.isAllAppsButtonRank(rank);
+        }
+        return false;
+    }
+
     private boolean canRunNewAppsAnimation() {
         long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
         return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);

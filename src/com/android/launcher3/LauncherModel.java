@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -169,6 +170,7 @@ public class LauncherModel extends BroadcastReceiver {
                         boolean matchPackageNamesOnly);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public void bindSearchablesChanged();
+        public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void dumpLogsToLocalData();
     }
@@ -1513,7 +1515,8 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item) {
+        private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item,
+                                           AtomicBoolean deleteOnItemOverlap) {
             LauncherAppState app = LauncherAppState.getInstance();
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             int countX = (int) grid.numColumns;
@@ -1521,6 +1524,13 @@ public class LauncherModel extends BroadcastReceiver {
 
             long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                // Return early if we detect that an item is under the hotseat button
+                if (mCallbacks == null ||
+                        mCallbacks.get().isAllAppsButtonRank((int) item.screenId)) {
+                    deleteOnItemOverlap.set(true);
+                    return false;
+                }
+
                 if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
                     if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                             [(int) item.screenId][0] != null) {
@@ -1658,6 +1668,7 @@ public class LauncherModel extends BroadcastReceiver {
                     Intent intent;
 
                     while (!mStopped && c.moveToNext()) {
+                        AtomicBoolean deleteOnItemOverlap = new AtomicBoolean(false);
                         try {
                             int itemType = c.getInt(itemTypeIndex);
 
@@ -1672,9 +1683,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     if (cn != null && !isValidPackageComponent(manager, cn)) {
                                         if (!mAppsCanBeOnRemoveableStorage) {
                                             // Log the invalid package, and remove it from the db
-                                            Uri uri = LauncherSettings.Favorites.getContentUri(id,
-                                                    false);
-                                            contentResolver.delete(uri, null, null);
+                                            Launcher.addDumpLog(TAG, "Invalid package removed: " + cn, true);
+                                            itemsToRemove.add(id);
                                         } else {
                                             // If apps can be on external storage, then we just
                                             // leave them for the user to remove (maybe add
@@ -1728,7 +1738,11 @@ public class LauncherModel extends BroadcastReceiver {
                                         }
                                     }
                                     // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, info)) {
+                                    deleteOnItemOverlap.set(false);
+                                    if (!checkItemPlacement(occupied, info, deleteOnItemOverlap)) {
+                                        if (deleteOnItemOverlap.get()) {
+                                            itemsToRemove.add(id);
+                                        }
                                         break;
                                     }
 
@@ -1776,7 +1790,12 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                 }
                                 // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, folderInfo)) {
+                                deleteOnItemOverlap.set(false);
+                                if (!checkItemPlacement(occupied, folderInfo,
+                                        deleteOnItemOverlap)) {
+                                    if (deleteOnItemOverlap.get()) {
+                                        itemsToRemove.add(id);
+                                    }
                                     break;
                                 }
 
@@ -1838,7 +1857,12 @@ public class LauncherModel extends BroadcastReceiver {
                                         }
                                     }
                                     // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, appWidgetInfo)) {
+                                    deleteOnItemOverlap.set(false);
+                                    if (!checkItemPlacement(occupied, appWidgetInfo,
+                                            deleteOnItemOverlap)) {
+                                        if (deleteOnItemOverlap.get()) {
+                                            itemsToRemove.add(id);
+                                        }
                                         break;
                                     }
                                     String providerName = provider.provider.flattenToString();
