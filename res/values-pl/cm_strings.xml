@@ -129,6 +129,7 @@
     <string name="menu_lock_workspace">Zablokuj ekran główny</string>
     <string name="menu_unlock_workspace">Odblokuj ekran główny</string>
     <string name="menu_preferences">Ustawienia</string>
+    <string name="menu_hidden_apps_delete">Zresetuj</string>
     <string name="menu_apps_sort_title">Nazwa</string>
     <string name="menu_apps_sort_install_date">Data instalacji</string>
     <string name="menu_apps_filter_system">Systemowe</string>
