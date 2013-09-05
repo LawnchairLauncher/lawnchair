@@ -192,7 +192,7 @@ public abstract class AutoScrollHelper implements View.OnTouchListener {
     private static final float DEFAULT_RELATIVE_EDGE = 0.2f;
     private static final float DEFAULT_RELATIVE_VELOCITY = 1f;
     private static final int DEFAULT_ACTIVATION_DELAY = ViewConfiguration.getTapTimeout();
-    private static final int DEFAULT_RAMP_UP_DURATION = 2500;
+    private static final int DEFAULT_RAMP_UP_DURATION = 500;
     private static final int DEFAULT_RAMP_DOWN_DURATION = 500;
 
     /**
