@@ -119,6 +119,12 @@
     <string name="preferences_interface_general_lock_workspace_summary">Pozice všech zástupců a složek budou na pracovní ploše, v doku, ve složce widgetů a aplikací uzamčeny</string>
     <string name="preferences_interface_general_fullscreen_title">Režim na celý displej</string>
     <string name="preferences_interface_general_fullscreen_summary">Skrýt stavový řádek a rozšířit plochy</string>
+    <string name="folder_empty_contents_title">Položky nenalezeny</string>
+    <string name="preferences_interface_general_iconpack_title">Balíček ikon</string>
+    <string name="preferences_interface_general_iconpack_summary">Baličky ikon nahradí výchozí ikony aplikací</string>
+    <string name="dialog_pick_iconpack_title">Vybrat balíček ikon</string>
+    <string name="default_iconpack_title">Výchozí ikony</string>
+    <string name="no_iconpacks_summary">Žádný balíček ikon není nainstalovaný</string>
 
     <string name="effects_standard">Klasické posunutí</string>
     <string name="effects_tablet">Tablet</string>
@@ -136,4 +142,9 @@
     <string name="effects_accordion">Harmonika</string>
     <string name="effects_carousel_left">Kolotoč vlevo</string>
     <string name="effects_carousel_right">Kolotoč vpravo</string>
+
+    <string name="live_folder_cling_title">Živé složky</string>
+    <string name="live_folder_cling_create_folder">Živé složky umožní vývojářům vytvářet složky s dynamickým obsahem.
+    Obsah složky je možné odstranit dlouhým podržením na jedné položce. Na rozdíl od normální složky mohou být položky
+    přidávány aplikací, která danou složku vytvořila.</string>
 </resources>
