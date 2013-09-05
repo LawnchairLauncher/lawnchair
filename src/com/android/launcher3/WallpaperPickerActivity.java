@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -71,6 +72,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private View mSelectedThumb;
     private CropView mCropView;
+    private boolean mIgnoreNextTap;
 
     private static class ThumbnailMetaData {
         public boolean mLaunchesGallery;
@@ -181,6 +183,34 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         setContentView(R.layout.wallpaper_picker);
 
         mCropView = (CropView) findViewById(R.id.cropView);
+        final View wallpaperStrip = findViewById(R.id.wallpaper_strip);
+        mCropView.setTouchCallback(new CropView.TouchCallback() {
+            LauncherViewPropertyAnimator mAnim;
+            public void onTouchDown() {
+                if (mAnim != null) {
+                    mAnim.cancel();
+                }
+                if (wallpaperStrip.getTranslationY() == 0) {
+                    mIgnoreNextTap = true;
+                }
+                mAnim = new LauncherViewPropertyAnimator(wallpaperStrip);
+                mAnim.translationY(wallpaperStrip.getHeight())
+                    .setInterpolator(new DecelerateInterpolator(0.75f));
+                mAnim.start();
+            }
+            public void onTap() {
+                boolean ignoreTap = mIgnoreNextTap;
+                mIgnoreNextTap = false;
+                if (!ignoreTap) {
+                    if (mAnim != null) {
+                        mAnim.cancel();
+                    }
+                    mAnim = new LauncherViewPropertyAnimator(wallpaperStrip);
+                    mAnim.translationY(0).setInterpolator(new DecelerateInterpolator(0.75f));
+                    mAnim.start();
+                }
+            }
+        });
 
         // Populate the built-in wallpapers
         findWallpapers();
