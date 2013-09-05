@@ -161,9 +161,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);

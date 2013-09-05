@@ -225,11 +225,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             String duplicateName = "";
             while (iter.hasNext()) {
                 final PendingInstallShortcutInfo pendingInfo = iter.next();
-                final Intent data = pendingInfo.data;
+                //final Intent data = pendingInfo.data;
                 final Intent intent = pendingInfo.launchIntent;
                 final String name = pendingInfo.name;
                 final boolean exists = LauncherModel.shortcutExists(context, name, intent);
-                final boolean allowDuplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
+                //final boolean allowDuplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
 
                 // TODO-XXX: Disable duplicates for now
                 if (!exists /* && allowDuplicate */) {

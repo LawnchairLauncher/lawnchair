@@ -31,7 +31,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -41,7 +40,6 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -67,7 +65,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private Resources mWallpaperResources;
 
     private View mSelectedThumb;
-    private CropView mCropView;
     private boolean mIgnoreNextTap;
     private OnClickListener mThumbnailOnClickListener;
 

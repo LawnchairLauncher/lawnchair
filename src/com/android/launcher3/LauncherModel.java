@@ -2835,7 +2835,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     private ArrayList<ItemInfo> getItemInfoForPackageName(final String pn) {
-        HashSet<ItemInfo> infos = new HashSet<ItemInfo>();
         ItemInfoFilter filter  = new ItemInfoFilter() {
             @Override
             public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
@@ -2846,7 +2845,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     private ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname) {
-        HashSet<ItemInfo> infos = new HashSet<ItemInfo>();
         ItemInfoFilter filter  = new ItemInfoFilter() {
             @Override
             public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {

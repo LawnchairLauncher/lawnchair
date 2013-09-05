@@ -18,14 +18,11 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
-
-import com.android.launcher3.R;
 
 /**
  * {@inheritDoc}

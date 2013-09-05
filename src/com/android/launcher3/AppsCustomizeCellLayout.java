@@ -17,12 +17,7 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewDebug;
-import android.view.ViewGroup;
 
 public class AppsCustomizeCellLayout extends CellLayout implements Page {
     public AppsCustomizeCellLayout(Context context) {

@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -60,7 +59,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         // setup default cell parameters
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        Resources resources = context.getResources();
         mOriginalCellWidth = mCellWidth = grid.cellWidthPx;
         mOriginalCellHeight = mCellHeight = grid.cellHeightPx;
         mCellCountX = (int) grid.numColumns;

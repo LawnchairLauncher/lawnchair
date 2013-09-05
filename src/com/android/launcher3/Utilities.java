@@ -44,7 +44,6 @@ import java.util.ArrayList;
  * Various utilities shared amongst the Launcher's classes.
  */
 final class Utilities {
-    @SuppressWarnings("unused")
     private static final String TAG = "Launcher.Utilities";
 
     private static int sIconWidth = -1;
@@ -215,8 +214,6 @@ final class Utilities {
         int count = ancestorChain.size();
         for (int i = 0; i < count; i++) {
             View v0 = ancestorChain.get(i);
-            View v1 = i < count -1 ? ancestorChain.get(i + 1) : null;
-
             // For TextViews, scroll has a meaning which relates to the text position
             // which is very strange... ignore the scroll.
             if (v0 != descendant || includeRootScroll) {

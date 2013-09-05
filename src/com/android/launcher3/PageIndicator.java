@@ -49,12 +49,6 @@ public class PageIndicator extends LinearLayout {
             new ArrayList<PageIndicatorMarker>();
     private int mActiveMarkerIndex;
 
-    private TimeInterpolator mAlphaInterpolator = new TimeInterpolator() {
-        public float getInterpolation(float t) {
-            return t;
-        }
-    };
-
     public PageIndicator(Context context) {
         this(context, null);
     }
