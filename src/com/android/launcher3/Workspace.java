@@ -1013,10 +1013,14 @@ public class Workspace extends SmoothPagedView
         private void updateOffset(boolean force) {
             if (mWaitingForUpdate || force) {
                 mWaitingForUpdate = false;
-                if (computeScrollOffset()) {
-                    mWallpaperManager.setWallpaperOffsets(mWindowToken,
-                            mWallpaperOffset.getCurrX(), 0.5f);
-                    setWallpaperOffsetSteps();
+                if (computeScrollOffset() && mWindowToken != null) {
+                    try {
+                        mWallpaperManager.setWallpaperOffsets(mWindowToken,
+                                mWallpaperOffset.getCurrX(), 0.5f);
+                        setWallpaperOffsetSteps();
+                    } catch (IllegalArgumentException e) {
+                        Log.e(TAG, "Error updating wallpaper offset: " + e);
+                    }
                 }
             }
         }
