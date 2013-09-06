@@ -22,7 +22,7 @@
     package="com.cyanogenmod.trebuchet"
     android:versionName="@string/application_version">
 
-    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="17" />
+    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="18" />
 
     <permission
         android:name="com.android.launcher.permission.PRELOAD_WORKSPACE"
