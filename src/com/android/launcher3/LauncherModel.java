@@ -156,6 +156,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindFolders(HashMap<Long,FolderInfo> folders);
         public void finishBindingItems(boolean upgradePath);
         public void bindAppWidget(LauncherAppWidgetInfo info);
+        public boolean shouldShowApp(ResolveInfo app);
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
@@ -2427,6 +2428,7 @@ public class LauncherModel extends BroadcastReceiver {
         private void loadAllApps() {
             final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
+            // "two variables"?
             // Don't use these two variables in any of the callback runnables.
             // Otherwise we hold a reference to them.
             final Callbacks oldCallbacks = mCallbacks.get();
@@ -2466,11 +2468,15 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
-                // This builds the icon bitmaps.
-                mBgAllAppsList.add(new AppInfo(packageManager, apps.get(i),
-                        mIconCache, mLabelCache));
+                ResolveInfo app = apps.get(i);
+                if (oldCallbacks.shouldShowApp(app)) {
+                    // This builds the icon bitmaps.
+                    mBgAllAppsList.add(new AppInfo(packageManager, app,
+                            mIconCache, mLabelCache));
+                }
             }
 
+            // Huh? Shouldn't this be inside the Runnable below?
             final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
             final ArrayList<AppInfo> added = mBgAllAppsList.added;
             mBgAllAppsList.added = new ArrayList<AppInfo>();
