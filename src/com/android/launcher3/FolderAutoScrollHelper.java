@@ -36,6 +36,8 @@ public class FolderAutoScrollHelper extends AutoScrollHelper {
         setEdgeType(EDGE_TYPE_INSIDE_EXTEND);
         setExclusive(true);
         setMaximumVelocity(MAX_SCROLL_VELOCITY, MAX_SCROLL_VELOCITY);
+        setRampDownDuration(0);
+        setRampUpDuration(0);
     }
 
     @Override

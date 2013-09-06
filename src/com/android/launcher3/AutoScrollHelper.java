@@ -67,7 +67,7 @@ import android.view.animation.Interpolator;
  * The following scrolling properties may be configured:
  * <ul>
  * <li>Acceleration ramp-up duration, see {@link #setRampUpDuration}. Default
- * value is 2500 milliseconds.
+ * value is 500 milliseconds.
  * <li>Acceleration ramp-down duration, see {@link #setRampDownDuration}.
  * Default value is 500 milliseconds.
  * <li>Target velocity relative to view size, see {@link #setRelativeVelocity}.
