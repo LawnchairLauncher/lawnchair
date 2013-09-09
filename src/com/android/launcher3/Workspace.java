@@ -488,6 +488,7 @@ public class Workspace extends SmoothPagedView
 
         newScreen.setOnLongClickListener(mLongClickListener);
         newScreen.setOnClickListener(mLauncher);
+        newScreen.setSoundEffectsEnabled(false);
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
