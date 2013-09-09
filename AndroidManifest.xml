@@ -110,7 +110,7 @@
             android:finishOnCloseSystemDialogs="true"
             android:process=":wallpaper_chooser">
             <intent-filter>
-                <action android:name="com.android.launcher3.action.CROP_AND_SET_WALLPAPER" />
+                <action android:name="android.intent.action.CROP_AND_SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
             </intent-filter>
