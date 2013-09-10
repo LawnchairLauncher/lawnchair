@@ -35,6 +35,7 @@ class ShortcutInfo extends ItemInfo {
      */
     Intent intent;
 
+    String customIconResource;
     /**
      * Indicates whether the title comes from an application's resource (if false)
      * or from a custom title (if true.)
@@ -67,7 +68,8 @@ class ShortcutInfo extends ItemInfo {
     /**
      * Title change listener
      */
-    private ShortcutListener mListener;
+    private ArrayList<ShortcutListener> mListeners =
+            new ArrayList<ShortcutListener>();
 
     /**
      * The shortcut folder information
@@ -104,6 +106,9 @@ class ShortcutInfo extends ItemInfo {
 
     public void setIcon(Bitmap b) {
         mIcon = b;
+        for (ShortcutListener i : mListeners) {
+            i.onIconChanged(this);
+        }
     }
 
     public Bitmap getIcon(IconCache iconCache) {
@@ -136,13 +141,15 @@ class ShortcutInfo extends ItemInfo {
     public void setTitle(CharSequence title) {
         this.title = title;
         this.customTitle = true;
-        if (mListener != null) {
-            mListener.onTitleChanged(title);
+        for (ShortcutListener i : mListeners) {
+            i.onTitleChanged(this);
         }
     }
 
     void setListener(ShortcutListener listener) {
-        mListener = listener;
+        if (!mListeners.contains(listener) && listener != null) {
+            mListeners.add(listener);
+        }
     }
 
     @Override
@@ -156,6 +163,7 @@ class ShortcutInfo extends ItemInfo {
         String uri = intent != null ? intent.toUri(0) : null;
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
 
+        values.put(LauncherSettings.BaseLauncherColumns.CUSTOM_ICON, customIconResource);
         if (customIcon) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
                     LauncherSettings.BaseLauncherColumns.ICON_TYPE_BITMAP);
@@ -193,7 +201,8 @@ class ShortcutInfo extends ItemInfo {
     }
 
     interface ShortcutListener {
-        public void onTitleChanged(CharSequence title);
+        public void onTitleChanged(ShortcutInfo item);
+        public void onIconChanged(ShortcutInfo item);
     }
 }
 

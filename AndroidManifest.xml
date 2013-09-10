@@ -132,6 +132,12 @@
         <activity android:name="com.cyanogenmod.trebuchet.preference.HiddenAppsActivity"
             android:label="@string/hidden_apps_title" />
 
+        <activity android:name=".IconPickerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:launchMode="singleTop" />
+
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.cyanogenmod.trebuchet.InstallShortcutReceiver"

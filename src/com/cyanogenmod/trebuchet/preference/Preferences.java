@@ -193,7 +193,7 @@ public class Preferences extends PreferenceActivity
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
                 Preference preference) {
             if (preference.getKey().equals("ui_general_iconpack")) {
-                IconPackHelper.pickIconPack(getActivity());
+                IconPackHelper.pickIconPack(getActivity(), false);
             }
             return super.onPreferenceTreeClick(preferenceScreen, preference);
         }

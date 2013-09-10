@@ -109,7 +109,13 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(ActivityInfo info) {
-
+        int iconId = 0;
+        if (mIconPackHelper != null && mIconPackHelper.isIconPackLoaded()) {
+            iconId = mIconPackHelper.getResourceIdForActivityIcon(info);
+            if (iconId != 0) {
+                return getFullResIcon(mIconPackHelper.getIconPackResources(), iconId);
+            }
+        }
         Resources resources;
         try {
             resources = mPackageManager.getResourcesForApplication(
@@ -118,13 +124,6 @@ public class IconCache {
             resources = null;
         }
         if (resources != null) {
-            int iconId = 0;
-            if (mIconPackHelper != null && mIconPackHelper.isIconPackLoaded()) {
-                iconId = mIconPackHelper.getResourceIdForActivityIcon(info);
-                if (iconId != 0) {
-                    return getFullResIcon(mIconPackHelper.getIconPackResources(), iconId);
-                }
-            }
             iconId = info.getIconResource();
             if (iconId != 0) {
                 return getFullResIcon(resources, iconId);

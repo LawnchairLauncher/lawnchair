@@ -9,7 +9,6 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
     <ImageButton
-        android:padding="5dp"
         android:layout_width="@android:dimen/app_icon_size"
         style="?android:attr/borderlessButtonStyle"
         android:id="@+id/dialog_edit_icon"

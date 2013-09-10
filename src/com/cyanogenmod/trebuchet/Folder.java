@@ -22,6 +22,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cyanogenmod.trebuchet.FolderInfo.FolderListener;
+import com.cyanogenmod.trebuchet.ShortcutInfo.ShortcutListener;
 import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ import java.util.Comparator;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener {
+        View.OnFocusChangeListener, ShortcutListener {
     private static final String TAG = "Trebuchet.Folder";
 
     protected DragController mDragController;
@@ -1128,6 +1130,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             findAndSetEmptyCells(item);
         }
         createAndAddShortcut(item);
+        item.setListener(this);
         if (!(item instanceof LiveFolderItemInfo)) {
             LauncherModel.addOrMoveItemInDatabase(
                     mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
@@ -1209,4 +1212,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             startEditingFolderName();
         }
     }
+
+    @Override
+    public void onTitleChanged(ShortcutInfo item) {
+        TextView textView = (TextView) getViewForInfo(item);
+        textView.setText(item.title);
+    }
+
+    @Override
+    public void onIconChanged(ShortcutInfo item) {
+        TextView textView = (TextView) getViewForInfo(item);
+        textView.setCompoundDrawablesWithIntrinsicBounds(null,
+                new FastBitmapDrawable(item.getIcon(mIconCache)), null, null);
+        mInfo.itemsChanged();
+    }
+
 }
