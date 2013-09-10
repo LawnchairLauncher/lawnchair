@@ -74,6 +74,7 @@
     <string name="preferences_interface_drawer_summary">应用与小部件抽屉</string>
     <string name="preferences_interface_drawer_orientation_title">方向</string>
     <string name="preferences_interface_drawer_orientation_summary">选择抽屉的滚动方向</string>
+    <string name="preferences_interface_drawer_apps_category">应用</string>
     <string name="preferences_interface_drawer_hidden_apps_title">隐藏应用</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">从抽屉里隐藏应用程序</string>
     <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">隐藏应用程序 (快捷方式)</string>
@@ -119,10 +120,10 @@
     <string name="preferences_interface_general_fullscreen_summary">隐藏状态栏以便扩展主屏幕</string>
     <string name="folder_empty_contents_title">没有找到任何项目</string>
     <string name="preferences_interface_general_iconpack_title">图标包</string>
-    <string name="preferences_interface_general_iconpack_summary">图标包替换默认的应用图标</string>
+    <string name="preferences_interface_general_iconpack_summary">图标包将替换默认的应用图标</string>
     <string name="dialog_pick_iconpack_title">选择图标包</string>
     <string name="default_iconpack_title">默认图标</string>
-    <string name="no_iconpacks_summary">未按装任何图标包</string>
+    <string name="no_iconpacks_summary">未安装任何图标包</string>
     <string name="effects_standard">标准</string>
     <string name="effects_tablet">平板</string>
     <string name="effects_zoom_in">放大</string>
@@ -140,5 +141,5 @@
     <string name="effects_carousel_left">旋转木马 (左)</string>
     <string name="effects_carousel_right">旋转木马 (右)</string>
     <string name="live_folder_cling_title">实时文件夹</string>
-    <string name="live_folder_cling_create_folder">实时文件夹允许应用开发者创建动态内容的文件夹. 长按一个条目可删除文件夹的内容. 不像普通的文件夹, 只能由创建该文件夹的应用来添加条目</string>
+    <string name="live_folder_cling_create_folder">实时文件夹允许应用开发者创建含有动态内容的文件夹。长按一个条目可删除文件夹的内容。不像普通的文件夹，新的条目只能由创建该文件夹的应用来添加</string>
 </resources>
