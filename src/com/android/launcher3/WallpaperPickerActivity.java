@@ -353,6 +353,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     mImages.add(res);
                     // Log.d(TAG, "add: [" + packageName + "]: " + extra + " (" + res + ")");
                 }
+            } else {
+                Log.e(TAG, "Couldn't find wallpaper " + extra);
             }
         }
     }
