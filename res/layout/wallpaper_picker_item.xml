@@ -14,7 +14,8 @@
      limitations under the License.
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.CheckableFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/wallpaperThumbnailWidth"
     android:layout_height="@dimen/wallpaperThumbnailHeight"
     android:focusable="true"
@@ -26,4 +27,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY" />
-</FrameLayout>
+</com.android.launcher3.CheckableFrameLayout>
