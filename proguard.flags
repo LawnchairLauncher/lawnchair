@@ -14,12 +14,6 @@
 -keep class com.android.launcher3.CellLayout {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
-  public float getDimmableProgress();
-  public void setDimmableProgress(float);
-  public float getHoverScale();
-  public void setHoverScale(float);
-  public float getHoverAlpha();
-  public void setHoverAlpha(float);
 }
 
 -keep class com.android.launcher3.DragLayer$LayoutParams {
@@ -49,18 +43,6 @@
   public void setBackgroundAlpha(float);
   public float getChildrenOutlineAlpha();
   public void setChildrenOutlineAlpha(float);
-  public void setVerticalWallpaperOffset(float);
-  public float getVerticalWallpaperOffset();
-  public void setHorizontalWallpaperOffset(float);
-  public float getHorizontalWallpaperOffset();
-}
-
--keep class com.android.launcher3.AllApps3D$Defines {
-  *;
-}
-
--keep class com.android.launcher3.ClippedImageView {
-  *;
 }
 
 -keep class com.android.launcher3.MemoryDumpActivity {
