@@ -140,12 +140,12 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
     public void onScaleEnd(ScaleGestureDetector detector) {
     }
 
-    public void moveToUpperLeft() {
+    public void moveToLeft() {
         if (getWidth() == 0 || getHeight() == 0) {
             final ViewTreeObserver observer = getViewTreeObserver();
             observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
-                        moveToUpperLeft();
+                        moveToLeft();
                         getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
@@ -154,7 +154,6 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         getEdgesHelper(edges);
         final float scale = mRenderer.scale;
         mRenderer.centerX += Math.ceil(edges.left / scale);
-        mRenderer.centerY += Math.ceil(edges.top / scale);
     }
 
     public void setTouchEnabled(boolean enabled) {
