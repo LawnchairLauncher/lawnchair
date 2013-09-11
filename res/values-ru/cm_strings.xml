@@ -26,7 +26,7 @@
     <string name="menu_apps_filter_downloaded">Загруженные</string>
     <string name="menu_hidden_apps_delete">Сброс</string>
     <string name="all_apps_sort_cling_title">Сортировка</string>
-    <string name="all_apps_sort_cling_add_item">Нажмите и удерживайте вкладку \"Приложения\" для выбора режима сортировки</string>
+    <string name="all_apps_sort_cling_add_item">Нажмите и удерживайте вкладку «Приложения» для выбора режима сортировки</string>
 
     <!-- Hidden apps -->
     <string name="hidden_apps_title">Скрытые приложения</string>
@@ -95,7 +95,7 @@
     <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Удалить виджеты скрытых приложений на главном экране</string>
     <string name="preferences_interface_drawer_widgets_category">ВИДЖЕТЫ</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Вместе с приложениями</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_summary">Пролистывать из меню \"Приложения\" в меню \"Виджеты\" без смены вкладок</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Пролистывать из меню «Приложения» в меню «Виджеты» без смены вкладок</string>
     <string name="preferences_interface_drawer_scrolling_category">Прокрутка</string>
     <string name="preferences_interface_drawer_scrolling_transition_effect_title">Эффект перехода</string>
     <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Эффект перехода при пролистывании экранов</string>
