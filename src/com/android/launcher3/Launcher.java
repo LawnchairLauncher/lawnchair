@@ -660,9 +660,6 @@ public class Launcher extends Activity
                 completeAddAppWidget(appWidgetId, args.container, args.screenId, null, null);
                 result = true;
                 break;
-            case REQUEST_PICK_WALLPAPER:
-                // We just wanted the activity result here so we can clear mWaitingForResult
-                break;
         }
         // Before adding this resetAddInfo(), after a shortcut was added to a workspace screen,
         // if you turned the screen off and then back while in All Apps, Launcher would not
@@ -686,7 +683,13 @@ public class Launcher extends Activity
                 addAppWidgetImpl(appWidgetId, mPendingAddInfo, null, mPendingAddWidgetInfo);
             }
             return;
+        } else if (requestCode == REQUEST_PICK_WALLPAPER) {
+            if (resultCode == RESULT_OK && mWorkspace.isInOverviewMode()) {
+                mWorkspace.exitOverviewMode(false);
+            }
+            return;
         }
+
         boolean delayExitSpringLoadedMode = false;
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET);
@@ -1631,7 +1634,7 @@ public class Launcher extends Activity
                     // If we are already on home, then just animate back to the workspace,
                     // otherwise, just wait until onResume to set the state back to Workspace
                     if (alreadyOnHome) {
-                        showWorkspace();
+                        showWorkspaceAndExitOverviewMode();
                     } else {
                         mOnResumeState = State.WORKSPACE;
                     }
@@ -1665,10 +1668,10 @@ public class Launcher extends Activity
         }
     }
 
-    protected void showWorkspace() {
+    protected void showWorkspaceAndExitOverviewMode() {
         showWorkspace(true);
         if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.exitOverviewMode();
+            mWorkspace.exitOverviewMode(true);
         }
     }
 
@@ -2128,7 +2131,7 @@ public class Launcher extends Activity
         if (isAllAppsVisible()) {
             showWorkspace(true);
         } else if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.exitOverviewMode();
+            mWorkspace.exitOverviewMode(true);
         } else if (mWorkspace.getOpenFolder() != null) {
             Folder openFolder = mWorkspace.getOpenFolder();
             if (openFolder.isEditingName()) {
@@ -2178,7 +2181,7 @@ public class Launcher extends Activity
 
         if (v instanceof CellLayout) {
             if (mWorkspace.isInOverviewMode()) {
-                mWorkspace.exitOverviewMode(mWorkspace.indexOfChild(v));
+                mWorkspace.exitOverviewMode(mWorkspace.indexOfChild(v), true);
             }
         }
 

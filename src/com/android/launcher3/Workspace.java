@@ -1757,35 +1757,37 @@ public class Workspace extends SmoothPagedView
     }
 
     public void enterOverviewMode() {
-        enableOverviewMode(true, -1);
+        enableOverviewMode(true, -1, true);
     }
 
-    public void exitOverviewMode() {
-        exitOverviewMode(-1);
+    public void exitOverviewMode(boolean animated) {
+        exitOverviewMode(-1, animated);
     }
 
-    public void exitOverviewMode(int snapPage) {
-        enableOverviewMode(false, snapPage);
+    public void exitOverviewMode(int snapPage, boolean animated) {
+        enableOverviewMode(false, snapPage, animated);
     }
 
-    private void enableOverviewMode(boolean enable, int snapPage) {
+    private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
         State finalState = Workspace.State.OVERVIEW;
         if (!enable) {
             finalState = Workspace.State.NORMAL;
         }
 
-        Animator workspaceAnim = getChangeStateAnimation(finalState, true, 0, snapPage);
-        workspaceAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator arg0) {
-                mIsSwitchingState = false;
-            }
-            @Override
-            public void onAnimationStart(Animator arg0) {
-                mIsSwitchingState = true;
-            }
-        });
-        workspaceAnim.start();
+        Animator workspaceAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
+        if (workspaceAnim != null) {
+            workspaceAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator arg0) {
+                    mIsSwitchingState = false;
+                }
+                @Override
+                public void onAnimationStart(Animator arg0) {
+                    mIsSwitchingState = true;
+                }
+            });
+            workspaceAnim.start();
+        }
     }
 
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
@@ -1933,9 +1935,12 @@ public class Workspace extends SmoothPagedView
             anim.setStartDelay(delay);
         } else {
             mLauncher.getOverviewPanel().setAlpha(finalOverviewPanelAlpha);
+            AlphaUpdateListener.updateVisibility(mLauncher.getOverviewPanel());
             mLauncher.getHotseat().setAlpha(finalHotseatAndPageIndicatorAlpha);
+            AlphaUpdateListener.updateVisibility(mLauncher.getHotseat());
             if (getPageIndicator() != null) {
                 getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
+                AlphaUpdateListener.updateVisibility(getPageIndicator());
             }
         }
 
@@ -1952,7 +1957,7 @@ public class Workspace extends SmoothPagedView
         return anim;
     }
 
-    class AlphaUpdateListener implements AnimatorUpdateListener {
+    static class AlphaUpdateListener implements AnimatorUpdateListener {
         View view;
         public AlphaUpdateListener(View v) {
             view = v;
@@ -1960,6 +1965,10 @@ public class Workspace extends SmoothPagedView
 
         @Override
         public void onAnimationUpdate(ValueAnimator arg0) {
+            updateVisibility(view);
+        }
+
+        public static void updateVisibility(View view) {
             if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != INVISIBLE) {
                 view.setVisibility(INVISIBLE);
             } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
