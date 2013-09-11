@@ -27,8 +27,7 @@
     <com.android.launcher3.DragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
 
         <!-- The workspace contains 5 screens of cells -->
         <com.android.launcher3.Workspace

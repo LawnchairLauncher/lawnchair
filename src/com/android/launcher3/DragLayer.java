@@ -69,6 +69,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     public static final int ANIMATION_END_FADE_OUT = 1;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
+    private final Rect mInsets = new Rect();
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -95,6 +97,26 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        final int n = getChildCount();
+        for (int i = 0; i < n; i++) {
+            final View child = getChildAt(i);
+            final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
+            if (child instanceof Insettable) {
+                ((Insettable)child).setInsets(insets);
+            } else  {
+                flp.topMargin += (insets.top - mInsets.top);
+                flp.leftMargin += (insets.left - mInsets.left);
+                flp.rightMargin += (insets.right - mInsets.right);
+                flp.bottomMargin += (insets.bottom - mInsets.bottom);
+            }
+            child.setLayoutParams(flp);
+        }
+        mInsets.set(insets);
+        return true; // I'll take it from here
     }
 
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {

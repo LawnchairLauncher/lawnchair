@@ -71,7 +71,8 @@ import java.util.Iterator;
  */
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
-        DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener {
+        DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
+        Insettable {
     private static final String TAG = "Launcher.Workspace";
 
     // Y rotation to apply to the workspace screens
@@ -318,6 +319,11 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+    }
+
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
     // dimension if unsuccessful
     public int[] estimateItemSize(int hSpan, int vSpan,
@@ -525,6 +531,9 @@ public class Workspace extends SmoothPagedView
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
         lp.canReorder  = false;
         lp.isFullscreen = true;
+        if (customContent instanceof Insettable) {
+            ((Insettable)customContent).setInsets(mInsets);
+        }
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
 
         mCustomContentCallbacks = callbacks;

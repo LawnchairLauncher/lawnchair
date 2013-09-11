@@ -260,6 +260,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Bouncer
     private boolean mTopAlignPageWhenShrinkingForBouncer = false;
 
+    protected final Rect mInsets = new Rect();
+
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
     }
@@ -798,7 +800,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 }
 
                 childWidth = widthSize - horizontalPadding;
-                childHeight = heightSize - verticalPadding;
+                childHeight = heightSize - verticalPadding - mInsets.top - mInsets.bottom;
 
             } else {
                 childWidthMode = MeasureSpec.EXACTLY;
@@ -873,17 +875,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
 
         for (int i = startIndex; i != endIndex; i += delta) {
-
             final View child = getPageAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int childTop;
-
             if (lp.isFullScreenPage) {
                 childTop = offsetY;
             } else {
-                childTop = offsetY + getPaddingTop();
+                childTop = offsetY + getPaddingTop() + mInsets.top;
                 if (mCenterPagesVertically) {
-                    childTop += ((getViewportHeight() - verticalPadding) - child.getMeasuredHeight()) / 2;
+                    childTop += (getViewportHeight() - mInsets.top - mInsets.bottom - verticalPadding - child.getMeasuredHeight()) / 2;
                 }
             }
 

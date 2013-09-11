@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,7 +37,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class AppsCustomizeTabHost extends TabHost implements LauncherTransitionable,
-        TabHost.OnTabChangeListener  {
+        TabHost.OnTabChangeListener, Insettable  {
     static final String LOG_TAG = "AppsCustomizeTabHost";
 
     private static final String APPS_TAB_TAG = "APPS";
@@ -53,6 +54,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private boolean mTransitioningToWorkspace;
     private boolean mResetAfterTransition;
     private Runnable mRelayoutAndMakeVisible;
+    private final Rect mInsets = new Rect();
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -84,6 +86,17 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
     void selectWidgetsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+        FrameLayout.LayoutParams flp = (LayoutParams) mContent.getLayoutParams();
+        flp.topMargin = insets.top;
+        flp.bottomMargin = insets.bottom;
+        flp.leftMargin = insets.left;
+        flp.rightMargin = insets.right;
+        mContent.setLayoutParams(flp);
     }
 
     /**
