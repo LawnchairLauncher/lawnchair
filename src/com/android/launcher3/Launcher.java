@@ -77,7 +77,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -131,12 +130,6 @@ public class Launcher extends Activity
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
-
-    private static final int MENU_GROUP_WALLPAPER = 1;
-    private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
-    private static final int MENU_MANAGE_APPS = MENU_WALLPAPER_SETTINGS + 1;
-    private static final int MENU_SYSTEM_SETTINGS = MENU_MANAGE_APPS + 1;
-    private static final int MENU_HELP = MENU_SYSTEM_SETTINGS + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -1881,66 +1874,12 @@ public class Launcher extends Activity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (isWorkspaceLocked()) {
-            return false;
-        }
-
-        super.onCreateOptionsMenu(menu);
-
-        Intent manageApps = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
-        manageApps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
-        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        String helpUrl = getString(R.string.help_url);
-        Intent help = new Intent(Intent.ACTION_VIEW, Uri.parse(helpUrl));
-        help.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-
-        menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
-            .setIcon(android.R.drawable.ic_menu_gallery)
-            .setAlphabeticShortcut('W');
-        menu.add(0, MENU_MANAGE_APPS, 0, R.string.menu_manage_apps)
-            .setIcon(android.R.drawable.ic_menu_manage)
-            .setIntent(manageApps)
-            .setAlphabeticShortcut('M');
-        menu.add(0, MENU_SYSTEM_SETTINGS, 0, R.string.menu_settings)
-            .setIcon(android.R.drawable.ic_menu_preferences)
-            .setIntent(settings)
-            .setAlphabeticShortcut('P');
-        if (!helpUrl.isEmpty()) {
-            menu.add(0, MENU_HELP, 0, R.string.menu_help)
-                .setIcon(android.R.drawable.ic_menu_help)
-                .setIntent(help)
-                .setAlphabeticShortcut('H');
-        }
-        return true;
-    }
-
-    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        if (mAppsCustomizeTabHost.isTransitioning()) {
-            return false;
+        if (!mWorkspace.isInOverviewMode()) {
+            mWorkspace.enterOverviewMode();
         }
-        boolean allAppsVisible = (mAppsCustomizeTabHost.getVisibility() == View.VISIBLE);
-        menu.setGroupVisible(MENU_GROUP_WALLPAPER, !allAppsVisible);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case MENU_WALLPAPER_SETTINGS:
-            startWallpaper();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     @Override
