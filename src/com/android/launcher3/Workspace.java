@@ -30,6 +30,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -977,8 +978,10 @@ public class Workspace extends SmoothPagedView
     };
 
     protected void setWallpaperDimension() {
+        String spKey = WallpaperCropActivity.getSharedPreferencesKey();
+        SharedPreferences sp = mLauncher.getSharedPreferences(spKey, Context.MODE_PRIVATE);
         WallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
-                mLauncher.getSharedPrefs(), mLauncher.getWindowManager(), mWallpaperManager);
+                sp, mLauncher.getWindowManager(), mWallpaperManager);
     }
 
 

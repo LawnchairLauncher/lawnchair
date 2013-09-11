@@ -22,6 +22,7 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -100,6 +101,10 @@ public class WallpaperCropActivity extends Activity {
                 });
     }
 
+    public static String getSharedPreferencesKey() {
+        return WallpaperCropActivity.class.getName();
+    }
+
     // As a ratio of screen height, the total distance we want the parallax effect to span
     // horizontally
     private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
@@ -145,7 +150,7 @@ public class WallpaperCropActivity extends Activity {
         // for the intended
         // parallax effects
         final int defaultWidth, defaultHeight;
-        if (LauncherAppState.isScreenLarge(res)) {
+        if (isScreenLarge(res)) {
             defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
             defaultHeight = maxDim;
         } else {
@@ -200,6 +205,11 @@ public class WallpaperCropActivity extends Activity {
         cropTask.execute();
     }
 
+    private static boolean isScreenLarge(Resources res) {
+        Configuration config = res.getConfiguration();
+        return config.smallestScreenWidthDp >= 720;
+    }
+
     protected void cropImageAndSetWallpaper(Uri uri,
             OnBitmapCroppedHandler onBitmapCroppedHandler, final boolean finishActivityWhenDone) {
      // Get the crop
@@ -216,7 +226,7 @@ public class WallpaperCropActivity extends Activity {
         int maxDim = Math.max(maxDims.x, maxDims.y);
         final int minDim = Math.min(minDims.x, minDims.y);
         int defaultWidth;
-        if (LauncherAppState.isScreenLarge(getResources())) {
+        if (isScreenLarge(getResources())) {
             defaultWidth = (int) (maxDim *
                     wallpaperTravelToScreenWidthRatio(maxDim, minDim));
         } else {
@@ -564,7 +574,7 @@ public class WallpaperCropActivity extends Activity {
     }
 
     protected void updateWallpaperDimensions(int width, int height) {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
+        String spKey = getSharedPreferencesKey();
         SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         if (width != 0 && height != 0) {
