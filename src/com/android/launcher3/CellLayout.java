@@ -947,9 +947,11 @@ public class CellLayout extends ViewGroup {
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
-        if (mCellWidth < 0 || mCellHeight < 0) {
-            mCellWidth = grid.calculateCellWidth(widthSize, mCountX);
-            mCellHeight = grid.calculateCellHeight(heightSize, mCountY);
+        int cw = grid.calculateCellWidth(widthSize, mCountX);
+        int ch = grid.calculateCellHeight(heightSize, mCountY);
+        if (cw != mCellWidth || ch != mCellHeight) {
+            mCellWidth = cw;
+            mCellHeight = ch;
             mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
                     mHeightGap, mCountX, mCountY);
         }
