@@ -123,7 +123,7 @@
     <string name="preferences_interface_general_iconpack_title">Pictogrammenpakket</string>
     <string name="preferences_interface_general_iconpack_summary">Pictogrammenpakketten vervangen de standaardpictogrammen van apps</string>
     <string name="dialog_pick_iconpack_title">Pictogrammenpakket kiezen</string>
-    <string name="default_iconpack_title">Standaardpictogrammen</string>
+    <string name="default_iconpack_title">Standaard</string>
     <string name="no_iconpacks_summary">Geen pictogrammenpakket geïnstalleerd</string>
     <string name="effects_standard">Standaard</string>
     <string name="effects_tablet">Tablet</string>
