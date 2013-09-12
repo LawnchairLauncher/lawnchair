@@ -33,10 +33,13 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -62,6 +65,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private static final int IMAGE_PICK = 5;
     private static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
+    private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
 
     private ArrayList<Drawable> mBundledWallpaperThumbs;
     private ArrayList<Integer> mBundledWallpaperResIds;
@@ -72,6 +76,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private OnClickListener mThumbnailOnClickListener;
 
     private LinearLayout mWallpapersView;
+
+    private ActionMode.Callback mActionModeCallback;
+    private ActionMode mActionMode;
+
     private View.OnLongClickListener mLongClickListener;
 
     ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
@@ -120,6 +128,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
         mThumbnailOnClickListener = new OnClickListener() {
             public void onClick(View v) {
+                if (mActionMode != null) {
+                    // When CAB is up, clicking toggles the item instead
+                    if (v.isLongClickable()) {
+                        mLongClickListener.onLongClick(v);
+                    }
+                    return;
+                }
                 if (mSelectedThumb != null) {
                     mSelectedThumb.setSelected(false);
                 }
@@ -161,6 +176,25 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 }
             }
         };
+        mLongClickListener = new View.OnLongClickListener() {
+            // Called when the user long-clicks on someView
+            public boolean onLongClick(View view) {
+                CheckableFrameLayout c = (CheckableFrameLayout) view;
+                c.toggle();
+
+                if (mActionMode != null) {
+                    mActionMode.invalidate();
+                } else {
+                    // Start the CAB using the ActionMode.Callback defined below
+                    mActionMode = startActionMode(mActionModeCallback);
+                    int childCount = mWallpapersView.getChildCount();
+                    for (int i = 0; i < childCount; i++) {
+                        mWallpapersView.getChildAt(i).setSelected(false);
+                    }
+                }
+                return true;
+            }
+        };
 
         // Populate the built-in wallpapers
         findBundledWallpapers();
@@ -190,6 +224,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         meta.mLaunchesGallery = true;
         galleryThumbnail.setTag(meta);
         galleryThumbnail.setOnClickListener(mThumbnailOnClickListener);
+
+        // Create smooth layout transitions for when items are deleted
+        final LayoutTransition transitioner = new LayoutTransition();
+        transitioner.setDuration(200);
+        transitioner.setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, 0);
+        transitioner.setAnimator(LayoutTransition.DISAPPEARING, null);
+        mWallpapersView.setLayoutTransition(transitioner);
 
         // Action bar
         // Show the custom action bar view
@@ -223,12 +264,95 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         }
                     }
                 });
+
+        // CAB for deleting items
+        mActionModeCallback = new ActionMode.Callback() {
+            // Called when the action mode is created; startActionMode() was called
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate a menu resource providing context menu items
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.cab_delete_wallpapers, menu);
+                return true;
+            }
+
+            private int numCheckedItems() {
+                int childCount = mWallpapersView.getChildCount();
+                int numCheckedItems = 0;
+                for (int i = 0; i < childCount; i++) {
+                    CheckableFrameLayout c = (CheckableFrameLayout) mWallpapersView.getChildAt(i);
+                    if (c.isChecked()) {
+                        numCheckedItems++;
+                    }
+                }
+                return numCheckedItems;
+            }
+
+            // Called each time the action mode is shown. Always called after onCreateActionMode,
+            // but may be called multiple times if the mode is invalidated.
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                int numCheckedItems = numCheckedItems();
+                if (numCheckedItems == 0) {
+                    mode.finish();
+                    return true;
+                } else {
+                    mode.setTitle(getResources().getQuantityString(
+                            R.plurals.number_of_items_selected, numCheckedItems, numCheckedItems));
+                    return true;
+                }
+            }
+
+            // Called when the user selects a contextual menu item
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        int childCount = mWallpapersView.getChildCount();
+                        ArrayList<View> viewsToRemove = new ArrayList<View>();
+                        for (int i = 0; i < childCount; i++) {
+                            CheckableFrameLayout c =
+                                    (CheckableFrameLayout) mWallpapersView.getChildAt(i);
+                            if (c.isChecked()) {
+                                ThumbnailMetaData meta = (ThumbnailMetaData) c.getTag();
+                                mSavedImages.deleteImage(meta.mSavedWallpaperDbId);
+                                viewsToRemove.add(c);
+                            }
+                        }
+                        for (View v : viewsToRemove) {
+                            mWallpapersView.removeView(v);
+                        }
+                        ///xxxxx DESTROYING
+                        mode.finish(); // Action picked, so close the CAB
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            // Called when the user exits the action mode
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                int childCount = mWallpapersView.getChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    CheckableFrameLayout c = (CheckableFrameLayout) mWallpapersView.getChildAt(i);
+                    c.setChecked(false);
+                }
+                mSelectedThumb.setSelected(true);
+                mActionMode = null;
+            }
+        };
+    }
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(TEMP_WALLPAPER_TILES, mTempWallpaperTiles);
     }
 
-
-
-
-
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        ArrayList<Uri> uris = savedInstanceState.getParcelableArrayList(TEMP_WALLPAPER_TILES);
+        for (Uri uri : uris) {
+            addTemporaryWallpaperTile(uri);
+        }
+    }
 
     private void populateWallpapersFromAdapter(ViewGroup parent, ImageAdapter ia,
             ArrayList<Integer> imageIds, boolean imagesAreResources, boolean addLongPressHandler) {

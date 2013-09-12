@@ -30,6 +30,17 @@
     <string name="folder_name"></string>
     <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
+    <!-- Shown when wallpapers are selected in Wallpaper picker -->
+    <!-- String indicating how many media item(s) is(are) selected
+            eg. 1 selected [CHAR LIMIT=30] -->
+    <plurals name="number_of_items_selected">
+        <item quantity="zero">%1$d selected</item>
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
+
+    <!-- Label on button to delete wallpaper(s) -->
+    <string name="wallpaper_delete">Delete</string>
     <!-- Label on button in Wallpaper Picker that launches Gallery app -->
     <string name="gallery">Gallery</string>
     <!-- Option in "Select wallpaper from" dialog box -->
