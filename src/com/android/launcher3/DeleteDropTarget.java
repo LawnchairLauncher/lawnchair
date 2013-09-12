@@ -145,6 +145,13 @@ public class DeleteDropTarget extends ButtonDropTarget {
                     item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                 return true;
             }
+
+            if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                    (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER ||
+                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)) {
+                return true;
+            }
+
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                 item instanceof ShortcutInfo) {
                 if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
