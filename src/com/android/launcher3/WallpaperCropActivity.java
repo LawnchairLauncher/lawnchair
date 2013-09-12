@@ -95,7 +95,7 @@ public class WallpaperCropActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         boolean finishActivityWhenDone = true;
-                        cropImageAndSetWallpaper(imageUri, finishActivityWhenDone);
+                        cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
                     }
                 });
     }
@@ -155,15 +155,34 @@ public class WallpaperCropActivity extends Activity {
         return new Point(defaultWidth, defaultHeight);
     }
 
-    protected void cropImageAndSetWallpaper(Resources res,
-            int resId, final boolean finishActivityWhenDone) {
+    protected void setWallpaper(String filePath, final boolean finishActivityWhenDone) {
+
+        BitmapCropTask cropTask = new BitmapCropTask(this,
+                filePath, null, 0, 0, true, false, null);
+        final Point bounds = cropTask.getImageBounds();
+        Runnable onEndCrop = new Runnable() {
+            public void run() {
+                updateWallpaperDimensions(bounds.x, bounds.y);
+                if (finishActivityWhenDone) {
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
+            }
+        };
+        cropTask.setOnEndRunnable(onEndCrop);
+        cropTask.setNoCrop(true);
+        cropTask.execute();
+    }
+
+    protected void cropImageAndSetWallpaper(
+            Resources res, int resId, final boolean finishActivityWhenDone) {
         // crop this image and scale it down to the default wallpaper size for
         // this device
         Point inSize = mCropView.getSourceDimensions();
         Point outSize = getDefaultWallpaperSize(getResources(),
                 getWindowManager());
         RectF crop = getMaxCropRect(
-                inSize.x, inSize.y, outSize.x, outSize.y);
+                inSize.x, inSize.y, outSize.x, outSize.y, false);
         Runnable onEndCrop = new Runnable() {
             public void run() {
                 // Passing 0, 0 will cause launcher to revert to using the
@@ -181,7 +200,8 @@ public class WallpaperCropActivity extends Activity {
         cropTask.execute();
     }
 
-    protected void cropImageAndSetWallpaper(Uri uri, final boolean finishActivityWhenDone) {
+    protected void cropImageAndSetWallpaper(Uri uri,
+            OnBitmapCroppedHandler onBitmapCroppedHandler, final boolean finishActivityWhenDone) {
      // Get the crop
         Point inSize = mCropView.getSourceDimensions();
 
@@ -258,11 +278,21 @@ public class WallpaperCropActivity extends Activity {
         };
         BitmapCropTask cropTask = new BitmapCropTask(uri,
                 cropRect, outWidth, outHeight, true, false, onEndCrop);
+        if (onBitmapCroppedHandler != null) {
+            cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
+        }
         cropTask.execute();
+    }
+
+    public interface OnBitmapCroppedHandler {
+        public void onBitmapCropped(byte[] imageBytes);
     }
 
     protected class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
         Uri mInUri = null;
+        Context mContext;
+        String mInFilePath;
+        byte[] mInImageBytes;
         int mInResId = 0;
         InputStream mInStream;
         RectF mCropBounds = null;
@@ -275,44 +305,81 @@ public class WallpaperCropActivity extends Activity {
         Bitmap mCroppedBitmap;
         Runnable mOnEndRunnable;
         Resources mResources;
+        OnBitmapCroppedHandler mOnBitmapCroppedHandler;
+        boolean mNoCrop;
+
+        public BitmapCropTask(Context c, String filePath,
+                RectF cropBounds, int outWidth, int outHeight,
+                boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            mContext = c;
+            mInFilePath = filePath;
+            mWPManager = WallpaperManager.getInstance(getApplicationContext());
+            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+        }
+
+        public BitmapCropTask(byte[] imageBytes,
+                RectF cropBounds, int outWidth, int outHeight,
+                boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            mInImageBytes = imageBytes;
+            mWPManager = WallpaperManager.getInstance(getApplicationContext());
+            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+        }
 
         public BitmapCropTask(Uri inUri,
                 RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInUri = inUri;
-            mCropBounds = cropBounds;
-            mOutWidth = outWidth;
-            mOutHeight = outHeight;
             mWPManager = WallpaperManager.getInstance(getApplicationContext());
-            mSetWallpaper = setWallpaper;
-            mSaveCroppedBitmap = saveCroppedBitmap;
-            mOnEndRunnable = onEndRunnable;
+            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
         public BitmapCropTask(Resources res, int inResId,
                 RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInResId = inResId;
+            mResources = res;
+            mWPManager = WallpaperManager.getInstance(getApplicationContext());
+            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+        }
+
+        private void init(RectF cropBounds, int outWidth, int outHeight,
+                boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mCropBounds = cropBounds;
             mOutWidth = outWidth;
             mOutHeight = outHeight;
-            mWPManager = WallpaperManager.getInstance(getApplicationContext());
             mSetWallpaper = setWallpaper;
             mSaveCroppedBitmap = saveCroppedBitmap;
             mOnEndRunnable = onEndRunnable;
-            mResources = res;
+        }
+
+        public void setOnBitmapCropped(OnBitmapCroppedHandler handler) {
+            mOnBitmapCroppedHandler = handler;
+        }
+
+        public void setNoCrop(boolean value) {
+            mNoCrop = value;
+        }
+
+        public void setOnEndRunnable(Runnable onEndRunnable) {
+            mOnEndRunnable = onEndRunnable;
         }
 
         // Helper to setup input stream
         private void regenerateInputStream() {
-            if (mInUri == null && mInResId == 0) {
-                Log.w(LOGTAG, "cannot read original file, no input URI or resource ID given");
+            if (mInUri == null && mInResId == 0 && mInFilePath == null && mInImageBytes == null) {
+                Log.w(LOGTAG, "cannot read original file, no input URI, resource ID, or " +
+                        "image byte array given");
             } else {
                 Utils.closeSilently(mInStream);
                 try {
                     if (mInUri != null) {
                         mInStream = new BufferedInputStream(
                                 getContentResolver().openInputStream(mInUri));
+                    } else if (mInFilePath != null) {
+                        mInStream = mContext.openFileInput(mInFilePath);
+                    } else if (mInImageBytes != null) {
+                        mInStream = new BufferedInputStream(
+                                new ByteArrayInputStream(mInImageBytes));
                     } else {
                         mInStream = new BufferedInputStream(
                                 mResources.openRawResource(mInResId));
@@ -348,6 +415,18 @@ public class WallpaperCropActivity extends Activity {
 
             regenerateInputStream();
 
+            if (mNoCrop && mInStream != null) {
+                try {
+                    mWPManager.setStream(mInStream);
+                } catch (IOException e) {
+                    Log.w(LOGTAG, "cannot write stream to wallpaper", e);
+                    failure = true;
+                }
+                if (mOnEndRunnable != null) {
+                    mOnEndRunnable.run();
+                }
+                return !failure;
+            }
             if (mInStream != null) {
                 // Find crop bounds (scaled to original image size)
                 Rect roundedTrueCrop = new Rect();
@@ -450,8 +529,11 @@ public class WallpaperCropActivity extends Activity {
                             failure = true;
                         } else {
                             try {
-                                mWPManager.setStream(new ByteArrayInputStream(tmpOut
-                                        .toByteArray()));
+                                byte[] outByteArray = tmpOut.toByteArray();
+                                mWPManager.setStream(new ByteArrayInputStream(outByteArray));
+                                if (mOnBitmapCroppedHandler != null) {
+                                    mOnBitmapCroppedHandler.onBitmapCropped(outByteArray);
+                                }
                             } catch (IOException e) {
                                 Log.w(LOGTAG, "cannot write stream to wallpaper", e);
                                 failure = true;
@@ -516,7 +598,8 @@ public class WallpaperCropActivity extends Activity {
     }
 
 
-    protected static RectF getMaxCropRect(int inWidth, int inHeight, int outWidth, int outHeight) {
+    protected static RectF getMaxCropRect(
+            int inWidth, int inHeight, int outWidth, int outHeight, boolean leftAligned) {
         RectF cropRect = new RectF();
         // Get a crop rect that will fit this
         if (inWidth / (float) inHeight > outWidth / (float) outHeight) {
@@ -524,6 +607,10 @@ public class WallpaperCropActivity extends Activity {
              cropRect.bottom = inHeight;
              cropRect.left = (inWidth - (outWidth / (float) outHeight) * inHeight) / 2;
              cropRect.right = inWidth - cropRect.left;
+             if (leftAligned) {
+                 cropRect.right -= cropRect.left;
+                 cropRect.left = 0;
+             }
         } else {
             cropRect.left = 0;
             cropRect.right = inWidth;
