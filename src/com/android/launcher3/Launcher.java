@@ -1631,10 +1631,7 @@ public class Launcher extends Activity
                     // If we are already on home, then just animate back to the workspace,
                     // otherwise, just wait until onResume to set the state back to Workspace
                     if (alreadyOnHome) {
-                        showWorkspace(true);
-                        if (mWorkspace.isInOverviewMode()) {
-                            mWorkspace.exitOverviewMode();
-                        }
+                        showWorkspace();
                     } else {
                         mOnResumeState = State.WORKSPACE;
                     }
@@ -1665,6 +1662,13 @@ public class Launcher extends Activity
         }
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
+        }
+    }
+
+    protected void showWorkspace() {
+        showWorkspace(true);
+        if (mWorkspace.isInOverviewMode()) {
+            mWorkspace.exitOverviewMode();
         }
     }
 
@@ -1941,6 +1945,9 @@ public class Launcher extends Activity
         }
     }
 
+    protected void moveToCustomContentScreen(boolean animate) {
+        mWorkspace.moveToCustomContentScreen(animate);
+    }
     /**
      * Process a shortcut drop.
      *

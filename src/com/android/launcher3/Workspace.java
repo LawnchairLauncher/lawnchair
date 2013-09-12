@@ -1333,7 +1333,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateStateForCustomContent(int screenCenter) {
-        if (hasCustomContent() && !isSmall() && !isSwitchingState()) {
+        if (hasCustomContent()) {
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
             int scrollDelta = getScrollForPage(index + 1) - getScrollX();
             float translationX = Math.max(scrollDelta, 0);
@@ -4127,18 +4127,37 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    void moveToDefaultScreen(boolean animate) {
+    private void moveToScreen(int page, boolean animate) {
         if (!isSmall()) {
             if (animate) {
-                snapToPage(mDefaultPage);
+                snapToPage(page);
             } else {
-                setCurrentPage(mDefaultPage);
+                setCurrentPage(page);
             }
         }
-        View child = getChildAt(mDefaultPage);
+        View child = getChildAt(page);
         if (child != null) {
             child.requestFocus();
         }
+    }
+
+    void moveToDefaultScreen(boolean animate) {
+        moveToScreen(mDefaultPage, animate);
+    }
+
+    void moveToCustomContentScreen(boolean animate) {
+        if (hasCustomContent()) {
+            int ccIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
+            if (animate) {
+                snapToPage(ccIndex);
+            } else {
+                setCurrentPage(ccIndex);
+            }
+            View child = getChildAt(ccIndex);
+            if (child != null) {
+                child.requestFocus();
+            }
+         }
     }
 
     @Override
