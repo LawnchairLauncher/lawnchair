@@ -19,7 +19,7 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wallpaper_picker"
+    android:id="@+id/wallpaper_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.android.launcher3.CropView
@@ -36,14 +36,28 @@
         android:indeterminate="true"
         android:indeterminateOnly="true"
         android:background="@android:color/transparent" />
-    <HorizontalScrollView
+    <LinearLayout
         android:id="@+id/wallpaper_strip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-        <LinearLayout android:id="@+id/wallpaper_list"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true" >
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+            android:layout_height="2dp"
+            android:background="@drawable/tile_shadow_top" />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <LinearLayout android:id="@+id/wallpaper_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/tile_shadow_bottom" />
+    </LinearLayout>
 </RelativeLayout>

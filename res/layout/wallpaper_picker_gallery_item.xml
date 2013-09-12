@@ -20,8 +20,8 @@
     android:layout_height="@dimen/wallpaperThumbnailHeight"
     android:focusable="true"
     android:clickable="true"
-    android:background="@drawable/wallpaper_gallery_item"
-    android:foreground="@drawable/wallpaper_gallery_item">
+    android:background="@drawable/wallpaper_tile_fg"
+    android:foreground="@drawable/wallpaper_tile_fg">
     <ImageView
         android:id="@+id/wallpaper_image"
         android:layout_width="match_parent"

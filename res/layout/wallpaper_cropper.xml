@@ -19,7 +19,7 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wallpaper_cropper"
+    android:id="@+id/wallpaper_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.android.launcher3.CropView

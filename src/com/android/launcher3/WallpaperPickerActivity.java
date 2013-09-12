@@ -109,8 +109,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     mIgnoreNextTap = true;
                 }
                 mAnim = new LauncherViewPropertyAnimator(wallpaperStrip);
-                mAnim.translationY(wallpaperStrip.getHeight())
-                    .setInterpolator(new DecelerateInterpolator(0.75f));
+                mAnim.translationY(wallpaperStrip.getHeight()).alpha(0f)
+                        .setInterpolator(new DecelerateInterpolator(0.75f));
                 mAnim.start();
             }
             public void onTap() {
@@ -121,7 +121,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         mAnim.cancel();
                     }
                     mAnim = new LauncherViewPropertyAnimator(wallpaperStrip);
-                    mAnim.translationY(0).setInterpolator(new DecelerateInterpolator(0.75f));
+                    mAnim.translationY(0).alpha(1f)
+                            .setInterpolator(new DecelerateInterpolator(0.75f));
                     mAnim.start();
                 }
             }
@@ -363,7 +364,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         cursor.close();
         return thumb;
     }
-    
+
+    protected void onStop() {
+        super.onStop();
+        final View wallpaperStrip = findViewById(R.id.wallpaper_strip);
+        if (wallpaperStrip.getTranslationY() > 0) {
+            wallpaperStrip.setTranslationY(0);
+            wallpaperStrip.setAlpha(1f);
+        }
+    }
+
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(TEMP_WALLPAPER_TILES, mTempWallpaperTiles);
     }
