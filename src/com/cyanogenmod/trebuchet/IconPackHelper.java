@@ -191,7 +191,10 @@ public class IconPackHelper {
         Map<ComponentName, String> iconPackResources = new HashMap<ComponentName, String>();
 
         try {
-            parser = res.getAssets().openXmlResourceParser("appfilter.xml");
+            inputStream = res.getAssets().open("appfilter.xml");
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            parser = factory.newPullParser();
+            parser.setInput(inputStream, "UTF-8");
         } catch (Exception e) {
             // Catch any exception since we want to fall back to parsing the xml/
             // resource in all cases
