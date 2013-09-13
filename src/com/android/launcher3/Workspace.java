@@ -1269,6 +1269,7 @@ public class Workspace extends SmoothPagedView
         if (hasCustomContent() && !isSmall() && !isSwitchingState()) {
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
             int scrollDelta = getScrollForPage(index + 1) - getScrollX();
+            float translationX = Math.max(scrollDelta, 0);
             float progress = (1.0f * scrollDelta) /
                     (getScrollForPage(index + 1) - getScrollForPage(index));
             progress = Math.max(0, progress);
@@ -1277,28 +1278,13 @@ public class Workspace extends SmoothPagedView
             mLastCustomContentScrollProgress = progress;
 
             setBackgroundAlpha(progress * 0.8f);
-            float height = getViewportHeight();
-            if (getPageIndicator() != null) {
-                height -= getPageIndicator().getTop();
-            } else if (mLauncher.getHotseat() != null) {
-                height -= mLauncher.getHotseat().getTop();
-            }
-            float transY = progress * height;
 
             if (mLauncher.getHotseat() != null) {
-                mLauncher.getHotseat().setTranslationY(transY);
-                mLauncher.getHotseat().setAlpha(1 - progress);
+                mLauncher.getHotseat().setTranslationX(translationX);
             }
 
             if (getPageIndicator() != null) {
-                final float alpha = 1 - progress;
-                final View pi = getPageIndicator();
-                getPageIndicator().setAlpha(alpha);
-                if (alpha < ALPHA_CUTOFF_THRESHOLD && pi.getVisibility() != INVISIBLE) {
-                    pi.setVisibility(INVISIBLE);
-                } else if (alpha > ALPHA_CUTOFF_THRESHOLD && pi.getVisibility() != VISIBLE) {
-                    pi.setVisibility(VISIBLE);
-                }
+                getPageIndicator().setTranslationX(translationX);
             }
 
             if (mCustomContentCallbacks != null) {
