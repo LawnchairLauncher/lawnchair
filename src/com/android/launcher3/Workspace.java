@@ -51,6 +51,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -110,6 +111,8 @@ public class Workspace extends SmoothPagedView
 
     private int mOriginalDefaultPage;
     private int mDefaultPage;
+
+    private ShortcutAndWidgetContainer mDragSourceInternal;
 
     // The screen id used for the empty screen always present to the right.
     private final static long EXTRA_EMPTY_SCREEN_ID = -201;
@@ -353,7 +356,7 @@ public class Workspace extends SmoothPagedView
         return r;
     }
 
-    public void onDragStart(DragSource source, Object info, int dragAction) {
+    public void onDragStart(final DragSource source, Object info, int dragAction) {
         mIsDragOccuring = true;
         updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
@@ -361,6 +364,14 @@ public class Workspace extends SmoothPagedView
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
         UninstallShortcutReceiver.enableUninstallQueue();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (mIsDragOccuring) {
+                    addExtraEmptyScreenOnDrag();
+                }
+            }
+        });
     }
 
     public void onDragEnd() {
@@ -371,6 +382,9 @@ public class Workspace extends SmoothPagedView
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
         UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
+
+        removeExtraEmptyScreen();
+        mDragSourceInternal = null;
     }
 
     /**
@@ -489,6 +503,10 @@ public class Workspace extends SmoothPagedView
         String log = "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ")";
         Launcher.addDumpLog(TAG, log, true);
 
+        if (mWorkspaceScreens.containsKey(screenId)) {
+            throw new RuntimeException("Screen id " + screenId + " already exists!");
+        }
+
         CellLayout newScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -539,6 +557,49 @@ public class Workspace extends SmoothPagedView
         mCustomContentCallbacks = callbacks;
     }
 
+    public void addExtraEmptyScreenOnDrag() {
+        boolean lastChildOnScreen = false;
+        boolean childOnFinalScreen = false;
+
+        if (mDragSourceInternal != null) {
+            if (mDragSourceInternal.getChildCount() == 1) {
+                lastChildOnScreen = true;
+            }
+            CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
+            if (indexOfChild(cl) == getChildCount() - 1) {
+                childOnFinalScreen = true;
+            }
+        }
+
+        // If this is the last item on the final screen
+        if (lastChildOnScreen && childOnFinalScreen) {
+            return;
+        }
+        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
+            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
+        }
+    }
+
+    public boolean addExtraEmptyScreen() {
+        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
+            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
+            return true;
+        }
+        return false;
+    }
+
+    public void removeExtraEmptyScreen() {
+        int nScreens = getChildCount();
+        nScreens = hasCustomContent() ? nScreens - 1 : nScreens;
+
+        if (mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && nScreens > 1) {
+            CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
+            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
+            mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
+            removeView(cl);
+        }
+    }
+
     public long commitExtraEmptyScreen() {
         Launcher.addDumpLog(TAG, "10249126 - commitExtraEmptyScreen()", true);
 
@@ -554,17 +615,12 @@ public class Workspace extends SmoothPagedView
         mWorkspaceScreens.put(newId, cl);
         mScreenOrder.add(newId);
 
-        addExtraEmptyScreen();
-
         // Update the model for the new screen
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         return newId;
     }
 
-    public void addExtraEmptyScreen() {
-        insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
-    }
 
     public CellLayout getScreenWithId(long screenId) {
         Launcher.addDumpLog(TAG, "10249126 - getScreenWithId(" + screenId + ")", true);
@@ -629,16 +685,27 @@ public class Workspace extends SmoothPagedView
             }
         }
 
+        // We enforce at least one page to add new items to. In the case that we remove the last
+        // such screen, we convert the last screen to the empty screen
+        int minScreens = hasCustomContent() ? 2 : 1;
+
         int pageShift = 0;
         for (Long id: removeScreens) {
             Launcher.addDumpLog(TAG, "10249126 - \tremove(" + id + ")", true);
             CellLayout cl = mWorkspaceScreens.get(id);
             mWorkspaceScreens.remove(id);
             mScreenOrder.remove(id);
-            if (indexOfChild(cl) < currentPage) {
-                pageShift++;
+
+            if (getChildCount() > minScreens) {
+                if (indexOfChild(cl) < currentPage) {
+                    pageShift++;
+                }
+                removeView(cl);
+            } else {
+                // if this is the last non-custom content screen, convert it to the empty screen
+                mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, cl);
+                mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
             }
-            removeView(cl);
         }
 
         if (!removeScreens.isEmpty()) {
@@ -2130,6 +2197,11 @@ public class Workspace extends SmoothPagedView
 
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
+
+        if (child.getParent() instanceof ShortcutAndWidgetContainer) {
+            mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
+        }
+
         b.recycle();
     }
 
