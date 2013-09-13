@@ -49,6 +49,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 
+import com.android.launcher3.LauncherSettings.BaseLauncherColumns;
 import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -65,7 +66,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = "com.android.launcher3.settings";
@@ -146,6 +147,7 @@ public class LauncherProvider extends ContentProvider {
         SqlArguments args = new SqlArguments(uri);
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        addModifiedTime(initialValues);
         final long rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
         if (rowId <= 0) return null;
 
@@ -164,6 +166,7 @@ public class LauncherProvider extends ContentProvider {
         try {
             int numValues = values.length;
             for (int i = 0; i < numValues; i++) {
+                addModifiedTime(values[i]);
                 if (dbInsertAndCheck(mOpenHelper, db, args.table, null, values[i]) < 0) {
                     return 0;
                 }
@@ -192,6 +195,7 @@ public class LauncherProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
+        addModifiedTime(values);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.update(args.table, values, args.where, args.args);
         if (count > 0) sendNotify(uri);
@@ -204,6 +208,13 @@ public class LauncherProvider extends ContentProvider {
         if (notify == null || "true".equals(notify)) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
+
+        // always notify the backup agent
+        LauncherBackupAgent.dataChanged(getContext());
+    }
+
+    private void addModifiedTime(ContentValues values) {
+        values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
 
     public long generateNewItemId() {
@@ -343,7 +354,8 @@ public class LauncherProvider extends ContentProvider {
                     "icon BLOB," +
                     "uri TEXT," +
                     "displayMode INTEGER," +
-                    "appWidgetProvider TEXT" +
+                    "appWidgetProvider TEXT," +
+                    "modified INTEGER NOT NULL DEFAULT 0" +
                     ");");
             addWorkspacesTable(db);
 
@@ -384,7 +396,8 @@ public class LauncherProvider extends ContentProvider {
         private void addWorkspacesTable(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + TABLE_WORKSPACE_SCREENS + " (" +
                     LauncherSettings.WorkspaceScreens._ID + " INTEGER," +
-                    LauncherSettings.WorkspaceScreens.SCREEN_RANK + " INTEGER" +
+                    LauncherSettings.WorkspaceScreens.SCREEN_RANK + " INTEGER," +
+                    LauncherSettings.ChangeLogColumns.MODIFIED + " INTEGER NOT NULL DEFAULT 0" +
                     ");");
         }
 
@@ -635,6 +648,25 @@ public class LauncherProvider extends ContentProvider {
                             "ADD COLUMN appWidgetProvider TEXT;");
                     db.setTransactionSuccessful();
                     version = 14;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+            }
+
+
+            if (version < 15) {
+                db.beginTransaction();
+                try {
+                    // Insert new column for holding update timestamp
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                    db.execSQL("ALTER TABLE workspaceScreens " +
+                            "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                    db.setTransactionSuccessful();
+                    version = 15;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
                     Log.e(TAG, ex.getMessage(), ex);

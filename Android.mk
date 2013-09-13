@@ -21,7 +21,13 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-support-v13
 
-LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-renderscript-files-under, src)
+LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-renderscript-files-under, src) \
+    $(call all-proto-files-under, protos)
+
+LOCAL_PROTOC_OPTIMIZE_TYPE := nano
+
+LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos
+
 LOCAL_SDK_VERSION := 17
 
 LOCAL_PACKAGE_NAME := Launcher3
