@@ -1114,6 +1114,7 @@ public class Launcher extends Activity
         mHotseat = (Hotseat) findViewById(R.id.hotseat);
         if (mHotseat != null) {
             mHotseat.setup(this);
+            mHotseat.setOnLongClickListener(this);
         }
 
         mOverviewPanel = findViewById(R.id.overview_panel);

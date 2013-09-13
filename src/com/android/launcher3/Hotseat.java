@@ -69,6 +69,14 @@ public class Hotseat extends FrameLayout {
     CellLayout getLayout() {
         return mContent;
     }
+
+    /**
+     * Registers the specified listener on the cell layout of the hotseat.
+     */
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        mContent.setOnLongClickListener(l);
+    }
   
     private boolean hasVerticalHotseat() {
         return (mIsLandscape && mTransposeLayoutWithOrientation);

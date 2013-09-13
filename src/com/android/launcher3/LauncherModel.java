@@ -2428,9 +2428,6 @@ public class LauncherModel extends BroadcastReceiver {
         private void loadAllApps() {
             final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
-            // "two variables"?
-            // Don't use these two variables in any of the callback runnables.
-            // Otherwise we hold a reference to them.
             final Callbacks oldCallbacks = mCallbacks.get();
             if (oldCallbacks == null) {
                 // This launcher has exited and nobody bothered to tell us.  Just bail.
@@ -2477,7 +2474,6 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             // Huh? Shouldn't this be inside the Runnable below?
-            final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
             final ArrayList<AppInfo> added = mBgAllAppsList.added;
             mBgAllAppsList.added = new ArrayList<AppInfo>();
 
@@ -2485,6 +2481,7 @@ public class LauncherModel extends BroadcastReceiver {
             mHandler.post(new Runnable() {
                 public void run() {
                     final long bindTime = SystemClock.uptimeMillis();
+                    final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(added);
                         if (DEBUG_LOADERS) {

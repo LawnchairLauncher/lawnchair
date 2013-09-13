@@ -64,6 +64,8 @@ public class CellLayout extends ViewGroup {
     private Launcher mLauncher;
     private int mCellWidth;
     private int mCellHeight;
+    private int mFixedCellWidth;
+    private int mFixedCellHeight;
 
     private int mCountX;
     private int mCountY;
@@ -193,8 +195,8 @@ public class CellLayout extends ViewGroup {
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
-        mCellWidth = -1;
-        mCellHeight = -1;
+        mCellWidth = mCellHeight = -1;
+        mFixedCellHeight = mFixedCellHeight = -1;
         mWidthGap = mOriginalWidthGap = 0;
         mHeightGap = mOriginalHeightGap = 0;
         mMaxGap = Integer.MAX_VALUE;
@@ -310,8 +312,8 @@ public class CellLayout extends ViewGroup {
     }
 
     public void setCellDimensions(int width, int height) {
-        mCellWidth = width;
-        mCellHeight = height;
+        mFixedCellWidth = mCellWidth = width;
+        mFixedCellHeight = mCellHeight = height;
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                 mCountX, mCountY);
     }
@@ -947,13 +949,15 @@ public class CellLayout extends ViewGroup {
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
-        int cw = grid.calculateCellWidth(widthSize, mCountX);
-        int ch = grid.calculateCellHeight(heightSize, mCountY);
-        if (cw != mCellWidth || ch != mCellHeight) {
-            mCellWidth = cw;
-            mCellHeight = ch;
-            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                    mHeightGap, mCountX, mCountY);
+        if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
+            int cw = grid.calculateCellWidth(widthSize, mCountX);
+            int ch = grid.calculateCellHeight(heightSize, mCountY);
+            if (cw != mCellWidth || ch != mCellHeight) {
+                mCellWidth = cw;
+                mCellHeight = ch;
+                mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
+                        mHeightGap, mCountX, mCountY);
+            }
         }
 
         int newWidth = widthSize;

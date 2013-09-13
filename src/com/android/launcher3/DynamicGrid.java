@@ -223,17 +223,16 @@ class DeviceProfile {
         availableWidthPx = awPx;
         availableHeightPx = ahPx;
 
-        if (isLandscape) {
-            allAppsNumRows = (int) numRows - 1;
-        } else {
-            allAppsNumRows = (int) numRows + 1;
-        }
         Rect padding = getWorkspacePadding(isLandscape ?
                 CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
         int pageIndicatorOffset =
             resources.getDimensionPixelSize(R.dimen.apps_customize_page_indicator_offset);
-        allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
-                (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+        if (isLandscape) {
+            allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
+                    (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
+        } else {
+            allAppsNumRows = (int) numRows + 1;
+        }
         allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
                 (iconSizePx + 2 * edgeMarginPx);
     }
