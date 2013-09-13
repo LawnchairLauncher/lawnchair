@@ -306,27 +306,27 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             // Called when the user selects a contextual menu item
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_delete:
-                        int childCount = mWallpapersView.getChildCount();
-                        ArrayList<View> viewsToRemove = new ArrayList<View>();
-                        for (int i = 0; i < childCount; i++) {
-                            CheckableFrameLayout c =
-                                    (CheckableFrameLayout) mWallpapersView.getChildAt(i);
-                            if (c.isChecked()) {
-                                ThumbnailMetaData meta = (ThumbnailMetaData) c.getTag();
-                                mSavedImages.deleteImage(meta.mSavedWallpaperDbId);
-                                viewsToRemove.add(c);
-                            }
+                int itemId = item.getItemId();
+                if (itemId == R.id.menu_delete) {
+                    int childCount = mWallpapersView.getChildCount();
+                    ArrayList<View> viewsToRemove = new ArrayList<View>();
+                    for (int i = 0; i < childCount; i++) {
+                        CheckableFrameLayout c =
+                                (CheckableFrameLayout) mWallpapersView.getChildAt(i);
+                        if (c.isChecked()) {
+                            ThumbnailMetaData meta = (ThumbnailMetaData) c.getTag();
+                            mSavedImages.deleteImage(meta.mSavedWallpaperDbId);
+                            viewsToRemove.add(c);
                         }
-                        for (View v : viewsToRemove) {
-                            mWallpapersView.removeView(v);
-                        }
-                        ///xxxxx DESTROYING
-                        mode.finish(); // Action picked, so close the CAB
-                        return true;
-                    default:
-                        return false;
+                    }
+                    for (View v : viewsToRemove) {
+                        mWallpapersView.removeView(v);
+                    }
+                    ///xxxxx DESTROYING
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                } else {
+                    return false;
                 }
             }
 
