@@ -45,6 +45,8 @@
     <string name="gallery">Gallery</string>
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpapers</string>
+    <!-- Title of activity for cropping wallpapers -->
+    <string name="crop_wallpaper">Crop wallpaper</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
     <string name="activity_not_found">App isn\'t installed.</string>
     <!--  Labels for the tabs in the customize drawer -->

@@ -18,13 +18,13 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperPicker" parent="@android:style/Theme.Holo">
-        <item name="android:actionBarStyle">@style/WallpaperPickerActionBar</item>
+    <style name="Theme.WallpaperCropper" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
-    <style name="WallpaperPickerActionBar" parent="android:style/Widget.Holo.ActionBar">
+    <style name="WallpaperCropperActionBar" parent="android:style/Widget.Holo.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">#88000000</item>
     </style>
