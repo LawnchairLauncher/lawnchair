@@ -509,8 +509,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override
             public void run() {
-                mSearchDropTargetBar.onDragEnd();
-
                 // If we are dragging from AllApps, then we allow AppsCustomizePagedView to clean up
                 // itself, otherwise, complete the drop to initiate the deletion process
                 if (!isAllApps) {
