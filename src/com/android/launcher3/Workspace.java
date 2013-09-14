@@ -1068,7 +1068,7 @@ public class Workspace extends SmoothPagedView
 
     class WallpaperOffsetInterpolator implements Choreographer.FrameCallback {
         float mFinalOffset = 0.0f;
-        float mCurrentOffset = 0.0f;
+        float mCurrentOffset = 0.5f; // to force an initial update
         //long mLastWallpaperOffsetUpdateTime;
         boolean mWaitingForUpdate;
         Choreographer mChoreographer;
