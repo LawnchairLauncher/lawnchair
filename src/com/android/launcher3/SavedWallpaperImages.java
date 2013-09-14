@@ -58,7 +58,7 @@ public class SavedWallpaperImages {
                 null, // args to select query
                 null,
                 null,
-                null,
+                ImageDb.COLUMN_ID + " DESC",
                 null);
 
         while (result.moveToNext()) {
