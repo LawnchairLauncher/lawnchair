@@ -72,6 +72,10 @@
     <string name="preferences_interface_drawer_orientation_summary">ドロワーのスクロールする方向を選択する</string>
     <string name="preferences_interface_drawer_hidden_apps_title">アプリを隠す</string>
     <string name="preferences_interface_drawer_hidden_apps_summary">ドロワーからアプリを隠す</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">アプリを隠す (ショートカット)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">ホーム画面から隠したアプリのショートカットを削除する</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">アプリを隠す (ウィジェット)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">ホーム画面から隠したウィジェットを削除する</string>
     <string name="preferences_interface_drawer_widgets_category">ウィジェット</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">アプリと一緒に表示</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">タブを変更しないでアプリドロワーからウィジェットドロワーに遷移する</string>
@@ -96,6 +100,8 @@
     <string name="preferences_interface_dock_default_page_summary">デフォルトページを選択</string>
     <string name="preferences_interface_dock_icons_title">アイコン</string>
     <string name="preferences_interface_dock_icons_summary">ドックのアイコンとカラムの数</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">アイコンラベルを隠す</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">ドックのアイコンラベルを隠す</string>
     <string name="preferences_interface_dock_icon_scale_title">アイコンスケール</string>
     <string name="preferences_interface_dock_icon_scale_summary">ドックに表示するアイコンのスケール</string>
     <string name="preferences_interface_dock_divider_title">ドックの区切り線を表示</string>
@@ -103,6 +109,14 @@
     <string name="preferences_interface_icons_title">アイコン</string>
     <string name="preferences_interface_general_title">一般</string>
     <string name="preferences_interface_general_orientation_title">画面の自動回転</string>
+    <string name="preferences_interface_general_lock_workspace_title">ホーム画面のロック</string>
+    <string name="preferences_interface_general_lock_workspace_summary">ホーム画面のドックやアプリのショートカットとフォルダ、ウィジェットの位置をロックする</string>
     <string name="preferences_interface_general_fullscreen_title">フルスクリーンモード</string>
     <string name="preferences_interface_general_fullscreen_summary">ステータスバーを隠してホーム画面を拡張する</string>
+    <string name="folder_empty_contents_title">アイテムがありません</string>
+    <string name="preferences_interface_general_iconpack_title">アイコンパック</string>
+    <string name="preferences_interface_general_iconpack_summary">アイコンパックはデフォルトのアイコンを置き換えます</string>
+    <string name="dialog_pick_iconpack_title">アイコンパックを選択</string>
+    <string name="default_iconpack_title">デフォルト</string>
+    <string name="no_iconpacks_summary">アイコンパックがインストールされていません</string>
 </resources>
