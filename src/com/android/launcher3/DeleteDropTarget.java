@@ -21,8 +21,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -31,7 +30,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -40,6 +38,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import java.util.List;
+import java.util.Set;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
@@ -147,9 +146,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
             }
 
             if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
-                    (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER ||
-                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)) {
+                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
                 return true;
+            }
+
+            if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
+                    item instanceof AppInfo) {
+                AppInfo appInfo = (AppInfo) info;
+                return (appInfo.flags & AppInfo.DOWNLOADED_FLAG) != 0;
             }
 
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
@@ -249,7 +254,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     private void deferCompleteDropIfUninstalling(DragObject d) {
         mWaitingForUninstall = false;
-        if (isUninstall(d)) {
+        if (isUninstallFromWorkspace(d)) {
             if (d.dragSource instanceof Folder) {
                 ((Folder) d.dragSource).deferCompleteDropAfterUninstallActivity();
             } else if (d.dragSource instanceof Workspace) {
@@ -259,8 +264,24 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
     }
 
-    private boolean isUninstall(DragObject d) {
-         return AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d);
+    private boolean isUninstallFromWorkspace(DragObject d) {
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
+            ShortcutInfo shortcut = (ShortcutInfo) d.dragInfo;
+            if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
+                Set<String> categories = shortcut.intent.getCategories();
+                boolean includesLauncherCategory = false;
+                if (categories != null) {
+                    for (String category : categories) {
+                        if (category.equals(Intent.CATEGORY_LAUNCHER)) {
+                            includesLauncherCategory = true;
+                            break;
+                        }
+                    }
+                }
+                return includesLauncherCategory;
+            }
+        }
+        return false;
     }
 
     private void completeDrop(DragObject d) {
@@ -271,7 +292,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             // Uninstall the application if it is being dragged from AppsCustomize
             AppInfo appInfo = (AppInfo) item;
             mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags);
-        } else if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
+        } else if (isUninstallFromWorkspace(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) item;
             if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
                 final ComponentName componentName = shortcut.intent.getComponent();
