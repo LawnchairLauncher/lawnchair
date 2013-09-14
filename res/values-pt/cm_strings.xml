@@ -141,6 +141,6 @@
     <string name="preferences_interface_general_iconpack_title">Pacote de ícones</string>
     <string name="preferences_interface_general_iconpack_summary">Os pacotes de ícones substituem os ícones padrões das aplicações</string>
     <string name="dialog_pick_iconpack_title">Escolhe o pacote de ícones</string>
-    <string name="default_iconpack_title">Ícones padrões</string>
+    <string name="default_iconpack_title">Padrão</string>
     <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
 </resources>
