@@ -653,18 +653,6 @@ public class Workspace extends SmoothPagedView
         return -1;
     }
 
-    public boolean hasNonCustomEmptyScreens() {
-        Launcher.addDumpLog(TAG, "10249126 - hasNonCustomEmptyScreens()", true);
-        Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
-        while (iter.hasNext()) {
-            long id = iter.next();
-            if (id >= 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     ArrayList<Long> getScreenOrder() {
         return mScreenOrder;
     }

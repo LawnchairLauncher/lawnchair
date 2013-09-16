@@ -2586,16 +2586,14 @@ public class Launcher extends Activity
         boolean allowLongPress = isHotseatLayout(v) || mWorkspace.allowLongPress();
         if (allowLongPress && !mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
-                if (mWorkspace.hasNonCustomEmptyScreens()) {
-                    // User long pressed on empty space
-                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    // Disabling reordering until we sort out some issues.
-                    if (mWorkspace.isInOverviewMode()) {
-                        mWorkspace.startReordering(v);
-                    } else {
-                        mWorkspace.enterOverviewMode();
-                    }
+                // User long pressed on empty space
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                // Disabling reordering until we sort out some issues.
+                if (mWorkspace.isInOverviewMode()) {
+                    mWorkspace.startReordering(v);
+                } else {
+                    mWorkspace.enterOverviewMode();
                 }
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
