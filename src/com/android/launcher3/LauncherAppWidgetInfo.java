@@ -65,6 +65,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
+        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString());
     }
 
     /**
