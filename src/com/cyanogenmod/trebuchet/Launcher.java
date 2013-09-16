@@ -338,7 +338,10 @@ public final class Launcher extends Activity
     private boolean mFullscreenMode;
 
     private boolean mWallpaperVisible;
-    private ImageButton mDialogIcon;
+
+    // Shortcut edit dialog
+    private ImageView mDialogIcon;
+    private String mSelectedDialogId;
 
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
@@ -688,11 +691,9 @@ public final class Launcher extends Activity
             if (resultCode == RESULT_OK) {
                 if (data == null) {
                     // Get/Set default icon
-                    String id = (String) mDialogIcon.getTag();
                     final PackageManager manager = getPackageManager();
-
                     final Cursor c = getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
-                            null, LauncherSettings.Favorites._ID + "=?", new String[]{id}, null);
+                            null, LauncherSettings.Favorites._ID + "=?", new String[]{mSelectedDialogId}, null);
                     if (c != null && c.getCount() > 0) {
                         c.moveToFirst();
                         final int itemTypeIndex = c.getColumnIndexOrThrow(
@@ -1145,6 +1146,7 @@ public final class Launcher extends Activity
      * @param info The shortcut to be edited
      */
     void updateShortcut(final ShortcutInfo info) {
+        mSelectedDialogId = String.valueOf(info.id);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View layout = mInflater.inflate(R.layout.dialog_edit, null);
         mDialogIcon = (ImageButton) layout.findViewById(R.id.dialog_edit_icon);
@@ -1153,32 +1155,28 @@ public final class Launcher extends Activity
         mDialogIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDialogIcon.setTag(String.valueOf(info.id));
                 IconPackHelper.pickIconPack(Launcher.this, true);
             }
         });
         final EditText title = (EditText) layout.findViewById(R.id.dialog_edit_text);
-        title.setText(info.title);
+        title.append(info.title);
         builder.setView(layout)
                 .setTitle(info.title)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (!info.title.equals(title.getText())) {
-                            info.setTitle(title.getText());
+                            info.setTitle(title.getText().toString());
                         }
+                        info.customIconResource = (String) mDialogIcon.getTag();
                         if (mDialogIcon.getTag() != null) {
-                            info.customIconResource = (String) mDialogIcon.getTag();
                             Drawable d = mModel.getDrawableForCustomIcon(Launcher.this, info.customIconResource);
                             if (d != null) {
                                 info.setIcon(Utilities.createIconBitmap(d, Launcher.this));
                             }
                         } else {
-                            info.customIconResource = null;
                             info.setIcon(((BitmapDrawable)mDialogIcon.getDrawable()).getBitmap());
                         }
-
-                        LauncherModel.updateItemInDatabase(Launcher.this, info);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null);

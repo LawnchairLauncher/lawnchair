@@ -92,6 +92,7 @@ class ShortcutInfo extends ItemInfo {
             iconResource.packageName = info.iconResource.packageName;
             iconResource.resourceName = info.iconResource.resourceName;
         }
+        customIconResource = info.customIconResource;
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
         customIcon = info.customIcon;
     }

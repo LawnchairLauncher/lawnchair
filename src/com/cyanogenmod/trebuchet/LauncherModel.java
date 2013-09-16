@@ -2321,6 +2321,7 @@ public class LauncherModel extends BroadcastReceiver {
         }
         Bitmap customIcon = getCustomIconFromCursor(c, context, customIconIndex);
         if (customIcon != null) {
+            info.customIconResource = c.getString(customIconIndex);
             icon = customIcon;
         }
 
@@ -2461,6 +2462,7 @@ public class LauncherModel extends BroadcastReceiver {
         }
         Bitmap customIcon = getCustomIconFromCursor(c, context, customIconIndex);
         if (customIcon != null) {
+            info.customIconResource = c.getString(customIconIndex);
             icon = customIcon;
         }
         info.setIcon(icon);

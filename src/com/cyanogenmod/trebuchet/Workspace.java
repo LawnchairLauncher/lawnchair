@@ -46,6 +46,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -4541,6 +4542,10 @@ public class Workspace extends PagedView
                         }
                         for (ApplicationInfo app : apps) {
                             if (app.componentName.equals(name)) {
+                                if (!TextUtils.isEmpty(info.customIconResource)
+                                        || !TextUtils.isEmpty(info.title)) {
+                                    continue;
+                                }
                                 BubbleTextView shortcut = (BubbleTextView) view;
                                 info.updateIcon(mIconCache);
                                 info.title = app.title.toString();
