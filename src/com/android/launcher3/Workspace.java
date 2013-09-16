@@ -1704,19 +1704,11 @@ public class Workspace extends SmoothPagedView
     protected void getOverviewModePages(int[] range) {
         int count = mScreenOrder.size();
 
-        int start = -1;
-        int end = -1;
-        //
-        for (int i = 0; i < count; i++) {
-            if (start < 0 && mScreenOrder.get(i) >= 0) {
-                start = i;
-            }
-            if (start >=0 && mScreenOrder.get(i) >= 0) {
-                end = i;
-            }
-        }
-        range[0] = start;
-        range[1] = end;
+        int start = hasCustomContent() ? 1 : 0;
+        int end = getChildCount() - 1;
+
+        range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
+        range[1] = Math.max(0,  end);
      }
 
     protected void onStartReordering() {
