@@ -1079,7 +1079,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected boolean shouldDrawChild(View child) {
-        return child.getAlpha() > 0;
+        return child.getAlpha() > 0 && child.getVisibility() == VISIBLE;
     }
 
     @Override
@@ -1546,21 +1546,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         getOverviewModePages(mTempVisiblePagesRange);
         if (!mFreeScroll) {
             snapToPage(snapPage);
-
-            for (int i = 0; i < getPageCount(); ++i) {
-                if (i < mTempVisiblePagesRange[0] || i > mTempVisiblePagesRange[1]) {
-                    getPageAt(i).setAlpha(1f);
-                }
-            }
         } else {
             mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
             mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
-
-            for (int i = 0; i < getPageCount(); ++i) {
-                if (i < mTempVisiblePagesRange[0] || i > mTempVisiblePagesRange[1]) {
-                    getPageAt(i).setAlpha(0f);
-                }
-            }
 
             if (getCurrentPage() < mTempVisiblePagesRange[0]) {
                 setCurrentPage(mTempVisiblePagesRange[0]);

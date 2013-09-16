@@ -1756,14 +1756,11 @@ public class Workspace extends SmoothPagedView
 
         Animator workspaceAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
         if (workspaceAnim != null) {
+            onTransitionPrepare();
             workspaceAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator arg0) {
-                    mIsSwitchingState = false;
-                }
-                @Override
-                public void onAnimationStart(Animator arg0) {
-                    mIsSwitchingState = true;
+                    onTransitionEnd();
                 }
             });
             workspaceAnim.start();
@@ -1956,13 +1953,11 @@ public class Workspace extends SmoothPagedView
                 view.setVisibility(VISIBLE);
             }
         }
-
     }
 
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
-        mIsSwitchingState = true;
-        updateChildrenLayersEnabled(false);
+        onTransitionPrepare();
     }
 
     @Override
@@ -1976,6 +1971,20 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+        onTransitionEnd();
+    }
+
+    private void onTransitionPrepare() {
+        mIsSwitchingState = true;
+        updateChildrenLayersEnabled(false);
+        if (mState != Workspace.State.NORMAL) {
+            if (hasCustomContent()) {
+                mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
+            }
+        }
+    }
+
+    private void onTransitionEnd() {
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
         // The code in getChangeStateAnimation to determine initialAlpha and finalAlpha will ensure
@@ -1986,6 +1995,11 @@ public class Workspace extends SmoothPagedView
             for (int i = 0; i < getChildCount(); i++) {
                 final CellLayout cl = (CellLayout) getChildAt(i);
                 cl.setShortcutAndWidgetAlpha(1f);
+            }
+        }
+        if (mState == Workspace.State.NORMAL) {
+            if (hasCustomContent()) {
+                mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(VISIBLE);
             }
         }
     }
