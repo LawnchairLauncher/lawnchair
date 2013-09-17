@@ -16,4 +16,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="menu_lock_workspace">נעל את מסך הבית</string>
     <string name="preferences_interface_general_lock_workspace_title">נעל את מסך הבית</string>
+    <string name="menu_unlock_workspace">בטל את נעילת מסך הבית</string>
+    <string name="workspace_locked">מסך הבית נעול. בטל את הנעילה בהגדרות על מנת לסדר מחדש</string>
+    <string name="preferences_interface_general_orientation_title">סיבוב אוטומטי של המסך</string>
+    <string name="preferences_interface_general_lock_workspace_summary">נעל מיקום קיצורי דרך ותיקיות</string>
+    <string name="preferences_interface_general_fullscreen_title">מצב מסך מלא</string>
+    <string name="preferences_interface_general_fullscreen_summary">החבא את שורת המצב על מנת להגדיל את מסך הבית</string>
+    <string name="preferences_interface_homescreen_general_category">כללי</string>
+    <string name="preferences_interface_general_title">כללי</string>
 </resources>
