@@ -1428,7 +1428,7 @@ public class Launcher extends Activity
                 // processing a multi-step drop
                 if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
                     mAppsCustomizeTabHost.reset();
-                    showWorkspace(false);
+                    showWorkspaceAndExitOverviewMode(false);
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
@@ -1634,7 +1634,7 @@ public class Launcher extends Activity
                     // If we are already on home, then just animate back to the workspace,
                     // otherwise, just wait until onResume to set the state back to Workspace
                     if (alreadyOnHome) {
-                        showWorkspaceAndExitOverviewMode();
+                        showWorkspaceAndExitOverviewMode(true);
                     } else {
                         mOnResumeState = State.WORKSPACE;
                     }
@@ -1668,11 +1668,14 @@ public class Launcher extends Activity
         }
     }
 
-    protected void showWorkspaceAndExitOverviewMode() {
-        showWorkspace(true);
+    protected void showWorkspaceAndExitOverviewMode(boolean animate) {
+        showWorkspace(animate);
         if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.exitOverviewMode(true);
+            mWorkspace.exitOverviewMode(animate);
         }
+    }
+    protected void showWorkspaceAndExitOverviewMode() {
+        showWorkspaceAndExitOverviewMode(true);
     }
 
     @Override
