@@ -27,11 +27,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#66000000"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
     <TextView
         android:id="@+id/wallpaper_item_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:text="@string/pick_image"
+        android:drawableTop="@drawable/ic_images"
+        android:drawablePadding="4dp"
         android:textColor="#FFFFFFFF"/>
 </com.android.launcher3.CheckableFrameLayout>
