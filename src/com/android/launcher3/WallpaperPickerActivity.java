@@ -26,6 +26,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -34,6 +35,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
@@ -52,7 +54,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 
 import com.android.photos.BitmapRegionTileSource;
 
@@ -214,11 +215,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         FrameLayout galleryThumbnail = (FrameLayout) getLayoutInflater().
                 inflate(R.layout.wallpaper_picker_gallery_item, mWallpapersView, false);
         setWallpaperItemPaddingToZero(galleryThumbnail);
-
-        TextView galleryLabel =
-                (TextView) galleryThumbnail.findViewById(R.id.wallpaper_item_label);
-        galleryLabel.setText(R.string.gallery);
         mWallpapersView.addView(galleryThumbnail, 0);
+
+        // Make its background the last photo taken on external storage
+        Bitmap lastPhoto = getThumbnailOfLastPhoto();
+        if (lastPhoto != null) {
+            ImageView galleryThumbnailBg =
+                    (ImageView) galleryThumbnail.findViewById(R.id.wallpaper_image);
+            galleryThumbnailBg.setImageBitmap(getThumbnailOfLastPhoto());
+        }
 
         ThumbnailMetaData meta = new ThumbnailMetaData();
         meta.mLaunchesGallery = true;
@@ -322,7 +327,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     for (View v : viewsToRemove) {
                         mWallpapersView.removeView(v);
                     }
-                    ///xxxxx DESTROYING
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 } else {
@@ -343,6 +347,23 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             }
         };
     }
+
+    protected Bitmap getThumbnailOfLastPhoto() {
+        Cursor cursor = MediaStore.Images.Media.query(getContentResolver(),
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.ImageColumns._ID,
+                    MediaStore.Images.ImageColumns.DATE_TAKEN},
+                null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC LIMIT 1");
+        Bitmap thumb = null;
+        if (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            thumb = MediaStore.Images.Thumbnails.getThumbnail(getContentResolver(),
+                    id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+        }
+        cursor.close();
+        return thumb;
+    }
+    
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(TEMP_WALLPAPER_TILES, mTempWallpaperTiles);
     }

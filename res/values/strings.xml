@@ -41,8 +41,8 @@
 
     <!-- Label on button to delete wallpaper(s) -->
     <string name="wallpaper_delete">Delete</string>
-    <!-- Label on button in Wallpaper Picker that launches Gallery app -->
-    <string name="gallery">Gallery</string>
+    <!-- Label on button in Wallpaper Picker to pick an image -->
+    <string name="pick_image">Pick image</string>
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpapers</string>
     <!-- Title of activity for cropping wallpapers -->
