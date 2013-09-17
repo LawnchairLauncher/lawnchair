@@ -482,6 +482,33 @@ public class Launcher extends Activity
         return false;
     }
 
+    /**
+     * To be overridden by subclasses to create the custom content and call
+     * {@link #addToCustomContentPage}. This will only be invoked if
+     * {@link #hasCustomContentToLeft()} is {@code true}.
+     */
+    protected void addCustomContentToLeft() {
+    }
+
+    /**
+     * Invoked by subclasses to signal a change to the {@link #addCustomContentToLeft} value to
+     * ensure the custom content page is added or removed if necessary.
+     */
+    protected void invalidateHasCustomContentToLeft() {
+        if (mWorkspace.getScreenOrder().isEmpty()) {
+            // Not bound yet, wait for bindScreens to be called.
+            return;
+        }
+
+        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
+            // Create the custom content page and call the subclass to populate it.
+            mWorkspace.createCustomContentPage();
+            addCustomContentToLeft();
+        } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
+            mWorkspace.removeCustomContentPage();
+        }
+    }
+
     private void updateGlobalIcons() {
         boolean searchVisible = false;
         boolean voiceVisible = false;
@@ -896,6 +923,9 @@ public class Launcher extends Activity
     }
 
     protected void onFinishBindingItems() {
+        if (hasCustomContentToLeft() && mWorkspace.hasCustomContent()) {
+            addCustomContentToLeft();
+        }
     }
 
     QSBScroller mQsbScroller = new QSBScroller() {
@@ -3606,7 +3636,8 @@ public class Launcher extends Activity
         }
 
         // Create the custom content page (this call updates mDefaultScreen which calls
-        // setCurrentPage() so ensure that all pages are added before calling this)
+        // setCurrentPage() so ensure that all pages are added before calling this).
+        // The actual content of the custom page will be added during onFinishBindingItems().
         if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
             mWorkspace.createCustomContentPage();
         }

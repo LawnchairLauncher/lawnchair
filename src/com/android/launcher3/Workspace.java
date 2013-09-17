@@ -52,7 +52,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -538,6 +537,24 @@ public class Workspace extends SmoothPagedView
         // Ensure that the current page and default page are maintained.
         mDefaultPage = mOriginalDefaultPage + 1;
         setCurrentPage(getCurrentPage() + 1);
+    }
+
+    public void removeCustomContentPage() {
+        Launcher.addDumpLog(TAG, "10249126 - removeCustomContentPage()", true);
+
+        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
+        if (customScreen == null) {
+            throw new RuntimeException("Expected custom content screen to exist");
+        }
+
+        mWorkspaceScreens.remove(CUSTOM_CONTENT_SCREEN_ID);
+        mScreenOrder.remove(CUSTOM_CONTENT_SCREEN_ID);
+        removeView(customScreen);
+        mCustomContentCallbacks = null;
+
+        // Ensure that the current page and default page are maintained.
+        mDefaultPage = mOriginalDefaultPage - 1;
+        setCurrentPage(getCurrentPage() - 1);
     }
 
     public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks) {
@@ -1326,30 +1343,32 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateStateForCustomContent(int screenCenter) {
+        float translationX = 0;
+        float progress = 0;
         if (hasCustomContent()) {
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
             int scrollDelta = getScrollForPage(index + 1) - getScrollX();
-            float translationX = Math.max(scrollDelta, 0);
-            float progress = (1.0f * scrollDelta) /
+            translationX = Math.max(scrollDelta, 0);
+            progress = (1.0f * scrollDelta) /
                     (getScrollForPage(index + 1) - getScrollForPage(index));
             progress = Math.max(0, progress);
+        }
 
-            if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
-            mLastCustomContentScrollProgress = progress;
+        if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
+        mLastCustomContentScrollProgress = progress;
 
-            setBackgroundAlpha(progress * 0.8f);
+        setBackgroundAlpha(progress * 0.8f);
 
-            if (mLauncher.getHotseat() != null) {
-                mLauncher.getHotseat().setTranslationX(translationX);
-            }
+        if (mLauncher.getHotseat() != null) {
+            mLauncher.getHotseat().setTranslationX(translationX);
+        }
 
-            if (getPageIndicator() != null) {
-                getPageIndicator().setTranslationX(translationX);
-            }
+        if (getPageIndicator() != null) {
+            getPageIndicator().setTranslationX(translationX);
+        }
 
-            if (mCustomContentCallbacks != null) {
-                mCustomContentCallbacks.onScrollProgressChanged(progress);
-            }
+        if (mCustomContentCallbacks != null) {
+            mCustomContentCallbacks.onScrollProgressChanged(progress);
         }
     }
 
@@ -3793,7 +3812,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         // We don't dispatch restoreInstanceState to our children using this code path.
-        // Some pages will be restored immediately as their items are bound immediately, and 
+        // Some pages will be restored immediately as their items are bound immediately, and
         // others we will need to wait until after their items are bound.
         mSavedStates = container;
     }
