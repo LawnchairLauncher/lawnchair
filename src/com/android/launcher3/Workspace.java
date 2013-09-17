@@ -361,6 +361,7 @@ public class Workspace extends SmoothPagedView
         mIsDragOccuring = true;
         updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
+        mLauncher.onInteractionBegin();
         setChildrenBackgroundAlphaMultipliers(1f);
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
@@ -386,6 +387,7 @@ public class Workspace extends SmoothPagedView
 
         removeExtraEmptyScreen();
         mDragSourceInternal = null;
+        mLauncher.onInteractionEnd();
     }
 
     /**
@@ -1737,15 +1739,18 @@ public class Workspace extends SmoothPagedView
     }
 
     public void enterOverviewMode() {
+        mLauncher.onInteractionBegin();
         enableOverviewMode(true, -1, true);
     }
 
     public void exitOverviewMode(boolean animated) {
         exitOverviewMode(-1, animated);
+        mLauncher.onInteractionEnd();
     }
 
     public void exitOverviewMode(int snapPage, boolean animated) {
         enableOverviewMode(false, snapPage, animated);
+        mLauncher.onInteractionEnd();
     }
 
     private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {

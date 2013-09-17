@@ -2305,6 +2305,23 @@ public class Launcher extends Activity
         }
     }
 
+    /**
+     * Called when the user stops interacting with the launcher.
+     * This implies that the user is now on the homescreen and is not doing housekeeping.
+     */
+    protected void onInteractionEnd() {}
+
+    /**
+     * Called when the user starts interacting with the launcher.
+     * The possible interactions are:
+     *  - open all apps
+     *  - reorder an app shortcut, or a widget
+     *  - open the overview mode.
+     * This is a good time to stop doing things that only make sense
+     * when the user is on the homescreen and not doing housekeeping.
+     */
+    protected void onInteractionBegin() {}
+
     void startApplicationDetailsActivity(ComponentName componentName) {
         String packageName = componentName.getPackageName();
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -3071,6 +3088,7 @@ public class Launcher extends Activity
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
 
         onWorkspaceShown(animated);
+        onInteractionEnd();
     }
 
     public void onWorkspaceShown(boolean animated) {
@@ -3085,6 +3103,7 @@ public class Launcher extends Activity
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
+        onInteractionBegin();
 
         // Pause the auto-advance of widgets until we are out of AllApps
         mUserPresent = false;
