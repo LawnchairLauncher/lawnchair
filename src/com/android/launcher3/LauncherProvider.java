@@ -65,7 +65,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = "com.android.launcher3.settings";
@@ -342,7 +342,8 @@ public class LauncherProvider extends ContentProvider {
                     "iconResource TEXT," +
                     "icon BLOB," +
                     "uri TEXT," +
-                    "displayMode INTEGER" +
+                    "displayMode INTEGER," +
+                    "appWidgetProvider TEXT" +
                     ");");
             addWorkspacesTable(db);
 
@@ -624,6 +625,22 @@ public class LauncherProvider extends ContentProvider {
 
                 addWorkspacesTable(db);
                 version = 13;
+            }
+
+            if (version < 14) {
+                db.beginTransaction();
+                try {
+                    // Insert new column for holding widget provider name
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN appWidgetProvider TEXT;");
+                    db.setTransactionSuccessful();
+                    version = 14;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             if (version != DATABASE_VERSION) {
@@ -1244,6 +1261,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.SPANX, spanX);
                 values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.APPWIDGET_ID, appWidgetId);
+                values.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
                 values.put(Favorites._ID, generateNewItemId());
                 dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
 

@@ -234,6 +234,13 @@ class LauncherSettings {
          * <P>Type: INTEGER</P>
          */
         static final String APPWIDGET_ID = "appWidgetId";
+
+        /**
+         * The ComponentName of the widget provider
+         *
+         * <P>Type: STRING</P>
+         */
+        public static final String APPWIDGET_PROVIDER = "appWidgetProvider";
         
         /**
          * Indicates whether this favorite is an application-created shortcut or not.
