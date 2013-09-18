@@ -3358,8 +3358,8 @@ public class Launcher extends Activity
             // We disable both search and voice search when there is no global search provider
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
-            searchButton.setVisibility(View.GONE);
-            voiceButton.setVisibility(View.GONE);
+            if (searchButton != null) searchButton.setVisibility(View.GONE);
+            if (voiceButton != null) voiceButton.setVisibility(View.GONE);
             setVoiceButtonProxyVisible(false);
             return false;
         }
@@ -3412,7 +3412,7 @@ public class Launcher extends Activity
             return true;
         } else {
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
-            voiceButton.setVisibility(View.GONE);
+            if (voiceButton != null) voiceButton.setVisibility(View.GONE);
             setVoiceButtonProxyVisible(false);
             return false;
         }
