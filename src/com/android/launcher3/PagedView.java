@@ -341,7 +341,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             mPageIndicator.addMarkers(markers, mAllowPagedViewAnimations);
-            mPageIndicator.setOnClickListener((Launcher) getContext());
         }
     }
 
@@ -585,6 +584,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         for (int i = 0; i < count; i++) {
             getPageAt(i).setOnLongClickListener(l);
         }
+        super.setOnLongClickListener(l);
     }
 
     @Override
@@ -1591,6 +1591,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             return false;
         }
 
+        super.onTouchEvent(ev);
+
         // Skip touch handling if there are no pages to swipe
         if (getChildCount() <= 0) return super.onTouchEvent(ev);
 
@@ -1886,7 +1888,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mActivePointerId = INVALID_POINTER;
     }
 
-    protected void onUnhandledTap(MotionEvent ev) {}
+    protected void onUnhandledTap(MotionEvent ev) {
+        ((Launcher) getContext()).onClick(this);
+    }
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {

@@ -2175,9 +2175,9 @@ public class Launcher extends Activity
             return;
         }
 
-        if (v instanceof PageIndicator) {
-            if (!mWorkspace.isInOverviewMode()) {
-                mWorkspace.enterOverviewMode();
+        if (v instanceof Workspace) {
+            if (mWorkspace.isInOverviewMode()) {
+                mWorkspace.exitOverviewMode(true);
             }
             return;
         }
@@ -2588,6 +2588,15 @@ public class Launcher extends Activity
         if (!isDraggingEnabled()) return false;
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
+
+        if (v instanceof Workspace) {
+            if (!mWorkspace.isInOverviewMode()) {
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                mWorkspace.enterOverviewMode();
+            }
+            return true;
+        }
 
         if (!(v instanceof CellLayout)) {
             v = (View) v.getParent().getParent();
