@@ -48,5 +48,6 @@
         android:textColorHighlight="#ff333333"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:imeOptions="flagNoExtractUi"/>
+        android:imeOptions="flagNoExtractUi"
+        android:fontFamily="sans-serif-condensed"/>
 </com.android.launcher3.Folder>
