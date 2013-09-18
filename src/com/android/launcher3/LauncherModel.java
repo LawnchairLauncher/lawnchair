@@ -39,6 +39,7 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.util.Pair;
 import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
@@ -1696,6 +1697,8 @@ public class LauncherModel extends BroadcastReceiver {
                             LauncherSettings.Favorites.ITEM_TYPE);
                     final int appWidgetIdIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.APPWIDGET_ID);
+                    final int appWidgetProviderIndex = c.getColumnIndexOrThrow(
+                            LauncherSettings.Favorites.APPWIDGET_PROVIDER);
                     final int screenIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.SCREEN);
                     final int cellXIndex = c.getColumnIndexOrThrow
@@ -1856,6 +1859,8 @@ public class LauncherModel extends BroadcastReceiver {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                                 // Read all Launcher-specific widget details
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
+                                String savedProvider = c.getString(appWidgetProviderIndex);
+
                                 id = c.getLong(idIndex);
 
                                 final AppWidgetProviderInfo provider =
@@ -1900,6 +1905,15 @@ public class LauncherModel extends BroadcastReceiver {
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, appWidgetInfo)) {
                                         break;
+                                    }
+                                    String providerName = provider.provider.flattenToString();
+                                    if (!providerName.equals(savedProvider)) {
+                                        ContentValues values = new ContentValues();
+                                        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                                                providerName);
+                                        String where = BaseColumns._ID + "= ?";
+                                        String[] args = {Integer.toString(c.getInt(idIndex))};
+                                        contentResolver.update(contentUri, values, where, args);
                                     }
                                     sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
                                     sBgAppWidgets.add(appWidgetInfo);
