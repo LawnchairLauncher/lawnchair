@@ -50,10 +50,23 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-            <LinearLayout android:id="@+id/wallpaper_list"
-                android:layout_width="match_parent"
+            <LinearLayout android:id="@+id/master_wallpaper_list"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                android:orientation="horizontal" >
+                <LinearLayout android:id="@+id/third_party_wallpaper_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+                <LinearLayout android:id="@+id/wallpaper_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+                <LinearLayout android:id="@+id/live_wallpaper_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </LinearLayout>
         </HorizontalScrollView>
         <View
             android:layout_width="match_parent"

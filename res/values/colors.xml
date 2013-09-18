@@ -32,4 +32,5 @@
     <color name="workspace_icon_text_color">#FFF</color>
 
     <color name="apps_customize_icon_text_color">#FFF</color>
+    <color name="wallpaper_picker_translucent_gray">#66000000</color>
 </resources>
