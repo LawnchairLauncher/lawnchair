@@ -138,12 +138,13 @@ public class WallpaperCropActivity extends Activity {
         windowManager.getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
 
         int maxDim = Math.max(maxDims.x, maxDims.y);
-        final int minDim = Math.min(minDims.x, minDims.y);
+        int minDim = Math.max(minDims.x, minDims.y);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Point realSize = new Point();
             windowManager.getDefaultDisplay().getRealSize(realSize);
             maxDim = Math.max(realSize.x, realSize.y);
+            minDim = Math.min(realSize.x, realSize.y);
         }
 
         // We need to ensure that there is enough extra space in the wallpaper
