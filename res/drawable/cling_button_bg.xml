@@ -15,6 +15,6 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/btn_cling_pressed" />
-    <item android:drawable="@drawable/btn_cling_normal" />
+    <item android:state_pressed="true" android:drawable="@drawable/cling_button_pressed" />
+    <item android:drawable="@drawable/cling_button" />
 </selector>

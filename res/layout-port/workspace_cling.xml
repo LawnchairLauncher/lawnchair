@@ -20,43 +20,51 @@
     android:layout_height="match_parent"
     launcher:drawIdentifier="workspace_portrait">
     <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="90dp">
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="120dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:orientation="vertical">
-            <TextView
-                style="@style/ClingTitleText"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/workspace_cling_title" />
-            <TextView
-                style="@style/ClingText"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/cling_arrow_up" />
+            <LinearLayout
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/workspace_cling_move_item" />
+                android:orientation="vertical"
+                android:background="@drawable/cling">
+                <TextView
+                    style="@style/ClingTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/workspace_cling_title" />
+                <TextView
+                    style="@style/ClingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/workspace_cling_move_item" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
-    <TextView
-        style="@style/ClingText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="130dp"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        android:text="@string/workspace_cling_open_all_apps" />
     <Button
         style="@style/ClingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="20dp"
         android:layout_gravity="bottom|end"
         android:onClick="dismissWorkspaceCling" />
 </com.android.launcher3.Cling>

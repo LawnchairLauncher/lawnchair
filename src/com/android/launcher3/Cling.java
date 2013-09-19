@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -31,40 +34,42 @@ import android.util.DisplayMetrics;
 import android.view.FocusFinder;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 
-public class Cling extends FrameLayout {
+public class Cling extends FrameLayout implements Insettable, View.OnLongClickListener {
 
-    static final String WORKSPACE_CLING_DISMISSED_KEY = "cling.workspace.dismissed";
-    static final String ALLAPPS_CLING_DISMISSED_KEY = "cling.allapps.dismissed";
-    static final String FOLDER_CLING_DISMISSED_KEY = "cling.folder.dismissed";
+    static final String FIRST_RUN_CLING_DISMISSED_KEY = "cling_gel.first_run.dismissed";
+    static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
+    static final String FOLDER_CLING_DISMISSED_KEY = "cling_gel.folder.dismissed";
+
+    private static String FIRST_RUN_PORTRAIT = "first_run_portrait";
+    private static String FIRST_RUN_LANDSCAPE = "first_run_landscape";
 
     private static String WORKSPACE_PORTRAIT = "workspace_portrait";
     private static String WORKSPACE_LANDSCAPE = "workspace_landscape";
     private static String WORKSPACE_LARGE = "workspace_large";
     private static String WORKSPACE_CUSTOM = "workspace_custom";
 
-    private static String ALLAPPS_PORTRAIT = "all_apps_portrait";
-    private static String ALLAPPS_LANDSCAPE = "all_apps_landscape";
-    private static String ALLAPPS_LARGE = "all_apps_large";
-
     private static String FOLDER_PORTRAIT = "folder_portrait";
     private static String FOLDER_LANDSCAPE = "folder_landscape";
     private static String FOLDER_LARGE = "folder_large";
+
+    private static float FIRST_RUN_CIRCLE_BUFFER_DPS = 40;
+    private static float WORKSPACE_INNER_CIRCLE_RADIUS_DPS = 50;
+    private static float WORKSPACE_OUTER_CIRCLE_RADIUS_DPS = 60;
+    private static float WORKSPACE_CIRCLE_Y_OFFSET_DPS = 30;
 
     private Launcher mLauncher;
     private boolean mIsInitialized;
     private String mDrawIdentifier;
     private Drawable mBackground;
-    private Drawable mPunchThroughGraphic;
-    private Drawable mHandTouchGraphic;
-    private int mPunchThroughGraphicCenterRadius;
-    private int mAppIconSize;
-    private int mButtonBarHeight;
-    private float mRevealRadius;
-    private int[] mPositionData;
 
     private Paint mErasePaint;
+    private Paint mBubblePaint;
+    private Paint mDotPaint;
+
+    private final Rect mInsets = new Rect();
 
     public Cling(Context context) {
         this(context, null, 0);
@@ -82,60 +87,116 @@ public class Cling extends FrameLayout {
         a.recycle();
 
         setClickable(true);
+
     }
 
     void init(Launcher l, int[] positionData) {
         if (!mIsInitialized) {
             mLauncher = l;
-            mPositionData = positionData;
-
-            Resources r = getContext().getResources();
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-
-            mPunchThroughGraphic = r.getDrawable(R.drawable.cling);
-            mPunchThroughGraphicCenterRadius =
-                r.getDimensionPixelSize(R.dimen.clingPunchThroughGraphicCenterRadius);
-            mAppIconSize = grid.iconSizePx;
-            mRevealRadius = grid.iconSizePx * 1f;
-            mButtonBarHeight = grid.hotseatBarHeightPx;
+            setOnLongClickListener(this);
 
             mErasePaint = new Paint();
             mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
             mErasePaint.setColor(0xFFFFFF);
             mErasePaint.setAlpha(0);
+            mErasePaint.setAntiAlias(true);
+
+            mBubblePaint = new Paint();
+            mBubblePaint.setColor(0xFFFFFF);
+            mBubblePaint.setAntiAlias(true);
+
+            mDotPaint = new Paint();
+            mDotPaint.setColor(0x72BBED);
+            mDotPaint.setAntiAlias(true);
 
             mIsInitialized = true;
         }
     }
 
+    void show(boolean animate, int duration) {
+        setVisibility(View.VISIBLE);
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
+                mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+                mDrawIdentifier.equals(WORKSPACE_LARGE) ||
+                mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
+            View content = getContent();
+            content.setAlpha(0f);
+            content.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(new AnimatorListenerAdapter() {
+                        public void onAnimationEnd(Animator animation) {
+                        };
+                    })
+                    .start();
+            setAlpha(1f);
+        } else {
+            if (animate) {
+                buildLayer();
+                setAlpha(0f);
+                animate()
+                    .alpha(1f)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .setDuration(duration)
+                    .start();
+            } else {
+                setAlpha(1f);
+            }
+        }
+        setFocusableInTouchMode(true);
+        post(new Runnable() {
+            public void run() {
+                setFocusable(true);
+                requestFocus();
+            }
+        });
+    }
+
+    void hide(final int duration, final Runnable postCb) {
+        if (mDrawIdentifier.equals(FIRST_RUN_PORTRAIT) ||
+                mDrawIdentifier.equals(FIRST_RUN_LANDSCAPE)) {
+            View content = getContent();
+            ObjectAnimator anim = LauncherAnimUtils.ofFloat(content, "alpha", 0f);
+            anim.setDuration(duration);
+            anim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    // We are about to trigger the workspace cling, so don't do anything else
+                    setVisibility(View.GONE);
+                    postCb.run();
+                };
+            });
+            anim.start();
+        } else {
+            ObjectAnimator anim = LauncherAnimUtils.ofFloat(this, "alpha", 0f);
+            anim.setDuration(duration);
+            anim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    setVisibility(View.GONE);
+                    postCb.run();
+                };
+            });
+            anim.start();
+        }
+    }
+
     void cleanup() {
         mBackground = null;
-        mPunchThroughGraphic = null;
-        mHandTouchGraphic = null;
         mIsInitialized = false;
     }
 
-    public String getDrawIdentifier() {
-        return mDrawIdentifier;
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+        setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
-    private int[] getPunchThroughPositions() {
-        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {
-            return new int[]{getMeasuredWidth() / 2, getMeasuredHeight() - (mButtonBarHeight / 2)};
-        } else if (mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
-            return new int[]{getMeasuredWidth() - (mButtonBarHeight / 2), getMeasuredHeight() / 2};
-        } else if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
-            final float scale = LauncherAppState.getInstance().getScreenDensity();
-            final int cornerXOffset = (int) (scale * 15);
-            final int cornerYOffset = (int) (scale * 10);
-            return new int[]{getMeasuredWidth() - cornerXOffset, cornerYOffset};
-        } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-                   mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
-                   mDrawIdentifier.equals(ALLAPPS_LARGE)) {
-            return mPositionData;
-        }
-        return new int[]{-1, -1};
+    View getContent() {
+        return findViewById(R.id.content);
+    }
+
+    String getDrawIdentifier() {
+        return mDrawIdentifier;
     }
 
     @Override
@@ -153,30 +214,12 @@ public class Cling extends FrameLayout {
         return (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)
                 || mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)
                 || mDrawIdentifier.equals(WORKSPACE_LARGE)
-                || mDrawIdentifier.equals(ALLAPPS_PORTRAIT)
-                || mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)
-                || mDrawIdentifier.equals(ALLAPPS_LARGE)
                 || mDrawIdentifier.equals(WORKSPACE_CUSTOM));
     }
 
     @Override
     public boolean onTouchEvent(android.view.MotionEvent event) {
-        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
-            mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
-            mDrawIdentifier.equals(WORKSPACE_LARGE) ||
-            mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-            mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
-            mDrawIdentifier.equals(ALLAPPS_LARGE)) {
-
-            int[] positions = getPunchThroughPositions();
-            for (int i = 0; i < positions.length; i += 2) {
-                double diff = Math.sqrt(Math.pow(event.getX() - positions[i], 2) +
-                        Math.pow(event.getY() - positions[i + 1], 2));
-                if (diff < mRevealRadius) {
-                    return false;
-                }
-            }
-        } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
+        if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
                    mDrawIdentifier.equals(FOLDER_LANDSCAPE) ||
                    mDrawIdentifier.equals(FOLDER_LARGE)) {
             Folder f = mLauncher.getWorkspace().getOpenFolder();
@@ -188,81 +231,94 @@ public class Cling extends FrameLayout {
                 }
             }
         }
-        return true;
+        return super.onTouchEvent(event);
     };
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
+                mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+                mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+            mLauncher.dismissWorkspaceCling(null);
+            return true;
+        }
+        return false;
+    }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         if (mIsInitialized) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            mLauncher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            canvas.save();
 
-            // Initialize the draw buffer (to allow punching through)
-            Bitmap b = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
-                    Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(b);
-
-            // Draw the background
+            // Get the background override if there is one
             if (mBackground == null) {
-                if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
-                        mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
-                        mDrawIdentifier.equals(WORKSPACE_LARGE)) {
-                    mBackground = getResources().getDrawable(R.drawable.bg_cling1);
-                } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-                        mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
-                        mDrawIdentifier.equals(ALLAPPS_LARGE)) {
-                    mBackground = getResources().getDrawable(R.drawable.bg_cling2);
-                } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
-                        mDrawIdentifier.equals(FOLDER_LANDSCAPE)) {
-                    mBackground = getResources().getDrawable(R.drawable.bg_cling3);
-                } else if (mDrawIdentifier.equals(FOLDER_LARGE)) {
-                    mBackground = getResources().getDrawable(R.drawable.bg_cling4);
-                } else if (mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
+                if (mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling5);
                 }
             }
+            // Draw the background
+            Bitmap eraseBg = null;
+            Canvas eraseCanvas = null;
             if (mBackground != null) {
                 mBackground.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
-                mBackground.draw(c);
+                mBackground.draw(canvas);
+            } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
+                    mDrawIdentifier.equals(FOLDER_LANDSCAPE) ||
+                    mDrawIdentifier.equals(FOLDER_LARGE)) {
+                canvas.drawColor(0xcc000000);
+            } else if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
+                    mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+                    mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+                // Initialize the draw buffer (to allow punching through)
+                eraseBg = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
+                        Bitmap.Config.ARGB_8888);
+                eraseCanvas = new Canvas(eraseBg);
+                eraseCanvas.drawColor(0xdd000000);
             } else {
-                c.drawColor(0x99000000);
+                canvas.drawColor(0xdd000000);
             }
 
-            int cx = -1;
-            int cy = -1;
-            float scale = mRevealRadius / mPunchThroughGraphicCenterRadius;
-            int dw = (int) (scale * mPunchThroughGraphic.getIntrinsicWidth());
-            int dh = (int) (scale * mPunchThroughGraphic.getIntrinsicHeight());
-
-            // Determine where to draw the punch through graphic
-            int[] positions = getPunchThroughPositions();
-            for (int i = 0; i < positions.length; i += 2) {
-                cx = positions[i];
-                cy = positions[i + 1];
-                if (cx > -1 && cy > -1) {
-                    c.drawCircle(cx, cy, mRevealRadius, mErasePaint);
-                    mPunchThroughGraphic.setBounds(cx - dw/2, cy - dh/2, cx + dw/2, cy + dh/2);
-                    mPunchThroughGraphic.draw(c);
-                }
+            // Draw everything else
+            DisplayMetrics metrics = new DisplayMetrics();
+            mLauncher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            float alpha = getAlpha();
+            View content = getContent();
+            if (content != null) {
+                alpha *= content.getAlpha();
+            }
+            if (mDrawIdentifier.equals(FIRST_RUN_PORTRAIT) ||
+                    mDrawIdentifier.equals(FIRST_RUN_LANDSCAPE)) {
+                // Draw the white circle
+                View bubbleContent = findViewById(R.id.bubble_content);
+                Rect bubbleRect = new Rect();
+                bubbleContent.getGlobalVisibleRect(bubbleRect);
+                mBubblePaint.setAlpha((int) (255 * alpha));
+                float buffer = DynamicGrid.pxFromDp(FIRST_RUN_CIRCLE_BUFFER_DPS, metrics);
+                canvas.drawCircle(metrics.widthPixels / 2,
+                        bubbleRect.centerY(),
+                        (bubbleContent.getMeasuredWidth() + buffer) / 2,
+                        mBubblePaint);
+            } else if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
+                    mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+                    mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+                int offset = DynamicGrid.pxFromDp(WORKSPACE_CIRCLE_Y_OFFSET_DPS, metrics);
+                mErasePaint.setAlpha((int) (128));
+                eraseCanvas.drawCircle(metrics.widthPixels / 2,
+                        metrics.heightPixels / 2 - offset,
+                        DynamicGrid.pxFromDp(WORKSPACE_OUTER_CIRCLE_RADIUS_DPS, metrics),
+                        mErasePaint);
+                mErasePaint.setAlpha(0);
+                eraseCanvas.drawCircle(metrics.widthPixels / 2,
+                        metrics.heightPixels / 2 - offset,
+                        DynamicGrid.pxFromDp(WORKSPACE_INNER_CIRCLE_RADIUS_DPS, metrics),
+                        mErasePaint);
+                canvas.drawBitmap(eraseBg, 0, 0, null);
+                eraseCanvas.setBitmap(null);
+                eraseBg = null;
             }
 
-            // Draw the hand graphic in All Apps
-            if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-                mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
-                mDrawIdentifier.equals(ALLAPPS_LARGE)) {
-                if (mHandTouchGraphic == null) {
-                    mHandTouchGraphic = getResources().getDrawable(R.drawable.hand);
-                }
-                int offset = mAppIconSize / 4;
-                mHandTouchGraphic.setBounds(cx + offset, cy + offset,
-                        cx + mHandTouchGraphic.getIntrinsicWidth() + offset,
-                        cy + mHandTouchGraphic.getIntrinsicHeight() + offset);
-                mHandTouchGraphic.draw(c);
-            }
 
-            canvas.drawBitmap(b, 0, 0, null);
-            c.setBitmap(null);
-            b = null;
+            canvas.restore();
         }
 
         // Draw the rest of the cling

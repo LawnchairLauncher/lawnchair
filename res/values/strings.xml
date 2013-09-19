@@ -226,21 +226,27 @@ s -->
 
     <!-- Clings -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_title">Make yourself at home</string>
+    <string name="first_run_cling_title">Welcome!</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_move_item">You can put your favorite apps here.</string>
-    <!-- The description of how to open all apps from the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_open_all_apps">To see all your apps, touch the circle.</string>
+    <string name="first_run_cling_description">Make yourself at Home</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <string name="first_run_cling_custom_content_hint"></string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <string name="first_run_cling_search_bar_hint"></string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <string name="first_run_cling_create_screens_hint">Create more screens for apps and folders</string>
+    <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
+    <string name="workspace_cling_title">Organize your space</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <string name="workspace_cling_move_item">Touch &amp; hold background to manage wallpaper, widgets and settings</string>
     <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
     <string name="all_apps_cling_title">Choose some apps</string>
     <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
     <string name="all_apps_cling_add_item">To add an app to your Home screen, touch &amp; hold it.</string>
     <!-- The title text for the Folder cling [CHAR_LIMIT=none] -->
-    <string name="folder_cling_title">Organize your apps with folders</string>
-    <!-- The description of how to move an app [CHAR_LIMIT=none] -->
-    <string name="folder_cling_move_item">To move an app, touch &amp; hold it.</string>
+    <string name="folder_cling_title">Create new folders for your apps</string>
     <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
-    <string name="folder_cling_create_folder">To make a new folder on your Home screen, stack one app on top of another.</string>
+    <string name="folder_cling_create_folder">Touch &amp; hold an app, then move it on top of another app icon</string>
     <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
     <string name="cling_dismiss">OK</string>
     <!-- Error message on dummy custom cling layout [DO NOT TRANSLATE] -->
