@@ -130,6 +130,7 @@ public class Launcher extends Activity
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
+    static final boolean DEBUG_DUMP_LOG = false;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -889,10 +890,6 @@ public class Launcher extends Activity
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
-
-        // Write all the logs to disk
-        Launcher.addDumpLog(TAG, "10249126 - onResume() - dumping logs to disk", true);
-        dumpLogsToLocalData(false);
     }
 
     @Override
@@ -909,10 +906,6 @@ public class Launcher extends Activity
         mPaused = true;
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
-
-        // Write all the logs to disk
-        Launcher.addDumpLog(TAG, "10249126 - onPause() - dumping logs to disk", true);
-        dumpLogsToLocalData(false);
     }
 
     protected void onFinishBindingItems() {
@@ -3587,7 +3580,6 @@ public class Launcher extends Activity
     public void bindAddScreens(ArrayList<Long> orderedScreenIds) {
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
-            Launcher.addDumpLog(TAG, "10249126 - bindAddScreens(" + orderedScreenIds.get(i) + ")", true);
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i));
         }
     }
@@ -3644,8 +3636,6 @@ public class Launcher extends Activity
         if (waitUntilResume(r)) {
             return;
         }
-
-        Launcher.addDumpLog(TAG, "10249126 - bindAppsAdded(" + newScreens.size() + ")", true);
 
         // Add the new screens
         bindAddScreens(newScreens);
@@ -3869,10 +3859,6 @@ public class Launcher extends Activity
                 onFinishBindingItems();
             }
         });
-
-        // Write all the logs to disk
-        Launcher.addDumpLog(TAG, "10249126 - finishBindingItems() - dumping logs to disk", true);
-        dumpLogsToLocalData(false);
     }
 
     private boolean canRunNewAppsAnimation() {
@@ -4273,15 +4259,17 @@ public class Launcher extends Activity
     }
 
     public static void dumpDebugLogsToConsole() {
-        synchronized (sDumpLogs) {
-            Log.d(TAG, "");
-            Log.d(TAG, "*********************");
-            Log.d(TAG, "Launcher debug logs: ");
-            for (int i = 0; i < sDumpLogs.size(); i++) {
-                Log.d(TAG, "  " + sDumpLogs.get(i));
+        if (DEBUG_DUMP_LOG) {
+            synchronized (sDumpLogs) {
+                Log.d(TAG, "");
+                Log.d(TAG, "*********************");
+                Log.d(TAG, "Launcher debug logs: ");
+                for (int i = 0; i < sDumpLogs.size(); i++) {
+                    Log.d(TAG, "  " + sDumpLogs.get(i));
+                }
+                Log.d(TAG, "*********************");
+                Log.d(TAG, "");
             }
-            Log.d(TAG, "*********************");
-            Log.d(TAG, "");
         }
     }
 
@@ -4289,105 +4277,59 @@ public class Launcher extends Activity
         if (debugLog) {
             Log.d(tag, log);
         }
-        sDateStamp.setTime(System.currentTimeMillis());
-        synchronized (sDumpLogs) {
-            sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log);
-        }
-    }
-
-    public void dumpLogsToLocalData(final boolean email) {
-        new Thread("DumpLogsToLocalData") {
-            @Override
-            public void run() {
-                boolean success = false;
-                sDateStamp.setTime(sRunStart);
-                String FILENAME = sDateStamp.getMonth() + "-"
-                        + sDateStamp.getDay() + "_"
-                        + sDateStamp.getHours() + "-"
-                        + sDateStamp.getMinutes() + "_"
-                        + sDateStamp.getSeconds() + ".txt";
-
-                FileOutputStream fos = null;
-                File outFile = null;
-                try {
-                    outFile = new File(getFilesDir(), FILENAME);
-                    outFile.createNewFile();
-                    fos = new FileOutputStream(outFile);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (fos != null) {
-                    PrintWriter writer = new PrintWriter(fos);
-
-                    writer.println(" ");
-                    writer.println("Debug logs: ");
-                    synchronized (sDumpLogs) {
-                        for (int i = 0; i < sDumpLogs.size(); i++) {
-                            writer.println("  " + sDumpLogs.get(i));
-                        }
-                    }
-                    writer.close();
-                }
-                try {
-                    if (fos != null) {
-                        fos.close();
-                        success = true;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (success && email) {
-                    if (!emailSent()) {
-                        emailFile(outFile);
-                    }
-                }
+        if (DEBUG_DUMP_LOG) {
+            sDateStamp.setTime(System.currentTimeMillis());
+            synchronized (sDumpLogs) {
+                sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log);
             }
-        }.start();
+        }
     }
 
-    private void emailFile(File file) {
-        File publicCopy = new File(Environment.getExternalStorageDirectory(), file.getName());
-        try {
-            copyFile(file, publicCopy);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+    public void dumpLogsToLocalData() {
+        if (DEBUG_DUMP_LOG) {
+            new Thread("DumpLogsToLocalData") {
+                @Override
+                public void run() {
+                    boolean success = false;
+                    sDateStamp.setTime(sRunStart);
+                    String FILENAME = sDateStamp.getMonth() + "-"
+                            + sDateStamp.getDay() + "_"
+                            + sDateStamp.getHours() + "-"
+                            + sDateStamp.getMinutes() + "_"
+                            + sDateStamp.getSeconds() + ".txt";
+
+                    FileOutputStream fos = null;
+                    File outFile = null;
+                    try {
+                        outFile = new File(getFilesDir(), FILENAME);
+                        outFile.createNewFile();
+                        fos = new FileOutputStream(outFile);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (fos != null) {
+                        PrintWriter writer = new PrintWriter(fos);
+
+                        writer.println(" ");
+                        writer.println("Debug logs: ");
+                        synchronized (sDumpLogs) {
+                            for (int i = 0; i < sDumpLogs.size(); i++) {
+                                writer.println("  " + sDumpLogs.get(i));
+                            }
+                        }
+                        writer.close();
+                    }
+                    try {
+                        if (fos != null) {
+                            fos.close();
+                            success = true;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         }
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"adamcohen@google.com, winsonc@google.com," +
-			"mikejurka@google"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Data corruption " + file.getName());
-        intent.putExtra(Intent.EXTRA_TEXT, "Data corruption has occurred, logs attached");
-
-        if (!file.exists() || !file.canRead()) {
-            Toast.makeText(this, "Attachment Error", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        Toast.makeText(this, "Data corruption has occurred, please send e-mail", Toast.LENGTH_LONG);
-        Uri uri = Uri.fromFile(publicCopy);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(intent, "Please send logs, consider clearing data"));
-
-        setEmailSent(true);
-    }
-
-    public void copyFile(File src, File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
     }
 }
 

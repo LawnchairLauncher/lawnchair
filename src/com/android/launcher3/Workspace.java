@@ -479,7 +479,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void removeAllWorkspaceScreens() {
-        Launcher.addDumpLog(TAG, "10249126 - removeAllWorkspaceScreens()", true);
         // Remove the pages and clear the screen models
         removeAllViews();
         mScreenOrder.clear();
@@ -490,7 +489,6 @@ public class Workspace extends SmoothPagedView
         // Find the index to insert this view into.  If the empty screen exists, then
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
-        Launcher.addDumpLog(TAG, "10249126 - insertNewWorkspaceScreenBeforeEmptyScreen(" + insertIndex + ")", true);
         if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
@@ -502,9 +500,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public long insertNewWorkspaceScreen(long screenId, int insertIndex) {
-        String log = "10249126 - insertNewWorkspaceScreen(" + screenId + ", " + insertIndex + ")";
-        Launcher.addDumpLog(TAG, log, true);
-
         if (mWorkspaceScreens.containsKey(screenId)) {
             throw new RuntimeException("Screen id " + screenId + " already exists!");
         }
@@ -522,7 +517,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void createCustomContentPage() {
-        Launcher.addDumpLog(TAG, "10249126 - createCustomContentPage()", true);
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
 
@@ -540,8 +534,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void removeCustomContentPage() {
-        Launcher.addDumpLog(TAG, "10249126 - removeCustomContentPage()", true);
-
         CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
         if (customScreen == null) {
             throw new RuntimeException("Expected custom content screen to exist");
@@ -621,12 +613,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public long commitExtraEmptyScreen() {
-        Launcher.addDumpLog(TAG, "10249126 - commitExtraEmptyScreen()", true);
-
-        // Write all the logs to disk
-        Launcher.addDumpLog(TAG, "10249126 - commitExtraEmptyScreen() - dumping logs to disk", true);
-        mLauncher.dumpLogsToLocalData(false);
-
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
         mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
@@ -643,13 +629,11 @@ public class Workspace extends SmoothPagedView
 
 
     public CellLayout getScreenWithId(long screenId) {
-        Launcher.addDumpLog(TAG, "10249126 - getScreenWithId(" + screenId + ")", true);
         CellLayout layout = mWorkspaceScreens.get(screenId);
         return layout;
     }
 
     public long getIdForScreen(CellLayout layout) {
-        Launcher.addDumpLog(TAG, "10249126 - getIdForScreen()", true);
         Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
         while (iter.hasNext()) {
             long id = iter.next();
@@ -661,7 +645,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public int getPageIndexForScreenId(long screenId) {
-        Launcher.addDumpLog(TAG, "10249126 - getPageIndexForScreenId(" + screenId + ")", true);
         return indexOfChild(mWorkspaceScreens.get(screenId));
     }
 
@@ -682,8 +665,6 @@ public class Workspace extends SmoothPagedView
             return;
         }
 
-        Launcher.addDumpLog(TAG, "10249126 - stripEmptyScreens()", true);
-
         int currentPage = getNextPage();
         ArrayList<Long> removeScreens = new ArrayList<Long>();
         for (Long id: mWorkspaceScreens.keySet()) {
@@ -699,7 +680,6 @@ public class Workspace extends SmoothPagedView
 
         int pageShift = 0;
         for (Long id: removeScreens) {
-            Launcher.addDumpLog(TAG, "10249126 - \tremove(" + id + ")", true);
             CellLayout cl = mWorkspaceScreens.get(id);
             mWorkspaceScreens.remove(id);
             mScreenOrder.remove(id);
@@ -1746,7 +1726,6 @@ public class Workspace extends SmoothPagedView
             mScreenOrder.add(getIdForScreen(cl));
         }
 
-        Launcher.addDumpLog(TAG, "10249126 - onEndReordering()", true);
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.
