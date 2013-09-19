@@ -16,20 +16,20 @@
 <com.android.launcher3.PageIndicatorMarker
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="16dp"
+    android:layout_height="16dp"
     android:layout_gravity="center_vertical">
     <ImageView
         android:id="@+id/inactive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/inactive_page"
+        android:src="@drawable/ic_pageindicator_default"
         />
     <ImageView
         android:id="@+id/active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/active_page"
+        android:src="@drawable/ic_pageindicator_current"
         android:alpha="0"
         />
 </com.android.launcher3.PageIndicatorMarker>
