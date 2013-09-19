@@ -1931,7 +1931,8 @@ public class Workspace extends SmoothPagedView
                 AlphaUpdateListener.updateVisibility(getPageIndicator());
             }
             searchBar.setAlpha(finalSearchBarAlpha);
-            AlphaUpdateListener.updateVisibility(mLauncher.getSearchBar());
+            AlphaUpdateListener.updateVisibility(searchBar);
+            updateCustomContentVisibility();
         }
         if (finalSearchBarAlpha == 0) {
             mLauncher.setVoiceButtonProxyVisible(false);
@@ -1998,10 +1999,27 @@ public class Workspace extends SmoothPagedView
     private void onTransitionPrepare() {
         mIsSwitchingState = true;
         updateChildrenLayersEnabled(false);
-        if (mState != Workspace.State.NORMAL) {
-            if (hasCustomContent()) {
-                mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
-            }
+        hideCustomContentIfNecessary();
+    }
+
+    void updateCustomContentVisibility() {
+        int visibility = mState == Workspace.State.NORMAL ? VISIBLE : INVISIBLE;
+        if (hasCustomContent()) {
+            mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(visibility);
+        }
+    }
+
+    void showCustomContentIfNecessary() {
+        boolean show  = mState == Workspace.State.NORMAL;
+        if (show && hasCustomContent()) {
+            mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(VISIBLE);
+        }
+    }
+
+    void hideCustomContentIfNecessary() {
+        boolean hide  = mState != Workspace.State.NORMAL;
+        if (hide && hasCustomContent()) {
+            mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
         }
     }
 
@@ -2018,11 +2036,7 @@ public class Workspace extends SmoothPagedView
                 cl.setShortcutAndWidgetAlpha(1f);
             }
         }
-        if (mState == Workspace.State.NORMAL) {
-            if (hasCustomContent()) {
-                mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(VISIBLE);
-            }
-        }
+        showCustomContentIfNecessary();
     }
 
     @Override

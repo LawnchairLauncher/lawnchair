@@ -26,6 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/widget_button_text"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/ic_gel_widget_icn"
         android:textSize="18dp"/>
     <Space
         android:layout_width="@dimen/overview_panel_buttonSpacing"
@@ -35,6 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/wallpaper_button_text"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/ic_gel_wallpaper_icn"
         android:textSize="18dp" />
     <Space
         android:layout_width="@dimen/overview_panel_buttonSpacing"
@@ -44,5 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settings_button_text"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/ic_gel_setting_icn"
         android:textSize="18dp" />
 </LinearLayout>
