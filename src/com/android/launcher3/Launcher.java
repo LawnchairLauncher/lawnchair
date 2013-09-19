@@ -1139,6 +1139,7 @@ public class Launcher extends Activity
                 startSettings();
             }
         });
+        mOverviewPanel.setAlpha(0f);
 
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);

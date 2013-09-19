@@ -133,6 +133,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected float mTotalMotionX;
     private int mLastScreenCenter = -1;
 
+    private boolean mCancelTap;
+
     private int[] mPageScrolls;
 
     protected final static int TOUCH_STATE_REST = 0;
@@ -735,7 +737,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // NOTE: We multiply by 1.5f to account for the fact that depending on the offset of the
         // viewport, we can be at most one and a half screens offset once we scale down
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        int maxSize = Math.max(dm.widthPixels, dm.heightPixels);
+        int maxSize = Math.max(dm.widthPixels, dm.heightPixels + mInsets.top + mInsets.bottom);
         int parentWidthSize, parentHeightSize;
         int scaledWidthSize, scaledHeightSize;
         if (mUseMinScale) {
@@ -1851,7 +1853,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     onDropToDelete();
                 }
             } else {
-                onUnhandledTap(ev);
+                if (!mCancelTap) {
+                    onUnhandledTap(ev);
+                }
             }
 
             // Remove the callback to wait for the side page hover timeout
@@ -1884,6 +1888,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void resetTouchState() {
         releaseVelocityTracker();
         endReordering();
+        mCancelTap = false;
         mTouchState = TOUCH_STATE_REST;
         mActivePointerId = INVALID_POINTER;
     }
@@ -2154,6 +2159,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      */
     public boolean allowLongPress() {
         return mAllowLongPress;
+    }
+
+    @Override
+    public boolean performLongClick() {
+        mCancelTap = true;
+        return super.performLongClick();
     }
 
     /**

@@ -1795,6 +1795,7 @@ public class Workspace extends SmoothPagedView
         float finalBackgroundAlpha = stateIsSpringLoaded ? 1.0f : 0f;
         float finalHotseatAndPageIndicatorAlpha = (stateIsOverview || stateIsSmall) ? 0f : 1f;
         float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
+        float finalSearchBarAlpha = stateIsOverview ? 0f : 1f;
 
         boolean zoomIn = true;
         mNewScale = 1.0f;
@@ -1857,6 +1858,7 @@ public class Workspace extends SmoothPagedView
             }
         }
 
+        View searchBar = mLauncher.getQsbBar();
         if (animated) {
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
             scale.scaleX(mNewScale)
@@ -1903,16 +1905,20 @@ public class Workspace extends SmoothPagedView
             }
             ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(mLauncher.getHotseat(), "alpha",
                     finalHotseatAndPageIndicatorAlpha);
+            ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
+                    "alpha", finalSearchBarAlpha);
             ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                     "alpha", finalOverviewPanelAlpha);
             overviewPanelAlpha.addUpdateListener(new AlphaUpdateListener(
                     mLauncher.getOverviewPanel()));
             hotseatAlpha.addUpdateListener(new AlphaUpdateListener(mLauncher.getHotseat()));
+            searchBarAlpha.addUpdateListener(new AlphaUpdateListener(searchBar));
             if (getPageIndicator() != null) {
                 pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
             }
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
+            anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
         } else {
@@ -1924,6 +1930,13 @@ public class Workspace extends SmoothPagedView
                 getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(getPageIndicator());
             }
+            searchBar.setAlpha(finalSearchBarAlpha);
+            AlphaUpdateListener.updateVisibility(mLauncher.getSearchBar());
+        }
+        if (finalSearchBarAlpha == 0) {
+            mLauncher.setVoiceButtonProxyVisible(false);
+        } else {
+            mLauncher.setVoiceButtonProxyVisible(true);
         }
 
         if (stateIsSpringLoaded) {
@@ -1932,6 +1945,9 @@ public class Workspace extends SmoothPagedView
             // be showing once AppsCustomize disappears
             animateBackgroundGradient(getResources().getInteger(
                     R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f, false);
+        } else if (stateIsOverview) {
+            animateBackgroundGradient(getResources().getInteger(
+                    R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f, true);
         } else {
             // Fade the background gradient away
             animateBackgroundGradient(0f, true);
