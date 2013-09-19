@@ -57,26 +57,38 @@ public class PageIndicatorMarker extends FrameLayout {
         if (immediate) {
             mActiveMarker.animate().cancel();
             mActiveMarker.setAlpha(1f);
+            mActiveMarker.setScaleX(1f);
+            mActiveMarker.setScaleY(1f);
             mInactiveMarker.animate().cancel();
             mInactiveMarker.setAlpha(0f);
         } else {
-            mActiveMarker.animate().alpha(1f)
+            mActiveMarker.animate()
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
                     .setDuration(MARKER_FADE_DURATION).start();
-            mInactiveMarker.animate().alpha(0f)
+            mInactiveMarker.animate()
+                    .alpha(0f)
                     .setDuration(MARKER_FADE_DURATION).start();
         }
         mIsActive = true;
     }
+
     void inactivate(boolean immediate) {
         if (immediate) {
             mInactiveMarker.animate().cancel();
             mInactiveMarker.setAlpha(1f);
             mActiveMarker.animate().cancel();
             mActiveMarker.setAlpha(0f);
+            mActiveMarker.setScaleX(0.5f);
+            mActiveMarker.setScaleY(0.5f);
         } else {
             mInactiveMarker.animate().alpha(1f)
                     .setDuration(MARKER_FADE_DURATION).start();
-            mActiveMarker.animate().alpha(0f)
+            mActiveMarker.animate()
+                    .alpha(0f)
+                    .scaleX(0.5f)
+                    .scaleY(0.5f)
                     .setDuration(MARKER_FADE_DURATION).start();
         }
         mIsActive = false;
