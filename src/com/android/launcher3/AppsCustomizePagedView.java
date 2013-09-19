@@ -941,8 +941,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void setContentType(ContentType type) {
+        int page = getCurrentPage();
+        if (mContentType != type) {
+            page = 0;
+        }
         mContentType = type;
-        invalidatePageData(0, true);
+        invalidatePageData(page, true);
     }
 
     public ContentType getContentType() {

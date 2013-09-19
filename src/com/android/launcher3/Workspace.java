@@ -4221,10 +4221,16 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    protected int getPageIndicatorMarker(int pageIndex) {
-        if (getScreenIdForPageIndex(pageIndex) == CUSTOM_CONTENT_SCREEN_ID) {
-            return R.layout.custom_content_page_indicator_marker;
+    protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
+        long screenId = getScreenIdForPageIndex(pageIndex);
+        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+            int count = mScreenOrder.size() - (hasCustomContent() ? 1 : 0);
+            if (count > 1) {
+                return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_add,
+                        R.drawable.ic_pageindicator_add);
+            }
         }
+
         return super.getPageIndicatorMarker(pageIndex);
     }
 

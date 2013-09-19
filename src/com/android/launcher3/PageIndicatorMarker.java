@@ -19,10 +19,12 @@ package com.android.launcher3;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.FrameLayout;
 import com.android.launcher3.R;
 
@@ -32,8 +34,8 @@ public class PageIndicatorMarker extends FrameLayout {
 
     private static final int MARKER_FADE_DURATION = 175;
 
-    private View mActiveMarker;
-    private View mInactiveMarker;
+    private ImageView mActiveMarker;
+    private ImageView mInactiveMarker;
     private boolean mIsActive = false;
 
     public PageIndicatorMarker(Context context) {
@@ -49,8 +51,14 @@ public class PageIndicatorMarker extends FrameLayout {
     }
 
     protected void onFinishInflate() {
-        mActiveMarker = findViewById(R.id.active);
-        mInactiveMarker = findViewById(R.id.inactive);
+        mActiveMarker = (ImageView) findViewById(R.id.active);
+        mInactiveMarker = (ImageView) findViewById(R.id.inactive);
+    }
+
+    void setMarkerDrawables(int activeResId, int inactiveResId) {
+        Resources r = getResources();
+        mActiveMarker.setImageDrawable(r.getDrawable(activeResId));
+        mInactiveMarker.setImageDrawable(r.getDrawable(inactiveResId));
     }
 
     void activate(boolean immediate) {
