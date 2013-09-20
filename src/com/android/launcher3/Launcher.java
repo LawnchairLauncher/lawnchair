@@ -923,12 +923,14 @@ public class Launcher extends Activity
 
             if (mWorkspace.isOnOrMovingToCustomContent()) {
                 mSearchDropTargetBar.setTranslationY(- scrollY);
+                getQsbBar().setTranslationY(-scrollY);
             }
         }
     };
 
     public void resetQSBScroll() {
         mSearchDropTargetBar.animate().translationY(0).start();
+        getQsbBar().animate().translationY(0).start();
     }
 
     public interface CustomContentCallbacks {
