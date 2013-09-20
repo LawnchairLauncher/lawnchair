@@ -170,7 +170,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public void bindSearchablesChanged();
         public void onPageBoundSynchronously(int page);
-        public void dumpLogsToLocalData(boolean email);
+        public void dumpLogsToLocalData();
     }
 
     public interface ItemInfoFilter {
@@ -286,7 +286,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
     public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
                                     final Callbacks callbacks, final ArrayList<AppInfo> addedApps) {
-        Launcher.addDumpLog(TAG, "10249126 - addAndBindAddedApps()", true);
         if (added.isEmpty()) {
             return;
         }
@@ -333,7 +332,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     workspaceScreens.size());
                             while (numPagesToAdd > 0) {
                                 long screenId = lp.generateNewScreenId();
-                                Launcher.addDumpLog(TAG, "10249126 - addAndBindAddedApps(" + screenId + ")", true);
                                 // Save the screen id for binding in the workspace
                                 workspaceScreens.add(screenId);
                                 addedWorkspaceScreensFinal.add(screenId);
@@ -364,8 +362,6 @@ public class LauncherModel extends BroadcastReceiver {
                         addedShortcutsFinal.add(shortcutInfo);
                     }
                 }
-
-                Launcher.addDumpLog(TAG, "10249126 - addAndBindAddedApps - updateWorkspaceScreenOrder(" + workspaceScreens.size() + ")", true);
 
                 // Update the workspace screens
                 updateWorkspaceScreenOrder(context, workspaceScreens);
@@ -571,7 +567,6 @@ public class LauncherModel extends BroadcastReceiver {
                     String msg = "item: " + item + " container being set to: " +
                             item.container + ", not in the list of folders";
                     Log.e(TAG, msg);
-                    Launcher.dumpDebugLogsToConsole();
                 }
             }
 
@@ -632,11 +627,6 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
             final long screenId, final int cellX, final int cellY) {
-        String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
-                " (" + item.container + ", " + item.screenId + ", " + item.cellX + ", " + item.cellY +
-                ") --> " + "(" + container + ", " + screenId + ", " + cellX + ", " + cellY + ")";
-        Launcher.addDumpLog(TAG, transaction, true);
-
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
@@ -671,11 +661,6 @@ public class LauncherModel extends BroadcastReceiver {
 
         for (int i = 0; i < count; i++) {
             ItemInfo item = items.get(i);
-            String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: "
-                    + item.id + " (" + item.container + ", " + item.screenId + ", " + item.cellX
-                    + ", " + item.cellY + ") --> " + "(" + container + ", " + screen + ", "
-                    + item.cellX + ", " + item.cellY + ")";
-            Launcher.addDumpLog(TAG, transaction, true);
             item.container = container;
 
             // We store hotseat items in canonical form which is this orientation invariant position
@@ -704,11 +689,6 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
             final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
-        String transaction = "DbDebug    Modify item (" + item.title + ") in db, id: " + item.id +
-                " (" + item.container + ", " + item.screenId + ", " + item.cellX + ", " + item.cellY +
-                ") --> " + "(" + container + ", " + screenId + ", " + cellX + ", " + cellY + ")";
-        Launcher.addDumpLog(TAG, transaction, true);
-
         item.cellX = cellX;
         item.cellY = cellY;
         item.spanX = spanX;
@@ -874,11 +854,6 @@ public class LauncherModel extends BroadcastReceiver {
 
         Runnable r = new Runnable() {
             public void run() {
-                String transaction = "DbDebug    Add item (" + item.title + ") to db, id: "
-                        + item.id + " (" + container + ", " + screenId + ", " + cellX + ", "
-                        + cellY + ")";
-                Launcher.addDumpLog(TAG, transaction, true);
-
                 cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
                         LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
@@ -901,7 +876,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     String msg = "adding item: " + item + " to a folder that " +
                                             " doesn't exist";
                                     Log.e(TAG, msg);
-                                    Launcher.dumpDebugLogsToConsole();
                                 }
                             }
                             break;
@@ -935,11 +909,6 @@ public class LauncherModel extends BroadcastReceiver {
 
         Runnable r = new Runnable() {
             public void run() {
-                String transaction = "DbDebug    Delete item (" + item.title + ") from db, id: "
-                        + item.id + " (" + item.container + ", " + item.screenId + ", " + item.cellX +
-                        ", " + item.cellY + ")";
-                Launcher.addDumpLog(TAG, transaction, true);
-
                 cr.delete(uriToDelete, null, null);
 
                 // Lock on mBgLock *after* the db operation
@@ -954,7 +923,6 @@ public class LauncherModel extends BroadcastReceiver {
                                     String msg = "deleting a folder (" + item + ") which still " +
                                             "contains items (" + info + ")";
                                     Log.e(TAG, msg);
-                                    Launcher.dumpDebugLogsToConsole();
                                 }
                             }
                             sBgWorkspaceItems.remove(item);
@@ -980,7 +948,6 @@ public class LauncherModel extends BroadcastReceiver {
      * a list of screen ids in the order that they should appear.
      */
     void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
-        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder()", true);
         final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -990,15 +957,8 @@ public class LauncherModel extends BroadcastReceiver {
         while (iter.hasNext()) {
             long id = iter.next();
             if (id < 0) {
-                Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - remove: " + id + ")", true);
                 iter.remove();
             }
-        }
-
-        // Dump the screens copy
-        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - screensCopy", true);
-        for (Long l : screensCopy) {
-            Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
         }
 
         Runnable r = new Runnable() {
@@ -1013,26 +973,13 @@ public class LauncherModel extends BroadcastReceiver {
                     long screenId = screensCopy.get(i);
                     v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
                     v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder(" + screenId + ", " + i + ")", true);
                     values[i] = v;
                 }
                 cr.bulkInsert(uri, values);
 
                 synchronized (sBgLock) {
-                    // Dump the sBgWorkspaceScreens
-                    Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - pre clear", true);
-                    for (Long l : sBgWorkspaceScreens) {
-                        Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                    }
-
                     sBgWorkspaceScreens.clear();
                     sBgWorkspaceScreens.addAll(screensCopy);
-
-                    // Dump the sBgWorkspaceScreens
-                    Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - post clear", true);
-                    for (Long l : sBgWorkspaceScreens) {
-                        Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                    }
                 }
             }
         };
@@ -1273,9 +1220,6 @@ public class LauncherModel extends BroadcastReceiver {
                 try {
                     long screenId = sc.getLong(idIndex);
                     int rank = sc.getInt(rankIndex);
-
-                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspaceScreensDb(" + screenId + ", " + rank + ")", true);
-
                     orderedScreens.put(rank, screenId);
                 } catch (Exception e) {
                     Launcher.addDumpLog(TAG, "Desktop items loading interrupted - invalid screens: " + e, true);
@@ -1343,7 +1287,6 @@ public class LauncherModel extends BroadcastReceiver {
                 isUpgradePath = loadWorkspace();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
-                        Launcher.addDumpLog(TAG, "10249126 - loadAndBindWorkspace() stopped", true);
                         return isUpgradePath;
                     }
                     mWorkspaceLoaded = true;
@@ -1484,10 +1427,7 @@ public class LauncherModel extends BroadcastReceiver {
             if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
                 // Ensure that all the applications that are in the system are
                 // represented on the home screen.
-                Launcher.addDumpLog(TAG, "10249126 - verifyApplications - useMoreApps="
-                        + UPGRADE_USE_MORE_APPS_FOLDER + " isUpgrade=" + isUpgrade, true);
                 if (!UPGRADE_USE_MORE_APPS_FOLDER || !isUpgrade) {
-                    Launcher.addDumpLog(TAG, "10249126 - verifyApplications(" + isUpgrade + ")", true);
                     verifyApplications();
                 }
             }
@@ -1507,7 +1447,6 @@ public class LauncherModel extends BroadcastReceiver {
 
         public void stopLocked() {
             synchronized (LoaderTask.this) {
-                Launcher.addDumpLog(TAG, "10249126 - STOPPED", true);
                 mStopped = true;
                 this.notify();
             }
@@ -1552,7 +1491,6 @@ public class LauncherModel extends BroadcastReceiver {
             synchronized (sBgLock) {
                 for (AppInfo app : mBgAllAppsList.data) {
                     tmpInfos = getItemInfoForComponentName(app.componentName);
-                    Launcher.addDumpLog(TAG, "10249126 - \t" + app.componentName.getPackageName() + ", " + tmpInfos.isEmpty(), true);
                     if (tmpInfos.isEmpty()) {
                         // We are missing an application icon, so add this to the workspace
                         added.add(app);
@@ -1667,7 +1605,6 @@ public class LauncherModel extends BroadcastReceiver {
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
-                Launcher.addDumpLog(TAG, "10249126 - loadWorkspace()", true);
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
@@ -1720,7 +1657,6 @@ public class LauncherModel extends BroadcastReceiver {
                     long id;
                     Intent intent;
 
-                    Launcher.addDumpLog(TAG, "10249126 - Num rows: " + c.getCount(), true);
                     while (!mStopped && c.moveToNext()) {
                         try {
                             int itemType = c.getInt(itemTypeIndex);
@@ -1739,7 +1675,6 @@ public class LauncherModel extends BroadcastReceiver {
                                             Uri uri = LauncherSettings.Favorites.getContentUri(id,
                                                     false);
                                             contentResolver.delete(uri, null, null);
-                                            Launcher.addDumpLog(TAG, "Invalid package removed: " + cn, true);
                                         } else {
                                             // If apps can be on external storage, then we just
                                             // leave them for the user to remove (maybe add
@@ -1932,7 +1867,6 @@ public class LauncherModel extends BroadcastReceiver {
 
                 // Break early if we've stopped loading
                 if (mStopped) {
-                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspace() - Stopped", true);
                     clearSBgDataStructures();
                     return false;
                 }
@@ -1956,14 +1890,12 @@ public class LauncherModel extends BroadcastReceiver {
                 }
 
                 if (loadedOldDb) {
-                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspace - loadedOldDb", true);
                     long maxScreenId = 0;
                     // If we're importing we use the old screen order.
                     for (ItemInfo item: sBgItemsIdMap.values()) {
                         long screenId = item.screenId;
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                 !sBgWorkspaceScreens.contains(screenId)) {
-                            Launcher.addDumpLog(TAG, "10249126 - loadWorkspace-loadedOldDb(" + screenId + ")", true);
                             sBgWorkspaceScreens.add(screenId);
                             if (screenId > maxScreenId) {
                                 maxScreenId = screenId;
@@ -1971,12 +1903,6 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     }
                     Collections.sort(sBgWorkspaceScreens);
-
-                    // Dump the sBgWorkspaceScreens
-                    Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens", true);
-                    for (Long l : sBgWorkspaceScreens) {
-                        Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                    }
 
                     LauncherAppState.getLauncherProvider().updateMaxScreenId(maxScreenId);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
@@ -1989,50 +1915,24 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                     LauncherAppState.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
-                    Launcher.addDumpLog(TAG, "10249126 - loadWorkspace - !loadedOldDb [" + sWorkerThread.getThreadId() + ", " + Process.myTid() + "]", true);
                     TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(mContext);
                     for (Integer i : orderedScreens.keySet()) {
-                        Launcher.addDumpLog(TAG, "10249126 - adding to sBgWorkspaceScreens: " + orderedScreens.get(i), true);
                         sBgWorkspaceScreens.add(orderedScreens.get(i));
                     }
 
                     // Remove any empty screens
                     ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
-                    for (Long l : unusedScreens) {
-                        Launcher.addDumpLog(TAG, "10249126 - unused screens: " + l, true);
-                    }
-
-                    Launcher.addDumpLog(TAG, "10249126 - sBgItemsIdMap [" + sWorkerThread.getThreadId() + ", " + Process.myTid() + "]", true);
                     for (ItemInfo item: sBgItemsIdMap.values()) {
                         long screenId = item.screenId;
-                        Launcher.addDumpLog(TAG, "10249126 - \t" + item.container + ", " + screenId + " - " + unusedScreens.contains(screenId) + " | " + item, true);
-
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                 unusedScreens.contains(screenId)) {
                             unusedScreens.remove(screenId);
-                            Launcher.addDumpLog(TAG, "10249126 - \t\tRemoving " + screenId, true);
-                            for (Long l : unusedScreens) {
-                                Launcher.addDumpLog(TAG, "10249126 - \t\t\t unused screens: " + l, true);
-                            }
                         }
                     }
 
                     // If there are any empty screens remove them, and update.
                     if (unusedScreens.size() != 0) {
-                        // Dump the sBgWorkspaceScreens
-                        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - pre removeAll", true);
-                        for (Long l : sBgWorkspaceScreens) {
-                            Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                        }
-
                         sBgWorkspaceScreens.removeAll(unusedScreens);
-
-                        // Dump the sBgWorkspaceScreens
-                        Launcher.addDumpLog(TAG, "10249126 - updateWorkspaceScreenOrder - sBgWorkspaceScreens - post removeAll", true);
-                        for (Long l : sBgWorkspaceScreens) {
-                            Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                        }
-
                         updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
                     }
                 }
@@ -2185,16 +2085,6 @@ public class LauncherModel extends BroadcastReceiver {
 
         private void bindWorkspaceScreens(final Callbacks oldCallbacks,
                 final ArrayList<Long> orderedScreens) {
-            Launcher.addDumpLog(TAG, "10249126 - bindWorkspaceScreens()", true);
-
-            // Dump the orderedScreens
-            synchronized (sBgLock) {
-                Launcher.addDumpLog(TAG, "10249126 - orderedScreens", true);
-                for (Long l : sBgWorkspaceScreens) {
-                    Launcher.addDumpLog(TAG, "10249126\t- " + l, true);
-                }
-            }
-
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {
@@ -2278,7 +2168,6 @@ public class LauncherModel extends BroadcastReceiver {
          * Binds all loaded data to actual views on the main thread.
          */
         private void bindWorkspace(int synchronizeBindPage, final boolean isUpgradePath) {
-            Launcher.addDumpLog(TAG, "10249126 - bindWorkspace(" + synchronizeBindPage + ", " + isUpgradePath + ")", true);
             final long t = SystemClock.uptimeMillis();
             Runnable r;
 
@@ -2679,12 +2568,11 @@ public class LauncherModel extends BroadcastReceiver {
             });
 
             // Write all the logs to disk
-            Launcher.addDumpLog(TAG, "10249126 - PackageUpdatedTask - dumping logs to disk", true);
             mHandler.post(new Runnable() {
                 public void run() {
                     Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                     if (callbacks == cb && cb != null) {
-                        callbacks.dumpLogsToLocalData(false);
+                        callbacks.dumpLogsToLocalData();
                     }
                 }
             });
