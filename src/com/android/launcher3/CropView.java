@@ -44,6 +44,7 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
     public interface TouchCallback {
         void onTouchDown();
         void onTap();
+        void onTouchUp();
     }
 
     public CropView(Context context) {
@@ -202,6 +203,7 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
                     now < mTouchDownTime + ViewConfiguration.getTapTimeout()) {
                 mTouchCallback.onTap();
             }
+            mTouchCallback.onTouchUp();
         }
 
         if (!mTouchEnabled) {

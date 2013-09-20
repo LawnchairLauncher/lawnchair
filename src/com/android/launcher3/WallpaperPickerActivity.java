@@ -109,6 +109,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         final View wallpaperStrip = findViewById(R.id.wallpaper_strip);
         mCropView.setTouchCallback(new CropView.TouchCallback() {
             LauncherViewPropertyAnimator mAnim;
+            @Override
             public void onTouchDown() {
                 if (mAnim != null) {
                     mAnim.cancel();
@@ -121,6 +122,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         .setInterpolator(new DecelerateInterpolator(0.75f));
                 mAnim.start();
             }
+            @Override
+            public void onTouchUp() {
+                mIgnoreNextTap = false;
+            }
+            @Override
             public void onTap() {
                 boolean ignoreTap = mIgnoreNextTap;
                 mIgnoreNextTap = false;
