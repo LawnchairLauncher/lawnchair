@@ -26,15 +26,22 @@
         android:id="@+id/wallpaper_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/wallpaper_picker_translucent_gray"
+        android:layout_gravity="center"
+        android:background="@android:color/black"
         android:scaleType="centerCrop" />
-    <TextView
-        android:id="@+id/wallpaper_item_label"
+    <ImageView
+        android:id="@+id/wallpaper_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/pick_image"
-        android:drawableTop="@drawable/ic_images"
-        android:drawablePadding="4dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/wallpaper_item_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="4dp"
+        android:layout_gravity="bottom"
+        android:background="@color/wallpaper_picker_translucent_gray"
         android:textColor="@android:color/white"/>
 </com.android.launcher3.CheckableFrameLayout>
