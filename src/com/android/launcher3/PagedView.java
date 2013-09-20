@@ -337,7 +337,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.removeAllMarkers(mAllowPagedViewAnimations);
 
-            ArrayList<Integer> markers = new ArrayList<Integer>();
+            ArrayList<PageIndicator.PageMarkerResources> markers =
+                    new ArrayList<PageIndicator.PageMarkerResources>();
             for (int i = 0; i < getChildCount(); ++i) {
                 markers.add(getPageIndicatorMarker(i));
             }
@@ -424,8 +425,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     PageIndicator getPageIndicator() {
         return mPageIndicator;
     }
-    protected int getPageIndicatorMarker(int pageIndex) {
-        return R.layout.page_indicator_marker;
+    protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
+        return new PageIndicator.PageMarkerResources();
     }
 
     public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
@@ -969,7 +970,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
             int pageIndex = indexOfChild(child);
-            mPageIndicator.addMarker(pageIndex, getPageIndicatorMarker(pageIndex),
+            mPageIndicator.addMarker(pageIndex,
+                    getPageIndicatorMarker(pageIndex),
                     mAllowPagedViewAnimations);
         }
 

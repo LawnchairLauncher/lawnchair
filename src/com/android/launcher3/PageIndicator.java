@@ -49,6 +49,20 @@ public class PageIndicator extends LinearLayout {
             new ArrayList<PageIndicatorMarker>();
     private int mActiveMarkerIndex;
 
+    public static class PageMarkerResources {
+        int activeId;
+        int inactiveId;
+
+        public PageMarkerResources() {
+            activeId = R.drawable.ic_pageindicator_current;
+            inactiveId = R.drawable.ic_pageindicator_default;
+        }
+        public PageMarkerResources(int aId, int iaId) {
+            activeId = aId;
+            inactiveId = iaId;
+        }
+    }
+
     public PageIndicator(Context context) {
         this(context, null);
     }
@@ -155,17 +169,20 @@ public class PageIndicator extends LinearLayout {
         mWindowRange[1] = windowEnd;
     }
 
-    void addMarker(int index, int layoutId, boolean allowAnimations) {
+    void addMarker(int index, PageMarkerResources marker, boolean allowAnimations) {
         index = Math.max(0, Math.min(index, mMarkers.size()));
 
-        PageIndicatorMarker marker =
-            (PageIndicatorMarker) mLayoutInflater.inflate(layoutId, this, false);
-        mMarkers.add(index, marker);
+        PageIndicatorMarker m =
+            (PageIndicatorMarker) mLayoutInflater.inflate(R.layout.page_indicator_marker,
+                    this, false);
+        m.setMarkerDrawables(marker.activeId, marker.inactiveId);
+
+        mMarkers.add(index, m);
         offsetWindowCenterTo(mActiveMarkerIndex, allowAnimations);
     }
-    void addMarkers(ArrayList<Integer> layoutIds, boolean allowAnimations) {
-        for (int i = 0; i < layoutIds.size(); ++i) {
-            addMarker(Integer.MAX_VALUE, layoutIds.get(i), allowAnimations);
+    void addMarkers(ArrayList<PageMarkerResources> markers, boolean allowAnimations) {
+        for (int i = 0; i < markers.size(); ++i) {
+            addMarker(Integer.MAX_VALUE, markers.get(i), allowAnimations);
         }
     }
 

@@ -1446,7 +1446,6 @@ public class Launcher extends Activity
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
                 if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
-                    mAppsCustomizeTabHost.reset();
                     showWorkspaceAndExitOverviewMode(false);
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
@@ -1665,8 +1664,8 @@ public class Launcher extends Activity
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
 
-                    // Reset AllApps to its initial state
-                    if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
+                    // Reset the apps customize page
+                    if (mAppsCustomizeTabHost != null) {
                         mAppsCustomizeTabHost.reset();
                     }
                 }
