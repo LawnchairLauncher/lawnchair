@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
@@ -55,6 +56,8 @@ public class BubbleTextView extends TextView {
     private int mPressedOutlineColor;
     private int mPressedGlowColor;
 
+    private int mTextColor;
+    private boolean mShadowsEnabled = true;
     private boolean mIsTextVisible;
 
     private boolean mBackgroundSizeChanged;
@@ -85,6 +88,7 @@ public class BubbleTextView extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+        setTextColor(getResources().getColor(R.color.workspace_icon_text_color));
     }
 
     private void init() {
@@ -290,6 +294,11 @@ public class BubbleTextView extends TextView {
 
     @Override
     public void draw(Canvas canvas) {
+        if (!mShadowsEnabled) {
+            super.draw(canvas);
+            return;
+        }
+
         final Drawable background = mBackground;
         if (background != null) {
             final int scrollX = getScrollX();
@@ -340,12 +349,24 @@ public class BubbleTextView extends TextView {
         if (mBackground != null) mBackground.setCallback(null);
     }
 
+    @Override
+    public void setTextColor(int color) {
+        mTextColor = color;
+        super.setTextColor(color);
+    }
+
+    public void setShadowsEnabled(boolean enabled) {
+        mShadowsEnabled = enabled;
+        getPaint().clearShadowLayer();
+        invalidate();
+    }
+
     public void setTextVisibility(boolean visible) {
         Resources res = getResources();
         if (visible) {
-            setTextColor(res.getColor(R.color.workspace_icon_text_color));
+            super.setTextColor(mTextColor);
         } else {
-            setTextColor(res.getColor(android.R.color.transparent));
+            super.setTextColor(res.getColor(android.R.color.transparent));
         }
         mIsTextVisible = visible;
     }

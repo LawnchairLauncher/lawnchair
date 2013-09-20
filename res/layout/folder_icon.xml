@@ -26,6 +26,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:antialias="true"
         android:src="@drawable/portal_ring_inner_holo"/>
     <com.android.launcher3.BubbleTextView
         style="@style/WorkspaceIcon"
