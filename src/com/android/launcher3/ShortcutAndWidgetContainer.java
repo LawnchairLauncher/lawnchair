@@ -137,7 +137,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 // Otherwise, center the icon
                 int cHeight = mIsHotseatLayout ? grid.hotseatCellHeightPx : Math.min(getMeasuredHeight(), grid.cellHeightPx);
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-                child.setPadding(0, cellPaddingY, 0, 0);
+                int cellPaddingX = (int) (grid.edgeMarginPx / 2f);
+                child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
             }
         } else {
             lp.x = 0;

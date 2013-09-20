@@ -28,6 +28,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/portal_ring_inner_holo"/>
     <com.android.launcher3.BubbleTextView
-        android:id="@+id/folder_icon_name"
-        style="@style/WorkspaceIcon"/>
+        style="@style/WorkspaceIcon"
+        android:id="@+id/folder_icon_name" />
 </com.android.launcher3.FolderIcon>
