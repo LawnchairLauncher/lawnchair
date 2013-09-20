@@ -207,7 +207,7 @@ class DeviceProfile {
 
         // Folder
         folderCellWidthPx = cellWidthPx + 3 * edgeMarginPx;
-        folderCellHeightPx = cellHeightPx + edgeMarginPx;
+        folderCellHeightPx = cellHeightPx + (int) ((3f/2f) * edgeMarginPx);
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
     }
