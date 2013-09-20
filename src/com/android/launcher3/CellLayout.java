@@ -497,32 +497,31 @@ public class CellLayout extends ViewGroup {
             int height = width;
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
             View child = getChildAt(fra.mCellX, fra.mCellY);
+            if (child != null) {
+                int centerX = mTempLocation[0] + mCellWidth / 2;
+                int centerY = mTempLocation[1] + previewOffset / 2 +
+                        child.getPaddingTop() + grid.folderBackgroundOffset;
 
-            int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + previewOffset / 2 +
-                    child.getPaddingTop() + grid.folderBackgroundOffset;
+                canvas.save();
+                canvas.translate(centerX - width / 2, centerY - height / 2);
+                d.setBounds(0, 0, width, height);
+                d.draw(canvas);
+                canvas.restore();
 
-            canvas.save();
-            canvas.translate(centerX - width / 2, centerY - height / 2);
-            d.setBounds(0, 0, width, height);
-            d.draw(canvas);
-            canvas.restore();
+                // Draw inner ring
+                d = FolderRingAnimator.sSharedInnerRingDrawable;
+                width = (int) (fra.getInnerRingSize() * getChildrenScale());
+                height = width;
 
-            // Draw inner ring
-            d = FolderRingAnimator.sSharedInnerRingDrawable;
-            width = (int) (fra.getInnerRingSize() * getChildrenScale());
-            height = width;
-            cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
-            child = getChildAt(fra.mCellX, fra.mCellY);
-
-            centerX = mTempLocation[0] + mCellWidth / 2;
-            centerY = mTempLocation[1] + previewOffset / 2 +
-                    child.getPaddingTop() + grid.folderBackgroundOffset;
-            canvas.save();
-            canvas.translate(centerX - width / 2, centerY - width / 2);
-            d.setBounds(0, 0, width, height);
-            d.draw(canvas);
-            canvas.restore();
+                centerX = mTempLocation[0] + mCellWidth / 2;
+                centerY = mTempLocation[1] + previewOffset / 2 +
+                        child.getPaddingTop() + grid.folderBackgroundOffset;
+                canvas.save();
+                canvas.translate(centerX - width / 2, centerY - width / 2);
+                d.setBounds(0, 0, width, height);
+                d.draw(canvas);
+                canvas.restore();
+            }
         }
 
         if (mFolderLeaveBehindCell[0] >= 0 && mFolderLeaveBehindCell[1] >= 0) {
@@ -532,15 +531,17 @@ public class CellLayout extends ViewGroup {
 
             cellToPoint(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1], mTempLocation);
             View child = getChildAt(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1]);
-            int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + previewOffset / 2 +
-                    child.getPaddingTop() + grid.folderBackgroundOffset;
+            if (child != null) {
+                int centerX = mTempLocation[0] + mCellWidth / 2;
+                int centerY = mTempLocation[1] + previewOffset / 2 +
+                        child.getPaddingTop() + grid.folderBackgroundOffset;
 
-            canvas.save();
-            canvas.translate(centerX - width / 2, centerY - width / 2);
-            d.setBounds(0, 0, width, height);
-            d.draw(canvas);
-            canvas.restore();
+                canvas.save();
+                canvas.translate(centerX - width / 2, centerY - width / 2);
+                d.setBounds(0, 0, width, height);
+                d.draw(canvas);
+                canvas.restore();
+            }
         }
     }
 

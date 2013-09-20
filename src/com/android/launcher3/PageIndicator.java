@@ -186,6 +186,11 @@ public class PageIndicator extends LinearLayout {
         }
     }
 
+    void updateMarker(int index, PageMarkerResources marker) {
+        PageIndicatorMarker m = mMarkers.get(index);
+        m.setMarkerDrawables(marker.activeId, marker.inactiveId);
+    }
+
     void removeMarker(int index, boolean allowAnimations) {
         if (mMarkers.size() > 0) {
             index = Math.max(0, Math.min(mMarkers.size() - 1, index));

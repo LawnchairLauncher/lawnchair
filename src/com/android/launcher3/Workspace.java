@@ -616,6 +616,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public long commitExtraEmptyScreen() {
+        int index = getPageIndexForScreenId(EXTRA_EMPTY_SCREEN_ID);
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
         mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
@@ -623,6 +624,11 @@ public class Workspace extends SmoothPagedView
         long newId = LauncherAppState.getLauncherProvider().generateNewScreenId();
         mWorkspaceScreens.put(newId, cl);
         mScreenOrder.add(newId);
+
+        // Update the page indicator marker
+        if (getPageIndicator() != null) {
+            getPageIndicator().updateMarker(index, getPageIndicatorMarker(index));
+        }
 
         // Update the model for the new screen
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
