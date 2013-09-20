@@ -609,15 +609,18 @@ public class Workspace extends SmoothPagedView
     }
 
     public void removeExtraEmptyScreen() {
-        int nScreens = getChildCount();
-        nScreens = hasCustomContent() ? nScreens - 1 : nScreens;
-
-        if (mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && nScreens > 1) {
+        if (hasExtraEmptyScreen()) {
             CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
             mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
             mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
             removeView(cl);
         }
+    }
+
+    public boolean hasExtraEmptyScreen() {
+        int nScreens = getChildCount();
+        nScreens = hasCustomContent() ? nScreens - 1 : nScreens;
+        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && nScreens > 1;
     }
 
     public long commitExtraEmptyScreen() {
@@ -1058,9 +1061,6 @@ public class Workspace extends SmoothPagedView
                 sp, mLauncher.getWindowManager(), mWallpaperManager);
     }
 
-
-
-
     protected void snapToPage(int whichPage, Runnable r) {
         if (mDelayedSnapToPageRunnable != null) {
             mDelayedSnapToPageRunnable.run();
@@ -1083,7 +1083,9 @@ public class Workspace extends SmoothPagedView
         boolean mAnimating;
         long mAnimationStartTime;
         float mAnimationStartOffset;
-        final int ANIMATION_DURATION = 250;
+        private final int ANIMATION_DURATION = 250;
+        // Don't use all the wallpaper for parallax until you have at least this many pages
+        private final int MIN_PARALLAX_PAGE_SPAN = 4;
         int mNumScreens;
 
         public WallpaperOffsetInterpolator() {
@@ -1095,7 +1097,6 @@ public class Workspace extends SmoothPagedView
         public void doFrame(long frameTimeNanos) {
             updateOffset(false);
         }
-
 
         private void updateOffset(boolean force) {
             if (mWaitingForUpdate || force) {
@@ -1138,17 +1139,41 @@ public class Workspace extends SmoothPagedView
             if (getChildCount() <= 1) {
                 return 0;
             }
-            final int lastIndex = isLayoutRtl() ? 0 : getChildCount() - 1;
+
+            // Exclude the leftmost page
             final int firstIndex = isLayoutRtl() ? getChildCount() - 2 : 1;
+            // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
+            int extra = numExtraScreensToIgnore();
+            final int lastIndex = isLayoutRtl() ? 0 + extra : getChildCount() - 1 - extra;
+
             int firstPageScrollX = getScrollForPage(firstIndex);
             int scrollRange = getScrollForPage(lastIndex) - firstPageScrollX;
             if (scrollRange == 0) {
                 return 0;
             } else {
-                // do different behavior if it's  a live wallpaper?
-                float offset = (getScrollX() - firstPageScrollX) / (float) scrollRange;
-                return offset;
+                // TODO: do different behavior if it's  a live wallpaper?
+                float offset = Math.min(1, (getScrollX() - firstPageScrollX) / (float) scrollRange);
+                offset = Math.max(0, offset);
+                // Don't use up all the wallpaper parallax until you have at least
+                // MIN_PARALLAX_PAGE_SPAN pages
+                int numScrollingPages = getNumScreensExcludingExtraEmptyScreenAndLeftmost();
+                int parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages) - 1;
+                return offset * (numScrollingPages - 1) / parallaxPageSpan;
             }
+        }
+
+        private int numExtraScreensToIgnore() {
+            int numScrollingPages = getChildCount() - 1;
+            if (numScrollingPages > MIN_PARALLAX_PAGE_SPAN && hasExtraEmptyScreen()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        private int getNumScreensExcludingExtraEmptyScreenAndLeftmost() {
+            int numScrollingPages = getChildCount() - 1 - numExtraScreensToIgnore();
+            return numScrollingPages;
         }
 
         public void syncWithScroll() {
@@ -1179,12 +1204,12 @@ public class Workspace extends SmoothPagedView
         public void setFinalX(float x) {
             scheduleUpdate();
             mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
-            if (getChildCount() != mNumScreens) {
+            if (getNumScreensExcludingExtraEmptyScreenAndLeftmost() != mNumScreens) {
                 if (mNumScreens > 0) {
                     // Don't animate if we're going from 0 screens
                     animateToFinal();
                 }
-                mNumScreens = getChildCount();
+                mNumScreens = getNumScreensExcludingExtraEmptyScreenAndLeftmost();
             }
         }
 
