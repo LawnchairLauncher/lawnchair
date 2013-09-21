@@ -403,6 +403,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         if (animated) {
             enableAndBuildHardwareLayer();
         }
+
+        // Dismiss the workspace cling
+        l.dismissWorkspaceCling(null);
     }
 
     @Override
@@ -419,8 +422,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
 
         if (!toWorkspace) {
-            // Dismiss the workspace cling
-            l.dismissWorkspaceCling(null);
             // Show the all apps cling (if not already shown)
             mAppsCustomizePane.showAllAppsCling();
             // Make sure adjacent pages are loaded (we wait until after the transition to

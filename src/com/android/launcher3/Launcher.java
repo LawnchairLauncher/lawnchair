@@ -202,8 +202,8 @@ public class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
     private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT = 600;
-    private static final int SHOW_CLING_DURATION = 550;
-    private static final int DISMISS_CLING_DURATION = 250;
+    private static final int SHOW_CLING_DURATION = 250;
+    private static final int DISMISS_CLING_DURATION = 200;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
@@ -422,7 +422,6 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
         setupViews();
         grid.layout(this);
-        showFirstRunWorkspaceCling();
 
         registerContentObservers();
 
@@ -464,6 +463,8 @@ public class Launcher extends Activity
 
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
+
+        showFirstRunCling();
     }
 
     protected void onUserLeaveHint() {
@@ -4080,47 +4081,30 @@ public class Launcher extends Activity
         return true;
     }
 
-    private Cling initCling(int clingId, int[] positionData, boolean animate, int delay) {
+    private Cling initCling(int clingId, int[] positionData, boolean animate,
+                            boolean dimNavBarVisibilty) {
         final Cling cling = (Cling) findViewById(clingId);
         if (cling != null) {
             cling.init(this, positionData);
-            cling.setVisibility(View.VISIBLE);
-            cling.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            if (animate) {
-                cling.buildLayer();
-                cling.setAlpha(0f);
-                cling.animate()
-                    .alpha(1f)
-                    .setInterpolator(new AccelerateInterpolator())
-                    .setDuration(SHOW_CLING_DURATION)
-                    .setStartDelay(delay)
-                    .start();
-            } else {
-                cling.setAlpha(1f);
+            cling.show(animate, SHOW_CLING_DURATION);
+
+            if (dimNavBarVisibilty) {
+                cling.setSystemUiVisibility(cling.getSystemUiVisibility() |
+                        View.SYSTEM_UI_FLAG_LOW_PROFILE);
             }
-            cling.setFocusableInTouchMode(true);
-            cling.post(new Runnable() {
-                public void run() {
-                    cling.setFocusable(true);
-                    cling.requestFocus();
-                }
-            });
-            mHideFromAccessibilityHelper.setImportantForAccessibilityToNo(
-                    mDragLayer, clingId == R.id.all_apps_cling);
         }
         return cling;
     }
 
-    private void dismissCling(final Cling cling, final String flag, int duration) {
+    private void dismissCling(final Cling cling, final Runnable postAnimationCb,
+                              final String flag, int duration, boolean restoreNavBarVisibilty) {
         // To catch cases where siblings of top-level views are made invisible, just check whether
         // the cling is directly set to GONE before dismissing it.
         if (cling != null && cling.getVisibility() != View.GONE) {
-            ObjectAnimator anim = LauncherAnimUtils.ofFloat(cling, "alpha", 0f);
-            anim.setDuration(duration);
-            anim.addListener(new AnimatorListenerAdapter() {
-                public void onAnimationEnd(Animator animation) {
-                    cling.setVisibility(View.GONE);
+            final Runnable cleanUpClingCb = new Runnable() {
+                public void run() {
                     cling.cleanup();
+                    /*
                     // We should update the shared preferences on a background thread
                     new Thread("dismissClingThread") {
                         public void run() {
@@ -4129,10 +4113,23 @@ public class Launcher extends Activity
                             editor.commit();
                         }
                     }.start();
-                };
-            });
-            anim.start();
+                    */
+                    if (postAnimationCb != null) {
+                        postAnimationCb.run();
+                    }
+                }
+            };
+            if (duration <= 0) {
+                cleanUpClingCb.run();
+            } else {
+                cling.hide(duration, cleanUpClingCb);
+            }
             mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
+
+            if (restoreNavBarVisibilty) {
+                cling.setSystemUiVisibility(cling.getSystemUiVisibility() &
+                        ~View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            }
         }
     }
 
@@ -4162,10 +4159,9 @@ public class Launcher extends Activity
         return false;
     }
 
-    public void showFirstRunWorkspaceCling() {
-        // Enable the clings only if they have not been dismissed before
+    public void showFirstRunCling() {
         if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false) &&
+                !mSharedPrefs.getBoolean(Cling.FIRST_RUN_CLING_DISMISSED_KEY, false) &&
                 !skipCustomClingIfNoAccounts() ) {
             // If we're not using the default workspace layout, replace workspace cling
             // with a custom workspace cling (usually specified in an overlay)
@@ -4181,25 +4177,27 @@ public class Launcher extends Activity
                 clingParent.addView(customCling, clingIndex);
                 customCling.setId(R.id.workspace_cling);
             }
-            initCling(R.id.workspace_cling, null, false, 0);
+            initCling(R.id.first_run_cling, null, false, true);
         } else {
-            removeCling(R.id.workspace_cling);
+            removeCling(R.id.first_run_cling);
         }
     }
-    public void showFirstRunAllAppsCling(int[] position) {
+
+    public void showFirstRunWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
-            initCling(R.id.all_apps_cling, position, true, 0);
+                !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+            initCling(R.id.workspace_cling, null, false, true);
         } else {
-            removeCling(R.id.all_apps_cling);
+            removeCling(R.id.workspace_cling);
         }
     }
     public Cling showFirstRunFoldersCling() {
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
-            return initCling(R.id.folder_cling, null, true, 0);
+            Cling cling = initCling(R.id.folder_cling, null, true, true);
+            return cling;
         } else {
             removeCling(R.id.folder_cling);
             return null;
@@ -4215,17 +4213,34 @@ public class Launcher extends Activity
         }
         return false;
     }
+    public void dismissFirstRunCling(View v) {
+        Cling cling = (Cling) findViewById(R.id.first_run_cling);
+        Runnable cb = new Runnable() {
+            public void run() {
+                // Show the workspace cling next
+                showFirstRunWorkspaceCling();
+            }
+        };
+        dismissCling(cling, cb, Cling.FIRST_RUN_CLING_DISMISSED_KEY,
+                DISMISS_CLING_DURATION, false);
+    }
     public void dismissWorkspaceCling(View v) {
         Cling cling = (Cling) findViewById(R.id.workspace_cling);
-        dismissCling(cling, Cling.WORKSPACE_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
-    }
-    public void dismissAllAppsCling(View v) {
-        Cling cling = (Cling) findViewById(R.id.all_apps_cling);
-        dismissCling(cling, Cling.ALLAPPS_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+        Runnable cb = null;
+        if (v == null) {
+            cb = new Runnable() {
+                public void run() {
+                    mWorkspace.enterOverviewMode();
+                }
+            };
+        }
+        dismissCling(cling, cb, Cling.WORKSPACE_CLING_DISMISSED_KEY,
+                DISMISS_CLING_DURATION, true);
     }
     public void dismissFolderCling(View v) {
         Cling cling = (Cling) findViewById(R.id.folder_cling);
-        dismissCling(cling, Cling.FOLDER_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+        dismissCling(cling, null, Cling.FOLDER_CLING_DISMISSED_KEY,
+                DISMISS_CLING_DURATION, true);
     }
 
     /**

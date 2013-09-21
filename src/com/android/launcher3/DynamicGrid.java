@@ -328,10 +328,12 @@ class DeviceProfile {
         return height / countY;
     }
 
+    boolean isPhone() {
+        return !isTablet && !isLargeTablet;
+    }
     boolean isTablet() {
         return isTablet;
     }
-
     boolean isLargeTablet() {
         return isLargeTablet;
     }

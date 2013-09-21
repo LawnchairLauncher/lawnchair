@@ -453,6 +453,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 Cling cling = mLauncher.showFirstRunFoldersCling();
                 if (cling != null) {
                     cling.bringToFront();
+                    bringToFront();
                 }
                 setFocusOnFirstChild();
             }
@@ -878,11 +879,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
 
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         int centerX = (int) (mTempRect.left + mTempRect.width() * scale / 2);
         int centerY = (int) (mTempRect.top + mTempRect.height() * scale / 2);
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
-
         int currentPage = mLauncher.getWorkspace().getCurrentPage();
         // In case the workspace is scrolling, we need to use the final scroll to compute
         // the folders bounds.
@@ -900,8 +903,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 bounds.left + bounds.width() - width);
         int top = Math.min(Math.max(bounds.top, centeredTop),
                 bounds.top + bounds.height() - height);
-        // If the folder doesn't fit within the bounds, center it about the desired bounds
-        if (width >= bounds.width()) {
+        if (grid.isPhone() && (grid.availableWidthPx - width) < grid.iconSizePx) {
+            // Center the folder if it is full (on phones only)
+            left = (grid.availableWidthPx - width) / 2;
+        } else if (width >= bounds.width()) {
+            // If the folder doesn't fit within the bounds, center it about the desired bounds
             left = bounds.left + (bounds.width() - width) / 2;
         }
         if (height >= bounds.height()) {
