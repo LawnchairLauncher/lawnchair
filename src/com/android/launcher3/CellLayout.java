@@ -491,31 +491,30 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < mFolderOuterRings.size(); i++) {
             FolderRingAnimator fra = mFolderOuterRings.get(i);
 
-            // Draw outer ring
-            Drawable d = FolderRingAnimator.sSharedOuterRingDrawable;
-            int width = (int) (fra.getOuterRingSize() * getChildrenScale());
-            int height = width;
+            Drawable d;
+            int width, height;
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
             View child = getChildAt(fra.mCellX, fra.mCellY);
+            int centerX = mTempLocation[0] + mCellWidth / 2;
+            int centerY = mTempLocation[1] + previewOffset / 2 +
+                    child.getPaddingTop() + grid.folderBackgroundOffset;
             if (child != null) {
-                int centerX = mTempLocation[0] + mCellWidth / 2;
-                int centerY = mTempLocation[1] + previewOffset / 2 +
-                        child.getPaddingTop() + grid.folderBackgroundOffset;
-
-                canvas.save();
-                canvas.translate(centerX - width / 2, centerY - height / 2);
-                d.setBounds(0, 0, width, height);
-                d.draw(canvas);
-                canvas.restore();
+                // Draw outer ring, if it exists
+                if (FolderIcon.HAS_OUTER_RING) {
+                    d = FolderRingAnimator.sSharedOuterRingDrawable;
+                    width = (int) (fra.getOuterRingSize() * getChildrenScale());
+                    height = width;
+                    canvas.save();
+                    canvas.translate(centerX - width / 2, centerY - height / 2);
+                    d.setBounds(0, 0, width, height);
+                    d.draw(canvas);
+                    canvas.restore();
+                }
 
                 // Draw inner ring
                 d = FolderRingAnimator.sSharedInnerRingDrawable;
                 width = (int) (fra.getInnerRingSize() * getChildrenScale());
                 height = width;
-
-                centerX = mTempLocation[0] + mCellWidth / 2;
-                centerY = mTempLocation[1] + previewOffset / 2 +
-                        child.getPaddingTop() + grid.folderBackgroundOffset;
                 canvas.save();
                 canvas.translate(centerX - width / 2, centerY - width / 2);
                 d.setBounds(0, 0, width, height);

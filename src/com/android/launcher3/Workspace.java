@@ -991,7 +991,6 @@ public class Workspace extends SmoothPagedView
             clearChildrenCache();
         }
 
-
         if (mDragController.isDragging()) {
             if (isSmall()) {
                 // If we are in springloaded mode, then force an event to check if the current touch

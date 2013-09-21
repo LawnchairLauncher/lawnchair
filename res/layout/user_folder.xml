@@ -46,6 +46,7 @@
         android:textSize="14sp"
         android:textColor="#ff777777"
         android:textColorHighlight="#ff333333"
+        android:textCursorDrawable="@null"
         android:gravity="center_horizontal"
         android:singleLine="true"
         android:imeOptions="flagNoExtractUi"

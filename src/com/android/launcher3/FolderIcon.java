@@ -73,6 +73,9 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     // The amount of vertical spread between items in the stack [0...1]
     private static final float PERSPECTIVE_SHIFT_FACTOR = 0.24f;
 
+    // Flag as to whether or not to draw an outer ring. Currently none is designed.
+    public static final boolean HAS_OUTER_RING = false;
+
     // The degree to which the item in the back of the stack is scaled [0...1]
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
     private static final float PERSPECTIVE_SCALE_FACTOR = 0.35f;
@@ -201,7 +204,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                 sPreviewSize = grid.folderIconSizePx;
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
                 sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
-                sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_holo);
+                sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_nolip_holo);
                 sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
                 sStaticValuesDirty = false;
             }
