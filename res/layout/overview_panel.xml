@@ -22,24 +22,30 @@
     android:paddingBottom="@dimen/overview_panel_bottom_padding">
 
     <TextView
-        android:id="@+id/widget_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/widget_button_text"
-        android:drawablePadding="4dp"
-        android:drawableTop="@drawable/ic_gel_widget_icn"
-        android:textSize="18dp"/>
-    <Space
-        android:layout_width="@dimen/overview_panel_buttonSpacing"
-        android:layout_height="wrap_content"/>
-    <TextView
         android:id="@+id/wallpaper_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/wallpaper_button_text"
         android:drawablePadding="4dp"
-        android:drawableTop="@drawable/ic_gel_wallpaper_icn"
-        android:textSize="18dp" />
+        android:drawableTop="@drawable/ic_wallpaper"
+        android:gravity="center_horizontal"
+        android:fontFamily="sans-serif-condensed"
+        android:textAllCaps="true"
+        android:textSize="12sp" />
+    <Space
+        android:layout_width="@dimen/overview_panel_buttonSpacing"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/widget_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_button_text"
+        android:drawablePadding="4dp"
+        android:gravity="center_horizontal"
+        android:drawableTop="@drawable/ic_widget"
+        android:fontFamily="sans-serif-condensed"
+        android:textAllCaps="true"
+        android:textSize="12sp"/>
     <Space
         android:layout_width="@dimen/overview_panel_buttonSpacing"
         android:layout_height="wrap_content"/>
@@ -49,6 +55,9 @@
         android:layout_height="wrap_content"
         android:text="@string/settings_button_text"
         android:drawablePadding="4dp"
-        android:drawableTop="@drawable/ic_gel_setting_icn"
-        android:textSize="18dp" />
+        android:gravity="center_horizontal"
+        android:drawableTop="@drawable/ic_setting"
+        android:fontFamily="sans-serif-condensed"
+        android:textAllCaps="true"
+        android:textSize="12sp" />
 </LinearLayout>
