@@ -2951,6 +2951,11 @@ public class Workspace extends SmoothPagedView
         float smallestDistSoFar = Float.MAX_VALUE;
 
         for (int i = 0; i < screenCount; i++) {
+            // The custom content screen is not a valid drag over option
+            if (mScreenOrder.get(i) == CUSTOM_CONTENT_SCREEN_ID) {
+                continue;
+            }
+
             CellLayout cl = (CellLayout) getChildAt(i);
 
             final float[] touchXy = {originX, originY};
