@@ -41,6 +41,21 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
 
     private List<ResolveInfo> mThirdPartyWallpaperPickers = new ArrayList<ResolveInfo>();
 
+    public static class ThirdPartyWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
+        private ResolveInfo mResolveInfo;
+        public ThirdPartyWallpaperTile(ResolveInfo resolveInfo) {
+            mResolveInfo = resolveInfo;
+        }
+        public void onClick(WallpaperPickerActivity a) {
+            final ComponentName itemComponentName = new ComponentName(
+                    mResolveInfo.activityInfo.packageName, mResolveInfo.activityInfo.name);
+            Intent launchIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+            launchIntent.setComponent(itemComponentName);
+            Utilities.startActivityForResultSafely(
+                    a, launchIntent, WallpaperPickerActivity.PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);
+        }
+    }
+
     public ThirdPartyWallpaperPickerListAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mPackageManager = context.getPackageManager();
@@ -88,7 +103,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
         return mThirdPartyWallpaperPickers.size();
     }
 
-    public Object getItem(int position) {
+    public ResolveInfo getItem(int position) {
         return mThirdPartyWallpaperPickers.get(position);
     }
 

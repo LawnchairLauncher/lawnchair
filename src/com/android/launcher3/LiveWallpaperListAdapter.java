@@ -17,12 +17,10 @@
 package com.android.launcher3;
 
 import android.app.WallpaperInfo;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -52,7 +50,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
 
-    private List<LiveWallpaperInfo> mWallpapers;
+    private List<LiveWallpaperTile> mWallpapers;
 
     @SuppressWarnings("unchecked")
     public LiveWallpaperListAdapter(Context context) {
@@ -63,18 +61,9 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
                 new Intent(WallpaperService.SERVICE_INTERFACE),
                 PackageManager.GET_META_DATA);
 
-        mWallpapers = generatePlaceholderViews(list.size());
+        mWallpapers = new ArrayList<LiveWallpaperTile>();
 
         new LiveWallpaperEnumerator(context).execute(list);
-    }
-
-    private List<LiveWallpaperInfo> generatePlaceholderViews(int amount) {
-        ArrayList<LiveWallpaperInfo> list = new ArrayList<LiveWallpaperInfo>(amount);
-        for (int i = 0; i < amount; i++) {
-            LiveWallpaperInfo info = new LiveWallpaperInfo();
-            list.add(info);
-        }
-        return list;
     }
 
     public int getCount() {
@@ -84,7 +73,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
         return mWallpapers.size();
     }
 
-    public Object getItem(int position) {
+    public LiveWallpaperTile getItem(int position) {
         return mWallpapers.get(position);
     }
 
@@ -103,31 +92,42 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
 
         WallpaperPickerActivity.setWallpaperItemPaddingToZero((FrameLayout) view);
 
-        LiveWallpaperInfo wallpaperInfo = mWallpapers.get(position);
+        LiveWallpaperTile wallpaperInfo = mWallpapers.get(position);
         ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);
         ImageView icon = (ImageView) view.findViewById(R.id.wallpaper_icon);
-        if (wallpaperInfo.thumbnail != null) {
-            image.setImageDrawable(wallpaperInfo.thumbnail);
+        if (wallpaperInfo.mThumbnail != null) {
+            image.setImageDrawable(wallpaperInfo.mThumbnail);
             icon.setVisibility(View.GONE);
         } else {
-            icon.setImageDrawable(wallpaperInfo.info.loadIcon(mPackageManager));
+            icon.setImageDrawable(wallpaperInfo.mInfo.loadIcon(mPackageManager));
             icon.setVisibility(View.VISIBLE);
         }
 
         TextView label = (TextView) view.findViewById(R.id.wallpaper_item_label);
-        label.setText(wallpaperInfo.info.loadLabel(mPackageManager));
+        label.setText(wallpaperInfo.mInfo.loadLabel(mPackageManager));
 
         return view;
     }
 
-    public class LiveWallpaperInfo {
-        public Drawable thumbnail;
-        public WallpaperInfo info;
-        public Intent intent;
+    public static class LiveWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
+        private Drawable mThumbnail;
+        private WallpaperInfo mInfo;
+        public LiveWallpaperTile(Drawable thumbnail, WallpaperInfo info, Intent intent) {
+            mThumbnail = thumbnail;
+            mInfo = info;
+        }
+        public void onClick(WallpaperPickerActivity a) {
+            Intent preview = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+            preview.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                    mInfo.getComponent());
+            a.onLiveWallpaperPickerLaunch();
+            Utilities.startActivityForResultSafely(
+                    a, preview, WallpaperPickerActivity.PICK_LIVE_WALLPAPER);
+        }
     }
 
     private class LiveWallpaperEnumerator extends
-            AsyncTask<List<ResolveInfo>, LiveWallpaperInfo, Void> {
+            AsyncTask<List<ResolveInfo>, LiveWallpaperTile, Void> {
         private Context mContext;
         private int mWallpaperPosition;
 
@@ -168,12 +168,12 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
                     continue;
                 }
 
-                LiveWallpaperInfo wallpaper = new LiveWallpaperInfo();
-                wallpaper.intent = new Intent(WallpaperService.SERVICE_INTERFACE);
-                wallpaper.intent.setClassName(info.getPackageName(), info.getServiceName());
-                wallpaper.info = info;
 
                 Drawable thumb = info.loadThumbnail(packageManager);
+                Intent launchIntent = new Intent(WallpaperService.SERVICE_INTERFACE);
+                launchIntent.setClassName(info.getPackageName(), info.getServiceName());
+                LiveWallpaperTile wallpaper = new LiveWallpaperTile(thumb, info, launchIntent);
+
                 // TODO: generate a default thumb
                 /*
                 final Resources res = mContext.getResources();
@@ -211,7 +211,6 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
 
                     thumb = new BitmapDrawable(res, thumbnail);
                 }*/
-                wallpaper.thumbnail = thumb;
                 publishProgress(wallpaper);
             }
 
@@ -219,9 +218,9 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
         }
 
         @Override
-        protected void onProgressUpdate(LiveWallpaperInfo...infos) {
-            for (LiveWallpaperInfo info : infos) {
-                info.thumbnail.setDither(true);
+        protected void onProgressUpdate(LiveWallpaperTile...infos) {
+            for (LiveWallpaperTile info : infos) {
+                info.mThumbnail.setDither(true);
                 if (mWallpaperPosition < mWallpapers.size()) {
                     mWallpapers.set(mWallpaperPosition, info);
                 } else {

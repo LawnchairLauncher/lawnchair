@@ -162,7 +162,6 @@ public class WallpaperCropActivity extends Activity {
     }
 
     protected void setWallpaper(String filePath, final boolean finishActivityWhenDone) {
-
         BitmapCropTask cropTask = new BitmapCropTask(this,
                 filePath, null, 0, 0, true, false, null);
         final Point bounds = cropTask.getImageBounds();
@@ -200,7 +199,7 @@ public class WallpaperCropActivity extends Activity {
                 }
             }
         };
-        BitmapCropTask cropTask = new BitmapCropTask(res, resId,
+        BitmapCropTask cropTask = new BitmapCropTask(this, res, resId,
                 crop, outSize.x, outSize.y,
                 true, false, onEndCrop);
         cropTask.execute();
@@ -287,7 +286,7 @@ public class WallpaperCropActivity extends Activity {
                 }
             }
         };
-        BitmapCropTask cropTask = new BitmapCropTask(uri,
+        BitmapCropTask cropTask = new BitmapCropTask(this, uri,
                 cropRect, outWidth, outHeight, true, false, onEndCrop);
         if (onBitmapCroppedHandler != null) {
             cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
@@ -299,7 +298,7 @@ public class WallpaperCropActivity extends Activity {
         public void onBitmapCropped(byte[] imageBytes);
     }
 
-    protected class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
+    protected static class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
         Uri mInUri = null;
         Context mContext;
         String mInFilePath;
@@ -309,7 +308,6 @@ public class WallpaperCropActivity extends Activity {
         RectF mCropBounds = null;
         int mOutWidth, mOutHeight;
         int mRotation = 0; // for now
-        protected final WallpaperManager mWPManager;
         String mOutputFormat = "jpg"; // for now
         boolean mSetWallpaper;
         boolean mSaveCroppedBitmap;
@@ -324,7 +322,6 @@ public class WallpaperCropActivity extends Activity {
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mContext = c;
             mInFilePath = filePath;
-            mWPManager = WallpaperManager.getInstance(getApplicationContext());
             init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
@@ -332,24 +329,23 @@ public class WallpaperCropActivity extends Activity {
                 RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInImageBytes = imageBytes;
-            mWPManager = WallpaperManager.getInstance(getApplicationContext());
             init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
-        public BitmapCropTask(Uri inUri,
+        public BitmapCropTask(Context c, Uri inUri,
                 RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            mContext = c;
             mInUri = inUri;
-            mWPManager = WallpaperManager.getInstance(getApplicationContext());
             init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
-        public BitmapCropTask(Resources res, int inResId,
+        public BitmapCropTask(Context c, Resources res, int inResId,
                 RectF cropBounds, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            mContext = c;
             mInResId = inResId;
             mResources = res;
-            mWPManager = WallpaperManager.getInstance(getApplicationContext());
             init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
@@ -385,7 +381,7 @@ public class WallpaperCropActivity extends Activity {
                 try {
                     if (mInUri != null) {
                         mInStream = new BufferedInputStream(
-                                getContentResolver().openInputStream(mInUri));
+                                mContext.getContentResolver().openInputStream(mInUri));
                     } else if (mInFilePath != null) {
                         mInStream = mContext.openFileInput(mInFilePath);
                     } else if (mInImageBytes != null) {
@@ -426,15 +422,16 @@ public class WallpaperCropActivity extends Activity {
 
             regenerateInputStream();
 
-            if (mNoCrop && mInStream != null) {
+            WallpaperManager wallpaperManager = null;
+            if (mSetWallpaper) {
+                wallpaperManager = WallpaperManager.getInstance(mContext.getApplicationContext());
+            }
+            if (mSetWallpaper && mNoCrop && mInStream != null) {
                 try {
-                    mWPManager.setStream(mInStream);
+                    wallpaperManager.setStream(mInStream);
                 } catch (IOException e) {
                     Log.w(LOGTAG, "cannot write stream to wallpaper", e);
                     failure = true;
-                }
-                if (mOnEndRunnable != null) {
-                    mOnEndRunnable.run();
                 }
                 return !failure;
             }
@@ -534,25 +531,17 @@ public class WallpaperCropActivity extends Activity {
                 ByteArrayOutputStream tmpOut = new ByteArrayOutputStream(2048);
                 if (crop.compress(cf, DEFAULT_COMPRESS_QUALITY, tmpOut)) {
                     // If we need to set to the wallpaper, set it
-                    if (mSetWallpaper && mWPManager != null) {
-                        if (mWPManager == null) {
-                            Log.w(LOGTAG, "no wallpaper manager");
-                            failure = true;
-                        } else {
-                            try {
-                                byte[] outByteArray = tmpOut.toByteArray();
-                                mWPManager.setStream(new ByteArrayInputStream(outByteArray));
-                                if (mOnBitmapCroppedHandler != null) {
-                                    mOnBitmapCroppedHandler.onBitmapCropped(outByteArray);
-                                }
-                            } catch (IOException e) {
-                                Log.w(LOGTAG, "cannot write stream to wallpaper", e);
-                                failure = true;
+                    if (mSetWallpaper && wallpaperManager != null) {
+                        try {
+                            byte[] outByteArray = tmpOut.toByteArray();
+                            wallpaperManager.setStream(new ByteArrayInputStream(outByteArray));
+                            if (mOnBitmapCroppedHandler != null) {
+                                mOnBitmapCroppedHandler.onBitmapCropped(outByteArray);
                             }
+                        } catch (IOException e) {
+                            Log.w(LOGTAG, "cannot write stream to wallpaper", e);
+                            failure = true;
                         }
-                    }
-                    if (mOnEndRunnable != null) {
-                        mOnEndRunnable.run();
                     }
                 } else {
                     Log.w(LOGTAG, "cannot compress bitmap");
@@ -569,8 +558,9 @@ public class WallpaperCropActivity extends Activity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            setResult(Activity.RESULT_OK);
-            finish();
+            if (mOnEndRunnable != null) {
+                mOnEndRunnable.run();
+            }
         }
     }
 

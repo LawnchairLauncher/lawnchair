@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -27,6 +28,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
+
+import com.android.photos.BitmapRegionTileSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,21 +43,49 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class SavedWallpaperImages {
+public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
     private static String TAG = "Launcher3.SavedWallpaperImages";
     private ImageDb mDb;
-    ArrayList<Integer> mIds;
-    ArrayList<Drawable> mThumbs;
+    ArrayList<SavedWallpaperTile> mImages;
     Context mContext;
+    LayoutInflater mLayoutInflater;
 
-    public SavedWallpaperImages(Context context) {
+    public static class SavedWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
+        private int mDbId;
+        private Drawable mThumb;
+        public SavedWallpaperTile(int dbId, Drawable thumb) {
+            mDbId = dbId;
+            mThumb = thumb;
+        }
+        public void onClick(WallpaperPickerActivity a) {
+            String imageFilename = a.getSavedImages().getImageFilename(mDbId);
+            File file = new File(a.getFilesDir(), imageFilename);
+            CropView v = a.getCropView();
+            v.setTileSource(new BitmapRegionTileSource(a, file.getAbsolutePath(), 1024, 0), null);
+            v.moveToLeft();
+            v.setTouchEnabled(false);
+        }
+        public void onSave(WallpaperPickerActivity a) {
+            boolean finishActivityWhenDone = true;
+            String imageFilename = a.getSavedImages().getImageFilename(mDbId);
+            a.setWallpaper(imageFilename, finishActivityWhenDone);
+        }
+        public void onDelete(WallpaperPickerActivity a) {
+            a.getSavedImages().deleteImage(mDbId);
+        }
+        public boolean isSelectable() {
+            return true;
+        }
+    }
+
+    public SavedWallpaperImages(Activity context) {
         mDb = new ImageDb(context);
         mContext = context;
+        mLayoutInflater = context.getLayoutInflater();
     }
 
     public void loadThumbnailsAndImageIdList() {
-        mIds = new ArrayList<Integer>();
-        mThumbs = new ArrayList<Drawable>();
+        mImages = new ArrayList<SavedWallpaperTile>();
         SQLiteDatabase db = mDb.getReadableDatabase();
         Cursor result = db.query(ImageDb.TABLE_NAME,
                 new String[] { ImageDb.COLUMN_ID,
@@ -66,19 +102,31 @@ public class SavedWallpaperImages {
             File file = new File(mContext.getFilesDir(), filename);
             Bitmap thumb = BitmapFactory.decodeFile(file.getAbsolutePath());
             if (thumb != null) {
-                mIds.add(result.getInt(0));
-                mThumbs.add(new BitmapDrawable(thumb));
+                mImages.add(new SavedWallpaperTile(result.getInt(0), new BitmapDrawable(thumb)));
             }
         }
         result.close();
     }
 
-    public ArrayList<Drawable> getThumbnails() {
-        return mThumbs;
+    public int getCount() {
+        return mImages.size();
     }
 
-    public ArrayList<Integer> getImageIds() {
-        return mIds;
+    public SavedWallpaperTile getItem(int position) {
+        return mImages.get(position);
+    }
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Drawable thumbDrawable = mImages.get(position).mThumb;
+        if (thumbDrawable == null) {
+            Log.e(TAG, "Error decoding thumbnail for wallpaper #" + position);
+        }
+        return WallpaperPickerActivity.createImageTileView(
+                mLayoutInflater, position, convertView, parent, thumbDrawable);
     }
 
     public String getImageFilename(int id) {
