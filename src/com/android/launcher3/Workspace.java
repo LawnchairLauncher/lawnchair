@@ -170,6 +170,7 @@ public class Workspace extends SmoothPagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
+    private int mOverviewModePageOffset;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -304,6 +305,7 @@ public class Workspace extends SmoothPagedView
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
+        mOverviewModePageOffset = res.getDimensionPixelSize(R.dimen.overview_mode_page_offset);
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
         mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
@@ -403,7 +405,10 @@ public class Workspace extends SmoothPagedView
         setClipChildren(false);
         setClipToPadding(false);
         setChildrenDrawnWithCacheEnabled(true);
-        setMinScale(0.5f);
+
+        // This is a bit of a hack to account for the fact that we translate the workspace
+        // up a bit, and still need to draw the background covering the whole screen.
+        setMinScale(mOverviewModeShrinkFactor - 0.2f);
         setupLayoutTransition();
 
         final Resources res = getResources();
@@ -1800,6 +1805,17 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    int getOverviewModeTranslationY() {
+        int childHeight = getNormalChildHeight();
+        int viewPortHeight = getViewportHeight();
+        int scaledChildHeight = (int) (mOverviewModeShrinkFactor * childHeight);
+
+        int offset = (viewPortHeight - scaledChildHeight) / 2;
+        int offsetDelta = mOverviewModePageOffset - offset + mInsets.top;
+
+        return offsetDelta;
+    }
+
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
         if (mState == state) {
             return null;
@@ -1824,6 +1840,7 @@ public class Workspace extends SmoothPagedView
         float finalHotseatAndPageIndicatorAlpha = (stateIsOverview || stateIsSmall) ? 0f : 1f;
         float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
         float finalSearchBarAlpha = stateIsOverview ? 0f : 1f;
+        float finalWorkspaceTranslationY = stateIsOverview ? getOverviewModeTranslationY() : 0;
 
         boolean zoomIn = true;
         mNewScale = 1.0f;
@@ -1879,8 +1896,6 @@ public class Workspace extends SmoothPagedView
                 mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
                 mNewBackgroundAlphas[i] = finalBackgroundAlpha;
             } else {
-                setScaleX(mNewScale);
-                setScaleY(mNewScale);
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
             }
@@ -1891,6 +1906,7 @@ public class Workspace extends SmoothPagedView
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
             scale.scaleX(mNewScale)
                 .scaleY(mNewScale)
+                .translationY(finalWorkspaceTranslationY)
                 .setInterpolator(mZoomInInterpolator);
             anim.play(scale);
             for (int index = 0; index < getChildCount(); index++) {
@@ -1961,6 +1977,9 @@ public class Workspace extends SmoothPagedView
             searchBar.setAlpha(finalSearchBarAlpha);
             AlphaUpdateListener.updateVisibility(searchBar);
             updateCustomContentVisibility();
+            setScaleX(mNewScale);
+            setScaleY(mNewScale);
+            setTranslationY(finalWorkspaceTranslationY);
         }
         if (finalSearchBarAlpha == 0) {
             mLauncher.setVoiceButtonProxyVisible(false);
@@ -2148,7 +2167,7 @@ public class Workspace extends SmoothPagedView
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createDragOutline(View v, Canvas canvas, int padding) {
-        final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
+        final int outlineColor = getResources().getColor(R.color.outline_color);
         final Bitmap b = Bitmap.createBitmap(
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
@@ -2165,7 +2184,7 @@ public class Workspace extends SmoothPagedView
      */
     private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h,
             boolean clipAlpha) {
-        final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
+        final int outlineColor = getResources().getColor(R.color.outline_color);
         final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
 

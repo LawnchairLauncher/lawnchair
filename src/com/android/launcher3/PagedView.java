@@ -111,6 +111,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected float mTouchX;
 
     protected boolean mFirstLayout = true;
+    private int mNormalChildHeight;
 
     protected int mCurrentPage;
     protected int mRestorePage = -1;
@@ -722,6 +723,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         super.addView(page, 0, lp);
     }
 
+    public int getNormalChildHeight() {
+        return mNormalChildHeight;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!mIsDataReady || getChildCount() == 0) {
@@ -739,6 +744,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // viewport, we can be at most one and a half screens offset once we scale down
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int maxSize = Math.max(dm.widthPixels, dm.heightPixels + mInsets.top + mInsets.bottom);
+
         int parentWidthSize, parentHeightSize;
         int scaledWidthSize, scaledHeightSize;
         if (mUseMinScale) {
@@ -804,6 +810,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 childWidth = widthSize - horizontalPadding;
                 childHeight = heightSize - verticalPadding - mInsets.top - mInsets.bottom;
+                mNormalChildHeight = childHeight;
 
             } else {
                 childWidthMode = MeasureSpec.EXACTLY;

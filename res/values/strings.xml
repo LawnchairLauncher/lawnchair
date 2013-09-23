@@ -284,9 +284,9 @@ s -->
 
     <!-- Strings for the customization mode -->
     <!-- Text for widget add button -->
-    <string name="widget_button_text">Add Widget</string>
+    <string name="widget_button_text">Widgets</string>
     <!-- Text for wallpaper change button -->
-    <string name="wallpaper_button_text">Wallpaper</string>
+    <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for settings button -->
     <string name="settings_button_text">Settings</string>
 </resources>
