@@ -35,8 +35,7 @@
         android:paddingStart="@dimen/app_widget_preview_padding_left"
         android:paddingEnd="@dimen/app_widget_preview_padding_right"
         android:scaleType="matrix"
-        android:background="@drawable/widget_container_holo" />
-
+        android:background="@drawable/screenpanel" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +56,10 @@
 
             android:textColor="#FFFFFFFF"
             android:textSize="13sp"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            android:fontFamily="sans-serif-condensed"
+            android:shadowRadius="2.0"
+            android:shadowColor="#B0000000" />
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
              style. -->
@@ -70,8 +72,11 @@
             android:layout_weight="0"
             android:gravity="start"
 
-            android:textColor="#FF555555"
-            android:textSize="12sp" />
+            android:textColor="#FFAAAAAA"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-condensed"
+            android:shadowRadius="2.0"
+            android:shadowColor="#B0000000" />
     </LinearLayout>
 
 

@@ -895,11 +895,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onPause() {
-        // NOTE: We want all transitions from launcher to act as if the wallpaper were enabled
-        // to be consistent.  So re-enable the flag here, and we will re-disable it as necessary
-        // when Launcher resumes and we are still in AllApps.
-        updateWallpaperVisibility(true);
-
         // Ensure that items added to Launcher are queued until Launcher returns
         InstallShortcutReceiver.enableInstallQueue();
 
@@ -2646,16 +2641,6 @@ public class Launcher extends Activity
         view.setPivotY(view.getHeight() / 2.0f);
     }
 
-    void disableWallpaperIfInAllApps() {
-        // Only disable it if we are in all apps
-        if (isAllAppsVisible()) {
-            if (mAppsCustomizeTabHost != null &&
-                    !mAppsCustomizeTabHost.isTransitioning()) {
-                updateWallpaperVisibility(false);
-            }
-        }
-    }
-
     private void setWorkspaceBackground(boolean workspace) {
         mLauncherView.setBackground(workspace ?
                 mWorkspaceBackgroundDrawable : null);
@@ -2815,7 +2800,6 @@ public class Launcher extends Activity
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    updateWallpaperVisibility(true);
                     // Prepare the position
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
@@ -2826,10 +2810,6 @@ public class Launcher extends Activity
                 public void onAnimationEnd(Animator animation) {
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
-
-                    if (!animationCancelled) {
-                        updateWallpaperVisibility(false);
-                    }
 
                     // Hide the search bar
                     if (mSearchDropTargetBar != null) {
@@ -2904,7 +2884,6 @@ public class Launcher extends Activity
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
             dispatchOnLauncherTransitionStart(toView, animated, false);
             dispatchOnLauncherTransitionEnd(toView, animated, false);
-            updateWallpaperVisibility(false);
         }
     }
 
@@ -2941,7 +2920,6 @@ public class Launcher extends Activity
         }
 
         setPivotsForZoom(fromView, scaleFactor);
-        updateWallpaperVisibility(true);
         showHotseat(animated);
         if (animated) {
             final LauncherViewPropertyAnimator scaleAnim =
@@ -2973,7 +2951,6 @@ public class Launcher extends Activity
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    updateWallpaperVisibility(true);
                     fromView.setVisibility(View.GONE);
                     dispatchOnLauncherTransitionEnd(fromView, animated, true);
                     dispatchOnLauncherTransitionEnd(toView, animated, true);
@@ -3011,30 +2988,13 @@ public class Launcher extends Activity
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        if (!hasFocus) {
-            // When another window occludes launcher (like the notification shade, or recents),
-            // ensure that we enable the wallpaper flag so that transitions are done correctly.
-            updateWallpaperVisibility(true);
-        } else {
-            // When launcher has focus again, disable the wallpaper if we are in AllApps
-            mWorkspace.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    disableWallpaperIfInAllApps();
-                }
-            }, 500);
-        }
-    }
-
     void showWorkspace(boolean animated) {
         showWorkspace(animated, null);
     }
 
     void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         if (mState != State.WORKSPACE) {
-            boolean wasInSpringLoadedMode = (mState == State.APPS_CUSTOMIZE_SPRING_LOADED);
+            boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
             hideAppsCustomizeHelper(State.WORKSPACE, animated, false, onCompleteRunnable);
 

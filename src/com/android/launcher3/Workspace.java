@@ -1836,10 +1836,10 @@ public class Workspace extends SmoothPagedView
         final boolean stateIsSpringLoaded = (state == State.SPRING_LOADED);
         final boolean stateIsSmall = (state == State.SMALL);
         final boolean stateIsOverview = (state == State.OVERVIEW);
-        float finalBackgroundAlpha = stateIsSpringLoaded ? 1.0f : 0f;
+        float finalBackgroundAlpha = (stateIsSpringLoaded || stateIsOverview) ? 1.0f : 0f;
         float finalHotseatAndPageIndicatorAlpha = (stateIsOverview || stateIsSmall) ? 0f : 1f;
         float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
-        float finalSearchBarAlpha = stateIsOverview ? 0f : 1f;
+        float finalSearchBarAlpha = !stateIsNormal ? 0f : 1f;
         float finalWorkspaceTranslationY = stateIsOverview ? getOverviewModeTranslationY() : 0;
 
         boolean zoomIn = true;
@@ -1862,8 +1862,6 @@ public class Workspace extends SmoothPagedView
             if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
                 updateChildrenLayersEnabled(false);
-            } else {
-                finalBackgroundAlpha = 1.0f;
             }
         }
         final int duration = zoomIn ?
@@ -1871,24 +1869,9 @@ public class Workspace extends SmoothPagedView
                 getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
-            float finalAlpha = (!mWorkspaceFadeInAdjacentScreens || stateIsSpringLoaded ||
-                    (i == mCurrentPage)) ? 1f : 0f;
-            float currentAlpha = cl.getShortcutsAndWidgets().getAlpha();
-            float initialAlpha = currentAlpha;
-
-            // Determine the pages alpha during the state transition
-            if ((oldStateIsSmall && stateIsNormal) ||
-                (oldStateIsNormal && stateIsSmall)) {
-                // To/from workspace - only show the current page unless the transition is not
-                //                     animated and the animation end callback below doesn't run;
-                //                     or, if we're in spring-loaded mode
-                if (i == mCurrentPage || !animated || oldStateIsSpringLoaded) {
-                    finalAlpha = 1f;
-                } else {
-                    initialAlpha = 0f;
-                    finalAlpha = 0f;
-                }
-            }
+            float finalAlpha = (!mWorkspaceFadeInAdjacentScreens ||
+                    (i == mCurrentPage)) && !stateIsSmall ? 1f : 0f;
+            float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
 
             mOldAlphas[i] = initialAlpha;
             mNewAlphas[i] = finalAlpha;
@@ -1917,7 +1900,6 @@ public class Workspace extends SmoothPagedView
                     cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
                     cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
                 } else {
-
                     if (mOldAlphas[i] != mNewAlphas[i] || currentAlpha != mNewAlphas[i]) {
                         LauncherViewPropertyAnimator alphaAnim =
                             new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
