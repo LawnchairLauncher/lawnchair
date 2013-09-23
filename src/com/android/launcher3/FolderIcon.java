@@ -74,7 +74,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     private static final float PERSPECTIVE_SHIFT_FACTOR = 0.24f;
 
     // Flag as to whether or not to draw an outer ring. Currently none is designed.
-    public static final boolean HAS_OUTER_RING = false;
+    public static final boolean HAS_OUTER_RING = true;
 
     // The degree to which the item in the back of the stack is scaled [0...1]
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
