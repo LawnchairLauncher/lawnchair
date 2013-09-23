@@ -36,7 +36,6 @@ import android.widget.ListAdapter;
 
 import com.android.photos.BitmapRegionTileSource;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -100,6 +99,7 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         while (result.moveToNext()) {
             String filename = result.getString(1);
             File file = new File(mContext.getFilesDir(), filename);
+
             Bitmap thumb = BitmapFactory.decodeFile(file.getAbsolutePath());
             if (thumb != null) {
                 mImages.add(new SavedWallpaperTile(result.getInt(0), new BitmapDrawable(thumb)));
@@ -181,12 +181,11 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             imageFileStream.write(imageBytes);
             imageFileStream.close();
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            thumbnail.compress(Bitmap.CompressFormat.JPEG, 95, stream);
             File thumbFile = File.createTempFile("wallpaperthumb", "", mContext.getFilesDir());
             FileOutputStream thumbFileStream =
                     mContext.openFileOutput(thumbFile.getName(), Context.MODE_PRIVATE);
-            thumbFileStream.write(stream.toByteArray());
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 95, thumbFileStream);
+            thumbFileStream.close();
 
             SQLiteDatabase db = mDb.getWritableDatabase();
             ContentValues values = new ContentValues();
