@@ -1075,7 +1075,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     }
                 }
 
-                mTmpIntPoint[0] = currPage.getMeasuredWidth();;
+                mTmpIntPoint[0] = currPage.getMeasuredWidth();
                 Utilities.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
                 if (mTmpIntPoint[0] < 0) {
                     if (range[0] == -1) {
