@@ -274,6 +274,7 @@ public class Launcher extends Activity
     private boolean mVisible = false;
     private boolean mAttached = false;
     private static final boolean DISABLE_CLINGS = true;
+    private static final boolean DISABLE_CUSTOM_CLINGS = true;
 
     private static LocaleConfiguration sLocaleConfiguration = null;
 
@@ -4166,21 +4167,45 @@ public class Launcher extends Activity
             // If we're not using the default workspace layout, replace workspace cling
             // with a custom workspace cling (usually specified in an overlay)
             // For now, only do this on tablets
-            if (mSharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
-                    getResources().getBoolean(R.bool.config_useCustomClings)) {
-                // Use a custom cling
-                View cling = findViewById(R.id.workspace_cling);
-                ViewGroup clingParent = (ViewGroup) cling.getParent();
-                int clingIndex = clingParent.indexOfChild(cling);
-                clingParent.removeViewAt(clingIndex);
-                View customCling = mInflater.inflate(R.layout.custom_workspace_cling, clingParent, false);
-                clingParent.addView(customCling, clingIndex);
-                customCling.setId(R.id.workspace_cling);
+            if (!DISABLE_CUSTOM_CLINGS) {
+                if (mSharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
+                        getResources().getBoolean(R.bool.config_useCustomClings)) {
+                    // Use a custom cling
+                    View cling = findViewById(R.id.workspace_cling);
+                    ViewGroup clingParent = (ViewGroup) cling.getParent();
+                    int clingIndex = clingParent.indexOfChild(cling);
+                    clingParent.removeViewAt(clingIndex);
+                    View customCling = mInflater.inflate(R.layout.custom_workspace_cling, clingParent, false);
+                    clingParent.addView(customCling, clingIndex);
+                    customCling.setId(R.id.workspace_cling);
+                }
+            }
+            Cling cling = (Cling) findViewById(R.id.first_run_cling);
+            if (cling != null) {
+                String sbHintStr = getFirstRunClingSearchBarHint();
+                String ccHintStr = getFirstRunCustomContentHint();
+                if (!sbHintStr.isEmpty()) {
+                    TextView sbHint = (TextView) cling.findViewById(R.id.search_bar_hint);
+                    sbHint.setText(sbHintStr);
+                    sbHint.setVisibility(View.VISIBLE);
+                }
+                if (!ccHintStr.isEmpty()) {
+                    TextView ccHint = (TextView) cling.findViewById(R.id.custom_content_hint);
+                    ccHint.setText(ccHintStr);
+                    ccHint.setVisibility(View.VISIBLE);
+                }
             }
             initCling(R.id.first_run_cling, null, false, true);
         } else {
             removeCling(R.id.first_run_cling);
         }
+    }
+
+    protected String getFirstRunClingSearchBarHint() {
+        return "";
+    }
+    protected String getFirstRunCustomContentHint() {
+        return "";
     }
 
     public void showFirstRunWorkspaceCling() {
