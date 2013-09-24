@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -79,13 +80,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         onTabChangedEnd(type);
         setCurrentTabByTag(getTabTagForContentType(type));
         setOnTabChangedListener(this);
-    }
-
-    void selectAppsTab() {
-        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Applications);
-    }
-    void selectWidgetsTab() {
-        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
     }
 
     @Override
@@ -203,6 +197,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     private void onTabChangedEnd(AppsCustomizePagedView.ContentType type) {
+        int bgAlpha = (int) (255 * (getResources().getInteger(
+            R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f));
+        setBackgroundColor(Color.argb(bgAlpha, 0, 0, 0));
         mAppsCustomizePane.setContentType(type);
     }
 

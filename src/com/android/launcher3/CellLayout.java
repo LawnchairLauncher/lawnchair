@@ -949,9 +949,11 @@ public class CellLayout extends ViewGroup {
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
+        int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
-            int cw = grid.calculateCellWidth(widthSize, mCountX);
-            int ch = grid.calculateCellHeight(heightSize, mCountY);
+            int cw = grid.calculateCellWidth(childWidthSize, mCountX);
+            int ch = grid.calculateCellHeight(childHeightSize, mCountY);
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
@@ -960,8 +962,8 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        int newWidth = widthSize;
-        int newHeight = heightSize;
+        int newWidth = childWidthSize;
+        int newHeight = childHeightSize;
         if (mFixedWidth > 0 && mFixedHeight > 0) {
             newWidth = mFixedWidth;
             newHeight = mFixedHeight;
@@ -973,8 +975,8 @@ public class CellLayout extends ViewGroup {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = widthSize - getPaddingLeft() - getPaddingRight();
-            int vSpace = heightSize - getPaddingTop() - getPaddingBottom();
+            int hSpace = childWidthSize;
+            int vSpace = childHeightSize;
             int hFreeSpace = hSpace - (mCountX * mCellWidth);
             int vFreeSpace = vSpace - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
@@ -990,15 +992,19 @@ public class CellLayout extends ViewGroup {
         int maxHeight = 0;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - getPaddingLeft() -
-                    getPaddingRight(), MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - getPaddingTop() -
-                    getPaddingBottom(), MeasureSpec.EXACTLY);
+            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth,
+                    MeasureSpec.EXACTLY);
+            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight,
+                    MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
             maxWidth = Math.max(maxWidth, child.getMeasuredWidth());
             maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
-        setMeasuredDimension(maxWidth, maxHeight);
+        if (mFixedWidth > 0 && mFixedHeight > 0) {
+            setMeasuredDimension(maxWidth, maxHeight);
+        } else {
+            setMeasuredDimension(widthSize, heightSize);
+        }
     }
 
     @Override
@@ -1006,8 +1012,11 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(getPaddingLeft(), getPaddingTop(),
-                    r - l - getPaddingRight(), b - t - getPaddingBottom());
+            int left = getPaddingLeft();
+            int top = getPaddingTop();
+            child.layout(left, top,
+                    left + r - l,
+                    top + b - t);
         }
     }
 
