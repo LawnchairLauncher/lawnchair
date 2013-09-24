@@ -911,8 +911,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 mPageScrolls[i] = childLeft - scrollOffset - offsetX;
 
                 if (i != endIndex - delta) {
+                    childLeft += childWidth + scrollOffset;
                     int nextScrollOffset = (getViewportWidth() - getChildWidth(i + delta)) / 2;
-                    childLeft += childWidth + nextScrollOffset;
+                    childLeft += nextScrollOffset;
                 }
             }
         }
@@ -1039,9 +1040,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int getChildOffset(int index) {
         if (index < 0 || index > getChildCount() - 1) return 0;
 
-        final boolean isRtl = isLayoutRtl();
-
-        if (isRtl) index = getChildCount() - index - 1;
         int offset = getPageAt(index).getLeft() - getViewportOffsetX();
 
         return offset;
@@ -1056,33 +1054,43 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int pageCount = getChildCount();
         mTmpIntPoint[0] = mTmpIntPoint[1] = 0;
 
+        range[0] = -1;
+        range[1] = -1;
+
         if (pageCount > 0) {
             int viewportWidth = getViewportWidth();
-            int leftScreen = 0;
-            int rightScreen = 0;
+            int curScreen = 0;
 
-            for (leftScreen = getNextPage(); leftScreen >= 0; --leftScreen) {
-                View currPage = getPageAt(leftScreen);
+            int count = getChildCount();
+            for (int i = 0; i < count; i++) {
+                View currPage = getPageAt(i);
 
-                // Check if the right edge of the page is in the viewport
-                mTmpIntPoint[0] = currPage.getMeasuredWidth();
-                Utilities.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
-                if (mTmpIntPoint[0] < 0) {
-                    break;
-                }
-            }
-            for (rightScreen = getNextPage(); rightScreen < getChildCount(); ++rightScreen) {
-                View currPage = getPageAt(rightScreen);
-
-                // Check if the left edge of the page is in the viewport
                 mTmpIntPoint[0] = 0;
                 Utilities.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
-                if (mTmpIntPoint[0] >= viewportWidth) {
-                    break;
+                if (mTmpIntPoint[0] > viewportWidth) {
+                    if (range[0] == -1) {
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+
+                mTmpIntPoint[0] = currPage.getMeasuredWidth();;
+                Utilities.getDescendantCoordRelativeToParent(currPage, this, mTmpIntPoint, false);
+                if (mTmpIntPoint[0] < 0) {
+                    if (range[0] == -1) {
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+                curScreen = i;
+                if (range[0] < 0) {
+                    range[0] = curScreen;
                 }
             }
-            range[0] = Math.max(0, leftScreen);
-            range[1] = Math.min(rightScreen, getChildCount() - 1);
+
+            range[1] = curScreen;
         } else {
             range[0] = -1;
             range[1] = -1;
@@ -1558,8 +1566,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (!mFreeScroll) {
             snapToPage(snapPage);
         } else {
-            mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
-            mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
+            if (isLayoutRtl()) {
+                mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
+                mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
+            } else {
+                mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
+                mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
+            }
 
             if (getCurrentPage() < mTempVisiblePagesRange[0]) {
                 setCurrentPage(mTempVisiblePagesRange[0]);

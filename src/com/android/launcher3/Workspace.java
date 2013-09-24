@@ -933,8 +933,9 @@ public class Workspace extends SmoothPagedView
         boolean passRightSwipesToCustomContent =
                 (mTouchDownTime - mCustomContentShowTime) > CUSTOM_CONTENT_GESTURE_DELAY;
 
-        if (deltaX > 0 && getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID
-                && passRightSwipesToCustomContent) {
+        boolean swipeInIgnoreDirection = isLayoutRtl() ? deltaX < 0 : deltaX > 0;
+        if (swipeInIgnoreDirection && getScreenIdForPageIndex(getCurrentPage()) ==
+                CUSTOM_CONTENT_SCREEN_ID && passRightSwipesToCustomContent) {
             // Pass swipes to the right to the custom content page.
             return;
         }
@@ -1363,9 +1364,15 @@ public class Workspace extends SmoothPagedView
         if (hasCustomContent()) {
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
             int scrollDelta = getScrollForPage(index + 1) - getScrollX();
-            translationX = Math.max(scrollDelta, 0);
+            translationX = scrollDelta;
             progress = (1.0f * scrollDelta) /
                     (getScrollForPage(index + 1) - getScrollForPage(index));
+
+            if (isLayoutRtl()) {
+                translationX = Math.min(0, translationX);
+            } else {
+                translationX = Math.max(0, translationX);
+            }
             progress = Math.max(0, progress);
         }
 
@@ -1396,7 +1403,10 @@ public class Workspace extends SmoothPagedView
         updateStateForCustomContent(screenCenter);
         enableHwLayersOnVisiblePages();
 
-        if ((mOverScrollX < 0 && !hasCustomContent()) || mOverScrollX > mMaxScrollX) {
+        boolean shouldOverScroll = (mOverScrollX < 0 && (!hasCustomContent() || isLayoutRtl())) ||
+                (mOverScrollX > mMaxScrollX && (!hasCustomContent() || !isLayoutRtl()));
+
+        if (shouldOverScroll) {
             int index = 0;
             float pivotX = 0f;
             final float leftBiasedPivot = 0.25f;
@@ -1857,7 +1867,7 @@ public class Workspace extends SmoothPagedView
             } else if (stateIsOverview) {
                 mNewScale = mOverviewModeShrinkFactor;
             } else if (stateIsSmall){
-                mNewScale = mOverviewModeShrinkFactor - 0.1f;
+                mNewScale = mOverviewModeShrinkFactor - 0.3f;
             }
             if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
