@@ -34,9 +34,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
                 android:text="@string/first_run_cling_title"
-                android:textColor="#49C0EC"
-                android:textSize="32sp" />
+                android:textColor="#FFFFFFFF"
+                android:textSize="30sp" />
             <TextView
                 style="@style/ClingAltTitleText"
                 android:layout_width="wrap_content"
@@ -47,22 +48,28 @@
         </LinearLayout>
         <TextView
             style="@style/ClingHintText"
+            android:id="@+id/search_bar_hint"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="80dp"
-            android:text="@string/first_run_cling_search_bar_hint"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:drawableTop="@drawable/cling_arrow_up"
+            android:drawablePadding="5dp"
+            android:text="@string/first_run_cling_search_bar_hint" />
         <TextView
             style="@style/ClingHintText"
+            android:id="@+id/custom_content_hint"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_marginStart="10dp"
             android:layout_marginTop="100dp"
-            android:text="@string/first_run_cling_custom_content_hint"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:drawableStart="@drawable/cling_arrow_left"
+            android:drawablePadding="10dp"
+            android:text="@string/first_run_cling_custom_content_hint" />
         <TextView
             style="@style/ClingHintText"
             android:layout_width="160dp"
@@ -70,8 +77,9 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="100dp"
-            android:text="@string/first_run_cling_create_screens_hint"
-            android:visibility="gone" />
+            android:drawableEnd="@drawable/cling_arrow_right"
+            android:drawablePadding="5dp"
+            android:text="@string/first_run_cling_create_screens_hint" />
     </FrameLayout>
     <Button
         style="@style/ClingButton"

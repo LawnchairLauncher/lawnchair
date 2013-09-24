@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -55,7 +56,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
     private static String FOLDER_LANDSCAPE = "folder_landscape";
     private static String FOLDER_LARGE = "folder_large";
 
-    private static float FIRST_RUN_CIRCLE_BUFFER_DPS = 40;
+    private static float FIRST_RUN_CIRCLE_BUFFER_DPS = 60;
     private static float WORKSPACE_INNER_CIRCLE_RADIUS_DPS = 50;
     private static float WORKSPACE_OUTER_CIRCLE_RADIUS_DPS = 60;
     private static float WORKSPACE_CIRCLE_Y_OFFSET_DPS = 30;
@@ -101,8 +102,10 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
             mErasePaint.setAlpha(0);
             mErasePaint.setAntiAlias(true);
 
+            int circleColor = getResources().getColor(
+                    R.color.first_run_cling_circle_background_color);
             mBubblePaint = new Paint();
-            mBubblePaint.setColor(0xFFFFFF);
+            mBubblePaint.setColor(circleColor);
             mBubblePaint.setAntiAlias(true);
 
             mDotPaint = new Paint();
