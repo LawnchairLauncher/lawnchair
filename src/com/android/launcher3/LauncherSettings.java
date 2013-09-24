@@ -23,7 +23,16 @@ import android.provider.BaseColumns;
  * Settings related utilities.
  */
 class LauncherSettings {
-    static interface BaseLauncherColumns extends BaseColumns {
+    /** Columns required on table staht will be subject to backup and restore. */
+    static interface ChangeLogColumns extends BaseColumns {
+        /**
+         * The time of the last update to this row.
+         * <P>Type: INTEGER</P>
+         */
+        static final String MODIFIED = "modified";
+    }
+
+    static interface BaseLauncherColumns extends ChangeLogColumns {
         /**
          * Descriptive name of the gesture that can be displayed to the user.
          * <P>Type: TEXT</P>
@@ -95,7 +104,7 @@ class LauncherSettings {
      *
      * Tracks the order of workspace screens.
      */
-    static final class WorkspaceScreens implements BaseColumns {
+    static final class WorkspaceScreens implements ChangeLogColumns {
         /**
          * The content:// style URL for this table
          */
