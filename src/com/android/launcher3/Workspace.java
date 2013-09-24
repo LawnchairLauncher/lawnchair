@@ -2909,7 +2909,10 @@ public class Workspace extends SmoothPagedView
        mTempPt[0] = x;
        mTempPt[1] = y;
        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempPt, true);
-       mLauncher.getHotseat().getHitRect(r);
+
+       LauncherAppState app = LauncherAppState.getInstance();
+       DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+       r = grid.getHotseatRect();
        if (r.contains(mTempPt[0], mTempPt[1])) {
            return true;
        }

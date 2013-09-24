@@ -290,8 +290,7 @@ class DeviceProfile {
 
     Rect getWorkspacePadding(int orientation) {
         Rect padding = new Rect();
-        if (orientation == CellLayout.LANDSCAPE &&
-                transposeLayoutWithOrientation) {
+        if (isVerticalBarLayout()) {
             // Pad the left and right of the workspace with search/hotseat bar sizes
             padding.set(searchBarSpaceHeightPx, edgeMarginPx,
                     hotseatBarHeightPx, edgeMarginPx);
@@ -321,6 +320,17 @@ class DeviceProfile {
         return padding;
     }
 
+    // The rect returned will be extended to below the system ui that covers the workspace
+    Rect getHotseatRect() {
+        if (isVerticalBarLayout()) {
+            return new Rect(availableWidthPx - hotseatBarHeightPx, 0,
+                    Integer.MAX_VALUE, availableHeightPx);
+        } else {
+            return new Rect(0, availableHeightPx - hotseatBarHeightPx,
+                    availableWidthPx, Integer.MAX_VALUE);
+        }
+    }
+
     int calculateCellWidth(int width, int countX) {
         return width / countX;
     }
@@ -338,11 +348,14 @@ class DeviceProfile {
         return isLargeTablet;
     }
 
+    boolean isVerticalBarLayout() {
+        return isLandscape && transposeLayoutWithOrientation;
+    }
+
     public void layout(Launcher launcher) {
         FrameLayout.LayoutParams lp;
         Resources res = launcher.getResources();
-        boolean hasVerticalBarLayout = isLandscape &&
-                res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+        boolean hasVerticalBarLayout = isVerticalBarLayout();
 
         // Layout the search bar space
         View searchBarSpace = launcher.findViewById(R.id.qsb_bar);
