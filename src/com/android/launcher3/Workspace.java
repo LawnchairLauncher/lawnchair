@@ -1023,6 +1023,12 @@ public class Workspace extends SmoothPagedView
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
         }
+    }
+
+    @Override
+    protected void notifyPageSwitchListener() {
+        super.notifyPageSwitchListener();
+        Launcher.setScreen(mCurrentPage);
 
         if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
@@ -1037,12 +1043,6 @@ public class Workspace extends SmoothPagedView
                 mLauncher.resetQSBScroll();
             }
         }
-    }
-
-    @Override
-    protected void notifyPageSwitchListener() {
-        super.notifyPageSwitchListener();
-        Launcher.setScreen(mCurrentPage);
     };
 
     protected void setWallpaperDimension() {
