@@ -209,7 +209,8 @@ public class Launcher extends Activity
     private static int sScreen = DEFAULT_SCREEN;
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
-    private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 10;
+    private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
+    private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     private static int NEW_APPS_ANIMATION_DELAY = 500;
 
     private final BroadcastReceiver mCloseSystemDialogsReceiver
@@ -3694,20 +3695,23 @@ public class Launcher extends Activity
             // Animate to the correct page
             if (newShortcutsScreenId > -1) {
                 long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
-                int newScreenIndex = mWorkspace.getPageIndexForScreenId(newShortcutsScreenId);
+                final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newShortcutsScreenId);
                 if (newShortcutsScreenId != currentScreenId) {
-                    mWorkspace.snapToPage(newScreenIndex);
+                    // We post the animation slightly delayed to prevent slowdowns
+                    // when we are loading right after we return to launcher.
+                    mWorkspace.postDelayed(new Runnable() {
+                        public void run() {
+                            mWorkspace.snapToPage(newScreenIndex);
+                            mWorkspace.postDelayed(new Runnable() {
+                                public void run() {
+                                    anim.playTogether(bounceAnims);
+                                    anim.start();
+                                }
+                            }, NEW_APPS_ANIMATION_DELAY);
+                        }
+                    }, NEW_APPS_PAGE_MOVE_DELAY);
                 }
             }
-
-            // We post the animation slightly delayed to prevent slowdowns when we are loading
-            // right after we return to launcher.
-            mWorkspace.postDelayed(new Runnable() {
-                public void run() {
-                    anim.playTogether(bounceAnims);
-                    anim.start();
-                }
-            }, NEW_APPS_ANIMATION_DELAY);
         }
         workspace.requestLayout();
     }

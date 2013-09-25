@@ -281,14 +281,14 @@ public class LauncherModel extends BroadcastReceiver {
         return null;
     }
 
-    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
-                                    final ArrayList<AppInfo> addedApps) {
+    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> workspaceApps,
+                                    final ArrayList<AppInfo> allAppsApps) {
         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-        addAndBindAddedApps(context, added, cb, addedApps);
+        addAndBindAddedApps(context, workspaceApps, cb, allAppsApps);
     }
-    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> added,
-                                    final Callbacks callbacks, final ArrayList<AppInfo> addedApps) {
-        if (added.isEmpty()) {
+    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> workspaceApps,
+                                    final Callbacks callbacks, final ArrayList<AppInfo> allAppsApps) {
+        if (workspaceApps.isEmpty() && allAppsApps.isEmpty()) {
             return;
         }
         // Process the newly added applications and add them to the database first
@@ -308,7 +308,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
 
                 synchronized(sBgLock) {
-                    Iterator<ItemInfo> iter = added.iterator();
+                    Iterator<ItemInfo> iter = workspaceApps.iterator();
                     while (iter.hasNext()) {
                         ItemInfo a = iter.next();
                         final String name = a.title.toString();
@@ -356,6 +356,7 @@ public class LauncherModel extends BroadcastReceiver {
                         } else {
                             throw new RuntimeException("Unexpected info type");
                         }
+
                         // Add the shortcut to the db
                         addItemToDatabase(context, shortcutInfo,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
@@ -368,24 +369,26 @@ public class LauncherModel extends BroadcastReceiver {
                 // Update the workspace screens
                 updateWorkspaceScreenOrder(context, workspaceScreens);
 
-                if (!addedShortcutsFinal.isEmpty()) {
+                if (!addedShortcutsFinal.isEmpty() || !allAppsApps.isEmpty()) {
                     runOnMainThread(new Runnable() {
                         public void run() {
                             Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                             if (callbacks == cb && cb != null) {
-                                ItemInfo info = addedShortcutsFinal.get(addedShortcutsFinal.size() - 1);
-                                long lastScreenId = info.screenId;
                                 final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
                                 final ArrayList<ItemInfo> addNotAnimated = new ArrayList<ItemInfo>();
-                                for (ItemInfo i : addedShortcutsFinal) {
-                                    if (i.screenId == lastScreenId) {
-                                        addAnimated.add(i);
-                                    } else {
-                                        addNotAnimated.add(i);
+                                if (!addedShortcutsFinal.isEmpty()) {
+                                    ItemInfo info = addedShortcutsFinal.get(addedShortcutsFinal.size() - 1);
+                                    long lastScreenId = info.screenId;
+                                    for (ItemInfo i : addedShortcutsFinal) {
+                                        if (i.screenId == lastScreenId) {
+                                            addAnimated.add(i);
+                                        } else {
+                                            addNotAnimated.add(i);
+                                        }
                                     }
                                 }
                                 callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
-                                        addNotAnimated, addAnimated, addedApps);
+                                        addNotAnimated, addAnimated, allAppsApps);
                             }
                         }
                     });
@@ -2514,9 +2517,13 @@ public class LauncherModel extends BroadcastReceiver {
 
             if (added != null) {
                 // Ensure that we add all the workspace applications to the db
-                final ArrayList<ItemInfo> addedInfos = new ArrayList<ItemInfo>(added);
                 Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                addAndBindAddedApps(context, addedInfos, cb, added);
+                if (!AppsCustomizePagedView.DISABLE_ALL_APPS) {
+                    addAndBindAddedApps(context, new ArrayList<ItemInfo>(), cb, added);
+                } else {
+                    final ArrayList<ItemInfo> addedInfos = new ArrayList<ItemInfo>(added);
+                    addAndBindAddedApps(context, addedInfos, cb, added);
+                }
             }
             if (modified != null) {
                 final ArrayList<AppInfo> modifiedFinal = modified;
