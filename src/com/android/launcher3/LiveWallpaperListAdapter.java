@@ -116,6 +116,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
             mThumbnail = thumbnail;
             mInfo = info;
         }
+        @Override
         public void onClick(WallpaperPickerActivity a) {
             Intent preview = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
             preview.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
