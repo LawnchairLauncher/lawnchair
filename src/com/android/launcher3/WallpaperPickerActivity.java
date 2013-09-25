@@ -87,11 +87,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     public static abstract class WallpaperTileInfo {
         public void onClick(WallpaperPickerActivity a) {}
         public void onSave(WallpaperPickerActivity a) {}
-        public void onDelete() {}
+        public void onDelete(WallpaperPickerActivity a) {}
         public boolean isSelectable() { return false; }
     }
 
     public static class PickImageInfo extends WallpaperTileInfo {
+        @Override
         public void onClick(WallpaperPickerActivity a) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
@@ -104,13 +105,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public UriWallpaperInfo(Uri uri) {
             mUri = uri;
         }
+        @Override
         public void onClick(WallpaperPickerActivity a) {
             CropView v = a.getCropView();
             v.setTileSource(new BitmapRegionTileSource(
                     a, mUri, 1024, 0), null);
             v.setTouchEnabled(true);
         }
-
+        @Override
         public void onSave(final WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
             OnBitmapCroppedHandler h = new OnBitmapCroppedHandler() {
@@ -123,6 +125,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             };
             a.cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone);
         }
+        @Override
         public boolean isSelectable() {
             return true;
         }
@@ -138,6 +141,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             mResId = resId;
             mThumb = thumb;
         }
+        @Override
         public void onClick(WallpaperPickerActivity a) {
             BitmapRegionTileSource source = new BitmapRegionTileSource(
                     mResources, a, mResId, 1024, 0);
@@ -151,10 +155,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             v.setScale(wallpaperSize.x / crop.width());
             v.setTouchEnabled(false);
         }
+        @Override
         public void onSave(WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
             a.cropImageAndSetWallpaper(mResources, mResId, finishActivityWhenDone);
         }
+        @Override
         public boolean isSelectable() {
             return true;
         }
@@ -361,7 +367,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         CheckableFrameLayout c =
                                 (CheckableFrameLayout) mWallpapersView.getChildAt(i);
                         if (c.isChecked()) {
-                            ((WallpaperTileInfo) c.getTag()).onDelete();
+                            WallpaperTileInfo info = (WallpaperTileInfo) c.getTag();
+                            info.onDelete(WallpaperPickerActivity.this);
                             viewsToRemove.add(c);
                         }
                     }

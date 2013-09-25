@@ -46,6 +46,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
         public ThirdPartyWallpaperTile(ResolveInfo resolveInfo) {
             mResolveInfo = resolveInfo;
         }
+        @Override
         public void onClick(WallpaperPickerActivity a) {
             final ComponentName itemComponentName = new ComponentName(
                     mResolveInfo.activityInfo.packageName, mResolveInfo.activityInfo.name);

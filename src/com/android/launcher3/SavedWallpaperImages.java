@@ -57,6 +57,7 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             mDbId = dbId;
             mThumb = thumb;
         }
+        @Override
         public void onClick(WallpaperPickerActivity a) {
             String imageFilename = a.getSavedImages().getImageFilename(mDbId);
             File file = new File(a.getFilesDir(), imageFilename);
@@ -65,14 +66,17 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             v.moveToLeft();
             v.setTouchEnabled(false);
         }
+        @Override
         public void onSave(WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
             String imageFilename = a.getSavedImages().getImageFilename(mDbId);
             a.setWallpaper(imageFilename, finishActivityWhenDone);
         }
+        @Override
         public void onDelete(WallpaperPickerActivity a) {
             a.getSavedImages().deleteImage(mDbId);
         }
+        @Override
         public boolean isSelectable() {
             return true;
         }
