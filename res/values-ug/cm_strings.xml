@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">نەشر ھوقۇقى \u00A9 2013 CyanogenMod قۇرۇلۇشىغا تەۋە</string>
+    <string name="menu">تىزىملىك</string>
+    <string name="cancel_target_label">ۋاز كەچ</string>
+    <string name="edit_target_label">تەھرىر</string>
+    <string name="menu_lock_workspace">باش ئېكراننى قۇلۇپلا</string>
+    <string name="menu_unlock_workspace">باش ئېكراننى قۇلۇپلىما</string>
+    <string name="menu_preferences">Trebuchet تەڭشەكلىرى</string>
+    <string name="menu_apps_sort_title">ئاتى</string>
+    <string name="menu_apps_sort_install_date">ئورناتقان چېسلا</string>
+    <string name="menu_apps_filter_system">سىستېما</string>
+    <string name="menu_apps_filter_downloaded">چۈشۈرۈلگىنى</string>
+    <string name="menu_hidden_apps_delete">ئەسلىگە قايتۇر</string>
+    <string name="all_apps_sort_cling_title">ئەپلىرىڭىزنى تەرتىپلەڭ</string>
+    <string name="all_apps_sort_cling_add_item">ئەپلەر چېكىپ بېسىپ تەرتىپلەش ئۇسۇلى تاللىنىدۇ</string>
+    <string name="hidden_apps_title">يوشۇرۇن ئەپلەر</string>
+    <string name="workspace_locked">باش ئېكران قۇلۇپلاندى، تەڭشەكتىن قۇلۇپ ئاچقاندىن كېيىن ئۆزگەرتىشنى سىناڭ</string>
+    <string name="preferences_title">تەڭشەكلەر</string>
+    <string name="preferences_interface_title">ئارايۈز</string>
+    <string name="preferences_application_title">ئەپ</string>
+    <string name="preferences_interface_homescreen_title">باش ئېكران</string>
+    <string name="preferences_interface_homescreen_summary">ئېكران ۋە تام قەغەز</string>
+    <string name="preferences_interface_homescreen_general_category">ئادەتتىكى</string>
+    <string name="preferences_interface_homescreen_general_screens_title">باش ئېكران</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">باش ئېكراندىكى ئېكران سانى</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">كۆڭۈلدىكى ئېكران</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">كۆڭۈلدىكى باش ئېكراننى تاللاڭ</string>
+    <string name="preferences_interface_homescreen_general_search_title">ئىزدەش بالداق</string>
+    <string name="preferences_interface_homescreen_general_search_summary">مۇقىم ئىزدەش بالداقنى قوزغات</string>
+    <string name="preferences_interface_homescreen_general_grid_title">قۇر-رەت چوڭلۇقى</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">باش ئېكراندىكى قۇر-رەت سانىنى تاللاڭ</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">قۇرلار</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">رەتلەر</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">ئېكراننى سوز</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">باش ئېكراننى يېيىپ ئېكران چوڭلۇقىنى تولدۇرىدۇ</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">سىنبەلگىنىڭ تېكىست بەلگىسىنى يوشۇر</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">باش ئېكراندىكى سىنبەلگىنىڭ تېكىست بەلگىسىنى يوشۇرىدۇ</string>
+    <string name="preferences_interface_homescreen_scrolling_category">سىيرىش</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">ئالماشتۇرۇش ئۈنۈمى</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">باش ئېكراننى سىيرىغاندىكى ئۈنۈمى</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">تام قەغەزنى دومىلات</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">باش ئېكراننى ئالماشتۇرغاندا تام قەغەزنى دومىلىتىدۇ</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">تام قەغەزنى تېز رەڭلىگۈچ</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">تام قەغەز بىتلىق سۈرەتنى قولدا سىزىپ، مۇقىم تام قەغەزنىڭ راۋانلىقىنى كۈچەيتىدۇ</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">تام قەغەز چوڭلۇقى</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">ئېكران بىرلىكىدە تەم قەغەز كەڭلىكىنى تەڭشەيدۇ</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">يان ئېكراننى سۇسلاشتۇر</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">باش ئېكراننى سىيرىغاندا ياندىكى ئېكراننى سۇسلاشتۇرىدۇ</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">گىرۋەكلەرنى كۆرسەت</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">باش ئېكراننى سىيرىغاندا ئېكران گىرۋەكلىرىنى كۆرسىتىدۇ</string>
+    <string name="preferences_interface_homescreen_indicator_category">كۆرسەتكۈچ</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">بەت كۆرسەتكۈچىنى كۆرسەت</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">ئېكراندا نۆۋەتتىكى بەتتىكى كۆرسەتكۈچنى كۆرسىتىدۇ</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">كۆرسەتكۈچنى سۇسلات</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">باش ئېكران ئۆزگەرگەندىن كېيىن كۆرسەتكۈچنى سۇسلىتىدۇ</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">كۆرسەتكۈچ ئورنى</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">كۆرسەتكۈچنىڭ ئېكراندىكى ئورنىنى تاللاڭ</string>
+    <string name="preferences_interface_drawer_title">تارتما</string>
+    <string name="preferences_interface_drawer_summary">ئەپ ۋە ئەپچە تارمىسى</string>
+    <string name="preferences_interface_drawer_orientation_title">يۆنىلىش</string>
+    <string name="preferences_interface_drawer_orientation_summary">تارتمىنىڭ دومىلاش يۆنىلىشىنى تاللاڭ</string>
+    <string name="preferences_interface_drawer_apps_category">ئەپلەر</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">يوشۇرۇن ئەپلەر</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">تارتمىدىن ئەپلەرنى يوشۇرىدۇ</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">يوشۇرۇن ئەپلەر (قىسقا يوللار)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">يوشۇرۇن ئەپلەرنىڭ سىنبەلگىسىنى باش ئېكراندىن چىقىرىۋېتىدۇ</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">يوشۇرۇن ئەپلەر (ئەپچەلەر)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">يوشۇرۇن ئەپچەلەرنىڭ سىنبەلگىسىنى باش ئېكراندىن چىقىرىۋېتىدۇ</string>
+    <string name="preferences_interface_drawer_widgets_category">ئەپچەلەر</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">ئەپلەر بىلەن قوشۇل</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">بەتكۈچلەرنى ئۆزگەرتمىگەن ئەھۋالدا ئەپ تارتمىسىدىن ئەپچە تارتمىسىغا ئالماشتۇرىدۇ</string>
+    <string name="preferences_interface_drawer_scrolling_category">سىيرىش</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">ئالماشتۇرۇش ئۈنۈمى</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">ئېكراننى دومىلاتقاندىكى ئۈنۈمى</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">بەت قىرىنى سۇسلاشتۇر</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">ئېكراننى دومىلاتقاندا بەت قىرىنى سۇسلاشتۇرۇشنى قوزغىتىدۇ</string>
+    <string name="preferences_interface_drawer_indicator_category">كۆرسەتكۈچ</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">بەت كۆرسەتكۈچىنى كۆرسەت</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">ئېكراننىڭ ئاستىدا نۆۋەتتىكى بەتنىڭ كۆرسەتكۈچىنى كۆرسىتىدۇ</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">كۆرسەتكۈچنى سۇسلات</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">بەت ئۆزگەرگەندىن كېيىن كۆرسەتكۈچنى سۇسلىتىدۇ</string>
+    <string name="preferences_interface_drawer_indicator_position_title">كۆرسەتكۈچ ئورنى</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">كۆرسەتكۈچنىڭ ئېكراندىكى ئورنىنى تاللاڭ</string>
+    <string name="preferences_interface_dock_title">لەڭگەر</string>
+    <string name="preferences_interface_dock_enabled_title">لەڭگەرنى كۆرسەت</string>
+    <string name="preferences_interface_dock_enabled_summary">باش ئېكراننىڭ ئاستىدا لەڭگەرنى كۆرسىتىدۇ</string>
+    <string name="preferences_interface_dock_pages_title">بەتلەر</string>
+    <string name="preferences_interface_dock_pages_summary">لەڭگەردىكى بەت سانى</string>
+    <string name="preferences_interface_dock_default_page_title">كۆڭۈلدىكى بەت</string>
+    <string name="preferences_interface_dock_default_page_summary">كۆڭۈلدىكى بەتنى تاللاڭ</string>
+    <string name="preferences_interface_dock_icons_title">سىنبەلگەلەر</string>
+    <string name="preferences_interface_dock_icons_summary">لەڭگەردىكى سىنبەلگە/رەت سانى</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">سىنبەلگىنىڭ تېكىست بەلگىسىنى يوشۇر</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">لەڭگەردىكى سىنبەلگىنىڭ تېكىست بەلگىسىنى يوشۇرىدۇ</string>
+    <string name="preferences_interface_dock_icon_scale_title">سىنبەلگە نىسبىتى</string>
+    <string name="preferences_interface_dock_icon_scale_summary">لەڭگەردىكى سىنبەلگە نىسبىتى</string>
+    <string name="preferences_interface_dock_divider_title">لەڭگەر ئايرىغۇچنى كۆرسەت</string>
+    <string name="preferences_interface_dock_divider_summary">باش ئېكران بىلەن لەڭگەر بۆلگۈچنى كۆرسىتىدۇ</string>
+    <string name="preferences_interface_icons_title">سىنبەلگەلەر</string>
+    <string name="preferences_interface_general_title">ئادەتتىكى</string>
+    <string name="preferences_interface_general_orientation_title">ئېكراننى ئۆزلۈكىدىن ئايلاندۇر</string>
+    <string name="preferences_interface_general_lock_workspace_title">باش ئېكراننى قۇلۇپلا</string>
+    <string name="preferences_interface_general_lock_workspace_summary">ئاساسىي ئېكران ۋە لەڭگەردىكى بارلىق سىنبەلگە ۋە قىسقۇچلارنىڭ ئورنىنى قۇلۇپلايدۇ</string>
+    <string name="preferences_interface_general_fullscreen_title">پۈتۈن ئېكران ھالىتى</string>
+    <string name="preferences_interface_general_fullscreen_summary">ھالەت بالداقنى يوشۇرۇپ باش ئېكراننى كەڭەيتىدۇ</string>
+    <string name="folder_empty_contents_title">ھېچقانداق نەتىجە تېپىلمىدى</string>
+    <string name="preferences_interface_general_iconpack_title">سىنبەلگە بوغچىسى</string>
+    <string name="preferences_interface_general_iconpack_summary">سىنبەلگە بوغچىسى كۆڭۈلدىكى ئەپ سىنبەلگىسىنى ئالماشتۇرىدۇ</string>
+    <string name="dialog_pick_iconpack_title">سىنبەلگە بوغچىسىنى تاللاڭ</string>
+    <string name="default_iconpack_title">كۆڭۈلدىكى</string>
+    <string name="no_iconpacks_summary">سىنبەلگە بوغچىسى ئورنىتىلمىغان</string>
+    <string name="effects_standard">ئۆلچەملىك</string>
+    <string name="effects_tablet">تاختا كومپيۇتېر</string>
+    <string name="effects_zoom_in">يېقىنلات</string>
+    <string name="effects_zoom_out">يىراقلات</string>
+    <string name="effects_rotate_up">ئۈستىگە ئايلاندۇر</string>
+    <string name="effects_rotate_down">ئاستىغا ئايلاندۇر</string>
+    <string name="effects_cylinder_in">سىلىندىر كىر</string>
+    <string name="effects_cylinder_out">سىلىندىر چىق</string>
+    <string name="effects_cube_in">كۇب كىر</string>
+    <string name="effects_cube_out">كۇب چىق</string>
+    <string name="effects_spin">ئايلاندۇر</string>
+    <string name="effects_flip">چۆرگىلەت</string>
+    <string name="effects_stack">دەستىلە</string>
+    <string name="effects_accordion">گارمون</string>
+    <string name="effects_carousel_left">ئايلانما ئات سول</string>
+    <string name="effects_carousel_right">ئايلانما ئات ئوڭ</string>
+    <string name="live_folder_cling_title">شۇئان قىسقۇچ</string>
+    <string name="live_folder_cling_create_folder">شۇئان قىسقۇچ ئەپ ئىجاتكارلىرىنىڭ ھەرىكەتچان مەزمۇنلۇق قىسقۇچ قۇرۇشىغا يول قويىدۇ. بىر تۈر ئۇزۇن ۋاقىت بېسىلسا قىسقۇچنىڭ مەزمۇنىنى ئۆچۈرگىلى بولىدۇ. ئادەتتىكى قىسقۇچقا ئوخشىمايدۇ، پەقەت بۇ قىسقۇچنى قۇرغان ئەپلا تۈر قوشالايدۇ.</string>
+
+</resources>
