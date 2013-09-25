@@ -439,6 +439,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         ViewGroup parent = (ViewGroup) getParent();
         if (parent == null) return;
 
+        View overviewPanel = ((Launcher) getContext()).getOverviewPanel();
         final int count = parent.getChildCount();
         if (!isChildrenDrawingOrderEnabled()) {
             for (int i = 0; i < count; i++) {
@@ -446,7 +447,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 if (child == this) {
                     break;
                 } else {
-                    if (child.getVisibility() == GONE) {
+                    if (child.getVisibility() == GONE || child == overviewPanel) {
                         continue;
                     }
                     child.setVisibility(visibility);

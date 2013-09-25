@@ -1911,7 +1911,9 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        View searchBar = mLauncher.getQsbBar();
+        final View searchBar = mLauncher.getQsbBar();
+        final View overviewPanel = mLauncher.getOverviewPanel();
+        final View hotseat = mLauncher.getHotseat();
         if (animated) {
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
             scale.scaleX(mNewScale)
@@ -1957,29 +1959,32 @@ public class Workspace extends SmoothPagedView
                 pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
                         finalHotseatAndPageIndicatorAlpha);
             }
-            ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(mLauncher.getHotseat(), "alpha",
+            ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(hotseat, "alpha",
                     finalHotseatAndPageIndicatorAlpha);
             ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
                     "alpha", finalSearchBarAlpha);
-            ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
+            ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(overviewPanel,
                     "alpha", finalOverviewPanelAlpha);
-            overviewPanelAlpha.addUpdateListener(new AlphaUpdateListener(
-                    mLauncher.getOverviewPanel()));
-            hotseatAlpha.addUpdateListener(new AlphaUpdateListener(mLauncher.getHotseat()));
+
+            overviewPanelAlpha.addUpdateListener(new AlphaUpdateListener(overviewPanel));
+            hotseatAlpha.addUpdateListener(new AlphaUpdateListener(hotseat));
             searchBarAlpha.addUpdateListener(new AlphaUpdateListener(searchBar));
+
             if (getPageIndicator() != null) {
                 pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
             }
+
+
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
             anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
         } else {
-            mLauncher.getOverviewPanel().setAlpha(finalOverviewPanelAlpha);
-            AlphaUpdateListener.updateVisibility(mLauncher.getOverviewPanel());
-            mLauncher.getHotseat().setAlpha(finalHotseatAndPageIndicatorAlpha);
-            AlphaUpdateListener.updateVisibility(mLauncher.getHotseat());
+            overviewPanel.setAlpha(finalOverviewPanelAlpha);
+            AlphaUpdateListener.updateVisibility(overviewPanel);
+            hotseat.setAlpha(finalHotseatAndPageIndicatorAlpha);
+            AlphaUpdateListener.updateVisibility(hotseat);
             if (getPageIndicator() != null) {
                 getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(getPageIndicator());
