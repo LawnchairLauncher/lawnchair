@@ -217,11 +217,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     return;
                 }
                 WallpaperTileInfo info = (WallpaperTileInfo) v.getTag();
-                if (mSelectedThumb != null) {
-                    mSelectedThumb.setSelected(false);
-                    mSelectedThumb = null;
-                }
                 if (info.isSelectable()) {
+                    if (mSelectedThumb != null) {
+                        mSelectedThumb.setSelected(false);
+                        mSelectedThumb = null;
+                    }
                     mSelectedThumb = v;
                     v.setSelected(true);
                 }
@@ -313,8 +313,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        WallpaperTileInfo info = (WallpaperTileInfo) mSelectedThumb.getTag();
-                        info.onSave(WallpaperPickerActivity.this);
+                        if (mSelectedThumb != null) {
+                            WallpaperTileInfo info = (WallpaperTileInfo) mSelectedThumb.getTag();
+                            info.onSave(WallpaperPickerActivity.this);
+                        }
                     }
                 });
 
