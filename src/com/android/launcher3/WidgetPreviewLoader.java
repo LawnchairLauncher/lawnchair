@@ -159,11 +159,12 @@ public class WidgetPreviewLoader {
     }
 
     public Bitmap getPreview(final Object o) {
-        String name = getObjectName(o);
+        final String name = getObjectName(o);
+        final String packageName = getObjectPackage(o);
         // check if the package is valid
         boolean packageValid = true;
         synchronized(sInvalidPackages) {
-            packageValid = !sInvalidPackages.contains(getObjectPackage(o));
+            packageValid = !sInvalidPackages.contains(packageName);
         }
         if (!packageValid) {
             return null;
@@ -334,7 +335,7 @@ public class WidgetPreviewLoader {
         db.insert(CacheDb.TABLE_NAME, null, values);
     }
 
-    public static void removeFromDb(final CacheDb cacheDb, final String packageName) {
+    public static void removePackageFromDb(final CacheDb cacheDb, final String packageName) {
         synchronized(sInvalidPackages) {
             sInvalidPackages.add(packageName);
         }
@@ -351,6 +352,18 @@ public class WidgetPreviewLoader {
                 synchronized(sInvalidPackages) {
                     sInvalidPackages.remove(packageName);
                 }
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+    }
+
+    public static void removeItemFromDb(final CacheDb cacheDb, final String objectName) {
+        new AsyncTask<Void, Void, Void>() {
+            public Void doInBackground(Void ... args) {
+                SQLiteDatabase db = cacheDb.getWritableDatabase();
+                db.delete(CacheDb.TABLE_NAME,
+                        CacheDb.COLUMN_NAME + " = ? ", // SELECT query
+                        new String[] { objectName }); // args to SELECT query
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
@@ -377,8 +390,12 @@ public class WidgetPreviewLoader {
             final BitmapFactory.Options opts = mCachedBitmapFactoryOptions.get();
             opts.inBitmap = b;
             opts.inSampleSize = 1;
-            Bitmap out = BitmapFactory.decodeByteArray(blob, 0, blob.length, opts);
-            return out;
+            try {
+                return BitmapFactory.decodeByteArray(blob, 0, blob.length, opts);
+            } catch (IllegalArgumentException e) {
+                removeItemFromDb(mDb, name);
+                return null;
+            }
         } else {
             result.close();
             return null;

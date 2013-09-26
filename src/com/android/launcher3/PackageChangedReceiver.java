@@ -16,6 +16,6 @@ public class PackageChangedReceiver extends BroadcastReceiver {
         // in rare cases the receiver races with the application to set up LauncherAppState
         LauncherAppState.setApplicationContext(context.getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
-        WidgetPreviewLoader.removeFromDb(app.getWidgetPreviewCacheDb(), packageName);
+        WidgetPreviewLoader.removePackageFromDb(app.getWidgetPreviewCacheDb(), packageName);
     }
 }
