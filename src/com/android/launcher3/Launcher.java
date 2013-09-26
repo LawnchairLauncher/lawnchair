@@ -634,6 +634,10 @@ public class Launcher extends Activity
         }
     }
 
+    public Stats getStats() {
+        return mStats;
+    }
+
     public LayoutInflater getInflater() {
         return mInflater;
     }
