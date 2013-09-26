@@ -927,6 +927,8 @@ public class CellLayout extends ViewGroup {
         return r;
     }
 
+    /** Return a rect that has the cellWidth/cellHeight (left, top), and
+     * widthGap/heightGap (right, bottom) */
     static void getMetrics(Rect metrics, int paddedMeasureWidth,
             int paddedMeasureHeight, int countX, int countY) {
         LauncherAppState app = LauncherAppState.getInstance();
