@@ -71,7 +71,7 @@
     <integer name="config_dragFadeOutDuration">250</integer>
 
     <!-- Camera distance for the overscroll effect -->
-    <integer name="config_cameraDistance">6500</integer>
+    <integer name="config_cameraDistance">8000</integer>
 
     <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
     <bool name="config_useCustomClings">false</bool>
