@@ -29,11 +29,12 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
@@ -58,6 +59,8 @@ import android.widget.ListAdapter;
 
 import com.android.photos.BitmapRegionTileSource;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -471,7 +474,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     new BitmapCropTask(context, res, resId, null, width, height, false, true, null);
         }
         Point bounds = cropTask.getImageBounds();
-        if (bounds == null) {
+        if (bounds == null || bounds.x == 0 || bounds.y == 0) {
             return null;
         }
 
@@ -555,12 +558,46 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             } catch (PackageManager.NameNotFoundException e) {
             }
         }
-        //TODO: add default wallpaper
-        //Resources sysRes = Resources.getSystem();
-        //int resId = sysRes.getIdentifier("default_wallpaper", "drawable", "android");
-        //bundledWallpapers.add(
-        //        new ResourceWallpaperInfo(sysRes, resId, new ColorDrawable(0xFFFF0000)));
+
+        // Add an entry for the default wallpaper (stored in system resources)
+        ResourceWallpaperInfo defaultWallpaperInfo = getDefaultWallpaperInfo();
+        if (defaultWallpaperInfo != null) {
+            bundledWallpapers.add(0, defaultWallpaperInfo);
+        }
         return bundledWallpapers;
+    }
+
+    private ResourceWallpaperInfo getDefaultWallpaperInfo() {
+        Resources sysRes = Resources.getSystem();
+        int resId = sysRes.getIdentifier("default_wallpaper", "drawable", "android");
+
+        File defaultThumbFile = new File(getFilesDir(), "default_thumb.jpg");
+        Bitmap thumb = null;
+        boolean defaultWallpaperExists = false;
+        if (defaultThumbFile.exists()) {
+            thumb = BitmapFactory.decodeFile(defaultThumbFile.getAbsolutePath());
+            defaultWallpaperExists = true;
+        } else {
+            Point defaultThumbSize = getDefaultThumbnailSize(getResources());
+            thumb = createThumbnail(defaultThumbSize, this, null, null, sysRes, resId, false);
+            if (thumb != null) {
+                try {
+                    defaultThumbFile.createNewFile();
+                    FileOutputStream thumbFileStream =
+                            openFileOutput(defaultThumbFile.getName(), Context.MODE_PRIVATE);
+                    thumb.compress(Bitmap.CompressFormat.JPEG, 95, thumbFileStream);
+                    thumbFileStream.close();
+                    defaultWallpaperExists = true;
+                } catch (IOException e) {
+                    Log.e(TAG, "Error while writing default wallpaper thumbnail to file " + e);
+                    defaultThumbFile.delete();
+                }
+            }
+        }
+        if (defaultWallpaperExists) {
+            return new ResourceWallpaperInfo(sysRes, resId, new BitmapDrawable(thumb));
+        }
+        return null;
     }
 
     public Pair<ApplicationInfo, Integer> getWallpaperArrayResourceId() {
