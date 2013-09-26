@@ -290,7 +290,8 @@ class DeviceProfile {
 
     Rect getWorkspacePadding(int orientation) {
         Rect padding = new Rect();
-        if (isVerticalBarLayout()) {
+        if (orientation == CellLayout.LANDSCAPE &&
+                transposeLayoutWithOrientation) {
             // Pad the left and right of the workspace with search/hotseat bar sizes
             padding.set(searchBarSpaceHeightPx, edgeMarginPx,
                     hotseatBarHeightPx, edgeMarginPx);
