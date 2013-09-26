@@ -103,20 +103,24 @@ public class Stats {
         }
     }
 
+    public void recordLaunch(Intent intent) {
+        recordLaunch(intent, null);
+    }
+
     public void recordLaunch(Intent intent, ShortcutInfo shortcut) {
         intent = new Intent(intent);
         intent.setSourceBounds(null);
 
         final String flat = intent.toUri(0);
 
-        mLauncher.sendBroadcast(
-                new Intent(ACTION_LAUNCH)
-                        .putExtra(EXTRA_INTENT, flat)
-                        .putExtra(EXTRA_CONTAINER, shortcut.container)
-                        .putExtra(EXTRA_SCREEN, shortcut.screenId)
-                        .putExtra(EXTRA_CELLX, shortcut.cellX)
-                        .putExtra(EXTRA_CELLY, shortcut.cellY),
-                PERM_LAUNCH);
+        Intent broadcastIntent = new Intent(ACTION_LAUNCH).putExtra(EXTRA_INTENT, flat);
+        if (shortcut != null) {
+            broadcastIntent.putExtra(EXTRA_CONTAINER, shortcut.container)
+                    .putExtra(EXTRA_SCREEN, shortcut.screenId)
+                    .putExtra(EXTRA_CELLX, shortcut.cellX)
+                    .putExtra(EXTRA_CELLY, shortcut.cellY);
+        }
+        mLauncher.sendBroadcast(broadcastIntent, PERM_LAUNCH);
 
         incrementLaunch(flat);
 
@@ -128,10 +132,17 @@ public class Stats {
             try {
                 mLog.writeInt(LOG_TAG_LAUNCH);
                 mLog.writeLong(System.currentTimeMillis());
-                mLog.writeShort((short) shortcut.container);
-                mLog.writeShort((short) shortcut.screenId);
-                mLog.writeShort((short) shortcut.cellX);
-                mLog.writeShort((short) shortcut.cellY);
+                if (shortcut == null) {
+                    mLog.writeShort(0);
+                    mLog.writeShort(0);
+                    mLog.writeShort(0);
+                    mLog.writeShort(0);
+                } else {
+                    mLog.writeShort((short) shortcut.container);
+                    mLog.writeShort((short) shortcut.screenId);
+                    mLog.writeShort((short) shortcut.cellX);
+                    mLog.writeShort((short) shortcut.cellY);
+                }
                 mLog.writeUTF(flat);
                 if (FLUSH_IMMEDIATELY) {
                     mLog.flush(); // TODO: delayed writes
