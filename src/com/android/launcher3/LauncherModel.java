@@ -2477,7 +2477,7 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         mBgAllAppsList.updatePackage(context, packages[i]);
-                        WidgetPreviewLoader.removeFromDb(
+                        WidgetPreviewLoader.removePackageFromDb(
                                 mApp.getWidgetPreviewCacheDb(), packages[i]);
                     }
                     break;
@@ -2486,7 +2486,7 @@ public class LauncherModel extends BroadcastReceiver {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mBgAllAppsList.removePackage(packages[i]);
-                        WidgetPreviewLoader.removeFromDb(
+                        WidgetPreviewLoader.removePackageFromDb(
                                 mApp.getWidgetPreviewCacheDb(), packages[i]);
                     }
                     break;
