@@ -2557,11 +2557,14 @@ public class Launcher extends Activity
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
-                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                mWorkspace.enterOverviewMode();
+                if (mWorkspace.enterOverviewMode()) {
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            return true;
         }
 
         if (!(v instanceof CellLayout)) {

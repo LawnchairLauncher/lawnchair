@@ -1781,9 +1781,13 @@ public class Workspace extends SmoothPagedView
         return mState == State.OVERVIEW;
     }
 
-    public void enterOverviewMode() {
+    public boolean enterOverviewMode() {
+        if (mTouchState != TOUCH_STATE_REST) {
+            return false;
+        }
         mLauncher.onInteractionBegin();
         enableOverviewMode(true, -1, true);
+        return true;
     }
 
     public void exitOverviewMode(boolean animated) {
