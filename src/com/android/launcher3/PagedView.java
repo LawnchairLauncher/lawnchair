@@ -1316,13 +1316,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                  */
                 if (mActivePointerId != INVALID_POINTER) {
                     determineScrollingStart(ev);
-                    break;
                 }
                 // if mActivePointerId is INVALID_POINTER, then we must have missed an ACTION_DOWN
                 // event. in that case, treat the first occurence of a move event as a ACTION_DOWN
                 // i.e. fall through to the next case (don't break)
                 // (We sometimes miss ACTION_DOWN events in Workspace because it ignores all events
                 // while it's small- this was causing a crash before we checked for INVALID_POINTER)
+                break;
             }
 
             case MotionEvent.ACTION_DOWN: {
@@ -2373,7 +2373,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     public boolean startReordering(View v) {
-        int dragViewIndex = indexOfChild(v);//getPageNearestToCenterOfScreen();
+        int dragViewIndex = indexOfChild(v);
+
+        if (mTouchState != TOUCH_STATE_REST) return false;
+
         mTempVisiblePagesRange[0] = 0;
         mTempVisiblePagesRange[1] = getPageCount() - 1;
         getOverviewModePages(mTempVisiblePagesRange);
