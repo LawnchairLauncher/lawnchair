@@ -175,16 +175,10 @@ public class DeleteDropTarget extends ButtonDropTarget {
         boolean isVisible = true;
         boolean isUninstall = false;
 
-        // If we are dragging a widget from AppsCustomize, hide the delete target
-        if (isAllAppsWidget(source, info)) {
-            isVisible = false;
-        }
-
         // If we are dragging an application from AppsCustomize, only show the control if we can
-        // delete the app (it was downloaded), and rename the string to "uninstall" in such a case
-        if (willAcceptDrop(info)) {
-            isVisible = true;
-        } else {
+        // delete the app (it was downloaded), and rename the string to "uninstall" in such a case.
+        // Hide the delete target if it is a widget from AppsCustomize.
+        if (!willAcceptDrop(info) || isAllAppsWidget(source, info)) {
             isVisible = false;
         }
 
