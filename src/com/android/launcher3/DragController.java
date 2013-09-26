@@ -24,8 +24,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -51,7 +51,6 @@ public class DragController {
 
     private static final int SCROLL_DELAY = 500;
     private static final int RESCROLL_DELAY = 750;
-    private static final int VIBRATE_DURATION = 15;
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
 
@@ -66,7 +65,6 @@ public class DragController {
 
     private Launcher mLauncher;
     private Handler mHandler;
-    private final Vibrator mVibrator;
 
     // temporaries to avoid gc thrash
     private Rect mRectTemp = new Rect();
@@ -150,7 +148,6 @@ public class DragController {
         mHandler = new Handler();
         mScrollZone = r.getDimensionPixelSize(R.dimen.scroll_zone);
         mVelocityTracker = VelocityTracker.obtain();
-        mVibrator = (Vibrator) launcher.getSystemService(Context.VIBRATOR_SERVICE);
 
         float density = r.getDisplayMetrics().density;
         mFlingToDeleteThresholdVelocity =
@@ -240,8 +237,6 @@ public class DragController {
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
 
-        mVibrator.vibrate(VIBRATE_DURATION);
-
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
 
@@ -252,6 +247,7 @@ public class DragController {
             dragView.setDragRegion(new Rect(dragRegion));
         }
 
+        mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mMotionDownX, mMotionDownY);
         handleMoveEvent(mMotionDownX, mMotionDownY);
     }
