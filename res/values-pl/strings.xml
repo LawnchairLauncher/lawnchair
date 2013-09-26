@@ -19,97 +19,104 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="8424725141379931883">"Program uruchamiający"</string>
-    <string name="home" msgid="5921706419368316758">"Strona główna"</string>
-    <string name="uid_name" msgid="3371120195364560632">"Aplikacje główne systemu Android"</string>
-    <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="6063168087625352235">"Wybierz tapetę z..."</string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Ustaw tapetę"</string>
-    <string name="pick_wallpaper" msgid="5630222540525626723">"Tapety"</string>
-    <string name="activity_not_found" msgid="217823393239365967">"Aplikacja nie jest zainstalowana."</string>
-    <string name="widgets_tab_label" msgid="9145860100000983599">"Widżety"</string>
-    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Aby dodać widżet, dotknij go i przytrzymaj."</string>
-    <string name="market" msgid="2652226429823445833">"Sklep"</string>
-    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
-    <string name="external_drop_widget_error" msgid="2285187188524172774">"Nie można upuścić elementu na tym ekranie głównym."</string>
-    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Wybierz widżet, który chcesz dodać"</string>
-    <string name="rename_folder_label" msgid="5646236631298452787">"Nazwa folderu"</string>
-    <string name="rename_folder_title" msgid="4544573104191526550">"Zmień nazwę folderu"</string>
-    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
-    <string name="cancel_action" msgid="3811860427489435048">"Anuluj"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"Dodaj do strony głównej"</string>
-    <string name="group_applications" msgid="2103752818818161976">"Aplikacje"</string>
-    <string name="group_shortcuts" msgid="9133529424900391877">"Skróty"</string>
-    <string name="group_widgets" msgid="6704978494073105844">"Widżety"</string>
-    <string name="group_wallpapers" msgid="1568191644272224858">"Tapety"</string>
-    <string name="completely_out_of_space" msgid="1759078539443491182">"Brak miejsca na Twoich ekranach głównych."</string>
-    <string name="out_of_space" msgid="8365249326091984698">"Brak miejsca na tej stronie głównej"</string>
-    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Brak miejsca w kieszonce."</string>
-    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ten widżet jest za duży, aby umieścić go w kieszonce."</string>
-    <string name="shortcut_installed" msgid="7071557296331322355">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został utworzony."</string>
-    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został usunięty."</string>
-    <string name="shortcut_duplicate" msgid="4757756326465060694">"Skrót „<xliff:g id="NAME">%s</xliff:g>” już istnieje."</string>
-    <string name="title_select_shortcut" msgid="1873670208166882222">"Wybierz skrót"</string>
-    <string name="title_select_application" msgid="1793455815754848652">"Wybierz aplikację"</string>
-    <string name="all_apps_button_label" msgid="2578400570124163469">"Aplikacje"</string>
-    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Ekran główny"</string>
-    <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Usuń"</string>
-    <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Odinstaluj"</string>
-    <string name="delete_target_label" msgid="665300185123139530">"Usuń"</string>
-    <string name="delete_target_uninstall_label" msgid="748894921183769150">"Odinstaluj"</string>
-    <string name="info_target_label" msgid="4019495079517426980">"O aplikacji"</string>
-    <string name="accessibility_search_button" msgid="816822994629942611">"Szukaj"</string>
-    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Wyszukiwanie głosowe"</string>
-    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Aplikacje"</string>
-    <string name="accessibility_delete_button" msgid="3628162007991023603">"Usuń"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Odinstaluj aktualizację"</string>
-    <string name="menu_add" msgid="3065046628354640854">"Dodaj"</string>
-    <string name="menu_manage_apps" msgid="2308685199463588895">"Zarządzaj aplikacjami"</string>
-    <string name="menu_wallpaper" msgid="5837429080911269832">"Tapeta"</string>
-    <string name="menu_search" msgid="4826514464423239041">"Szukaj"</string>
-    <string name="menu_notifications" msgid="6424587053194766192">"Powiadomienia"</string>
-    <string name="menu_settings" msgid="3946232973327980394">"Ustawienia systemu"</string>
-    <string name="menu_help" msgid="4901160661634590633">"Pomoc"</string>
-    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Odinstaluj aplikację"</string>
-    <string name="cab_menu_app_info" msgid="914548323652698884">"Szczegóły aplikacji"</string>
-    <string name="cab_app_selection_text" msgid="6378522164293415735">"Wybrano 1 aplikację"</string>
-    <string name="cab_widget_selection_text" msgid="962527270506951955">"Zaznaczono 1 widżet"</string>
-    <string name="cab_folder_selection_text" msgid="8916111874189565067">"Zaznaczono 1 folder"</string>
-    <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Zaznaczono 1 skrót"</string>
-    <string name="permlab_install_shortcut" msgid="1201690825493376489">"zainstaluj skróty"</string>
-    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Pozwala aplikacji dodawać skróty bez interwencji użytkownika."</string>
-    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"odinstaluj skróty"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Pozwala aplikacji usuwać skróty bez interwencji użytkownika."</string>
-    <string name="permlab_read_settings" msgid="3452408290738106747">"odczytywanie ustawień i skrótów strony głównej"</string>
-    <string name="permdesc_read_settings" msgid="5788109303585403679">"Umożliwia aplikacji odczytywanie ustawień i skrótów na ekranie głównym."</string>
-    <string name="permlab_write_settings" msgid="1360567537236705628">"zapisywanie ustawień i skrótów strony głównej"</string>
-    <string name="permdesc_write_settings" msgid="8530105489115785531">"Umożliwia aplikacji zmianę ustawień i skrótów na ekranie głównym."</string>
-    <string name="gadget_error_text" msgid="8359351016167075858">"Problem podczas ładowania widżetu"</string>
-    <string name="uninstall_system_app_text" msgid="6429814133777046491">"To jest aplikacja systemowa, której nie możesz odinstalować."</string>
-    <string name="dream_name" msgid="2847171357608437154">"Wyrzutnia rakiet"</string>
-    <string name="folder_hint_text" msgid="8633351560105748141">"Folder bez nazwy"</string>
-    <string name="workspace_description_format" msgid="2968608205939373034">"Ekran główny %1$d"</string>
-    <string name="default_scroll_format" msgid="4057140866420001240">"Strona %1$d z %2$d"</string>
-    <string name="workspace_scroll_format" msgid="1704767047951143301">"Ekran główny %1$d z %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Strona aplikacji: %1$d z %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Strona widżetów: %1$d z %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"Rozgość się"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"Dodaj tu swoje ulubione aplikacje."</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Aby zobaczyć wszystkie aplikacje, dotknij okręgu."</string>
-    <string name="all_apps_cling_title" msgid="2559734712581447107">"Wybierz kilka aplikacji"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"By dodać aplikację na ekran główny, dotknij i przytrzymaj jej ikonę."</string>
-    <string name="folder_cling_title" msgid="4308949882377840953">"Uporządkuj swoje aplikacje za pomocą folderów"</string>
-    <string name="folder_cling_move_item" msgid="270598675060435169">"Dotknij i przytrzymaj, aby przenieść aplikację."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Aby utworzyć nowy folder na ekranie głównym, ułóż aplikacje jedna na drugiej."</string>
-    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <string name="folder_opened" msgid="1262064100943801533">"Folder otwarty, <xliff:g id="WIDTH">%1$d</xliff:g> na <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="1335478160661137579">"Dotknij, aby zamknąć folder"</string>
-    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Dotknij, aby zapisać zmianę nazwy"</string>
-    <string name="folder_closed" msgid="3130534551370511932">"Folder zamknięty"</string>
-    <string name="folder_renamed" msgid="7951233572858053642">"Nazwa folderu zmieniona na <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="3051680259794759037">"Folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="custom_workspace_cling_title_1" msgid="1433009175359948587"></string>
-    <string name="custom_workspace_cling_description_1" msgid="6875529190849858047"></string>
-    <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
-    <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"Ekran główny"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Główne aplikacje Androida"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"Ustaw tapetę"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"Wybrane: %1$d"</item>
+    <item quantity="one" msgid="142482526010824029">"Wybrane: %1$d"</item>
+    <item quantity="other" msgid="1418352074806573570">"Wybrane: %1$d"</item>
+  </plurals>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"Usuń"</string>
+    <string name="pick_image" msgid="1272073934062909527">"Wybierz obraz"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"Tapety"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"Przytnij tapetę"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"Aplikacja nie jest zainstalowana."</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"Widżety"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"Widżety"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Pokaż pamięć"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Aby dodać widżet, kliknij go i przytrzymaj."</string>
+    <string name="market" msgid="2619650989819296998">"Sklep"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"Nie można upuścić elementu na tym ekranie głównym."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Wybierz widżet, który chcesz dodać"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"Nazwa folderu"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Zmień nazwę folderu"</string>
+    <string name="rename_action" msgid="5559600076028658757">"OK"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"Anuluj"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"Dodaj do ekranu głównego"</string>
+    <string name="group_applications" msgid="3797214114206693605">"Aplikacje"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"Skróty"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"Widżety"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"Brak miejsca na ekranach głównych."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Brak miejsca na tym ekranie głównym."</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Brak miejsca w kieszonce."</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ten widżet jest za duży, by umieścić go w kieszonce."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został utworzony."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został usunięty."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"Skrót „<xliff:g id="NAME">%s</xliff:g>” już istnieje."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"Wybierz skrót"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"Wybierz aplikację"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Aplikacje"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Ekran główny"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Usuń"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Odinstaluj"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"Usuń"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Odinstaluj"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"Informacje o aplikacji"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"Szukaj"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Wyszukiwanie głosowe"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Aplikacje"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"Usuń"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Odinstaluj aktualizację"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Odinstaluj aplikację"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"Szczegóły aplikacji"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"Wybrano 1 aplikację"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"Wybrano 1 widżet"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"Wybrano 1 folder"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"Wybrano 1 skrót"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalowanie skrótów"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Pozwala aplikacji dodawać skróty bez interwencji użytkownika."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"odinstalowywanie skrótów"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Pozwala aplikacji usuwać skróty bez interwencji użytkownika."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"odczytywanie ustawień i skrótów na ekranie głównym"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Pozwala aplikacji na odczytywanie ustawień i skrótów na ekranie głównym."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"zapisywanie ustawień i skrótów na ekranie głównym"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Umożliwia aplikacji zmianę ustawień i skrótów na ekranie głównym."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Problem podczas ładowania widżetu"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"To aplikacja systemowa i nie można jej odinstalować."</string>
+    <string name="dream_name" msgid="1530253749244328964">"Wyrzutnia rakiet"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Folder bez nazwy"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"Ekran główny %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"Strona %1$d z %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Ekran główny %1$d z %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Strona aplikacji: %1$d z %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Strona widżetów: %1$d z %2$d"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"Witamy!"</string>
+    <string name="first_run_cling_description" msgid="658815204153067813">"Poczuj się jak u siebie"</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Dodaj więcej ekranów na aplikacje i foldery"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"Uporządkuj obszar roboczy"</string>
+    <string name="workspace_cling_move_item" msgid="2243369117709858844">"Kliknij i przytrzymaj tło, by zmienić tapetę, widżety lub ustawienia"</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"Wybierz kilka aplikacji"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Aby dodać aplikację na ekran główny, dotknij i przytrzymaj jej ikonę."</string>
+    <string name="folder_cling_title" msgid="294708344826056909">"Utwórz nowe foldery z aplikacjami"</string>
+    <string name="folder_cling_create_folder" msgid="3245124301268588807">"Kliknij i przytrzymaj aplikację, a potem przesuń ją na ikonę innej aplikacji"</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Folder otwarty, <xliff:g id="WIDTH">%1$d</xliff:g> na <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Kliknij, by zamknąć folder"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Kliknij, by zapisać zmianę nazwy"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Folder zamknięty"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Nazwa folderu zmieniona na <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"></string>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"></string>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Widżety"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Ustawienia"</string>
 </resources>
