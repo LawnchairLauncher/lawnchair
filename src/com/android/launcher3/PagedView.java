@@ -925,6 +925,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mFirstLayout = false;
         }
 
+        if (isPageMoving()) {
+            // If the page is moving, then snap it to the final position to ensure we don't get
+            // stuck between pages
+            snapToDestination();
+        }
+
         if (childCount > 0) {
             final int index = isLayoutRtl() ? 0 : childCount - 1;
             mMaxScrollX = getScrollForPage(index);
