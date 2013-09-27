@@ -107,7 +107,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
             if (child instanceof Insettable) {
                 ((Insettable)child).setInsets(insets);
-            } else  {
+            } else {
                 flp.topMargin += (insets.top - mInsets.top);
                 flp.leftMargin += (insets.left - mInsets.left);
                 flp.rightMargin += (insets.right - mInsets.right);
