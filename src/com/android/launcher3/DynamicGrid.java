@@ -359,14 +359,14 @@ class DeviceProfile {
         boolean hasVerticalBarLayout = isVerticalBarLayout();
 
         // Layout the search bar space
-        View searchBarSpace = launcher.findViewById(R.id.qsb_bar);
-        lp = (FrameLayout.LayoutParams) searchBarSpace.getLayoutParams();
+        View searchBar = launcher.getSearchBar();
+        lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         if (hasVerticalBarLayout) {
             // Vertical search bar
             lp.gravity = Gravity.TOP | Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
             lp.height = LayoutParams.MATCH_PARENT;
-            searchBarSpace.setPadding(
+            searchBar.setPadding(
                     0, 2 * edgeMarginPx, 0,
                     2 * edgeMarginPx);
         } else {
@@ -374,19 +374,19 @@ class DeviceProfile {
             lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
             lp.width = searchBarSpaceWidthPx;
             lp.height = searchBarSpaceHeightPx;
-            searchBarSpace.setPadding(
+            searchBar.setPadding(
                     2 * edgeMarginPx,
                     2 * edgeMarginPx,
                     2 * edgeMarginPx, 0);
         }
-        searchBarSpace.setLayoutParams(lp);
+        searchBar.setLayoutParams(lp);
 
         // Layout the search bar
-        View searchBar = launcher.getQsbBar();
-        lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
-        lp.width = LayoutParams.MATCH_PARENT;
-        lp.height = LayoutParams.MATCH_PARENT;
-        searchBar.setLayoutParams(lp);
+        View qsbBar = launcher.getQsbBar();
+        LayoutParams vglp = qsbBar.getLayoutParams();
+        vglp.width = LayoutParams.MATCH_PARENT;
+        vglp.height = LayoutParams.MATCH_PARENT;
+        qsbBar.setLayoutParams(vglp);
 
         // Layout the voice proxy
         View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
