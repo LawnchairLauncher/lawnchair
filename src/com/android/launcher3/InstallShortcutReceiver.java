@@ -224,6 +224,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
 
         // Queue the item up for adding if launcher has not loaded properly yet
+        LauncherAppState.setApplicationContext(context.getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
         boolean launcherNotLoaded = (app.getDynamicGrid() == null);
 
