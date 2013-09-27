@@ -453,8 +453,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 setLayerType(LAYER_TYPE_NONE, null);
                 Cling cling = mLauncher.showFirstRunFoldersCling();
                 if (cling != null) {
-                    cling.bringToFront();
+                    cling.bringScrimToFront();
                     bringToFront();
+                    cling.bringToFront();
                 }
                 setFocusOnFirstChild();
             }
