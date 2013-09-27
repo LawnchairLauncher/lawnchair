@@ -95,13 +95,13 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mLeftHandle = new ImageView(context);
         mLeftHandle.setImageResource(R.drawable.widget_resize_handle_left);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
-                Gravity.START | Gravity.CENTER_VERTICAL);
+                Gravity.LEFT | Gravity.CENTER_VERTICAL);
         addView(mLeftHandle, lp);
 
         mRightHandle = new ImageView(context);
         mRightHandle.setImageResource(R.drawable.widget_resize_handle_right);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
-                Gravity.END | Gravity.CENTER_VERTICAL);
+                Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         addView(mRightHandle, lp);
 
         mTopHandle = new ImageView(context);
