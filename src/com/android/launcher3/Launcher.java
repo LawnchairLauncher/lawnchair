@@ -3263,7 +3263,8 @@ public class Launcher extends Activity
 
     public View getQsbBar() {
         if (mQsbBar == null) {
-            mQsbBar = mInflater.inflate(R.layout.qsb_bar, mSearchDropTargetBar);
+            mQsbBar = mInflater.inflate(R.layout.search_bar, mSearchDropTargetBar, false);
+            mSearchDropTargetBar.addView(mQsbBar);
         }
         return mQsbBar;
     }
