@@ -16,12 +16,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="preferences_interface_homescreen_indicator_position_entries">
         <item>Над нижней панелью</item>
-        <item>Наверху</item>
-        <item>Внизу</item>
+        <item>Вверху экрана</item>
+        <item>Внизу экрана</item>
     </string-array>
     <string-array name="preferences_interface_drawer_indicator_position_entries">
-        <item>Наверху/Слева</item>
-        <item>Внизу/Справа</item>
+        <item>Вверху или слева</item>
+        <item>Внизу или справа</item>
     </string-array>
     <string-array name="preferences_interface_drawer_orientation_entries">
         <item>Горизонтальная</item>
