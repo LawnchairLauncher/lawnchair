@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="@string/wallpaper_button_text"
         android:drawablePadding="4dp"
-        android:drawableTop="@drawable/ic_wallpaper"
+        android:drawableTop="@drawable/wallpaper_button"
         android:gravity="center_horizontal"
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
@@ -42,7 +42,7 @@
         android:text="@string/widget_button_text"
         android:drawablePadding="4dp"
         android:gravity="center_horizontal"
-        android:drawableTop="@drawable/ic_widget"
+        android:drawableTop="@drawable/widget_button"
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
         android:textSize="12sp"/>
@@ -56,7 +56,7 @@
         android:text="@string/settings_button_text"
         android:drawablePadding="4dp"
         android:gravity="center_horizontal"
-        android:drawableTop="@drawable/ic_setting"
+        android:drawableTop="@drawable/setting_button"
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
         android:textSize="12sp" />
