@@ -102,6 +102,35 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
+    public static void removeFromInstallQueue(SharedPreferences sharedPrefs,
+                                              ArrayList<String> packageNames) {
+        synchronized(sLock) {
+            Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
+            if (strings != null) {
+                Set<String> newStrings = new HashSet<String>(strings);
+                for (String json : newStrings) {
+                    try {
+                        JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
+                        Intent launchIntent = Intent.parseUri(object.getString(LAUNCH_INTENT_KEY), 0);
+                        String pn = launchIntent.getPackage();
+                        if (pn == null) {
+                            pn = launchIntent.getComponent().getPackageName();
+                        }
+                        if (packageNames.contains(pn)) {
+                            newStrings.remove(json);
+                        }
+                    } catch (org.json.JSONException e) {
+                        Log.d("InstallShortcutReceiver", "Exception reading shortcut to remove: " + e);
+                    } catch (java.net.URISyntaxException e) {
+                        Log.d("InstallShortcutReceiver", "Exception reading shortcut to remove: " + e);
+                    }
+                }
+                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL,
+                        new HashSet<String>(newStrings)).commit();
+            }
+        }
+    }
+
     private static ArrayList<PendingInstallShortcutInfo> getAndClearInstallQueue(
             SharedPreferences sharedPrefs) {
         synchronized(sLock) {
@@ -115,7 +144,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 try {
                     JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
                     Intent data = Intent.parseUri(object.getString(DATA_INTENT_KEY), 0);
-                    Intent launchIntent = Intent.parseUri(object.getString(LAUNCH_INTENT_KEY), 0);
+                    Intent launchIntent =
+                            Intent.parseUri(object.getString(LAUNCH_INTENT_KEY), 0);
                     String name = object.getString(NAME_KEY);
                     String iconBase64 = object.optString(ICON_KEY);
                     String iconResourceName = object.optString(ICON_RESOURCE_NAME_KEY);
@@ -137,9 +167,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         new PendingInstallShortcutInfo(data, name, launchIntent);
                     infos.add(info);
                 } catch (org.json.JSONException e) {
-                    Log.d("InstallShortcutReceiver", "Exception reading shortcut to add: " + e);
+                    Log.d("InstallShortcutReceiver",
+                            "Exception reading shortcut to add: " + e);
                 } catch (java.net.URISyntaxException e) {
-                    Log.d("InstallShortcutReceiver", "Exception reading shortcut to add: " + e);
+                    Log.d("InstallShortcutReceiver",
+                            "Exception reading shortcut to add: " + e);
                 }
             }
             sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).commit();

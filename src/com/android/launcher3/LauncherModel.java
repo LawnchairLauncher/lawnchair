@@ -2565,6 +2565,12 @@ public class LauncherModel extends BroadcastReceiver {
                             deleteItemFromDatabase(context, i);
                         }
                     }
+
+                    // Remove any queued items from the install queue
+                    String spKey = LauncherAppState.getSharedPreferencesKey();
+                    SharedPreferences sp =
+                            context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+                    InstallShortcutReceiver.removeFromInstallQueue(sp, removedPackageNames);
                 } else {
                     for (AppInfo a : removedApps) {
                         ArrayList<ItemInfo> infos =
@@ -3062,7 +3068,8 @@ public class LauncherModel extends BroadcastReceiver {
         final Collator collator = Collator.getInstance();
         return new Comparator<AppInfo>() {
             public final int compare(AppInfo a, AppInfo b) {
-                int result = collator.compare(a.title.toString(), b.title.toString());
+                int result = collator.compare(a.title.toString().trim(),
+                        b.title.toString().trim());
                 if (result == 0) {
                     result = a.componentName.compareTo(b.componentName);
                 }
@@ -3082,7 +3089,7 @@ public class LauncherModel extends BroadcastReceiver {
         final Collator collator = Collator.getInstance();
         return new Comparator<AppWidgetProviderInfo>() {
             public final int compare(AppWidgetProviderInfo a, AppWidgetProviderInfo b) {
-                return collator.compare(a.label.toString(), b.label.toString());
+                return collator.compare(a.label.toString().trim(), b.label.toString().trim());
             }
         };
     }
@@ -3114,14 +3121,14 @@ public class LauncherModel extends BroadcastReceiver {
             if (mLabelCache.containsKey(keyA)) {
                 labelA = mLabelCache.get(keyA);
             } else {
-                labelA = a.loadLabel(mPackageManager).toString();
+                labelA = a.loadLabel(mPackageManager).toString().trim();
 
                 mLabelCache.put(keyA, labelA);
             }
             if (mLabelCache.containsKey(keyB)) {
                 labelB = mLabelCache.get(keyB);
             } else {
-                labelB = b.loadLabel(mPackageManager).toString();
+                labelB = b.loadLabel(mPackageManager).toString().trim();
 
                 mLabelCache.put(keyB, labelB);
             }
@@ -3144,7 +3151,7 @@ public class LauncherModel extends BroadcastReceiver {
             } else {
                 labelA = (a instanceof AppWidgetProviderInfo) ?
                     ((AppWidgetProviderInfo) a).label :
-                    ((ResolveInfo) a).loadLabel(mPackageManager).toString();
+                    ((ResolveInfo) a).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(a, labelA);
             }
             if (mLabelCache.containsKey(b)) {
@@ -3152,7 +3159,7 @@ public class LauncherModel extends BroadcastReceiver {
             } else {
                 labelB = (b instanceof AppWidgetProviderInfo) ?
                     ((AppWidgetProviderInfo) b).label :
-                    ((ResolveInfo) b).loadLabel(mPackageManager).toString();
+                    ((ResolveInfo) b).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(b, labelB);
             }
             return mCollator.compare(labelA, labelB);

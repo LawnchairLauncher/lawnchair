@@ -834,9 +834,6 @@ public class Launcher extends Activity
         // Background was set to gradient in onPause(), restore to black if in all apps.
         setWorkspaceBackground(mState == State.WORKSPACE);
 
-        // Process any items that were added while Launcher was away
-        InstallShortcutReceiver.disableAndFlushInstallQueue(this);
-
         mPaused = false;
         sPausedFromUserAction = false;
         if (mRestoring || mOnResumeNeedsLoad) {
@@ -885,11 +882,18 @@ public class Launcher extends Activity
             // Resets the previous all apps icon press state
             mAppsCustomizeContent.resetDrawableState();
         }
+        // Reset AllApps to its initial state
+        if (mAppsCustomizeTabHost != null) {
+            mAppsCustomizeTabHost.reset();
+        }
         // It is possible that widgets can receive updates while launcher is not in the foreground.
         // Consequently, the widgets will be inflated in the orientation of the foreground activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
         getWorkspace().reinflateWidgetsIfNecessary();
+
+        // Process any items that were added while Launcher was away.
+        InstallShortcutReceiver.disableAndFlushInstallQueue(this);
 
         // Again, as with the above scenario, it's possible that one or more of the global icons
         // were updated in the wrong orientation.
