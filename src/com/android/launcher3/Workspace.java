@@ -2747,6 +2747,8 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    /** Return a rect that has the cellWidth/cellHeight (left, top), and
+     * widthGap/heightGap (right, bottom) */
     static Rect getCellLayoutMetrics(Launcher launcher, int orientation) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -2758,24 +2760,28 @@ public class Workspace extends SmoothPagedView
         display.getCurrentSizeRange(smallestSize, largestSize);
         int countX = (int) grid.numColumns;
         int countY = (int) grid.numRows;
+        int constrainedLongEdge = largestSize.y;
+        int constrainedShortEdge = smallestSize.y;
         if (orientation == CellLayout.LANDSCAPE) {
             if (mLandscapeCellLayoutMetrics == null) {
                 Rect padding = grid.getWorkspacePadding(CellLayout.LANDSCAPE);
-                int width = largestSize.x - padding.left - padding.right;
-                int height = smallestSize.y - padding.top - padding.bottom;
+                int width = constrainedLongEdge - padding.left - padding.right;
+                int height = constrainedShortEdge - padding.top - padding.bottom;
                 mLandscapeCellLayoutMetrics = new Rect();
-                CellLayout.getMetrics(mLandscapeCellLayoutMetrics, width, height,
-                        countX, countY);
+                mLandscapeCellLayoutMetrics.set(
+                        grid.calculateCellWidth(width, countX),
+                        grid.calculateCellHeight(height, countY), 0, 0);
             }
             return mLandscapeCellLayoutMetrics;
         } else if (orientation == CellLayout.PORTRAIT) {
             if (mPortraitCellLayoutMetrics == null) {
                 Rect padding = grid.getWorkspacePadding(CellLayout.PORTRAIT);
-                int width = smallestSize.x - padding.left - padding.right;
-                int height = largestSize.y - padding.top - padding.bottom;
+                int width = constrainedShortEdge - padding.left - padding.right;
+                int height = constrainedLongEdge - padding.top - padding.bottom;
                 mPortraitCellLayoutMetrics = new Rect();
-                CellLayout.getMetrics(mPortraitCellLayoutMetrics, width, height,
-                        countX, countY);
+                mPortraitCellLayoutMetrics.set(
+                        grid.calculateCellWidth(width, countX),
+                        grid.calculateCellHeight(height, countY), 0, 0);
             }
             return mPortraitCellLayoutMetrics;
         }
