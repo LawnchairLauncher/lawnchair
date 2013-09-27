@@ -4069,7 +4069,7 @@ public class Launcher extends Activity
         Cling cling = (Cling) findViewById(clingId);
         View scrim = null;
         if (scrimId > 0) {
-            scrim = findViewById(R.id.scrim);
+            scrim = findViewById(R.id.cling_scrim);
         }
         if (cling != null) {
             cling.init(this, scrim);
