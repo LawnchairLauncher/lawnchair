@@ -78,6 +78,7 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
             PendingUninstallShortcutInfo pendingInfo) {
         final Intent data = pendingInfo.data;
 
+        LauncherAppState.setApplicationContext(context.getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
         synchronized (app) { // TODO: make removeShortcut internally threadsafe
             removeShortcut(context, data);
