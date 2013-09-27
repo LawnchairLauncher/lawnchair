@@ -274,7 +274,7 @@ public class Launcher extends Activity
     private boolean mUserPresent = true;
     private boolean mVisible = false;
     private boolean mAttached = false;
-    private static final boolean DISABLE_CLINGS = true;
+    private static final boolean DISABLE_CLINGS = false;
     private static final boolean DISABLE_CUSTOM_CLINGS = true;
 
     private static LocaleConfiguration sLocaleConfiguration = null;
@@ -4064,11 +4064,15 @@ public class Launcher extends Activity
         return true;
     }
 
-    private Cling initCling(int clingId, int[] positionData, boolean animate,
+    private Cling initCling(int clingId, int scrimId, boolean animate,
                             boolean dimNavBarVisibilty) {
-        final Cling cling = (Cling) findViewById(clingId);
+        Cling cling = (Cling) findViewById(clingId);
+        View scrim = null;
+        if (scrimId > 0) {
+            scrim = findViewById(R.id.scrim);
+        }
         if (cling != null) {
-            cling.init(this, positionData);
+            cling.init(this, scrim);
             cling.show(animate, SHOW_CLING_DURATION);
 
             if (dimNavBarVisibilty) {
@@ -4087,7 +4091,6 @@ public class Launcher extends Activity
             final Runnable cleanUpClingCb = new Runnable() {
                 public void run() {
                     cling.cleanup();
-                    /*
                     // We should update the shared preferences on a background thread
                     new Thread("dismissClingThread") {
                         public void run() {
@@ -4096,7 +4099,6 @@ public class Launcher extends Activity
                             editor.commit();
                         }
                     }.start();
-                    */
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -4177,7 +4179,7 @@ public class Launcher extends Activity
                     ccHint.setVisibility(View.VISIBLE);
                 }
             }
-            initCling(R.id.first_run_cling, null, false, true);
+            initCling(R.id.first_run_cling, 0, false, true);
         } else {
             removeCling(R.id.first_run_cling);
         }
@@ -4194,7 +4196,7 @@ public class Launcher extends Activity
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
-            initCling(R.id.workspace_cling, null, false, true);
+            initCling(R.id.workspace_cling, 0, false, true);
         } else {
             removeCling(R.id.workspace_cling);
         }
@@ -4203,7 +4205,8 @@ public class Launcher extends Activity
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
-            Cling cling = initCling(R.id.folder_cling, null, true, true);
+            Cling cling = initCling(R.id.folder_cling, R.id.cling_scrim,
+                    true, true);
             return cling;
         } else {
             removeCling(R.id.folder_cling);

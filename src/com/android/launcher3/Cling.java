@@ -70,6 +70,9 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
     private Paint mBubblePaint;
     private Paint mDotPaint;
 
+    private View mScrimView;
+    private int mBackgroundColor;
+
     private final Rect mInsets = new Rect();
 
     public Cling(Context context) {
@@ -91,9 +94,11 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
 
     }
 
-    void init(Launcher l, int[] positionData) {
+    void init(Launcher l, View scrim) {
         if (!mIsInitialized) {
             mLauncher = l;
+            mScrimView = scrim;
+            mBackgroundColor = 0xdd000000;
             setOnLongClickListener(this);
 
             mErasePaint = new Paint();
@@ -128,10 +133,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
             content.animate()
                     .alpha(1f)
                     .setDuration(duration)
-                    .setListener(new AnimatorListenerAdapter() {
-                        public void onAnimationEnd(Animator animation) {
-                        };
-                    })
+                    .setListener(null)
                     .start();
             setAlpha(1f);
         } else {
@@ -142,11 +144,24 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
                     .alpha(1f)
                     .setInterpolator(new AccelerateInterpolator())
                     .setDuration(duration)
+                    .setListener(null)
                     .start();
             } else {
                 setAlpha(1f);
             }
         }
+
+        // Show the scrim if necessary
+        if (mScrimView != null) {
+            mScrimView.setVisibility(View.VISIBLE);
+            mScrimView.setAlpha(0f);
+            mScrimView.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(null)
+                    .start();
+        }
+
         setFocusableInTouchMode(true);
         post(new Runnable() {
             public void run() {
@@ -160,32 +175,54 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
         if (mDrawIdentifier.equals(FIRST_RUN_PORTRAIT) ||
                 mDrawIdentifier.equals(FIRST_RUN_LANDSCAPE)) {
             View content = getContent();
-            ObjectAnimator anim = LauncherAnimUtils.ofFloat(content, "alpha", 0f);
-            anim.setDuration(duration);
-            anim.addListener(new AnimatorListenerAdapter() {
-                public void onAnimationEnd(Animator animation) {
-                    // We are about to trigger the workspace cling, so don't do anything else
-                    setVisibility(View.GONE);
-                    postCb.run();
-                };
-            });
-            anim.start();
+            content.animate()
+                .alpha(0f)
+                .setDuration(duration)
+                .setListener(new AnimatorListenerAdapter() {
+                    public void onAnimationEnd(Animator animation) {
+                        // We are about to trigger the workspace cling, so don't do anything else
+                        setVisibility(View.GONE);
+                        postCb.run();
+                    };
+                })
+                .start();
         } else {
-            ObjectAnimator anim = LauncherAnimUtils.ofFloat(this, "alpha", 0f);
-            anim.setDuration(duration);
-            anim.addListener(new AnimatorListenerAdapter() {
-                public void onAnimationEnd(Animator animation) {
-                    setVisibility(View.GONE);
-                    postCb.run();
-                };
-            });
-            anim.start();
+            animate()
+                .alpha(0f)
+                .setDuration(duration)
+                .setListener(new AnimatorListenerAdapter() {
+                    public void onAnimationEnd(Animator animation) {
+                        // We are about to trigger the workspace cling, so don't do anything else
+                        setVisibility(View.GONE);
+                        postCb.run();
+                    };
+                })
+                .start();
+        }
+
+        // Show the scrim if necessary
+        if (mScrimView != null) {
+            mScrimView.animate()
+                .alpha(0f)
+                .setDuration(duration)
+                .setListener(new AnimatorListenerAdapter() {
+                    public void onAnimationEnd(Animator animation) {
+                        mScrimView.setVisibility(View.GONE);
+                    };
+                })
+                .start();
         }
     }
 
     void cleanup() {
         mBackground = null;
         mIsInitialized = false;
+    }
+
+    void bringScrimToFront() {
+        if (mScrimView != null) {
+            mScrimView.bringToFront();
+        }
     }
 
     @Override
@@ -262,13 +299,12 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
             // Draw the background
             Bitmap eraseBg = null;
             Canvas eraseCanvas = null;
-            if (mBackground != null) {
+            if (mScrimView != null) {
+                // Skip drawing the background
+                mScrimView.setBackgroundColor(mBackgroundColor);
+            } else if (mBackground != null) {
                 mBackground.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
                 mBackground.draw(canvas);
-            } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
-                    mDrawIdentifier.equals(FOLDER_LANDSCAPE) ||
-                    mDrawIdentifier.equals(FOLDER_LARGE)) {
-                canvas.drawColor(0xcc000000);
             } else if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                     mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
                     mDrawIdentifier.equals(WORKSPACE_LARGE)) {
@@ -276,9 +312,9 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
                 eraseBg = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
                         Bitmap.Config.ARGB_8888);
                 eraseCanvas = new Canvas(eraseBg);
-                eraseCanvas.drawColor(0xdd000000);
+                eraseCanvas.drawColor(mBackgroundColor);
             } else {
-                canvas.drawColor(0xdd000000);
+                canvas.drawColor(mBackgroundColor);
             }
 
             // Draw everything else
