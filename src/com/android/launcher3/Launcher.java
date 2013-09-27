@@ -1922,6 +1922,8 @@ public class Launcher extends Activity
     }
 
     protected void moveToCustomContentScreen(boolean animate) {
+        // Close any folders that may be open.
+        closeFolder();
         mWorkspace.moveToCustomContentScreen(animate);
     }
     /**
