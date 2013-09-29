@@ -915,7 +915,7 @@ public class Launcher extends Activity
     }
 
     protected void onFinishBindingItems() {
-        if (hasCustomContentToLeft() && mWorkspace.hasCustomContent()) {
+        if (mWorkspace != null && hasCustomContentToLeft() && mWorkspace.hasCustomContent()) {
             addCustomContentToLeft();
         }
     }
