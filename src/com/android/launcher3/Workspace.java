@@ -2649,8 +2649,8 @@ public class Workspace extends SmoothPagedView
                         }
                     }
 
-                    LauncherModel.moveItemInDatabase(mLauncher, info, container, screenId, lp.cellX,
-                            lp.cellY);
+                    LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, lp.cellX,
+                            lp.cellY, item.spanX, item.spanY);
                 } else {
                     // If we can't find a drop location, we return the item to its original position
                     CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
