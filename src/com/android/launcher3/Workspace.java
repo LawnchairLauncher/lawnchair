@@ -3125,9 +3125,18 @@ public class Workspace extends SmoothPagedView
 
             ItemInfo info = (ItemInfo) d.dragInfo;
 
+            int minSpanX = item.spanX;
+            int minSpanY = item.spanY;
+            if (item.minSpanX > 0 && item.minSpanY > 0) {
+                minSpanX = item.minSpanX;
+                minSpanY = item.minSpanY;
+            }
+
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], item.spanX, item.spanY,
+                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY,
                     mDragTargetLayout, mTargetCell);
+            int reorderX = mTargetCell[0];
+            int reorderY = mTargetCell[1];
 
             setCurrentDropOverCell(mTargetCell[0], mTargetCell[1]);
 
@@ -3140,13 +3149,6 @@ public class Workspace extends SmoothPagedView
             manageFolderFeedback(info, mDragTargetLayout, mTargetCell,
                     targetCellDistance, dragOverView);
 
-            int minSpanX = item.spanX;
-            int minSpanY = item.spanY;
-            if (item.minSpanX > 0 && item.minSpanY > 0) {
-                minSpanX = item.minSpanX;
-                minSpanY = item.minSpanY;
-            }
-
             boolean nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
                     item.spanY, child, mTargetCell);
@@ -3157,8 +3159,8 @@ public class Workspace extends SmoothPagedView
                         mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false,
                         d.dragView.getDragVisualizeOffset(), d.dragView.getDragRegion());
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                    && !mReorderAlarm.alarmPending() && (mLastReorderX != mTargetCell[0] ||
-                    mLastReorderY != mTargetCell[1])) {
+                    && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
+                    mLastReorderY != reorderY)) {
 
                 // Otherwise, if we aren't adding to or creating a folder and there's no pending
                 // reorder, then we schedule a reorder
@@ -3257,7 +3259,8 @@ public class Workspace extends SmoothPagedView
         public void onAlarm(Alarm alarm) {
             int[] resultSpan = new int[2];
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], spanX, spanY, mDragTargetLayout, mTargetCell);
+                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, mDragTargetLayout,
+                    mTargetCell);
             mLastReorderX = mTargetCell[0];
             mLastReorderY = mTargetCell[1];
 
