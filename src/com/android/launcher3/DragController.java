@@ -502,6 +502,8 @@ public class DragController {
     public void forceTouchMove() {
         int[] dummyCoordinates = mCoordinatesTemp;
         DropTarget dropTarget = findDropTarget(mLastTouch[0], mLastTouch[1], dummyCoordinates);
+        mDragObject.x = dummyCoordinates[0];
+        mDragObject.y = dummyCoordinates[1];
         checkTouchMove(dropTarget);
     }
 
