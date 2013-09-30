@@ -694,6 +694,7 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
             final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
+        item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
         item.spanX = spanX;
