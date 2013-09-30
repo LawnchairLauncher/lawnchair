@@ -37,10 +37,10 @@
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Afficher la mémoire"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Appuyez manière prolongée pour sélectionner widget."</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"App. de manière prolongée pour sélectionner widget."</string>
     <string name="market" msgid="2619650989819296998">"Boutique"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"Impossible de déposer l\'élément sur écran d\'accueil."</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"Impossible de déposer élément sur écran d\'accueil."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Sélectionner le widget à créer"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Nom du dossier"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Renommer le dossier"</string>
@@ -95,16 +95,16 @@
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Page des applications %1$d sur %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Page des widgets %1$d sur %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"Bienvenue !"</string>
-    <string name="first_run_cling_description" msgid="658815204153067813">"Se familiariser avec l\'écran d\'accueil"</string>
+    <string name="first_run_cling_description" msgid="7401277885309232757">"Familiarisez-vous avec l\'écran d\'accueil."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Créer plus d\'écrans pour les applications et les dossiers"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiser son espace"</string>
-    <string name="workspace_cling_move_item" msgid="2243369117709858844">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Sélectionner des applications"</string>
     <string name="all_apps_cling_add_item" msgid="400866858451850784">"Pour ajouter une application à votre écran d\'accueil, appuyez dessus de manière prolongée."</string>
-    <string name="folder_cling_title" msgid="294708344826056909">"Créer des dossiers pour vos applications"</string>
-    <string name="folder_cling_create_folder" msgid="3245124301268588807">"Appuyez de manière prolongée sur l\'icône d\'une application, puis déplacez-la sur une autre icône d\'application."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"Voici un dossier"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Pour en créer un, appuyez de manière prolongée sur une application, puis déplacez-la vers une autre."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"Dossier ouvert, <xliff:g id="WIDTH">%1$d</xliff:g> par <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Appuyez pour fermer le dossier."</string>

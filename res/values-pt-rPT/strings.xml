@@ -95,16 +95,16 @@
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Página de aplicações %1$d de %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Página de widgets %1$d de %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"Bem-vindo(a)!"</string>
-    <string name="first_run_cling_description" msgid="658815204153067813">"Sinta-se em casa"</string>
+    <string name="first_run_cling_description" msgid="7401277885309232757">"Sinta-se em casa."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crie mais ecrãs para aplicações e pastas"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizar o seu espaço"</string>
-    <string name="workspace_cling_move_item" msgid="2243369117709858844">"Toque sem soltar na imagem de fundo para gerir a imagem de fundo, os widgets e as definições"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Toque sem soltar no fundo para gerir a imagem de fundo, os widgets e as definições."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Escolher algumas aplicações"</string>
     <string name="all_apps_cling_add_item" msgid="400866858451850784">"Para adicionar uma aplicação ao Ecrã principal, toque na mesma sem soltar."</string>
-    <string name="folder_cling_title" msgid="294708344826056909">"Criar pastas novas para as suas aplicações"</string>
-    <string name="folder_cling_create_folder" msgid="3245124301268588807">"Toque sem soltar numa aplicação e mova-a para a parte superior de outro ícone de aplicação"</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"Eis uma pasta"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para criar uma pasta, toque sem soltar numa aplicação e arraste-a para cima de outra aplicação."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"Pasta aberta, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Toque para fechar a pasta"</string>
