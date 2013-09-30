@@ -492,7 +492,7 @@ public class Launcher extends Activity
      * ensure the custom content page is added or removed if necessary.
      */
     protected void invalidateHasCustomContentToLeft() {
-        if (mWorkspace.getScreenOrder().isEmpty()) {
+        if (mWorkspace == null || mWorkspace.getScreenOrder().isEmpty()) {
             // Not bound yet, wait for bindScreens to be called.
             return;
         }
