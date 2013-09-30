@@ -48,8 +48,8 @@ final class Utilities {
 
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
-    private static int sIconTextureWidth = -1;
-    private static int sIconTextureHeight = -1;
+    public static int sIconTextureWidth = -1;
+    public static int sIconTextureHeight = -1;
 
     private static final Paint sBlurPaint = new Paint();
     private static final Paint sGlowColorPressedPaint = new Paint();

@@ -281,6 +281,8 @@ public class Launcher extends Activity
 
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
+    private View.OnTouchListener mHapticFeedbackTouchListener;
+
     // Related to the auto-advancing of widgets
     private final int ADVANCE_MSG = 1;
     private final int mAdvanceInterval = 20000;
@@ -1148,24 +1150,32 @@ public class Launcher extends Activity
         }
 
         mOverviewPanel = findViewById(R.id.overview_panel);
-        findViewById(R.id.widget_button).setOnClickListener(new OnClickListener() {
+        View widgetButton = findViewById(R.id.widget_button);
+        widgetButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 showAllApps(true, AppsCustomizePagedView.ContentType.Widgets);
             }
         });
-        findViewById(R.id.wallpaper_button).setOnClickListener(new OnClickListener() {
+        widgetButton.setOnTouchListener(getHapticFeedbackTouchListener());
+
+        View wallpaperButton = findViewById(R.id.wallpaper_button);
+        wallpaperButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 startWallpaper();
             }
         });
-        findViewById(R.id.settings_button).setOnClickListener(new OnClickListener() {
+        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
+
+        View settingsButton = findViewById(R.id.settings_button);
+        settingsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 startSettings();
             }
         });
+        settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
         mOverviewPanel.setAlpha(0f);
 
         // Setup the workspace
@@ -2272,6 +2282,26 @@ public class Launcher extends Activity
     public void onTouchDownAllAppsButton(View v) {
         // Provide the same haptic feedback that the system offers for virtual keys.
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    }
+
+    public void performHapticFeedbackOnTouchDown(View v) {
+        // Provide the same haptic feedback that the system offers for virtual keys.
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    }
+
+    public View.OnTouchListener getHapticFeedbackTouchListener() {
+        if (mHapticFeedbackTouchListener == null) {
+            mHapticFeedbackTouchListener = new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                    }
+                    return false;
+                }
+            };
+        }
+        return mHapticFeedbackTouchListener;
     }
 
     public void onClickAppMarketButton(View v) {
