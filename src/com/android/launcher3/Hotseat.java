@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -126,27 +127,17 @@ public class Hotseat extends FrameLayout {
             // Add the Apps button
             Context context = getContext();
 
-            Drawable rawIcon =
-                    context.getResources().getDrawable(R.drawable.all_apps_button_icon);
-            Bitmap icon = Utilities.createIconBitmap(rawIcon, context);
-
             LayoutInflater inflater = LayoutInflater.from(context);
-            BubbleTextView allAppsButton = (BubbleTextView)
-                    inflater.inflate(R.layout.application, mContent, false);
-            allAppsButton.setCompoundDrawablesWithIntrinsicBounds(null,
-                    new FastBitmapDrawable(icon), null, null);
-            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
-            allAppsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (mLauncher != null &&
-                            (event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        mLauncher.onTouchDownAllAppsButton(v);
-                    }
-                    return false;
-                }
-            });
+            TextView allAppsButton = (TextView)
+                    inflater.inflate(R.layout.all_apps_button, mContent, false);
+            Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+            d.setBounds(0, 0, Utilities.sIconTextureWidth, Utilities.sIconTextureHeight);
+            allAppsButton.setCompoundDrawables(null, d, null, null);
 
+            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+            if (mLauncher != null) {
+                allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
+            }
             allAppsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View v) {
