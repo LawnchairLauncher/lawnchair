@@ -2153,19 +2153,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     public void scrollLeft() {
-        if (mScroller.isFinished()) {
-            if (mCurrentPage > 0) snapToPage(mCurrentPage - 1);
-        } else {
-            if (mNextPage > 0) snapToPage(mNextPage - 1);
-        }
+        if (getNextPage() > 0) snapToPage(getNextPage() - 1);
     }
 
     public void scrollRight() {
-        if (mScroller.isFinished()) {
-            if (mCurrentPage < getChildCount() -1) snapToPage(mCurrentPage + 1);
-        } else {
-            if (mNextPage < getChildCount() -1) snapToPage(mNextPage + 1);
-        }
+        if (getNextPage() < getChildCount() -1) snapToPage(getNextPage() + 1);
     }
 
     public int getPageForView(View v) {

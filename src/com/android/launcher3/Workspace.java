@@ -1748,25 +1748,17 @@ public class Workspace extends SmoothPagedView
 
     protected void onStartReordering() {
         super.onStartReordering();
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            ((CellLayout) getChildAt(i)).setUseActiveGlowBackground(true);
-        }
         showOutlines();
-
         // Reordering handles its own animations, disable the automatic ones.
         setLayoutTransition(null);
     }
 
     protected void onEndReordering() {
         super.onEndReordering();
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            ((CellLayout) getChildAt(i)).setUseActiveGlowBackground(false);
-        }
-        hideOutlines();
 
+        hideOutlines();
         mScreenOrder.clear();
+        int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = ((CellLayout) getChildAt(i));
             mScreenOrder.add(getIdForScreen(cl));
