@@ -21,9 +21,9 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="home" msgid="7658288663002113681">"Startside"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Kjerneprogrammer for Android"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Kjerneapper for Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Angi bakgrunnsbilde"</string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"Angi bakgrunn"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d valgt"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d valgt"</item>
@@ -43,7 +43,7 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Kunne ikke slippe elementet på denne startsiden."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Velg modul for oppretting"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Mappenavn"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"Gi mappe nytt navn"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Gi mappen nytt navn"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Avbryt"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Legg til på startsiden"</string>
@@ -54,8 +54,8 @@
     <string name="out_of_space" msgid="4691004494942118364">"Denne startsiden er full."</string>
     <string name="hotseat_out_of_space" msgid="9139760413395605841">"Dokksonen er full."</string>
     <string name="invalid_hotseat_item" msgid="1211534262129849507">"Denne modulen er for stor for dokksonen."</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"Opprettet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Fjernet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» er opprettet."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» er fjernet."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Valg av snarvei"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Velg app"</string>
@@ -74,9 +74,9 @@
     <string name="cab_menu_delete_app" msgid="7435191475867183689">"Avinstaller appen"</string>
     <string name="cab_menu_app_info" msgid="8593722221450362342">"Informasjon om appen"</string>
     <string name="cab_app_selection_text" msgid="374688303047985416">"Én app er valgt"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"Én modul valgt"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"Én mappe valgt"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"Én snarvei valgt"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"Én modul er valgt"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"Én mappe er valgt"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"Én snarvei er valgt"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installere snarveier"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Gir apper tillatelse til å legge til snarveier uten innblanding fra brukeren."</string>
     <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"avinstallere snarveier"</string>
@@ -95,20 +95,24 @@
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Appside %1$d av %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Modulside %1$d av %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"Velkommen!"</string>
-    <string name="first_run_cling_description" msgid="658815204153067813">"Sånn blir du kjent med startsiden"</string>
+    <!-- no translation found for first_run_cling_description (7401277885309232757) -->
+    <skip />
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Opprett flere sider for apper og mapper"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiser plassen din"</string>
-    <string name="workspace_cling_move_item" msgid="2243369117709858844">"Trykk og hold inne på bakgrunnen for å administrere bakgrunnen, moduler og innstillinger"</string>
+    <!-- no translation found for workspace_cling_move_item (528201129978005352) -->
+    <skip />
     <string name="all_apps_cling_title" msgid="34929250753095858">"Velg noen apper"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Trykk og hold inne på en app for å legge den til på startsiden."</string>
-    <string name="folder_cling_title" msgid="294708344826056909">"Lag nye mapper for apper"</string>
-    <string name="folder_cling_create_folder" msgid="3245124301268588807">"Trykk og hold inne på en app, og flytt den så oppå et annet appikon"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Trykk og hold på en app for å legge den til på startsiden."</string>
+    <!-- no translation found for folder_cling_title (3894908818693254164) -->
+    <skip />
+    <!-- no translation found for folder_cling_create_folder (6158215559475836131) -->
+    <skip />
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"Mappen er åpnet – <xliff:g id="WIDTH">%1$d</xliff:g> ganger <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Trykk for å lukke mappen"</string>
-    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Trykk for å lagre nytt navn"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Trykk for å lagre det nye navnet"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Mappen ble lukket"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Mappen heter nå <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>"</string>
