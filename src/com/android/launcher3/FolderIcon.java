@@ -536,7 +536,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         if (d != null) {
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             d.setFilterBitmap(true);
-            d.setColorFilter(Color.argb(params.overlayAlpha, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
+            d.setColorFilter(Color.argb(params.overlayAlpha, 255, 255, 255),
+                    PorterDuff.Mode.SRC_ATOP);
             d.draw(canvas);
             d.clearColorFilter();
             d.setFilterBitmap(false);
