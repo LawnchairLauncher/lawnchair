@@ -1177,6 +1177,7 @@ public final class Launcher extends Activity
                         } else {
                             info.setIcon(((BitmapDrawable)mDialogIcon.getDrawable()).getBitmap());
                         }
+                        LauncherModel.updateItemInDatabase(Launcher.this, info);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null);
