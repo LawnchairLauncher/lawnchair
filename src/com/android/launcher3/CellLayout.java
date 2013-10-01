@@ -95,6 +95,7 @@ public class CellLayout extends ViewGroup {
     private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
     private int[] mFolderLeaveBehindCell = {-1, -1};
 
+    private float FOREGROUND_ALPHA_DAMPER = 0.65f;
     private int mForegroundAlpha = 0;
     private float mBackgroundAlpha;
     private float mBackgroundAlphaMultiplier = 1.0f;
@@ -349,6 +350,7 @@ public class CellLayout extends ViewGroup {
             mOverScrollForegroundDrawable = mOverScrollRight;
         }
 
+        r *= FOREGROUND_ALPHA_DAMPER;
         mForegroundAlpha = (int) Math.round((r * 255));
         mOverScrollForegroundDrawable.setAlpha(mForegroundAlpha);
         invalidate();
