@@ -1036,14 +1036,14 @@ public class Workspace extends SmoothPagedView
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onShow();
                 mCustomContentShowTime = System.currentTimeMillis();
-                mLauncher.setVoiceButtonProxyVisible(false);
+                mLauncher.updateVoiceButtonProxyVisible(false);
             }
         } else if (hasCustomContent() && getNextPage() != 0 && mCustomContentShowing) {
             mCustomContentShowing = false;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onHide();
                 mLauncher.resetQSBScroll();
-                mLauncher.setVoiceButtonProxyVisible(true);
+                mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
     };
@@ -1823,6 +1823,16 @@ public class Workspace extends SmoothPagedView
         return offsetDelta;
     }
 
+    boolean shouldVoiceButtonProxyBeVisible() {
+        if (isOnOrMovingToCustomContent()) {
+            return false;
+        }
+        if (mState != State.NORMAL) {
+            return false;
+        }
+        return true;
+    }
+
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
         if (mState == state) {
             return null;
@@ -1975,11 +1985,7 @@ public class Workspace extends SmoothPagedView
             setScaleY(mNewScale);
             setTranslationY(finalWorkspaceTranslationY);
         }
-        if (finalSearchBarAlpha == 0) {
-            mLauncher.setVoiceButtonProxyVisible(false);
-        } else {
-            mLauncher.setVoiceButtonProxyVisible(true);
-        }
+        mLauncher.updateVoiceButtonProxyVisible(false);
 
         if (stateIsSpringLoaded) {
             // Right now we're covered by Apps Customize

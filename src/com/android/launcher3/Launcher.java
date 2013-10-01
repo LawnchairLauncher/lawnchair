@@ -900,6 +900,9 @@ public class Launcher extends Activity
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
 
+        // Update the voice search button proxy
+        updateVoiceButtonProxyVisible(false);
+
         // Again, as with the above scenario, it's possible that one or more of the global icons
         // were updated in the wrong orientation.
         updateGlobalIcons();
@@ -3338,7 +3341,7 @@ public class Launcher extends Activity
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             if (searchButton != null) searchButton.setVisibility(View.GONE);
             if (voiceButton != null) voiceButton.setVisibility(View.GONE);
-            setVoiceButtonProxyVisible(false);
+            updateVoiceButtonProxyVisible(false);
             return false;
         }
     }
@@ -3385,13 +3388,13 @@ public class Launcher extends Activity
             }
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
-            setVoiceButtonProxyVisible(true);
+            updateVoiceButtonProxyVisible(false);
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             if (voiceButton != null) voiceButton.setVisibility(View.GONE);
-            setVoiceButtonProxyVisible(false);
+            updateVoiceButtonProxyVisible(false);
             return false;
         }
     }
@@ -3403,11 +3406,22 @@ public class Launcher extends Activity
         invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
     }
 
-    public void setVoiceButtonProxyVisible(boolean visible) {
+    public void updateVoiceButtonProxyVisible(boolean forceDisableVoiceButtonProxy) {
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
         if (voiceButtonProxy != null) {
+            boolean visible = !forceDisableVoiceButtonProxy &&
+                    mWorkspace.shouldVoiceButtonProxyBeVisible();
             voiceButtonProxy.setVisibility(visible ? View.VISIBLE : View.GONE);
+            voiceButtonProxy.bringToFront();
         }
+    }
+
+    /**
+     * This is an overrid eot disable the voice button proxy.  If disabled is true, then the voice button proxy
+     * will be hidden regardless of what shouldVoiceButtonProxyBeVisible() returns.
+     */
+    public void disableVoiceButtonProxy(boolean disabled) {
+        updateVoiceButtonProxyVisible(disabled);
     }
     /**
      * Sets the app market icon
