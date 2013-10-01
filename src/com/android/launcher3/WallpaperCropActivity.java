@@ -506,7 +506,9 @@ public class WallpaperCropActivity extends Activity {
                             (int) returnRect.height(), Bitmap.Config.ARGB_8888);
                     if (tmp != null) {
                         Canvas c = new Canvas(tmp);
-                        c.drawBitmap(crop, m, new Paint());
+                        Paint p = new Paint();
+                        p.setFilterBitmap(true);
+                        c.drawBitmap(crop, m, p);
                         crop = tmp;
                     }
                 } else if (mRotation > 0) {
