@@ -39,7 +39,8 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
 
-    private List<ResolveInfo> mThirdPartyWallpaperPickers = new ArrayList<ResolveInfo>();
+    private List<ThirdPartyWallpaperTile> mThirdPartyWallpaperPickers =
+            new ArrayList<ThirdPartyWallpaperTile>();
 
     public static class ThirdPartyWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
         private ResolveInfo mResolveInfo;
@@ -96,7 +97,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
                     continue outerLoop;
                 }
             }
-            mThirdPartyWallpaperPickers.add(info);
+            mThirdPartyWallpaperPickers.add(new ThirdPartyWallpaperTile(info));
         }
     }
 
@@ -104,7 +105,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
         return mThirdPartyWallpaperPickers.size();
     }
 
-    public ResolveInfo getItem(int position) {
+    public ThirdPartyWallpaperTile getItem(int position) {
         return mThirdPartyWallpaperPickers.get(position);
     }
 
@@ -123,7 +124,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
 
         WallpaperPickerActivity.setWallpaperItemPaddingToZero((FrameLayout) view);
 
-        ResolveInfo info = mThirdPartyWallpaperPickers.get(position);
+        ResolveInfo info = mThirdPartyWallpaperPickers.get(position).mResolveInfo;
         TextView label = (TextView) view.findViewById(R.id.wallpaper_item_label);
         label.setText(info.loadLabel(mPackageManager));
         label.setCompoundDrawablesWithIntrinsicBounds(

@@ -1070,7 +1070,6 @@ public class Workspace extends SmoothPagedView
     class WallpaperOffsetInterpolator implements Choreographer.FrameCallback {
         float mFinalOffset = 0.0f;
         float mCurrentOffset = 0.5f; // to force an initial update
-        //long mLastWallpaperOffsetUpdateTime;
         boolean mWaitingForUpdate;
         Choreographer mChoreographer;
         Interpolator mInterpolator;
@@ -1135,10 +1134,12 @@ public class Workspace extends SmoothPagedView
             }
 
             // Exclude the leftmost page
-            final int firstIndex = isLayoutRtl() ? getChildCount() - 2 : 1;
+            final int startPage = hasCustomContent() ? 1 : 0;
+            final int firstIndex = isLayoutRtl() ? getChildCount() - 1 - startPage : startPage;
             // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
-            int extra = numExtraScreensToIgnore();
-            final int lastIndex = isLayoutRtl() ? 0 + extra : getChildCount() - 1 - extra;
+            int emptyExtraPages = numExtraScreensToIgnore();
+            final int lastIndex =
+                    isLayoutRtl() ? 0 + emptyExtraPages : getChildCount() - 1 - emptyExtraPages;
 
             int firstPageScrollX = getScrollForPage(firstIndex);
             int scrollRange = getScrollForPage(lastIndex) - firstPageScrollX;
@@ -1166,7 +1167,8 @@ public class Workspace extends SmoothPagedView
         }
 
         private int getNumScreensExcludingExtraEmptyScreenAndLeftmost() {
-            int numScrollingPages = getChildCount() - 1 - numExtraScreensToIgnore();
+            int numScrollingPages = getChildCount() - numExtraScreensToIgnore();
+            if (hasCustomContent()) numScrollingPages -= 1;
             return numScrollingPages;
         }
 
