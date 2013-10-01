@@ -27,22 +27,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:orientation="vertical"
-            android:background="@drawable/cling">
-            <TextView
-                style="@style/ClingTitleText"
-                android:id="@+id/folder_cling_title"
-                android:text="@string/folder_cling_title" />
-            <TextView
-                style="@style/ClingText"
-                android:id="@+id/folder_cling_create_folder"
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/folder_cling_create_folder" />
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical"
+                android:background="@drawable/cling">
+                <TextView
+                    style="@style/ClingTitleText"
+                    android:id="@+id/folder_cling_title"
+                    android:text="@string/folder_cling_title" />
+                <TextView
+                    style="@style/ClingText"
+                    android:id="@+id/folder_cling_create_folder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/folder_cling_create_folder" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cling_arrow_down" />
         </LinearLayout>
     </FrameLayout>
     <Button
