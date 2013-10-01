@@ -498,17 +498,17 @@ public class DynamicGrid {
         boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
-                255, 300,  2, 3,  48, 12, (hasAA ? 5 : 4), 48));
+                255, 300,  2, 3,  48, 13, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Shorter Stubby",
-                255, 400,  3, 3,  48, 12, (hasAA ? 5 : 4), 48));
+                255, 400,  3, 3,  48, 13, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Short Stubby",
-                275, 420,  3, 4,  48, 12, (hasAA ? 5 : 4), 48));
+                275, 420,  3, 4,  48, 13, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Stubby",
-                255, 450,  3, 4,  48, 12, (hasAA ? 5 : 4), 48));
+                255, 450,  3, 4,  48, 13, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Nexus S",
-                296, 491.33f,  4, 4,  48, 12, (hasAA ? 5 : 4), 48));
+                296, 491.33f,  4, 4,  48, 13, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
-                359, 518,  4, 4,  60, 12, (hasAA ? 5 : 4), 56));
+                359, 518,  4, 4,  60, 13, (hasAA ? 5 : 4), 56));
         // The tablet profile is odd in that the landscape orientation
         // also includes the nav bar on the side
         deviceProfiles.add(new DeviceProfile("Nexus 7",
