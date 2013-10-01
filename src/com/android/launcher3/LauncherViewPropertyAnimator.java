@@ -35,7 +35,8 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
             ALPHA,
             START_DELAY,
             DURATION,
-            INTERPOLATOR
+            INTERPOLATOR,
+            WITH_LAYER
     }
     EnumSet<Properties> mPropertiesToSet = EnumSet.noneOf(Properties.class);
     ViewPropertyAnimator mViewPropertyAnimator;
@@ -223,6 +224,9 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
         if (mPropertiesToSet.contains(Properties.INTERPOLATOR)) {
             mViewPropertyAnimator.setInterpolator(mInterpolator);
         }
+        if (mPropertiesToSet.contains(Properties.WITH_LAYER)) {
+            mViewPropertyAnimator.withLayer();
+        }
         mViewPropertyAnimator.setListener(this);
         mViewPropertyAnimator.start();
         LauncherAnimUtils.cancelOnDestroyActivity(this);
@@ -261,6 +265,11 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     public LauncherViewPropertyAnimator alpha(float value) {
         mPropertiesToSet.add(Properties.ALPHA);
         mAlpha = value;
+        return this;
+    }
+
+    public LauncherViewPropertyAnimator withLayer() {
+        mPropertiesToSet.add(Properties.WITH_LAYER);
         return this;
     }
 }

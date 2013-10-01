@@ -88,7 +88,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -103,12 +102,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -330,6 +326,8 @@ public class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
+    protected TransparentBars mTransparentBars;
+
     private HideFromAccessibilityHelper mHideFromAccessibilityHelper
         = new HideFromAccessibilityHelper();
 
@@ -344,7 +342,7 @@ public class Launcher extends Activity
     private static ArrayList<PendingAddArguments> sPendingAddList
             = new ArrayList<PendingAddArguments>();
 
-    private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
+    public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
     private static class PendingAddArguments {
         int requestCode;
@@ -425,6 +423,10 @@ public class Launcher extends Activity
 
         checkForLocaleChange();
         setContentView(R.layout.launcher);
+
+        mTransparentBars = new TransparentBars(findViewById(R.id.launcher));
+        mTransparentBars.requestTransparentBars(true);
+
         setupViews();
         grid.layout(this);
 
@@ -2851,8 +2853,6 @@ public class Launcher extends Activity
             mStateAnimation.play(alphaAnim).after(startDelay);
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
-                boolean animationCancelled = false;
-
                 @Override
                 public void onAnimationStart(Animator animation) {
                     // Prepare the position
@@ -2870,11 +2870,6 @@ public class Launcher extends Activity
                     if (mSearchDropTargetBar != null) {
                         mSearchDropTargetBar.hideSearchBar(false);
                     }
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    animationCancelled = true;
                 }
             });
 
@@ -3623,22 +3618,6 @@ public class Launcher extends Activity
         boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, SHOW_WEIGHT_WATCHER_DEFAULT);
 
         return show;
-    }
-
-    private boolean emailSent() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
-        boolean show = sp.getBoolean(CORRUPTION_EMAIL_SENT_KEY, false);
-        return show;
-    }
-
-    private void setEmailSent(boolean sent) {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(CORRUPTION_EMAIL_SENT_KEY, sent);
-        editor.commit();
     }
 
     private void toggleShowWeightWatcher() {
