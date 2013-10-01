@@ -44,6 +44,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -52,6 +53,9 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -113,6 +117,7 @@ public class Workspace extends SmoothPagedView
     private int mDefaultPage;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
+    private static boolean sAccessibilityEnabled;
 
     // The screen id used for the empty screen always present to the right.
     private final static long EXTRA_EMPTY_SCREEN_ID = -201;
@@ -139,6 +144,7 @@ public class Workspace extends SmoothPagedView
     CustomContentCallbacks mCustomContentCallbacks;
     boolean mCustomContentShowing;
     private float mLastCustomContentScrollProgress = -1f;
+    private String mCustomContentDescription = "";
 
     /**
      * The CellLayout that is currently being dragged over
@@ -318,11 +324,7 @@ public class Workspace extends SmoothPagedView
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
-
-        // Unless otherwise specified this view is important for accessibility.
-        if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-        }
+        setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
     }
 
     @Override
@@ -450,9 +452,7 @@ public class Workspace extends SmoothPagedView
         CellLayout cl = ((CellLayout) child);
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
-        cl.setContentDescription(getContext().getString(
-                R.string.workspace_description_format, getChildCount()));
-
+        cl.setImportantForAccessibility(ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO);
         super.onChildViewAdded(parent, child);
     }
 
@@ -555,7 +555,8 @@ public class Workspace extends SmoothPagedView
         setCurrentPage(getCurrentPage() - 1);
     }
 
-    public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks) {
+    public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks,
+            String description) {
         if (getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID) < 0) {
             throw new RuntimeException("Expected custom content screen to exist");
         }
@@ -571,6 +572,7 @@ public class Workspace extends SmoothPagedView
             ((Insettable)customContent).setInsets(mInsets);
         }
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
+        mCustomContentDescription = description;
 
         mCustomContentCallbacks = callbacks;
     }
@@ -641,7 +643,6 @@ public class Workspace extends SmoothPagedView
 
         return newId;
     }
-
 
     public CellLayout getScreenWithId(long screenId) {
         CellLayout layout = mWorkspaceScreens.get(screenId);
@@ -1039,6 +1040,9 @@ public class Workspace extends SmoothPagedView
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
+        if (getPageIndicator() != null) {
+            getPageIndicator().setContentDescription(getPageIndicatorDescription());
+        }
     }
 
     protected CustomContentCallbacks getCustomContentCallbacks() {
@@ -1412,6 +1416,22 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
+    protected OnClickListener getPageIndicatorClickListener() {
+        AccessibilityManager am = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (!am.isTouchExplorationEnabled()) {
+            return null;
+        }
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                enterOverviewMode();
+            }
+        };
+        return listener;
+    }
+
+    @Override
     protected void screenScrolled(int screenCenter) {
         final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
@@ -1473,6 +1493,17 @@ public class Workspace extends SmoothPagedView
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mWindowToken = null;
+    }
+
+    protected void onResume() {
+        if (getPageIndicator() != null) {
+            // In case accessibility state has changed, we need to perform this on every
+            // attach to window
+            getPageIndicator().setOnClickListener(getPageIndicatorClickListener());
+        }
+        AccessibilityManager am = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        sAccessibilityEnabled = am.isEnabled();
     }
 
     @Override
@@ -1852,6 +1883,14 @@ public class Workspace extends SmoothPagedView
     private void setState(State state) {
         mState = state;
         updateInteractionForState();
+        updateAccessibilityFlags();
+    }
+
+    private void updateAccessibilityFlags() {
+        int accessible = mState == State.NORMAL ?
+                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES :
+                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+        setImportantForAccessibility(accessible);
     }
 
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
@@ -2036,8 +2075,11 @@ public class Workspace extends SmoothPagedView
         }
 
         public static void updateVisibility(View view) {
-            if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != INVISIBLE) {
-                view.setVisibility(INVISIBLE);
+            // We want to avoid the extra layout pass by setting the views to GONE unless
+            // accessibility is on, in which case not setting them to GONE causes a glitch.
+            int invisibleState = sAccessibilityEnabled ? GONE : INVISIBLE;
+            if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != invisibleState) {
+                view.setVisibility(invisibleState);
             } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
                     && view.getVisibility() != VISIBLE) {
                 view.setVisibility(VISIBLE);
@@ -4308,10 +4350,19 @@ public class Workspace extends SmoothPagedView
     public void syncPageItems(int page, boolean immediate) {
     }
 
+    protected String getPageIndicatorDescription() {
+        String settings = getResources().getString(R.string.settings_button_text);
+        return getCurrentPageDescription() + ", " + settings;
+    }
+
     protected String getCurrentPageDescription() {
         int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+        int delta = numCustomPages();
+        if (hasCustomContent() && getNextPage() == 0) {
+            return mCustomContentDescription;
+        }
         return String.format(getContext().getString(R.string.workspace_scroll_format),
-                page + 1, getChildCount());
+                page + 1 - delta, getChildCount() - delta);
     }
 
     public void getLocationInDragLayer(int[] loc) {
