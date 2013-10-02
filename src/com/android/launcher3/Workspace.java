@@ -1780,19 +1780,16 @@ public class Workspace extends SmoothPagedView
         if (mTouchState != TOUCH_STATE_REST) {
             return false;
         }
-        mLauncher.onInteractionBegin();
         enableOverviewMode(true, -1, true);
         return true;
     }
 
     public void exitOverviewMode(boolean animated) {
         exitOverviewMode(-1, animated);
-        mLauncher.onInteractionEnd();
     }
 
     public void exitOverviewMode(int snapPage, boolean animated) {
         enableOverviewMode(false, snapPage, animated);
-        mLauncher.onInteractionEnd();
     }
 
     private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
@@ -1835,6 +1832,19 @@ public class Workspace extends SmoothPagedView
         return true;
     }
 
+    public void updateInteractionForState() {
+        if (mState != State.NORMAL) {
+            mLauncher.onInteractionBegin();
+        } else {
+            mLauncher.onInteractionEnd();
+        }
+    }
+
+    private void setState(State state) {
+        mState = state;
+        updateInteractionForState();
+    }
+
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
         if (mState == state) {
             return null;
@@ -1850,7 +1860,7 @@ public class Workspace extends SmoothPagedView
         final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
         final boolean oldStateIsSmall = (oldState == State.SMALL);
         final boolean oldStateIsOverview = (oldState == State.OVERVIEW);
-        mState = state;
+        setState(state);
         final boolean stateIsNormal = (state == State.NORMAL);
         final boolean stateIsSpringLoaded = (state == State.SPRING_LOADED);
         final boolean stateIsSmall = (state == State.SMALL);

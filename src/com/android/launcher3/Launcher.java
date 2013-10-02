@@ -911,6 +911,7 @@ public class Launcher extends Activity
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
+        mWorkspace.updateInteractionForState();
     }
 
     @Override
@@ -3072,7 +3073,6 @@ public class Launcher extends Activity
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
 
         onWorkspaceShown(animated);
-        onInteractionEnd();
     }
 
     public void onWorkspaceShown(boolean animated) {
@@ -3087,7 +3087,6 @@ public class Launcher extends Activity
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
-        onInteractionBegin();
 
         // Pause the auto-advance of widgets until we are out of AllApps
         mUserPresent = false;
