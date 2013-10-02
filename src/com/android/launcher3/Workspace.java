@@ -2074,7 +2074,7 @@ public class Workspace extends SmoothPagedView
                     R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f, true);
         } else {
             // Fade the background gradient away
-            animateBackgroundGradient(0f, true);
+            animateBackgroundGradient(0f, animated);
         }
         return anim;
     }

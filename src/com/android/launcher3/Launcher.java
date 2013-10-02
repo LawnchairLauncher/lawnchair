@@ -270,6 +270,7 @@ public class Launcher extends Activity
     private IconCache mIconCache;
     private boolean mUserPresent = true;
     private boolean mVisible = false;
+    private boolean mHasFocus = false;
     private boolean mAttached = false;
     private static final boolean DISABLE_CLINGS = false;
     private static final boolean DISABLE_CUSTOM_CLINGS = true;
@@ -1009,25 +1010,11 @@ public class Launcher extends Activity
     }
 
     // We can't hide the IME if it was forced open.  So don't bother
-    /*
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
-        if (hasFocus) {
-            final InputMethodManager inputManager = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            inputManager.hideSoftInputFromWindow(lp.token, 0, new android.os.ResultReceiver(new
-                        android.os.Handler()) {
-                        protected void onReceiveResult(int resultCode, Bundle resultData) {
-                            Log.d(TAG, "ResultReceiver got resultCode=" + resultCode);
-                        }
-                    });
-            Log.d(TAG, "called hideSoftInputFromWindow from onWindowFocusChanged");
-        }
+        mHasFocus = hasFocus;
     }
-    */
 
     private boolean acceptFilter() {
         final InputMethodManager inputManager = (InputMethodManager)
@@ -1485,7 +1472,7 @@ public class Launcher extends Activity
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
                 if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
-                    showWorkspaceAndExitOverviewMode(false);
+                    showWorkspace(false);
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
@@ -1669,9 +1656,9 @@ public class Launcher extends Activity
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
 
-            final boolean alreadyOnHome =
-                    ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                        != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            final boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
+                    Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                    != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
             if (mWorkspace == null) {
                 // Can be cases where mWorkspace is null, this prevents a NPE
@@ -1691,7 +1678,7 @@ public class Launcher extends Activity
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                showWorkspaceAndExitOverviewMode(true);
+                showWorkspace(true);
             } else {
                 mOnResumeState = State.WORKSPACE;
             }
@@ -1708,19 +1695,10 @@ public class Launcher extends Activity
                 mAppsCustomizeTabHost.reset();
             }
         }
+
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }
-    }
-
-    protected void showWorkspaceAndExitOverviewMode(boolean animate) {
-        showWorkspace(animate);
-        if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.exitOverviewMode(animate);
-        }
-    }
-    protected void showWorkspaceAndExitOverviewMode() {
-        showWorkspaceAndExitOverviewMode(false);
     }
 
     @Override
@@ -2079,7 +2057,6 @@ public class Launcher extends Activity
     }
 
     protected void startWallpaper() {
-        showWorkspace(true);
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
         pickWallpaper.setComponent(getWallpaperPickerComponent());
         startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
@@ -2125,7 +2102,12 @@ public class Launcher extends Activity
     @Override
     public void onBackPressed() {
         if (isAllAppsVisible()) {
-            showWorkspace(true);
+            if (mAppsCustomizeContent.getContentType() ==
+                    AppsCustomizePagedView.ContentType.Applications) {
+                showWorkspace(true);
+            } else {
+                showOverviewMode(true);
+            }
         } else if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(true);
         } else if (mWorkspace.getOpenFolder() != null) {
@@ -2943,7 +2925,7 @@ public class Launcher extends Activity
      * This is the opposite of showAppsCustomizeHelper.
      * @param animated If true, the transition will be animated.
      */
-    private void hideAppsCustomizeHelper(State toState, final boolean animated,
+    private void hideAppsCustomizeHelper(Workspace.State toState, final boolean animated,
             final boolean springLoaded, final Runnable onCompleteRunnable) {
 
         if (mStateAnimation != null) {
@@ -2961,13 +2943,14 @@ public class Launcher extends Activity
         final View fromView = mAppsCustomizeTabHost;
         final View toView = mWorkspace;
         Animator workspaceAnim = null;
-        if (toState == State.WORKSPACE) {
+        if (toState == Workspace.State.NORMAL) {
             int stagger = res.getInteger(R.integer.config_appsCustomizeWorkspaceAnimationStagger);
             workspaceAnim = mWorkspace.getChangeStateAnimation(
-                    Workspace.State.NORMAL, animated, stagger, -1);
-        } else if (toState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
+                    toState, animated, stagger, -1);
+        } else if (toState == Workspace.State.SPRING_LOADED ||
+                toState == Workspace.State.OVERVIEW) {
             workspaceAnim = mWorkspace.getChangeStateAnimation(
-                    Workspace.State.SPRING_LOADED, animated);
+                    toState, animated);
         }
 
         setPivotsForZoom(fromView, scaleFactor);
@@ -3039,15 +3022,22 @@ public class Launcher extends Activity
         }
     }
 
-    void showWorkspace(boolean animated) {
+    protected void showWorkspace(boolean animated) {
         showWorkspace(animated, null);
     }
 
+    protected void showWorkspace() {
+        showWorkspace(true);
+    }
+
     void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
+        if (mWorkspace.isInOverviewMode()) {
+            mWorkspace.exitOverviewMode(animated);
+        }
         if (mState != State.WORKSPACE) {
             boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
-            hideAppsCustomizeHelper(State.WORKSPACE, animated, false, onCompleteRunnable);
+            hideAppsCustomizeHelper(Workspace.State.NORMAL, animated, false, onCompleteRunnable);
 
             // Show the search bar (only animate if we were showing the drop target bar in spring
             // loaded mode)
@@ -3072,6 +3062,13 @@ public class Launcher extends Activity
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
 
+        onWorkspaceShown(animated);
+    }
+
+    void showOverviewMode(boolean animated) {
+        mWorkspace.setVisibility(View.VISIBLE);
+        hideAppsCustomizeHelper(Workspace.State.OVERVIEW, animated, false, null);
+        mState = State.WORKSPACE;
         onWorkspaceShown(animated);
     }
 
@@ -3100,7 +3097,7 @@ public class Launcher extends Activity
 
     void enterSpringLoadedDragMode() {
         if (isAllAppsVisible()) {
-            hideAppsCustomizeHelper(State.APPS_CUSTOMIZE_SPRING_LOADED, true, true, null);
+            hideAppsCustomizeHelper(Workspace.State.SPRING_LOADED, true, true, null);
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
     }
