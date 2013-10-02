@@ -990,13 +990,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // in accordance with any scroll effects.
         mForceScreenScrolled = true;
         mRecomputePageSpacing = true;
-
+        updateFreescrollBounds();
         invalidate();
     }
 
     @Override
     public void onChildViewRemoved(View parent, View child) {
         mForceScreenScrolled = true;
+        updateFreescrollBounds();
         invalidate();
     }
 
@@ -1558,6 +1559,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         setEnableFreeScroll(false, snapPage);
     }
 
+    void updateFreescrollBounds() {
+        getOverviewModePages(mTempVisiblePagesRange);
+        if (isLayoutRtl()) {
+            mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
+            mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
+        } else {
+            mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
+            mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
+        }
+    }
+
     private void setEnableFreeScroll(boolean freeScroll, int snapPage) {
         mFreeScroll = freeScroll;
 
@@ -1565,18 +1577,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             snapPage = getPageNearestToCenterOfScreen();
         }
 
-        getOverviewModePages(mTempVisiblePagesRange);
         if (!mFreeScroll) {
             snapToPage(snapPage);
         } else {
-            if (isLayoutRtl()) {
-                mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
-                mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
-            } else {
-                mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
-                mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
-            }
-
+            updateFreescrollBounds();
+            getOverviewModePages(mTempVisiblePagesRange);
             if (getCurrentPage() < mTempVisiblePagesRange[0]) {
                 setCurrentPage(mTempVisiblePagesRange[0]);
             } else if (getCurrentPage() > mTempVisiblePagesRange[1]) {
