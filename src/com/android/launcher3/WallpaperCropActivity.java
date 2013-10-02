@@ -75,6 +75,9 @@ public class WallpaperCropActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
+        if (!enableRotation()) {
+            setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
+        }
     }
 
     protected void init() {
@@ -99,6 +102,12 @@ public class WallpaperCropActivity extends Activity {
                         cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
                     }
                 });
+        TransparentBars transparentBars = new TransparentBars(findViewById(R.id.wallpaper_root));
+        transparentBars.requestTransparentBars(true);
+    }
+
+    public boolean enableRotation() {
+        return getResources().getBoolean(R.bool.allow_rotation);
     }
 
     public static String getSharedPreferencesKey() {

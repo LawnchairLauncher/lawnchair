@@ -77,6 +77,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private OnClickListener mThumbnailOnClickListener;
 
     private LinearLayout mWallpapersView;
+    private View mWallpaperStrip;
 
     private ActionMode.Callback mActionModeCallback;
     private ActionMode mActionMode;
@@ -169,12 +170,19 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
+    public void setWallpaperStripYOffset(float offset) {
+        mWallpaperStrip.setPadding(0, 0, 0, (int) offset);
+    }
+
     // called by onCreate; this is subclassed to overwrite WallpaperCropActivity
     protected void init() {
         setContentView(R.layout.wallpaper_picker);
+        final WallpaperRootView root = (WallpaperRootView) findViewById(R.id.wallpaper_root);
+        TransparentBars transparentBars = new TransparentBars(root);
+        transparentBars.requestTransparentBars(true);
 
         mCropView = (CropView) findViewById(R.id.cropView);
-        final View wallpaperStrip = findViewById(R.id.wallpaper_strip);
+        mWallpaperStrip = findViewById(R.id.wallpaper_strip);
         mCropView.setTouchCallback(new CropView.TouchCallback() {
             LauncherViewPropertyAnimator mAnim;
             @Override
@@ -182,11 +190,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 if (mAnim != null) {
                     mAnim.cancel();
                 }
-                if (wallpaperStrip.getTranslationY() == 0) {
+                if (mWallpaperStrip.getTranslationY() == 0) {
                     mIgnoreNextTap = true;
                 }
-                mAnim = new LauncherViewPropertyAnimator(wallpaperStrip);
-                mAnim.translationY(wallpaperStrip.getHeight()).alpha(0f)
+                mAnim = new LauncherViewPropertyAnimator(mWallpaperStrip);
+                mAnim.translationY(mWallpaperStrip.getHeight()).alpha(0f)
                         .setInterpolator(new DecelerateInterpolator(0.75f));
                 mAnim.start();
             }
@@ -202,8 +210,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     if (mAnim != null) {
                         mAnim.cancel();
                     }
-                    mAnim = new LauncherViewPropertyAnimator(wallpaperStrip);
-                    mAnim.translationY(0).alpha(1f)
+                    mAnim = new LauncherViewPropertyAnimator(mWallpaperStrip);
+                    mAnim.translationY(0f).alpha(1f)
                             .setInterpolator(new DecelerateInterpolator(0.75f));
                     mAnim.start();
                 }
@@ -401,6 +409,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         };
     }
 
+    public boolean enableRotation() {
+        return super.enableRotation() || Launcher.sForceEnableRotation;
+    }
+
     protected Bitmap getThumbnailOfLastPhoto() {
         Cursor cursor = MediaStore.Images.Media.query(getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -419,10 +431,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     protected void onStop() {
         super.onStop();
-        final View wallpaperStrip = findViewById(R.id.wallpaper_strip);
-        if (wallpaperStrip.getTranslationY() > 0) {
-            wallpaperStrip.setTranslationY(0);
-            wallpaperStrip.setAlpha(1f);
+        mWallpaperStrip = findViewById(R.id.wallpaper_strip);
+        if (mWallpaperStrip.getTranslationY() > 0f) {
+            mWallpaperStrip.setTranslationY(0f);
+            mWallpaperStrip.setAlpha(1f);
         }
     }
 
