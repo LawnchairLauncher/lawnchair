@@ -518,6 +518,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     void setCurrentPage(int currentPage) {
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
+            // We need to clean up the next page here to avoid computeScrollHelper from
+            // updating current page on the pass.
+            mNextPage = INVALID_PAGE;
         }
         // don't introduce any checks like mCurrentPage == currentPage here-- if we change the
         // the default
