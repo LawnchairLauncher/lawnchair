@@ -4272,7 +4272,7 @@ public class Workspace extends SmoothPagedView
         if (screenId == EXTRA_EMPTY_SCREEN_ID) {
             int count = mScreenOrder.size() - (hasCustomContent() ? 1 : 0);
             if (count > 1) {
-                return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_add,
+                return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_current,
                         R.drawable.ic_pageindicator_add);
             }
         }
