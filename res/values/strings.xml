@@ -228,7 +228,7 @@ s -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
     <string name="first_run_cling_title">Welcome!</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
-    <string name="first_run_cling_description">Make yourself at Home.</string>
+    <string name="first_run_cling_description">Make yourself at home.</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
     <string name="first_run_cling_custom_content_hint"></string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
