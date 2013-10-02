@@ -464,7 +464,7 @@ public class WidgetPreviewLoader {
             if (cellVSpan < 1) cellVSpan = 1;
 
             BitmapDrawable previewDrawable = (BitmapDrawable) mContext.getResources()
-                    .getDrawable(R.drawable.widget_preview_tile);
+                    .getDrawable(R.drawable.widget_tile);
             final int previewDrawableWidth = previewDrawable
                     .getIntrinsicWidth();
             final int previewDrawableHeight = previewDrawable
