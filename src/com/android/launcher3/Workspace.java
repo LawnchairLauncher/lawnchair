@@ -1046,7 +1046,7 @@ public class Workspace extends SmoothPagedView
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
-    };
+    }
 
     protected void setWallpaperDimension() {
         String spKey = WallpaperCropActivity.getSharedPreferencesKey();
@@ -1572,7 +1572,7 @@ public class Workspace extends SmoothPagedView
             } else {
                 for (int i = 0; i < getPageCount(); i++) {
                     final CellLayout cl = (CellLayout) getChildAt(i);
-                    cl.disableHardwareLayers();
+                    cl.enableHardwareLayer(false);
                 }
             }
         }
@@ -1592,17 +1592,16 @@ public class Workspace extends SmoothPagedView
                     leftScreen--;
                 }
             }
+
+            final CellLayout customScreen = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout layout = (CellLayout) getPageAt(i);
-                if (!(leftScreen <= i && i <= rightScreen && shouldDrawChild(layout))) {
-                    layout.disableHardwareLayers();
-                }
-            }
-            for (int i = 0; i < screenCount; i++) {
-                final CellLayout layout = (CellLayout) getPageAt(i);
-                if (leftScreen <= i && i <= rightScreen && shouldDrawChild(layout)) {
-                    layout.enableHardwareLayers();
-                }
+
+                // enable layers between left and right screen inclusive, except for the
+                // customScreen, which may animate its content during transitions.
+                boolean enableLayer = layout != customScreen &&
+                        leftScreen <= i && i <= rightScreen && shouldDrawChild(layout);
+                layout.enableHardwareLayer(enableLayer);
             }
         }
     }
