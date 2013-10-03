@@ -36,5 +36,5 @@
     <color name="folder_items_text_color">#FF333333</color>
     <color name="outline_color">#FFFFFFFF</color>
     
-    <color name="first_run_cling_circle_background_color">#FF8BB4E9</color>
+    <color name="first_run_cling_circle_background_color">#64b1ea</color>
 </resources>
