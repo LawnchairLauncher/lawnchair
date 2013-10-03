@@ -95,12 +95,12 @@
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Página de aplicaciones %1$d de %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Página de widgets %1$d de %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"Te damos la bienvenida"</string>
-    <string name="first_run_cling_description" msgid="7401277885309232757">"Personaliza tu página de inicio."</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Personaliza tu pantalla principal."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crea más pantallas para aplicaciones y carpetas"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiza tu espacio"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén pulsado el fondo para administrar el fondo de pantalla, los widgets y los ajustes."</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén pulsado el fondo para gestionar el fondo de pantalla, los widgets y los ajustes."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Selecciona algunas aplicaciones"</string>
     <string name="all_apps_cling_add_item" msgid="400866858451850784">"Para añadir una aplicación a tu pantalla de inicio, solo tienes que mantenerla pulsada."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Esto es una carpeta"</string>
