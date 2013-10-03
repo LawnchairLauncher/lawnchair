@@ -892,8 +892,15 @@ public class LauncherBackupAgent extends BackupAgent {
         out.bytes += blob.length;
         Log.v(TAG, "saving " + geKeyType(key) + " " + backupKey + ": " +
                 getKeyName(key) + "/" + blob.length);
-        if(DEBUG) Log.d(TAG, "wrote " +
-                Base64.encodeToString(blob, 0, blob.length, Base64.NO_WRAP));
+        if(DEBUG) {
+            String encoded = Base64.encodeToString(blob, 0, blob.length, Base64.NO_WRAP);
+            final int chunkSize = 1024;
+            for (int offset = 0; offset < encoded.length(); offset += chunkSize) {
+                int end = offset + chunkSize;
+                end = Math.min(end, encoded.length());
+                Log.d(TAG, "wrote " + encoded.substring(offset, end));
+            }
+        }
     }
 
     private Set<String> getSavedIdsByType(int type, Journal in) {
