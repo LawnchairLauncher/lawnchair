@@ -46,11 +46,14 @@ class AllAppsList {
 
     private IconCache mIconCache;
 
+    private AppFilter mAppFilter;
+
     /**
      * Boring constructor.
      */
-    public AllAppsList(IconCache iconCache) {
+    public AllAppsList(IconCache iconCache, AppFilter appFilter) {
         mIconCache = iconCache;
+        mAppFilter = appFilter;
     }
 
     /**
@@ -60,13 +63,16 @@ class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info) {
+        if (mAppFilter != null && !mAppFilter.shouldShowApp(info.componentName)) {
+            return;
+        }
         if (findActivity(data, info.componentName)) {
             return;
         }
         data.add(info);
         added.add(info);
     }
-    
+
     public void clear() {
         data.clear();
         // TODO: do we clear these too?

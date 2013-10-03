@@ -34,6 +34,7 @@ public class LauncherAppState {
 
     private LauncherModel mModel;
     private IconCache mIconCache;
+    private AppFilter mAppFilter;
     private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
     private boolean mIsScreenLarge;
     private float mScreenDensity;
@@ -81,7 +82,9 @@ public class LauncherAppState {
 
         mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
         mIconCache = new IconCache(sContext);
-        mModel = new LauncherModel(this, mIconCache);
+
+        mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
+        mModel = new LauncherModel(this, mIconCache, mAppFilter);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
@@ -145,6 +148,10 @@ public class LauncherAppState {
 
     LauncherModel getModel() {
         return mModel;
+    }
+
+    boolean shouldShowAppOrWidgetProvider(ComponentName componentName) {
+        return mAppFilter == null || mAppFilter.shouldShowApp(componentName);
     }
 
     WidgetPreviewLoader.CacheDb getWidgetPreviewCacheDb() {

@@ -438,6 +438,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         for (Object o : widgetsAndShortcuts) {
             if (o instanceof AppWidgetProviderInfo) {
                 AppWidgetProviderInfo widget = (AppWidgetProviderInfo) o;
+                if (!app.shouldShowAppOrWidgetProvider(widget.provider)) {
+                    continue;
+                }
                 widget.label = widget.label.trim();
                 if (widget.minWidth > 0 && widget.minHeight > 0) {
                     // Ensure that all widgets we show can be added on a workspace of this size
