@@ -48,6 +48,7 @@
             android:layout_height="2dp"
             android:background="@drawable/tile_shadow_top" />
         <HorizontalScrollView
+            android:id="@+id/wallpaper_scroll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
             <LinearLayout android:id="@+id/master_wallpaper_list"
