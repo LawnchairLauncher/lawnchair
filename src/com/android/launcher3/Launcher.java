@@ -911,6 +911,16 @@ public class Launcher extends Activity
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
+
+        if (mWorkspace.getCustomContentCallbacks() != null) {
+            // If we are resuming and the custom content is the current page, we call onShow().
+            // It is also poassible that onShow will instead be called slightly after first layout
+            // if PagedView#setRestorePage was set to the custom content page in onCreate().
+            if (mWorkspace.isOnOrMovingToCustomContent()) {
+                mWorkspace.getCustomContentCallbacks().onShow();
+            }
+        }
+
         mWorkspace.updateInteractionForState();
     }
 
@@ -923,6 +933,12 @@ public class Launcher extends Activity
         mPaused = true;
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
+
+        // We call onHide() aggressively. The custom content callbacks should be able to
+        // debounce excess onHide calls.
+        if (mWorkspace.getCustomContentCallbacks() != null) {
+            mWorkspace.getCustomContentCallbacks().onHide();
+        }
     }
 
     protected void onFinishBindingItems() {
@@ -1659,54 +1675,40 @@ public class Launcher extends Activity
                     ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
-            Runnable processIntent = new Runnable() {
-                public void run() {
-                    if (mWorkspace == null) {
-                        // Can be cases where mWorkspace is null, this prevents a NPE
-                        return;
-                    }
-                    Folder openFolder = mWorkspace.getOpenFolder();
-                    // In all these cases, only animate if we're already on home
-                    mWorkspace.exitWidgetResizeMode();
-                    if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                            openFolder == null) {
-                        mWorkspace.moveToDefaultScreen(true);
-                    }
-
-                    closeFolder();
-                    exitSpringLoadedDragMode();
-
-                    // If we are already on home, then just animate back to the workspace,
-                    // otherwise, just wait until onResume to set the state back to Workspace
-                    if (alreadyOnHome) {
-                        showWorkspaceAndExitOverviewMode(true);
-                    } else {
-                        mOnResumeState = State.WORKSPACE;
-                    }
-
-                    final View v = getWindow().peekDecorView();
-                    if (v != null && v.getWindowToken() != null) {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(
-                                INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    }
-
-                    // Reset the apps customize page
-                    if (mAppsCustomizeTabHost != null) {
-                        mAppsCustomizeTabHost.reset();
-                    }
-                }
-            };
-
-            if (alreadyOnHome && !mWorkspace.hasWindowFocus()) {
-                // Delay processing of the intent to allow the status bar animation to finish
-                // first in order to avoid janky animations.
-                mWorkspace.postDelayed(processIntent, 350);
-            } else {
-                // Process the intent immediately.
-                processIntent.run();
+            if (mWorkspace == null) {
+                // Can be cases where mWorkspace is null, this prevents a NPE
+                return;
+            }
+            Folder openFolder = mWorkspace.getOpenFolder();
+            // In all these cases, only animate if we're already on home
+            mWorkspace.exitWidgetResizeMode();
+            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+                    openFolder == null) {
+                mWorkspace.moveToDefaultScreen(true);
             }
 
+            closeFolder();
+            exitSpringLoadedDragMode();
+
+            // If we are already on home, then just animate back to the workspace,
+            // otherwise, just wait until onResume to set the state back to Workspace
+            if (alreadyOnHome) {
+                showWorkspaceAndExitOverviewMode(true);
+            } else {
+                mOnResumeState = State.WORKSPACE;
+            }
+
+            final View v = getWindow().peekDecorView();
+            if (v != null && v.getWindowToken() != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+
+            // Reset the apps customize page
+            if (mAppsCustomizeTabHost != null) {
+                mAppsCustomizeTabHost.reset();
+            }
         }
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));

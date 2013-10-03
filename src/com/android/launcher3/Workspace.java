@@ -853,13 +853,6 @@ public class Workspace extends SmoothPagedView
 
     protected void onWindowVisibilityChanged (int visibility) {
         mLauncher.onWindowVisibilityChanged(visibility);
-        if (mCustomContentShowing && mCustomContentCallbacks != null) {
-            if (visibility == View.VISIBLE) {
-                mCustomContentCallbacks.onShow();
-            } else if (visibility == View.GONE) {
-                mCustomContentCallbacks.onHide();
-            }
-        }
     }
 
     @Override
@@ -1046,6 +1039,10 @@ public class Workspace extends SmoothPagedView
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
+    }
+
+    protected CustomContentCallbacks getCustomContentCallbacks() {
+        return mCustomContentCallbacks;
     }
 
     protected void setWallpaperDimension() {
