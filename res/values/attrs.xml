@@ -148,6 +148,9 @@
         <attr name="key" format="string" />
         <attr name="value" format="string" />
     </declare-styleable>
+    <declare-styleable name="Include">
+        <attr name="workspace" format="reference" />
+    </declare-styleable>
 
     <!-- Only used in the device overlays -->
     <declare-styleable name="CustomClingTitleText">
