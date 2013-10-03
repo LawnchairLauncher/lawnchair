@@ -50,9 +50,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -278,6 +281,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             public void onChanged() {
                 liveWallpapersView.removeAllViews();
                 populateWallpapersFromAdapter(liveWallpapersView, a, false, false);
+                initializeScrollForRtl();
             }
         });
 
@@ -303,11 +307,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             galleryThumbnailBg.setImageBitmap(getThumbnailOfLastPhoto());
             int colorOverlay = getResources().getColor(R.color.wallpaper_picker_translucent_gray);
             galleryThumbnailBg.setColorFilter(colorOverlay, PorterDuff.Mode.SRC_ATOP);
+
         }
 
         PickImageInfo pickImageInfo = new PickImageInfo();
         galleryThumbnail.setTag(pickImageInfo);
         galleryThumbnail.setOnClickListener(mThumbnailOnClickListener);
+
+        // Update the scroll for RTL
+        initializeScrollForRtl();
 
         // Create smooth layout transitions for when items are deleted
         final LayoutTransition transitioner = new LayoutTransition();
@@ -407,6 +415,23 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 mActionMode = null;
             }
         };
+    }
+
+    private void initializeScrollForRtl() {
+        final HorizontalScrollView scroll =
+                (HorizontalScrollView) findViewById(R.id.wallpaper_scroll_container);
+
+        if (scroll.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            final ViewTreeObserver observer = scroll.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+                public void onGlobalLayout() {
+                    LinearLayout masterWallpaperList =
+                            (LinearLayout) findViewById(R.id.master_wallpaper_list);
+                    scroll.scrollTo(masterWallpaperList.getWidth(), 0);
+                    scroll.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
     }
 
     public boolean enableRotation() {

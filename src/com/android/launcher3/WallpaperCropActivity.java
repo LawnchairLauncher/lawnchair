@@ -221,8 +221,10 @@ public class WallpaperCropActivity extends Activity {
 
     protected void cropImageAndSetWallpaper(Uri uri,
             OnBitmapCroppedHandler onBitmapCroppedHandler, final boolean finishActivityWhenDone) {
-     // Get the crop
+        // Get the crop
         Point inSize = mCropView.getSourceDimensions();
+
+        boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
 
         Point minDims = new Point();
         Point maxDims = new Point();
@@ -234,12 +236,12 @@ public class WallpaperCropActivity extends Activity {
 
         int maxDim = Math.max(maxDims.x, maxDims.y);
         final int minDim = Math.min(minDims.x, minDims.y);
-        int defaultWidth;
+        int defaultWallpaperWidth;
         if (isScreenLarge(getResources())) {
-            defaultWidth = (int) (maxDim *
+            defaultWallpaperWidth = (int) (maxDim *
                     wallpaperTravelToScreenWidthRatio(maxDim, minDim));
         } else {
-            defaultWidth = Math.max((int)
+            defaultWallpaperWidth = Math.max((int)
                     (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
         }
 
@@ -264,12 +266,17 @@ public class WallpaperCropActivity extends Activity {
 
         // ADJUST CROP WIDTH
         // Extend the crop all the way to the right, for parallax
-        float extraSpaceToRight = inSize.x - cropRect.right;
+        // (or all the way to the left, in RTL)
+        float extraSpace = ltr ? inSize.x - cropRect.right : cropRect.left;
         // Cap the amount of extra width
-        float maxExtraSpace = defaultWidth / cropScale - cropRect.width();
-        extraSpaceToRight = Math.min(extraSpaceToRight, maxExtraSpace);
+        float maxExtraSpace = defaultWallpaperWidth / cropScale - cropRect.width();
+        extraSpace = Math.min(extraSpace, maxExtraSpace);
 
-        cropRect.right += extraSpaceToRight;
+        if (ltr) {
+            cropRect.right += extraSpace;
+        } else {
+            cropRect.left -= extraSpace;
+        }
 
         // ADJUST CROP HEIGHT
         if (isPortrait) {
