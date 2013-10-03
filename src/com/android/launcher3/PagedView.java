@@ -1051,7 +1051,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected void getOverviewModePages(int[] range) {
         range[0] = 0;
-        range[1] = getChildCount() - 1;
+        range[1] = Math.max(0, getChildCount() - 1);
     }
 
     protected void getVisiblePages(int[] range) {
@@ -1476,7 +1476,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     public int getScrollForPage(int index) {
-        if (mPageScrolls == null || index >= mPageScrolls.length) {
+        if (mPageScrolls == null || index >= mPageScrolls.length || index < 0) {
             return 0;
         } else {
             return mPageScrolls[index];
