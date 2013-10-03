@@ -23,7 +23,7 @@ message Key {
   enum Type {
     FAVORITE = 1;
     SCREEN = 2;
-    IMAGE = 3;
+    ICON = 3;
   }
   required Type type = 1;
   optional string name = 2;  // keep this short
