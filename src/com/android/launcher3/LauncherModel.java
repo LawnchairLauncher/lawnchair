@@ -158,7 +158,6 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindFolders(HashMap<Long,FolderInfo> folders);
         public void finishBindingItems(boolean upgradePath);
         public void bindAppWidget(LauncherAppWidgetInfo info);
-        public boolean shouldShowApp(ResolveInfo app);
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
@@ -179,12 +178,12 @@ public class LauncherModel extends BroadcastReceiver {
         public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
     }
 
-    LauncherModel(LauncherAppState app, IconCache iconCache) {
+    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         final Context context = app.getContext();
 
         mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
         mApp = app;
-        mBgAllAppsList = new AllAppsList(iconCache);
+        mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mIconCache = iconCache;
 
         mDefaultIcon = Utilities.createIconBitmap(
@@ -2397,11 +2396,9 @@ public class LauncherModel extends BroadcastReceiver {
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 ResolveInfo app = apps.get(i);
-                if (oldCallbacks.shouldShowApp(app)) {
-                    // This builds the icon bitmaps.
-                    mBgAllAppsList.add(new AppInfo(packageManager, app,
-                            mIconCache, mLabelCache));
-                }
+                // This builds the icon bitmaps.
+                mBgAllAppsList.add(new AppInfo(packageManager, app,
+                        mIconCache, mLabelCache));
             }
 
             // Huh? Shouldn't this be inside the Runnable below?
