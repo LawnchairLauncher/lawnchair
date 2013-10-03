@@ -19,7 +19,6 @@ package com.android.launcher3;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
 
-import com.android.launcher3.LauncherSettings.ChangeLogColumns;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.backup.BackupProtos;
@@ -27,28 +26,40 @@ import com.android.launcher3.backup.BackupProtos.CheckedMessage;
 import com.android.launcher3.backup.BackupProtos.Favorite;
 import com.android.launcher3.backup.BackupProtos.Journal;
 import com.android.launcher3.backup.BackupProtos.Key;
+import com.android.launcher3.backup.BackupProtos.Resource;
 import com.android.launcher3.backup.BackupProtos.Screen;
 
 import android.app.backup.BackupAgent;
 import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.BackupManager;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.ParcelFileDescriptor;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.CRC32;
+
+import static android.graphics.Bitmap.CompressFormat.WEBP;
 
 /**
  * Persist the launcher home state across calamities.
@@ -56,58 +67,68 @@ import java.util.zip.CRC32;
 public class LauncherBackupAgent extends BackupAgent {
 
     private static final String TAG = "LauncherBackupAgent";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final int MAX_JOURNAL_SIZE = 1000000;
+
+    private static final int MAX_ICONS_PER_PASS = 10;
 
     private static BackupManager sBackupManager;
 
     private static final String[] FAVORITE_PROJECTION = {
             Favorites._ID,                     // 0
-            Favorites.APPWIDGET_ID,            // 1
-            Favorites.APPWIDGET_PROVIDER,      // 2
-            Favorites.CELLX,                   // 3
-            Favorites.CELLY,                   // 4
-            Favorites.CONTAINER,               // 5
-            Favorites.ICON,                    // 6
-            Favorites.ICON_PACKAGE,            // 7
-            Favorites.ICON_RESOURCE,           // 8
-            Favorites.ICON_TYPE,               // 9
-            Favorites.ITEM_TYPE,               // 10
-            Favorites.INTENT,                  // 11
-            Favorites.SCREEN,                  // 12
-            Favorites.SPANX,                   // 13
-            Favorites.SPANY,                   // 14
-            Favorites.TITLE,                   // 15
+            Favorites.MODIFIED,                // 1
+            Favorites.INTENT,                  // 2
+            Favorites.APPWIDGET_PROVIDER,      // 3
+            Favorites.APPWIDGET_ID,            // 4
+            Favorites.CELLX,                   // 5
+            Favorites.CELLY,                   // 6
+            Favorites.CONTAINER,               // 7
+            Favorites.ICON,                    // 8
+            Favorites.ICON_PACKAGE,            // 9
+            Favorites.ICON_RESOURCE,           // 10
+            Favorites.ICON_TYPE,               // 11
+            Favorites.ITEM_TYPE,               // 12
+            Favorites.SCREEN,                  // 13
+            Favorites.SPANX,                   // 14
+            Favorites.SPANY,                   // 15
+            Favorites.TITLE,                   // 16
     };
 
     private static final int ID_INDEX = 0;
-    private static final int APPWIDGET_ID_INDEX = 1;
-    private static final int APPWIDGET_PROVIDER_INDEX = 2;
-    private static final int CELLX_INDEX = 3;
-    private static final int CELLY_INDEX = 4;
-    private static final int CONTAINER_INDEX = 5;
-    private static final int ICON_INDEX = 6;
-    private static final int ICON_PACKAGE_INDEX = 7;
-    private static final int ICON_RESOURCE_INDEX = 8;
-    private static final int ICON_TYPE_INDEX = 9;
-    private static final int ITEM_TYPE_INDEX = 10;
-    private static final int INTENT_INDEX = 11;
-    private static final int SCREEN_INDEX = 12;
-    private static final int SPANX_INDEX = 13 ;
-    private static final int SPANY_INDEX = 14;
-    private static final int TITLE_INDEX = 15;
+    private static final int ID_MODIFIED = 1;
+    private static final int INTENT_INDEX = 2;
+    private static final int APPWIDGET_PROVIDER_INDEX = 3;
+    private static final int APPWIDGET_ID_INDEX = 4;
+    private static final int CELLX_INDEX = 5;
+    private static final int CELLY_INDEX = 6;
+    private static final int CONTAINER_INDEX = 7;
+    private static final int ICON_INDEX = 8;
+    private static final int ICON_PACKAGE_INDEX = 9;
+    private static final int ICON_RESOURCE_INDEX = 10;
+    private static final int ICON_TYPE_INDEX = 11;
+    private static final int ITEM_TYPE_INDEX = 12;
+    private static final int SCREEN_INDEX = 13;
+    private static final int SPANX_INDEX = 14;
+    private static final int SPANY_INDEX = 15;
+    private static final int TITLE_INDEX = 16;
 
     private static final String[] SCREEN_PROJECTION = {
             WorkspaceScreens._ID,              // 0
-            WorkspaceScreens.SCREEN_RANK       // 1
+            WorkspaceScreens.MODIFIED,         // 1
+            WorkspaceScreens.SCREEN_RANK       // 2
     };
 
-    private static final int SCREEN_RANK_INDEX = 1;
+    private static final int SCREEN_RANK_INDEX = 2;
 
-    private static final String[] ID_ONLY_PROJECTION = {
-            BaseColumns._ID
+
+    private static final String[] ICON_PROJECTION = {
+            Favorites._ID,                // 0
+            Favorites.MODIFIED,           // 1
+            Favorites.INTENT              // 2
     };
+
+    private HashMap<ComponentName, AppWidgetProviderInfo> mWidgetMap;
 
 
     /**
@@ -155,12 +176,11 @@ public class LauncherBackupAgent extends BackupAgent {
         ArrayList<Key> keys = new ArrayList<Key>();
         backupFavorites(in, data, out, keys);
         backupScreens(in, data, out, keys);
+        backupIcons(in, data, out, keys);
 
         out.key = keys.toArray(BackupProtos.Key.EMPTY_ARRAY);
         writeJournal(newState, out);
         Log.v(TAG, "onBackup: wrote " + out.bytes + "b in " + out.rows + " rows.");
-
-        Log.v(TAG, "onBackup: finished");
     }
 
     /**
@@ -205,6 +225,10 @@ public class LauncherBackupAgent extends BackupAgent {
                         restoreScreen(key, buffer, dataSize, keys);
                         break;
 
+                    case Key.ICON:
+                        restoreIcon(key, buffer, dataSize, keys);
+                        break;
+
                     default:
                         Log.w(TAG, "unknown restore entity type: " + key.type);
                         break;
@@ -236,70 +260,35 @@ public class LauncherBackupAgent extends BackupAgent {
             ArrayList<Key> keys)
             throws IOException {
         // read the old ID set
-        Set<String> savedIds = new HashSet<String>();
-        for(int i = 0; i < in.key.length; i++) {
-            Key key = in.key[i];
-            if (key.type == Key.FAVORITE) {
-                savedIds.add(keyToBackupKey(key));
-            }
-        }
+        Set<String> savedIds = getSavedIdsByType(Key.FAVORITE, in);
         if (DEBUG) Log.d(TAG, "favorite savedIds.size()=" + savedIds.size());
 
         // persist things that have changed since the last backup
         ContentResolver cr = getContentResolver();
-        String where = ChangeLogColumns.MODIFIED + " > ?";
-        String[] args = {Long.toString(in.t)};
-        String updateOrder = ChangeLogColumns.MODIFIED;
-        Cursor updated = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
-                where, args, updateOrder);
-        if (DEBUG) Log.d(TAG, "favorite updated.getCount()=" + updated.getCount());
+        Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
+                null, null, null);
+        Set<String> currentIds = new HashSet<String>(cursor.getCount());
         try {
-            updated.moveToPosition(-1);
-            while(updated.moveToNext()) {
-                final long id = updated.getLong(ID_INDEX);
+            cursor.moveToPosition(-1);
+            while(cursor.moveToNext()) {
+                final long id = cursor.getLong(ID_INDEX);
+                final long updateTime = cursor.getLong(ID_MODIFIED);
                 Key key = getKey(Key.FAVORITE, id);
-                byte[] blob = packFavorite(updated);
-                String backupKey = keyToBackupKey(key);
-                data.writeEntityHeader(backupKey, blob.length);
-                data.writeEntityData(blob, blob.length);
-                out.rows++;
-                out.bytes += blob.length;
-                Log.v(TAG, "saving favorite " + backupKey + ": " + id + "/" + blob.length);
-                if(DEBUG) Log.d(TAG, "wrote " +
-                        Base64.encodeToString(blob, 0, blob.length, Base64.NO_WRAP));
-                // remember that is was a new column, so we don't delete it.
-                savedIds.add(backupKey);
-            }
-        } finally {
-            updated.close();
-        }
-        if (DEBUG) Log.d(TAG, "favorite savedIds.size()=" + savedIds.size());
-
-        // build the current ID set
-        String idOrder = BaseColumns._ID;
-        Cursor idCursor = cr.query(Favorites.CONTENT_URI, ID_ONLY_PROJECTION,
-                null, null, idOrder);
-        Set<String> currentIds = new HashSet<String>(idCursor.getCount());
-        try {
-            idCursor.moveToPosition(-1);
-            while(idCursor.moveToNext()) {
-                Key key = getKey(Key.FAVORITE, idCursor.getLong(ID_INDEX));
-                currentIds.add(keyToBackupKey(key));
-                // save the IDs for next time
                 keys.add(key);
+                currentIds.add(keyToBackupKey(key));
+                if (updateTime > in.t) {
+                    byte[] blob = packFavorite(cursor);
+                    writeRowToBackup(key, blob, out, data);
+                }
             }
         } finally {
-            idCursor.close();
+            cursor.close();
         }
         if (DEBUG) Log.d(TAG, "favorite currentIds.size()=" + currentIds.size());
 
         // these IDs must have been deleted
         savedIds.removeAll(currentIds);
-        for (String deleted : savedIds) {
-            Log.v(TAG, "dropping favorite " + deleted);
-            data.writeEntityHeader(deleted, -1);
-            out.rows++;
-        }
+        out.rows += removeDeletedKeysFromBackup(savedIds, data);
     }
 
     /**
@@ -332,76 +321,42 @@ public class LauncherBackupAgent extends BackupAgent {
      * @param in notes from last backup
      * @param data output stream for key/value pairs
      * @param out notes about this backup
-     * @param keys keys to mark as clean in the notes for next backup  @throws IOException
+     * @param keys keys to mark as clean in the notes for next backup
+     * @throws IOException
      */
     private void backupScreens(Journal in, BackupDataOutput data, Journal out,
             ArrayList<Key> keys)
             throws IOException {
         // read the old ID set
-        Set<String> savedIds = new HashSet<String>();
-        for(int i = 0; i < in.key.length; i++) {
-            Key key = in.key[i];
-            if (key.type == Key.SCREEN) {
-                savedIds.add(keyToBackupKey(key));
-            }
-        }
-        if (DEBUG) Log.d(TAG, "screens savedIds.size()=" + savedIds.size());
+        Set<String> savedIds = getSavedIdsByType(Key.SCREEN, in);
+        if (DEBUG) Log.d(TAG, "screen savedIds.size()=" + savedIds.size());
 
         // persist things that have changed since the last backup
         ContentResolver cr = getContentResolver();
-        String where = ChangeLogColumns.MODIFIED + " > ?";
-        String[] args = {Long.toString(in.t)};
-        String updateOrder = ChangeLogColumns.MODIFIED;
-        Cursor updated = cr.query(WorkspaceScreens.CONTENT_URI, SCREEN_PROJECTION,
-                where, args, updateOrder);
-        updated.moveToPosition(-1);
-        if (DEBUG) Log.d(TAG, "screens updated.getCount()=" + updated.getCount());
+        Cursor cursor = cr.query(WorkspaceScreens.CONTENT_URI, SCREEN_PROJECTION,
+                null, null, null);
+        Set<String> currentIds = new HashSet<String>(cursor.getCount());
         try {
-            while(updated.moveToNext()) {
-                final long id = updated.getLong(ID_INDEX);
+            cursor.moveToPosition(-1);
+            while(cursor.moveToNext()) {
+                final long id = cursor.getLong(ID_INDEX);
+                final long updateTime = cursor.getLong(ID_MODIFIED);
                 Key key = getKey(Key.SCREEN, id);
-                byte[] blob = packScreen(updated);
-                String backupKey = keyToBackupKey(key);
-                data.writeEntityHeader(backupKey, blob.length);
-                data.writeEntityData(blob, blob.length);
-                out.rows++;
-                out.bytes += blob.length;
-                Log.v(TAG, "saving screen " + backupKey + ": " + id + "/" + blob.length);
-                if(DEBUG) Log.d(TAG, "wrote " +
-                        Base64.encodeToString(blob, 0, blob.length, Base64.NO_WRAP));
-                // remember that is was a new column, so we don't delete it.
-                savedIds.add(backupKey);
-            }
-        } finally {
-            updated.close();
-        }
-        if (DEBUG) Log.d(TAG, "screen savedIds.size()=" + savedIds.size());
-
-        // build the current ID set
-        String idOrder = BaseColumns._ID;
-        Cursor idCursor = cr.query(WorkspaceScreens.CONTENT_URI, ID_ONLY_PROJECTION,
-                null, null, idOrder);
-        idCursor.moveToPosition(-1);
-        Set<String> currentIds = new HashSet<String>(idCursor.getCount());
-        try {
-            while(idCursor.moveToNext()) {
-                Key key = getKey(Key.SCREEN, idCursor.getLong(ID_INDEX));
-                currentIds.add(keyToBackupKey(key));
-                // save the IDs for next time
                 keys.add(key);
+                currentIds.add(keyToBackupKey(key));
+                if (updateTime > in.t) {
+                    byte[] blob = packScreen(cursor);
+                    writeRowToBackup(key, blob, out, data);
+                }
             }
         } finally {
-            idCursor.close();
+            cursor.close();
         }
         if (DEBUG) Log.d(TAG, "screen currentIds.size()=" + currentIds.size());
 
         // these IDs must have been deleted
         savedIds.removeAll(currentIds);
-        for(String deleted: savedIds) {
-            Log.v(TAG, "dropping screen " + deleted);
-            data.writeEntityHeader(deleted, -1);
-            out.rows++;
-        }
+        out.rows += removeDeletedKeysFromBackup(savedIds, data);
     }
 
     /**
@@ -426,7 +381,118 @@ public class LauncherBackupAgent extends BackupAgent {
         }
     }
 
-    /** create a new key object.
+    /**
+     * Write all the static icon resources we need to render placeholders
+     * for a package that is not installed.
+     *
+     * @param in notes from last backup
+     * @param data output stream for key/value pairs
+     * @param out notes about this backup
+     * @param keys keys to mark as clean in the notes for next backup
+     * @throws IOException
+     */
+    private void backupIcons(Journal in, BackupDataOutput data, Journal out,
+            ArrayList<Key> keys) throws IOException {
+        // persist icons for new shortcuts since the last backup
+        final ContentResolver cr = getContentResolver();
+        final IconCache iconCache = new IconCache(this);
+        final int dpi = getResources().getDisplayMetrics().densityDpi;
+
+        // read the old ID set
+        Set<String> savedIds = getSavedIdsByType(Key.ICON, in);
+        if (DEBUG) Log.d(TAG, "icon savedIds.size()=" + savedIds.size());
+
+        int startRows = out.rows;
+        if (DEBUG) Log.d(TAG, "starting here: " + startRows);
+        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION;
+        Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
+                where, null, null);
+        Set<String> currentIds = new HashSet<String>(cursor.getCount());
+        try {
+            cursor.moveToPosition(-1);
+            while(cursor.moveToNext()) {
+                final long id = cursor.getLong(ID_INDEX);
+                final String intentDescription = cursor.getString(INTENT_INDEX);
+                try {
+                    Intent intent = Intent.parseUri(intentDescription, 0);
+                    ComponentName cn = intent.getComponent();
+                    Key key = null;
+                    String backupKey = null;
+                    if (cn != null) {
+                        key = getKey(Key.ICON, cn.flattenToShortString());
+                        backupKey = keyToBackupKey(key);
+                        currentIds.add(backupKey);
+                    } else {
+                        Log.w(TAG, "empty intent on application favorite: " + id);
+                    }
+                    if (savedIds.contains(backupKey)) {
+                        if (DEBUG) Log.d(TAG, "already saved icon " + backupKey);
+
+                        // remember that we already backed this up previously
+                        keys.add(key);
+                    } else if (backupKey != null) {
+                        if (DEBUG) Log.d(TAG, "I can count this high: " + out.rows);
+                        if ((out.rows - startRows) < MAX_ICONS_PER_PASS) {
+                            if (DEBUG) Log.d(TAG, "saving icon " + backupKey);
+                            Bitmap icon = iconCache.getIcon(intent);
+                            keys.add(key);
+                            if (icon != null && !iconCache.isDefaultIcon(icon)) {
+                                byte[] blob = packIcon(dpi, icon);
+                                writeRowToBackup(key, blob, out, data);
+                            }
+                        } else {
+                            if (DEBUG) Log.d(TAG, "scheduling another rtun for icon " + backupKey);
+                            // too many icons for this pass, request another.
+                            dataChanged(this);
+                        }
+                    }
+                } catch (URISyntaxException e) {
+                    Log.w(TAG, "invalid URI on application favorite: " + id);
+                } catch (IOException e) {
+                    Log.w(TAG, "unable to save application icon for favorite: " + id);
+                }
+
+            }
+        } finally {
+            cursor.close();
+        }
+        if (DEBUG) Log.d(TAG, "icon currentIds.size()=" + currentIds.size());
+
+        // these IDs must have been deleted
+        savedIds.removeAll(currentIds);
+        out.rows += removeDeletedKeysFromBackup(savedIds, data);
+    }
+
+    /**
+     * Read an icon from the stream.
+     *
+     * <P>Keys arrive in any order, so shortcuts that use this screen may already exist.
+     *
+     * @param key identifier for the row
+     * @param buffer the serialized proto from the stream, may be larger than dataSize
+     * @param dataSize the size of the proto from the stream
+     * @param keys keys to mark as clean in the notes for next backup
+     */
+    private void restoreIcon(Key key, byte[] buffer, int dataSize, ArrayList<Key> keys) {
+        Log.v(TAG, "unpacking icon " + key.id);
+        if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
+                Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
+        try {
+            Resource res = unpackIcon(buffer, 0, dataSize);
+            if (DEBUG) Log.d(TAG, "unpacked " + res.dpi);
+            if (DEBUG) Log.d(TAG, "read " +
+                    Base64.encodeToString(res.data, 0, res.data.length,
+                            Base64.NO_WRAP));
+            Bitmap icon = BitmapFactory.decodeByteArray(res.data, 0, res.data.length);
+            if (icon == null) {
+                Log.w(TAG, "failed to unpack icon for " + key.name);
+            }
+        } catch (InvalidProtocolBufferNanoException e) {
+            Log.w(TAG, "failed to decode proto", e);
+        }
+    }
+
+    /** create a new key, with an integer ID.
      *
      * <P> Keys contain their own checksum instead of using
      * the heavy-weight CheckedMessage wrapper.
@@ -435,6 +501,19 @@ public class LauncherBackupAgent extends BackupAgent {
         Key key = new Key();
         key.type = type;
         key.id = id;
+        key.checksum = checkKey(key);
+        return key;
+    }
+
+    /** create a new key for a named object.
+     *
+     * <P> Keys contain their own checksum instead of using
+     * the heavy-weight CheckedMessage wrapper.
+     */
+    private Key getKey(int type, String name) {
+        Key key = new Key();
+        key.type = type;
+        key.name = name;
         key.checksum = checkKey(key);
         return key;
     }
@@ -457,6 +536,28 @@ public class LauncherBackupAgent extends BackupAgent {
             throw new KeyParsingException(e);
         } catch (IllegalArgumentException e) {
             throw new KeyParsingException(e);
+        }
+    }
+
+    private String getKeyName(Key key) {
+        if (TextUtils.isEmpty(key.name)) {
+            return Long.toString(key.id);
+        } else {
+            return key.name;
+        }
+
+    }
+
+    private String geKeyType(Key key) {
+        switch (key.type) {
+            case Key.FAVORITE:
+                return "favorite";
+            case Key.SCREEN:
+                return "screen";
+            case Key.ICON:
+                return "icon";
+            default:
+                return "anonymous";
         }
     }
 
@@ -544,6 +645,25 @@ public class LauncherBackupAgent extends BackupAgent {
         return screen;
     }
 
+    /** Serialize an icon Resource for persistence, including a checksum wrapper. */
+    private byte[] packIcon(int dpi, Bitmap icon) {
+        Resource res = new Resource();
+        res.dpi = dpi;
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        if (icon.compress(WEBP, 100, os)) {
+            res.data = os.toByteArray();
+        }
+        return writeCheckedBytes(res);
+    }
+
+    /** Deserialize an icon resource from persistence, after verifying checksum wrapper. */
+    private Resource unpackIcon(byte[] buffer, int offset, int dataSize)
+            throws InvalidProtocolBufferNanoException {
+        Resource res = new Resource();
+        MessageNano.mergeFrom(res, readCheckedBytes(buffer, offset, dataSize));
+        return res;
+    }
+
     /**
      * Read the old journal from the input file.
      *
@@ -598,6 +718,41 @@ public class LauncherBackupAgent extends BackupAgent {
             }
         }
         return journal;
+    }
+
+    private void writeRowToBackup(Key key, byte[] blob, Journal out,
+            BackupDataOutput data) throws IOException {
+        String backupKey = keyToBackupKey(key);
+        data.writeEntityHeader(backupKey, blob.length);
+        data.writeEntityData(blob, blob.length);
+        out.rows++;
+        out.bytes += blob.length;
+        Log.v(TAG, "saving " + geKeyType(key) + " " + backupKey + ": " +
+                getKeyName(key) + "/" + blob.length);
+        if(DEBUG) Log.d(TAG, "wrote " +
+                Base64.encodeToString(blob, 0, blob.length, Base64.NO_WRAP));
+    }
+
+    private Set<String> getSavedIdsByType(int type, Journal in) {
+        Set<String> savedIds = new HashSet<String>();
+        for(int i = 0; i < in.key.length; i++) {
+            Key key = in.key[i];
+            if (key.type == type) {
+                savedIds.add(keyToBackupKey(key));
+            }
+        }
+        return savedIds;
+    }
+
+    private int removeDeletedKeysFromBackup(Set<String> deletedIds, BackupDataOutput data)
+            throws IOException {
+        int rows = 0;
+        for(String deleted: deletedIds) {
+            Log.v(TAG, "dropping icon " + deleted);
+            data.writeEntityHeader(deleted, -1);
+            rows++;
+        }
+        return rows;
     }
 
     /**
