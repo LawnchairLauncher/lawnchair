@@ -617,7 +617,7 @@ public class Workspace extends SmoothPagedView
 
     public boolean hasExtraEmptyScreen() {
         int nScreens = getChildCount();
-        nScreens = hasCustomContent() ? nScreens - 1 : nScreens;
+        nScreens = nScreens - numCustomPages();
         return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && nScreens > 1;
     }
 
@@ -691,7 +691,7 @@ public class Workspace extends SmoothPagedView
 
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
-        int minScreens = hasCustomContent() ? 2 : 1;
+        int minScreens = 1 + numCustomPages();
 
         int pageShift = 0;
         for (Long id: removeScreens) {
@@ -1075,7 +1075,7 @@ public class Workspace extends SmoothPagedView
         float mAnimationStartOffset;
         private final int ANIMATION_DURATION = 250;
         // Don't use all the wallpaper for parallax until you have at least this many pages
-        private final int MIN_PARALLAX_PAGE_SPAN = 4;
+        private final int MIN_PARALLAX_PAGE_SPAN = 3;
         int mNumScreens;
 
         public WallpaperOffsetInterpolator() {
@@ -1131,12 +1131,15 @@ public class Workspace extends SmoothPagedView
             }
 
             // Exclude the leftmost page
-            final int startPage = hasCustomContent() ? 1 : 0;
-            final int firstIndex = isLayoutRtl() ? getChildCount() - 1 - startPage : startPage;
+            int emptyExtraPages = numEmptyScreensToIgnore();
+            int firstIndex = numCustomPages();
             // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
-            int emptyExtraPages = numExtraScreensToIgnore();
-            final int lastIndex =
-                    isLayoutRtl() ? 0 + emptyExtraPages : getChildCount() - 1 - emptyExtraPages;
+            int lastIndex = getChildCount() - 1 - emptyExtraPages;
+            if (isLayoutRtl()) {
+                int temp = firstIndex;
+                firstIndex = lastIndex;
+                lastIndex = temp;
+            }
 
             int firstPageScrollX = getScrollForPage(firstIndex);
             int scrollRange = getScrollForPage(lastIndex) - firstPageScrollX;
@@ -1144,28 +1147,36 @@ public class Workspace extends SmoothPagedView
                 return 0;
             } else {
                 // TODO: do different behavior if it's  a live wallpaper?
-                float offset = Math.min(1, (getScrollX() - firstPageScrollX) / (float) scrollRange);
+                // Sometimes the left parameter of the pages is animated during a layout transition;
+                // this parameter offsets it to keep the wallpaper from animating as well
+                int offsetForLayoutTransitionAnimation = isLayoutRtl() ?
+                        getPageAt(getChildCount() - 1).getLeft() - getFirstChildLeft() : 0;
+                int adjustedScroll =
+                        getScrollX() - firstPageScrollX - offsetForLayoutTransitionAnimation;
+                float offset = Math.min(1, adjustedScroll / (float) scrollRange);
                 offset = Math.max(0, offset);
                 // Don't use up all the wallpaper parallax until you have at least
                 // MIN_PARALLAX_PAGE_SPAN pages
-                int numScrollingPages = getNumScreensExcludingExtraEmptyScreenAndLeftmost();
-                int parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages) - 1;
-                return offset * (numScrollingPages - 1) / parallaxPageSpan;
+                int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
+                int parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
+                // On RTL devices, push the wallpaper offset to the right if we don't have enough
+                // pages (ie if numScrollingPages < MIN_PARALLAX_PAGE_SPAN)
+                int padding = isLayoutRtl() ? parallaxPageSpan - numScrollingPages + 1 : 0;
+                return offset * (padding + numScrollingPages - 1) / parallaxPageSpan;
             }
         }
 
-        private int numExtraScreensToIgnore() {
-            int numScrollingPages = getChildCount() - 1;
-            if (numScrollingPages > MIN_PARALLAX_PAGE_SPAN && hasExtraEmptyScreen()) {
+        private int numEmptyScreensToIgnore() {
+            int numScrollingPages = getChildCount() - numCustomPages();
+            if (numScrollingPages >= MIN_PARALLAX_PAGE_SPAN && hasExtraEmptyScreen()) {
                 return 1;
             } else {
                 return 0;
             }
         }
 
-        private int getNumScreensExcludingExtraEmptyScreenAndLeftmost() {
-            int numScrollingPages = getChildCount() - numExtraScreensToIgnore();
-            if (hasCustomContent()) numScrollingPages -= 1;
+        private int getNumScreensExcludingEmptyAndCustom() {
+            int numScrollingPages = getChildCount() - numEmptyScreensToIgnore() - numCustomPages();
             return numScrollingPages;
         }
 
@@ -1197,12 +1208,12 @@ public class Workspace extends SmoothPagedView
         public void setFinalX(float x) {
             scheduleUpdate();
             mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
-            if (getNumScreensExcludingExtraEmptyScreenAndLeftmost() != mNumScreens) {
+            if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
                 if (mNumScreens > 0) {
                     // Don't animate if we're going from 0 screens
                     animateToFinal();
                 }
-                mNumScreens = getNumScreensExcludingExtraEmptyScreenAndLeftmost();
+                mNumScreens = getNumScreensExcludingEmptyAndCustom();
             }
         }
 
@@ -1354,6 +1365,10 @@ public class Workspace extends SmoothPagedView
 
     public boolean hasCustomContent() {
         return (mScreenOrder.size() > 0 && mScreenOrder.get(0) == CUSTOM_CONTENT_SCREEN_ID);
+    }
+
+    public int numCustomPages() {
+        return hasCustomContent() ? 1 : 0;
     }
 
     public boolean isOnOrMovingToCustomContent() {
@@ -1735,9 +1750,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void getOverviewModePages(int[] range) {
-        int count = mScreenOrder.size();
-
-        int start = hasCustomContent() ? 1 : 0;
+        int start = numCustomPages();
         int end = getChildCount() - 1;
 
         range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
@@ -4277,7 +4290,7 @@ public class Workspace extends SmoothPagedView
     protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
         long screenId = getScreenIdForPageIndex(pageIndex);
         if (screenId == EXTRA_EMPTY_SCREEN_ID) {
-            int count = mScreenOrder.size() - (hasCustomContent() ? 1 : 0);
+            int count = mScreenOrder.size() - numCustomPages();
             if (count > 1) {
                 return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_current,
                         R.drawable.ic_pageindicator_add);
