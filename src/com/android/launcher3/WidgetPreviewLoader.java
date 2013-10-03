@@ -105,7 +105,6 @@ public class WidgetPreviewLoader {
     private int mPreviewBitmapHeight;
     private String mSize;
     private Context mContext;
-    private Launcher mLauncher;
     private PackageManager mPackageManager;
     private PagedViewCellLayout mWidgetSpacingLayout;
 
@@ -137,11 +136,11 @@ public class WidgetPreviewLoader {
         sInvalidPackages = new HashSet<String>();
     }
 
-    public WidgetPreviewLoader(Launcher launcher) {
+    public WidgetPreviewLoader(Context context) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-        mContext = mLauncher = launcher;
+        mContext = context;
         mPackageManager = mContext.getPackageManager();
         mAppIconSize = grid.iconSizePx;
         mIconCache = app.getIconCache();
@@ -417,7 +416,7 @@ public class WidgetPreviewLoader {
     }
 
     public Bitmap generateWidgetPreview(AppWidgetProviderInfo info, Bitmap preview) {
-        int[] cellSpans = Launcher.getSpanForWidget(mLauncher, info);
+        int[] cellSpans = Launcher.getSpanForWidget(mContext, info);
         int maxWidth = maxWidthForWidgetPreview(cellSpans[0]);
         int maxHeight = maxHeightForWidgetPreview(cellSpans[1]);
         return generateWidgetPreview(info.provider, info.previewImage, info.icon,
