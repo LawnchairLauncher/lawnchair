@@ -1720,7 +1720,7 @@ public class Launcher extends Activity
         }
     }
     protected void showWorkspaceAndExitOverviewMode() {
-        showWorkspaceAndExitOverviewMode(true);
+        showWorkspaceAndExitOverviewMode(false);
     }
 
     @Override
