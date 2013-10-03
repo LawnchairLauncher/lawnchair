@@ -3933,11 +3933,6 @@ public class Launcher extends Activity
         }
     }
 
-    @Override
-    public boolean shouldShowApp(ResolveInfo app) {
-        return true;
-    }
-
     /**
      * A package was updated.
      *
