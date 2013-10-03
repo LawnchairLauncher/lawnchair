@@ -87,7 +87,7 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permet que l\'aplicació canviï la configuració i les dreceres de la pantalla d\'inici."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"S\'ha produït un problema en carregar el widget"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aquesta aplicació és una aplicació del sistema i no es pot desinstal·lar."</string>
-    <string name="dream_name" msgid="1530253749244328964">"Llançamíssils"</string>
+    <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sense nom"</string>
     <string name="workspace_description_format" msgid="2950174241104043327">"Pantalla d\'inici %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pàgina %1$d de %2$d"</string>
@@ -95,7 +95,7 @@
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Pàgina d\'aplicacions %1$d de %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Pàgina de widgets %1$d de %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"Hola!"</string>
-    <string name="first_run_cling_description" msgid="7401277885309232757">"Posa\'t còmode"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Posa\'t còmode."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crea més pantalles per a aplicacions i carpetes"</string>
