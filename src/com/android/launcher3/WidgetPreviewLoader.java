@@ -469,7 +469,7 @@ public class WidgetPreviewLoader {
                     .getIntrinsicWidth();
             final int previewDrawableHeight = previewDrawable
                     .getIntrinsicHeight();
-            previewWidth = previewDrawableWidth * cellHSpan; // subtract 2 dips
+            previewWidth = previewDrawableWidth * cellHSpan;
             previewHeight = previewDrawableHeight * cellVSpan;
 
             defaultPreview = Bitmap.createBitmap(previewWidth, previewHeight,

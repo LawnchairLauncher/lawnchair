@@ -327,7 +327,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
             }
             if (mDrawIdentifier.equals(FIRST_RUN_PORTRAIT) ||
                     mDrawIdentifier.equals(FIRST_RUN_LANDSCAPE)) {
-                // Draw the white circle
+                // Draw the circle
                 View bubbleContent = findViewById(R.id.bubble_content);
                 Rect bubbleRect = new Rect();
                 bubbleContent.getGlobalVisibleRect(bubbleRect);
