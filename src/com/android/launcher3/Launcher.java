@@ -3745,20 +3745,24 @@ public class Launcher extends Activity
             if (newShortcutsScreenId > -1) {
                 long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
                 final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newShortcutsScreenId);
+                final Runnable startBounceAnimRunnable = new Runnable() {
+                    public void run() {
+                        anim.playTogether(bounceAnims);
+                        anim.start();
+                    }
+                };
                 if (newShortcutsScreenId != currentScreenId) {
                     // We post the animation slightly delayed to prevent slowdowns
                     // when we are loading right after we return to launcher.
                     mWorkspace.postDelayed(new Runnable() {
                         public void run() {
                             mWorkspace.snapToPage(newScreenIndex);
-                            mWorkspace.postDelayed(new Runnable() {
-                                public void run() {
-                                    anim.playTogether(bounceAnims);
-                                    anim.start();
-                                }
-                            }, NEW_APPS_ANIMATION_DELAY);
+                            mWorkspace.postDelayed(startBounceAnimRunnable,
+                                    NEW_APPS_ANIMATION_DELAY);
                         }
                     }, NEW_APPS_PAGE_MOVE_DELAY);
+                } else {
+                    mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
                 }
             }
         }
