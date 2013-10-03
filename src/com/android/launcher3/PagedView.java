@@ -265,6 +265,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected final Rect mInsets = new Rect();
 
+    protected int mFirstChildLeft;
+
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
     }
@@ -857,6 +859,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         requestLayout();
     }
 
+    protected int getFirstChildLeft() {
+        return mFirstChildLeft;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!mIsDataReady || getChildCount() == 0) {
@@ -881,8 +887,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int delta = isRtl ? -1 : 1;
 
         int verticalPadding = getPaddingTop() + getPaddingBottom();
-        int childLeft = offsetX + (screenWidth - getChildWidth(startIndex)) / 2;
 
+        int childLeft = mFirstChildLeft = offsetX + (screenWidth - getChildWidth(startIndex)) / 2;
         if (mPageScrolls == null || getChildCount() != mChildCountOnLastLayout) {
             mPageScrolls = new int[getChildCount()];
         }
