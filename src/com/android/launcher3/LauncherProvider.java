@@ -296,6 +296,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_SHORTCUT = "shortcut";
         private static final String TAG_FOLDER = "folder";
         private static final String TAG_EXTRA = "extra";
+        private static final String TAG_INCLUDE = "include";
 
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
@@ -1011,6 +1012,8 @@ public class LauncherProvider extends ContentProvider {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             ContentValues values = new ContentValues();
 
+            if (LOGD) Log.v(TAG, String.format("Loading favorites from resid=0x%08x", workspaceResourceId));
+
             PackageManager packageManager = mContext.getPackageManager();
             int i = 0;
             try {
@@ -1031,6 +1034,30 @@ public class LauncherProvider extends ContentProvider {
                     boolean added = false;
                     final String name = parser.getName();
 
+                    if (TAG_INCLUDE.equals(name)) {
+                        final TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Include);
+
+                        final int resId = a.getResourceId(R.styleable.Include_workspace, 0);
+
+                        if (LOGD) Log.v(TAG, String.format(("%" + (2*(depth+1)) + "s<include workspace=%08x>"),
+                                "", resId));
+
+                        if (resId != 0 && resId != workspaceResourceId) {
+                            // recursively load some more favorites, why not?
+                            i += loadFavorites(db, resId);
+                            added = false;
+                            mMaxItemId = -1;
+                        } else {
+                            Log.w(TAG, String.format("Skipping <include workspace=0x%08x>", resId));
+                        }
+
+                        a.recycle();
+
+                        if (LOGD) Log.v(TAG, String.format(("%" + (2*(depth+1)) + "s</include>"), ""));
+                        continue;
+                    }
+
+                    // Assuming it's a <favorite> at this point
                     TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Favorite);
 
                     long container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
@@ -1047,6 +1074,17 @@ public class LauncherProvider extends ContentProvider {
                     values.put(LauncherSettings.Favorites.SCREEN, screen);
                     values.put(LauncherSettings.Favorites.CELLX, x);
                     values.put(LauncherSettings.Favorites.CELLY, y);
+
+                    if (LOGD) {
+                        final String title = a.getString(R.styleable.Favorite_title);
+                        final String pkg = a.getString(R.styleable.Favorite_packageName);
+                        final String something = title != null ? title : pkg;
+                        Log.v(TAG, String.format(
+                                ("%" + (2*(depth+1)) + "s<%s%s c=%d s=%s x=%s y=%s>"),
+                                "", name,
+                                (something == null ? "" : (" \"" + something + "\"")),
+                                container, screen, x, y));
+                    }
 
                     if (TAG_FAVORITE.equals(name)) {
                         long id = addAppShortcut(db, values, a, packageManager, intent);
@@ -1086,6 +1124,13 @@ public class LauncherProvider extends ContentProvider {
                                     R.styleable.Favorite);
                             values.clear();
                             values.put(LauncherSettings.Favorites.CONTAINER, folderId);
+
+                            if (LOGD) {
+                                final String pkg = ar.getString(R.styleable.Favorite_packageName);
+                                final String uri = ar.getString(R.styleable.Favorite_uri);
+                                Log.v(TAG, String.format(("%" + (2*(folderDepth+1)) + "s<%s \"%s\">"), "",
+                                        folder_item_name, uri != null ? uri : pkg));
+                            }
 
                             if (TAG_FAVORITE.equals(folder_item_name) && folderId >= 0) {
                                 long id =
