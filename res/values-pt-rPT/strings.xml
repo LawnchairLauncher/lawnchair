@@ -95,7 +95,7 @@
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Página de aplicações %1$d de %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Página de widgets %1$d de %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"Bem-vindo(a)!"</string>
-    <string name="first_run_cling_description" msgid="7401277885309232757">"Sinta-se em casa."</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Sinta-se em casa."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crie mais ecrãs para aplicações e pastas"</string>
