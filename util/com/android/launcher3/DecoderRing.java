@@ -100,7 +100,7 @@ class DecoderRing {
         if (type == Key.class) {
             Key key = new Key();
             try {
-                MessageNano.mergeFrom(key, byteStream.toByteArray());
+                key = Key.parseFrom(byteStream.toByteArray());
             } catch (InvalidProtocolBufferNanoException e) {
                 System.err.println("failed to parse proto: " + e);
                 System.exit(1);
