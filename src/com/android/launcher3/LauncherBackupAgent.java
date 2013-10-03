@@ -28,6 +28,7 @@ import com.android.launcher3.backup.BackupProtos.Journal;
 import com.android.launcher3.backup.BackupProtos.Key;
 import com.android.launcher3.backup.BackupProtos.Resource;
 import com.android.launcher3.backup.BackupProtos.Screen;
+import com.android.launcher3.backup.BackupProtos.Widget;
 
 import android.app.backup.BackupAgent;
 import android.app.backup.BackupDataInput;
@@ -42,6 +43,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -67,11 +69,17 @@ import static android.graphics.Bitmap.CompressFormat.WEBP;
 public class LauncherBackupAgent extends BackupAgent {
 
     private static final String TAG = "LauncherBackupAgent";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final int MAX_JOURNAL_SIZE = 1000000;
 
+    /** icons are large, dribble them out */
     private static final int MAX_ICONS_PER_PASS = 10;
+
+    /** widgets contain previews, which are very large, dribble them out */
+    private static final int MAX_WIDGETS_PER_PASS = 5;
+
+    public static final int IMAGE_COMPRESSION_QUALITY = 75;
 
     private static BackupManager sBackupManager;
 
@@ -177,6 +185,7 @@ public class LauncherBackupAgent extends BackupAgent {
         backupFavorites(in, data, out, keys);
         backupScreens(in, data, out, keys);
         backupIcons(in, data, out, keys);
+        backupWidgets(in, data, out, keys);
 
         out.key = keys.toArray(BackupProtos.Key.EMPTY_ARRAY);
         writeJournal(newState, out);
@@ -227,6 +236,10 @@ public class LauncherBackupAgent extends BackupAgent {
 
                     case Key.ICON:
                         restoreIcon(key, buffer, dataSize, keys);
+                        break;
+
+                    case Key.WIDGET:
+                        restoreWidget(key, buffer, dataSize, keys);
                         break;
 
                     default:
@@ -393,9 +406,10 @@ public class LauncherBackupAgent extends BackupAgent {
      */
     private void backupIcons(Journal in, BackupDataOutput data, Journal out,
             ArrayList<Key> keys) throws IOException {
-        // persist icons for new shortcuts since the last backup
+        // persist icons that haven't been persisted yet
         final ContentResolver cr = getContentResolver();
-        final IconCache iconCache = new IconCache(this);
+        final LauncherAppState app = LauncherAppState.getInstance();
+        final IconCache iconCache = app.getIconCache();
         final int dpi = getResources().getDisplayMetrics().densityDpi;
 
         // read the old ID set
@@ -441,7 +455,7 @@ public class LauncherBackupAgent extends BackupAgent {
                                 writeRowToBackup(key, blob, out, data);
                             }
                         } else {
-                            if (DEBUG) Log.d(TAG, "scheduling another rtun for icon " + backupKey);
+                            if (DEBUG) Log.d(TAG, "scheduling another run for icon " + backupKey);
                             // too many icons for this pass, request another.
                             dataChanged(this);
                         }
@@ -466,7 +480,7 @@ public class LauncherBackupAgent extends BackupAgent {
     /**
      * Read an icon from the stream.
      *
-     * <P>Keys arrive in any order, so shortcuts that use this screen may already exist.
+     * <P>Keys arrive in any order, so shortcuts that use this icon may already exist.
      *
      * @param key identifier for the row
      * @param buffer the serialized proto from the stream, may be larger than dataSize
@@ -486,6 +500,115 @@ public class LauncherBackupAgent extends BackupAgent {
             Bitmap icon = BitmapFactory.decodeByteArray(res.data, 0, res.data.length);
             if (icon == null) {
                 Log.w(TAG, "failed to unpack icon for " + key.name);
+            }
+        } catch (InvalidProtocolBufferNanoException e) {
+            Log.w(TAG, "failed to decode proto", e);
+        }
+    }
+
+    /**
+     * Write all the static widget resources we need to render placeholders
+     * for a package that is not installed.
+     *
+     * @param in notes from last backup
+     * @param data output stream for key/value pairs
+     * @param out notes about this backup
+     * @param keys keys to mark as clean in the notes for next backup
+     * @throws IOException
+     */
+    private void backupWidgets(Journal in, BackupDataOutput data, Journal out,
+            ArrayList<Key> keys) throws IOException {
+        // persist static widget info that hasn't been persisted yet
+        final ContentResolver cr = getContentResolver();
+        final PagedViewCellLayout widgetSpacingLayout = new PagedViewCellLayout(this);
+        final WidgetPreviewLoader previewLoader = new WidgetPreviewLoader(this);
+        final LauncherAppState appState = LauncherAppState.getInstance();
+        final IconCache iconCache = appState.getIconCache();
+        final int dpi = getResources().getDisplayMetrics().densityDpi;
+        final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
+        if (DEBUG) Log.d(TAG, "cellWidthPx: " + profile.cellWidthPx);
+
+        // read the old ID set
+        Set<String> savedIds = getSavedIdsByType(Key.WIDGET, in);
+        if (DEBUG) Log.d(TAG, "widgets savedIds.size()=" + savedIds.size());
+
+        int startRows = out.rows;
+        if (DEBUG) Log.d(TAG, "starting here: " + startRows);
+        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPWIDGET;
+        Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
+                where, null, null);
+        Set<String> currentIds = new HashSet<String>(cursor.getCount());
+        try {
+            cursor.moveToPosition(-1);
+            while(cursor.moveToNext()) {
+                final long id = cursor.getLong(ID_INDEX);
+                final String providerName = cursor.getString(APPWIDGET_PROVIDER_INDEX);
+                final int spanX = cursor.getInt(SPANX_INDEX);
+                final int spanY = cursor.getInt(SPANY_INDEX);
+                final ComponentName provider = ComponentName.unflattenFromString(providerName);
+                Key key = null;
+                String backupKey = null;
+                if (provider != null) {
+                    key = getKey(Key.WIDGET, providerName);
+                    backupKey = keyToBackupKey(key);
+                    currentIds.add(backupKey);
+                } else {
+                    Log.w(TAG, "empty intent on appwidget: " + id);
+                }
+                if (savedIds.contains(backupKey)) {
+                    if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
+
+                    // remember that we already backed this up previously
+                    keys.add(key);
+                } else if (backupKey != null) {
+                    if (DEBUG) Log.d(TAG, "I can count this high: " + out.rows);
+                    if ((out.rows - startRows) < MAX_WIDGETS_PER_PASS) {
+                        if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
+                        previewLoader.setPreviewSize(spanX * profile.cellWidthPx,
+                                spanY * profile.cellHeightPx, widgetSpacingLayout);
+                        byte[] blob = packWidget(dpi, previewLoader, iconCache, provider);
+                        writeRowToBackup(key, blob, out, data);
+
+                    } else {
+                        if (DEBUG) Log.d(TAG, "scheduling another run for widget " + backupKey);
+                        // too many widgets for this pass, request another.
+                        dataChanged(this);
+                    }
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+        if (DEBUG) Log.d(TAG, "widget currentIds.size()=" + currentIds.size());
+
+        // these IDs must have been deleted
+        savedIds.removeAll(currentIds);
+        out.rows += removeDeletedKeysFromBackup(savedIds, data);
+    }
+
+    /**
+     * Read a widget from the stream.
+     *
+     * <P>Keys arrive in any order, so widgets that use this data may already exist.
+     *
+     * @param key identifier for the row
+     * @param buffer the serialized proto from the stream, may be larger than dataSize
+     * @param dataSize the size of the proto from the stream
+     * @param keys keys to mark as clean in the notes for next backup
+     */
+    private void restoreWidget(Key key, byte[] buffer, int dataSize, ArrayList<Key> keys) {
+        Log.v(TAG, "unpacking widget " + key.id);
+        if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
+                Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
+        try {
+            Widget widget = unpackWidget(buffer, 0, dataSize);
+            if (DEBUG) Log.d(TAG, "unpacked " + widget.provider);
+            if (widget.icon.data != null)  {
+                Bitmap icon = BitmapFactory
+                        .decodeByteArray(widget.icon.data, 0, widget.icon.data.length);
+                if (icon == null) {
+                    Log.w(TAG, "failed to unpack widget icon for " + key.name);
+                }
             }
         } catch (InvalidProtocolBufferNanoException e) {
             Log.w(TAG, "failed to decode proto", e);
@@ -556,6 +679,8 @@ public class LauncherBackupAgent extends BackupAgent {
                 return "screen";
             case Key.ICON:
                 return "icon";
+            case Key.WIDGET:
+                return "widget";
             default:
                 return "anonymous";
         }
@@ -650,7 +775,7 @@ public class LauncherBackupAgent extends BackupAgent {
         Resource res = new Resource();
         res.dpi = dpi;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        if (icon.compress(WEBP, 100, os)) {
+        if (icon.compress(WEBP, IMAGE_COMPRESSION_QUALITY, os)) {
             res.data = os.toByteArray();
         }
         return writeCheckedBytes(res);
@@ -662,6 +787,44 @@ public class LauncherBackupAgent extends BackupAgent {
         Resource res = new Resource();
         MessageNano.mergeFrom(res, readCheckedBytes(buffer, offset, dataSize));
         return res;
+    }
+
+    /** Serialize a widget for persistence, including a checksum wrapper. */
+    private byte[] packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
+            ComponentName provider) {
+        final AppWidgetProviderInfo info = findAppWidgetProviderInfo(provider);
+        Widget widget = new Widget();
+        widget.provider = provider.flattenToShortString();
+        widget.label = info.label;
+        widget.configure = info.configure != null;
+        if (info.icon != 0) {
+            widget.icon = new Resource();
+            Drawable fullResIcon = iconCache.getFullResIcon(provider.getPackageName(), info.icon);
+            Bitmap icon = Utilities.createIconBitmap(fullResIcon, this);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            if (icon.compress(WEBP, IMAGE_COMPRESSION_QUALITY, os)) {
+                widget.icon.data = os.toByteArray();
+                widget.icon.dpi = dpi;
+            }
+        }
+        if (info.previewImage != 0) {
+            widget.preview = new Resource();
+            Bitmap preview = previewLoader.generateWidgetPreview(info, null);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            if (preview.compress(WEBP, IMAGE_COMPRESSION_QUALITY, os)) {
+                widget.preview.data = os.toByteArray();
+                widget.preview.dpi = dpi;
+            }
+        }
+        return writeCheckedBytes(widget);
+    }
+
+    /** Deserialize a widget from persistence, after verifying checksum wrapper. */
+    private Widget unpackWidget(byte[] buffer, int offset, int dataSize)
+            throws InvalidProtocolBufferNanoException {
+        Widget widget = new Widget();
+        MessageNano.mergeFrom(widget, readCheckedBytes(buffer, offset, dataSize));
+        return widget;
     }
 
     /**
@@ -796,6 +959,18 @@ public class LauncherBackupAgent extends BackupAgent {
             throw new InvalidProtocolBufferNanoException("checksum does not match");
         }
         return wrapper.payload;
+    }
+
+    private AppWidgetProviderInfo findAppWidgetProviderInfo(ComponentName component) {
+        if (mWidgetMap == null) {
+            List<AppWidgetProviderInfo> widgets =
+                    AppWidgetManager.getInstance(this).getInstalledProviders();
+            mWidgetMap = new HashMap<ComponentName, AppWidgetProviderInfo>(widgets.size());
+            for (AppWidgetProviderInfo info : widgets) {
+                mWidgetMap.put(info.provider, info);
+            }
+        }
+        return mWidgetMap.get(component);
     }
 
     private class KeyParsingException extends Throwable {

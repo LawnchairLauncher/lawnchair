@@ -24,6 +24,7 @@ message Key {
     FAVORITE = 1;
     SCREEN = 2;
     ICON = 3;
+    WIDGET = 4;
   }
   required Type type = 1;
   optional string name = 2;  // keep this short
@@ -71,6 +72,14 @@ message Screen {
  }
 
 message Resource {
-  required int32 dpi = 2;
-  required bytes data = 3;
+  required int32 dpi = 1;
+  required bytes data = 2;
+ }
+
+message Widget {
+  required string provider = 1;
+  optional string label = 2;
+  optional bool configure = 3;
+  optional Resource icon = 4;
+  optional Resource preview = 5;
  }
