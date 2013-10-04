@@ -32,6 +32,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -334,6 +335,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
         // Hook up the page indicator
         ViewGroup parent = (ViewGroup) getParent();
         if (mPageIndicator == null && mPageIndicatorViewId > -1) {
@@ -347,7 +350,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             mPageIndicator.addMarkers(markers, mAllowPagedViewAnimations);
+            mPageIndicator.setOnClickListener(getPageIndicatorClickListener());
+            mPageIndicator.setContentDescription(getPageIndicatorDescription());
         }
+    }
+
+    protected String getPageIndicatorDescription() {
+        return getCurrentPageDescription();
+    }
+
+    protected OnClickListener getPageIndicatorClickListener() {
+        return null;
     }
 
     protected void onDetachedFromWindow() {
@@ -649,6 +662,28 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
+    private void sendScrollAccessibilityEvent() {
+        AccessibilityManager am =
+                (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (am.isEnabled()) {
+            AccessibilityEvent ev =
+                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+            ev.getText().add("");
+            ev.setItemCount(getChildCount());
+            ev.setFromIndex(mCurrentPage);
+            int action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD;
+
+            if (getNextPage() >= mCurrentPage) {
+                action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD;
+            } else {
+                action = AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD;
+            }
+
+            ev.setAction(action);
+            sendAccessibilityEventUnchecked(ev);
+        }
+    }
+
     // we moved this functionality to a helper function so SmoothPagedView can reuse it
     protected boolean computeScrollHelper() {
         if (mScroller.computeScrollOffset()) {
@@ -663,6 +698,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             invalidate();
             return true;
         } else if (mNextPage != INVALID_PAGE) {
+            sendScrollAccessibilityEvent();
+
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
@@ -680,14 +717,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             onPostReorderingAnimationCompleted();
-            // Notify the user when the page changes
-            AccessibilityManager accessibilityManager = (AccessibilityManager)
+            AccessibilityManager am = (AccessibilityManager)
                     getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            if (accessibilityManager.isEnabled()) {
-                AccessibilityEvent ev =
-                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
-                ev.getText().add(getCurrentPageDescription());
-                sendAccessibilityEventUnchecked(ev);
+            if (am.isEnabled()) {
+                // Notify the user when the page changes
+                announceForAccessibility(getCurrentPageDescription());
             }
             return true;
         }
@@ -2133,6 +2167,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             focusedChild.clearFocus();
         }
 
+        sendScrollAccessibilityEvent();
+
         pageBeginMoving();
         awakenScrollBars(duration);
         if (immediate) {
@@ -2719,11 +2755,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         event.setScrollable(true);
-        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
-            event.setFromIndex(mCurrentPage);
-            event.setToIndex(mCurrentPage);
-            event.setItemCount(getChildCount());
-        }
     }
 
     @Override
