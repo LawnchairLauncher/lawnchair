@@ -318,8 +318,10 @@ public class LauncherModel extends BroadcastReceiver {
                             continue;
                         }
 
-                        // Add this icon to the db, creating a new page if necessary
-                        int startSearchPageIndex = 1;
+                        // Add this icon to the db, creating a new page if necessary.  If there
+                        // is only the empty page then we just add items to the first page.
+                        // Otherwise, we add them to the next pages.
+                        int startSearchPageIndex = workspaceScreens.isEmpty() ? 0 : 1;
                         Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
                                 name, launchIntent, startSearchPageIndex, workspaceScreens);
                         if (coords == null) {

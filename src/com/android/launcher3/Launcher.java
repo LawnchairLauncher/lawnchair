@@ -3664,6 +3664,9 @@ public class Launcher extends Activity
                     addAnimated.size(), true);
         }
 
+        // Remove the extra empty screen
+        mWorkspace.removeExtraEmptyScreen();
+
         if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
                 addedApps != null && mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(addedApps);
