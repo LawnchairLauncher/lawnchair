@@ -644,7 +644,7 @@ public class LauncherBackupAgent extends BackupAgent {
 
     /** keys need to be strings, serialize and encode. */
     private String keyToBackupKey(Key key) {
-        return Base64.encodeToString(Key.toByteArray(key), Base64.NO_WRAP | Base64.NO_PADDING);
+        return Base64.encodeToString(Key.toByteArray(key), Base64.NO_WRAP);
     }
 
     /** keys need to be strings, decode and parse. */
