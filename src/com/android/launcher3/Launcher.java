@@ -408,6 +408,7 @@ public class Launcher extends Activity
         mStats = new Stats(this);
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
+
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
 
@@ -420,6 +421,7 @@ public class Launcher extends Activity
             android.os.Debug.startMethodTracing(
                     Environment.getExternalStorageDirectory() + "/launcher");
         }
+
 
         checkForLocaleChange();
         setContentView(R.layout.launcher);
@@ -920,8 +922,8 @@ public class Launcher extends Activity
                 mWorkspace.getCustomContentCallbacks().onShow();
             }
         }
-
         mWorkspace.updateInteractionForState();
+        mWorkspace.onResume();
     }
 
     @Override
@@ -984,14 +986,9 @@ public class Launcher extends Activity
         public void setScrollY(int scrollY);
     }
 
-    // Add a fullscreen unpadded view to the workspace to the left all other screens.
-    public QSBScroller addToCustomContentPage(View customContent) {
-        return addToCustomContentPage(customContent, null);
-    }
-
     public QSBScroller addToCustomContentPage(View customContent,
-            CustomContentCallbacks callbacks) {
-        mWorkspace.addToCustomContentPage(customContent, callbacks);
+            CustomContentCallbacks callbacks, String description) {
+        mWorkspace.addToCustomContentPage(customContent, callbacks, description);
         return mQsbScroller;
     }
 
