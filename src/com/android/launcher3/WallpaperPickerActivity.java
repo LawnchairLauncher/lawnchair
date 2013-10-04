@@ -92,10 +92,20 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private WallpaperInfo mLiveWallpaperInfoOnPickerLaunch;
 
     public static abstract class WallpaperTileInfo {
+        protected View mView;
+        public void setView(View v) {
+            mView = v;
+        }
         public void onClick(WallpaperPickerActivity a) {}
         public void onSave(WallpaperPickerActivity a) {}
         public void onDelete(WallpaperPickerActivity a) {}
         public boolean isSelectable() { return false; }
+        public boolean isNamelessWallpaper() { return false; }
+        public void onIndexUpdated(CharSequence label) {
+            if (isNamelessWallpaper()) {
+                mView.setContentDescription(label);
+            }
+        }
     }
 
     public static class PickImageInfo extends WallpaperTileInfo {
@@ -136,6 +146,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public boolean isSelectable() {
             return true;
         }
+        @Override
+        public boolean isNamelessWallpaper() {
+            return true;
+        }
     }
 
     public static class ResourceWallpaperInfo extends WallpaperTileInfo {
@@ -169,6 +183,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public boolean isSelectable() {
+            return true;
+        }
+        @Override
+        public boolean isNamelessWallpaper() {
             return true;
         }
     }
@@ -282,6 +300,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 liveWallpapersView.removeAllViews();
                 populateWallpapersFromAdapter(liveWallpapersView, a, false, false);
                 initializeScrollForRtl();
+                updateTileIndices();
             }
         });
 
@@ -294,16 +313,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
         // Add a tile for the Gallery
         LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);
-        FrameLayout galleryThumbnail = (FrameLayout) getLayoutInflater().
+        FrameLayout pickImageTile = (FrameLayout) getLayoutInflater().
                 inflate(R.layout.wallpaper_picker_image_picker_item, masterWallpaperList, false);
-        setWallpaperItemPaddingToZero(galleryThumbnail);
-        masterWallpaperList.addView(galleryThumbnail, 0);
+        setWallpaperItemPaddingToZero(pickImageTile);
+        masterWallpaperList.addView(pickImageTile, 0);
 
         // Make its background the last photo taken on external storage
         Bitmap lastPhoto = getThumbnailOfLastPhoto();
         if (lastPhoto != null) {
             ImageView galleryThumbnailBg =
-                    (ImageView) galleryThumbnail.findViewById(R.id.wallpaper_image);
+                    (ImageView) pickImageTile.findViewById(R.id.wallpaper_image);
             galleryThumbnailBg.setImageBitmap(getThumbnailOfLastPhoto());
             int colorOverlay = getResources().getColor(R.color.wallpaper_picker_translucent_gray);
             galleryThumbnailBg.setColorFilter(colorOverlay, PorterDuff.Mode.SRC_ATOP);
@@ -311,8 +330,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
 
         PickImageInfo pickImageInfo = new PickImageInfo();
-        galleryThumbnail.setTag(pickImageInfo);
-        galleryThumbnail.setOnClickListener(mThumbnailOnClickListener);
+        pickImageTile.setTag(pickImageInfo);
+        pickImageInfo.setView(pickImageTile);
+        pickImageTile.setOnClickListener(mThumbnailOnClickListener);
+        pickImageInfo.setView(pickImageTile);
+
+        updateTileIndices();
 
         // Update the scroll for RTL
         initializeScrollForRtl();
@@ -396,6 +419,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     for (View v : viewsToRemove) {
                         mWallpapersView.removeView(v);
                     }
+                    updateTileIndices();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 } else {
@@ -479,13 +503,57 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         for (int i = 0; i < adapter.getCount(); i++) {
             FrameLayout thumbnail = (FrameLayout) adapter.getView(i, null, parent);
             parent.addView(thumbnail, i);
-            thumbnail.setTag(adapter.getItem(i));
+            WallpaperTileInfo info = (WallpaperTileInfo) adapter.getItem(i);
+            thumbnail.setTag(info);
+            info.setView(thumbnail);
             if (addLongPressHandler) {
                 addLongPressHandler(thumbnail);
             }
             thumbnail.setOnClickListener(mThumbnailOnClickListener);
             if (i == 0 && selectFirstTile) {
                 mThumbnailOnClickListener.onClick(thumbnail);
+            }
+        }
+    }
+
+    private void updateTileIndices() {
+        LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);
+        final int childCount = masterWallpaperList.getChildCount();
+        ArrayList<WallpaperTileInfo> tiles = new ArrayList<WallpaperTileInfo>();
+        final Resources res = getResources();
+
+        // Do two passes; the first pass gets the total number of tiles
+        int numTiles = 0;
+        for (int passNum = 0; passNum < 2; passNum++) {
+            int tileIndex = 0;
+            for (int i = 0; i < childCount; i++) {
+                View child = masterWallpaperList.getChildAt(i);
+                LinearLayout subList;
+
+                int subListStart;
+                int subListEnd;
+                if (child.getTag() instanceof WallpaperTileInfo) {
+                    subList = masterWallpaperList;
+                    subListStart = i;
+                    subListEnd = i + 1;
+                } else { // if (child instanceof LinearLayout) {
+                    subList = (LinearLayout) child;
+                    subListStart = 0;
+                    subListEnd = subList.getChildCount();
+                }
+
+                for (int j = subListStart; j < subListEnd; j++) {
+                    WallpaperTileInfo info = (WallpaperTileInfo) subList.getChildAt(j).getTag();
+                    if (info.isNamelessWallpaper()) {
+                        if (passNum == 0) {
+                            numTiles++;
+                        } else {
+                            CharSequence label = res.getString(
+                                    R.string.wallpaper_accessibility_name, ++tileIndex, numTiles);
+                            info.onIndexUpdated(label);
+                        }
+                    }
+                }
             }
         }
     }
@@ -545,9 +613,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             Log.e(TAG, "Error loading thumbnail for uri=" + uri);
         }
         mWallpapersView.addView(pickedImageThumbnail, 0);
+        updateTileIndices();
 
         UriWallpaperInfo info = new UriWallpaperInfo(uri);
         pickedImageThumbnail.setTag(info);
+        info.setView(pickedImageThumbnail);
         pickedImageThumbnail.setOnClickListener(mThumbnailOnClickListener);
         mThumbnailOnClickListener.onClick(pickedImageThumbnail);
     }

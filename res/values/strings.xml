@@ -38,6 +38,9 @@
         <item quantity="one">%1$d selected</item>
         <item quantity="other">%1$d selected</item>
     </plurals>
+    <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
+         e.g. "Wallpaper 3 of 10" -->
+    <string name="wallpaper_accessibility_name">Wallpaper %1$d of %2$d</string>
 
     <!-- Label on button to delete wallpaper(s) -->
     <string name="wallpaper_delete">Delete</string>
