@@ -61,8 +61,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.CRC32;
 
-import static android.graphics.Bitmap.CompressFormat.WEBP;
-
 /**
  * Persist the launcher home state across calamities.
  */
@@ -80,6 +78,9 @@ public class LauncherBackupAgent extends BackupAgent {
     private static final int MAX_WIDGETS_PER_PASS = 5;
 
     public static final int IMAGE_COMPRESSION_QUALITY = 75;
+
+    private static final Bitmap.CompressFormat IMAGE_FORMAT =
+            android.graphics.Bitmap.CompressFormat.PNG;
 
     private static BackupManager sBackupManager;
 
@@ -776,7 +777,7 @@ public class LauncherBackupAgent extends BackupAgent {
         Resource res = new Resource();
         res.dpi = dpi;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        if (icon.compress(WEBP, IMAGE_COMPRESSION_QUALITY, os)) {
+        if (icon.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
             res.data = os.toByteArray();
         }
         return writeCheckedBytes(res);
@@ -803,7 +804,7 @@ public class LauncherBackupAgent extends BackupAgent {
             Drawable fullResIcon = iconCache.getFullResIcon(provider.getPackageName(), info.icon);
             Bitmap icon = Utilities.createIconBitmap(fullResIcon, this);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (icon.compress(WEBP, IMAGE_COMPRESSION_QUALITY, os)) {
+            if (icon.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
                 widget.icon.data = os.toByteArray();
                 widget.icon.dpi = dpi;
             }
@@ -812,7 +813,7 @@ public class LauncherBackupAgent extends BackupAgent {
             widget.preview = new Resource();
             Bitmap preview = previewLoader.generateWidgetPreview(info, null);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (preview.compress(WEBP, IMAGE_COMPRESSION_QUALITY, os)) {
+            if (preview.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
                 widget.preview.data = os.toByteArray();
                 widget.preview.dpi = dpi;
             }
