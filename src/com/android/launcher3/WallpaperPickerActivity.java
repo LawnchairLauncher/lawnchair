@@ -295,7 +295,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // Add a tile for the Gallery
         LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);
         FrameLayout galleryThumbnail = (FrameLayout) getLayoutInflater().
-                inflate(R.layout.wallpaper_picker_gallery_item, masterWallpaperList, false);
+                inflate(R.layout.wallpaper_picker_image_picker_item, masterWallpaperList, false);
         setWallpaperItemPaddingToZero(galleryThumbnail);
         masterWallpaperList.addView(galleryThumbnail, 0);
 

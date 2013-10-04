@@ -24,6 +24,7 @@
 <!-- Wallpaper picker -->
     <dimen name="wallpaperThumbnailWidth">106.5dp</dimen>
     <dimen name="wallpaperThumbnailHeight">94.5dp</dimen>
+    <dimen name="wallpaperItemIconSize">32dp</dimen>
 
 <!-- Cling -->
     <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
