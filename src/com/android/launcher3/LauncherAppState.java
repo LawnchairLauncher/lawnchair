@@ -54,6 +54,10 @@ public class LauncherAppState {
         return INSTANCE;
     }
 
+    public static LauncherAppState getInstanceNoCreate() {
+        return INSTANCE;
+    }
+
     public Context getContext() {
         return sContext;
     }
