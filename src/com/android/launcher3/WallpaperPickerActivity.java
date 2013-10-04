@@ -554,8 +554,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
-            Uri uri = data.getData();
-            addTemporaryWallpaperTile(uri);
+            if (data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                addTemporaryWallpaperTile(uri);
+            }
         } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY) {
             setResult(RESULT_OK);
             finish();
