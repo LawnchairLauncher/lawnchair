@@ -32,6 +32,8 @@
         android:id="@+id/wallpaper_item_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="center"
         android:layout_gravity="center"
         android:text="@string/pick_image"
         android:drawableTop="@drawable/ic_images"

@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
 
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
+    private final int mIconSize;
 
     private List<ThirdPartyWallpaperTile> mThirdPartyWallpaperPickers =
             new ArrayList<ThirdPartyWallpaperTile>();
@@ -61,6 +64,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
     public ThirdPartyWallpaperPickerListAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mPackageManager = context.getPackageManager();
+        mIconSize = context.getResources().getDimensionPixelSize(R.dimen.wallpaperItemIconSize);
         final PackageManager pm = mPackageManager;
 
         final Intent pickWallpaperIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
@@ -117,7 +121,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
         View view;
 
         if (convertView == null) {
-            view = mInflater.inflate(R.layout.third_party_wallpaper_picker_item, parent, false);
+            view = mInflater.inflate(R.layout.wallpaper_picker_third_party_item, parent, false);
         } else {
             view = convertView;
         }
@@ -127,8 +131,9 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
         ResolveInfo info = mThirdPartyWallpaperPickers.get(position).mResolveInfo;
         TextView label = (TextView) view.findViewById(R.id.wallpaper_item_label);
         label.setText(info.loadLabel(mPackageManager));
-        label.setCompoundDrawablesWithIntrinsicBounds(
-                null, info.loadIcon(mPackageManager), null, null);
+        Drawable icon = info.loadIcon(mPackageManager);
+        icon.setBounds(new Rect(0, 0, mIconSize, mIconSize));
+        label.setCompoundDrawables(null, icon, null, null);
         return view;
     }
 }
