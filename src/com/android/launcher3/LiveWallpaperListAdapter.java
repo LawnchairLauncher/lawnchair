@@ -85,7 +85,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
         View view;
 
         if (convertView == null) {
-            view = mInflater.inflate(R.layout.live_wallpaper_picker_item, parent, false);
+            view = mInflater.inflate(R.layout.wallpaper_picker_live_wallpaper_item, parent, false);
         } else {
             view = convertView;
         }
