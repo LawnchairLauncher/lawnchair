@@ -408,8 +408,13 @@ public class LauncherBackupAgent extends BackupAgent {
     private void backupIcons(Journal in, BackupDataOutput data, Journal out,
             ArrayList<Key> keys) throws IOException {
         // persist icons that haven't been persisted yet
+        final LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app == null) {
+            dataChanged(this); // try again later
+            if (DEBUG) Log.d(TAG, "Launcher is not initialized, delaying icon backup");
+            return;
+        }
         final ContentResolver cr = getContentResolver();
-        final LauncherAppState app = LauncherAppState.getInstance();
         final IconCache iconCache = app.getIconCache();
         final int dpi = getResources().getDisplayMetrics().densityDpi;
 
@@ -520,10 +525,15 @@ public class LauncherBackupAgent extends BackupAgent {
     private void backupWidgets(Journal in, BackupDataOutput data, Journal out,
             ArrayList<Key> keys) throws IOException {
         // persist static widget info that hasn't been persisted yet
+        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        if (appState == null) {
+            dataChanged(this); // try again later
+            if (DEBUG) Log.d(TAG, "Launcher is not initialized, delaying widget backup");
+            return;
+        }
         final ContentResolver cr = getContentResolver();
-        final PagedViewCellLayout widgetSpacingLayout = new PagedViewCellLayout(this);
         final WidgetPreviewLoader previewLoader = new WidgetPreviewLoader(this);
-        final LauncherAppState appState = LauncherAppState.getInstance();
+        final PagedViewCellLayout widgetSpacingLayout = new PagedViewCellLayout(this);
         final IconCache iconCache = appState.getIconCache();
         final int dpi = getResources().getDisplayMetrics().densityDpi;
         final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
