@@ -326,7 +326,7 @@ public class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
-    protected TransparentBars mTransparentBars;
+    protected TranslucentDecor mTransparentDecor;
 
     private HideFromAccessibilityHelper mHideFromAccessibilityHelper
         = new HideFromAccessibilityHelper();
@@ -426,8 +426,8 @@ public class Launcher extends Activity
         checkForLocaleChange();
         setContentView(R.layout.launcher);
 
-        mTransparentBars = new TransparentBars(findViewById(R.id.launcher));
-        mTransparentBars.requestTransparentBars(true);
+        mTransparentDecor = new TranslucentDecor(findViewById(R.id.launcher));
+        mTransparentDecor.requestTranslucentDecor(true);
 
         setupViews();
         grid.layout(this);
