@@ -567,6 +567,7 @@ public class LauncherBackupAgent extends BackupAgent {
                         previewLoader.setPreviewSize(spanX * profile.cellWidthPx,
                                 spanY * profile.cellHeightPx, widgetSpacingLayout);
                         byte[] blob = packWidget(dpi, previewLoader, iconCache, provider);
+                        keys.add(key);
                         writeRowToBackup(key, blob, out, data);
 
                     } else {
