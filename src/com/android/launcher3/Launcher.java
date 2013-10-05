@@ -3462,7 +3462,7 @@ public class Launcher extends Activity
         text.clear();
         // Populate event with a fake title based on the current state.
         if (mState == State.APPS_CUSTOMIZE) {
-            text.add(getString(R.string.all_apps_button_label));
+            text.add(mAppsCustomizeTabHost.getCurrentTabView().getContentDescription());
         } else {
             text.add(getString(R.string.all_apps_home_button_label));
         }
