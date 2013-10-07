@@ -571,6 +571,7 @@ public class Workspace extends SmoothPagedView
         if (customContent instanceof Insettable) {
             ((Insettable)customContent).setInsets(mInsets);
         }
+        customScreen.removeAllViews();
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
         mCustomContentDescription = description;
 
