@@ -87,6 +87,7 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -4087,6 +4088,13 @@ public class Launcher extends Activity
 
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
+
+        // Disable clings for accessibility when explore by touch is enabled
+        final AccessibilityManager a11yManager = (AccessibilityManager) getSystemService(
+                ACCESSIBILITY_SERVICE);
+        if (a11yManager.isTouchExplorationEnabled()) {
+            return false;
+        }
 
         // Restricted secondary users (child mode) will potentially have very few apps
         // seeded when they start up for the first time. Clings won't work well with that
