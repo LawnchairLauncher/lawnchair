@@ -18,6 +18,7 @@ package com.android.launcher3;
 import com.android.launcher3.backup.BackupProtos.CheckedMessage;
 import com.android.launcher3.backup.BackupProtos.Favorite;
 import com.android.launcher3.backup.BackupProtos.Key;
+import com.android.launcher3.backup.BackupProtos.Journal;
 import com.android.launcher3.backup.BackupProtos.Resource;
 import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
@@ -49,17 +50,27 @@ class DecoderRing {
             throws Exception {
         File source = null;
         Class type = Key.class;
+        int skip = 0;
+
         for (int i = 0; i < args.length; i++) {
             if ("-k".equals(args[i])) {
                 type = Key.class;
             } else if ("-f".equals(args[i])) {
                 type = Favorite.class;
+            } else if ("-j".equals(args[i])) {
+                type = Journal.class;
             } else if ("-i".equals(args[i])) {
                 type = Resource.class;
             } else if ("-s".equals(args[i])) {
                 type = Screen.class;
             } else if ("-w".equals(args[i])) {
                 type = Widget.class;
+            } else if ("-S".equals(args[i])) {
+                if ((i + 1) < args.length) {
+                    skip = Integer.valueOf(args[++i]);
+                } else {
+                    usage(args);
+                }
             } else if (args[i] != null && !args[i].startsWith("-")) {
                 source = new File(args[i]);
             } else {
@@ -86,8 +97,14 @@ class DecoderRing {
         try {
             while (input.available() > 0) {
                 int n = input.read(buffer);
+                int offset = 0;
+                if (skip > 0) {
+                    offset = Math.min(skip, n);
+                    n -= offset;
+                    skip -= offset;
+                }
                 if (n > 0) {
-                    byteStream.write(buffer, 0, n);
+                    byteStream.write(buffer, offset, n);
                 }
             }
         } catch (IOException e) {
@@ -190,6 +207,7 @@ class DecoderRing {
         System.err.println("\t-i\tdecode a icon");
         System.err.println("\t-s\tdecode a screen");
         System.err.println("\t-w\tdecode a widget");
+        System.err.println("\t-s b\tskip b bytes");
         System.err.println("\tfilename\tread from filename, not stdin");
         System.exit(1);
     }
