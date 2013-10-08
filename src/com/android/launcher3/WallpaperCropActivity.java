@@ -102,8 +102,6 @@ public class WallpaperCropActivity extends Activity {
                         cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
                     }
                 });
-        TranslucentDecor transparentDecor = new TranslucentDecor(findViewById(R.id.wallpaper_root));
-        transparentDecor.requestTranslucentDecor(true);
     }
 
     public boolean enableRotation() {
