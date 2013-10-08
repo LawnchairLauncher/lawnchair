@@ -1909,7 +1909,7 @@ public class Workspace extends SmoothPagedView
                 getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
-            boolean isCurrentPage = (i == mCurrentPage);
+            boolean isCurrentPage = (i == getNextPage());
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
             float finalAlpha = stateIsSmall ? 0f : 1f;
 
