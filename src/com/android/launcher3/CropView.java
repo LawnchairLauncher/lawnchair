@@ -197,13 +197,14 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
             float squaredDist = (mFirstX - x) * (mFirstX - x) + (mFirstY - y) * (mFirstY - y);
             float slop = config.getScaledTouchSlop() * config.getScaledTouchSlop();
             long now = System.currentTimeMillis();
-            // only do this if it's a small movement
-            if (mTouchCallback != null &&
-                    squaredDist < slop &&
-                    now < mTouchDownTime + ViewConfiguration.getTapTimeout()) {
-                mTouchCallback.onTap();
+            if (mTouchCallback != null) {
+                // only do this if it's a small movement
+                if (squaredDist < slop &&
+                        now < mTouchDownTime + ViewConfiguration.getTapTimeout()) {
+                    mTouchCallback.onTap();
+                }
+                mTouchCallback.onTouchUp();
             }
-            mTouchCallback.onTouchUp();
         }
 
         if (!mTouchEnabled) {
