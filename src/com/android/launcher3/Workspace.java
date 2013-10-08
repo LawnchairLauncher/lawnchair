@@ -459,7 +459,8 @@ public class Workspace extends SmoothPagedView
     protected boolean shouldDrawChild(View child) {
         final CellLayout cl = (CellLayout) child;
         return super.shouldDrawChild(child) &&
-            (cl.getShortcutsAndWidgets().getAlpha() > 0 ||
+            (mIsSwitchingState ||
+             cl.getShortcutsAndWidgets().getAlpha() > 0 ||
              cl.getBackgroundAlpha() > 0);
     }
 
@@ -1920,7 +1921,8 @@ public class Workspace extends SmoothPagedView
         float finalSearchBarAlpha = !stateIsNormal ? 0f : 1f;
         float finalWorkspaceTranslationY = stateIsOverview ? getOverviewModeTranslationY() : 0;
 
-        boolean zoomIn = true;
+        boolean workspaceToAllApps = (oldStateIsNormal && stateIsSmall);
+        boolean allAppsToWorkspace = (oldStateIsSmall && stateIsNormal);
         mNewScale = 1.0f;
 
         if (oldStateIsOverview) {
@@ -1937,19 +1939,32 @@ public class Workspace extends SmoothPagedView
             } else if (stateIsSmall){
                 mNewScale = mOverviewModeShrinkFactor - 0.3f;
             }
-            if (oldStateIsNormal && stateIsSmall) {
-                zoomIn = false;
+            if (workspaceToAllApps) {
                 updateChildrenLayersEnabled(false);
             }
         }
-        final int duration = zoomIn ?
+
+        final int duration = workspaceToAllApps ?
                 getResources().getInteger(R.integer.config_workspaceUnshrinkTime) :
                 getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
-            float finalAlpha = (!mWorkspaceFadeInAdjacentScreens ||
-                    (i == mCurrentPage)) && !stateIsSmall ? 1f : 0f;
+            boolean isCurrentPage = (i == mCurrentPage);
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
+            float finalAlpha = stateIsSmall ? 0f : 1f;
+
+            // If we are animating to/from the small state, then hide the side pages and fade the
+            // current page in
+            if (!mIsSwitchingState) {
+                if (workspaceToAllApps || allAppsToWorkspace) {
+                    if (allAppsToWorkspace && isCurrentPage) {
+                        initialAlpha = 0f;
+                    } else if (!isCurrentPage) {
+                        initialAlpha = finalAlpha = 0f;
+                    }
+                    cl.setShortcutAndWidgetAlpha(initialAlpha);
+                }
+            }
 
             mOldAlphas[i] = initialAlpha;
             mNewAlphas[i] = finalAlpha;
@@ -2109,6 +2124,10 @@ public class Workspace extends SmoothPagedView
 
     private void onTransitionPrepare() {
         mIsSwitchingState = true;
+
+        // Invalidate here to ensure that the pages are rendered during the state change transition.
+        invalidate();
+
         updateChildrenLayersEnabled(false);
         hideCustomContentIfNecessary();
     }
