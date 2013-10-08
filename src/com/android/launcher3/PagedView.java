@@ -827,48 +827,50 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         for (int i = 0; i < childCount; i++) {
             // disallowing padding in paged view (just pass 0)
             final View child = getPageAt(i);
-            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            if (child.getVisibility() != GONE) {
+                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
-            int childWidthMode;
-            int childHeightMode;
-            int childWidth;
-            int childHeight;
+                int childWidthMode;
+                int childHeightMode;
+                int childWidth;
+                int childHeight;
 
-            if (!lp.isFullScreenPage) {
-                if (lp.width == LayoutParams.WRAP_CONTENT) {
-                    childWidthMode = MeasureSpec.AT_MOST;
+                if (!lp.isFullScreenPage) {
+                    if (lp.width == LayoutParams.WRAP_CONTENT) {
+                        childWidthMode = MeasureSpec.AT_MOST;
+                    } else {
+                        childWidthMode = MeasureSpec.EXACTLY;
+                    }
+
+                    if (lp.height == LayoutParams.WRAP_CONTENT) {
+                        childHeightMode = MeasureSpec.AT_MOST;
+                    } else {
+                        childHeightMode = MeasureSpec.EXACTLY;
+                    }
+
+                    childWidth = widthSize - horizontalPadding;
+                    childHeight = heightSize - verticalPadding - mInsets.top - mInsets.bottom;
+                    mNormalChildHeight = childHeight;
+
                 } else {
                     childWidthMode = MeasureSpec.EXACTLY;
-                }
-
-                if (lp.height == LayoutParams.WRAP_CONTENT) {
-                    childHeightMode = MeasureSpec.AT_MOST;
-                } else {
                     childHeightMode = MeasureSpec.EXACTLY;
+
+                    if (mUseMinScale) {
+                        childWidth = getViewportWidth();
+                        childHeight = getViewportHeight();
+                    } else {
+                        childWidth = widthSize - getPaddingLeft() - getPaddingRight();
+                        childHeight = heightSize - getPaddingTop() - getPaddingBottom();
+                    }
                 }
 
-                childWidth = widthSize - horizontalPadding;
-                childHeight = heightSize - verticalPadding - mInsets.top - mInsets.bottom;
-                mNormalChildHeight = childHeight;
-
-            } else {
-                childWidthMode = MeasureSpec.EXACTLY;
-                childHeightMode = MeasureSpec.EXACTLY;
-
-                if (mUseMinScale) {
-                    childWidth = getViewportWidth();
-                    childHeight = getViewportHeight();
-                } else {
-                    childWidth = widthSize - getPaddingLeft() - getPaddingRight();
-                    childHeight = heightSize - getPaddingTop() - getPaddingBottom();
-                }
+                final int childWidthMeasureSpec =
+                        MeasureSpec.makeMeasureSpec(childWidth, childWidthMode);
+                    final int childHeightMeasureSpec =
+                        MeasureSpec.makeMeasureSpec(childHeight, childHeightMode);
+                child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
             }
-
-            final int childWidthMeasureSpec =
-                    MeasureSpec.makeMeasureSpec(childWidth, childWidthMode);
-                final int childHeightMeasureSpec =
-                    MeasureSpec.makeMeasureSpec(childHeight, childHeightMode);
-            child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
         }
         setMeasuredDimension(scaledWidthSize, scaledHeightSize);
 
@@ -929,18 +931,18 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         for (int i = startIndex; i != endIndex; i += delta) {
             final View child = getPageAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            int childTop;
-            if (lp.isFullScreenPage) {
-                childTop = offsetY;
-            } else {
-                childTop = offsetY + getPaddingTop() + mInsets.top;
-                if (mCenterPagesVertically) {
-                    childTop += (getViewportHeight() - mInsets.top - mInsets.bottom - verticalPadding - child.getMeasuredHeight()) / 2;
-                }
-            }
-
             if (child.getVisibility() != View.GONE) {
+                LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                int childTop;
+                if (lp.isFullScreenPage) {
+                    childTop = offsetY;
+                } else {
+                    childTop = offsetY + getPaddingTop() + mInsets.top;
+                    if (mCenterPagesVertically) {
+                        childTop += (getViewportHeight() - mInsets.top - mInsets.bottom - verticalPadding - child.getMeasuredHeight()) / 2;
+                    }
+                }
+
                 final int childWidth = child.getMeasuredWidth();
                 final int childHeight = child.getMeasuredHeight();
 

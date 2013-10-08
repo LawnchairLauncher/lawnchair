@@ -103,7 +103,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            measureChild(child);
+            if (child.getVisibility() != GONE) {
+                measureChild(child);
+            }
         }
     }
 
