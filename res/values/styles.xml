@@ -22,6 +22,7 @@
         <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="WallpaperCropperActionBar" parent="android:style/Widget.Holo.ActionBar">

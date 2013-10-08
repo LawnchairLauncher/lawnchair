@@ -181,8 +181,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     protected void init() {
         setContentView(R.layout.wallpaper_picker);
         final WallpaperRootView root = (WallpaperRootView) findViewById(R.id.wallpaper_root);
-        TranslucentDecor transparentDecor = new TranslucentDecor(root);
-        transparentDecor.requestTranslucentDecor(true);
 
         mCropView = (CropView) findViewById(R.id.cropView);
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
