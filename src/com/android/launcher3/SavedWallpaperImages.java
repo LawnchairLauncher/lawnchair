@@ -79,6 +79,10 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         public boolean isSelectable() {
             return true;
         }
+        @Override
+        public boolean isNamelessWallpaper() {
+            return true;
+        }
     }
 
     public SavedWallpaperImages(Activity context) {
