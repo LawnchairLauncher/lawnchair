@@ -93,6 +93,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
         WallpaperPickerActivity.setWallpaperItemPaddingToZero((FrameLayout) view);
 
         LiveWallpaperTile wallpaperInfo = mWallpapers.get(position);
+        wallpaperInfo.setView(view);
         ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);
         ImageView icon = (ImageView) view.findViewById(R.id.wallpaper_icon);
         if (wallpaperInfo.mThumbnail != null) {
@@ -174,46 +175,10 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
                 Intent launchIntent = new Intent(WallpaperService.SERVICE_INTERFACE);
                 launchIntent.setClassName(info.getPackageName(), info.getServiceName());
                 LiveWallpaperTile wallpaper = new LiveWallpaperTile(thumb, info, launchIntent);
-
-                // TODO: generate a default thumb
-                /*
-                final Resources res = mContext.getResources();
-                Canvas canvas = new Canvas();
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-                paint.setTextAlign(Paint.Align.CENTER);
-                BitmapDrawable galleryIcon = (BitmapDrawable) res.getDrawable(
-                        R.drawable.livewallpaper_placeholder);
-                if (thumb == null) {
-                    int thumbWidth = res.getDimensionPixelSize(
-                            R.dimen.live_wallpaper_thumbnail_width);
-                    int thumbHeight = res.getDimensionPixelSize(
-                            R.dimen.live_wallpaper_thumbnail_height);
-
-                    Bitmap thumbnail = Bitmap.createBitmap(thumbWidth, thumbHeight,
-                            Bitmap.Config.ARGB_8888);
-
-                    paint.setColor(res.getColor(R.color.live_wallpaper_thumbnail_background));
-                    canvas.setBitmap(thumbnail);
-                    canvas.drawPaint(paint);
-
-                    galleryIcon.setBounds(0, 0, thumbWidth, thumbHeight);
-                    galleryIcon.setGravity(Gravity.CENTER);
-                    galleryIcon.draw(canvas);
-
-                    String title = info.loadLabel(packageManager).toString();
-
-                    paint.setColor(res.getColor(R.color.live_wallpaper_thumbnail_text_color));
-                    paint.setTextSize(
-                            res.getDimensionPixelSize(R.dimen.live_wallpaper_thumbnail_text_size));
-
-                    canvas.drawText(title, (int) (thumbWidth * 0.5),
-                            thumbHeight - res.getDimensionPixelSize(
-                                    R.dimen.live_wallpaper_thumbnail_text_offset), paint);
-
-                    thumb = new BitmapDrawable(res, thumbnail);
-                }*/
                 publishProgress(wallpaper);
             }
+            // Send a null object to show loading is finished
+            publishProgress((LiveWallpaperTile) null);
 
             return null;
         }
@@ -221,6 +186,10 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
         @Override
         protected void onProgressUpdate(LiveWallpaperTile...infos) {
             for (LiveWallpaperTile info : infos) {
+                if (info == null) {
+                    LiveWallpaperListAdapter.this.notifyDataSetChanged();
+                    break;
+                }
                 info.mThumbnail.setDither(true);
                 if (mWallpaperPosition < mWallpapers.size()) {
                     mWallpapers.set(mWallpaperPosition, info);
@@ -228,9 +197,6 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
                     mWallpapers.add(info);
                 }
                 mWallpaperPosition++;
-                if (mWallpaperPosition == getCount()) {
-                    LiveWallpaperListAdapter.this.notifyDataSetChanged();
-                }
             }
         }
     }
