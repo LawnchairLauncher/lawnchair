@@ -668,11 +668,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (am.isEnabled()) {
             AccessibilityEvent ev =
                     AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
-            ev.getText().add("");
             ev.setItemCount(getChildCount());
             ev.setFromIndex(mCurrentPage);
-            int action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD;
 
+            final int action;
             if (getNextPage() >= mCurrentPage) {
                 action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD;
             } else {
@@ -2750,6 +2749,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
         if (getCurrentPage() > 0) {
             info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        }
+    }
+
+    @Override
+    public void sendAccessibilityEvent(int eventType) {
+        // Don't let the view send real scroll events.
+        if (eventType != AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            super.sendAccessibilityEvent(eventType);
         }
     }
 
