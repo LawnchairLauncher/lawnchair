@@ -338,7 +338,8 @@ public class Workspace extends SmoothPagedView
             ItemInfo itemInfo, boolean springLoaded) {
         int[] size = new int[2];
         if (getChildCount() > 0) {
-            CellLayout cl = (CellLayout) mLauncher.getWorkspace().getChildAt(0);
+            // Use the first non-custom page to estimate the child position
+            CellLayout cl = (CellLayout) getChildAt(numCustomPages());
             Rect r = estimateItemPosition(cl, itemInfo, 0, 0, hSpan, vSpan);
             size[0] = r.width();
             size[1] = r.height();
