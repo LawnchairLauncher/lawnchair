@@ -3928,8 +3928,7 @@ public class Launcher extends Activity
                 mIntentsOnWorkspaceFromUpgradePath = null;
             }
         } else {
-            if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
-                    mAppsCustomizeContent != null) {
+            if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setApps(apps);
             }
         }
