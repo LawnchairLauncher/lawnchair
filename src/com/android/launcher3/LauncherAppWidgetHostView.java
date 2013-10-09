@@ -24,20 +24,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
+import com.android.launcher3.DragLayer.TouchCompleteListener;
+
 /**
  * {@inheritDoc}
  */
-public class LauncherAppWidgetHostView extends AppWidgetHostView {
+public class LauncherAppWidgetHostView extends AppWidgetHostView implements TouchCompleteListener {
     private CheckLongPressHelper mLongPressHelper;
     private LayoutInflater mInflater;
     private Context mContext;
     private int mPreviousOrientation;
+    private DragLayer mDragLayer;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mDragLayer = ((Launcher) context).getDragLayer();
     }
 
     @Override
@@ -72,6 +76,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 mLongPressHelper.postCheckForLongPress();
+                mDragLayer.setTouchCompleteListener(this);
                 break;
             }
 
@@ -100,7 +105,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
+        mLongPressHelper.cancelLongPress();
+    }
 
+    @Override
+    public void onTouchComplete() {
         mLongPressHelper.cancelLongPress();
     }
 
@@ -108,4 +117,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     public int getDescendantFocusability() {
         return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
     }
+
+
 }

@@ -69,6 +69,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     public static final int ANIMATION_END_FADE_OUT = 1;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
+    private TouchCompleteListener mTouchCompleteListener;
+
     private final Rect mInsets = new Rect();
 
     /**
@@ -173,10 +175,17 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+        int action = ev.getAction();
+
+        if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, true)) {
                 return true;
             }
+        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+            if (mTouchCompleteListener != null) {
+                mTouchCompleteListener.onTouchComplete();
+            }
+            mTouchCompleteListener = null;
         }
         clearAllResizeFrames();
         return mDragController.onInterceptTouchEvent(ev);
@@ -278,12 +287,15 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         int x = (int) ev.getX();
         int y = (int) ev.getY();
 
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-                if (handleTouchDown(ev, false)) {
-                    return true;
-                }
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (handleTouchDown(ev, false)) {
+                return true;
             }
+        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+            if (mTouchCompleteListener != null) {
+                mTouchCompleteListener.onTouchComplete();
+            }
+            mTouchCompleteListener = null;
         }
 
         if (mCurrentResizeFrame != null) {
@@ -817,5 +829,13 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 mRightHoverDrawable.draw(canvas);
             }
         }
+    }
+
+    public void setTouchCompleteListener(TouchCompleteListener listener) {
+        mTouchCompleteListener = listener;
+    }
+
+    public interface TouchCompleteListener {
+        public void onTouchComplete();
     }
 }
