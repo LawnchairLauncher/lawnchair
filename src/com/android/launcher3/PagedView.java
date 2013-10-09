@@ -350,7 +350,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             mPageIndicator.addMarkers(markers, mAllowPagedViewAnimations);
-            mPageIndicator.setOnClickListener(getPageIndicatorClickListener());
+
+            OnClickListener listener = getPageIndicatorClickListener();
+            if (listener != null) {
+                mPageIndicator.setOnClickListener(listener);
+            }
             mPageIndicator.setContentDescription(getPageIndicatorDescription());
         }
     }
