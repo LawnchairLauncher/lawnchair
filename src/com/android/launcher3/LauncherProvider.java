@@ -49,8 +49,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 
-import com.android.launcher3.LauncherSettings.BaseLauncherColumns;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.config.ProviderConfig;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -69,7 +69,7 @@ public class LauncherProvider extends ContentProvider {
     private static final int DATABASE_VERSION = 15;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
-    static final String AUTHORITY = "com.android.launcher3.settings";
+    static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
