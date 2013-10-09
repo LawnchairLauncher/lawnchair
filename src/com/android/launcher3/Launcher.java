@@ -3042,7 +3042,7 @@ public class Launcher extends Activity
             // Show the search bar (only animate if we were showing the drop target bar in spring
             // loaded mode)
             if (mSearchDropTargetBar != null) {
-                mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
+                mSearchDropTargetBar.showSearchBar(animated && wasInSpringLoadedMode);
             }
 
             // Set focus to the AppsCustomize button
