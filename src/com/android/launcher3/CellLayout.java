@@ -169,6 +169,8 @@ public class CellLayout extends ViewGroup {
     private static final int INVALID_DIRECTION = -100;
     private DropTarget.DragEnforcer mDragEnforcer;
 
+    private Rect mTempRect = new Rect();
+
     private final static PorterDuffXfermode sAddBlendMode =
             new PorterDuffXfermode(PorterDuff.Mode.ADD);
     private final static Paint sPaint = new Paint();
@@ -397,25 +399,6 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    public void scaleRect(Rect r, float scale) {
-        if (scale != 1.0f) {
-            r.left = (int) (r.left * scale + 0.5f);
-            r.top = (int) (r.top * scale + 0.5f);
-            r.right = (int) (r.right * scale + 0.5f);
-            r.bottom = (int) (r.bottom * scale + 0.5f);
-        }
-    }
-
-    Rect temp = new Rect();
-    void scaleRectAboutCenter(Rect in, Rect out, float scale) {
-        int cx = in.centerX();
-        int cy = in.centerY();
-        out.set(in);
-        out.offset(-cx, -cy);
-        scaleRect(out, scale);
-        out.offset(cx, cy);
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
@@ -443,10 +426,11 @@ public class CellLayout extends ViewGroup {
             final float alpha = mDragOutlineAlphas[i];
             if (alpha > 0) {
                 final Rect r = mDragOutlines[i];
-                scaleRectAboutCenter(r, temp, getChildrenScale());
+                mTempRect.set(r);
+                Utilities.scaleRectAboutCenter(mTempRect, getChildrenScale());
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
                 paint.setAlpha((int)(alpha + .5f));
-                canvas.drawBitmap(b, null, temp, paint);
+                canvas.drawBitmap(b, null, mTempRect, paint);
             }
         }
 
@@ -456,9 +440,13 @@ public class CellLayout extends ViewGroup {
             final int padding = mPressedOrFocusedIcon.getPressedOrFocusedBackgroundPadding();
             final Bitmap b = mPressedOrFocusedIcon.getPressedOrFocusedBackground();
             if (b != null) {
+                int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() -
+                        (mCountX * mCellWidth);
+                int left = getPaddingLeft() + (int) Math.ceil(offset / 2f);
+                int top = getPaddingTop();
                 canvas.drawBitmap(b,
-                        mPressedOrFocusedIcon.getLeft() + getPaddingLeft() - padding,
-                        mPressedOrFocusedIcon.getTop() + getPaddingTop() - padding,
+                        mPressedOrFocusedIcon.getLeft() + left - padding,
+                        mPressedOrFocusedIcon.getTop() + top - padding,
                         null);
             }
         }

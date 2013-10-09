@@ -295,6 +295,23 @@ final class Utilities {
         sIconTextureWidth = sIconTextureHeight = widthPx;
     }
 
+    public static void scaleRect(Rect r, float scale) {
+        if (scale != 1.0f) {
+            r.left = (int) (r.left * scale + 0.5f);
+            r.top = (int) (r.top * scale + 0.5f);
+            r.right = (int) (r.right * scale + 0.5f);
+            r.bottom = (int) (r.bottom * scale + 0.5f);
+        }
+    }
+
+    public static void scaleRectAboutCenter(Rect r, float scale) {
+        int cx = r.centerX();
+        int cy = r.centerY();
+        r.offset(-cx, -cy);
+        Utilities.scaleRect(r, scale);
+        r.offset(cx, cy);
+    }
+
     public static void startActivityForResultSafely(
             Activity activity, Intent intent, int requestCode) {
         try {

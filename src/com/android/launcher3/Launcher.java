@@ -4082,6 +4082,13 @@ public class Launcher extends Activity
             return false;
         }
 
+        // For now, limit only to phones
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        if (grid.isTablet()) {
+            return false;
+        }
+
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 
@@ -4234,12 +4241,34 @@ public class Launcher extends Activity
     protected String getFirstRunCustomContentHint() {
         return "";
     }
+    protected int getFirstRunFocusedHotseatAppDrawableId() {
+        return -1;
+    }
+    protected ComponentName getFirstRunFocusedHotseatAppComponentName() {
+        return null;
+    }
+    protected int getFirstRunFocusedHotseatAppRank() {
+        return -1;
+    }
+    protected String getFirstRunFocusedHotseatAppBubbleTitle() {
+        return "";
+    }
+    protected String getFirstRunFocusedHotseatAppBubbleDescription() {
+        return "";
+    }
 
     public void showFirstRunWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
-            initCling(R.id.workspace_cling, 0, false, true);
+            Cling c = initCling(R.id.workspace_cling, 0, false, true);
+
+            // Set the focused hotseat app if there is one
+            c.setFocusedHotseatApp(getFirstRunFocusedHotseatAppDrawableId(),
+                    getFirstRunFocusedHotseatAppRank(),
+                    getFirstRunFocusedHotseatAppComponentName(),
+                    getFirstRunFocusedHotseatAppBubbleTitle(),
+                    getFirstRunFocusedHotseatAppBubbleDescription());
         } else {
             removeCling(R.id.workspace_cling);
         }
@@ -4276,6 +4305,9 @@ public class Launcher extends Activity
         };
         dismissCling(cling, cb, Cling.FIRST_RUN_CLING_DISMISSED_KEY,
                 DISMISS_CLING_DURATION, false);
+
+        // Fade out the search bar for the workspace cling coming up
+        mSearchDropTargetBar.hideSearchBar(true);
     }
     public void dismissWorkspaceCling(View v) {
         Cling cling = (Cling) findViewById(R.id.workspace_cling);
@@ -4289,6 +4321,9 @@ public class Launcher extends Activity
         }
         dismissCling(cling, cb, Cling.WORKSPACE_CLING_DISMISSED_KEY,
                 DISMISS_CLING_DURATION, true);
+
+        // Fade in the search bar
+        mSearchDropTargetBar.showSearchBar(true);
     }
     public void dismissFolderCling(View v) {
         Cling cling = (Cling) findViewById(R.id.folder_cling);
