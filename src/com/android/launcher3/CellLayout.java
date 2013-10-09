@@ -492,10 +492,12 @@ public class CellLayout extends ViewGroup {
             int width, height;
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
             View child = getChildAt(fra.mCellX, fra.mCellY);
-            int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + previewOffset / 2 +
-                    child.getPaddingTop() + grid.folderBackgroundOffset;
+
             if (child != null) {
+                int centerX = mTempLocation[0] + mCellWidth / 2;
+                int centerY = mTempLocation[1] + previewOffset / 2 +
+                        child.getPaddingTop() + grid.folderBackgroundOffset;
+
                 // Draw outer ring, if it exists
                 if (FolderIcon.HAS_OUTER_RING) {
                     d = FolderRingAnimator.sSharedOuterRingDrawable;
