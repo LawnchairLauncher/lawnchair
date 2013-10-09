@@ -838,7 +838,7 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS_CUSTOMIZE) {
-            showAllApps(false, AppsCustomizePagedView.ContentType.Applications);
+            showAllApps(false, AppsCustomizePagedView.ContentType.Applications, false);
         }
         mOnResumeState = State.NONE;
 
@@ -893,10 +893,7 @@ public class Launcher extends Activity
             // Resets the previous all apps icon press state
             mAppsCustomizeContent.resetDrawableState();
         }
-        // Reset AllApps to its initial state
-        if (mAppsCustomizeTabHost != null) {
-            mAppsCustomizeTabHost.reset();
-        }
+
         // It is possible that widgets can receive updates while launcher is not in the foreground.
         // Consequently, the widgets will be inflated in the orientation of the foreground activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
@@ -1161,7 +1158,7 @@ public class Launcher extends Activity
         widgetButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                showAllApps(true, AppsCustomizePagedView.ContentType.Widgets);
+                showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
             }
         });
         widgetButton.setOnTouchListener(getHapticFeedbackTouchListener());
@@ -2174,7 +2171,7 @@ public class Launcher extends Activity
                 final String shortcutClass = intent.getComponent().getClassName();
 
                 if (shortcutClass.equals(WidgetAdder.class.getName())) {
-                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets);
+                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
                     return;
                 } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
                     MemoryDumpActivity.startDump(this);
@@ -2264,7 +2261,7 @@ public class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAllAppsButton(View v) {
-        showAllApps(true, AppsCustomizePagedView.ContentType.Applications);
+        showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
     }
 
     public void onTouchDownAllAppsButton(View v) {
@@ -3075,10 +3072,13 @@ public class Launcher extends Activity
     public void onWorkspaceShown(boolean animated) {
     }
 
-    void showAllApps(boolean animated,
-                     AppsCustomizePagedView.ContentType contentType) {
+    void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType,
+                     boolean resetPageToZero) {
         if (mState != State.WORKSPACE) return;
 
+        if (resetPageToZero) {
+            mAppsCustomizeTabHost.reset();
+        }
         showAppsCustomizeHelper(animated, false, contentType);
         mAppsCustomizeTabHost.requestFocus();
 
