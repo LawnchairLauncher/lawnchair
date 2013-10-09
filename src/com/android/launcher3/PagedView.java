@@ -1528,6 +1528,19 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
+    // While layout transitions are occurring, a child's position may stray from its baseline
+    // position. This method returns the magnitude of this stray at any given time.
+    public int getLayoutTransitionOffsetForPage(int index) {
+        if (mPageScrolls == null || index >= mPageScrolls.length || index < 0) {
+            return 0;
+        } else {
+            View child = getChildAt(index);
+            int scrollOffset = (getViewportWidth() - child.getMeasuredWidth()) / 2;
+            int baselineX = mPageScrolls[index] + scrollOffset + getViewportOffsetX();
+            return (int) (child.getX() - baselineX);
+        }
+    }
+
     // This curve determines how the effect of scrolling over the limits of the page dimishes
     // as the user pulls further and further from the bounds
     private float overScrollInfluenceCurve(float f) {
