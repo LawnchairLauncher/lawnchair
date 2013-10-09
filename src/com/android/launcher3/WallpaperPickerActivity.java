@@ -52,6 +52,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -254,6 +255,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     }
                     mSelectedThumb = v;
                     v.setSelected(true);
+                    // TODO: Remove this once the accessibility framework and
+                    // services have better support for selection state.
+                    v.announceForAccessibility(
+                            getString(R.string.announce_selection, v.getContentDescription()));
                 }
                 info.onClick(WallpaperPickerActivity.this);
             }
