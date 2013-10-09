@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 
 /* Class that does most of the work of enabling dragging items out of a PagedView by performing a
@@ -104,11 +103,6 @@ public abstract class PagedViewWithDraggableItems extends PagedView
 
     @Override
     public boolean onLongClick(View v) {
-        // Only if workspace is not locked
-        if (mLauncher.getLockWorkspace()) {
-            Toast.makeText(mLauncher, mLauncher.getString(R.string.workspace_locked), Toast.LENGTH_SHORT).show();
-            return false;
-        }
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
         // Return early if we are still animating the pages
