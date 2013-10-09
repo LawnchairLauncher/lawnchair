@@ -546,10 +546,7 @@ public class CellLayout extends ViewGroup {
         super.dispatchDraw(canvas);
         if (mForegroundAlpha > 0) {
             mOverScrollForegroundDrawable.setBounds(mForegroundRect);
-            Paint p = ((NinePatchDrawable) mOverScrollForegroundDrawable).getPaint();
-            p.setXfermode(sAddBlendMode);
             mOverScrollForegroundDrawable.draw(canvas);
-            p.setXfermode(null);
         }
     }
 
