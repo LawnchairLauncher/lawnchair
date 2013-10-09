@@ -115,7 +115,6 @@ public class CellLayout extends ViewGroup {
 
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
-    private final Point mDragCenter = new Point();
     boolean mUseActiveGlowBackground = false;
 
     // These arrays are used to implement the drag visualization on x-large screens.
@@ -1204,12 +1203,6 @@ public class CellLayout extends ViewGroup {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
-        if (v != null && dragOffset == null) {
-            mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
-        } else {
-            mDragCenter.set(originX, originY);
-        }
-
         if (dragOutline == null && v == null) {
             return;
         }
@@ -1223,11 +1216,6 @@ public class CellLayout extends ViewGroup {
 
             int left = topLeft[0];
             int top = topLeft[1];
-
-            // Offset icons by their padding
-            if (v instanceof BubbleTextView) {
-                top += v.getPaddingTop();
-            }
 
             if (v != null && dragOffset == null) {
                 // When drawing the drag outline, it did not account for margin offsets
@@ -1249,7 +1237,9 @@ public class CellLayout extends ViewGroup {
                     // outline offset
                     left += dragOffset.x + ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
                              - dragRegion.width()) / 2;
-                    top += dragOffset.y;
+                    int cHeight = getShortcutsAndWidgets().getCellContentHeight();
+                    int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
+                    top += dragOffset.y + cellPaddingY;
                 } else {
                     // Center the drag outline in the cell
                     left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)

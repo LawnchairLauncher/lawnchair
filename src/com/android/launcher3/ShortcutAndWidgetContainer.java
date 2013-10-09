@@ -123,6 +123,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mIsHotseatLayout = isHotseat;
     }
 
+    int getCellContentHeight() {
+        final LauncherAppState app = LauncherAppState.getInstance();
+        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
+                grid.hotseatCellHeightPx : grid.cellHeightPx);
+    }
+
     public void measureChild(View child) {
         final LauncherAppState app = LauncherAppState.getInstance();
         final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -137,7 +144,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 // Widgets have their own padding, so skip
             } else {
                 // Otherwise, center the icon
-                int cHeight = mIsHotseatLayout ? grid.hotseatCellHeightPx : Math.min(getMeasuredHeight(), grid.cellHeightPx);
+                int cHeight = getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
                 int cellPaddingX = (int) (grid.edgeMarginPx / 2f);
                 child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
