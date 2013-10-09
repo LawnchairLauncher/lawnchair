@@ -1623,6 +1623,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
+                if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
 
                 // +1 for the hotseat (it can be larger than the workspace)
