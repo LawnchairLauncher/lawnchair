@@ -616,11 +616,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             Log.e(TAG, "Error loading thumbnail for uri=" + uri);
         }
         mWallpapersView.addView(pickedImageThumbnail, 0);
-        updateTileIndices();
 
         UriWallpaperInfo info = new UriWallpaperInfo(uri);
         pickedImageThumbnail.setTag(info);
         info.setView(pickedImageThumbnail);
+        updateTileIndices();
         pickedImageThumbnail.setOnClickListener(mThumbnailOnClickListener);
         mThumbnailOnClickListener.onClick(pickedImageThumbnail);
     }
