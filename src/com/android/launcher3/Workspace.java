@@ -538,10 +538,14 @@ public class Workspace extends SmoothPagedView
 
         // Ensure that the current page and default page are maintained.
         mDefaultPage = mOriginalDefaultPage + 1;
-        setCurrentPage(getCurrentPage() + 1);
 
         // Update the custom content hint
         mLauncher.updateCustomContentHintVisibility();
+        if (mRestorePage != INVALID_RESTORE_PAGE) {
+            mRestorePage = mRestorePage + 1;
+        } else {
+            setCurrentPage(getCurrentPage() + 1);
+        }
     }
 
     public void removeCustomContentPage() {
@@ -557,10 +561,14 @@ public class Workspace extends SmoothPagedView
 
         // Ensure that the current page and default page are maintained.
         mDefaultPage = mOriginalDefaultPage - 1;
-        setCurrentPage(getCurrentPage() - 1);
 
         // Update the custom content hint
         mLauncher.updateCustomContentHintVisibility();
+        if (mRestorePage != INVALID_RESTORE_PAGE) {
+            mRestorePage = mRestorePage - 1;
+        } else {
+            setCurrentPage(getCurrentPage() - 1);
+        }
     }
 
     public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks,
@@ -3720,6 +3728,10 @@ public class Workspace extends SmoothPagedView
      */
     public CellLayout.CellInfo getDragInfo() {
         return mDragInfo;
+    }
+
+    public int getRestorePage() {
+        return getNextPage() - numCustomPages();
     }
 
     /**
