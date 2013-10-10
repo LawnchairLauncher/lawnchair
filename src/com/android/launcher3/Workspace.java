@@ -557,6 +557,12 @@ public class Workspace extends SmoothPagedView
         mWorkspaceScreens.remove(CUSTOM_CONTENT_SCREEN_ID);
         mScreenOrder.remove(CUSTOM_CONTENT_SCREEN_ID);
         removeView(customScreen);
+
+        if (mCustomContentCallbacks != null) {
+            mCustomContentCallbacks.onScrollProgressChanged(0);
+            mCustomContentCallbacks.onHide();
+        }
+
         mCustomContentCallbacks = null;
 
         // Ensure that the current page and default page are maintained.
