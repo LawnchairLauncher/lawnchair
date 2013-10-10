@@ -53,6 +53,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -1524,7 +1525,10 @@ public class Workspace extends SmoothPagedView
         if (getPageIndicator() != null) {
             // In case accessibility state has changed, we need to perform this on every
             // attach to window
-            getPageIndicator().setOnClickListener(getPageIndicatorClickListener());
+            OnClickListener listener = getPageIndicatorClickListener();
+            if (listener != null) {
+                getPageIndicator().setOnClickListener(listener);
+            }
         }
         AccessibilityManager am = (AccessibilityManager)
                 getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
