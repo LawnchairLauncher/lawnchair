@@ -539,6 +539,9 @@ public class Workspace extends SmoothPagedView
         // Ensure that the current page and default page are maintained.
         mDefaultPage = mOriginalDefaultPage + 1;
         setCurrentPage(getCurrentPage() + 1);
+
+        // Update the custom content hint
+        mLauncher.updateCustomContentHintVisibility();
     }
 
     public void removeCustomContentPage() {
@@ -555,6 +558,9 @@ public class Workspace extends SmoothPagedView
         // Ensure that the current page and default page are maintained.
         mDefaultPage = mOriginalDefaultPage - 1;
         setCurrentPage(getCurrentPage() - 1);
+
+        // Update the custom content hint
+        mLauncher.updateCustomContentHintVisibility();
     }
 
     public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks,
