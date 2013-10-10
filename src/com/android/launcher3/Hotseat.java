@@ -20,12 +20,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -100,6 +99,25 @@ public class Hotseat extends FrameLayout {
         } else {
             return rank == mAllAppsButtonRank;
         }
+    }
+
+    /** This returns the coordinates of an app in a given cell, relative to the DragLayer */
+    Rect getCellCoordinates(int cellX, int cellY) {
+        Rect coords = new Rect();
+        mContent.cellToRect(cellX, cellY, 1, 1, coords);
+        int[] hotseatInParent = new int[2];
+        Utilities.getDescendantCoordRelativeToParent(this, mLauncher.getDragLayer(),
+                hotseatInParent, false);
+        coords.offset(hotseatInParent[0], hotseatInParent[1]);
+
+        // Center the icon
+        int cWidth = mContent.getShortcutsAndWidgets().getCellContentWidth();
+        int cHeight = mContent.getShortcutsAndWidgets().getCellContentHeight();
+        int cellPaddingX = (int) Math.max(0, ((coords.width() - cWidth) / 2f));
+        int cellPaddingY = (int) Math.max(0, ((coords.height() - cHeight) / 2f));
+        coords.offset(cellPaddingX, cellPaddingY);
+
+        return coords;
     }
 
     @Override

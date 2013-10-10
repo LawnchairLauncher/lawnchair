@@ -18,17 +18,13 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -37,8 +33,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
-public class Cling extends FrameLayout implements Insettable, View.OnLongClickListener {
+public class Cling extends FrameLayout implements Insettable, View.OnClickListener,
+        View.OnLongClickListener, View.OnTouchListener {
 
     static final String FIRST_RUN_CLING_DISMISSED_KEY = "cling_gel.first_run.dismissed";
     static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
@@ -65,6 +63,12 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
     private boolean mIsInitialized;
     private String mDrawIdentifier;
     private Drawable mBackground;
+
+    private int[] mTouchDownPt = new int[2];
+
+    private Drawable mFocusedHotseatApp;
+    private ComponentName mFocusedHotseatAppComponent;
+    private Rect mFocusedHotseatAppBounds;
 
     private Paint mErasePaint;
     private Paint mBubblePaint;
@@ -100,6 +104,8 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
             mScrimView = scrim;
             mBackgroundColor = 0xdd000000;
             setOnLongClickListener(this);
+            setOnClickListener(this);
+            setOnTouchListener(this);
 
             mErasePaint = new Paint();
             mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
@@ -118,6 +124,46 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
             mDotPaint.setAntiAlias(true);
 
             mIsInitialized = true;
+        }
+    }
+
+    void setFocusedHotseatApp(int drawableId, int appRank, ComponentName cn, String title,
+                              String description) {
+        // Get the app to draw
+        Resources r = getResources();
+        int appIconId = drawableId;
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (hotseat != null && appIconId > -1 && appRank > -1 && !title.isEmpty() &&
+                !description.isEmpty()) {
+            // Set the app bounds
+            int x = hotseat.getCellXFromOrder(appRank);
+            int y = hotseat.getCellYFromOrder(appRank);
+            Rect pos = hotseat.getCellCoordinates(x, y);
+            LauncherAppState app = LauncherAppState.getInstance();
+            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            mFocusedHotseatApp = getResources().getDrawable(appIconId);
+            mFocusedHotseatAppComponent = cn;
+            mFocusedHotseatAppBounds = new Rect(pos.left, pos.top,
+                    pos.left + Utilities.sIconTextureWidth,
+                    pos.top + Utilities.sIconTextureHeight);
+            Utilities.scaleRectAboutCenter(mFocusedHotseatAppBounds,
+                    (grid.hotseatIconSize / grid.iconSize));
+
+            // Set the title
+            TextView v = (TextView) findViewById(R.id.focused_hotseat_app_title);
+            if (v != null) {
+                v.setText(title);
+            }
+
+            // Set the description
+            v = (TextView) findViewById(R.id.focused_hotseat_app_description);
+            if (v != null) {
+                v.setText(description);
+            }
+
+            // Show the bubble
+            View bubble = findViewById(R.id.focused_hotseat_app_bubble);
+            bubble.setVisibility(View.VISIBLE);
         }
     }
 
@@ -275,6 +321,32 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
     };
 
     @Override
+    public boolean onTouch(View v, MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mTouchDownPt[0] = (int) ev.getX();
+            mTouchDownPt[1] = (int) ev.getY();
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
+                mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+                mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+            if (mFocusedHotseatAppBounds != null &&
+                mFocusedHotseatAppBounds.contains(mTouchDownPt[0], mTouchDownPt[1])) {
+                // Launch the activity that is being highlighted
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setComponent(mFocusedHotseatAppComponent);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                mLauncher.startActivity(intent, null);
+                mLauncher.dismissWorkspaceCling(this);
+            }
+        }
+    }
+
+    @Override
     public boolean onLongClick(View v) {
         if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                 mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
@@ -354,8 +426,16 @@ public class Cling extends FrameLayout implements Insettable, View.OnLongClickLi
                 canvas.drawBitmap(eraseBg, 0, 0, null);
                 eraseCanvas.setBitmap(null);
                 eraseBg = null;
-            }
 
+                // Draw the focused hotseat app icon
+                if (mFocusedHotseatAppBounds != null && mFocusedHotseatApp != null) {
+                    mFocusedHotseatApp.setBounds(mFocusedHotseatAppBounds.left,
+                            mFocusedHotseatAppBounds.top, mFocusedHotseatAppBounds.right,
+                            mFocusedHotseatAppBounds.bottom);
+                    mFocusedHotseatApp.setAlpha((int) (255 * alpha));
+                    mFocusedHotseatApp.draw(canvas);
+                }
+            }
 
             canvas.restore();
         }

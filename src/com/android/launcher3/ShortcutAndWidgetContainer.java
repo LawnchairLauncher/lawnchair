@@ -123,6 +123,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mIsHotseatLayout = isHotseat;
     }
 
+    int getCellContentWidth() {
+        final LauncherAppState app = LauncherAppState.getInstance();
+        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
+                grid.hotseatCellWidthPx: grid.cellWidthPx);
+    }
+
     int getCellContentHeight() {
         final LauncherAppState app = LauncherAppState.getInstance();
         final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
