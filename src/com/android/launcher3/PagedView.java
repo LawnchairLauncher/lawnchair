@@ -97,6 +97,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final boolean DISABLE_TOUCH_SIDE_PAGES = true;
     private static final boolean DISABLE_FLING_TO_DELETE = true;
 
+    public static final int INVALID_RESTORE_PAGE = -1001;
+
     private boolean mFreeScroll = false;
     private int mFreeScrollMinScrollX = -1;
     private int mFreeScrollMaxScrollX = -1;
@@ -115,7 +117,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private int mNormalChildHeight;
 
     protected int mCurrentPage;
-    protected int mRestorePage = -1;
+    protected int mRestorePage = INVALID_RESTORE_PAGE;
     protected int mChildCountOnLastLayout;
 
     protected int mNextPage = INVALID_PAGE;
@@ -546,7 +548,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (getChildCount() == 0) {
             return;
         }
-
         mForceScreenScrolled = true;
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
         updateCurrentPageScroll();
@@ -982,9 +983,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (mScroller.isFinished() && mChildCountOnLastLayout != getChildCount() &&
                 !mDeferringForDelete) {
-            if (mRestorePage > -1) {
+            if (mRestorePage != INVALID_RESTORE_PAGE) {
                 setCurrentPage(mRestorePage);
-                mRestorePage = -1;
+                mRestorePage = INVALID_RESTORE_PAGE;
             } else {
                 setCurrentPage(getNextPage());
             }

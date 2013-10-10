@@ -1082,8 +1082,9 @@ public class Launcher extends Activity
             mOnResumeState = State.APPS_CUSTOMIZE;
         }
 
-        int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
-        if (currentScreen > -1) {
+        int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN,
+                PagedView.INVALID_RESTORE_PAGE);
+        if (currentScreen != PagedView.INVALID_RESTORE_PAGE) {
             mWorkspace.setRestorePage(currentScreen);
         }
 
@@ -1703,7 +1704,9 @@ public class Launcher extends Activity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
+        if (mWorkspace.getChildCount() > 0) {
+            outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getRestorePage());
+        }
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
