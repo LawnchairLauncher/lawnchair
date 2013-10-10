@@ -4182,6 +4182,57 @@ public class Launcher extends Activity
         return false;
     }
 
+    public void updateCustomContentHintVisibility() {
+        Cling cling = (Cling) findViewById(R.id.first_run_cling);
+        String ccHintStr = getFirstRunCustomContentHint();
+
+        if (mWorkspace.hasCustomContent()) {
+            // Show the custom content hint if ccHintStr is not empty
+            if (cling != null) {
+                setCustomContentHintVisibility(cling, ccHintStr, true, true);
+            }
+        } else {
+            // Hide the custom content hint
+            if (cling != null) {
+                setCustomContentHintVisibility(cling, ccHintStr, false, true);
+            }
+        }
+    }
+
+    private void setCustomContentHintVisibility(Cling cling, String ccHintStr, boolean visible,
+                                                boolean animate) {
+        final TextView ccHint = (TextView) cling.findViewById(R.id.custom_content_hint);
+        if (ccHint != null) {
+            if (visible && !ccHintStr.isEmpty()) {
+                ccHint.setText(ccHintStr);
+                ccHint.setVisibility(View.VISIBLE);
+                if (animate) {
+                    ccHint.setAlpha(0f);
+                    ccHint.animate().alpha(1f)
+                                    .setDuration(SHOW_CLING_DURATION)
+                                    .start();
+                } else {
+                    ccHint.setAlpha(1f);
+                }
+            } else {
+                if (animate) {
+                    ccHint.animate().alpha(0f)
+                                    .setDuration(SHOW_CLING_DURATION)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            ccHint.setVisibility(View.GONE);
+                                        }
+                                    })
+                                    .start();
+                } else {
+                    ccHint.setAlpha(0f);
+                    ccHint.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
     public void showFirstRunCling() {
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.FIRST_RUN_CLING_DISMISSED_KEY, false) &&
@@ -4211,11 +4262,7 @@ public class Launcher extends Activity
                     sbHint.setText(sbHintStr);
                     sbHint.setVisibility(View.VISIBLE);
                 }
-                if (!ccHintStr.isEmpty()) {
-                    TextView ccHint = (TextView) cling.findViewById(R.id.custom_content_hint);
-                    ccHint.setText(ccHintStr);
-                    ccHint.setVisibility(View.VISIBLE);
-                }
+                setCustomContentHintVisibility(cling, ccHintStr, true, false);
             }
             initCling(R.id.first_run_cling, 0, false, true);
         } else {
