@@ -173,7 +173,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
         boolean isVisible = true;
-        boolean isUninstall = false;
+        boolean useUninstallLabel = !AppsCustomizePagedView.DISABLE_ALL_APPS &&
+                isAllAppsApplication(source, info);
 
         // If we are dragging an application from AppsCustomize, only show the control if we can
         // delete the app (it was downloaded), and rename the string to "uninstall" in such a case.
@@ -182,7 +183,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             isVisible = false;
         }
 
-        if (isUninstall) {
+        if (useUninstallLabel) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mUninstallDrawable, null, null, null);
         } else {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mRemoveDrawable, null, null, null);
@@ -193,7 +194,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         resetHoverColor();
         ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (getText().length() > 0) {
-            setText(isUninstall ? R.string.delete_target_uninstall_label
+            setText(useUninstallLabel ? R.string.delete_target_uninstall_label
                 : R.string.delete_target_label);
         }
     }
