@@ -62,9 +62,9 @@
             android:id="@+id/focused_hotseat_app_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="100dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="90dp"
             android:orientation="vertical"
             android:visibility="gone">
             <LinearLayout
@@ -90,8 +90,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="80dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="80dp"
                 android:src="@drawable/cling_arrow_down" />
         </LinearLayout>
     </FrameLayout>
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_gravity="bottom|start"
+        android:layout_marginLeft="20dp"
+        android:layout_gravity="bottom|left"
         android:onClick="dismissWorkspaceCling" />
 </com.android.launcher3.Cling>
