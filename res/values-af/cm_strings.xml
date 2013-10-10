@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!-- Copyright (C) 2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -118,6 +119,12 @@
     <string name="preferences_interface_general_lock_workspace_summary">Sluit kortpaaie en vouer posisies op die tuisskerm, dok, programme en legstuk-laai</string>
     <string name="preferences_interface_general_fullscreen_title">Volskerm</string>
     <string name="preferences_interface_general_fullscreen_summary">Versteek die statusbalk om die tuisskerm te vergroot</string>
+    <string name="folder_empty_contents_title">Geen items gevind</string>
+    <string name="preferences_interface_general_iconpack_title">Ikoon versamelings</string>
+    <string name="preferences_interface_general_iconpack_summary">Ikoon veramelings vervang die standaard program ikoon</string>
+    <string name="dialog_pick_iconpack_title">Kies ikoon versameling</string>
+    <string name="default_iconpack_title">Default</string>
+    <string name="no_iconpacks_summary">Geen ikoon versameling geïnstalleer</string>
     <string name="effects_standard">Standaard</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Zoom in</string>
@@ -134,4 +141,8 @@
     <string name="effects_accordion">Konsertina</string>
     <string name="effects_carousel_left">Rondomtalie links</string>
     <string name="effects_carousel_right">Rondomtalie regs</string>
+    <string name="live_folder_cling_title">Lewendige vouergidse</string>
+    <string name="live_folder_cling_create_folder">Lewendige vouergidse laat program ontwikkelaars toe om dinamiese vouer inhoud te skep.
+     Vouer inhoud can verwyder word met die lang druk van \'n enkele inskrywing. Anders as gewone vouers, kan slegs items bygevoeg word deur
+     die program wat die vouer skep.</string>
 </resources>
