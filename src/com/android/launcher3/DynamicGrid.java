@@ -16,11 +16,14 @@
 
 package com.android.launcher3;
 
+import android.appwidget.AppWidgetHostView;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Paint.FontMetrics;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -64,7 +67,9 @@ class DeviceProfile {
     boolean isLargeTablet;
     boolean transposeLayoutWithOrientation;
 
+    int desiredWorkspaceLeftRightMarginPx;
     int edgeMarginPx;
+    Rect defaultWidgetPadding;
 
     int widthPx;
     int heightPx;
@@ -109,7 +114,8 @@ class DeviceProfile {
         hotseatIconSize = his;
     }
 
-    DeviceProfile(ArrayList<DeviceProfile> profiles,
+    DeviceProfile(Context context,
+                  ArrayList<DeviceProfile> profiles,
                   float minWidth, float minHeight,
                   int wPx, int hPx,
                   int awPx, int ahPx,
@@ -122,7 +128,11 @@ class DeviceProfile {
         minWidthDps = minWidth;
         minHeightDps = minHeight;
 
+        ComponentName cn = new ComponentName(context.getPackageName(),
+                this.getClass().getName());
+        defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
+        desiredWorkspaceLeftRightMarginPx = 2 * edgeMarginPx;
         pageIndicatorHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
 
         // Interpolate the rows
@@ -312,9 +322,9 @@ class DeviceProfile {
                         hotseatBarHeightPx + pageIndicatorHeightPx);
             } else {
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(edgeMarginPx,
+                padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
                         searchBarSpaceHeightPx,
-                        edgeMarginPx,
+                        desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right,
                         hotseatBarHeightPx + pageIndicatorHeightPx);
             }
         }
@@ -489,7 +499,8 @@ public class DynamicGrid {
                 size, metrics));
     }
 
-    public DynamicGrid(Resources resources, int minWidthPx, int minHeightPx,
+    public DynamicGrid(Context context, Resources resources,
+                       int minWidthPx, int minHeightPx,
                        int widthPx, int heightPx,
                        int awPx, int ahPx) {
         DisplayMetrics dm = resources.getDisplayMetrics();
@@ -526,7 +537,7 @@ public class DynamicGrid {
                 1527, 2527,  7, 7,  100, 20,  7, 72));
         mMinWidth = dpiFromPx(minWidthPx, dm);
         mMinHeight = dpiFromPx(minHeightPx, dm);
-        mProfile = new DeviceProfile(deviceProfiles,
+        mProfile = new DeviceProfile(context, deviceProfiles,
                 mMinWidth, mMinHeight,
                 widthPx, heightPx,
                 awPx, ahPx,
