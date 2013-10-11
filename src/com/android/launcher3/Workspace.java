@@ -442,6 +442,13 @@ public class Workspace extends SmoothPagedView
         setLayoutTransition(mLayoutTransition);
     }
 
+    void enableLayoutTransitions() {
+        setLayoutTransition(mLayoutTransition);
+    }
+    void disableLayoutTransitions() {
+        setLayoutTransition(null);
+    }
+
     @Override
     protected int getScrollMode() {
         return SmoothPagedView.X_LARGE_MODE;
@@ -489,10 +496,24 @@ public class Workspace extends SmoothPagedView
     }
 
     public void removeAllWorkspaceScreens() {
+        // Disable all layout transitions before removing all pages to ensure that we don't get the
+        // transition animations competing with us changing the scroll when we add pages or the
+        // custom content screen
+        disableLayoutTransitions();
+
+        // Since we increment the current page when we call addCustomContentPage via bindScreens
+        // (and other places), we need to adjust the current page back when we clear the pages
+        if (hasCustomContent()) {
+            removeCustomContentPage();
+        }
+
         // Remove the pages and clear the screen models
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
+
+        // Re-enable the layout transitions
+        enableLayoutTransitions();
     }
 
     public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId) {
@@ -1822,7 +1843,7 @@ public class Workspace extends SmoothPagedView
         super.onStartReordering();
         showOutlines();
         // Reordering handles its own animations, disable the automatic ones.
-        setLayoutTransition(null);
+        disableLayoutTransitions();
     }
 
     protected void onEndReordering() {
@@ -1839,7 +1860,7 @@ public class Workspace extends SmoothPagedView
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.
-        setLayoutTransition(mLayoutTransition);
+        enableLayoutTransitions();
     }
 
     public boolean isInOverviewMode() {
