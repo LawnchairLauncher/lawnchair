@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -2058,14 +2059,13 @@ public class Workspace extends SmoothPagedView
             ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(overviewPanel,
                     "alpha", finalOverviewPanelAlpha);
 
-            overviewPanelAlpha.addUpdateListener(new AlphaUpdateListener(overviewPanel));
-            hotseatAlpha.addUpdateListener(new AlphaUpdateListener(hotseat));
-            searchBarAlpha.addUpdateListener(new AlphaUpdateListener(searchBar));
+            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
+            hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
+            searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
 
             if (getPageIndicator() != null) {
-                pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
+                pageIndicatorAlpha.addListener(new AlphaUpdateListener(getPageIndicator()));
             }
-
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
@@ -2106,7 +2106,7 @@ public class Workspace extends SmoothPagedView
         return anim;
     }
 
-    static class AlphaUpdateListener implements AnimatorUpdateListener {
+    static class AlphaUpdateListener implements AnimatorUpdateListener, AnimatorListener {
         View view;
         public AlphaUpdateListener(View v) {
             view = v;
@@ -2127,6 +2127,25 @@ public class Workspace extends SmoothPagedView
                     && view.getVisibility() != VISIBLE) {
                 view.setVisibility(VISIBLE);
             }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator arg0) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animator arg0) {
+            updateVisibility(view);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator arg0) {
+        }
+
+        @Override
+        public void onAnimationStart(Animator arg0) {
+            // We want the views to be visible for animation, so fade-in/out is visible
+            view.setVisibility(VISIBLE);
         }
     }
 
