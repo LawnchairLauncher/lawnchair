@@ -230,29 +230,29 @@ s -->
     <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
 
     <!-- Clings -->
-    <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
+    <!-- The title text for the workspace cling [CHAR_LIMIT=60] -->
     <string name="first_run_cling_title">Welcome!</string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
     <string name="first_run_cling_description">Make yourself at home.</string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
     <string name="first_run_cling_custom_content_hint"></string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
     <string name="first_run_cling_search_bar_hint"></string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
     <string name="first_run_cling_create_screens_hint">Create more screens for apps and folders</string>
-    <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
+    <!-- The title text for the workspace cling [CHAR_LIMIT=60] -->
     <string name="workspace_cling_title">Organize your space</string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to use the workspace [CHAR_LIMIT=160] -->
     <string name="workspace_cling_move_item">Touch &amp; hold background to manage wallpaper, widgets and settings.</string>
-    <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
+    <!-- The title text for the All Apps cling [CHAR_LIMIT=60] -->
     <string name="all_apps_cling_title">Choose some apps</string>
-    <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=160] -->
     <string name="all_apps_cling_add_item">To add an app to your Home screen, touch &amp; hold it.</string>
-    <!-- The title text for the Folder cling [CHAR_LIMIT=none] -->
+    <!-- The title text for the Folder cling [CHAR_LIMIT=60] -->
     <string name="folder_cling_title">Here\'s a folder</string>
-    <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
+    <!-- The description of how to create a folder [CHAR_LIMIT=160] -->
     <string name="folder_cling_create_folder">To create one like this, touch &amp; hold an app, then move it over another.</string>
-    <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
+    <!-- The text on the button to dismiss a cling [CHAR_LIMIT=30] -->
     <string name="cling_dismiss">OK</string>
     <!-- Error message on dummy custom cling layout [DO NOT TRANSLATE] -->
     <string name="dummy_custom_cling_error_message">Error: custom workspace layout passed in but custom cling was not overwritten</string>
