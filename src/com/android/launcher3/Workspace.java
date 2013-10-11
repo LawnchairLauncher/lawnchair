@@ -1431,11 +1431,11 @@ public class Workspace extends SmoothPagedView
         if (hasCustomContent()) {
             int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
 
-            int scrollDelta = getScrollForPage(index + 1) - getScrollX() +
-                    getLayoutTransitionOffsetForPage(index + 1);
-            translationX = scrollDelta;
-            progress = (1.0f * scrollDelta) /
-                    (getScrollForPage(index + 1) - getScrollForPage(index));
+            int scrollDelta = getScrollX() - getScrollForPage(index) -
+                    getLayoutTransitionOffsetForPage(index);
+            float scrollRange = getScrollForPage(index + 1) - getScrollForPage(index);
+            translationX = scrollRange - scrollDelta;
+            progress = (scrollRange - scrollDelta) / scrollRange;
 
             if (isLayoutRtl()) {
                 translationX = Math.min(0, translationX);
