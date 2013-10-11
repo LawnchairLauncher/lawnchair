@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -173,6 +174,16 @@ public class Hotseat extends FrameLayout {
             lp.canReorder = false;
             mContent.addViewToCellLayout(allAppsButton, -1, 0, lp, true);
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // We don't want any clicks to go through to the hotseat unless the workspace is in
+        // the normal state.
+        if (mLauncher.getWorkspace().isSmall()) {
+            return true;
+        }
+        return false;
     }
 
     void addAllAppsFolder(IconCache iconCache,
