@@ -178,7 +178,8 @@ public class LauncherAppState {
                                   int width, int height,
                                   int availableWidth, int availableHeight) {
         if (mDynamicGrid == null) {
-            mDynamicGrid = new DynamicGrid(context.getResources(),
+            mDynamicGrid = new DynamicGrid(context,
+                    context.getResources(),
                     minWidth, minHeight, width, height,
                     availableWidth, availableHeight);
         }
