@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -61,11 +62,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
+import com.android.gallery3d.exif.ExifInterface;
 import com.android.photos.BitmapRegionTileSource;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class WallpaperPickerActivity extends WallpaperCropActivity {
@@ -126,8 +130,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(WallpaperPickerActivity a) {
             CropView v = a.getCropView();
-            v.setTileSource(new BitmapRegionTileSource(
-                    a, mUri, 1024, 0), null);
+            int rotation = WallpaperCropActivity.getRotationFromExif(a, mUri);
+            v.setTileSource(new BitmapRegionTileSource(a, mUri, 1024, rotation), null);
             v.setTouchEnabled(true);
         }
         @Override
@@ -136,8 +140,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             OnBitmapCroppedHandler h = new OnBitmapCroppedHandler() {
                 public void onBitmapCropped(byte[] imageBytes) {
                     Point thumbSize = getDefaultThumbnailSize(a.getResources());
-                    Bitmap thumb =
-                            createThumbnail(thumbSize, null, null, imageBytes, null, 0, true);
+                    // rotation is set to 0 since imageBytes has already been correctly rotated
+                    Bitmap thumb = createThumbnail(
+                            thumbSize, null, null, imageBytes, null, 0, 0, true);
                     a.getSavedImages().writeImage(thumb, imageBytes);
                 }
             };
@@ -165,8 +170,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onClick(WallpaperPickerActivity a) {
+            int rotation = WallpaperCropActivity.getRotationFromExif(mResources, mResId);
             BitmapRegionTileSource source = new BitmapRegionTileSource(
-                    mResources, a, mResId, 1024, 0);
+                    mResources, a, mResId, 1024, rotation);
             CropView v = a.getCropView();
             v.setTileSource(source, null);
             Point wallpaperSize = WallpaperCropActivity.getDefaultWallpaperSize(
@@ -199,7 +205,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     // called by onCreate; this is subclassed to overwrite WallpaperCropActivity
     protected void init() {
         setContentView(R.layout.wallpaper_picker);
-        final WallpaperRootView root = (WallpaperRootView) findViewById(R.id.wallpaper_root);
 
         mCropView = (CropView) findViewById(R.id.cropView);
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
@@ -522,7 +527,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private void updateTileIndices() {
         LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);
         final int childCount = masterWallpaperList.getChildCount();
-        ArrayList<WallpaperTileInfo> tiles = new ArrayList<WallpaperTileInfo>();
         final Resources res = getResources();
 
         // Do two passes; the first pass gets the total number of tiles
@@ -568,26 +572,35 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private static Bitmap createThumbnail(Point size, Context context, Uri uri, byte[] imageBytes,
-            Resources res, int resId, boolean leftAligned) {
+            Resources res, int resId, int rotation, boolean leftAligned) {
         int width = size.x;
         int height = size.y;
 
         BitmapCropTask cropTask;
         if (uri != null) {
-            cropTask = new BitmapCropTask(context, uri, null, width, height, false, true, null);
+            cropTask = new BitmapCropTask(
+                    context, uri, null, rotation, width, height, false, true, null);
         } else if (imageBytes != null) {
-            cropTask = new BitmapCropTask(imageBytes, null, width, height, false, true, null);
+            cropTask = new BitmapCropTask(
+                    imageBytes, null, rotation, width, height, false, true, null);
         }  else {
-            cropTask =
-                    new BitmapCropTask(context, res, resId, null, width, height, false, true, null);
+            cropTask = new BitmapCropTask(
+                    context, res, resId, null, rotation, width, height, false, true, null);
         }
         Point bounds = cropTask.getImageBounds();
         if (bounds == null || bounds.x == 0 || bounds.y == 0) {
             return null;
         }
 
+        Matrix rotateMatrix = new Matrix();
+        rotateMatrix.setRotate(rotation);
+        float[] rotatedBounds = new float[] { bounds.x, bounds.y };
+        rotateMatrix.mapPoints(rotatedBounds);
+        rotatedBounds[0] = Math.abs(rotatedBounds[0]);
+        rotatedBounds[1] = Math.abs(rotatedBounds[1]);
+
         RectF cropRect = WallpaperCropActivity.getMaxCropRect(
-                bounds.x, bounds.y, width, height, leftAligned);
+                (int) rotatedBounds[0], (int) rotatedBounds[1], width, height, leftAligned);
         cropTask.setCropBounds(cropRect);
 
         if (cropTask.cropBitmap()) {
@@ -607,7 +620,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // Load the thumbnail
         ImageView image = (ImageView) pickedImageThumbnail.findViewById(R.id.wallpaper_image);
         Point defaultSize = getDefaultThumbnailSize(this.getResources());
-        Bitmap thumb = createThumbnail(defaultSize, this, uri, null, null, 0, false);
+        int rotation = WallpaperCropActivity.getRotationFromExif(this, uri);
+        Bitmap thumb = createThumbnail(defaultSize, this, uri, null, null, 0, rotation, false);
         if (thumb != null) {
             image.setImageBitmap(thumb);
             Drawable thumbDrawable = image.getDrawable();
@@ -620,6 +634,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         UriWallpaperInfo info = new UriWallpaperInfo(uri);
         pickedImageThumbnail.setTag(info);
         info.setView(pickedImageThumbnail);
+        addLongPressHandler(pickedImageThumbnail);
         updateTileIndices();
         pickedImageThumbnail.setOnClickListener(mThumbnailOnClickListener);
         mThumbnailOnClickListener.onClick(pickedImageThumbnail);
@@ -690,8 +705,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             thumb = BitmapFactory.decodeFile(defaultThumbFile.getAbsolutePath());
             defaultWallpaperExists = true;
         } else {
-            Point defaultThumbSize = getDefaultThumbnailSize(getResources());
-            thumb = createThumbnail(defaultThumbSize, this, null, null, sysRes, resId, false);
+            Resources res = getResources();
+            Point defaultThumbSize = getDefaultThumbnailSize(res);
+            int rotation = WallpaperCropActivity.getRotationFromExif(res, resId);
+            thumb = createThumbnail(
+                    defaultThumbSize, this, null, null, sysRes, resId, rotation, false);
             if (thumb != null) {
                 try {
                     defaultThumbFile.createNewFile();
