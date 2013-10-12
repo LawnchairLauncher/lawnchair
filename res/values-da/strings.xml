@@ -29,6 +29,8 @@
     <item quantity="one" msgid="142482526010824029">"%1$d er valgt"</item>
     <item quantity="other" msgid="1418352074806573570">"%1$d er valgt"</item>
   </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Baggrund %1$d af %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> blev valgt"</string>
     <string name="wallpaper_delete" msgid="8095005658756613921">"Slet"</string>
     <string name="pick_image" msgid="1272073934062909527">"Vælg billede"</string>
     <string name="pick_wallpaper" msgid="8179698221502010609">"Baggrunde"</string>
