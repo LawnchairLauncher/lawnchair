@@ -122,7 +122,7 @@
     <string name="preferences_interface_general_iconpack_title">Pacchetto icone</string>
     <string name="preferences_interface_general_iconpack_summary">I pacchetti di icone sostituiscono l\'icona predefinita delle applicazioni</string>
     <string name="dialog_pick_iconpack_title">Scegli pacchetto icone</string>
-    <string name="default_iconpack_title">Icone predefinite</string>
+    <string name="default_iconpack_title">Predefinito</string>
     <string name="no_iconpacks_summary">Nessun pacchetto di icone installato</string>
     <string name="effects_standard">Predefinito</string>
     <string name="effects_tablet">Tablet</string>
