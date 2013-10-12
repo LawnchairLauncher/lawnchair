@@ -1950,6 +1950,9 @@ public class Workspace extends SmoothPagedView
 
         boolean workspaceToAllApps = (oldStateIsNormal && stateIsSmall);
         boolean allAppsToWorkspace = (oldStateIsSmall && stateIsNormal);
+        boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
+        boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
+
         mNewScale = 1.0f;
 
         if (oldStateIsOverview) {
@@ -2062,10 +2065,15 @@ public class Workspace extends SmoothPagedView
             hotseatAlpha.addUpdateListener(new AlphaUpdateListener(hotseat));
             searchBarAlpha.addUpdateListener(new AlphaUpdateListener(searchBar));
 
+            if (workspaceToOverview) {
+                hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
+            } else if (overviewToWorkspace) {
+                overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
+            }
+
             if (getPageIndicator() != null) {
                 pageIndicatorAlpha.addUpdateListener(new AlphaUpdateListener(getPageIndicator()));
             }
-
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
