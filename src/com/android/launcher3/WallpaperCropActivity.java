@@ -37,12 +37,14 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.android.gallery3d.common.Utils;
+import com.android.gallery3d.exif.ExifInterface;
 import com.android.photos.BitmapRegionTileSource;
 
 import java.io.BufferedInputStream;
@@ -88,7 +90,8 @@ public class WallpaperCropActivity extends Activity {
         Intent cropIntent = this.getIntent();
         final Uri imageUri = cropIntent.getData();
 
-        mCropView.setTileSource(new BitmapRegionTileSource(this, imageUri, 1024, 0), null);
+        int rotation = getRotationFromExif(this, imageUri);
+        mCropView.setTileSource(new BitmapRegionTileSource(this, imageUri, 1024, rotation), null);
         mCropView.setTouchEnabled(true);
         // Action bar
         // Show the custom action bar view
@@ -168,9 +171,47 @@ public class WallpaperCropActivity extends Activity {
         return new Point(defaultWidth, defaultHeight);
     }
 
+    public static int getRotationFromExif(String path) {
+        return getRotationFromExifHelper(path, null, 0, null, null);
+    }
+
+    public static int getRotationFromExif(Context context, Uri uri) {
+        return getRotationFromExifHelper(null, null, 0, context, uri);
+    }
+
+    public static int getRotationFromExif(Resources res, int resId) {
+        return getRotationFromExifHelper(null, res, resId, null, null);
+    }
+
+    private static int getRotationFromExifHelper(
+            String path, Resources res, int resId, Context context, Uri uri) {
+        ExifInterface ei = new ExifInterface();
+        try {
+            if (path != null) {
+                ei.readExif(path);
+            } else if (uri != null) {
+                InputStream is = context.getContentResolver().openInputStream(uri);
+                BufferedInputStream bis = new BufferedInputStream(is);
+                ei.readExif(bis);
+            } else {
+                InputStream is = res.openRawResource(resId);
+                BufferedInputStream bis = new BufferedInputStream(is);
+                ei.readExif(bis);
+            }
+            Integer ori = ei.getTagIntValue(ExifInterface.TAG_ORIENTATION);
+            if (ori != null) {
+                return ExifInterface.getRotationForOrientationValue(ori.shortValue());
+            }
+        } catch (IOException e) {
+            Log.w(LOGTAG, "Getting exif data failed", e);
+        }
+        return 0;
+    }
+
     protected void setWallpaper(String filePath, final boolean finishActivityWhenDone) {
-        BitmapCropTask cropTask = new BitmapCropTask(this,
-                filePath, null, 0, 0, true, false, null);
+        int rotation = getRotationFromExif(filePath);
+        BitmapCropTask cropTask = new BitmapCropTask(
+                this, filePath, null, rotation, 0, 0, true, false, null);
         final Point bounds = cropTask.getImageBounds();
         Runnable onEndCrop = new Runnable() {
             public void run() {
@@ -190,6 +231,7 @@ public class WallpaperCropActivity extends Activity {
             Resources res, int resId, final boolean finishActivityWhenDone) {
         // crop this image and scale it down to the default wallpaper size for
         // this device
+        int rotation = getRotationFromExif(res, resId);
         Point inSize = mCropView.getSourceDimensions();
         Point outSize = getDefaultWallpaperSize(getResources(),
                 getWindowManager());
@@ -207,8 +249,7 @@ public class WallpaperCropActivity extends Activity {
             }
         };
         BitmapCropTask cropTask = new BitmapCropTask(this, res, resId,
-                crop, outSize.x, outSize.y,
-                true, false, onEndCrop);
+                crop, rotation, outSize.x, outSize.y, true, false, onEndCrop);
         cropTask.execute();
     }
 
@@ -220,8 +261,6 @@ public class WallpaperCropActivity extends Activity {
     protected void cropImageAndSetWallpaper(Uri uri,
             OnBitmapCroppedHandler onBitmapCroppedHandler, final boolean finishActivityWhenDone) {
         // Get the crop
-        Point inSize = mCropView.getSourceDimensions();
-
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
 
         Point minDims = new Point();
@@ -260,12 +299,21 @@ public class WallpaperCropActivity extends Activity {
         }
         // Get the crop
         RectF cropRect = mCropView.getCrop();
+        int cropRotation = mCropView.getImageRotation();
         float cropScale = mCropView.getWidth() / (float) cropRect.width();
+
+        Point inSize = mCropView.getSourceDimensions();
+        Matrix rotateMatrix = new Matrix();
+        rotateMatrix.setRotate(cropRotation);
+        float[] rotatedInSize = new float[] { inSize.x, inSize.y };
+        rotateMatrix.mapPoints(rotatedInSize);
+        rotatedInSize[0] = Math.abs(rotatedInSize[0]);
+        rotatedInSize[1] = Math.abs(rotatedInSize[1]);
 
         // ADJUST CROP WIDTH
         // Extend the crop all the way to the right, for parallax
         // (or all the way to the left, in RTL)
-        float extraSpace = ltr ? inSize.x - cropRect.right : cropRect.left;
+        float extraSpace = ltr ? rotatedInSize[0] - cropRect.right : cropRect.left;
         // Cap the amount of extra width
         float maxExtraSpace = defaultWallpaperWidth / cropScale - cropRect.width();
         extraSpace = Math.min(extraSpace, maxExtraSpace);
@@ -283,7 +331,7 @@ public class WallpaperCropActivity extends Activity {
             float extraPortraitHeight =
                     portraitHeight / cropScale - cropRect.height();
             float expandHeight =
-                    Math.min(Math.min(inSize.y - cropRect.bottom, cropRect.top),
+                    Math.min(Math.min(rotatedInSize[1] - cropRect.bottom, cropRect.top),
                             extraPortraitHeight / 2);
             cropRect.top -= expandHeight;
             cropRect.bottom += expandHeight;
@@ -301,7 +349,7 @@ public class WallpaperCropActivity extends Activity {
             }
         };
         BitmapCropTask cropTask = new BitmapCropTask(this, uri,
-                cropRect, outWidth, outHeight, true, false, onEndCrop);
+                cropRect, cropRotation, outWidth, outHeight, true, false, onEndCrop);
         if (onBitmapCroppedHandler != null) {
             cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
         }
@@ -321,7 +369,7 @@ public class WallpaperCropActivity extends Activity {
         InputStream mInStream;
         RectF mCropBounds = null;
         int mOutWidth, mOutHeight;
-        int mRotation = 0; // for now
+        int mRotation;
         String mOutputFormat = "jpg"; // for now
         boolean mSetWallpaper;
         boolean mSaveCroppedBitmap;
@@ -332,40 +380,45 @@ public class WallpaperCropActivity extends Activity {
         boolean mNoCrop;
 
         public BitmapCropTask(Context c, String filePath,
-                RectF cropBounds, int outWidth, int outHeight,
+                RectF cropBounds, int rotation, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mContext = c;
             mInFilePath = filePath;
-            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+            init(cropBounds, rotation,
+                    outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
         public BitmapCropTask(byte[] imageBytes,
-                RectF cropBounds, int outWidth, int outHeight,
+                RectF cropBounds, int rotation, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mInImageBytes = imageBytes;
-            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+            init(cropBounds, rotation,
+                    outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
         public BitmapCropTask(Context c, Uri inUri,
-                RectF cropBounds, int outWidth, int outHeight,
+                RectF cropBounds, int rotation, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mContext = c;
             mInUri = inUri;
-            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+            init(cropBounds, rotation,
+                    outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
         public BitmapCropTask(Context c, Resources res, int inResId,
-                RectF cropBounds, int outWidth, int outHeight,
+                RectF cropBounds, int rotation, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mContext = c;
             mInResId = inResId;
             mResources = res;
-            init(cropBounds, outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+            init(cropBounds, rotation,
+                    outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
         }
 
-        private void init(RectF cropBounds, int outWidth, int outHeight,
+        private void init(RectF cropBounds, int rotation, int outWidth, int outHeight,
                 boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
             mCropBounds = cropBounds;
+            mRotation = rotation;
             mOutWidth = outWidth;
             mOutHeight = outHeight;
             mSetWallpaper = setWallpaper;
@@ -452,6 +505,29 @@ public class WallpaperCropActivity extends Activity {
             if (mInStream != null) {
                 // Find crop bounds (scaled to original image size)
                 Rect roundedTrueCrop = new Rect();
+                Matrix rotateMatrix = new Matrix();
+                Matrix inverseRotateMatrix = new Matrix();
+                if (mRotation > 0) {
+                    rotateMatrix.setRotate(mRotation);
+                    inverseRotateMatrix.setRotate(-mRotation);
+
+                    mCropBounds.roundOut(roundedTrueCrop);
+                    mCropBounds = new RectF(roundedTrueCrop);
+
+                    Point bounds = getImageBounds();
+
+                    float[] rotatedBounds = new float[] { bounds.x, bounds.y };
+                    rotateMatrix.mapPoints(rotatedBounds);
+                    rotatedBounds[0] = Math.abs(rotatedBounds[0]);
+                    rotatedBounds[1] = Math.abs(rotatedBounds[1]);
+
+                    mCropBounds.offset(-rotatedBounds[0]/2, -rotatedBounds[1]/2);
+                    inverseRotateMatrix.mapRect(mCropBounds);
+                    mCropBounds.offset(bounds.x/2, bounds.y/2);
+
+                    regenerateInputStream();
+                }
+
                 mCropBounds.roundOut(roundedTrueCrop);
 
                 if (roundedTrueCrop.width() <= 0 || roundedTrueCrop.height() <= 0) {
@@ -495,6 +571,12 @@ public class WallpaperCropActivity extends Activity {
                         fullSize = BitmapFactory.decodeStream(mInStream, null, options);
                     }
                     if (fullSize != null) {
+                        mCropBounds.left /= scaleDownSampleSize;
+                        mCropBounds.top /= scaleDownSampleSize;
+                        mCropBounds.bottom /= scaleDownSampleSize;
+                        mCropBounds.right /= scaleDownSampleSize;
+                        mCropBounds.roundOut(roundedTrueCrop);
+
                         crop = Bitmap.createBitmap(fullSize, roundedTrueCrop.left,
                                 roundedTrueCrop.top, roundedTrueCrop.width(),
                                 roundedTrueCrop.height());
@@ -506,16 +588,40 @@ public class WallpaperCropActivity extends Activity {
                     failure = true;
                     return false;
                 }
-                if (mOutWidth > 0 && mOutHeight > 0) {
-                    Matrix m = new Matrix();
-                    RectF cropRect = new RectF(0, 0, crop.getWidth(), crop.getHeight());
-                    if (mRotation > 0) {
-                        m.setRotate(mRotation);
-                        m.mapRect(cropRect);
+                if (mOutWidth > 0 && mOutHeight > 0 || mRotation > 0) {
+                    float[] dimsAfter = new float[] { crop.getWidth(), crop.getHeight() };
+                    rotateMatrix.mapPoints(dimsAfter);
+                    dimsAfter[0] = Math.abs(dimsAfter[0]);
+                    dimsAfter[1] = Math.abs(dimsAfter[1]);
+
+                    if (!(mOutWidth > 0 && mOutHeight > 0)) {
+                        mOutWidth = Math.round(dimsAfter[0]);
+                        mOutHeight = Math.round(dimsAfter[1]);
                     }
+
+                    RectF cropRect = new RectF(0, 0, dimsAfter[0], dimsAfter[1]);
                     RectF returnRect = new RectF(0, 0, mOutWidth, mOutHeight);
-                    m.setRectToRect(cropRect, returnRect, Matrix.ScaleToFit.FILL);
-                    m.preRotate(mRotation);
+
+                    Matrix m = new Matrix();
+                    if (mRotation == 0) {
+                        m.setRectToRect(cropRect, returnRect, Matrix.ScaleToFit.FILL);
+                    } else {
+                        Matrix m1 = new Matrix();
+                        m1.setTranslate(-crop.getWidth() / 2f, -crop.getHeight() / 2f);
+                        Matrix m2 = new Matrix();
+                        m2.setRotate(mRotation);
+                        Matrix m3 = new Matrix();
+                        m3.setTranslate(dimsAfter[0] / 2f, dimsAfter[1] / 2f);
+                        Matrix m4 = new Matrix();
+                        m4.setRectToRect(cropRect, returnRect, Matrix.ScaleToFit.FILL);
+
+                        Matrix c1 = new Matrix();
+                        c1.setConcat(m2, m1);
+                        Matrix c2 = new Matrix();
+                        c2.setConcat(m4, m3);
+                        m.setConcat(c2, c1);
+                    }
+
                     Bitmap tmp = Bitmap.createBitmap((int) returnRect.width(),
                             (int) returnRect.height(), Bitmap.Config.ARGB_8888);
                     if (tmp != null) {
@@ -523,14 +629,6 @@ public class WallpaperCropActivity extends Activity {
                         Paint p = new Paint();
                         p.setFilterBitmap(true);
                         c.drawBitmap(crop, m, p);
-                        crop = tmp;
-                    }
-                } else if (mRotation > 0) {
-                    Matrix m = new Matrix();
-                    m.setRotate(mRotation);
-                    Bitmap tmp = Bitmap.createBitmap(crop, 0, 0, crop.getWidth(),
-                            crop.getHeight(), m, true);
-                    if (tmp != null) {
                         crop = tmp;
                     }
                 }
@@ -601,8 +699,7 @@ public class WallpaperCropActivity extends Activity {
             final SharedPreferences sharedPrefs,
             WindowManager windowManager,
             final WallpaperManager wallpaperManager) {
-        final Point defaultWallpaperSize =
-                WallpaperCropActivity.getDefaultWallpaperSize(res, windowManager);
+        final Point defaultWallpaperSize = getDefaultWallpaperSize(res, windowManager);
 
         new Thread("suggestWallpaperDimension") {
             public void run() {
@@ -613,7 +710,6 @@ public class WallpaperCropActivity extends Activity {
             }
         }.start();
     }
-
 
     protected static RectF getMaxCropRect(
             int inWidth, int inHeight, int outWidth, int outHeight, boolean leftAligned) {

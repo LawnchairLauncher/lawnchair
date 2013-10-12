@@ -63,7 +63,7 @@ public class TiledImageView extends FrameLayout {
         // Guarded by locks
         public float scale;
         public int centerX, centerY;
-        int rotation;
+        public int rotation;
         public TileSource source;
         Runnable isReadyCallback;
 
