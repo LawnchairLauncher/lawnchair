@@ -17,9 +17,11 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.FloatMath;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -36,10 +38,18 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
     private long mTouchDownTime;
     private float mFirstX, mFirstY;
     private float mLastX, mLastY;
+    private float mCenterX, mCenterY;
     private float mMinScale;
     private boolean mTouchEnabled = true;
     private RectF mTempEdges = new RectF();
+    private float[] mTempPoint = new float[] { 0, 0 };
+    private float[] mTempCoef = new float[] { 0, 0 };
+    private float[] mTempAdjustment = new float[] { 0, 0 };
+    private float[] mTempImageDims = new float[] { 0, 0 };
+    private float[] mTempRendererCenter = new float[] { 0, 0 };
     TouchCallback mTouchCallback;
+    Matrix mRotateMatrix;
+    Matrix mInverseRotateMatrix;
 
     public interface TouchCallback {
         void onTouchDown();
@@ -54,17 +64,43 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
     public CropView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mScaleGestureDetector = new ScaleGestureDetector(context, this);
+        mRotateMatrix = new Matrix();
+        mInverseRotateMatrix = new Matrix();
+    }
+
+    private float[] getImageDims() {
+        final float imageWidth = mRenderer.source.getImageWidth();
+        final float imageHeight = mRenderer.source.getImageHeight();
+        float[] imageDims = mTempImageDims;
+        imageDims[0] = imageWidth;
+        imageDims[1] = imageHeight;
+        mRotateMatrix.mapPoints(imageDims);
+        imageDims[0] = Math.abs(imageDims[0]);
+        imageDims[1] = Math.abs(imageDims[1]);
+        return imageDims;
     }
 
     private void getEdgesHelper(RectF edgesOut) {
         final float width = getWidth();
         final float height = getHeight();
-        final float imageWidth = mRenderer.source.getImageWidth();
-        final float imageHeight = mRenderer.source.getImageHeight();
+        final float[] imageDims = getImageDims();
+        final float imageWidth = imageDims[0];
+        final float imageHeight = imageDims[1];
+
+        float initialCenterX = mRenderer.source.getImageWidth() / 2f;
+        float initialCenterY = mRenderer.source.getImageHeight() / 2f;
+
+        float[] rendererCenter = mTempRendererCenter;
+        rendererCenter[0] = mCenterX - initialCenterX;
+        rendererCenter[1] = mCenterY - initialCenterY;
+        mRotateMatrix.mapPoints(rendererCenter);
+        rendererCenter[0] += imageWidth / 2;
+        rendererCenter[1] += imageHeight / 2;
+
         final float scale = mRenderer.scale;
-        float centerX = (width / 2f - mRenderer.centerX + (imageWidth - width) / 2f)
+        float centerX = (width / 2f - rendererCenter[0] + (imageWidth - width) / 2f)
                 * scale + width / 2f;
-        float centerY = (height / 2f - mRenderer.centerY + (imageHeight - height) / 2f)
+        float centerY = (height / 2f - rendererCenter[1] + (imageHeight - height) / 2f)
                 * scale + height / 2f;
         float leftEdge = centerX - imageWidth / 2f * scale;
         float rightEdge = centerX + imageWidth / 2f * scale;
@@ -75,6 +111,10 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         edgesOut.right = rightEdge;
         edgesOut.top = topEdge;
         edgesOut.bottom = bottomEdge;
+    }
+
+    public int getImageRotation() {
+        return mRenderer.rotation;
     }
 
     public RectF getCrop() {
@@ -96,6 +136,12 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
 
     public void setTileSource(TileSource source, Runnable isReadyCallback) {
         super.setTileSource(source, isReadyCallback);
+        mCenterX = mRenderer.centerX;
+        mCenterY = mRenderer.centerY;
+        mRotateMatrix.reset();
+        mRotateMatrix.setRotate(mRenderer.rotation);
+        mInverseRotateMatrix.reset();
+        mInverseRotateMatrix.setRotate(-mRenderer.rotation);
         updateMinScale(getWidth(), getHeight(), source, true);
     }
 
@@ -115,8 +161,10 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
                 mRenderer.scale = 1;
             }
             if (source != null) {
-                mMinScale = Math.max(w / (float) source.getImageWidth(),
-                        h / (float) source.getImageHeight());
+                final float[] imageDims = getImageDims();
+                final float imageWidth = imageDims[0];
+                final float imageHeight = imageDims[1];
+                mMinScale = Math.max(w / imageWidth, h / imageHeight);
                 mRenderer.scale = Math.max(mMinScale, mRenderer.scale);
             }
         }
@@ -154,7 +202,13 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         final RectF edges = mTempEdges;
         getEdgesHelper(edges);
         final float scale = mRenderer.scale;
-        mRenderer.centerX += Math.ceil(edges.left / scale);
+        mCenterX += Math.ceil(edges.left / scale);
+        updateCenter();
+    }
+
+    private void updateCenter() {
+        mRenderer.centerX = Math.round(mCenterX);
+        mRenderer.centerY = Math.round(mCenterY);
     }
 
     public void setTouchEnabled(boolean enabled) {
@@ -215,8 +269,13 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
             mScaleGestureDetector.onTouchEvent(event);
             switch (action) {
                 case MotionEvent.ACTION_MOVE:
-                    mRenderer.centerX += (mLastX - x) / mRenderer.scale;
-                    mRenderer.centerY += (mLastY - y) / mRenderer.scale;
+                    float[] point = mTempPoint;
+                    point[0] = (mLastX - x) / mRenderer.scale;
+                    point[1] = (mLastY - y) / mRenderer.scale;
+                    mInverseRotateMatrix.mapPoints(point);
+                    mCenterX += point[0];
+                    mCenterY += point[1];
+                    updateCenter();
                     invalidate();
                     break;
             }
@@ -226,18 +285,32 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
                 final RectF edges = mTempEdges;
                 getEdgesHelper(edges);
                 final float scale = mRenderer.scale;
+
+                float[] coef = mTempCoef;
+                coef[0] = 1;
+                coef[1] = 1;
+                mRotateMatrix.mapPoints(coef);
+                float[] adjustment = mTempAdjustment;
+                mTempAdjustment[0] = 0;
+                mTempAdjustment[1] = 0;
                 if (edges.left > 0) {
-                    mRenderer.centerX += Math.ceil(edges.left / scale);
-                }
-                if (edges.right < getWidth()) {
-                    mRenderer.centerX += (edges.right - getWidth()) / scale;
+                    adjustment[0] = edges.left / scale;
+                } else if (edges.right < getWidth()) {
+                    adjustment[0] = (edges.right - getWidth()) / scale;
                 }
                 if (edges.top > 0) {
-                    mRenderer.centerY += Math.ceil(edges.top / scale);
+                    adjustment[1] = FloatMath.ceil(edges.top / scale);
+                } else if (edges.bottom < getHeight()) {
+                    adjustment[1] = (edges.bottom - getHeight()) / scale;
                 }
-                if (edges.bottom < getHeight()) {
-                    mRenderer.centerY += (edges.bottom - getHeight()) / scale;
+                for (int dim = 0; dim <= 1; dim++) {
+                    if (coef[dim] > 0) adjustment[dim] = FloatMath.ceil(adjustment[dim]);
                 }
+
+                mInverseRotateMatrix.mapPoints(adjustment);
+                mCenterX += adjustment[0];
+                mCenterY += adjustment[1];
+                updateCenter();
             }
         }
 
