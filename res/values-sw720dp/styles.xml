@@ -53,6 +53,8 @@
 <!-- Workspace -->
     <style name="Theme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
         <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="TabIndicator.AppsCustomize">
