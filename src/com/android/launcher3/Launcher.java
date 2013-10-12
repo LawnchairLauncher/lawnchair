@@ -736,6 +736,7 @@ public class Launcher extends Activity
                 Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not returned from the \\" +
                         "widget configuration activity.");
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
+                mWorkspace.stripEmptyScreens();
             } else {
                 completeTwoStageWidgetDrop(resultCode, appWidgetId);
             }
@@ -760,6 +761,8 @@ public class Launcher extends Activity
             } else {
                 delayExitSpringLoadedMode = completeAdd(args);
             }
+        } else if (resultCode == RESULT_CANCELED) {
+            mWorkspace.stripEmptyScreens();
         }
         mDragLayer.clearAnimatedView();
         // Exit spring loaded mode if necessary after cancelling the configuration of a widget
