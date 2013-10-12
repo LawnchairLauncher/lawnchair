@@ -29,6 +29,8 @@
     <item quantity="one" msgid="142482526010824029">"%1$d valittu"</item>
     <item quantity="other" msgid="1418352074806573570">"%1$d valittu"</item>
   </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Taustakuva %1$d/%2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"Valittu: <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="8095005658756613921">"Poista"</string>
     <string name="pick_image" msgid="1272073934062909527">"Valitse kuva"</string>
     <string name="pick_wallpaper" msgid="8179698221502010609">"Taustakuvat"</string>

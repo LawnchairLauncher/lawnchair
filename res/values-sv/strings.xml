@@ -29,6 +29,8 @@
     <item quantity="one" msgid="142482526010824029">"%1$d har valts"</item>
     <item quantity="other" msgid="1418352074806573570">"%1$d har valts"</item>
   </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Bakgrund %1$d av %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> har valts"</string>
     <string name="wallpaper_delete" msgid="8095005658756613921">"Ta bort"</string>
     <string name="pick_image" msgid="1272073934062909527">"Välj bild"</string>
     <string name="pick_wallpaper" msgid="8179698221502010609">"Bakgrunder"</string>
