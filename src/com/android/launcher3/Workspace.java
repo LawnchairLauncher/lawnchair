@@ -1974,9 +1974,15 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        final int duration = workspaceToAllApps ?
-                getResources().getInteger(R.integer.config_workspaceUnshrinkTime) :
-                getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
+        final int duration;
+        if (workspaceToAllApps) {
+            duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
+        } else if (workspaceToOverview || overviewToWorkspace) {
+            duration = getResources().getInteger(R.integer.config_overviewTransitionTime);
+        } else {
+            duration = getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
+        }
+
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
             boolean isCurrentPage = (i == getNextPage());
@@ -2011,6 +2017,7 @@ public class Workspace extends SmoothPagedView
         final View overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
         if (animated) {
+            anim.setDuration(duration);
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
             scale.scaleX(mNewScale)
                 .scaleY(mNewScale)
@@ -2029,14 +2036,13 @@ public class Workspace extends SmoothPagedView
                         LauncherViewPropertyAnimator alphaAnim =
                             new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
                         alphaAnim.alpha(mNewAlphas[i])
-                            .setDuration(duration)
                             .setInterpolator(mZoomInInterpolator);
                         anim.play(alphaAnim);
                     }
                     if (mOldBackgroundAlphas[i] != 0 ||
                         mNewBackgroundAlphas[i] != 0) {
                         ValueAnimator bgAnim =
-                                LauncherAnimUtils.ofFloat(cl, 0f, 1f).setDuration(duration);
+                                LauncherAnimUtils.ofFloat(cl, 0f, 1f);
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                                 public void onAnimationUpdate(float a, float b) {
