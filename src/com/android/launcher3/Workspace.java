@@ -3046,7 +3046,9 @@ public class Workspace extends SmoothPagedView
     private void cleanupFolderCreation() {
         if (mDragFolderRingAnimator != null) {
             mDragFolderRingAnimator.animateToNaturalState();
+            mDragFolderRingAnimator = null;
         }
+        mFolderCreationAlarm.setOnAlarmListener(null);
         mFolderCreationAlarm.cancelAlarm();
     }
 
@@ -3390,9 +3392,11 @@ public class Workspace extends SmoothPagedView
         }
 
         public void onAlarm(Alarm alarm) {
-            if (mDragFolderRingAnimator == null) {
-                mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
+            if (mDragFolderRingAnimator != null) {
+                // This shouldn't happen ever, but just in case, make sure we clean up the mess.
+                mDragFolderRingAnimator.animateToNaturalState();
             }
+            mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
             mDragFolderRingAnimator.setCell(cellX, cellY);
             mDragFolderRingAnimator.setCellLayout(layout);
             mDragFolderRingAnimator.animateToAcceptState();
