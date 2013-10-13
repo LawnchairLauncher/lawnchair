@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -54,6 +55,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -215,12 +217,21 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 if (mAnim != null) {
                     mAnim.cancel();
                 }
-                if (mWallpaperStrip.getTranslationY() == 0) {
+                if (mWallpaperStrip.getAlpha() == 1f) {
                     mIgnoreNextTap = true;
                 }
                 mAnim = new LauncherViewPropertyAnimator(mWallpaperStrip);
-                mAnim.translationY(mWallpaperStrip.getHeight()).alpha(0f)
-                        .setInterpolator(new DecelerateInterpolator(0.75f));
+                mAnim.alpha(0f)
+                     .setDuration(150)
+                     .addListener(new Animator.AnimatorListener() {
+                         public void onAnimationStart(Animator animator) { }
+                         public void onAnimationEnd(Animator animator) {
+                             mWallpaperStrip.setVisibility(View.INVISIBLE);
+                         }
+                         public void onAnimationCancel(Animator animator) { }
+                         public void onAnimationRepeat(Animator animator) { }
+                     });
+                mAnim.setInterpolator(new AccelerateInterpolator(0.75f));
                 mAnim.start();
             }
             @Override
@@ -235,9 +246,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     if (mAnim != null) {
                         mAnim.cancel();
                     }
+                    mWallpaperStrip.setVisibility(View.VISIBLE);
                     mAnim = new LauncherViewPropertyAnimator(mWallpaperStrip);
-                    mAnim.translationY(0f).alpha(1f)
-                            .setInterpolator(new DecelerateInterpolator(0.75f));
+                    mAnim.alpha(1f)
+                         .setDuration(150)
+                         .setInterpolator(new DecelerateInterpolator(0.75f));
                     mAnim.start();
                 }
             }
@@ -489,9 +502,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     protected void onStop() {
         super.onStop();
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
-        if (mWallpaperStrip.getTranslationY() > 0f) {
-            mWallpaperStrip.setTranslationY(0f);
+        if (mWallpaperStrip.getAlpha() < 1f) {
             mWallpaperStrip.setAlpha(1f);
+            mWallpaperStrip.setVisibility(View.VISIBLE);
         }
     }
 
