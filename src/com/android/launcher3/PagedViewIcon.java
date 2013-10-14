@@ -69,7 +69,7 @@ public class PagedViewIcon extends TextView {
             PagedViewIcon.PressedCallback cb) {
         mIcon = info.iconBitmap;
         mPressedCallback = cb;
-        setCompoundDrawablesWithIntrinsicBounds(null, Utilities.createIconDrawable(mIcon),
+        setCompoundDrawables(null, Utilities.createIconDrawable(mIcon),
                 null, null);
         setText(info.title);
         setTag(info);
