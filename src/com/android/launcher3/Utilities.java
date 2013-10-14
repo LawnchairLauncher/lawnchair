@@ -70,6 +70,7 @@ final class Utilities {
      */
     static Drawable createIconDrawable(Bitmap icon) {
         FastBitmapDrawable d = new FastBitmapDrawable(icon);
+        d.setFilterBitmap(true);
         resizeIconDrawable(d);
         return d;
     }
