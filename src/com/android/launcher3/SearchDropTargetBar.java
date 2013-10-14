@@ -138,7 +138,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
      * Shows and hides the search bar.
      */
     public void showSearchBar(boolean animated) {
-        if (!mIsSearchBarHidden) return;
         if (animated) {
             prepareStartAnimation(mQSBSearchBar);
             mQSBSearchBarAnim.reverse();
@@ -153,7 +152,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mIsSearchBarHidden = false;
     }
     public void hideSearchBar(boolean animated) {
-        if (mIsSearchBarHidden) return;
         if (animated) {
             prepareStartAnimation(mQSBSearchBar);
             mQSBSearchBarAnim.start();
