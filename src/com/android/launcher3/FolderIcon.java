@@ -98,6 +98,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     private int mPreviewOffsetY;
     private float mMaxPerspectiveShift;
     boolean mAnimating = false;
+    private Rect mOldBounds = new Rect();
 
     private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
@@ -534,6 +535,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         Drawable d = params.drawable;
 
         if (d != null) {
+            mOldBounds.set(d.getBounds());
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             d.setFilterBitmap(true);
             d.setColorFilter(Color.argb(params.overlayAlpha, 255, 255, 255),
@@ -541,6 +543,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             d.draw(canvas);
             d.clearColorFilter();
             d.setFilterBitmap(false);
+            d.setBounds(mOldBounds);
         }
         canvas.restore();
     }
