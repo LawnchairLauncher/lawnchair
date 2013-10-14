@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Postavke</string>
+    <string name="cancel_target_label">Odustani</string>
+    <string name="edit_target_label">Uredi</string>
+    <string name="menu_lock_workspace">Zaključaj početni zaslon</string>
+    <string name="menu_unlock_workspace">Otključaj početni zaslon</string>
+    <string name="menu_preferences">Trebuchet postavke</string>
+    <string name="menu_apps_sort_title">Ime</string>
+    <string name="menu_apps_sort_install_date">Datum instalacije</string>
+    <string name="menu_apps_filter_system">Sistem</string>
+    <string name="menu_apps_filter_downloaded">Preuzeto</string>
+    <string name="menu_hidden_apps_delete">Resetuj</string>
+    <string name="all_apps_sort_cling_title">Sortirajte vaše aplikacije</string>
+    <string name="all_apps_sort_cling_add_item">Dodirni &amp; drži apps tab da izabereš metod sortiranja</string>
+    <string name="hidden_apps_title">Skrivene aplikacije</string>
+    <string name="workspace_locked">Početni zaslon je zaključan, otključaj u postavkama da preurediš</string>
+    <string name="preferences_title">Postavke</string>
+    <string name="preferences_interface_title">Interfejs</string>
+    <string name="preferences_application_title">App</string>
+    <string name="preferences_interface_homescreen_title">Početni zaslon</string>
+    <string name="preferences_interface_homescreen_summary">Zasloni i podzadine</string>
+    <string name="preferences_interface_homescreen_general_category">Opće</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Početni zasloni</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Broj zaslona na početnom zaslonu</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Zadani</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Izaberi zadani početni zaslon</string>
+    <string name="preferences_interface_homescreen_general_search_title">Traka za pretraživanje</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Uključi trajnu traku za pretraživanje</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Veličina mreže</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Izaberi broj redova/kolona na početnom zaslonu</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Redovi</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Kolone</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Rastegni zaslone</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Proširi početne zaslone da ispune veličinu ekrana</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Sakrij oznake ikona</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Sakrij oznake ikona na početnom zaslonu</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Skrollanje</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Efekat prelaza</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Efekat prelaza kada skrollaš kroz početne zaslone</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Skrollaj podzadinu</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Skrollaj podzadinu kad skrollaš početni zaslon</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Brzi render podzadine</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Koristi hack za podzadinu koji povećava glatkoću na statičnim podzadinama</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Veličina podzadine</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Koliko bi zaslona trebala podzadina biti široka</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Izblijedi stranice zaslona</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Izblijedi stranice zaslona kada skrollaš kroz početne zaslone</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Prikaži konture</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Prikaži konture zaslona kada skrollaš kroz početne zaslone</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Prikaži indikator stranice</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Prikaži indikator aktuelne stranice na zaslonu</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Izblijedi indikator</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Izblijedi indikator nakon što je početni zaslon promjenjen</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Položaj indikatora</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Odaberi gdje na zaslonu prikazati indikator</string>
+    <string name="preferences_interface_drawer_title">Drawer</string>
+    <string name="preferences_interface_drawer_summary">Apps and widgets drawer</string>
+    <string name="preferences_interface_drawer_orientation_title">Orijentacija</string>
+    <string name="preferences_interface_drawer_orientation_summary">Choose which way the drawer scrolls</string>
+    <string name="preferences_interface_drawer_apps_category">Aplikacije</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Skrivene aplikacije</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Hide apps from the drawer</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Skrivene aplikacije (prečice)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Ukloni sakrivene aplikacije/prečice sa početnog zaslona</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Skrivene aplikacije (widgeti)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Ukloni skrivene aplikacije/widgete sa početnog zaslona</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgeti</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Udruži sa aplikacijama</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
+    <string name="preferences_interface_drawer_scrolling_category">Skrollanje</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Efekat prelaza</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Efekat prelaza kada skrollaš kroz zaslone</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Izblijedi stranice strana</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Izblijedi stranice strana kada skrollaš kroz početne zaslone</string>
+    <string name="preferences_interface_drawer_indicator_category">Indikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Prikaži indikator stranice</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Prikaži indikator trenutne stranice na dnu zaslona</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Izblijedi indikator</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Izblijedi indikator nakon što se stranica promjenila</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Položaj indikatora</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Izaberi gdje na zaslonu prikazati indikator</string>
+    <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_enabled_title">Prikaži dock</string>
+    <string name="preferences_interface_dock_enabled_summary">Prikaži dock ispod početnog zaslona</string>
+    <string name="preferences_interface_dock_pages_title">Strane</string>
+    <string name="preferences_interface_dock_pages_summary">Broj strana u docku</string>
+    <string name="preferences_interface_dock_default_page_title">Zadana strana</string>
+    <string name="preferences_interface_dock_default_page_summary">Izaberi zadanu stranu</string>
+    <string name="preferences_interface_dock_icons_title">Ikonice</string>
+    <string name="preferences_interface_dock_icons_summary">Broj ikona/kolona u docku</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Sakrij oznake ikona</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Sakrij oznake ikona u docku</string>
+    <string name="preferences_interface_dock_icon_scale_title">Razmjera ikona</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Razmjera ikona u docku</string>
+    <string name="preferences_interface_dock_divider_title">Prikaži pregradu docka</string>
+    <string name="preferences_interface_dock_divider_summary">Prikaži pregradu između početnog zaslona i docka</string>
+    <string name="preferences_interface_icons_title">Ikone</string>
+    <string name="preferences_interface_general_title">Opće</string>
+    <string name="preferences_interface_general_orientation_title">Automatski rotiraj zaslon</string>
+    <string name="preferences_interface_general_lock_workspace_title">Zaključaj početni zaslon</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Zaključaj položaje prečica i mapa u početnom zaslonu, docku i draweru aplikacija i widgeta</string>
+    <string name="preferences_interface_general_fullscreen_title">Fullscreen način</string>
+    <string name="preferences_interface_general_fullscreen_summary">Sakrij statusnu traku da raširiš početni zaslon</string>
+    <string name="folder_empty_contents_title">Predmeti nisu pronađeni</string>
+    <string name="preferences_interface_general_iconpack_title">Pack ikona</string>
+    <string name="preferences_interface_general_iconpack_summary">Packovi ikona zamjene zadane ikone aplikacija</string>
+    <string name="dialog_pick_iconpack_title">Odaberi pack ikona</string>
+    <string name="default_iconpack_title">Zadano</string>
+    <string name="no_iconpacks_summary">Nema instaliranih packova ikona</string>
+    <string name="effects_standard">Standardni</string>
+    <string name="effects_tablet">Tablet</string>
+    <string name="effects_zoom_in">Zumiraj</string>
+    <string name="effects_zoom_out">Smanji</string>
+    <string name="effects_rotate_up">Rotiraj gore</string>
+    <string name="effects_rotate_down">Rotiraj dole</string>
+    <string name="effects_cylinder_in">U cilindru</string>
+    <string name="effects_cylinder_out">Van cilindra</string>
+    <string name="effects_cube_in">U kocki</string>
+    <string name="effects_cube_out">Van kocke</string>
+    <string name="effects_spin">Zavrti</string>
+    <string name="effects_flip">Prevrni</string>
+    <string name="effects_stack">Slaži</string>
+    <string name="effects_accordion">Harmonika</string>
+    <string name="effects_carousel_left">Ringišpil lijevo</string>
+    <string name="effects_carousel_right">Ringišpil desno</string>
+    <string name="live_folder_cling_title">Dinamične mape</string>
+    <string name="live_folder_cling_create_folder">Žive mape omogućuju app programerima stvaranje mape s dinamičnim sadržajem.
+     Sadržaji mape mogu biti uklonjeni s dugim pritiskom na samo jednu stavku. Za razliku od normalne mape, stavku može dodati samo aplikacija koja je stvorila mapu </string>
+</resources>
