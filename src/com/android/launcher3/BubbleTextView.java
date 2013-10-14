@@ -110,8 +110,7 @@ public class BubbleTextView extends TextView {
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
         setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(b),
-                null, null);
+                Utilities.createIconDrawable(b), null, null);
         setCompoundDrawablePadding((int) ((grid.folderIconSizePx - grid.iconSizePx) / 2f));
         setText(info.title);
         setTag(info);

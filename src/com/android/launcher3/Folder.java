@@ -533,7 +533,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         final BubbleTextView textView =
             (BubbleTextView) mInflater.inflate(R.layout.application, this, false);
         textView.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(item.getIcon(mIconCache)), null, null);
+                Utilities.createIconDrawable(item.getIcon(mIconCache)), null, null);
         textView.setText(item.title);
         textView.setTag(item);
         textView.setTextColor(getResources().getColor(R.color.folder_items_text_color));
