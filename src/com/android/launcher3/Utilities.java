@@ -66,6 +66,22 @@ final class Utilities {
     static int sColorIndex = 0;
 
     /**
+     * Returns a FastBitmapDrawable with the icon, accurately sized.
+     */
+    static Drawable createIconDrawable(Bitmap icon) {
+        FastBitmapDrawable d = new FastBitmapDrawable(icon);
+        resizeIconDrawable(d);
+        return d;
+    }
+
+    /**
+     * Resizes an icon drawable to the correct icon size.
+     */
+    static void resizeIconDrawable(Drawable icon) {
+        icon.setBounds(0, 0, sIconTextureWidth, sIconTextureHeight);
+    }
+
+    /**
      * Returns a bitmap suitable for the all apps view. Used to convert pre-ICS
      * icon bitmaps that are stored in the database (which were 74x74 pixels at hdpi size)
      * to the proper size (48dp)
