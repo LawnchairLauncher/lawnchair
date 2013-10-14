@@ -1446,6 +1446,12 @@ public class Workspace extends SmoothPagedView
         }
 
         if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
+
+        CellLayout cc = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
+        if (progress > 0 && cc.getVisibility() != VISIBLE && !isSmall()) {
+            cc.setVisibility(VISIBLE);
+        }
+
         mLastCustomContentScrollProgress = progress;
 
         setBackgroundAlpha(progress * 0.8f);
