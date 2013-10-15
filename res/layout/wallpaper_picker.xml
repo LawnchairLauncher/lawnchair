@@ -27,6 +27,11 @@
         android:id="@+id/cropView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/defaultWallpaperView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
     <ProgressBar
         android:id="@+id/loading"
         style="@android:style/Widget.Holo.ProgressBar.Large"
