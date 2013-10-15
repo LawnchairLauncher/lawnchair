@@ -402,6 +402,7 @@ public class Launcher extends Activity
                 Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
+        mIconCache.flushInvalidIcons(grid);
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
