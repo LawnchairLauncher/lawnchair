@@ -147,6 +147,20 @@ public class IconCache {
     }
 
     /**
+     * Empty out the cache that aren't of the correct grid size
+     */
+    public void flushInvalidIcons(DeviceProfile grid) {
+        synchronized (mCache) {
+            for (ComponentName cn : mCache.keySet()) {
+                final CacheEntry e = mCache.get(cn);
+                if (e.icon.getWidth() != grid.iconSizePx || e.icon.getHeight() != grid.iconSizePx) {
+                    mCache.remove(cn);
+                }
+            }
+        }
+    }
+
+    /**
      * Fill in "application" with the icon and label for "info."
      */
     public void getTitleAndIcon(AppInfo application, ResolveInfo info,
