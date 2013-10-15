@@ -483,7 +483,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child) {
-        animateViewIntoPosition(dragView, child, null);
+        animateViewIntoPosition(dragView, child, null, null);
     }
 
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
@@ -499,8 +499,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child,
-            final Runnable onFinishAnimationRunnable) {
-        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, null);
+            final Runnable onFinishAnimationRunnable, View anchorView) {
+        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, anchorView);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
@@ -648,8 +648,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 int x = (int) (fromLeft + Math.round(((to.left - fromLeft) * motionPercent)));
                 int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
 
-                int xPos = x - mDropView.getScrollX() + (mAnchorView != null
-                        ? (mAnchorViewInitialScrollX - mAnchorView.getScrollX()) : 0);
+                int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
+                    (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
+
+                int xPos = x - mDropView.getScrollX() + anchorAdjust;
                 int yPos = y - mDropView.getScrollY();
 
                 mDropView.setTranslationX(xPos);

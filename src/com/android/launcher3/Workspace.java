@@ -3783,7 +3783,7 @@ public class Workspace extends SmoothPagedView
                 // the correct final location.
                 setFinalTransitionTransform(cellLayout);
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view,
-                        exitSpringLoadedRunnable);
+                        exitSpringLoadedRunnable, this);
                 resetTransitionTransform(cellLayout);
             }
         }
