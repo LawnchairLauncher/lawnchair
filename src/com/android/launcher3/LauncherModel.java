@@ -195,9 +195,6 @@ public class LauncherModel extends BroadcastReceiver {
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mIconCache = iconCache;
 
-        mDefaultIcon = Utilities.createIconBitmap(
-                mIconCache.getFullResDefaultActivityIcon(), context);
-
         final Resources res = context.getResources();
         Configuration config = res.getConfiguration();
         mPreviousConfigMcc = config.mcc;
@@ -409,6 +406,11 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     public Bitmap getFallbackIcon() {
+        if (mDefaultIcon == null) {
+            final Context context = LauncherAppState.getInstance().getContext();
+            mDefaultIcon = Utilities.createIconBitmap(
+                    mIconCache.getFullResDefaultActivityIcon(), context);
+        }
         return Bitmap.createBitmap(mDefaultIcon);
     }
 
