@@ -81,8 +81,6 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Choose the number of rows/columns on the homescreen</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rows</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Columns</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_title">Stretch screens</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Expand homescreens to fill the size of display</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide homescreen icon labels</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>

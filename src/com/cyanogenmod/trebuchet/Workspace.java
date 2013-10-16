@@ -305,7 +305,6 @@ public class Workspace extends PagedView
     // Preferences
     private int mNumberHomescreens;
     private int mDefaultHomescreen;
-    private boolean mStretchScreens;
     private boolean mShowSearchBar;
     private boolean mShowHotseat;
     private boolean mHideIconLabels;
@@ -393,12 +392,6 @@ public class Workspace extends PagedView
             mDefaultHomescreen = mNumberHomescreens / 2;
         }
 
-        mStretchScreens = PreferencesProvider.Interface.Homescreen.getStretchScreens();
-        // Large screen has calculated dimensions always, unless specified by config_workspaceTabletGrid option
-        boolean workspaceTabletGrid = getResources().getBoolean(R.bool.config_workspaceTabletGrid);
-        if (LauncherApplication.isScreenLarge() && workspaceTabletGrid == false) {
-            mStretchScreens = false;
-        }
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar();
         mShowHotseat = PreferencesProvider.Interface.Dock.getShowDock();
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels();
@@ -531,9 +524,7 @@ public class Workspace extends PagedView
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (int i = 0; i < mNumberHomescreens; i++) {
             CellLayout screen = (CellLayout) inflater.inflate(R.layout.workspace_screen, null);
-            if (mStretchScreens) {
-                screen.setCellGaps(-1, -1);
-            }
+            screen.setCellGaps(-1, -1);
             addView(screen);
         }
 
