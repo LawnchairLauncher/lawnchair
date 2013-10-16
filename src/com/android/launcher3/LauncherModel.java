@@ -175,8 +175,7 @@ public class LauncherModel extends BroadcastReceiver {
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
-                        ArrayList<AppInfo> appInfos,
-                        boolean matchPackageNamesOnly);
+                        ArrayList<AppInfo> appInfos);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
         public void bindSearchablesChanged();
         public void onPageBoundSynchronously(int page);
@@ -2725,43 +2724,47 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
             }
-            // If a package has been removed, or an app has been removed as a result of
-            // an update (for example), make the removed callback.
-            if (mOp == OP_REMOVE || !removedApps.isEmpty()) {
-                final boolean packageRemoved = (mOp == OP_REMOVE);
-                final ArrayList<String> removedPackageNames =
-                        new ArrayList<String>(Arrays.asList(packages));
 
-                // Update the launcher db to reflect the removal of apps
-                if (packageRemoved) {
-                    for (String pn : removedPackageNames) {
-                        ArrayList<ItemInfo> infos = getItemInfoForPackageName(pn);
-                        for (ItemInfo i : infos) {
-                            deleteItemFromDatabase(context, i);
-                        }
-                    }
-
-                    // Remove any queued items from the install queue
-                    String spKey = LauncherAppState.getSharedPreferencesKey();
-                    SharedPreferences sp =
-                            context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-                    InstallShortcutReceiver.removeFromInstallQueue(sp, removedPackageNames);
-                } else {
-                    for (AppInfo a : removedApps) {
-                        ArrayList<ItemInfo> infos =
-                                getItemInfoForComponentName(a.componentName);
-                        for (ItemInfo i : infos) {
-                            deleteItemFromDatabase(context, i);
-                        }
+            final ArrayList<String> removedPackageNames =
+                    new ArrayList<String>();
+            if (mOp == OP_REMOVE) {
+                // Mark all packages in the broadcast to be removed
+                removedPackageNames.addAll(Arrays.asList(packages));
+            } else if (mOp == OP_UPDATE) {
+                // Mark disabled packages in the broadcast to be removed
+                final PackageManager pm = context.getPackageManager();
+                for (int i=0; i<N; i++) {
+                    if (isPackageDisabled(pm, packages[i])) {
+                        removedPackageNames.add(packages[i]);
                     }
                 }
-
+            }
+            // Remove all the components associated with this package
+            for (String pn : removedPackageNames) {
+                ArrayList<ItemInfo> infos = getItemInfoForPackageName(pn);
+                for (ItemInfo i : infos) {
+                    deleteItemFromDatabase(context, i);
+                }
+            }
+            // Remove all the specific components
+            for (AppInfo a : removedApps) {
+                ArrayList<ItemInfo> infos = getItemInfoForComponentName(a.componentName);
+                for (ItemInfo i : infos) {
+                    deleteItemFromDatabase(context, i);
+                }
+            }
+            if (!removedPackageNames.isEmpty() || !removedApps.isEmpty()) {
+                // Remove any queued items from the install queue
+                String spKey = LauncherAppState.getSharedPreferencesKey();
+                SharedPreferences sp =
+                        context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+                InstallShortcutReceiver.removeFromInstallQueue(sp, removedPackageNames);
+                // Call the components-removed callback
                 mHandler.post(new Runnable() {
                     public void run() {
                         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindComponentsRemoved(removedPackageNames,
-                                    removedApps, packageRemoved);
+                            callbacks.bindComponentsRemoved(removedPackageNames, removedApps);
                         }
                     }
                 });
@@ -2803,19 +2806,26 @@ public class LauncherModel extends BroadcastReceiver {
         return widgetsAndShortcuts;
     }
 
+    private boolean isPackageDisabled(PackageManager pm, String packageName) {
+        try {
+            PackageInfo pi = pm.getPackageInfo(packageName, 0);
+            return !pi.applicationInfo.enabled;
+        } catch (NameNotFoundException e) {
+            // Fall through
+        }
+        return false;
+    }
     private boolean isValidPackageComponent(PackageManager pm, ComponentName cn) {
         if (cn == null) {
             return false;
         }
+        if (isPackageDisabled(pm, cn.getPackageName())) {
+            return false;
+        }
 
         try {
-            // Skip if the application is disabled
-            PackageInfo pi = pm.getPackageInfo(cn.getPackageName(), 0);
-            if (!pi.applicationInfo.enabled) {
-                return false;
-            }
-
             // Check the activity
+            PackageInfo pi = pm.getPackageInfo(cn.getPackageName(), 0);
             return (pm.getActivityInfo(cn, 0) != null);
         } catch (NameNotFoundException e) {
             return false;
