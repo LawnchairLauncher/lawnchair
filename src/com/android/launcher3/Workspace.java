@@ -1250,10 +1250,8 @@ public class Workspace extends SmoothPagedView
                 // TODO: do different behavior if it's  a live wallpaper?
                 // Sometimes the left parameter of the pages is animated during a layout transition;
                 // this parameter offsets it to keep the wallpaper from animating as well
-                int offsetForLayoutTransitionAnimation = isLayoutRtl() ?
-                        getPageAt(getChildCount() - 1).getLeft() - getFirstChildLeft() : 0;
                 int adjustedScroll =
-                        getScrollX() - firstPageScrollX - offsetForLayoutTransitionAnimation;
+                        getScrollX() - firstPageScrollX - getLayoutTransitionOffsetForPage(0);
                 float offset = Math.min(1, adjustedScroll / (float) scrollRange);
                 offset = Math.max(0, offset);
                 // Don't use up all the wallpaper parallax until you have at least
