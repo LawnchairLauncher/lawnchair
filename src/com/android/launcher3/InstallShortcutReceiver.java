@@ -108,6 +108,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     public static void removeFromInstallQueue(SharedPreferences sharedPrefs,
                                               ArrayList<String> packageNames) {
+        if (packageNames.isEmpty()) {
+            return;
+        }
         synchronized(sLock) {
             Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
             if (DBG) {
