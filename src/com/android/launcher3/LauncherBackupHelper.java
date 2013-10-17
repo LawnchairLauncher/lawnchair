@@ -83,6 +83,8 @@ public class LauncherBackupHelper implements BackupHelper {
 
     public static final String LAUNCHER_PREFIX = "L";
 
+    public static final String LAUNCHER_PREFS_PREFIX = "LP";
+
     private static final Bitmap.CompressFormat IMAGE_FORMAT =
             android.graphics.Bitmap.CompressFormat.PNG;
 
