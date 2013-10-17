@@ -223,16 +223,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
         // This name is only used for comparisons and notifications, so fall back to activity name
         // if not supplied
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        if (name == null) {
-            try {
-                PackageManager pm = context.getPackageManager();
-                ActivityInfo info = pm.getActivityInfo(intent.getComponent(), 0);
-                name = info.loadLabel(pm).toString();
-            } catch (PackageManager.NameNotFoundException nnfe) {
-                return;
-            }
-        }
+        String name = ensureValidName(context, intent,
+                data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME)).toString();
         Bitmap icon = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
         Intent.ShortcutIconResource iconResource =
             data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
@@ -318,6 +310,25 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         }
         LauncherAppState app = LauncherAppState.getInstance();
-        return app.getModel().infoFromShortcutIntent(context, data, null);
+        ShortcutInfo info = app.getModel().infoFromShortcutIntent(context, data, null);
+        info.title = ensureValidName(context, launchIntent, info.title);
+        return info;
+    }
+
+    /**
+     * Ensures that we have a valid, non-null name.  If the provided name is null, we will return
+     * the application name instead.
+     */
+    private static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
+        if (name == null) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                ActivityInfo info = pm.getActivityInfo(intent.getComponent(), 0);
+                name = info.loadLabel(pm).toString();
+            } catch (PackageManager.NameNotFoundException nnfe) {
+                return "";
+            }
+        }
+        return name;
     }
 }
