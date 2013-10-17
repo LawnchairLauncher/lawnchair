@@ -214,8 +214,8 @@ public class Launcher extends Activity
     private AnimatorSet mStateAnimation;
 
     static final int APPWIDGET_HOST_ID = 1024;
-    private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
-    private static final int EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT = 600;
+    public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
+    private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
     private static final int SHOW_CLING_DURATION = 250;
     private static final int DISMISS_CLING_DURATION = 200;
 
@@ -746,13 +746,24 @@ public class Launcher extends Activity
         // Reset the startActivity waiting flag
         mWaitingForResult = false;
 
+        Runnable exitSpringLoaded = new Runnable() {
+            @Override
+            public void run() {
+                exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
+                        EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+            }
+        };
+
         if (requestCode == REQUEST_BIND_APPWIDGET) {
-            int appWidgetId = data != null ?
+            final int appWidgetId = data != null ?
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
+                mWorkspace.removeExtraEmptyScreen(true, exitSpringLoaded,
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(appWidgetId, mPendingAddInfo, null, mPendingAddWidgetInfo);
+                addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
+                        mPendingAddWidgetInfo, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
             }
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
@@ -762,22 +773,37 @@ public class Launcher extends Activity
             return;
         }
 
-        boolean delayExitSpringLoadedMode = false;
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET);
 
         // We have special handling for widgets
         if (isWidgetDrop) {
-            int appWidgetId = data != null ?
+            final int appWidgetId = data != null ?
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
+            final int result;
+            final Runnable onComplete;
             if (appWidgetId < 0) {
                 Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not returned from the \\" +
                         "widget configuration activity.");
-                completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
-                mWorkspace.stripEmptyScreens();
+                result = RESULT_CANCELED;
+                completeTwoStageWidgetDrop(result, appWidgetId);
+                onComplete = new Runnable() {
+                    @Override
+                    public void run() {
+                        exitSpringLoadedDragModeDelayed(false, 0, null);
+                    }
+                };
             } else {
-                completeTwoStageWidgetDrop(resultCode, appWidgetId);
+                result = resultCode;
+                onComplete = new Runnable() {
+                    @Override
+                    public void run() {
+                        completeTwoStageWidgetDrop(result, appWidgetId);
+                    }
+                };
             }
+            mWorkspace.removeExtraEmptyScreen(true, onComplete, ON_ACTIVITY_RESULT_ANIMATION_DELAY,
+                    false);
             return;
         }
 
@@ -797,15 +823,15 @@ public class Launcher extends Activity
             if (isWorkspaceLocked()) {
                 sPendingAddList.add(args);
             } else {
-                delayExitSpringLoadedMode = completeAdd(args);
+                completeAdd(args);
             }
+            mWorkspace.removeExtraEmptyScreen(true, exitSpringLoaded,
+                    ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         } else if (resultCode == RESULT_CANCELED) {
-            mWorkspace.stripEmptyScreens();
+            mWorkspace.removeExtraEmptyScreen(true, exitSpringLoaded,
+                    ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         }
         mDragLayer.clearAnimatedView();
-        // Exit spring loaded mode if necessary after cancelling the configuration of a widget
-        exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), delayExitSpringLoadedMode,
-                null);
     }
 
     private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
@@ -825,25 +851,18 @@ public class Launcher extends Activity
                 public void run() {
                     completeAddAppWidget(appWidgetId, mPendingAddInfo.container,
                             mPendingAddInfo.screenId, layout, null);
-                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), false,
-                            null);
+                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
+                            EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
             animationType = Workspace.CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION;
-            onCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), false,
-                            null);
-                }
-            };
         }
         if (mDragLayer.getAnimatedView() != null) {
             mWorkspace.animateWidgetDrop(mPendingAddInfo, cellLayout,
                     (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
                     animationType, boundWidget, true);
-        } else {
+        } else if (onCompleteRunnable != null) {
             // The animated view may be null in the case of a rotation during widget configuration
             onCompleteRunnable.run();
         }
@@ -2087,8 +2106,14 @@ public class Launcher extends Activity
         mPendingAddInfo.dropPos = null;
     }
 
-    void addAppWidgetImpl(final int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
-            AppWidgetProviderInfo appWidgetInfo) {
+    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
+            final AppWidgetHostView boundWidget, final AppWidgetProviderInfo appWidgetInfo) {
+        addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
+    }
+
+    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
+            final AppWidgetHostView boundWidget, final AppWidgetProviderInfo appWidgetInfo, int
+            delay) {
         if (appWidgetInfo.configure != null) {
             mPendingAddWidgetInfo = appWidgetInfo;
 
@@ -2099,10 +2124,17 @@ public class Launcher extends Activity
             Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_APPWIDGET);
         } else {
             // Otherwise just add it
+            Runnable onComplete = new Runnable() {
+                @Override
+                public void run() {
+                    // Exit spring loaded mode if necessary after adding the widget
+                    exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
+                            null);
+                }
+            };
             completeAddAppWidget(appWidgetId, info.container, info.screenId, boundWidget,
                     appWidgetInfo);
-            // Exit spring loaded mode if necessary after adding the widget
-            exitSpringLoadedDragModeDelayed(true, false, null);
+            mWorkspace.removeExtraEmptyScreen(true, onComplete, delay, false);
         }
     }
 
@@ -3320,7 +3352,7 @@ public class Launcher extends Activity
         }
     }
 
-    void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay,
+    void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
             final Runnable onCompleteRunnable) {
         if (mState != State.APPS_CUSTOMIZE_SPRING_LOADED) return;
 
@@ -3337,9 +3369,8 @@ public class Launcher extends Activity
                     exitSpringLoadedDragMode();
                 }
             }
-        }, (extendedDelay ?
-                EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT :
-                EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT));
+        }, delay);
+
     }
 
     void exitSpringLoadedDragMode() {

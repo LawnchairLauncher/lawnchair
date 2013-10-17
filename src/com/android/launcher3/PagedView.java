@@ -266,7 +266,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected final Rect mInsets = new Rect();
 
-    private Runnable mDelayedSnapToPageRunnable;
+    protected Runnable mDelayedSnapToPageRunnable;
 
     // Relating to the scroll and overscroll effects
     protected static float CAMERA_DISTANCE = 6500;

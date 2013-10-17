@@ -22,6 +22,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -90,6 +91,9 @@ public class Workspace extends SmoothPagedView
     private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
     private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
 
+    protected static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
+    protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
+
     private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
     private static final int FLING_THRESHOLD_VELOCITY = 500;
@@ -129,6 +133,8 @@ public class Workspace extends SmoothPagedView
 
     private HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
     private ArrayList<Long> mScreenOrder = new ArrayList<Long>();
+
+    private Runnable mRemoveEmptyScreenRunnable;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -422,6 +428,7 @@ public class Workspace extends SmoothPagedView
         disableLayoutTransitions();
         removeExtraEmptyScreens();
         enableLayoutTransitions();
+
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();
     }
@@ -662,6 +669,9 @@ public class Workspace extends SmoothPagedView
         boolean addLeftScreen = true;
         boolean addRightScreen = true;
 
+        // Cancel any pending removal of empty screen
+        mRemoveEmptyScreenRunnable = null;
+
         if (mDragSourceInternal != null) {
             if (mDragSourceInternal.getChildCount() == 1) {
                 CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
@@ -695,6 +705,97 @@ public class Workspace extends SmoothPagedView
             setCurrentPage(mCurrentPage - 1);
             removeView(cl);
         }
+    }
+
+    private void convertFinalScreenToEmptyScreenIfNecessary() {
+        if (hasExtraEmptyScreens() || mScreenOrder.size() == 0) return;
+        long finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
+
+        if (finalScreenId == CUSTOM_CONTENT_SCREEN_ID) return;
+        CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
+
+        // If the final screen is empty, convert it to the extra empty screen
+        if (finalScreen.getShortcutsAndWidgets().getChildCount() == 0) {
+            mWorkspaceScreens.remove(finalScreenId);
+            mScreenOrder.remove(finalScreenId);
+
+            // if this is the last non-custom content screen, convert it to the empty screen
+            mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_LEFT_ID, finalScreen);
+            mScreenOrder.add(EXTRA_EMPTY_SCREEN_LEFT_ID);
+        }
+    }
+
+    public void removeExtraEmptyScreen(final boolean animate, final Runnable onComplete) {
+        removeExtraEmptyScreen(animate, onComplete, 0, false);
+    }
+
+    public void removeExtraEmptyScreen(final boolean animate, final Runnable onComplete,
+            final int delay, final boolean stripEmptyScreens) {
+        if (delay > 0) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    removeExtraEmptyScreen(animate, onComplete, 0, stripEmptyScreens);
+                }
+
+            }, delay);
+            return;
+        }
+
+        convertFinalScreenToEmptyScreenIfNecessary();
+        if (hasExtraEmptyScreens()) {
+            int emptyIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_LEFT_ID);
+            if (getNextPage() == emptyIndex) {
+                snapToPage(getNextPage() - 1, SNAP_OFF_EMPTY_SCREEN_DURATION);
+                fadeAndRemoveEmptyScreen(SNAP_OFF_EMPTY_SCREEN_DURATION, FADE_EMPTY_SCREEN_DURATION,
+                        onComplete, stripEmptyScreens);
+            } else {
+                fadeAndRemoveEmptyScreen(0, FADE_EMPTY_SCREEN_DURATION,
+                        onComplete, stripEmptyScreens);
+            }
+            return;
+        }
+        if (onComplete != null) {
+            onComplete.run();
+        }
+    }
+
+    private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
+            final boolean stripEmptyScreens) {
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
+        PropertyValuesHolder bgAlpha = PropertyValuesHolder.ofFloat("backgroundAlpha", 0f);
+
+        final CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_LEFT_ID);
+
+        mRemoveEmptyScreenRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (hasExtraEmptyScreens()) {
+                    mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_LEFT_ID);
+                    mScreenOrder.remove(EXTRA_EMPTY_SCREEN_LEFT_ID);
+                    removeView(cl);
+                    if (stripEmptyScreens) {
+                        stripEmptyScreens();
+                    }
+                }
+            }
+        };
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(cl, alpha, bgAlpha);
+        oa.setDuration(duration);
+        oa.setStartDelay(delay);
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mRemoveEmptyScreenRunnable != null) {
+                    mRemoveEmptyScreenRunnable.run();
+                }
+                if (onComplete != null) {
+                    onComplete.run();
+                }
+            }
+        });
+        oa.start();
     }
 
     public void removeExtraEmptyScreenRight() {
@@ -818,6 +919,7 @@ public class Workspace extends SmoothPagedView
                 // if this is the last non-custom content screen, convert it to the empty screen
                 mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_RIGHT_ID, cl);
                 mScreenOrder.add(EXTRA_EMPTY_SCREEN_RIGHT_ID);
+                mRemoveEmptyScreenRunnable = null;
             }
         }
 
@@ -1160,6 +1262,18 @@ public class Workspace extends SmoothPagedView
         SharedPreferences sp = mLauncher.getSharedPreferences(spKey, Context.MODE_PRIVATE);
         WallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
                 sp, mLauncher.getWindowManager(), mWallpaperManager);
+    }
+
+    protected void snapToPage(int whichPage, Runnable r) {
+        snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION, r);
+    }
+
+    protected void snapToPage(int whichPage, int duration, Runnable r) {
+        if (mDelayedSnapToPageRunnable != null) {
+            mDelayedSnapToPageRunnable.run();
+        }
+        mDelayedSnapToPageRunnable = r;
+        snapToPage(whichPage, duration);
     }
 
     protected void snapToScreenId(long screenId, Runnable r) {
@@ -2853,13 +2967,13 @@ public class Workspace extends SmoothPagedView
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
-                    stripEmptyScreens();
+                    removeExtraEmptyScreen(true, null, 0, true);
                     return;
                 }
 
                 if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                         distance, d, false)) {
-                    stripEmptyScreens();
+                    removeExtraEmptyScreen(true, null, 0, true);
                     return;
                 }
 
@@ -2968,7 +3082,7 @@ public class Workspace extends SmoothPagedView
                     if (finalResizeRunnable != null) {
                         finalResizeRunnable.run();
                     }
-                    stripEmptyScreens();
+                    removeExtraEmptyScreen(true, null, 0, true);
                 }
             };
             mAnimatingViewIntoPlace = true;
@@ -3619,7 +3733,13 @@ public class Workspace extends SmoothPagedView
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
             public void run() {
-                mLauncher.exitSpringLoadedDragModeDelayed(true, false, null);
+                removeExtraEmptyScreen(false, new Runnable() {
+                    @Override
+                    public void run() {
+                        mLauncher.exitSpringLoadedDragModeDelayed(true,
+                                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+                    }
+                });
             }
         };
 
@@ -3856,7 +3976,7 @@ public class Workspace extends SmoothPagedView
                 external, scalePreview);
 
         Resources res = mLauncher.getResources();
-        int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
+        final int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
 
         // In the case where we've prebound the widget, we remove it from the DragLayer
         if (finalView instanceof AppWidgetHostView && external) {
@@ -3964,11 +4084,11 @@ public class Workspace extends SmoothPagedView
             final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
             mDeferredAction = new Runnable() {
-                    public void run() {
-                        onDropCompleted(target, d, isFlingToDelete, success);
-                        mDeferredAction = null;
-                    }
-                };
+                public void run() {
+                    onDropCompleted(target, d, isFlingToDelete, success);
+                    mDeferredAction = null;
+                }
+            };
             return;
         }
 
@@ -3986,7 +4106,7 @@ public class Workspace extends SmoothPagedView
                 // If we move the item to anything not on the Workspace, check if any empty
                 // screens need to be removed. If we dropped back on the workspace, this will
                 // be done post drop animation.
-                stripEmptyScreens();
+                removeExtraEmptyScreen(true, null, 0, true);
             }
         } else if (mDragInfo != null && target != null && (!(target instanceof InfoDropTarget))) {
             CellLayout cellLayout;
