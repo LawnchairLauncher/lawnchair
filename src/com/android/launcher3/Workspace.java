@@ -4513,29 +4513,45 @@ public class Workspace extends SmoothPagedView
         stripEmptyScreens();
     }
 
+    private void updateShortcut(HashMap<ComponentName, AppInfo> appsMap, ItemInfo info,
+                                View child) {
+        ComponentName cn = info.getIntent().getComponent();
+        if (cn != null) {
+            AppInfo appInfo = appsMap.get(info.getIntent().getComponent());
+            if ((appInfo != null) && LauncherModel.isShortcutInfoUpdateable(info)) {
+                ShortcutInfo shortcutInfo = (ShortcutInfo) info;
+                BubbleTextView shortcut = (BubbleTextView) child;
+                shortcutInfo.updateIcon(mIconCache);
+                shortcutInfo.title = appInfo.title.toString();
+                shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache);
+            }
+        }
+    }
+
     void updateShortcuts(ArrayList<AppInfo> apps) {
+        // Create a map of the apps to test against
+        final HashMap<ComponentName, AppInfo> appsMap = new HashMap<ComponentName, AppInfo>();
+        for (AppInfo ai : apps) {
+            appsMap.put(ai.componentName, ai);
+        }
+
         ArrayList<ShortcutAndWidgetContainer> childrenLayouts = getAllShortcutAndWidgetContainers();
         for (ShortcutAndWidgetContainer layout: childrenLayouts) {
-            int childCount = layout.getChildCount();
-            for (int j = 0; j < childCount; j++) {
-                final View view = layout.getChildAt(j);
-                Object tag = view.getTag();
-
-                if (LauncherModel.isShortcutInfoUpdateable((ItemInfo) tag)) {
-                    ShortcutInfo info = (ShortcutInfo) tag;
-
-                    final Intent intent = info.intent;
-                    final ComponentName name = intent.getComponent();
-                    final int appCount = apps.size();
-                    for (int k = 0; k < appCount; k++) {
-                        AppInfo app = apps.get(k);
-                        if (app.componentName.equals(name)) {
-                            BubbleTextView shortcut = (BubbleTextView) view;
-                            info.updateIcon(mIconCache);
-                            info.title = app.title.toString();
-                            shortcut.applyFromShortcutInfo(info, mIconCache);
-                        }
+            // Update all the children shortcuts
+            final HashMap<ItemInfo, View> children = new HashMap<ItemInfo, View>();
+            for (int j = 0; j < layout.getChildCount(); j++) {
+                View v = layout.getChildAt(j);
+                ItemInfo info = (ItemInfo) v.getTag();
+                if (info instanceof FolderInfo && v instanceof FolderIcon) {
+                    FolderIcon folder = (FolderIcon) v;
+                    ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
+                    for (View fv : folderChildren) {
+                        info = (ItemInfo) fv.getTag();
+                        updateShortcut(appsMap, info, fv);
                     }
+                    folder.invalidate();
+                } else if (info instanceof ShortcutInfo) {
+                    updateShortcut(appsMap, info, v);
                 }
             }
         }
