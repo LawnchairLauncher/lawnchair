@@ -181,6 +181,12 @@ class LauncherSettings {
         static final String SPANY = "spanY";
 
         /**
+         * The receiver component for this item
+         * <P>Type: STRING</P>
+         */
+        static final String RECEIVER = "receiverComponent";
+
+        /**
          * The favorite is a user created folder
          */
         static final int ITEM_TYPE_FOLDER = 2;

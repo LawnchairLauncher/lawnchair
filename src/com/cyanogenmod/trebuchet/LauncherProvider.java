@@ -239,6 +239,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_ALLAPPS = "allapps";
         private static final String TAG_FOLDER = "folder";
         private static final String TAG_EXTRA = "extra";
+        private static final String TAG_LIVE_FOLDER = "live-folder";
 
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
@@ -358,6 +359,7 @@ public class LauncherProvider extends ContentProvider {
             final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
             final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
             final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+            final int receiverIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.RECEIVER);
 
             ContentValues[] rows = new ContentValues[c.getCount()];
             int i = 0;
@@ -376,6 +378,8 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.SCREEN, c.getInt(screenIndex));
                 values.put(LauncherSettings.Favorites.CELLX, c.getInt(cellXIndex));
                 values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
+                values.put(LauncherSettings.Favorites.RECEIVER, c.getInt(receiverIndex));
+
                 rows[i++] = values;
             }
 
@@ -654,6 +658,9 @@ public class LauncherProvider extends ContentProvider {
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
                         added = id >= 0;
+                    } else if (TAG_LIVE_FOLDER.equals(name)) {
+                        long id = addLiveFolder(db, values, a, packageManager);
+                        added = id >= 0;
                     } else if (TAG_FOLDER.equals(name)) {
                         String title;
                         int titleResId =  a.getResourceId(R.styleable.Favorite_title, -1);
@@ -770,6 +777,47 @@ public class LauncherProvider extends ContentProvider {
             } else {
                 return id;
             }
+        }
+
+        private long addLiveFolder(SQLiteDatabase db, ContentValues values, TypedArray a,
+                PackageManager packageManager) {
+            long id = -1;
+            String packageName = a.getString(R.styleable.Favorite_packageName);
+            String className = a.getString(R.styleable.Favorite_className);
+            try {
+                ComponentName cn;
+                try {
+                    cn = new ComponentName(packageName, className);
+                    packageManager.getReceiverInfo(cn, 0);
+                } catch (PackageManager.NameNotFoundException nnfe) {
+                    String[] packages = packageManager.currentToCanonicalPackageNames(
+                        new String[] { packageName });
+                    cn = new ComponentName(packages[0], className);
+                    packageManager.getReceiverInfo(cn, 0);
+                }
+                String title;
+                int titleResId =  a.getResourceId(R.styleable.Favorite_title, -1);
+                if (titleResId != -1) {
+                    title = mContext.getResources().getString(titleResId);
+                } else {
+                    title = mContext.getResources().getString(R.string.folder_name);
+                }
+                values.put(LauncherSettings.Favorites.TITLE, title);
+
+                values.put(Favorites.RECEIVER, cn.toString());
+                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_LIVE_FOLDER);
+                values.put(Favorites.SPANX, 1);
+                values.put(Favorites.SPANY, 1);
+                id = generateNewId();
+                values.put(Favorites._ID, id);
+                if (dbInsertAndCheck(db, TABLE_FAVORITES, null, values) < 0) {
+                    return -1;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.w(TAG, "Unable to add favorite: " + packageName +
+                        "/" + className, e);
+            }
+            return id;
         }
 
         private ComponentName getSearchWidgetProvider() {
