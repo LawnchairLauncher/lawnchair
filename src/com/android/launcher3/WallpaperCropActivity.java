@@ -37,7 +37,6 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -96,9 +95,6 @@ public class WallpaperCropActivity extends Activity {
             return;
         }
 
-        int rotation = getRotationFromExif(this, imageUri);
-        mCropView.setTileSource(new BitmapRegionTileSource(this, imageUri, 1024, rotation), null);
-        mCropView.setTouchEnabled(true);
         // Action bar
         // Show the custom action bar view
         final ActionBar actionBar = getActionBar();
@@ -111,6 +107,46 @@ public class WallpaperCropActivity extends Activity {
                         cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
                     }
                 });
+
+        // Load image in background
+        setCropViewTileSource(
+                new BitmapRegionTileSource.UriBitmapSource(this, imageUri, 1024), true, false);
+    }
+
+    public void setCropViewTileSource(final BitmapRegionTileSource.BitmapSource bitmapSource,
+            final boolean touchEnabled, final boolean moveToLeft) {
+        final Context context = WallpaperCropActivity.this;
+        final View progressView = findViewById(R.id.loading);
+        final AsyncTask<Void, Void, Void> loadBitmapTask = new AsyncTask<Void, Void, Void>() {
+            protected Void doInBackground(Void...args) {
+                if (!isCancelled()) {
+                    bitmapSource.loadInBackground();
+                }
+                return null;
+            }
+            protected void onPostExecute(Void arg) {
+                if (!isCancelled()) {
+                    progressView.setVisibility(View.INVISIBLE);
+                    mCropView.setTileSource(
+                            new BitmapRegionTileSource(context, bitmapSource), null);
+                    mCropView.setTouchEnabled(touchEnabled);
+                    if (moveToLeft) {
+                        mCropView.moveToLeft();
+                    }
+                }
+            }
+        };
+        // We don't want to show the spinner every time we load an image, because that would be
+        // annoying; instead, only start showing the spinner if loading the image has taken
+        // longer than 1 sec (ie 1000 ms)
+        progressView.postDelayed(new Runnable() {
+            public void run() {
+                if (loadBitmapTask.getStatus() != AsyncTask.Status.FINISHED) {
+                    progressView.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 1000);
+        loadBitmapTask.execute();
     }
 
     public boolean enableRotation() {
