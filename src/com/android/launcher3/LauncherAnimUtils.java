@@ -30,6 +30,7 @@ public class LauncherAnimUtils {
     static HashSet<Animator> sAnimators = new HashSet<Animator>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
+            sAnimators.add(animation);
         }
 
         public void onAnimationRepeat(Animator animation) {
@@ -45,7 +46,6 @@ public class LauncherAnimUtils {
     };
 
     public static void cancelOnDestroyActivity(Animator a) {
-        sAnimators.add(a);
         a.addListener(sEndAnimListener);
     }
 
