@@ -4085,6 +4085,7 @@ public class Workspace extends SmoothPagedView
             }
         }
         mRestoredPages.clear();
+        mSavedStates = null;
     }
 
     @Override
