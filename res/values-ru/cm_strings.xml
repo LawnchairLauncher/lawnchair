@@ -164,6 +164,8 @@
 
     <!-- Live folder cling -->
     <string name="live_folder_cling_title">Живые папки</string>
-    <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
     <string name="live_folder_cling_create_folder">Живые папки позволяют разработчикам приложений создавать папки с динамическим контентом. Содержимое папки можно удалить долгим нажатием на элемент. В отличие от обычных папок, в живую папку элементы могут добавляться только приложением, создавшим её.</string>
+
+    <!-- Folder titles -->
+    <string name="conversations_title">Диалоги</string>
 </resources>
