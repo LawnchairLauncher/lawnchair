@@ -55,7 +55,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
     private static final int GL_SIZE_LIMIT = 2048;
     // This must be no larger than half the size of the GL_SIZE_LIMIT
     // due to decodePreview being allowed to be up to 2x the size of the target
-    private static final int MAX_PREVIEW_SIZE = 1024;
+    public static final int MAX_PREVIEW_SIZE = GL_SIZE_LIMIT / 2;
 
     public static abstract class BitmapSource {
         private BitmapRegionDecoder mDecoder;
