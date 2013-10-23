@@ -1021,12 +1021,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void setContentType(ContentType type) {
-        int page = getCurrentPage();
-        if (mContentType != type) {
-            page = 0;
+        // Widgets appear to be cleared every time you leave, always force invalidate for them
+        if (mContentType != type || type == ContentType.Widgets) {
+            int page = (mContentType != type) ? 0 : getCurrentPage();
+            mContentType = type;
+            invalidatePageData(page, true);
         }
-        mContentType = type;
-        invalidatePageData(page, true);
     }
 
     public ContentType getContentType() {
