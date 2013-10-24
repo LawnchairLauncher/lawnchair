@@ -54,7 +54,7 @@
     <string name="preferences_interface_homescreen_general_grid_rows_title">Files</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Columnes</string>
     <string name="preferences_interface_homescreen_general_stretch_screens_title">Estira pantalles</string>
-    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Expandeix les pantalles d\'inici per omplir la mida de la pantalla</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Estira les pantalles d\'inici per omplir la mida de la pantalla</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Amaga les etiquetes de les icones</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Amaga les etiquetes de les icones de les pantalles d\'inici</string>
     <string name="preferences_interface_homescreen_scrolling_category">Moviments</string>
@@ -155,5 +155,5 @@
     <string name="live_folder_cling_title">Carpetes vives</string>
     <string name="live_folder_cling_create_folder">Les carpetes vives permeten als desenvolupadors d\'apps crear carpetes amb continguts dinàmics.
     Els continguts de les carpetes poden ser eliminats amb una pulsació llarga sobre una entrada. Contràriament a les carpetes normals, els elements només poden ser afegits per les aplicacions que han creat la carpeta</string>
-
+    <string name="conversations_title">Conversacions</string>
 </resources>
