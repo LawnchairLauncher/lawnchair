@@ -143,4 +143,5 @@
     <string name="effects_carousel_right">Carrousel rechts</string>
     <string name="live_folder_cling_title">Dynamische mappen</string>
     <string name="live_folder_cling_create_folder">Met dynamische mappen kunnen app-ontwikkelaars mappen aanmaken met dynamische inhoud. De inhoud hiervan kan verwijderd worden door een item lang aan te raken. In tegenstelling tot normale mappen kunnen items alleen worden toegevoegd door de app die de map heeft aangemaakt</string>
+    <string name="conversations_title">Gesprekken</string>
 </resources>
