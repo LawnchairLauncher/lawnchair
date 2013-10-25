@@ -144,5 +144,4 @@
     <string name="live_folder_cling_title">Carpetas dinámicas</string>
     <string name="live_folder_cling_create_folder">Las carpetas dinámicas permiten a los desarrolladores de aplicaciones, crear carpetas con contenido dinámico. El contenido de las carpetas puede ser eliminado con una pulsación larga sobre un elemento, pero a diferencia de las carpetas normales, los nuevos elementos solo pueden ser añadidos por la aplicación que creó la carpeta</string>
     <string name="conversations_title">Conversaciones</string>
-    <string name="google_title">Google</string>
 </resources>
