@@ -74,6 +74,7 @@ public class CellLayout extends ViewGroup {
     private int mOriginalHeightGap;
     private int mWidthGap;
     private int mHeightGap;
+    private int mMaxGap;
     private boolean mScrollingTransformsDirty = false;
 
     private final Rect mRect = new Rect();
@@ -190,6 +191,7 @@ public class CellLayout extends ViewGroup {
         mCellHeight = mOriginalCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
         mWidthGap = mOriginalWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
         mHeightGap = mOriginalHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
+        mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
         mCountX = LauncherModel.getWorkspaceCellCountX();
         mCountY = LauncherModel.getWorkspaceCellCountY();
         mOccupied = new boolean[mCountX][mCountY];
@@ -280,6 +282,11 @@ public class CellLayout extends ViewGroup {
         mForegroundRect = new Rect();
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
+
+        if (!LauncherApplication.isScreenLarge()){
+            mCellWidth = (mCellWidth * res.getInteger(R.integer.default_cell_count_x)) / mCountX;
+            mCellHeight = (mCellHeight * res.getInteger(R.integer.default_cell_count_y)) / mCountY;
+        }
 
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         addView(mShortcutsAndWidgets);
@@ -992,26 +999,10 @@ public class CellLayout extends ViewGroup {
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
             int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
             int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
-
-            if (hSpace - (mCountX * mCellWidth) < 0) {
-                mCellWidth = hSpace / mCountX;
-            }
-            if (vSpace - (mCountY * mCellHeight) < 0) {
-                mCellHeight = vSpace / mCountY;
-            }
-
             int hFreeSpace = hSpace - (mCountX * mCellWidth);
             int vFreeSpace = vSpace - (mCountY * mCellHeight);
-
-            mWidthGap = 0;
-            mHeightGap = 0;
-
-            if (numWidthGaps > 0) {
-                mWidthGap = hFreeSpace / numWidthGaps;
-            }
-            if (numHeightGaps > 0) {
-                mHeightGap = vFreeSpace / numHeightGaps;
-            }
+            mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
+            mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
             mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         } else {
             mWidthGap = mOriginalWidthGap;
