@@ -966,9 +966,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         Rect workspacePadding = grid.getWorkspacePadding(grid.isLandscape ?
                 CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
         int maxContentAreaHeight = grid.availableHeightPx -
-                4 * grid.edgeMarginPx -
                 workspacePadding.top - workspacePadding.bottom -
-                getPaddingTop() - getPaddingBottom() -
                 mFolderNameHeight;
         return Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());

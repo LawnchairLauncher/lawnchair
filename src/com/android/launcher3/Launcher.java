@@ -323,6 +323,7 @@ public class Launcher extends Activity
     private Drawable mWorkspaceBackgroundDrawable;
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
+    private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
 
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
     static Date sDateStamp = new Date();
@@ -452,18 +453,12 @@ public class Launcher extends Activity
         mSavedState = savedInstanceState;
         restoreState(mSavedState);
 
-        // Update customization drawer _after_ restoring the states
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated(
-                LauncherModel.getSortedWidgetsAndShortcuts(this));
-        }
-
         if (PROFILE_STARTUP) {
             android.os.Debug.stopMethodTracing();
         }
 
         if (!mRestoring) {
-            if (sPausedFromUserAction) {
+            if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE || sPausedFromUserAction) {
                 // If the user leaves launcher, then we should just load items asynchronously when
                 // they return.
                 mModel.startLoader(true, -1);
@@ -4133,6 +4128,8 @@ public class Launcher extends Activity
         } else {
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setApps(apps);
+                mAppsCustomizeContent.onPackagesUpdated(
+                        LauncherModel.getSortedWidgetsAndShortcuts(this));
             }
         }
     }

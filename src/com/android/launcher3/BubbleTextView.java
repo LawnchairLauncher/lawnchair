@@ -87,7 +87,7 @@ public class BubbleTextView extends TextView {
         // Ensure we are using the right text size
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         setTextColor(getResources().getColor(R.color.workspace_icon_text_color));
     }
 
@@ -111,7 +111,7 @@ public class BubbleTextView extends TextView {
         Bitmap b = info.getIcon(iconCache);
         setCompoundDrawables(null,
                 Utilities.createIconDrawable(b), null, null);
-        setCompoundDrawablePadding((int) ((grid.folderIconSizePx - grid.iconSizePx) / 2f));
+        setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         setText(info.title);
         setTag(info);
     }

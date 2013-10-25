@@ -84,11 +84,11 @@ public class PagedViewWidget extends LinearLayout {
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         TextView name = (TextView) findViewById(R.id.widget_name);
         if (name != null) {
-            name.setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+            name.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         }
         TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
-            dims.setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+            dims.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         }
     }
 

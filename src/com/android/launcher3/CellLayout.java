@@ -212,7 +212,7 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         final Resources res = getResources();
-        mHotseatScale = (float) grid.hotseatIconSize / grid.iconSize;
+        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
         mNormalBackground = res.getDrawable(R.drawable.screenpanel);
         mActiveGlowBackground = res.getDrawable(R.drawable.screenpanel_hover);

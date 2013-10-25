@@ -181,7 +181,7 @@ public class IconCache {
             Iterator<Entry<ComponentName, CacheEntry>> it = mCache.entrySet().iterator();
             while (it.hasNext()) {
                 final CacheEntry e = it.next().getValue();
-                if (e.icon.getWidth() != grid.iconSizePx || e.icon.getHeight() != grid.iconSizePx) {
+                if (e.icon.getWidth() < grid.iconSizePx || e.icon.getHeight() < grid.iconSizePx) {
                     it.remove();
                 }
             }

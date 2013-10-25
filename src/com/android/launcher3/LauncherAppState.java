@@ -28,7 +28,7 @@ import com.android.launcher3.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;
 
-public class LauncherAppState {
+public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
@@ -189,16 +189,17 @@ public class LauncherAppState {
     DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
                                   int width, int height,
                                   int availableWidth, int availableHeight) {
-
-        mDynamicGrid = new DynamicGrid(context,
-                context.getResources(),
-                minWidth, minHeight, width, height,
-                availableWidth, availableHeight);
+        if (mDynamicGrid == null) {
+            mDynamicGrid = new DynamicGrid(context,
+                    context.getResources(),
+                    minWidth, minHeight, width, height,
+                    availableWidth, availableHeight);
+            mDynamicGrid.getDeviceProfile().addCallback(this);
+        }
 
         // Update the icon size
         DeviceProfile grid = mDynamicGrid.getDeviceProfile();
-        Utilities.setIconSize(grid.iconSizePx);
-        grid.updateFromConfiguration(context.getResources(), width, height,
+        grid.updateFromConfiguration(context, context.getResources(), width, height,
                 availableWidth, availableHeight);
         return grid;
     }
@@ -226,5 +227,10 @@ public class LauncherAppState {
 
     public int getLongPressTimeout() {
         return mLongPressTimeout;
+    }
+
+    @Override
+    public void onAvailableSizeChanged(DeviceProfile grid) {
+        Utilities.setIconSize(grid.iconSizePx);
     }
 }

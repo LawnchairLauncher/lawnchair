@@ -37,7 +37,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
@@ -49,7 +49,7 @@ import java.util.ArrayList;
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
-public class FolderIcon extends LinearLayout implements FolderListener {
+public class FolderIcon extends FrameLayout implements FolderListener {
     private Launcher mLauncher;
     private Folder mFolder;
     private FolderInfo mInfo;
@@ -134,18 +134,21 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                     "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items " +
                     "is dependent on this");
         }
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
         icon.setClipToPadding(false);
         icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         Utilities.applyTypeface(icon.mFolderName);
-        icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        icon.mFolderName.setCompoundDrawablePadding(0);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
+        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+
         // Offset the preview background to center this view accordingly
-        LinearLayout.LayoutParams lp =
-                (LinearLayout.LayoutParams) icon.mPreviewBackground.getLayoutParams();
+        icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
+        lp = (FrameLayout.LayoutParams) icon.mPreviewBackground.getLayoutParams();
         lp.topMargin = grid.folderBackgroundOffset;
         lp.width = grid.folderIconSizePx;
         lp.height = grid.folderIconSizePx;
@@ -548,12 +551,10 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         if (d != null) {
             mOldBounds.set(d.getBounds());
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
-            d.setFilterBitmap(true);
             d.setColorFilter(Color.argb(params.overlayAlpha, 255, 255, 255),
                     PorterDuff.Mode.SRC_ATOP);
             d.draw(canvas);
             d.clearColorFilter();
-            d.setFilterBitmap(false);
             d.setBounds(mOldBounds);
         }
         canvas.restore();
