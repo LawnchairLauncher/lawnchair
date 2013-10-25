@@ -119,6 +119,11 @@
     <string name="preferences_interface_general_fullscreen_title">Fuldskærmstilstand</string>
     <string name="preferences_interface_general_fullscreen_summary">Skjul statuslinjen for at udvide startskærmen</string>
     <string name="folder_empty_contents_title">Ingen objekter fundet</string>
+    <string name="preferences_interface_general_iconpack_title">Ikon-pakke</string>
+    <string name="preferences_interface_general_iconpack_summary">Ikon-pakker erstatter standardikoner for applikationer</string>
+    <string name="dialog_pick_iconpack_title">Vælg ikon-pakke</string>
+    <string name="default_iconpack_title">Standard</string>
+    <string name="no_iconpacks_summary">Ingen ikon-pakker installeret</string>
     <string name="effects_standard">Standard</string>
     <string name="effects_tablet">Tablet</string>
     <string name="effects_zoom_in">Zoom ind</string>
