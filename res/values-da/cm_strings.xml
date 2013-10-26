@@ -144,4 +144,5 @@
     <string name="live_folder_cling_create_folder">Live-mapper lader app-udviklere oprette mapper med dynamisk indhold.
     Mappeindhold kan fjernes med et langt tryk på et enkelt objekt. I modsætning til normale mapper kan objekter kun tilføjes af
     app\'en, som har oprettet mappen</string>
+    <string name="conversations_title">Samtaler</string>
 </resources>
