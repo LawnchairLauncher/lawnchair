@@ -818,6 +818,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public View getContent() {
+        if (getChildCount() > 0) {
+            return getChildAt(0);
+        }
         return null;
     }
 
@@ -841,7 +844,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         mInTransition = false;
         for (AsyncTaskPageData d : mDeferredSyncWidgetPageItems) {
-            onSyncWidgetPageItems(d);
+            onSyncWidgetPageItems(d, false);
         }
         mDeferredSyncWidgetPageItems.clear();
         for (Runnable r : mDeferredPrepareLoadWidgetPreviewsTasks) {
@@ -1110,7 +1113,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     mRunningTasks.remove(task);
                     if (task.isCancelled()) return;
                     // do cleanup inside onSyncWidgetPageItems
-                    onSyncWidgetPageItems(data);
+                    onSyncWidgetPageItems(data, false);
                 }
             }, mWidgetPreviewLoader);
 
@@ -1226,7 +1229,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     AsyncTaskPageData data = new AsyncTaskPageData(page, items,
                             maxPreviewWidth, maxPreviewHeight, null, null, mWidgetPreviewLoader);
                     loadWidgetPreviewsInBackground(null, data);
-                    onSyncWidgetPageItems(data);
+                    onSyncWidgetPageItems(data, immediate);
                 } else {
                     if (mInTransition) {
                         mDeferredPrepareLoadWidgetPreviewsTasks.add(this);
@@ -1265,8 +1268,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    private void onSyncWidgetPageItems(AsyncTaskPageData data) {
-        if (mInTransition) {
+    private void onSyncWidgetPageItems(AsyncTaskPageData data, boolean immediatelySyncItems) {
+        if (!immediatelySyncItems && mInTransition) {
             mDeferredSyncWidgetPageItems.add(data);
             return;
         }
