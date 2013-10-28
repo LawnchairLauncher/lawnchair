@@ -142,4 +142,5 @@
     <string name="effects_carousel_right">旋转木马 (右)</string>
     <string name="live_folder_cling_title">实时文件夹</string>
     <string name="live_folder_cling_create_folder">实时文件夹允许应用开发者创建含有动态内容的文件夹。长按一个条目可删除文件夹的内容。不像普通的文件夹，新的条目只能由创建该文件夹的应用来添加</string>
+    <string name="conversations_title">会话</string>
 </resources>
