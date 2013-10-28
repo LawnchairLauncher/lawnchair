@@ -147,4 +147,6 @@
     <string name="live_folder_cling_create_folder">Živé složky umožní vývojářům vytvářet složky s dynamickým obsahem.
     Obsah složky je možné odstranit dlouhým podržením na jedné položce. Na rozdíl od normální složky mohou být položky
     přidávány aplikací, která danou složku vytvořila.</string>
+
+    <string name="conversations_title">Konverzace</string>
 </resources>
