@@ -515,33 +515,39 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
         scrollTo(newX, 0);
         mScroller.setFinalX(newX);
-        mScroller.forceFinished(true);
+        forceFinishScroller();
     }
 
     /**
      * Called during AllApps/Home transitions to avoid unnecessary work. When that other animation
-     * ends, {@link #resumeScrolling()} should be called, along with
-     * {@link #updateCurrentPageScroll()} to correctly set the final state and re-enable scrolling.
+     * {@link #updateCurrentPageScroll()} should be called, to correctly set the final state and
+     * re-enable scrolling.
      */
-    void pauseScrolling() {
-        mScroller.forceFinished(true);
+    void stopScrolling() {
+        mCurrentPage = mNextPage;
+        forceFinishScroller();
     }
 
-    /**
-     * Enables scrolling again.
-     * @see #pauseScrolling()
-     */
-    void resumeScrolling() {
+    private void abortScrollerAnimation() {
+        mScroller.abortAnimation();
+        // We need to clean up the next page here to avoid computeScrollHelper from
+        // updating current page on the pass.
+        mNextPage = INVALID_PAGE;
     }
+
+    private void forceFinishScroller() {
+        mScroller.forceFinished(true);
+        // We need to clean up the next page here to avoid computeScrollHelper from
+        // updating current page on the pass.
+        mNextPage = INVALID_PAGE;
+    }
+
     /**
      * Sets the current page.
      */
     void setCurrentPage(int currentPage) {
         if (!mScroller.isFinished()) {
-            mScroller.abortAnimation();
-            // We need to clean up the next page here to avoid computeScrollHelper from
-            // updating current page on the pass.
-            mNextPage = INVALID_PAGE;
+            abortScrollerAnimation();
         }
         // don't introduce any checks like mCurrentPage == currentPage here-- if we change the
         // the default
@@ -1467,7 +1473,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
-                    mScroller.abortAnimation();
+                    abortScrollerAnimation();
                 } else {
                     if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
                         mTouchState = TOUCH_STATE_SCROLLING;
@@ -1762,7 +1768,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
              * will be false if being flinged.
              */
             if (!mScroller.isFinished()) {
-                mScroller.abortAnimation();
+                abortScrollerAnimation();
             }
 
             // Remember where the motion event started
@@ -1960,7 +1966,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     }
                 } else {
                     if (!mScroller.isFinished()) {
-                        mScroller.abortAnimation();
+                        abortScrollerAnimation();
                     }
 
                     float scaleX = getScaleX();
@@ -2432,8 +2438,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (mContentIsRefreshable) {
             // Force all scrolling-related behavior to end
-            mScroller.forceFinished(true);
-            mNextPage = INVALID_PAGE;
+            forceFinishScroller();
 
             // Update all the pages
             syncPages();

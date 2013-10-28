@@ -3223,7 +3223,7 @@ public class Launcher extends Activity
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionPrepare(toView, animated, true);
-            mAppsCustomizeContent.pauseScrolling();
+            mAppsCustomizeContent.stopScrolling();
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -3235,7 +3235,6 @@ public class Launcher extends Activity
                         onCompleteRunnable.run();
                     }
                     mAppsCustomizeContent.updateCurrentPageScroll();
-                    mAppsCustomizeContent.resumeScrolling();
                 }
             });
 
