@@ -155,7 +155,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int mTouchSlop;
     private int mPagingTouchSlop;
     private int mMaximumVelocity;
-    protected int mPageSpacing;
     protected int mPageLayoutPaddingTop;
     protected int mPageLayoutPaddingBottom;
     protected int mPageLayoutPaddingLeft;
@@ -258,9 +257,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Drop to delete
     private View mDeleteDropTarget;
 
-    private boolean mAutoComputePageSpacing = false;
-    private boolean mRecomputePageSpacing = false;
-
     // Bouncer
     private boolean mTopAlignPageWhenShrinkingForBouncer = false;
 
@@ -294,10 +290,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.PagedView, defStyle, 0);
-        setPageSpacing(a.getDimensionPixelSize(R.styleable.PagedView_pageSpacing, 0));
-        if (mPageSpacing < 0) {
-            mAutoComputePageSpacing = mRecomputePageSpacing = true;
-        }
+
         mPageLayoutPaddingTop = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutPaddingTop, 0);
         mPageLayoutPaddingBottom = a.getDimensionPixelSize(
@@ -888,26 +881,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
         }
         setMeasuredDimension(scaledWidthSize, scaledHeightSize);
-
-        if (childCount > 0) {
-            // Calculate the variable page spacing if necessary
-            if (mAutoComputePageSpacing && mRecomputePageSpacing) {
-                // The gap between pages in the PagedView should be equal to the gap from the page
-                // to the edge of the screen (so it is not visible in the current screen).  To
-                // account for unequal padding on each side of the paged view, we take the maximum
-                // of the left/right gap and use that as the gap between each page.
-                int offset = (getViewportWidth() - getChildWidth(0)) / 2;
-                int spacing = Math.max(offset, widthSize - offset -
-                        getChildAt(0).getMeasuredWidth());
-                setPageSpacing(spacing);
-                mRecomputePageSpacing = false;
-            }
-        }
-    }
-
-    public void setPageSpacing(int pageSpacing) {
-        mPageSpacing = pageSpacing;
-        requestLayout();
     }
 
     @Override
@@ -1130,7 +1103,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.
         mForceScreenScrolled = true;
-        mRecomputePageSpacing = true;
         updateFreescrollBounds();
         invalidate();
     }
@@ -1402,9 +1374,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int offset = (getViewportWidth() - getChildWidth(mCurrentPage)) / 2;
         if (isLayoutRtl()) {
             return (x > (getViewportOffsetX() + getViewportWidth() -
-                    offset + mPageSpacing));
+                    offset));
         }
-        return (x < getViewportOffsetX() + offset - mPageSpacing);
+        return (x < getViewportOffsetX() + offset);
     }
 
     /**
@@ -1413,10 +1385,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean hitsNextPage(float x, float y) {
         int offset = (getViewportWidth() - getChildWidth(mCurrentPage)) / 2;
         if (isLayoutRtl()) {
-            return (x < getViewportOffsetX() + offset - mPageSpacing);
+            return (x < getViewportOffsetX() + offset);
         }
         return  (x > (getViewportOffsetX() + getViewportWidth() -
-                offset + mPageSpacing));
+                offset));
     }
 
     /** Returns whether x and y originated within the buffered viewport */
@@ -1607,7 +1579,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected float getScrollProgress(int screenCenter, View v, int page) {
         final int halfScreenSize = getViewportWidth() / 2;
 
-        int totalDistance = v.getMeasuredWidth() + mPageSpacing;
+        int offset = (getViewportWidth() - getChildWidth(page)) / 2;
+        int totalDistance = v.getMeasuredWidth() + offset;
         int delta = screenCenter - (getScrollForPage(page) + halfScreenSize);
 
         float scrollProgress = delta / (totalDistance * 1.0f);
@@ -2700,9 +2673,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     int newX = 0;
                     if (slideFromLeft) {
                         if (i == 0) {
+                            int pageSpace = (getViewportWidth() - getChildWidth(i)) / 2;
                             // Simulate the page being offscreen with the page spacing
                             oldX = getViewportOffsetX() + getChildOffset(i) - getChildWidth(i)
-                                    - mPageSpacing;
+                                    - pageSpace;
                         } else {
                             oldX = getViewportOffsetX() + getChildOffset(i - 1);
                         }
