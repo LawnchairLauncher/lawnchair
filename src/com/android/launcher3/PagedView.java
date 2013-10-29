@@ -519,11 +519,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         forceFinishScroller();
     }
 
-    private void abortScrollerAnimation() {
+    private void abortScrollerAnimation(boolean resetNextPage) {
         mScroller.abortAnimation();
         // We need to clean up the next page here to avoid computeScrollHelper from
         // updating current page on the pass.
-        mNextPage = INVALID_PAGE;
+        if (resetNextPage) {
+            mNextPage = INVALID_PAGE;
+        }
     }
 
     private void forceFinishScroller() {
@@ -538,7 +540,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      */
     void setCurrentPage(int currentPage) {
         if (!mScroller.isFinished()) {
-            abortScrollerAnimation();
+            abortScrollerAnimation(true);
         }
         // don't introduce any checks like mCurrentPage == currentPage here-- if we change the
         // the default
@@ -1372,7 +1374,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
-                    abortScrollerAnimation();
+                    abortScrollerAnimation(false);
                 } else {
                     if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
                         mTouchState = TOUCH_STATE_SCROLLING;
@@ -1671,7 +1673,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
              * will be false if being flinged.
              */
             if (!mScroller.isFinished()) {
-                abortScrollerAnimation();
+                abortScrollerAnimation(false);
             }
 
             // Remember where the motion event started
@@ -1869,7 +1871,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     }
                 } else {
                     if (!mScroller.isFinished()) {
-                        abortScrollerAnimation();
+                        abortScrollerAnimation(true);
                     }
 
                     float scaleX = getScaleX();
