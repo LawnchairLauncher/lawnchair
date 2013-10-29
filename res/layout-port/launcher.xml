@@ -35,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
-            launcher:pageSpacing="@dimen/workspace_page_spacing"
             launcher:pageIndicator="@id/page_indicator">
         </com.android.launcher3.Workspace>
 

@@ -334,6 +334,7 @@ public class Workspace extends SmoothPagedView
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
+
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
@@ -1553,12 +1554,6 @@ public class Workspace extends SmoothPagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
-                    if (!mIsDragOccuring && !mShowOutlines) {
-                        child.setBackgroundAlphaMultiplier(
-                                backgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                    } else {
-                        child.setBackgroundAlphaMultiplier(1f);
-                    }
                 }
             }
         }
@@ -2233,7 +2228,14 @@ public class Workspace extends SmoothPagedView
             final CellLayout cl = (CellLayout) getChildAt(i);
             boolean isCurrentPage = (i == getNextPage());
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
-            float finalAlpha = stateIsSmall ? 0f : 1f;
+            float finalAlpha;
+            if (stateIsSmall) {
+                finalAlpha = 0f;
+            } else if (stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
+                finalAlpha = i == getNextPage() ? 1f : 0f;
+            } else {
+                finalAlpha = 1f;
+            }
 
             if (stateIsOverview) {
                 cl.setVisibility(VISIBLE);

@@ -87,6 +87,7 @@ class DeviceProfile {
     int heightPx;
     int availableWidthPx;
     int availableHeightPx;
+    int defaultPageSpacingPx;
 
     int iconSizePx;
     int iconTextSizePx;
@@ -136,21 +137,24 @@ class DeviceProfile {
                   float minWidth, float minHeight,
                   int wPx, int hPx,
                   int awPx, int ahPx,
-                  Resources resources) {
-        DisplayMetrics dm = resources.getDisplayMetrics();
+                  Resources res) {
+        DisplayMetrics dm = res.getDisplayMetrics();
         ArrayList<DeviceProfileQuery> points =
                 new ArrayList<DeviceProfileQuery>();
         transposeLayoutWithOrientation =
-                resources.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+                res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         minWidthDps = minWidth;
         minHeightDps = minHeight;
 
         ComponentName cn = new ComponentName(context.getPackageName(),
                 this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
-        edgeMarginPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
+        edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = 2 * edgeMarginPx;
-        pageIndicatorHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
+        pageIndicatorHeightPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
+        defaultPageSpacingPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
 
         // Interpolate the rows
         for (DeviceProfile p : profiles) {
@@ -184,7 +188,8 @@ class DeviceProfile {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.iconTextSize));
         }
         iconTextSize = invDistWeightedInterpolate(minWidth, minHeight, points);
-        iconDrawablePaddingOriginalPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
+        iconDrawablePaddingOriginalPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
 
         // Interpolate the hotseat icon size
         points.clear();
@@ -195,7 +200,7 @@ class DeviceProfile {
         hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
 
         // Calculate the remaining vars
-        updateFromConfiguration(context, resources, wPx, hPx, awPx, ahPx);
+        updateFromConfiguration(context, res, wPx, hPx, awPx, ahPx);
         updateAvailableDimensions(context);
     }
 
@@ -395,6 +400,7 @@ class DeviceProfile {
     Rect getWorkspacePadding() {
         return getWorkspacePadding(isLandscape ? CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
     }
+
     Rect getWorkspacePadding(int orientation) {
         Rect padding = new Rect();
         if (orientation == CellLayout.LANDSCAPE &&
@@ -428,6 +434,19 @@ class DeviceProfile {
         return padding;
     }
 
+    int getWorkspacePageSpacing(int orientation) {
+        if (orientation == CellLayout.LANDSCAPE &&
+                transposeLayoutWithOrientation) {
+            // In landscape mode the page spacing is set to the default.
+            return defaultPageSpacingPx;
+        } else {
+            // In portrait, we want the pages spaced such that there is no
+            // overhang of the previous / next page into the current page viewport.
+            // We assume symmetrical padding in portrait mode.
+            return getWorkspacePadding().left;
+        }
+    }
+
     // The rect returned will be extended to below the system ui that covers the workspace
     Rect getHotseatRect() {
         if (isVerticalBarLayout()) {
@@ -458,6 +477,10 @@ class DeviceProfile {
 
     boolean isVerticalBarLayout() {
         return isLandscape && transposeLayoutWithOrientation;
+    }
+
+    boolean shouldFadeAdjacentWorkspaceScreens() {
+        return isVerticalBarLayout() || isLargeTablet();
     }
 
     public void layout(Launcher launcher) {
@@ -524,15 +547,14 @@ class DeviceProfile {
         }
 
         // Layout the workspace
-        View workspace = launcher.findViewById(R.id.workspace);
+        PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
         lp = (FrameLayout.LayoutParams) workspace.getLayoutParams();
         lp.gravity = Gravity.CENTER;
-        Rect padding = getWorkspacePadding(isLandscape
-                ? CellLayout.LANDSCAPE
-                : CellLayout.PORTRAIT);
-        workspace.setPadding(padding.left, padding.top,
-                padding.right, padding.bottom);
+        int orientation = isLandscape ? CellLayout.LANDSCAPE : CellLayout.PORTRAIT;
+        Rect padding = getWorkspacePadding(orientation);
         workspace.setLayoutParams(lp);
+        workspace.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        workspace.setPageSpacing(getWorkspacePageSpacing(orientation));
 
         // Layout the hotseat
         View hotseat = launcher.findViewById(R.id.hotseat);
