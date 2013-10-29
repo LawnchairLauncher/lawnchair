@@ -62,15 +62,19 @@ public class PagedViewIcon extends TextView {
         // Ensure we are using the right text size
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
     }
 
     public void applyFromApplicationInfo(AppInfo info, boolean scaleUp,
             PagedViewIcon.PressedCallback cb) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
         mIcon = info.iconBitmap;
         mPressedCallback = cb;
         setCompoundDrawables(null, Utilities.createIconDrawable(mIcon),
                 null, null);
+        setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         setText(info.title);
         setTag(info);
     }
