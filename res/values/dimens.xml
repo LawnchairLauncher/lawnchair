@@ -20,6 +20,7 @@
     <dimen name="dynamic_grid_search_bar_max_width">500dp</dimen>
     <dimen name="dynamic_grid_search_bar_height">48dp</dimen>
     <dimen name="dynamic_grid_page_indicator_height">24dp</dimen>
+    <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
 
 <!-- Wallpaper picker -->
     <dimen name="wallpaperThumbnailWidth">106.5dp</dimen>
