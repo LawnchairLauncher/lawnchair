@@ -103,8 +103,7 @@
         <attr name="pageLayoutPaddingBottom" format="dimension" />
         <attr name="pageLayoutPaddingLeft" format="dimension" />
         <attr name="pageLayoutPaddingRight" format="dimension" />
-        <!-- The space between adjacent pages of the PagedView. -->
-        <attr name="pageSpacing" format="dimension" />
+
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>

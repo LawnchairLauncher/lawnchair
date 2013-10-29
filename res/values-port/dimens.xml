@@ -15,9 +15,6 @@
 -->
 
 <resources>
-<!-- Workspace -->
-    <dimen name="workspace_page_spacing">-1dp</dimen>
-
 <!-- AppsCustomize -->
     <integer name="apps_customize_cling_focused_x">1</integer>
     <integer name="apps_customize_cling_focused_y">1</integer>
