@@ -41,10 +41,12 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.exif.ExifInterface;
 import com.android.photos.BitmapRegionTileSource;
+import com.android.photos.BitmapRegionTileSource.BitmapSource;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -109,12 +111,24 @@ public class WallpaperCropActivity extends Activity {
                 });
 
         // Load image in background
-        setCropViewTileSource(
-                new BitmapRegionTileSource.UriBitmapSource(this, imageUri, 1024), true, false);
+        final BitmapRegionTileSource.UriBitmapSource bitmapSource =
+                new BitmapRegionTileSource.UriBitmapSource(this, imageUri, 1024);
+        Runnable onLoad = new Runnable() {
+            public void run() {
+                if (bitmapSource.getLoadingState() != BitmapSource.State.LOADED) {
+                    Toast.makeText(WallpaperCropActivity.this,
+                            getString(R.string.wallpaper_load_fail),
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        };
+        setCropViewTileSource(bitmapSource, true, false, onLoad);
     }
 
-    public void setCropViewTileSource(final BitmapRegionTileSource.BitmapSource bitmapSource,
-            final boolean touchEnabled, final boolean moveToLeft) {
+    public void setCropViewTileSource(
+            final BitmapRegionTileSource.BitmapSource bitmapSource, final boolean touchEnabled,
+            final boolean moveToLeft, final Runnable postExecute) {
         final Context context = WallpaperCropActivity.this;
         final View progressView = findViewById(R.id.loading);
         final AsyncTask<Void, Void, Void> loadBitmapTask = new AsyncTask<Void, Void, Void>() {
@@ -127,12 +141,17 @@ public class WallpaperCropActivity extends Activity {
             protected void onPostExecute(Void arg) {
                 if (!isCancelled()) {
                     progressView.setVisibility(View.INVISIBLE);
-                    mCropView.setTileSource(
-                            new BitmapRegionTileSource(context, bitmapSource), null);
-                    mCropView.setTouchEnabled(touchEnabled);
-                    if (moveToLeft) {
-                        mCropView.moveToLeft();
+                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
+                        mCropView.setTileSource(
+                                new BitmapRegionTileSource(context, bitmapSource), null);
+                        mCropView.setTouchEnabled(touchEnabled);
+                        if (moveToLeft) {
+                            mCropView.moveToLeft();
+                        }
                     }
+                }
+                if (postExecute != null) {
+                    postExecute.run();
                 }
             }
         };
@@ -235,10 +254,12 @@ public class WallpaperCropActivity extends Activity {
                 InputStream is = context.getContentResolver().openInputStream(uri);
                 BufferedInputStream bis = new BufferedInputStream(is);
                 ei.readExif(bis);
+                bis.close();
             } else {
                 InputStream is = res.openRawResource(resId);
                 BufferedInputStream bis = new BufferedInputStream(is);
                 ei.readExif(bis);
+                bis.close();
             }
             Integer ori = ei.getTagIntValue(ExifInterface.TAG_ORIENTATION);
             if (ori != null) {
@@ -408,7 +429,6 @@ public class WallpaperCropActivity extends Activity {
         String mInFilePath;
         byte[] mInImageBytes;
         int mInResId = 0;
-        InputStream mInStream;
         RectF mCropBounds = null;
         int mOutWidth, mOutHeight;
         int mRotation;
@@ -481,37 +501,36 @@ public class WallpaperCropActivity extends Activity {
         }
 
         // Helper to setup input stream
-        private void regenerateInputStream() {
+        private InputStream regenerateInputStream() {
             if (mInUri == null && mInResId == 0 && mInFilePath == null && mInImageBytes == null) {
                 Log.w(LOGTAG, "cannot read original file, no input URI, resource ID, or " +
                         "image byte array given");
             } else {
-                Utils.closeSilently(mInStream);
                 try {
                     if (mInUri != null) {
-                        mInStream = new BufferedInputStream(
+                        return new BufferedInputStream(
                                 mContext.getContentResolver().openInputStream(mInUri));
                     } else if (mInFilePath != null) {
-                        mInStream = mContext.openFileInput(mInFilePath);
+                        return mContext.openFileInput(mInFilePath);
                     } else if (mInImageBytes != null) {
-                        mInStream = new BufferedInputStream(
-                                new ByteArrayInputStream(mInImageBytes));
+                        return new BufferedInputStream(new ByteArrayInputStream(mInImageBytes));
                     } else {
-                        mInStream = new BufferedInputStream(
-                                mResources.openRawResource(mInResId));
+                        return new BufferedInputStream(mResources.openRawResource(mInResId));
                     }
                 } catch (FileNotFoundException e) {
                     Log.w(LOGTAG, "cannot read file: " + mInUri.toString(), e);
                 }
             }
+            return null;
         }
 
         public Point getImageBounds() {
-            regenerateInputStream();
-            if (mInStream != null) {
+            InputStream is = regenerateInputStream();
+            if (is != null) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeStream(mInStream, null, options);
+                BitmapFactory.decodeStream(is, null, options);
+                Utils.closeSilently(is);
                 if (options.outWidth != 0 && options.outHeight != 0) {
                     return new Point(options.outWidth, options.outHeight);
                 }
@@ -529,22 +548,26 @@ public class WallpaperCropActivity extends Activity {
         public boolean cropBitmap() {
             boolean failure = false;
 
-            regenerateInputStream();
 
             WallpaperManager wallpaperManager = null;
             if (mSetWallpaper) {
                 wallpaperManager = WallpaperManager.getInstance(mContext.getApplicationContext());
             }
-            if (mSetWallpaper && mNoCrop && mInStream != null) {
+
+
+            if (mSetWallpaper && mNoCrop) {
                 try {
-                    wallpaperManager.setStream(mInStream);
+                    InputStream is = regenerateInputStream();
+                    if (is != null) {
+                        wallpaperManager.setStream(is);
+                        Utils.closeSilently(is);
+                    }
                 } catch (IOException e) {
                     Log.w(LOGTAG, "cannot write stream to wallpaper", e);
                     failure = true;
                 }
                 return !failure;
-            }
-            if (mInStream != null) {
+            } else {
                 // Find crop bounds (scaled to original image size)
                 Rect roundedTrueCrop = new Rect();
                 Matrix rotateMatrix = new Matrix();
@@ -557,6 +580,11 @@ public class WallpaperCropActivity extends Activity {
                     mCropBounds = new RectF(roundedTrueCrop);
 
                     Point bounds = getImageBounds();
+                    if (bounds == null) {
+                        Log.w(LOGTAG, "cannot get bounds for image");
+                        failure = true;
+                        return false;
+                    }
 
                     float[] rotatedBounds = new float[] { bounds.x, bounds.y };
                     rotateMatrix.mapPoints(rotatedBounds);
@@ -567,7 +595,6 @@ public class WallpaperCropActivity extends Activity {
                     inverseRotateMatrix.mapRect(mCropBounds);
                     mCropBounds.offset(bounds.x/2, bounds.y/2);
 
-                    regenerateInputStream();
                 }
 
                 mCropBounds.roundOut(roundedTrueCrop);
@@ -585,7 +612,14 @@ public class WallpaperCropActivity extends Activity {
                 // Attempt to open a region decoder
                 BitmapRegionDecoder decoder = null;
                 try {
-                    decoder = BitmapRegionDecoder.newInstance(mInStream, true);
+                    InputStream is = regenerateInputStream();
+                    if (is == null) {
+                        Log.w(LOGTAG, "cannot get input stream for uri=" + mInUri.toString());
+                        failure = true;
+                        return false;
+                    }
+                    decoder = BitmapRegionDecoder.newInstance(is, false);
+                    Utils.closeSilently(is);
                 } catch (IOException e) {
                     Log.w(LOGTAG, "cannot open region decoder for file: " + mInUri.toString(), e);
                 }
@@ -603,14 +637,15 @@ public class WallpaperCropActivity extends Activity {
 
                 if (crop == null) {
                     // BitmapRegionDecoder has failed, try to crop in-memory
-                    regenerateInputStream();
+                    InputStream is = regenerateInputStream();
                     Bitmap fullSize = null;
-                    if (mInStream != null) {
+                    if (is != null) {
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         if (scaleDownSampleSize > 1) {
                             options.inSampleSize = scaleDownSampleSize;
                         }
-                        fullSize = BitmapFactory.decodeStream(mInStream, null, options);
+                        fullSize = BitmapFactory.decodeStream(is, null, options);
+                        Utils.closeSilently(is);
                     }
                     if (fullSize != null) {
                         mCropBounds.left /= scaleDownSampleSize;

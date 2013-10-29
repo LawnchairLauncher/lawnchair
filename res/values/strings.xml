@@ -30,6 +30,14 @@
     <string name="folder_name"></string>
     <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
+    <!-- Error message when an image is selected as a wallpaper,
+         but the wallpaper picker cannot load it -->
+    <string name="image_load_fail">Coudn\'t load image</string>
+    <!-- Error message when an image is selected as a wallpaper,
+         but the wallpaper cropper cannot load it. The user will
+         usually see this when using another app and trying to set
+         an image as the wallpaper -->
+    <string name="wallpaper_load_fail">Couldn\'t load image as wallpaper</string>
     <!-- Shown when wallpapers are selected in Wallpaper picker -->
     <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
