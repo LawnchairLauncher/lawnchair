@@ -31,6 +31,7 @@ import android.os.Build.VERSION_CODES;
 import android.util.Log;
 
 import com.android.gallery3d.common.BitmapUtils;
+import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.exif.ExifInterface;
 import com.android.gallery3d.glrenderer.BasicTexture;
 import com.android.gallery3d.glrenderer.BitmapTexture;
@@ -62,10 +63,12 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         private Bitmap mPreview;
         private int mPreviewSize;
         private int mRotation;
+        public enum State { NOT_LOADED, LOADED, ERROR_LOADING };
+        private State mState = State.NOT_LOADED;
         public BitmapSource(int previewSize) {
             mPreviewSize = previewSize;
         }
-        public void loadInBackground() {
+        public boolean loadInBackground() {
             ExifInterface ei = new ExifInterface();
             if (readExif(ei)) {
                 Integer ori = ei.getTagIntValue(ExifInterface.TAG_ORIENTATION);
@@ -74,19 +77,30 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 }
             }
             mDecoder = loadBitmapRegionDecoder();
-            int width = mDecoder.getWidth();
-            int height = mDecoder.getHeight();
-            if (mPreviewSize != 0) {
-                int previewSize = Math.min(mPreviewSize, MAX_PREVIEW_SIZE);
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                opts.inPreferQualityOverSpeed = true;
+            if (mDecoder == null) {
+                mState = State.ERROR_LOADING;
+                return false;
+            } else {
+                int width = mDecoder.getWidth();
+                int height = mDecoder.getHeight();
+                if (mPreviewSize != 0) {
+                    int previewSize = Math.min(mPreviewSize, MAX_PREVIEW_SIZE);
+                    BitmapFactory.Options opts = new BitmapFactory.Options();
+                    opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                    opts.inPreferQualityOverSpeed = true;
 
-                float scale = (float) previewSize / Math.max(width, height);
-                opts.inSampleSize = BitmapUtils.computeSampleSizeLarger(scale);
-                opts.inJustDecodeBounds = false;
-                mPreview = loadPreviewBitmap(opts);
+                    float scale = (float) previewSize / Math.max(width, height);
+                    opts.inSampleSize = BitmapUtils.computeSampleSizeLarger(scale);
+                    opts.inJustDecodeBounds = false;
+                    mPreview = loadPreviewBitmap(opts);
+                }
+                mState = State.LOADED;
+                return true;
             }
+        }
+
+        public State getLoadingState() {
+            return mState;
         }
 
         public BitmapRegionDecoder getBitmapRegionDecoder() {
@@ -156,7 +170,10 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         @Override
         public BitmapRegionDecoder loadBitmapRegionDecoder() {
             try {
-                return BitmapRegionDecoder.newInstance(regenerateInputStream(), true);
+                InputStream is = regenerateInputStream();
+                BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(is, false);
+                Utils.closeSilently(is);
+                return regionDecoder;
             } catch (FileNotFoundException e) {
                 Log.e("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
                 return null;
@@ -168,7 +185,10 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         @Override
         public Bitmap loadPreviewBitmap(BitmapFactory.Options options) {
             try {
-                return BitmapFactory.decodeStream(regenerateInputStream(), null, options);
+                InputStream is = regenerateInputStream();
+                Bitmap b = BitmapFactory.decodeStream(is, null, options);
+                Utils.closeSilently(is);
+                return b;
             } catch (FileNotFoundException e) {
                 Log.e("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
                 return null;
@@ -177,13 +197,15 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         @Override
         public boolean readExif(ExifInterface ei) {
             try {
-                ei.readExif(regenerateInputStream());
+                InputStream is = regenerateInputStream();
+                ei.readExif(is);
+                Utils.closeSilently(is);
                 return true;
             } catch (FileNotFoundException e) {
                 Log.e("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
                 return false;
             } catch (IOException e) {
-                Log.e("BitmapRegionTileSource", "Failure while reading URI " + mUri, e);
+                Log.e("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
                 return false;
             }
         }
@@ -204,7 +226,10 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         @Override
         public BitmapRegionDecoder loadBitmapRegionDecoder() {
             try {
-                return BitmapRegionDecoder.newInstance(regenerateInputStream(), true);
+                InputStream is = regenerateInputStream();
+                BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(is, true);
+                Utils.closeSilently(is);
+                return regionDecoder;
             } catch (IOException e) {
                 Log.e("BitmapRegionTileSource", "Error reading resource", e);
                 return null;
@@ -217,7 +242,9 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         @Override
         public boolean readExif(ExifInterface ei) {
             try {
-                ei.readExif(regenerateInputStream());
+                InputStream is = regenerateInputStream();
+                ei.readExif(is);
+                Utils.closeSilently(is);
                 return true;
             } catch (IOException e) {
                 Log.e("BitmapRegionTileSource", "Error reading resource", e);
@@ -243,27 +270,29 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         mTileSize = TiledImageRenderer.suggestedTileSize(context);
         mRotation = source.getRotation();
         mDecoder = source.getBitmapRegionDecoder();
-        mWidth = mDecoder.getWidth();
-        mHeight = mDecoder.getHeight();
-        mOptions = new BitmapFactory.Options();
-        mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        mOptions.inPreferQualityOverSpeed = true;
-        mOptions.inTempStorage = new byte[16 * 1024];
-        int previewSize = source.getPreviewSize();
-        if (previewSize != 0) {
-            previewSize = Math.min(previewSize, MAX_PREVIEW_SIZE);
-            // Although this is the same size as the Bitmap that is likely already
-            // loaded, the lifecycle is different and interactions are on a different
-            // thread. Thus to simplify, this source will decode its own bitmap.
-            Bitmap preview = decodePreview(source, previewSize);
-            if (preview.getWidth() <= GL_SIZE_LIMIT && preview.getHeight() <= GL_SIZE_LIMIT) {
-                mPreview = new BitmapTexture(preview);
-            } else {
-                Log.w(TAG, String.format(
-                        "Failed to create preview of apropriate size! "
-                        + " in: %dx%d, out: %dx%d",
-                        mWidth, mHeight,
-                        preview.getWidth(), preview.getHeight()));
+        if (mDecoder != null) {
+            mWidth = mDecoder.getWidth();
+            mHeight = mDecoder.getHeight();
+            mOptions = new BitmapFactory.Options();
+            mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            mOptions.inPreferQualityOverSpeed = true;
+            mOptions.inTempStorage = new byte[16 * 1024];
+            int previewSize = source.getPreviewSize();
+            if (previewSize != 0) {
+                previewSize = Math.min(previewSize, MAX_PREVIEW_SIZE);
+                // Although this is the same size as the Bitmap that is likely already
+                // loaded, the lifecycle is different and interactions are on a different
+                // thread. Thus to simplify, this source will decode its own bitmap.
+                Bitmap preview = decodePreview(source, previewSize);
+                if (preview.getWidth() <= GL_SIZE_LIMIT && preview.getHeight() <= GL_SIZE_LIMIT) {
+                    mPreview = new BitmapTexture(preview);
+                } else {
+                    Log.w(TAG, String.format(
+                            "Failed to create preview of apropriate size! "
+                            + " in: %dx%d, out: %dx%d",
+                            mWidth, mHeight,
+                            preview.getWidth(), preview.getHeight()));
+                }
             }
         }
     }

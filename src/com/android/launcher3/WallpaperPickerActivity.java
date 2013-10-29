@@ -67,9 +67,11 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.Toast;
 
 import com.android.photos.BitmapRegionTileSource;
 import com.android.launcher3.settings.SettingsProvider;
+import com.android.photos.BitmapRegionTileSource.BitmapSource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -87,8 +89,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private static final int MENU_WALLPAPER_SCROLL = 0;
 
+    private View mSelectedTile;
 
-    private View mSelectedThumb;
     private boolean mIgnoreNextTap;
     private OnClickListener mThumbnailOnClickListener;
 
@@ -132,13 +134,39 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public static class UriWallpaperInfo extends WallpaperTileInfo {
         private Uri mUri;
+        private boolean mFirstClick = true;
+        private BitmapRegionTileSource.UriBitmapSource mBitmapSource;
         public UriWallpaperInfo(Uri uri) {
             mUri = uri;
         }
         @Override
-        public void onClick(WallpaperPickerActivity a) {
-            a.setCropViewTileSource(new BitmapRegionTileSource.UriBitmapSource(
-                    a, mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE), true, false);
+        public void onClick(final WallpaperPickerActivity a) {
+            final Runnable onLoad;
+            if (!mFirstClick) {
+                onLoad = null;
+            } else {
+                mFirstClick = false;
+                onLoad = new Runnable() {
+                    public void run() {
+                        if (mBitmapSource != null &&
+                                mBitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
+                            mView.setVisibility(View.VISIBLE);
+                            a.selectTile(mView);
+                        } else {
+                            ViewGroup parent = (ViewGroup) mView.getParent();
+                            if (parent != null) {
+                                parent.removeView(mView);
+                                Toast.makeText(a,
+                                        a.getString(R.string.image_load_fail),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                };
+            }
+            mBitmapSource = new BitmapRegionTileSource.UriBitmapSource(
+                    a, mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
+            a.setCropViewTileSource(mBitmapSource, true, false, onLoad);
         }
         @Override
         public void onSave(final WallpaperPickerActivity a) {
@@ -308,17 +336,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     return;
                 }
                 WallpaperTileInfo info = (WallpaperTileInfo) v.getTag();
-                if (info.isSelectable()) {
-                    if (mSelectedThumb != null) {
-                        mSelectedThumb.setSelected(false);
-                        mSelectedThumb = null;
-                    }
-                    mSelectedThumb = v;
-                    v.setSelected(true);
-                    // TODO: Remove this once the accessibility framework and
-                    // services have better support for selection state.
-                    v.announceForAccessibility(
-                            getString(R.string.announce_selection, v.getContentDescription()));
+                if (info.isSelectable() && v.getVisibility() == View.VISIBLE) {
+                    selectTile(v);
                 }
                 info.onClick(WallpaperPickerActivity.this);
             }
@@ -444,8 +463,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mSelectedThumb != null) {
-                            WallpaperTileInfo info = (WallpaperTileInfo) mSelectedThumb.getTag();
+                        if (mSelectedTile != null) {
+                            WallpaperTileInfo info = (WallpaperTileInfo) mSelectedTile.getTag();
                             info.onSave(WallpaperPickerActivity.this);
                         }
                     }
@@ -524,15 +543,23 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     CheckableFrameLayout c = (CheckableFrameLayout) mWallpapersView.getChildAt(i);
                     c.setChecked(false);
                 }
-                mSelectedThumb.setSelected(true);
+                mSelectedTile.setSelected(true);
                 mActionMode = null;
             }
         };
     }
-    @Override
-    public void setCropViewTileSource(final BitmapRegionTileSource.BitmapSource bitmapSource,
-            final boolean touchEnabled, boolean moveToLeft) {
-        super.setCropViewTileSource(bitmapSource, touchEnabled, moveToLeft);
+
+    private void selectTile(View v) {
+        if (mSelectedTile != null) {
+            mSelectedTile.setSelected(false);
+            mSelectedTile = null;
+        }
+        mSelectedTile = v;
+        v.setSelected(true);
+        // TODO: Remove this once the accessibility framework and
+        // services have better support for selection state.
+        v.announceForAccessibility(
+                getString(R.string.announce_selection, v.getContentDescription()));
     }
 
     private void initializeScrollForRtl() {
@@ -732,8 +759,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private void addTemporaryWallpaperTile(final Uri uri) {
         mTempWallpaperTiles.add(uri);
         // Add a tile for the image picked from Gallery
-        FrameLayout pickedImageThumbnail = (FrameLayout) getLayoutInflater().
+        final FrameLayout pickedImageThumbnail = (FrameLayout) getLayoutInflater().
                 inflate(R.layout.wallpaper_picker_item, mWallpapersView, false);
+        pickedImageThumbnail.setVisibility(View.GONE);
         setWallpaperItemPaddingToZero(pickedImageThumbnail);
         mWallpapersView.addView(pickedImageThumbnail, 0);
 
