@@ -21,15 +21,15 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="home" msgid="7658288663002113681">"صفحه اصلی"</string>
-    <string name="uid_name" msgid="7820867637514617527">"برنامه‌های Android Core"</string>
+    <string name="uid_name" msgid="7820867637514617527">"‏برنامه‌های Android Core"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"تنظیم کاغذدیواری"</string>
   <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d انتخاب شد"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d انتخاب شد"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d انتخاب شد"</item>
+    <item quantity="zero" msgid="7464587177007785408">"‏%1$d انتخاب شد"</item>
+    <item quantity="one" msgid="142482526010824029">"‏%1$d انتخاب شد"</item>
+    <item quantity="other" msgid="1418352074806573570">"‏%1$d انتخاب شد"</item>
   </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"کاغذ دیواری %1$d از %2$d"</string>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"‏کاغذ دیواری %1$d از %2$d"</string>
     <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> انتخاب شده"</string>
     <string name="wallpaper_delete" msgid="8095005658756613921">"حذف"</string>
     <string name="pick_image" msgid="1272073934062909527">"انتخاب تصویر"</string>
@@ -38,7 +38,7 @@
     <string name="activity_not_found" msgid="8071924732094499514">"برنامه نصب نشده است."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"ابزارک‌ها"</string>
     <string name="widget_adder" msgid="3201040140710381657">"ابزارک‌ها"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"نمایش Mem"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"‏نمایش Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"برای انتخاب ابزارک لمس کنید و نگه دارید."</string>
     <string name="market" msgid="2619650989819296998">"فروشگاه"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -91,11 +91,11 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"این برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"پوشه بی‌نام"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"صفحه اصلی %1$d"</string>
-    <string name="default_scroll_format" msgid="7475544710230993317">"صفحه %1$d از %2$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"صفحه اصلی %1$d از %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"صفحه برنامه‌ها %1$d از %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"صفحه ابزارک‌ها %1$d از %2$d"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"‏صفحه اصلی %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"‏صفحه %1$d از %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"‏صفحه اصلی %1$d از %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"‏صفحه برنامه‌ها %1$d از %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"‏صفحه ابزارک‌ها %1$d از %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"خوش آمدید!"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"راحت باشید."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
