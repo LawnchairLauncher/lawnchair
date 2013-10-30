@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android 核心應用程式"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"設定桌布"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"無法載入圖片"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"無法載入設為桌布的圖片"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"已選取 %1$d 個項目"</item>
     <item quantity="one" msgid="142482526010824029">"已選取 %1$d 個項目"</item>

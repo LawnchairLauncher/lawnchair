@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Izinhlelo zokusebenza ze-Android Core"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Setha isithombe sangemuva"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Ayikwazanga ukulayisha isithombe"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Ayikwazanga ukulayisha isithombe njengesithombe sangemuva"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d khethiwe"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d khethiwe"</item>
