@@ -21,15 +21,15 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="home" msgid="7658288663002113681">"الرئيسية"</string>
-    <string name="uid_name" msgid="7820867637514617527">"تطبيقات Android الأساسية"</string>
+    <string name="uid_name" msgid="7820867637514617527">"‏تطبيقات Android الأساسية"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"تعيين خلفية"</string>
   <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"تم تحديد %1$d"</item>
-    <item quantity="one" msgid="142482526010824029">"تم تحديد %1$d"</item>
-    <item quantity="other" msgid="1418352074806573570">"تم تحديد %1$d"</item>
+    <item quantity="zero" msgid="7464587177007785408">"‏تم تحديد %1$d"</item>
+    <item quantity="one" msgid="142482526010824029">"‏تم تحديد %1$d"</item>
+    <item quantity="other" msgid="1418352074806573570">"‏تم تحديد %1$d"</item>
   </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"الخلفية %1$d من %2$d"</string>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"‏الخلفية %1$d من %2$d"</string>
     <string name="announce_selection" msgid="8338254712932127413">"تم تحديد <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="8095005658756613921">"حذف"</string>
     <string name="pick_image" msgid="1272073934062909527">"اختيار صورة"</string>
@@ -91,11 +91,11 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="dream_name" msgid="1530253749244328964">"قاذفة صواريخ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"الشاشة الرئيسية %1$d"</string>
-    <string name="default_scroll_format" msgid="7475544710230993317">"الصفحة %1$d من %2$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"الشاشة الرئيسية %1$d من %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"صفحة التطبيقات %1$d من %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"صفحة الأدوات %1$d من %2$d"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"‏الشاشة الرئيسية %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"‏الصفحة %1$d من %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"‏الشاشة الرئيسية %1$d من %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"‏صفحة التطبيقات %1$d من %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"‏صفحة الأدوات %1$d من %2$d"</string>
     <string name="first_run_cling_title" msgid="7257389003637362144">"مرحبًا!"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"تصرف على راحتك."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
