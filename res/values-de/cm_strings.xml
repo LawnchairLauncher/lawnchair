@@ -143,5 +143,4 @@
     <string name="live_folder_cling_title">Live-Ordner</string>
     <string name="live_folder_cling_create_folder">Live-Ordner ermöglichen es App-Entwicklern, Ordner mit dynamischem Inhalt anzulegen. Ordnerinhalte können durch langes Drücken auf ein einzelnes Element entfernt werden. Anders als bei normalen Ordnern können Inhalte nur durch die App hinzugefügt werden, welche den Ordner angelegt hat.</string>
     <string name="conversations_title">Unterhaltungen</string>
-    <string name="google_title">Google</string>
 </resources>
