@@ -247,19 +247,19 @@ public class WallpaperCropActivity extends Activity {
     private static int getRotationFromExifHelper(
             String path, Resources res, int resId, Context context, Uri uri) {
         ExifInterface ei = new ExifInterface();
+        InputStream is = null;
+        BufferedInputStream bis = null;
         try {
             if (path != null) {
                 ei.readExif(path);
             } else if (uri != null) {
-                InputStream is = context.getContentResolver().openInputStream(uri);
-                BufferedInputStream bis = new BufferedInputStream(is);
+                is = context.getContentResolver().openInputStream(uri);
+                bis = new BufferedInputStream(is);
                 ei.readExif(bis);
-                bis.close();
             } else {
-                InputStream is = res.openRawResource(resId);
-                BufferedInputStream bis = new BufferedInputStream(is);
+                is = res.openRawResource(resId);
+                bis = new BufferedInputStream(is);
                 ei.readExif(bis);
-                bis.close();
             }
             Integer ori = ei.getTagIntValue(ExifInterface.TAG_ORIENTATION);
             if (ori != null) {
@@ -267,6 +267,9 @@ public class WallpaperCropActivity extends Activity {
             }
         } catch (IOException e) {
             Log.w(LOGTAG, "Getting exif data failed", e);
+        } finally {
+            Utils.closeSilently(bis);
+            Utils.closeSilently(is);
         }
         return 0;
     }
@@ -606,13 +609,13 @@ public class WallpaperCropActivity extends Activity {
                 }
 
                 // See how much we're reducing the size of the image
-                int scaleDownSampleSize = Math.min(roundedTrueCrop.width() / mOutWidth,
-                        roundedTrueCrop.height() / mOutHeight);
-
+                int scaleDownSampleSize = Math.max(1, Math.min(roundedTrueCrop.width() / mOutWidth,
+                        roundedTrueCrop.height() / mOutHeight));
                 // Attempt to open a region decoder
                 BitmapRegionDecoder decoder = null;
+                InputStream is = null;
                 try {
-                    InputStream is = regenerateInputStream();
+                    is = regenerateInputStream();
                     if (is == null) {
                         Log.w(LOGTAG, "cannot get input stream for uri=" + mInUri.toString());
                         failure = true;
@@ -622,6 +625,9 @@ public class WallpaperCropActivity extends Activity {
                     Utils.closeSilently(is);
                 } catch (IOException e) {
                     Log.w(LOGTAG, "cannot open region decoder for file: " + mInUri.toString(), e);
+                } finally {
+                   Utils.closeSilently(is);
+                   is = null;
                 }
 
                 Bitmap crop = null;
@@ -637,7 +643,7 @@ public class WallpaperCropActivity extends Activity {
 
                 if (crop == null) {
                     // BitmapRegionDecoder has failed, try to crop in-memory
-                    InputStream is = regenerateInputStream();
+                    is = regenerateInputStream();
                     Bitmap fullSize = null;
                     if (is != null) {
                         BitmapFactory.Options options = new BitmapFactory.Options();
