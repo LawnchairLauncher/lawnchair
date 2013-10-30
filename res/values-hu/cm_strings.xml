@@ -142,4 +142,5 @@
     <string name="effects_carousel_right">Körhinta jobbra</string>
     <string name="live_folder_cling_title">Élő mappák</string>
     <string name="live_folder_cling_create_folder">Az élő mappák lehetővé teszik az alkalmazás fejlesztők számára, hogy dinamikus tartalmú mappákat hozzanak létre. A mappából elemek hosszú érintéssel távolíthatóak el. Ellentétben a hagyományos mappákkal, ezeket csak az alkalmazások hozhatják létre</string>
+    <string name="conversations_title">Beszélgetések</string>
 </resources>
