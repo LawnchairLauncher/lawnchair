@@ -24,6 +24,10 @@
     <string name="uid_name" msgid="7820867637514617527">"แอปหลักของแอนดรอยด์"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"ตั้งค่าวอลเปเปอร์"</string>
+    <!-- no translation found for image_load_fail (2821429163328561136) -->
+    <skip />
+    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
+    <skip />
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"เลือกไว้ %1$d"</item>
     <item quantity="one" msgid="142482526010824029">"เลือกไว้ %1$d"</item>
