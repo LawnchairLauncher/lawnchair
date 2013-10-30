@@ -524,7 +524,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * re-enable scrolling.
      */
     void stopScrolling() {
-        mCurrentPage = mNextPage;
+        mCurrentPage = getNextPage();
         forceFinishScroller();
     }
 
