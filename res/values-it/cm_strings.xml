@@ -142,4 +142,5 @@
     <string name="effects_carousel_right">Carosello destra</string>
     <string name="live_folder_cling_title">Live folder</string>
     <string name="live_folder_cling_create_folder">Le \'Live folder\' consentono agli sviluppatori di app la creazione di cartelle con contenuti dinamici. Il contenuto della cartella può essere rimosso con una pressione prolungata su una singola voce. A differenza delle normali cartelle, gli elementi possono essere aggiunti solo dall\'applicazione che ha creato la cartella</string>
+    <string name="conversations_title">Conversazioni</string>
 </resources>
