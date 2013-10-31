@@ -216,6 +216,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private PagedViewCellLayout mWidgetSpacingLayout;
     private int mNumAppsPages;
     private int mNumWidgetPages;
+    private Rect mAllAppsPadding = new Rect();
 
     // Animation states
     enum State { NORMAL, OVERVIEW};
@@ -359,6 +360,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         setPadding(grid.edgeMarginPx, 2 * grid.edgeMarginPx,
                 grid.edgeMarginPx, 2 * grid.edgeMarginPx);
+    }
+
+    void setAllAppsPadding(Rect r) {
+        mAllAppsPadding.set(r);
+    }
+    void setWidgetsPageIndicatorPadding(int pageIndicatorHeight) {
+        mPageLayoutPaddingBottom = pageIndicatorHeight;
     }
 
     /** Returns the item index of the center item on this page so that we can restore to this
@@ -1083,6 +1091,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
+        layout.setPadding(mAllAppsPadding.left, mAllAppsPadding.top, mAllAppsPadding.right,
+                mAllAppsPadding.bottom);
         setVisibilityOnChildren(layout, View.VISIBLE);
     }
 
