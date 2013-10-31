@@ -38,6 +38,12 @@
     <add-resource type="dimen" name="custom_cling_margin_top" />
     <add-resource type="dimen" name="custom_cling_margin_right" />
     <add-resource type="dimen" name="custom_cling_margin_left" />
+    
+    <dimen name="cling_title_text_size">20sp</dimen>
+    <dimen name="cling_text_size">14sp</dimen>
+    <dimen name="cling_alt_title_text_size">24sp</dimen>
+    <dimen name="cling_alt_text_size">16sp</dimen>
+    <dimen name="cling_hint_text_size">14sp</dimen>
 
 <!-- Workspace -->
     <dimen name="workspace_max_gap">16dp</dimen>
