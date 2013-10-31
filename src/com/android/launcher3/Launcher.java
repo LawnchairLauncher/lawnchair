@@ -754,10 +754,14 @@ public class Launcher extends Activity
                 };
             } else {
                 result = resultCode;
+                final CellLayout dropLayout =
+                        (CellLayout) mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
+                dropLayout.setDropPending(true);
                 onComplete = new Runnable() {
                     @Override
                     public void run() {
                         completeTwoStageWidgetDrop(result, appWidgetId);
+                        dropLayout.setDropPending(false);
                     }
                 };
             }
