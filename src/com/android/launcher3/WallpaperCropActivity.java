@@ -329,40 +329,15 @@ public class WallpaperCropActivity extends Activity {
         // Get the crop
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
 
-        Point minDims = new Point();
-        Point maxDims = new Point();
+
         Display d = getWindowManager().getDefaultDisplay();
-        d.getCurrentSizeRange(minDims, maxDims);
 
         Point displaySize = new Point();
         d.getSize(displaySize);
-
-        int maxDim = Math.max(maxDims.x, maxDims.y);
-        final int minDim = Math.min(minDims.x, minDims.y);
-        int defaultWallpaperWidth;
-        if (isScreenLarge(getResources())) {
-            defaultWallpaperWidth = (int) (maxDim *
-                    wallpaperTravelToScreenWidthRatio(maxDim, minDim));
-        } else {
-            defaultWallpaperWidth = Math.max((int)
-                    (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
-        }
-
         boolean isPortrait = displaySize.x < displaySize.y;
-        int portraitHeight;
-        if (isPortrait) {
-            portraitHeight = mCropView.getHeight();
-        } else {
-            // TODO: how to actually get the proper portrait height?
-            // This is not quite right:
-            portraitHeight = Math.max(maxDims.x, maxDims.y);
-        }
-        if (android.os.Build.VERSION.SDK_INT >=
-                android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Point realSize = new Point();
-            d.getRealSize(realSize);
-            portraitHeight = Math.max(realSize.x, realSize.y);
-        }
+
+        Point defaultWallpaperSize = getDefaultWallpaperSize(getResources(),
+                getWindowManager());
         // Get the crop
         RectF cropRect = mCropView.getCrop();
         int cropRotation = mCropView.getImageRotation();
@@ -381,7 +356,7 @@ public class WallpaperCropActivity extends Activity {
         // (or all the way to the left, in RTL)
         float extraSpace = ltr ? rotatedInSize[0] - cropRect.right : cropRect.left;
         // Cap the amount of extra width
-        float maxExtraSpace = defaultWallpaperWidth / cropScale - cropRect.width();
+        float maxExtraSpace = defaultWallpaperSize.x / cropScale - cropRect.width();
         extraSpace = Math.min(extraSpace, maxExtraSpace);
 
         if (ltr) {
@@ -392,10 +367,10 @@ public class WallpaperCropActivity extends Activity {
 
         // ADJUST CROP HEIGHT
         if (isPortrait) {
-            cropRect.bottom = cropRect.top + portraitHeight / cropScale;
+            cropRect.bottom = cropRect.top + defaultWallpaperSize.y / cropScale;
         } else { // LANDSCAPE
             float extraPortraitHeight =
-                    portraitHeight / cropScale - cropRect.height();
+                    defaultWallpaperSize.y / cropScale - cropRect.height();
             float expandHeight =
                     Math.min(Math.min(rotatedInSize[1] - cropRect.bottom, cropRect.top),
                             extraPortraitHeight / 2);
@@ -763,7 +738,7 @@ public class WallpaperCropActivity extends Activity {
 
     protected void updateWallpaperDimensions(int width, int height) {
         String spKey = getSharedPreferencesKey();
-        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = sp.edit();
         if (width != 0 && height != 0) {
             editor.putInt(WALLPAPER_WIDTH_KEY, width);
