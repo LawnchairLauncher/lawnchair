@@ -688,6 +688,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
             ev.setItemCount(getChildCount());
             ev.setFromIndex(mCurrentPage);
+            ev.setToIndex(getNextPage());
 
             final int action;
             if (getNextPage() >= mCurrentPage) {
