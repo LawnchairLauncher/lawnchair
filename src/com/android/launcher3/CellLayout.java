@@ -74,6 +74,7 @@ public class CellLayout extends ViewGroup {
     private int mHeightGap;
     private int mMaxGap;
     private boolean mScrollingTransformsDirty = false;
+    private boolean mDropPending = false;
 
     private final Rect mRect = new Rect();
     private final CellInfo mCellInfo = new CellInfo();
@@ -328,6 +329,14 @@ public class CellLayout extends ViewGroup {
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
     public void setInvertIfRtl(boolean invert) {
         mShortcutsAndWidgets.setInvertIfRtl(invert);
+    }
+
+    public void setDropPending(boolean pending) {
+        mDropPending = pending;
+    }
+
+    public boolean isDropPending() {
+        return mDropPending;
     }
 
     private void invalidateBubbleTextView(BubbleTextView icon) {

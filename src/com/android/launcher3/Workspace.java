@@ -716,7 +716,8 @@ public class Workspace extends SmoothPagedView
         CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
 
         // If the final screen is empty, convert it to the extra empty screen
-        if (finalScreen.getShortcutsAndWidgets().getChildCount() == 0) {
+        if (finalScreen.getShortcutsAndWidgets().getChildCount() == 0 &&
+                !finalScreen.isDropPending()) {
             mWorkspaceScreens.remove(finalScreenId);
             mScreenOrder.remove(finalScreenId);
 
