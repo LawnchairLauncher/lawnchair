@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"ແອັບພລິເຄຊັນຫຼັກຂອງ Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"ຕັ້ງເປັນພາບພື້ນຫຼັງ"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"ບໍ່ສາມາດໂຫຼດຮູບພາບໄດ້"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"ບໍ່​ສາ​ມາດ​ໂຫຼດ​ຮູບພາບ​ເປັນ​ຮູບພື້ນຫຼັງໄດ້"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
     <item quantity="one" msgid="142482526010824029">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>

@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Główne aplikacje Androida"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Ustaw tapetę"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Nie udało się załadować obrazu"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Nie udało się załadować obrazu jako tapety"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"Wybrane: %1$d"</item>
     <item quantity="one" msgid="142482526010824029">"Wybrane: %1$d"</item>
