@@ -76,10 +76,10 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     public void setupQSB(Launcher launcher) {
         mQSBSearchBar = launcher.getQsbBar();
         if (mEnableDropDownDropTargets) {
-            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "translationY", 0,
+            mQSBSearchBarAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY", 0f,
                     -mBarHeight);
         } else {
-            mQSBSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
+            mQSBSearchBarAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
         }
         setupAnimation(mQSBSearchBarAnim, mQSBSearchBar);
     }
@@ -122,12 +122,12 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             mBarHeight = grid.searchBarSpaceHeightPx;
             mDropTargetBar.setTranslationY(-mBarHeight);
-            mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "translationY",
+            mDropTargetBarAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
                     -mBarHeight, 0f);
 
         } else {
             mDropTargetBar.setAlpha(0f);
-            mDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
+            mDropTargetBarAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
         }
         setupAnimation(mDropTargetBarAnim, mDropTargetBar);
     }
