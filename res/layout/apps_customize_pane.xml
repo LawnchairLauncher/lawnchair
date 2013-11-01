@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.AppsCustomizeTabHost
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+    android:background="#80FFFFFF">
+    <LinearLayout
+        android:id="@+id/apps_customize_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <!-- The layout_width of the tab bar gets overriden to align the content
+             with the text in the tabs in AppsCustomizeTabHost. -->
+        <FrameLayout
+            android:id="@+id/tabs_container"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/apps_customize_tab_bar_height"
+            android:layout_marginTop="@dimen/apps_customize_tab_bar_margin_top"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone">
+            <com.android.launcher3.FocusOnlyTabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="start"
+                android:background="@drawable/tab_unselected_holo"
+                android:tabStripEnabled="false"
+                android:divider="@null" />
+            <include
+                android:id="@+id/market_button"
+                layout="@layout/market_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end" />
+        </FrameLayout>
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.android.launcher3.AppsCustomizePagedView
+                android:id="@+id/apps_customize_pane_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/apps_customize_page_indicator_offset"
+                launcher:widgetCountX="@integer/apps_customize_widget_cell_count_x"
+                launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y"
+                launcher:clingFocusedX="@integer/apps_customize_cling_focused_x"
+                launcher:clingFocusedY="@integer/apps_customize_cling_focused_y"
+                launcher:maxGap="@dimen/workspace_max_gap"
+                launcher:pageIndicator="@+id/page_indicator" />
+            <FrameLayout
+                android:id="@+id/animation_buffer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FF000000"
+                android:visibility="gone" />
+            <include
+                android:id="@+id/page_indicator"
+                layout="@layout/page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/apps_customize_page_indicator_margin" />
+        </FrameLayout>
+    </LinearLayout>
+</com.android.launcher3.AppsCustomizeTabHost>

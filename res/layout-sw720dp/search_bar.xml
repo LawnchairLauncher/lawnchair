@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+    style="@style/SearchDropTargetBar"
+    android:background="@drawable/search_frame">
+   <!-- Global search icon -->
+   <com.android.launcher3.HolographicLinearLayout
+        style="@style/SearchButton"
+        launcher:sourceImageViewId="@+id/search_button"
+        android:id="@+id/search_button_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/voice_button_container"
+        android:paddingStart="8dp"
+        android:onClick="onClickSearchButton"
+        android:focusable="true"
+        android:clickable="true"
+        android:contentDescription="@string/accessibility_search_button">
+       <ImageView
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_home_search_normal_holo"
+            android:adjustViewBounds="true" />
+    </com.android.launcher3.HolographicLinearLayout>
+
+    <!-- Voice search icon -->
+    <com.android.launcher3.HolographicLinearLayout
+        style="@style/SearchButton"
+        launcher:sourceImageViewId="@+id/voice_button"
+        android:id="@+id/voice_button_container"
+        android:layout_width="@dimen/app_icon_size"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:paddingEnd="8dp"
+        android:onClick="onClickVoiceButton"
+        android:focusable="true"
+        android:clickable="true"
+        android:contentDescription="@string/accessibility_voice_search_button">
+        <ImageView
+            android:id="@+id/voice_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_home_voice_search_holo"
+            android:adjustViewBounds="true" />
+    </com.android.launcher3.HolographicLinearLayout>
+</RelativeLayout>

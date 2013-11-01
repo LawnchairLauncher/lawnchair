@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+<!-- QSB -->
+    <dimen name="toolbar_button_vertical_padding">8dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">0dip</dimen>
+
+<!-- Workspace -->
+    <!-- We really want the page spacing to be the max of either the button bar
+     height or the qsb bar height -->
+    <dimen name="workspace_page_spacing">-1dp</dimen>
+
+<!-- AppsCustomize -->
+    <dimen name="apps_customize_tab_bar_height">42dp</dimen>
+    <integer name="apps_customize_widget_cell_count_x">3</integer>
+    <integer name="apps_customize_widget_cell_count_y">2</integer>
+    <integer name="apps_customize_cling_focused_x">2</integer>
+    <integer name="apps_customize_cling_focused_y">1</integer>
+</resources>

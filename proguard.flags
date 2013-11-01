@@ -1,0 +1,51 @@
+-keep class com.android.launcher3.Launcher {
+  public void previousScreen(android.view.View);
+  public void nextScreen(android.view.View);
+  public void launchHotSeat(android.view.View);
+  public void onClickSearchButton(android.view.View);
+  public void onClickVoiceButton(android.view.View);
+  public void onClickConfigureButton(android.view.View);
+  public void onClickAllAppsButton(android.view.View);
+  public void onClickAppMarketButton(android.view.View);
+  public void dismissFirstRunCling(android.view.View);
+  public void dismissWorkspaceCling(android.view.View);
+  public void dismissAllAppsCling(android.view.View);
+}
+
+-keep class com.android.launcher3.CellLayout {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
+}
+
+-keep class com.android.launcher3.DragLayer$LayoutParams {
+  public void setWidth(int);
+  public int getWidth();
+  public void setHeight(int);
+  public int getHeight();
+  public void setX(int);
+  public int getX();
+  public void setY(int);
+  public int getY();
+}
+
+-keep class com.android.launcher3.CellLayout$LayoutParams {
+  public void setWidth(int);
+  public int getWidth();
+  public void setHeight(int);
+  public int getHeight();
+  public void setX(int);
+  public int getX();
+  public void setY(int);
+  public int getY();
+}
+
+-keep class com.android.launcher3.Workspace {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
+  public float getChildrenOutlineAlpha();
+  public void setChildrenOutlineAlpha(float);
+}
+
+-keep class com.android.launcher3.MemoryDumpActivity {
+  *;
+}

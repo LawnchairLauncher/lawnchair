@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"ដើម"</string>
+    <string name="uid_name" msgid="7820867637514617527">"កម្មវិធី​​សំខាន់​ៗ​របស់ Android"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"កំណត់​ផ្ទាំង​រូបភាព"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"បាន​ជ្រើស %1$d"</item>
+    <item quantity="one" msgid="142482526010824029">"បាន​ជ្រើស %1$d"</item>
+    <item quantity="other" msgid="1418352074806573570">"បាន​ជ្រើស %1$d"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"ផ្ទាំង​រូបភាព %1$d នៃ %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"​បាន​ជ្រើស <xliff:g id="LABEL">%1$s</xliff:g>"</string>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"លុប"</string>
+    <string name="pick_image" msgid="1272073934062909527">"ជ្រើស​យក​រូបភាព"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"ផ្ទាំង​រូបភាព"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"ច្រឹប​ផ្ទាំង​រូបភាព"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"មិន​បាន​ដំឡើង​កម្មវិធី។"</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"ធាតុ​ក្រាហ្វិក"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"ធាតុ​ក្រាហ្វិក"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"បង្ហាញ​ Mem"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ធាតុ​ក្រាហ្វិក។"</string>
+    <string name="market" msgid="2619650989819296998">"ហាងទំនិញ"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"មិន​អាច​ទម្លាក់​ធាតុ​លើ​អេក្រង់​ដើម​នេះ​ទេ"</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"ជ្រើស​ធាតុ​ក្រាហ្វិក ដើម្បី​​​បង្កើត"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"ឈ្មោះ​ថត"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"ប្ដូរ​ឈ្មោះ​ថត"</string>
+    <string name="rename_action" msgid="5559600076028658757">"យល់ព្រម"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"បោះបង់"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"បន្ថែម​ទៅ​អេក្រង់​ដើម"</string>
+    <string name="group_applications" msgid="3797214114206693605">"កម្មវិធី"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"ផ្លូវកាត់"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"ធាតុ​ក្រាហ្វិក"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​រស់​អ្នក​ទៀត​ទេ។"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"គ្មាន​បន្ទប់​នៅ​ក្នុង​មជ្ឈមណ្ឌល​ទៀត​ទេ។"</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"ធាតុ​ក្រាហ្វិក​នេះ​ធំ​ពេក​សម្រាប់​មជ្ឈមណ្ឌល។"</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"បាន​បង្កើត​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"បាន​លុប​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"មាន​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" រួច​ហើយ។"</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"ជ្រើស​ផ្លូវកាត់"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"ជ្រើស​កម្មវិធី"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"កម្មវិធី"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"ដើម"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"លុប​ចេញ"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"លុប"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"លុប​ចេញ"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"លុប"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"ព័ត៌មាន​កម្មវិធី"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"ស្វែងរក"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"ស្វែងរក​តាម​សំឡេង"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"កម្មវិធី"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"លុប​ចេញ"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"លុប​បច្ចុប្បន្នភាព"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"លុប​កម្មវិធី"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"ព័ត៌មាន​លម្អិត​កម្មវិធី"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"បាន​ជ្រើស​កម្មវិធី ១"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"បាន​ជ្រើស​ធាតុ ១"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"បាន​ជ្រើស​ថត ១"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"បាន​ជ្រើស​ផ្លូវកាត់ ១"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"ដំឡើង​ផ្លូវកាត់"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​បន្ថែម​ផ្លូវកាត់​ ដោយ​មិន​ចាំបាច់​​អំពើ​ពី​អ្នក​ប្រើ។"</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"លុប​ផ្លូវកាត់"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​លុប​ផ្លូវកាត់​ដោយ​មិន​ចាំបាច់​អំពើ​ពី​អ្នក​ប្រើ។"</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"អាន​ការ​កំណត់​ និង​ផ្លូវកាត់​​អេក្រង់​ដើម"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​អាន​ការ​កំណត់ និង​ផ្លូវកាត់​ក្នុង​អេក្រង់​ដើម។"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"សរសេរ​ការ​កំណត់ ​និង​ផ្លូវកាត់​​លើ​អេក្រង់​ដើម"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​ប្ដូរ​ការ​កំណត់ និង​ផ្លូវ​កាត់​ក្នុង​អេក្រង់​ដើម។"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"បញ្ហា​ក្នុង​ការ​ផ្ទុក​ធាតុ​​ក្រាហ្វិក"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
+    <string name="dream_name" msgid="1530253749244328964">"កម្មវិធី​ចាប់ផ្ដើម​រ៉ូកែត"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"ថត​គ្មាន​ឈ្មោះ"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"អេក្រង់​ដើម %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"ទំព័រ %1$d នៃ %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"អេក្រង់​ដើម %1$d នៃ %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ទំព័រ​កម្មវិធី %1$d នៃ %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ទំព័រ​ធាតុ​ក្រាហ្វិក ​%1$d នៃ %2$d"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"សូម​ស្វាគមន៍​!"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"ធ្វើ​ដោយ​ខ្លួន​ឯង​នៅ​លើ​អេក្រង់​ដើម។"</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"បង្កើត​អេក្រង់​ច្រើន​សម្រាប់​កម្មវិធី​ ​និង​ថតឯកសារ"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"រៀបចំ​ចន្លោះ​របស់​អ្នក"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"ប៉ះ &amp; សង្កត់​លើ​ផ្ទៃ​ខាង​ក្រោម ដើម្បី​គ្រប់គ្រង​ផ្ទាំង​រូបភាព, ធាតុ​ក្រាហ្វិក និង​ការ​កំណត់។"</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"ជ្រើស​កម្មវិធី​មួយ​ចំនួន"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"ប៉ះ​ &amp; សង្កត់​វា ដើម្បី​បន្ថែម​កម្មវិធី​ទៅ​​​អេក្រង់​ដើម​របស់​អ្នក"</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"នេះ​ជា​ថត"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"ដើម្បី​បង្កើត​មួយ​ដូច​នេះ ប៉ះ &amp; សង្កត់​​លើ​កម្មវិធី បន្ទាប់​មក​ផ្លាស់ទី​វា​ទៅ​លើ​ធាតុ​មួយ​ផ្សេង​ទៀត។"</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"យល់ព្រម"</string>
+    <string name="folder_opened" msgid="94695026776264709">"បាន​បើក​ថត <xliff:g id="WIDTH">%1$d</xliff:g> ដោយ <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"ប៉ះ ដើម្បី​បិទ​ថត"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"ប៉ះ ដើម្បី​រក្សាទុក​ការ​ប្ដូរ​ឈ្មោះ"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"បាន​បិទ​ថត"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"បាន​ប្ដូរ​ឈ្មោះ​ថត​ជា <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"></string>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"></string>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
+    <string name="widget_button_text" msgid="2880537293434387943">"ធាតុ​ក្រាហ្វិក"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"ការកំណត់"</string>
+</resources>

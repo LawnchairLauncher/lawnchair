@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="8424725141379931883">"Pelancar"</string>
+    <string name="home" msgid="5921706419368316758">"Laman Utama"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Apl Teras Android"</string>
+    <string name="folder_name" msgid="8551881338202938211"></string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Pilih kertas dinding dari"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Tetapkan kertas dinding"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Kertas dinding"</string>
+    <string name="activity_not_found" msgid="217823393239365967">"Aplikasi tidak dipasang."</string>
+    <string name="widgets_tab_label" msgid="9145860100000983599">"Widget"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Sentuh &amp; tahan untuk mengambil widget."</string>
+    <string name="market" msgid="2652226429823445833">"Kedai"</string>
+    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Tidak dapat melepaskan item pada skrin Utama ini."</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pilih widget untuk dibuat"</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Nama folder"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Namakan semula folder"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Batal"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Tambah ke Skrin utama"</string>
+    <string name="group_applications" msgid="2103752818818161976">"Aplikasi"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Pintasan"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Widget"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Kertas dinding"</string>
+    <string name="completely_out_of_space" msgid="1759078539443491182">"Tiada lagi ruang pada skrin Utama anda."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Tiada lagi ruang pada skrin Utama ini"</string>
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Tiada lagi ruang pada kerusi panas."</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Widget ini terlalu besar untuk kerusi panas."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" diwujudkan."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" telah dialih keluar."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" sudah pun wujud."</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Pilih pintasan"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"Pilih aplikasi"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Apl"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Laman Utama"</string>
+    <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Alih keluar"</string>
+    <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Nyahpasang"</string>
+    <string name="delete_target_label" msgid="665300185123139530">"Alih keluar"</string>
+    <string name="delete_target_uninstall_label" msgid="748894921183769150">"Nyahpasang"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"Maklumat apl"</string>
+    <string name="accessibility_search_button" msgid="816822994629942611">"Carian"</string>
+    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Carian Suara"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Aplikasi"</string>
+    <string name="accessibility_delete_button" msgid="3628162007991023603">"Alih keluar"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Nyahpasang kemas kini"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Tambah"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"Mengurus apl"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Kertas dinding"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Cari"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Pemberitahuan"</string>
+    <string name="menu_settings" msgid="3946232973327980394">"Tetapan sistem"</string>
+    <string name="menu_help" msgid="4901160661634590633">"Bantuan"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Nyahpasang aplikasi"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"Butiran aplikasi"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"1 aplikasi dipilih"</string>
+    <string name="cab_widget_selection_text" msgid="962527270506951955">"1 widget dipilih"</string>
+    <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 folder dipilih"</string>
+    <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 pintasan dipilih"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"pasang pintasan"</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Membenarkan aplikasi menambah pintasan tanpa campur tangan pengguna."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"nyahpasang pintasan"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Membenarkan apl mengalih keluar pintasan tanpa campur tangan pengguna."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"membaca tetapan dan pintasan Laman Utama"</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Membenarkan apl membaca tetapan dan pintasan di Laman Utama."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"menulis tetapan dan pintasan Laman Utama"</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Membenarkan apl menukar tetapan dan pintasan di Laman Utama."</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Masalah memuatkan widget"</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Ini adalah aplikasi sistem dan tidak boleh dinyahpasang."</string>
+    <string name="dream_name" msgid="2847171357608437154">"Pelancar Roket"</string>
+    <string name="folder_hint_text" msgid="8633351560105748141">"Folder Tanpa Nama"</string>
+    <string name="workspace_description_format" msgid="2968608205939373034">"Skrin utama %1$d"</string>
+    <string name="default_scroll_format" msgid="4057140866420001240">"Halaman %1$d dari %2$d"</string>
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"Skrin utama %1$d dari %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Halaman apl %1$d dari %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Halaman widget %1$d dari %2$d"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"Buat diri anda seperti di rumah"</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"Anda boleh meletakkan aplikasi kegemaran anda di sini."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Untuk melihat semua aplikasi anda, sentuh bulatan."</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"Pilih beberapa aplikasi"</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Untuk menambahkan aplikasi pada skrin Utama anda, sentuh &amp; tahankannya."</string>
+    <string name="folder_cling_title" msgid="4308949882377840953">"Susun aplikasi anda dengan folder"</string>
+    <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindahkan aplikasi, sentuh &amp; tahankannya."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Untuk membuat folder baharu pada skrin Utama anda, tindihkan satu aplikasi di atas yang lain."</string>
+    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <string name="folder_opened" msgid="1262064100943801533">"Folder dibuka, <xliff:g id="WIDTH">%1$d</xliff:g> kali <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Sentuh untuk menutup folder"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Sentuh untuk menyimpan penamaan semula"</string>
+    <string name="folder_closed" msgid="3130534551370511932">"Folder ditutup"</string>
+    <string name="folder_renamed" msgid="7951233572858053642">"Folder dinamakan semula kepada <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="1433009175359948587"></string>
+    <string name="custom_workspace_cling_description_1" msgid="6875529190849858047"></string>
+    <string name="custom_workspace_cling_title_2" msgid="5516006164661020362"></string>
+    <string name="custom_workspace_cling_description_2" msgid="2758258454975288377"></string>
+</resources>

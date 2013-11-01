@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.Cling
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    launcher:drawIdentifier="first_run_portrait">
+    <FrameLayout 
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/bubble_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:orientation="vertical">
+            <TextView
+                style="@style/ClingAltTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:text="@string/first_run_cling_title"
+                android:textColor="#FFFFFFFF"
+                android:textSize="30sp"
+                android:gravity="center" />
+            <TextView
+                style="@style/ClingAltTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/first_run_cling_description"
+                android:textColor="#80000000"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+        <TextView
+            style="@style/ClingHintText"
+            android:id="@+id/search_bar_hint"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="65dp"
+            android:visibility="gone"
+            android:drawableTop="@drawable/cling_arrow_up"
+            android:drawablePadding="5dp"
+            android:text="@string/first_run_cling_search_bar_hint" />
+        <TextView
+            style="@style/ClingHintText"
+            android:id="@+id/custom_content_hint"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="100dp"
+            android:visibility="gone"
+            android:drawableStart="@drawable/cling_arrow_left"
+            android:drawablePadding="10dp"
+            android:text="@string/first_run_cling_custom_content_hint" />
+        <TextView
+            style="@style/ClingHintText"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="85dp"
+            android:drawableEnd="@drawable/cling_arrow_right"
+            android:drawablePadding="5dp"
+            android:text="@string/first_run_cling_create_screens_hint" />
+    </FrameLayout>
+    <Button
+        style="@style/ClingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="20dp"
+        android:layout_gravity="bottom|end"
+        android:onClick="dismissFirstRunCling" />
+</com.android.launcher3.Cling>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"Ecran de pornire"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android Core Apps"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"Setați imaginea de fundal"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"%1$d selectate"</item>
+    <item quantity="one" msgid="142482526010824029">"%1$d selectat"</item>
+    <item quantity="other" msgid="1418352074806573570">"%1$d selectate"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Imaginea de fundal %1$d din %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"S-a selectat <xliff:g id="LABEL">%1$s</xliff:g>"</string>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"Ștergeți"</string>
+    <string name="pick_image" msgid="1272073934062909527">"Alegeți imaginea"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"Imagini de fundal"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"Decupați imaginea de fundal"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"Aplicația nu este instalată."</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"Widgeturi"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"Widgeturi"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Afișați memoria"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Atingeți lung un widget pentru a-l alege."</string>
+    <string name="market" msgid="2619650989819296998">"Cumpărați"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"Nu se poate plasa articolul pe ecranul de pornire."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Alegeți widgetul de creat"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"Numele dosarului"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Redenumiți dosarul"</string>
+    <string name="rename_action" msgid="5559600076028658757">"OK"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"Anulați"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"Adăugați la Ecranul de pornire"</string>
+    <string name="group_applications" msgid="3797214114206693605">"Aplicații"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"Comenzi rapide"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"Widgeturi"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"Nu mai este loc pe ecranele de pornire."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Nu mai este loc pe acest Ecran de pornire."</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Nu mai este loc în bara de lansare rapidă."</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Acest widget este prea mare pentru bara de lansare rapidă."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>\" a fost creată."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” a fost eliminată."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” există deja."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"Alegeți comanda rapidă"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"Alegeți aplicația"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicații"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Ecran de pornire"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Eliminați"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Dezinstalați"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"Eliminați"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Dezinstalați"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"Informații despre aplicație"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"Căutați"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Căutare vocală"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Aplicații"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"Eliminați"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Dezinstalați actualizarea"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Dezinstalați aplicația"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"Detalii despre aplicație"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 aplicație selectată"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 widget selectat"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 dosar selectat"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 comandă rapidă selectată"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalează comenzi rapide"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite unei aplicații să adauge comenzi rapide fără intervenția utilizatorului."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"dezinstalează comenzi rapide"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Permite aplicației să elimine comenzi rapide fără intervenția utilizatorului."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"citește setări și comenzi rapide pentru ecranul de pornire"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Permite aplicației să citească setările și comenzile rapide din ecranul de pornire."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"scrie setări și comenzi rapide pentru ecranul de pornire"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite aplicației să modifice setările și comenzile rapide din ecranul de pornire."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Problemă la încărcarea widgetului"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aceasta este o aplicație de sistem și nu poate fi dezinstalată."</string>
+    <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Dosar fără nume"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"Ecran de pornire %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"Pagina %1$d din %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Ecranul de pornire %1$d din %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Pagina de aplicații %1$d din %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Pagina de widgeturi %1$d din %2$d"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"Bun venit!"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Simțiți-vă ca acasă."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Creați mai multe ecrane pentru aplicații și dosare"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"Organizați-vă spațiul"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Atingeți lung fundalul pentru a gestiona imaginea de fundal, widgeturile și setările."</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"Alegeți unele aplicații"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Atingeți lung o aplicație pentru a o adăuga pe ecranul de pornire."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"Iată un dosar"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Pentru a crea un dosar similar, atingeți și țineți degetul pe o aplicație, apoi mutați-o deasupra alteia."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Dosar deschis, <xliff:g id="WIDTH">%1$d</xliff:g> pe <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Atingeți pentru a închide dosarul"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Atingeți pentru a salva redenumirea"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Dosar închis"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Dosar redenumit <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Dosar: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"></string>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"></string>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Widgeturi"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Imagini de fundal"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Setări"</string>
+</resources>

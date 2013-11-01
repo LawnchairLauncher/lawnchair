@@ -1,0 +1,91 @@
+<resources>
+    <bool name="config_largeHeap">false</bool>
+    <bool name="is_tablet">false</bool>
+    <bool name="is_large_tablet">false</bool>
+    <bool name="allow_rotation">false</bool>
+
+    <!-- Max number of page indicators to show -->
+    <integer name="config_maxNumberOfPageIndicatorsToShow">21</integer>
+
+<!-- DragController -->
+    <integer name="config_flingToDeleteMinVelocity">-1500</integer>
+
+<!-- AllApps/Customize/AppsCustomize -->
+    <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
+    <integer name="config_appsCustomizeSpringLoadedBgAlpha">65</integer>
+    <integer name="config_workspaceUnshrinkTime">300</integer>
+    <integer name="config_overviewTransitionTime">250</integer>
+
+    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
+    <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
+    <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
+    <integer name="config_workspaceOverviewShrinkPercentage">58</integer>
+
+    <!-- Fade/zoom in/out duration & scale in the AllApps transition.
+         Note: This should be less than the workspaceShrinkTime as they happen together. -->
+    <integer name="config_appsCustomizeZoomInTime">350</integer>
+    <integer name="config_appsCustomizeZoomOutTime">600</integer>
+    <integer name="config_appsCustomizeZoomScaleFactor">7</integer>
+    <integer name="config_appsCustomizeFadeInTime">250</integer>
+    <integer name="config_appsCustomizeFadeOutTime">200</integer>
+    <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
+    <integer name="config_appsCustomizeWorkspaceAnimationStagger">40</integer>
+    <integer name="config_workspaceAppsCustomizeAnimationStagger">100</integer>
+
+    <integer name="config_workspaceDefaultScreen">0</integer>
+
+    <!-- Tab transition animation duration -->
+    <integer name="config_tabTransitionDuration">250</integer>
+
+    <!-- The slope, in percent, of the drag movement needed to drag an item out of
+         AppsCustomize (y / x * 100%)  -->
+    <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
+
+<!-- Workspace -->
+    <!-- Whether or not the drop targets drop down as opposed to fade in -->
+    <bool name="config_useDropTargetDownTransition">false</bool>
+    <!-- Whether or not to fade the side pages -->
+    <bool name="config_workspaceFadeAdjacentScreens">false</bool>
+
+    <!-- The transition duration for the background of the drop targets -->
+    <integer name="config_dropTargetBgTransitionDuration">0</integer>
+
+    <!-- The duration (in ms) of the fade animation on the object outlines, used when
+         we are dragging objects around on the home screen. -->
+    <integer name="config_dragOutlineFadeTime">900</integer>
+
+    <!-- The alpha value at which to show the most recent drop visualization outline. -->
+    <integer name="config_dragOutlineMaxAlpha">128</integer>
+
+    <!-- Parameters controlling the animation for when an item is dropped on the home screen,
+         and it animates from its old position to the new one. -->
+    <integer name="config_dropAnimMinDuration">100</integer>
+    <integer name="config_dropAnimMaxDuration">500</integer>
+
+    <!-- The duration of the UserFolder opening and closing animation -->
+    <integer name="config_folderAnimDuration">120</integer>
+
+    <!-- The distance at which the animation should take the max duration -->
+    <integer name="config_dropAnimMaxDist">800</integer>
+
+    <!-- Properties controlling the workspace fade-out during dragging -->
+    <integer name="config_dragFadeOutAlpha">80</integer>
+    <integer name="config_dragFadeOutDuration">250</integer>
+
+    <!-- Camera distance for the overscroll effect -->
+    <integer name="config_cameraDistance">8000</integer>
+
+    <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
+    <bool name="config_useCustomClings">false</bool>
+
+<!-- Hotseat -->
+    <bool name="hotseat_transpose_layout_with_orientation">true</bool>
+
+    <!-- Memory debugging, including a memory dump icon -->
+    <bool name="debug_memory_enabled">false</bool>
+
+    <!-- Name of a subclass of com.android.launcher3.AppFilter used to
+         filter the activities shown in the launcher. Can be empty. -->
+    <string name="app_filter_class" translatable="false"></string>
+
+</resources>

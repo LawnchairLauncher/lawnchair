@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"Tuis"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android-kernprogramme"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"Stel muurpapier"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"%1$d gekies"</item>
+    <item quantity="one" msgid="142482526010824029">"%1$d gekies"</item>
+    <item quantity="other" msgid="1418352074806573570">"%1$d gekies"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Muurpapier %1$d van %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"Het <xliff:g id="LABEL">%1$s</xliff:g> gekies"</string>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"Vee uit"</string>
+    <string name="pick_image" msgid="1272073934062909527">"Kies prent"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"Muurpapiere"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"Snoei muurpapier"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"Program is nie geïnstalleer nie."</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"Legstukke"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"Legstukke"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Wys Mem"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Raak en hou om \'n legstuk op te tel."</string>
+    <string name="market" msgid="2619650989819296998">"Winkel"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"Kan nie item op hierdie Tuisskerm laat los nie."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Kies legstuk om te skep"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"Vouernaam"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Hernoem vouer"</string>
+    <string name="rename_action" msgid="5559600076028658757">"OK"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"Kanselleer"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"Voeg by Tuisskerm"</string>
+    <string name="group_applications" msgid="3797214114206693605">"Programme"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"Kortpaaie"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"Legstukke"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"Niks meer spasie op jou Tuisskerms nie."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Niks meer spasie op die tuisskerm nie."</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Niks meer plek op die warmlaai nie."</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Hierdie legstuk is te groot vir die warmlaai."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" is geskep."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" is verwyder."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" bestaan reeds."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"Kies kortpad"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"Kies program"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Programme"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Tuis"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Verwyder"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Deïnstalleer"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"Verwyder"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Deïnstalleer"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"Programinligting"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"Soek"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Stemsoektog"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Programme"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"Verwyder"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Deïnstalleer opdatering"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Deïnstalleer program"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"Programbesonderhede"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 program gekies"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 legstuk gekies"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 vouer gekies"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 kortpad gekies"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"installeer kortpaaie"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Laat \'n program toe om kortpaaie by te voeg sonder gebruikerinmenging."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"deïnstalleer kortpaaie"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Laat die program toe om kortpaaie te verwyder sonder gebruikerinmenging."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"lees Tuis-instellings en -kortpaaie"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Laat die program toe om die instellings en kortpaaie in Tuis te lees."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"skryf Tuis-instellings en -kortpaaie"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Laat die program toe om die instellings en kortpaaie in Tuis te verander."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Kon nie legstuk laai nie"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dit is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
+    <string name="dream_name" msgid="1530253749244328964">"Vuurpyllanseerder"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Naamlose vouer"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"Tuisskerm %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"Bladsy %1$d van %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Tuisskerm %1$d van %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Programme-bladsy %1$d van %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Legstukke-bladsy %1$d van %2$d"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"Welkom!"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Maak jouself tuis."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Skep meer skerms vir programme en vouers"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"Organiseer jou spasie"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Raak en hou agtergrond om muurpapier, legstukke en instellings te bestuur."</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"Kies \'n paar programme"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Om \'n program by jou Tuisskerm te voeg, raak en hou dit."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"Hier\'s \'n vouer"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Om een soos dié te skep, raak en hou \'n program en skuif dit dan oor \'n ander een."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Vouer oopgemaak, <xliff:g id="WIDTH">%1$d</xliff:g> by <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Raak om vouer toe te maak"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Raak om hernoem te stoor"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Vouer is gesluit"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Vouer hernoem na <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Vouer: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"></string>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"></string>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Legstukke"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Muurpapiere"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Instellings"</string>
+</resources>

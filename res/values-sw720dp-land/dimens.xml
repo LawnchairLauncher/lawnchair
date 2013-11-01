@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+<!-- AppsCustomize -->
+    <integer name="apps_customize_widget_cell_count_x">4</integer>
+    <integer name="apps_customize_widget_cell_count_y">2</integer>
+    <integer name="apps_customize_cling_focused_x">4</integer>
+    <integer name="apps_customize_cling_focused_y">2</integer>
+
+<!-- Workspace -->
+    <dimen name="workspace_page_spacing">50dp</dimen>
+
+    <!-- the area at the edge of the screen that makes the workspace go left
+         or right while you're dragging. -->
+    <dimen name="scroll_zone">100dip</dimen>
+
+<!-- Cling -->
+    <!-- The offset for the text in the cling -->
+    <dimen name="cling_text_block_offset_x">140dp</dimen>
+    <dimen name="cling_text_block_offset_y">80dp</dimen>
+</resources>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"Ana ekran"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android Çekirdek Uygulamaları"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"Duvar kağıdını ayarla"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"%1$d tane seçildi"</item>
+    <item quantity="one" msgid="142482526010824029">"%1$d tane seçildi"</item>
+    <item quantity="other" msgid="1418352074806573570">"%1$d tane seçildi"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Duvar kağıdı %1$d / %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> seçildi"</string>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"Sil"</string>
+    <string name="pick_image" msgid="1272073934062909527">"Resim seç"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"Duvar Kağıtları"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"Duvar kağıdını kırp"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"Uygulama yüklü değil."</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"Widget\'lar"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"Widget\'lar"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Belleği Göster"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Widget seçmek için dokunun ve basılı tutun."</string>
+    <string name="market" msgid="2619650989819296998">"Alışveriş yap"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"Öğe bu Ana ekrana bırakılamadı."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Oluşturmak için widget seçin"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"Klasör adı"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Klasörü yeniden adlandırın"</string>
+    <string name="rename_action" msgid="5559600076028658757">"Tamam"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"İptal"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"Ana ekrana ekleyin"</string>
+    <string name="group_applications" msgid="3797214114206693605">"Uygulamalar"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"Kısayollar"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"Widget\'lar"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"Ana ekranlarınızda yer kalmadı."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Bu Ana ekranda yer kalmadı."</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Favori kısa yollarda yer yok"</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Bu widget, favori kısa yollar için çok büyük."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu oluşturuldu."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu kaldırıldı."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu zaten var."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"Kısayolu seçin"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"Uygulama seçin"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Uygulamalar"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Ana ekran"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Kaldır"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Yüklemeyi kaldır"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"Kaldır"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Yüklemeyi kaldır"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"Uygulama bilgileri"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"Ara"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Sesli Arama"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Uygulamalar"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"Kaldır"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Güncellemeyi kaldır"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Uygulamanın yüklemesini kaldır"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"Uygulama ayrıntıları"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 uygulama seçildi"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 widget seçildi"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 klasör seçildi"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 kısayol seçildi"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"kısayolları yükle"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Uygulamaya, kullanıcı müdahalesi olmadan kısayol ekleme izni verir."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"kısayolların yüklemesini kaldır"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Uygulamaya, kullanıcı müdahalesi olmadan kısayolları kaldırma izni verir."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"Ana ekran ayarlarını ve kısayollarını oku"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Uygulamaya, Ana ekrandaki ayarları ve kısayolları okuma izni verir."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"Ana ekran ayarlarını ve kısayollarını yaz"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Uygulamaya, Ana ekrandaki ayarları ve kısayolları değiştirme izni verir."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Widget yüklenirken sorun oluştu"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Bu bir sistem uygulamasıdır ve yüklemesi kaldırılamaz."</string>
+    <string name="dream_name" msgid="1530253749244328964">"Roket Fırlatıcı"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Adsız Klasör"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"Ana ekran %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"Sayfa %1$d / %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Ana ekran %1$d / %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Uygulama sayfası %1$d / %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Widget sayfası %1$d / %2$d"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"Hoş geldiniz!"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Rahatınıza bakın."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Uygulamalar ve klasörler için daha fazla ekran oluşturun"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"Alanınızı düzenleyin"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Duvar kağıdını, widget\'ları ve ayarları yönetmek için arka plana uzun basın."</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"İstediğiniz uygulamaları seçin"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Bir uygulamayı Ana ekranınıza eklemek için, ilgili uygulamayı basılı tutun."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"İşte bir klasör"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Buna benzer bir klasör oluşturmak için uygulamaya uzun basın ve sonra uygulamayı başka bir uygulamanın üzerine taşıyın."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"Tamam"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Klasör açıldı, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Klasörü kapatmak için dokunun"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Yeni adı kaydetmek için dokunun"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Klasör kapatıldı"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Klasörün adı <xliff:g id="NAME">%1$s</xliff:g> olarak değiştirildi"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Klasör: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"></string>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"></string>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Widget\'lar"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Duvar Kağıtları"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Ayarlar"</string>
+</resources>

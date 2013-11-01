@@ -1,0 +1,14 @@
+<resources>
+    <bool name="is_tablet">true</bool>
+    <bool name="allow_rotation">true</bool>
+
+    <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
+    <bool name="config_useCustomClings">true</bool>
+
+<!-- DragController -->
+    <integer name="config_flingToDeleteMinVelocity">-1000</integer>
+
+    <!-- Camera distance for the overscroll effect. We use a higher value here because the 
+         workspace screens run nearly flush to the edge of the screen-->
+    <integer name="config_cameraDistance">14000</integer>
+</resources>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+<!-- Dynamic Grid -->
+    <dimen name="dynamic_grid_edge_margin">6dp</dimen>
+    <dimen name="dynamic_grid_search_bar_max_width">500dp</dimen>
+    <dimen name="dynamic_grid_search_bar_height">48dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_height">24dp</dimen>
+
+<!-- Wallpaper picker -->
+    <dimen name="wallpaperThumbnailWidth">106.5dp</dimen>
+    <dimen name="wallpaperThumbnailHeight">94.5dp</dimen>
+    <dimen name="wallpaperItemIconSize">32dp</dimen>
+
+<!-- Cling -->
+    <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
+    <dimen name="folderClingMarginTop">20dp</dimen>
+    <!-- The offset for the text in the cling -->
+    <dimen name="cling_text_block_offset_x">0dp</dimen>
+    <dimen name="cling_text_block_offset_y">0dp</dimen>
+    <!-- entries for custom clings, will be set in overlays -->
+    <add-resource type="dimen" name="custom_cling_margin_top" />
+    <add-resource type="dimen" name="custom_cling_margin_right" />
+    <add-resource type="dimen" name="custom_cling_margin_left" />
+
+<!-- Workspace -->
+    <dimen name="workspace_max_gap">16dp</dimen>
+    <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
+    <dimen name="workspace_spring_loaded_page_spacing">15dp</dimen>
+    <dimen name="overview_panel_bottom_padding">50dp</dimen>
+    <dimen name="overview_panel_buttonSpacing">60dp</dimen>
+    <dimen name="overview_mode_page_offset">130dp</dimen>
+
+<!-- QSB -->
+    <dimen name="toolbar_button_vertical_padding">4dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
+    <!-- External toolbar icon size (for bounds) -->
+    <dimen name="toolbar_external_icon_width">36dp</dimen>
+    <dimen name="toolbar_external_icon_height">36dp</dimen>
+
+<!-- AllApps/Customize/AppsCustomize -->
+    <!-- The height of the tab bar - if this changes, we should update the
+         external icon width/height above to compensate -->
+    <dimen name="apps_customize_tab_bar_height">52dp</dimen>
+    <dimen name="apps_customize_tab_bar_margin_top">0dp</dimen>
+    <dimen name="app_icon_size">48dp</dimen>
+
+    <!-- The AppsCustomize page indicator -->
+    <dimen name="apps_customize_page_indicator_height">12dp</dimen>
+    <dimen name="apps_customize_page_indicator_margin">4dp</dimen>
+    <dimen name="apps_customize_page_indicator_offset">16dp</dimen>
+
+    <!-- Drag padding to add to the bottom of drop targets -->
+    <dimen name="drop_target_drag_padding">14dp</dimen>
+
+<!-- Dragging -->
+    <!-- the area at the edge of the screen that makes the workspace go left
+         or right while you're dragging. -->
+    <dimen name="scroll_zone">20dp</dimen>
+
+    <!-- When dragging items on the workspace, the number of dps by which the position of
+     the drag view should be offset from the position of the original view. -->
+    <dimen name="dragViewOffsetX">0dp</dimen>
+    <dimen name="dragViewOffsetY">0dp</dimen>
+    <!--  When dragging an item, how much bigger (fixed dps) the dragged view
+          should be. If 0, it will not be scaled at all. -->
+    <dimen name="dragViewScale">12dp</dimen>
+
+    <!-- Padding applied to AppWidget previews -->
+    <dimen name="app_widget_preview_padding_left">16dp</dimen>
+    <dimen name="app_widget_preview_padding_right">16dp</dimen>
+    <dimen name="app_widget_preview_padding_top">32dp</dimen>
+    <dimen name="app_widget_preview_label_margin_top">4dp</dimen>
+    <dimen name="app_widget_preview_label_margin_left">2dp</dimen>
+    <dimen name="app_widget_preview_label_margin_right">2dp</dimen>
+
+    <!-- Padding applied to shortcut previews -->
+    <dimen name="shortcut_preview_padding_left">0dp</dimen>
+    <dimen name="shortcut_preview_padding_right">0dp</dimen>
+    <dimen name="shortcut_preview_padding_top">0dp</dimen>
+
+<!-- Folders -->
+    <!-- The amount that the preview contents are inset from the preview background -->
+    <dimen name="folder_preview_padding">4dp</dimen>
+    <dimen name="folder_name_padding">10dp</dimen>
+</resources>

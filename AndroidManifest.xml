@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.launcher3">
+
+    <permission
+        android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="system|signature" />
+    <permission
+        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="dangerous"
+        android:label="@string/permlab_install_shortcut"
+        android:description="@string/permdesc_install_shortcut" />
+    <permission
+        android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="dangerous"
+        android:label="@string/permlab_uninstall_shortcut"
+        android:description="@string/permdesc_uninstall_shortcut"/>
+    <permission
+        android:name="com.android.launcher3.permission.READ_SETTINGS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="normal"
+        android:label="@string/permlab_read_settings"
+        android:description="@string/permdesc_read_settings"/>
+    <permission
+        android:name="com.android.launcher3.permission.WRITE_SETTINGS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="normal"
+        android:label="@string/permlab_write_settings"
+        android:description="@string/permdesc_write_settings"/>
+
+    <permission
+        android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS"
+        android:protectionLevel="signature"
+        />
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.android.launcher3.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.android.launcher3.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS" />
+
+    <application
+        android:name="com.android.launcher3.LauncherApplication"
+        android:label="@string/application_name"
+        android:icon="@mipmap/ic_launcher_home"
+        android:hardwareAccelerated="true"
+        android:largeHeap="@bool/config_largeHeap"
+        android:supportsRtl="true">
+        <activity
+            android:name="com.android.launcher3.Launcher"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.ToggleWeightWatcher"
+            android:label="@string/toggle_weight_watcher"
+            android:enabled="@bool/debug_memory_enabled"
+            android:icon="@mipmap/ic_launcher_home">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.WallpaperPickerActivity"
+            android:theme="@style/Theme.WallpaperCropper"
+            android:label="@string/pick_wallpaper"
+            android:icon="@mipmap/ic_launcher_wallpaper"
+            android:finishOnCloseSystemDialogs="true"
+            android:process=":wallpaper_chooser">
+            <intent-filter>
+                <action android:name="android.intent.action.SET_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.WallpaperCropActivity"
+            android:theme="@style/Theme.WallpaperCropper"
+            android:label="@string/crop_wallpaper"
+            android:icon="@mipmap/ic_launcher_wallpaper"
+            android:finishOnCloseSystemDialogs="true"
+            android:process=":wallpaper_chooser">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.CROP_AND_SET_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <!-- Debugging tools -->
+        <activity
+            android:name="com.android.launcher3.MemoryDumpActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:label="@string/debug_memory_activity"
+            android:enabled="@bool/debug_memory_enabled"
+            android:excludeFromRecents="true"
+            android:icon="@mipmap/ic_launcher_home"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.android.launcher3.MemoryTracker"
+            android:enabled="@bool/debug_memory_enabled"
+            >
+        </service>
+
+        <!-- Intent received used to prepopulate the default workspace. -->
+        <receiver
+            android:name="com.android.launcher3.PreloadReceiver"
+            android:permission="com.android.launcher3.permission.PRELOAD_WORKSPACE">
+            <intent-filter>
+                <action android:name="com.android.launcher3.action.PRELOAD_WORKSPACE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent received used to install shortcuts from other applications -->
+        <receiver
+            android:name="com.android.launcher3.InstallShortcutReceiver"
+            android:permission="com.android.launcher3.permission.INSTALL_SHORTCUT">
+            <intent-filter>
+                <action android:name="com.android.launcher3.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent received used to uninstall shortcuts from other applications -->
+        <receiver
+            android:name="com.android.launcher3.UninstallShortcutReceiver"
+            android:permission="com.android.launcher3.permission.UNINSTALL_SHORTCUT">
+            <intent-filter>
+                <action android:name="com.android.launcher3.action.UNINSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- New user initialization; set up initial wallpaper -->
+        <receiver
+            android:name="com.android.launcher3.UserInitializeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_INITIALIZE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.android.launcher3.PackageChangedReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package"></data>
+            </intent-filter>
+        </receiver>
+
+        <!-- The settings provider contains Home's data, like the workspace favorites -->
+        <provider
+            android:name="com.android.launcher3.LauncherProvider"
+            android:authorities="com.android.launcher3.settings"
+            android:exported="true"
+            android:writePermission="com.android.launcher3.permission.WRITE_SETTINGS"
+            android:readPermission="com.android.launcher3.permission.READ_SETTINGS" />
+
+        <meta-data android:name="android.nfc.disable_beam_default"
+                       android:value="true" />
+    </application>
+</manifest>

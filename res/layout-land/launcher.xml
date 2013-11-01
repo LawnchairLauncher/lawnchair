@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!-- Full screen view projects under the status bar and contains the background -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+
+    android:id="@+id/launcher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/workspace_bg">
+
+    <com.android.launcher3.DragLayer
+        android:id="@+id/drag_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <!-- The workspace contains 5 screens of cells -->
+        <com.android.launcher3.Workspace
+            android:id="@+id/workspace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
+            launcher:pageSpacing="@dimen/workspace_page_spacing"
+            launcher:pageIndicator="@id/page_indicator" />
+
+        <include layout="@layout/hotseat"
+            android:id="@+id/hotseat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end" />
+
+        <include
+            android:id="@+id/qsb_bar"
+            layout="@layout/qsb_bar" />
+
+        <include layout="@layout/overview_panel"
+            android:id="@+id/overview_panel"
+            android:visibility="gone" />
+
+        <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
+             that it is still visible during the transition to AllApps and doesn't overlay on
+             top of that view. -->
+        <com.android.launcher3.ScrimView
+            android:id="@+id/cling_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+        <include layout="@layout/first_run_cling"
+            android:id="@+id/first_run_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+        <include layout="@layout/workspace_cling"
+            android:id="@+id/workspace_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <include layout="@layout/folder_cling"
+            android:id="@+id/folder_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <!-- TODO: Fix
+        <com.android.launcher3.DrawableStateProxyView
+            android:id="@+id/voice_button_proxy"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="64dp"
+            android:clickable="true"
+            android:onClick="onClickVoiceButton"
+            android:importantForAccessibility="no"
+            launcher:sourceViewId="@+id/voice_button" />
+            -->
+
+        <include layout="@layout/apps_customize_pane"
+            android:id="@+id/apps_customize_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+    </com.android.launcher3.DragLayer>
+</FrameLayout>

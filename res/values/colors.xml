@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/colors.xml
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+<resources>
+    <!-- The color tints to apply to the text and drag view when hovering
+         over the delete target or the info target -->
+    <color name="delete_target_hover_tint">#DAFF0000</color>
+    <color name="info_target_hover_tint">#DA0099CC</color>
+
+    <color name="bubble_dark_background">#20000000</color>
+
+    <color name="appwidget_error_color">#FCCC</color>
+
+    <color name="workspace_all_apps_and_delete_zone_text_color">#CCFFFFFF</color>
+    <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
+    <color name="workspace_icon_text_color">#FFF</color>
+
+    <color name="apps_customize_icon_text_color">#FFF</color>
+    <color name="wallpaper_picker_translucent_gray">#66000000</color>
+    <color name="folder_items_text_color">#FF333333</color>
+    <color name="outline_color">#FFFFFFFF</color>
+    
+    <color name="first_run_cling_circle_background_color">#64b1ea</color>
+</resources>

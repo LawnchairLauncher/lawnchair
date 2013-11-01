@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"Home"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Aplicaciones básicas de Android"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"Establecer fondo"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"Seleccionados: %1$d"</item>
+    <item quantity="one" msgid="142482526010824029">"Seleccionados: %1$d"</item>
+    <item quantity="other" msgid="1418352074806573570">"Seleccionados: %1$d"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Fondo de pantalla %1$d de %2$d"</string>
+    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> seleccionado"</string>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"Eliminar"</string>
+    <string name="pick_image" msgid="1272073934062909527">"Seleccionar imagen"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"Fondos de pantalla"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"Recortar fondo de pantalla"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"La aplicación no está instalada."</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mostrar memoria"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Mantén pulsado el widget que quieras seleccionar."</string>
+    <string name="market" msgid="2619650989819296998">"Tienda"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"Error al arrastrar elemento a pantalla de inicio."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Selecciona widget a añadir"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"Nombre de carpeta"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Cambiar nombre de carpeta"</string>
+    <string name="rename_action" msgid="5559600076028658757">"Aceptar"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"Cancelar"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"Añadir a la pantalla de inicio"</string>
+    <string name="group_applications" msgid="3797214114206693605">"Aplicaciones"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"Accesos directos"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"Widgets"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"No queda espacio en las pantallas de inicio."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"No queda espacio en la pantalla de inicio."</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"No queda espacio en la barra de accesos directos."</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Este widget es demasiado grande para la barra de accesos directos."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"Se ha creado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Se ha eliminado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"Selecciona un acceso directo"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"Selecciona una aplicación"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicaciones"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Inicio"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Eliminar"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Desinstalar"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"Eliminar"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Desinstalar"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"Información de la aplicación"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"Buscar"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Búsqueda por voz"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Aplicaciones"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"Eliminar"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Desinstalar actualización"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Desinstalar aplicación"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"Información de la aplicación"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 aplicación seleccionada"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 widget seleccionado"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 carpeta seleccionada"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 acceso directo seleccionado"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar accesos directos"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite que una aplicación añada accesos directos sin intervención del usuario."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"desinstalar accesos directos"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Permite que la aplicación elimine accesos directos sin intervención del usuario."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"leer información de accesos directos y de ajustes de la pantalla de inicio"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Permite que la aplicación consulte los ajustes y los accesos directos de la pantalla de inicio."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"escribir información de accesos directos y de ajustes de la pantalla de inicio"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite que las aplicaciones cambien los ajustes y los accesos directos de la pantalla de inicio."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Problema al cargar el widget"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación es del sistema y no se puede desinstalar."</string>
+    <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sin nombre"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"Pantalla de inicio %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"Página %1$d de %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Pantalla de inicio %1$d de %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Página de aplicaciones %1$d de %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Página de widgets %1$d de %2$d"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"Te damos la bienvenida"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"Personaliza tu pantalla de inicio."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crea más pantallas para aplicaciones y carpetas"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"Organiza tu espacio"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén pulsado el fondo para gestionar el fondo de pantalla, los widgets y los ajustes."</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"Selecciona algunas aplicaciones"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Para añadir una aplicación a tu pantalla de inicio, solo tienes que mantenerla pulsada."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"Esto es una carpeta"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para crear una carpeta como esta, mantén pulsada una aplicación y muévela sobre otra."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"Aceptar"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Carpeta abierta, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Toca para cerrar la carpeta"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Toca para cambiar el nuevo nombre"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Carpeta cerrada"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Se ha cambiado el nombre de la carpeta a <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"></string>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"></string>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Ajustes"</string>
+</resources>
