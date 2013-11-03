@@ -143,4 +143,5 @@
     <string name="dialog_pick_iconpack_title">Escolhe o pacote de ícones</string>
     <string name="default_iconpack_title">Padrão</string>
     <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
+    <string name="conversations_title">Conversas</string>
 </resources>
