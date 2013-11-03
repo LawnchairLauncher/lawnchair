@@ -142,4 +142,5 @@
     <string name="effects_carousel_right">Carrousel à droite</string>
     <string name="live_folder_cling_title">Dossier dynamique</string>
     <string name="live_folder_cling_create_folder">Les dossiers dynamiques autorisent les développeurs d\'applications à créer des dossiers avec du contenu dynamique. Le contenu de ces dossiers peut être supprimé par un appui long sur une seule entrée. Contrairement aux dossiers classiques, les éléments peuvent être insérés seulement par l\'application qui a créé le dossier</string>
+    <string name="conversations_title">Conversations</string>
 </resources>
