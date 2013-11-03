@@ -615,6 +615,13 @@ public class LauncherProvider extends ContentProvider {
 
                 final int depth = parser.getDepth();
 
+                LauncherApplication app = ((LauncherApplication) mContext);
+                final ItemInfo occupied[][][] =
+                        new ItemInfo[Launcher.MAX_SCREEN_COUNT][Math.max(
+                                LauncherModel.getWorkspaceCellCountX(), LauncherModel.getHotseatCellCount())]
+                                [Math.max(LauncherModel.getWorkspaceCellCountX(),
+                                        LauncherModel.getHotseatCellCount())];
+
                 int type;
                 while (((type = parser.next()) != XmlPullParser.END_TAG ||
                         parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
@@ -642,6 +649,27 @@ public class LauncherProvider extends ContentProvider {
                     values.put(LauncherSettings.Favorites.SCREEN, screen);
                     values.put(LauncherSettings.Favorites.CELLX, x);
                     values.put(LauncherSettings.Favorites.CELLY, y);
+
+                    ItemInfo info = new ItemInfo();
+                    info.container = container;
+                    info.cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
+                    info.cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
+                    info.screen = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
+
+                    if (values.containsKey(LauncherSettings.Favorites.SPANX)) {
+                        info.spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
+                    } else {
+                        info.spanX = 1;
+                    }
+                    if (values.containsKey(LauncherSettings.Favorites.SPANY)) {
+                        info.spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
+                    } else {
+                        info.spanY = 1;
+                    }
+
+                    if (!app.getModel().checkItemPlacement(occupied, info)) {
+                        continue;
+                    }
 
                     if (TAG_FAVORITE.equals(name)) {
                         long id = addAppShortcut(db, values, a, packageManager, intent);

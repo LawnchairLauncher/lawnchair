@@ -1028,6 +1028,38 @@ public class LauncherModel extends BroadcastReceiver {
         return false;
     }
 
+    // check & update map of what's occupied; used to discard overlapping/invalid items
+    public boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
+        int containerIndex = item.screen;
+        if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            containerIndex += Launcher.MAX_WORKSPACE_SCREEN_COUNT;
+        } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            // Skip further checking if it is not the hotseat or workspace container
+            return true;
+        }
+
+        // Check if any workspace icons overlap with each other
+        for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+            for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                if (occupied[containerIndex][x][y] != null) {
+                    Log.e(TAG, "Error loading shortcut " + item
+                        + " into cell (" + containerIndex + "-" + item.screen + ":"
+                        + x + "," + y
+                        + ") occupied by "
+                        + occupied[containerIndex][x][y]);
+                    return false;
+                }
+            }
+        }
+        for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+            for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                occupied[containerIndex][x][y] = item;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Runnable for the thread that loads the contents of the launcher:
      *   - workspace icons
@@ -1265,38 +1297,6 @@ public class LauncherModel extends BroadcastReceiver {
 
                 return callbacks;
             }
-        }
-
-        // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
-            int containerIndex = item.screen;
-            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                containerIndex += Launcher.MAX_WORKSPACE_SCREEN_COUNT;
-            } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                // Skip further checking if it is not the hotseat or workspace container
-                return true;
-            }
-
-            // Check if any workspace icons overlap with each other
-            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    if (occupied[containerIndex][x][y] != null) {
-                        Log.e(TAG, "Error loading shortcut " + item
-                            + " into cell (" + containerIndex + "-" + item.screen + ":"
-                            + x + "," + y
-                            + ") occupied by "
-                            + occupied[containerIndex][x][y]);
-                        return false;
-                    }
-                }
-            }
-            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    occupied[containerIndex][x][y] = item;
-                }
-            }
-
-            return true;
         }
 
         private void loadWorkspace() {
