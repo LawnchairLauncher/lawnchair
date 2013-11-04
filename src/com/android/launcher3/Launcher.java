@@ -4122,6 +4122,9 @@ public class Launcher extends Activity
         if (grid.isTablet()) {
             return false;
         }
+        if (grid.isLandscape) {
+            return false;
+        }
 
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
