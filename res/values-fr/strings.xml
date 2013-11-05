@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Applications de base Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Définir comme fond d\'écran"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Impossible de charger l\'image."</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Impossible de charger l\'image comme fond d\'écran."</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d fond d\'écran sélectionné"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d fond d\'écran sélectionné"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Créez des écrans personnalisés pour vos applis et dossiers"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organisez votre espace"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Sélectionner des applications"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Pour ajouter une application à votre écran d\'accueil, appuyez dessus de manière prolongée."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Voici un dossier"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Pour en créer un, appuyez de manière prolongée sur une application, puis déplacez-la vers une autre."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android-kernapps"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Achtergrond instellen"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Kan afbeelding niet laden"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Kan afbeelding niet laden als achtergrond"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d geselecteerd"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d geselecteerd"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Meer schermen maken voor apps en mappen"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Uw ruimte indelen"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Blijf de achtergrond aanraken om de achtergrond, widgets en instellingen te beheren."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Selecteer een aantal apps"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Als u een app wilt toevoegen aan het startscherm, blijft u de app aanraken."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Dit is een map"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Als u een map zoals deze wilt maken, blijft u een app aanraken en schuift u deze boven op een andere app."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Aplikasi Inti Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Setel wallpaper"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Tidak dapat memuat gambar"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Tidak dapat memuat gambar sebagai wallpaper"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d dipilih"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d dipilih"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Buat lebih banyak layar untuk aplikasi dan folder"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Kelola ruang Anda"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Sentuh lama latar belakang untuk mengelola wallpaper, widget, dan setelan."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Pilih beberapa aplikasi"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Untuk menambah aplikasi ke layar Utama Anda, sentuh lama aplikasi tersebut."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ini adalah folder"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Untuk membuat seperti yang ini, sentuh lama aplikasi, lalu pindahkan ke atas aplikasi lain."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Oke"</string>

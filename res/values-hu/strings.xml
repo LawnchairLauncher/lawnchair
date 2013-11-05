@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Alap Android-alkalmazások"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Háttérkép beállítása"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"A kép betöltése nem sikerült"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"A kép betöltése háttérképként nem sikerült"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d kiválasztva"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d kiválasztva"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Hozzon létre további képernyőket az alkalmazásoknak és mappáknak"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Munkaterület rendezése"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Érintse meg és tartsa lenyomva a hátteret a háttérkép, modulok és beállítások kezeléséhez."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Válasszon ki néhány alkalmazást"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Ha egy alkalmazást szeretne elhelyezni a kezdőképernyőn, érintse meg, és tartsa lenyomva."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Itt egy mappa"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Mappa létrehozásához érintse meg és tartsa lenyomva az alkalmazást, majd húzza egy másik fölé."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
