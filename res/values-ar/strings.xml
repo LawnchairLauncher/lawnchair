@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"إنشاء المزيد من الشاشات للتطبيقات والمجلدات"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"تنظيم مساحتك"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"المس مع الاستمرار الجزء الخلفي من صورة الشاشة لإدارة الخلفية والأدوات والإعدادات."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"اختيار بعض التطبيقات"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"لإضافة تطبيق إلى الشاشة الرئيسية، المسه مع الاستمرار."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"إليك المجلد"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"لإنشاء مجلد مثل هذا، المس أحد التطبيقات مع استمرار اللمس، ثم حركه فوق آخر."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"موافق"</string>

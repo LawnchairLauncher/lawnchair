@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crea más pantallas para aplicaciones y carpetas"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiza tu espacio"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén pulsado el fondo para gestionar el fondo de pantalla, los widgets y los ajustes."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Selecciona algunas aplicaciones"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Para añadir una aplicación a tu pantalla de inicio, solo tienes que mantenerla pulsada."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Esto es una carpeta"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para crear una carpeta como esta, mantén pulsada una aplicación y muévela sobre otra."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Aceptar"</string>

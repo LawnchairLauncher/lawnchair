@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Ստեղծեք նոր էկրաններ ծրագրերի և թղթապանակների համար"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Կառավարեք ձեր տարածությունը"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Հպեք և պահեք հետնաշերտի վրա՝ պաստառները, վիջեթներն ու կարգավորումները կառավարելու համար:"</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Ընտրեք ինչ-որ ծրագիր"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Ձեր հիմնական էկրանին ծրագիր ավելացնելու համար հպեք և պահեք այն:"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ահա մի թղթապանակ"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Նման թղթապանակ ստեղծելու համար հպեք և պահեք որևէ ծրագրի վրա, ապա տեղաշարժեք այն մեկ ուրիշ ծրագրի վրա:"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Լավ"</string>
