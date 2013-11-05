@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Sukurkite daugiau programų ir aplankų ekrano kopijų"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Tvarkykite savo vietą"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Palieskite ir laikykite foną, jei norite tvarkyti ekrano foną, valdiklius ir nustatymus."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Pasirinkite kelias programas"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Jei norite prie pagrindinio ekrano pridėti programą, palieskite ją ir laikykite."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Štai aplankas"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Kad sukurtumėte tokį patį, palieskite ir laikykite programą, tada perkelkite ją virš kitos programos."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Gerai"</string>

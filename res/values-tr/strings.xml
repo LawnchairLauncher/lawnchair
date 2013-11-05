@@ -24,10 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Çekirdek Uygulamaları"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Duvar kağıdını ayarla"</string>
-    <!-- no translation found for image_load_fail (2821429163328561136) -->
-    <skip />
-    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
-    <skip />
+    <string name="image_load_fail" msgid="2821429163328561136">"Resim yüklenemedi"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Resim duvar kağıdı olarak yüklenemedi"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d tane seçildi"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d tane seçildi"</item>
@@ -107,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Uygulamalar ve klasörler için daha fazla ekran oluşturun"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Alanınızı düzenleyin"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Duvar kağıdını, widget\'ları ve ayarları yönetmek için arka plana uzun basın."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"İstediğiniz uygulamaları seçin"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Bir uygulamayı Ana ekranınıza eklemek için, ilgili uygulamayı basılı tutun."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"İşte bir klasör"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Buna benzer bir klasör oluşturmak için uygulamaya uzun basın ve sonra uygulamayı başka bir uygulamanın üzerine taşıyın."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Tamam"</string>

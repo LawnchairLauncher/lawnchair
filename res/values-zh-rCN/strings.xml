@@ -24,10 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android 核心应用"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"设置壁纸"</string>
-    <!-- no translation found for image_load_fail (2821429163328561136) -->
-    <skip />
-    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
-    <skip />
+    <string name="image_load_fail" msgid="2821429163328561136">"无法加载图片"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"无法加载要设为壁纸的图片"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"已选择%1$d项"</item>
     <item quantity="one" msgid="142482526010824029">"已选择%1$d项"</item>
@@ -107,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"添加更多屏幕来容纳应用和文件夹"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"整理您的空间"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"触摸并按住背景，即可管理壁纸、小部件和设置。"</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"选择一些应用"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"要将应用添加到主屏幕，请触摸并按住该应用。"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"这是一个文件夹"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"要创建一个类似的文件夹，请触摸并按住某个应用，然后将其移至另一个应用上。"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"确定"</string>

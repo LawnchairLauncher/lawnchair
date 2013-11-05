@@ -24,10 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Основные приложения Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Установить как обои"</string>
-    <!-- no translation found for image_load_fail (2821429163328561136) -->
-    <skip />
-    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
-    <skip />
+    <string name="image_load_fail" msgid="2821429163328561136">"Не удалось загрузить изображение"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Не удалось загрузить изображение"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"Выбрано: %1$d"</item>
     <item quantity="one" msgid="142482526010824029">"Выбрано: %1$d"</item>
@@ -107,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Создание дополнительных экранов для приложений и папок"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Организация рабочего пространства"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Чтобы перейти к управлению обоями, виджетами и настройками, нажмите на фоновое изображение и удерживайте его."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Выберите приложения"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Чтобы добавить приложение на главный экран, нажмите на значок и удерживайте его."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Это папка"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Чтобы создать папку, нажмите и удерживайте значок приложения, а затем перетащите его на другой значок."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ОК"</string>
