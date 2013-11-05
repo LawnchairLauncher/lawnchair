@@ -777,7 +777,7 @@ public class Launcher extends Activity
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             final int result;
             final Runnable onComplete;
-            if (appWidgetId < 0) {
+            if (appWidgetId < 0 || resultCode == RESULT_CANCELED) {
                 Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not returned from the \\" +
                         "widget configuration activity.");
                 result = RESULT_CANCELED;
