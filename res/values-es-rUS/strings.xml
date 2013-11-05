@@ -24,10 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Aplicaciones básicas de Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Establecer como fondo de pantalla"</string>
-    <!-- no translation found for image_load_fail (2821429163328561136) -->
-    <skip />
-    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
-    <skip />
+    <string name="image_load_fail" msgid="2821429163328561136">"No se pudo cargar la imagen."</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"No se pudo cargar la imagen como fondo de pantalla."</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d seleccionados"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d seleccionado"</item>
@@ -107,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crea más pantallas para aplicaciones y carpetas."</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiza tu espacio"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén presionado el fondo para administrar el fondo de pantalla, los widgets y la configuración."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Elige algunas aplicaciones"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Para agregar una aplicación a tu pantalla principal, mantenla presionada."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Aquí tienes una carpeta"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para crear una carpeta como esta, mantén presionada una aplicación y luego muévela sobre otra."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Aceptar"</string>

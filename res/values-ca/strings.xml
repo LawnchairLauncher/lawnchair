@@ -24,10 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Aplicacions principals d\'Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Estableix el fons de pantalla"</string>
-    <!-- no translation found for image_load_fail (2821429163328561136) -->
-    <skip />
-    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
-    <skip />
+    <string name="image_load_fail" msgid="2821429163328561136">"No s\'ha pogut carregar la imatge."</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"No s\'ha pogut carregar la imatge com a fons de pantalla."</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"Seleccionats: %1$d"</item>
     <item quantity="one" msgid="142482526010824029">"Seleccionats: %1$d"</item>
@@ -107,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Crea més pantalles per a aplicacions i carpetes"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organitza el teu espai"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Toca i mantén premut el fons per gestionar el fons de pantalla, els widgets i la configuració."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Tria unes quantes aplicacions"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Per afegir una aplicació a la pantalla d\'inici, mantén-la premuda."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Aquí hi ha una carpeta"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Per crear-ne una com aquesta, mantén premuda una aplicació i, a continuació, mou-la sobre una altra."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"D\'acord"</string>

@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Skapa fler skärmar för appar och mappar"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organisera ditt utrymme"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Tryck länge på bakgrunden om du vill hantera bakgrundsbilder, widgetar och inställningar."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Välj några appar"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Om du vill lägga till en app på startskärmen trycker du länge på den."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Det här är en mapp"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Om du vill skapa en till mapp av det här slaget trycker du länge på en app och drar den sedan ovanpå en annan."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

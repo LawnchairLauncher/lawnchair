@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Створюйте нові екрани для програм і папок"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Організуйте робочий простір"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Натисніть і утримуйте фон, щоб керувати фоновим малюнком, віджетами та налаштуваннями."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Виберіть програми"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Щоб додати програму на головний екран, торкніться й утримуйте її."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Це папка"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Щоб створити папку, натисніть і утримуйте програму, а потім перетягніть її на іншу."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OК"</string>
