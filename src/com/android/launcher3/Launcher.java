@@ -181,6 +181,8 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_ADD_SPAN_Y = "launcher.add_span_y";
     // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
+ // Type: parcelable
+    private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_ID = "launcher.add_widget_id";
 
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
@@ -227,6 +229,7 @@ public class Launcher extends Activity
 
     private ItemInfo mPendingAddInfo = new ItemInfo();
     private AppWidgetProviderInfo mPendingAddWidgetInfo;
+    private int mPendingAddWidgetId = -1;
 
     private int[] mTmpAddItemCellCoordinates = new int[2];
 
@@ -704,6 +707,8 @@ public class Launcher extends Activity
             final int requestCode, final int resultCode, final Intent data) {
         // Reset the startActivity waiting flag
         mWaitingForResult = false;
+        int pendingAddWidgetId = mPendingAddWidgetId;
+        mPendingAddWidgetId = -1;
 
         Runnable exitSpringLoaded = new Runnable() {
             @Override
@@ -737,8 +742,15 @@ public class Launcher extends Activity
 
         // We have special handling for widgets
         if (isWidgetDrop) {
-            final int appWidgetId = data != null ?
-                    data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
+            final int appWidgetId;
+            int widgetId = data != null ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+                    : -1;
+            if (widgetId < 0) {
+                appWidgetId = pendingAddWidgetId;
+            } else {
+                appWidgetId = widgetId;
+            }
+
             final int result;
             final Runnable onComplete;
             if (appWidgetId < 0 || resultCode == RESULT_CANCELED) {
@@ -815,6 +827,7 @@ public class Launcher extends Activity
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
+            mAppWidgetHost.deleteAppWidgetId(appWidgetId);
             animationType = Workspace.CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION;
         }
         if (mDragLayer.getAnimatedView() != null) {
@@ -1118,6 +1131,7 @@ public class Launcher extends Activity
             mPendingAddInfo.spanX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_X);
             mPendingAddInfo.spanY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y);
             mPendingAddWidgetInfo = savedState.getParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
+            mPendingAddWidgetId = savedState.getInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID);
             mWaitingForResult = true;
             mRestoring = true;
         }
@@ -1742,6 +1756,7 @@ public class Launcher extends Activity
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_X, mPendingAddInfo.spanX);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y, mPendingAddInfo.spanY);
             outState.putParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO, mPendingAddWidgetInfo);
+            outState.putInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID, mPendingAddWidgetId);
         }
 
         if (mFolderInfo != null && mWaitingForResult) {
@@ -1925,6 +1940,7 @@ public class Launcher extends Activity
             delay) {
         if (appWidgetInfo.configure != null) {
             mPendingAddWidgetInfo = appWidgetInfo;
+            mPendingAddWidgetId = appWidgetId;
 
             // Launch over to configure widget, if needed
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
