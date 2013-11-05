@@ -105,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Creare più schermate per app e cartelle"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizza il tuo spazio"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Tocca e tieni premuto lo sfondo per gestire sfondi, widget e impostazioni."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Scegli alcune applicazioni"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Per aggiungere un\'app alla schermata Home, tocca e tieni premuto."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ecco una cartella"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Per crearne una simile, tocca un\'app e tieni premuto, dopodiché spostala sopra un\'altra."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
