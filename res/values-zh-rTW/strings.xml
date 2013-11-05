@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android 核心應用程式"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"設定桌布"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"無法載入圖片"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"無法載入您要設為桌布的圖片"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"已選取 %1$d 個項目"</item>
     <item quantity="one" msgid="142482526010824029">"已選取 %1$d 個項目"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"建立更多畫面容納應用程式和資料夾"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"管理您的空間"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"輕觸並按住背景，即可管理桌布、小工具和設定。"</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"選擇一些應用程式"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"如要將應用程式新增至主螢幕，請輕觸並按住目標。"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"資料夾顯示如下"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"如要建立類似的資料夾，請輕觸並按住應用程式，然後將應用程式疊放在另一個應用程式上。"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"確定"</string>

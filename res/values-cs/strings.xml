@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Core Apps"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Nastavit jako tapetu"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Obrázek nelze načíst."</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Obrázek nelze načíst jako tapetu."</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"Vybráno: %1$d"</item>
     <item quantity="one" msgid="142482526010824029">"Vybráno: %1$d"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Vytvořte několik obrazovek pro aplikace a složky"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizace prostoru"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Chcete-li spravovat tapetu, widgety a nastavení, dotkněte se pozadí a přidržte je."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Vyberte nějaké aplikace"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Chcete-li na plochu přidat aplikaci, dotkněte se jí a přidržte ji."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Toto je složka"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Chcete-li vytvořit složku, přetáhněte aplikaci na jinou aplikaci."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

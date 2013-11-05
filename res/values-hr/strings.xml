@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Matične aplikacije za Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Postavi pozadinsku sliku"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Nije moguće učitati sliku"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Nije moguće učitati sliku kao pozadinsku sliku"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"Odabrano: %1$d"</item>
     <item quantity="one" msgid="142482526010824029">"Odabrano: %1$d"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Izradite više zaslona za aplikacije i mape"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizirajte svoj prostor"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Dodirnite i držite pozadinu da biste upravljali pozadinskom slikom, widgetima i postavkama."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Odaberite neke aplikacije"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Da biste dodali aplikaciju na početni zaslon, dodirnite je i zadržite."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Evo mape"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Da biste izradili ovakvu mapu, dodirnite i držite aplikaciju pa je pomaknite preko druge aplikacije."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"U redu"</string>

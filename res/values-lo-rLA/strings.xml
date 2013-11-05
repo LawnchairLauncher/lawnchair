@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"ແອັບພລິເຄຊັນຫຼັກຂອງ Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"ຕັ້ງເປັນພາບພື້ນຫຼັງ"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"ບໍ່ສາມາດໂຫຼດຮູບພາບໄດ້"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"ບໍ່​ສາ​ມາດ​ໂຫຼດ​ຮູບພາບ​ເປັນ​ຮູບພື້ນຫຼັງໄດ້"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
     <item quantity="one" msgid="142482526010824029">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"ສ້າງຈໍເພີ່ມເຕີມສຳລັບແອັບຯ ແລະໂຟນເດີ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ຈັດການພື້ນທີ່ຂອງທ່ານ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"ແຕະຄ້າງໄວ້ທີ່ພາບພື້ນຫຼັງເພື່ອຈັດການພາບພື້ນຫຼັງ, ວິດເຈັດແລະການຕັ້ງຄ່າ."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"ເລືອກແອັບຯ"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"ເພື່ອເພີ່ມແອັບຯໃສ່ໜ້າຈໍຫຼັກຂອງທ່ານ, ໃຫ້ແຕະຄ້າງໄວ້."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"ນີ້ແມ່ນໂຟນເດີ່"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"ເພື່ອສ້າງອັນໃໝ່ແບບນີ້, ແຕະຄ້າງໄວ້ທີ່ແອັບຯ ແລ້ວຍ້າຍມັນໄປຫາໂຕອື່ນ."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ຕົກລົງ"</string>

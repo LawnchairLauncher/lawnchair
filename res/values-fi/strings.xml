@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Androidin ydinsovellukset"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="wallpaper_instructions" msgid="563973358787555519">"Aseta taustakuva"</string>
+    <string name="image_load_fail" msgid="2821429163328561136">"Kuvan lataus epäonnistui"</string>
+    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Kuvaa ei voitu ladata taustakuvaksi"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="7464587177007785408">"%1$d valittu"</item>
     <item quantity="one" msgid="142482526010824029">"%1$d valittu"</item>
@@ -103,8 +105,6 @@
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Luo lisää ruutuja sovelluksille ja kansioille"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Järjestä tilasi"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Hallitse taustakuvaa, widgetejä ja asetuksia koskettamalla taustaa pitkään."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Valitse joitakin sovelluksia"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Voit lisätä sovelluksen aloitusruutuun koskettamalla sitä pitkään."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Tässä on kansio"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Luo se seuraavasti: kosketa sovellusta pitkään ja siirrä se sitten toisen päälle."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
