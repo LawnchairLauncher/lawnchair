@@ -102,7 +102,7 @@
     <string name="first_run_cling_description" msgid="6447072552696253358">"Gerät personalisieren"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Weitere Bildschirme für Apps und Ordner erstellen"</string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Mehr Bildschirme für Apps und Ordner erstellen"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Arbeitsbereich organisieren"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Hintergrund berühren und halten, um Hintergrund, Widgets und Einstellungen zu verwalten"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Hier ist ein Ordner"</string>
