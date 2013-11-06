@@ -74,7 +74,7 @@ public class LauncherProvider extends ContentProvider {
             "DEFAULT_WORKSPACE_RESOURCE_ID";
 
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.cyanogenmod.trebuchet.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
+            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
     /**
      * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
