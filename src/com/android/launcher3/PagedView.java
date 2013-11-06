@@ -799,14 +799,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        // NOTE: We multiply by 1.5f to account for the fact that depending on the offset of the
+        // NOTE: We multiply by 2f to account for the fact that depending on the offset of the
         // viewport, we can be at most one and a half screens offset once we scale down
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int maxSize = Math.max(dm.widthPixels + mInsets.left + mInsets.right,
                 dm.heightPixels + mInsets.top + mInsets.bottom);
 
-        int parentWidthSize = (int) (1.5f * maxSize);
-        int parentHeightSize = maxSize;
+        int parentWidthSize = (int) (2f * maxSize);
+        int parentHeightSize = (int) (2f * maxSize);
         int scaledWidthSize, scaledHeightSize;
         if (mUseMinScale) {
             scaledWidthSize = (int) (parentWidthSize / mMinScale);

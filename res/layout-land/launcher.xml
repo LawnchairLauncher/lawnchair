@@ -73,19 +73,6 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-        <!-- TODO: Fix
-        <com.android.launcher3.DrawableStateProxyView
-            android:id="@+id/voice_button_proxy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="top|start"
-            android:layout_marginTop="64dp"
-            android:clickable="true"
-            android:onClick="onClickVoiceButton"
-            android:importantForAccessibility="no"
-            launcher:sourceViewId="@+id/voice_button" />
-            -->
-
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"
             android:layout_width="match_parent"

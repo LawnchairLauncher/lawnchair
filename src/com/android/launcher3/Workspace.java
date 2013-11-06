@@ -186,7 +186,6 @@ public class Workspace extends SmoothPagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
-    private int mOverviewModePageOffset;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -338,13 +337,13 @@ public class Workspace extends SmoothPagedView
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        mOverviewModeShrinkFactor =
-                res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
-        mOverviewModePageOffset = res.getDimensionPixelSize(R.dimen.overview_mode_page_offset);
+        mOverviewModeShrinkFactor = grid.getOverviewModeScale();
         mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
         mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         mDefaultScreenId = SettingsProvider.getLongCustomDefault(context,
@@ -448,10 +447,8 @@ public class Workspace extends SmoothPagedView
         setClipChildren(false);
         setClipToPadding(false);
         setChildrenDrawnWithCacheEnabled(true);
-
-        // This is a bit of a hack to account for the fact that we translate the workspace
-        // up a bit, and still need to draw the background covering the whole screen.
-        setMinScale(mOverviewModeShrinkFactor - 0.2f);
+        
+        setMinScale(mOverviewModeShrinkFactor);
         setupLayoutTransition();
 
         final Resources res = getResources();
@@ -2109,14 +2106,17 @@ public class Workspace extends SmoothPagedView
     }
 
     int getOverviewModeTranslationY() {
-        int childHeight = getNormalChildHeight();
-        int viewPortHeight = getViewportHeight();
-        int scaledChildHeight = (int) (getOverviewModeScaleY() * childHeight);
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Rect overviewBar = grid.getOverviewModeButtonBarRect();
 
-        int offset = (viewPortHeight - scaledChildHeight) / 2;
-        int offsetDelta = mOverviewModePageOffset - offset + mInsets.top;
+        int availableHeight = getViewportHeight();
+        int scaledHeight = (int) (mOverviewModeShrinkFactor * getNormalChildHeight());
+        int offsetFromTopEdge = (availableHeight - scaledHeight) / 2;
+        int offsetToCenterInOverview = (availableHeight - mInsets.top - overviewBar.height()
+                - scaledHeight) / 2;
 
-        return offsetDelta;
+        return -offsetFromTopEdge + mInsets.top + offsetToCenterInOverview;
     }
 
     float getOverviewModeScaleY() {
