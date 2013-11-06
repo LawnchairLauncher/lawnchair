@@ -91,29 +91,30 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
             mStartTime = currentTime;
         }
 
+        final long currentPlayTime = animation.getCurrentPlayTime();
         if (!mHandlingOnAnimationUpdate &&
             sVisible &&
             // If the current play time exceeds the duration, the animation
             // will get finished, even if we call setCurrentPlayTime -- therefore
             // don't adjust the animation in that case
-            animation.getCurrentPlayTime() < animation.getDuration()) {
+            currentPlayTime < animation.getDuration()) {
             mHandlingOnAnimationUpdate = true;
             long frameNum = sGlobalFrameCounter - mStartFrame;
             // If we haven't drawn our first frame, reset the time to t = 0
             // (give up after MAX_DELAY ms of waiting though - might happen, for example, if we
             // are no longer in the foreground and no frames are being rendered ever)
-            if (frameNum == 0 && currentTime < mStartTime + MAX_DELAY) {
+            if (frameNum == 0 && currentTime < mStartTime + MAX_DELAY && currentPlayTime > 0) {
                 // The first frame on animations doesn't always trigger an invalidate...
                 // force an invalidate here to make sure the animation continues to advance
                 mTarget.getRootView().invalidate();
                 animation.setCurrentPlayTime(0);
-
             // For the second frame, if the first frame took more than 16ms,
             // adjust the start time and pretend it took only 16ms anyway. This
             // prevents a large jump in the animation due to an expensive first frame
             } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
                        !mAdjustedSecondFrameTime &&
-                       currentTime > mStartTime + IDEAL_FRAME_DURATION) {
+                       currentTime > mStartTime + IDEAL_FRAME_DURATION &&
+                       currentPlayTime > IDEAL_FRAME_DURATION) {
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
             } else {
