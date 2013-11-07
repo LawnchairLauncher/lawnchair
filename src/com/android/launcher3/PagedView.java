@@ -1817,7 +1817,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                                 addView(mDragView, pageUnderPointIndex);
                                 onAddView(mDragView, pageUnderPointIndex);
                                 mSidePageHoverIndex = -1;
-                                mPageIndicator.setActiveMarker(getNextPage());
+                                if (mPageIndicator != null) {
+                                    mPageIndicator.setActiveMarker(getNextPage());
+                                }
                             }
                         };
                         postDelayed(mSidePageHoverRunnable, REORDERING_SIDE_PAGE_HOVER_TIMEOUT);
