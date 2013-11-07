@@ -616,11 +616,13 @@ public class LauncherProvider extends ContentProvider {
                 final int depth = parser.getDepth();
 
                 LauncherApplication app = ((LauncherApplication) mContext);
+                int cellCountX = app.getResources().getInteger(R.integer.target_cell_count_x);
+                int cellCountY = app.getResources().getInteger(R.integer.target_cell_count_y);
+                int hotseatCellCount = app.getResources().getInteger(R.integer.hotseat_cell_count);
                 final ItemInfo occupied[][][] =
                         new ItemInfo[Launcher.MAX_SCREEN_COUNT][Math.max(
-                                LauncherModel.getWorkspaceCellCountX(), LauncherModel.getHotseatCellCount())]
-                                [Math.max(LauncherModel.getWorkspaceCellCountX(),
-                                        LauncherModel.getHotseatCellCount())];
+                                cellCountX, hotseatCellCount)]
+                                [Math.max(cellCountY, hotseatCellCount)];
 
                 int type;
                 while (((type = parser.next()) != XmlPullParser.END_TAG ||
