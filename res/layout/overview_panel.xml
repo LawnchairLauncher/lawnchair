@@ -13,18 +13,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:layout_gravity="center_horizontal|bottom"
-    android:paddingBottom="@dimen/overview_panel_bottom_padding">
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/wallpaper_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
         android:text="@string/wallpaper_button_text"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/wallpaper_button"
@@ -32,13 +32,11 @@
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
         android:textSize="12sp" />
-    <Space
-        android:layout_width="@dimen/overview_panel_buttonSpacing"
-        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/widget_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
         android:text="@string/widget_button_text"
         android:drawablePadding="4dp"
         android:gravity="center_horizontal"
@@ -46,13 +44,11 @@
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
         android:textSize="12sp"/>
-    <Space
-        android:layout_width="@dimen/overview_panel_buttonSpacing"
-        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
         android:text="@string/settings_button_text"
         android:drawablePadding="4dp"
         android:gravity="center_horizontal"
@@ -60,4 +56,4 @@
         android:fontFamily="sans-serif-condensed"
         android:textAllCaps="true"
         android:textSize="12sp" />
-</LinearLayout>
+</FrameLayout>
