@@ -24,11 +24,13 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
@@ -106,22 +108,32 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         final int n = getChildCount();
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);
-            final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
             if (child.getId() == R.id.overview_panel) {
                 continue;
             }
-            if (child instanceof Insettable) {
-                ((Insettable)child).setInsets(insets);
-            } else {
-                flp.topMargin += (insets.top - mInsets.top);
-                flp.leftMargin += (insets.left - mInsets.left);
-                flp.rightMargin += (insets.right - mInsets.right);
-                flp.bottomMargin += (insets.bottom - mInsets.bottom);
-            }
-            child.setLayoutParams(flp);
+            setInsets(child, insets, mInsets);
         }
         mInsets.set(insets);
         return true; // I'll take it from here
+    }
+
+    @Override
+    public void addView(View child, int index, android.view.ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        setInsets(child, mInsets, new Rect());
+    }
+
+    private void setInsets(View child, Rect newInsets, Rect oldInsets) {
+        final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
+        if (child instanceof Insettable) {
+            ((Insettable) child).setInsets(newInsets);
+        } else {
+            flp.topMargin += (newInsets.top - oldInsets.top);
+            flp.leftMargin += (newInsets.left - oldInsets.left);
+            flp.rightMargin += (newInsets.right - oldInsets.right);
+            flp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
+        }
+        child.setLayoutParams(flp);
     }
 
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
