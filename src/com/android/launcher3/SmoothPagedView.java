@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
-import android.widget.Scroller;
 
 public abstract class SmoothPagedView extends PagedView {
     private static final float SMOOTHING_SPEED = 0.75f;
@@ -100,7 +99,7 @@ public abstract class SmoothPagedView extends PagedView {
             mBaseLineFlingVelocity = 2500.0f;
             mFlingVelocityInfluence = 0.4f;
             mScrollInterpolator = new OvershootInterpolator();
-            mScroller = new Scroller(getContext(), mScrollInterpolator);
+            setDefaultInterpolator(mScrollInterpolator);
         }
     }
 

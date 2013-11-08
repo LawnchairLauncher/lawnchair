@@ -2234,8 +2234,11 @@ public class Workspace extends SmoothPagedView
         mNewScale = 1.0f;
 
         if (oldStateIsOverview) {
-            disableFreeScroll(snapPage);
+            disableFreeScroll();
+        } else if (stateIsOverview) {
+            enableFreeScroll();
         }
+
 
         if (state != State.NORMAL) {
             if (stateIsSpringLoaded) {
@@ -2259,16 +2262,20 @@ public class Workspace extends SmoothPagedView
             duration = getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         }
 
+        if (snapPage == -1) {
+            snapPage = getPageNearestToCenterOfScreen();
+        }
+        snapToPage(snapPage, duration, mZoomInInterpolator);
+
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
-            boolean isCurrentPage = (i == getNextPage());
+            boolean isCurrentPage = (i == snapPage);
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
             float finalAlpha;
             if (stateIsSmall) {
                 finalAlpha = 0f;
             } else if (stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
-
-                finalAlpha = (i == getNextPage() || i < numCustomPages()) ? 1f : 0f;
+                finalAlpha = (i == snapPage || i < numCustomPages()) ? 1f : 0f;
             } else {
                 finalAlpha = 1f;
             }
