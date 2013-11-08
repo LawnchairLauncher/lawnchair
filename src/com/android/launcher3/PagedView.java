@@ -1469,10 +1469,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                  */
                 final int xDist = Math.abs(mScroller.getFinalX() - mScroller.getCurrX());
                 final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
+
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
-                    mScrollAbortedFromIntercept = true;
-                    abortScrollerAnimation(false);
+                    if (!mScroller.isFinished()) {
+                        mScrollAbortedFromIntercept = true;
+                        abortScrollerAnimation(false);
+                    }
                 } else {
                     if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
                         mTouchState = TOUCH_STATE_SCROLLING;
