@@ -190,7 +190,9 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
                     LiveWallpaperListAdapter.this.notifyDataSetChanged();
                     break;
                 }
-                info.mThumbnail.setDither(true);
+                if (info.mThumbnail != null) {
+                    info.mThumbnail.setDither(true);
+                }
                 if (mWallpaperPosition < mWallpapers.size()) {
                     mWallpapers.set(mWallpaperPosition, info);
                 } else {
