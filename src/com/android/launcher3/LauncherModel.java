@@ -505,8 +505,7 @@ public class LauncherModel extends BroadcastReceiver {
             if (stackTrace != null) {
                 e.setStackTrace(stackTrace);
             }
-            // TODO: something breaks this in the upgrade path
-            //throw e;
+            throw e;
         }
     }
 
