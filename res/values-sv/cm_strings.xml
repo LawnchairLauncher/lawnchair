@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="menu">Meny</string>
+    <string name="cancel_target_label">Avbryt</string>
+    <string name="edit_target_label">Ändra</string>
+    <string name="menu_lock_workspace">Lås hemskärm</string>
+    <string name="menu_unlock_workspace">Lås upp hemskärm</string>
+    <string name="menu_preferences">Trebuchetinställningar</string>
+    <string name="menu_apps_sort_title">Namn</string>
+    <string name="menu_apps_sort_install_date">Installationsdatum</string>
+    <string name="menu_apps_filter_system">Förinstallerade</string>
+    <string name="menu_apps_filter_downloaded">Hämtade</string>
+    <string name="menu_hidden_apps_delete">Återställ</string>
+    <string name="all_apps_sort_cling_title">Sortera dina appar</string>
+    <string name="all_apps_sort_cling_add_item">Tryck på och håll ned Apparfliken för att välja sorteringsläge</string>
+    <string name="hidden_apps_title">Gömda appar</string>
+    <string name="workspace_locked">Hemskärmen är låst, lås upp den i inställningarna för att arrangera om</string>
+    <string name="preferences_title">Inställningar</string>
+    <string name="preferences_interface_title">Gränssnitt</string>
+    <string name="preferences_application_title">Om</string>
+    <string name="preferences_interface_homescreen_title">Hemskärm</string>
+    <string name="preferences_interface_homescreen_summary">Skärmar och bakgrundsbild</string>
+    <string name="preferences_interface_homescreen_general_category">Allmänt</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Hemskärmar</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Antalet skärmar på hemskärmen</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Standardskärm</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Välj standardhemskärm</string>
+    <string name="preferences_interface_homescreen_general_search_title">Sökfält</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Aktivera bestående sökfält</string>
+    <string name="preferences_interface_homescreen_general_grid_title">Rutnätsstorlek</string>
+    <string name="preferences_interface_homescreen_general_grid_summary">Välj antalet rader/kolumner på hemskärmen</string>
+    <string name="preferences_interface_homescreen_general_grid_rows_title">Rader</string>
+    <string name="preferences_interface_homescreen_general_grid_columns_title">Kolumner</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Sträck ut skärmar</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Expandera hemskärmarna för att fylla skärmstorleken</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Dölj ikonetiketter</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Göm ikonetiketter på hemskärmen</string>
+    <string name="preferences_interface_homescreen_scrolling_category">Bläddring</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Övergångseffekt</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Bläddringseffekt när du bläddrar mellan hemskärmar</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Bläddra bakgrundsbild</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Bläddra bakgrundsbild när du bläddrar mellan hemskärmar</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_title">Snabbrendera bakgrundsbild</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_hack_summary">Använd ett hack som gör bläddringen jämnare över statiska bakgrundsbilder</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_title">Bakgrundsbildsstorlek</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_size_summary">Hur många skärmar bred bakgrundsbilden bör vara</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Tona sidoskärmar</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Tonar sidoskärmarna när du bläddrar mellan hemskärmar</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Visa ramar</string>
+    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Visa skärmramar när du bläddrar mellan hemskärmar</string>
+    <string name="preferences_interface_homescreen_indicator_category">Indikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Visa sidindikator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_summary">Visa indikator för nuvarande sida på skärmen</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Tona indikator</string>
+    <string name="preferences_interface_homescreen_indicator_fade_summary">Tona bort indikatorn efter att hemskärmen har växlats</string>
+    <string name="preferences_interface_homescreen_indicator_position_title">Indikatorposition</string>
+    <string name="preferences_interface_homescreen_indicator_position_summary">Välj var indikatorn ska visas på skärmen</string>
+    <string name="preferences_interface_drawer_title">Applåda</string>
+    <string name="preferences_interface_drawer_summary">Behållare för appar och widgets</string>
+    <string name="preferences_interface_drawer_orientation_title">Orientering</string>
+    <string name="preferences_interface_drawer_orientation_summary">Välj åt vilket håll lådan bläddras</string>
+    <string name="preferences_interface_drawer_apps_category">Appar</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Gömda appar</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Dölj appar från lådan</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Gömda appar (genvägar)</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Ta bort dolda appars genvägar från hemskärmen</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Gömda appar (widgetar)</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Ta bort dolda appars widgetar från hemskärmen</string>
+    <string name="preferences_interface_drawer_widgets_category">Widgetar</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Slå samman med Appar</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_summary">Bläddra från appar till widgetar utan att ändra flik</string>
+    <string name="preferences_interface_drawer_scrolling_category">Bläddring</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Övergångseffekt</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Bläddringseffekt när du bläddrar mellan sidor</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Tona sidor</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Tona bort sidor när du bläddrar mellan sidor</string>
+    <string name="preferences_interface_drawer_indicator_category">Indikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Visa sidindikator</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Visa indikator för nuvarande sida på skärmen</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Tona indikator</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Tona bort indikatorn efter att sidan har växlats</string>
+    <string name="preferences_interface_drawer_indicator_position_title">Indikatorposition</string>
+    <string name="preferences_interface_drawer_indicator_position_summary">Välj var indikatorn ska visas på skärmen</string>
+    <string name="preferences_interface_dock_title">Docka</string>
+    <string name="preferences_interface_dock_enabled_title">Visa docka</string>
+    <string name="preferences_interface_dock_enabled_summary">Visa dockan under nedanför hemskärmen</string>
+    <string name="preferences_interface_dock_pages_title">Sidor</string>
+    <string name="preferences_interface_dock_pages_summary">Antal sidor i dockan</string>
+    <string name="preferences_interface_dock_default_page_title">Standardsida</string>
+    <string name="preferences_interface_dock_default_page_summary">Välj standardsida</string>
+    <string name="preferences_interface_dock_icons_title">Ikoner</string>
+    <string name="preferences_interface_dock_icons_summary">Antal ikoner/kolumner i dockan</string>
+    <string name="preferences_interface_dock_hide_icon_labels_title">Dölj ikonetiketter</string>
+    <string name="preferences_interface_dock_hide_icon_labels_summary">Dölj ikonetiketter i dockan</string>
+    <string name="preferences_interface_dock_icon_scale_title">Ikonstorlek</string>
+    <string name="preferences_interface_dock_icon_scale_summary">Storlek på ikoner i dockan</string>
+    <string name="preferences_interface_dock_divider_title">Visa avdelare</string>
+    <string name="preferences_interface_dock_divider_summary">Visa avdelare mellan hemskärm och dockan</string>
+    <string name="preferences_interface_icons_title">Ikoner</string>
+    <string name="preferences_interface_general_title">Allmänt</string>
+    <string name="preferences_interface_general_orientation_title">Autorotera skärmen</string>
+    <string name="preferences_interface_general_lock_workspace_title">Lås hemskärm</string>
+    <string name="preferences_interface_general_lock_workspace_summary">Lås genvägarnas och mapparnas positioner på hemskärmen, i dockan och applådan</string>
+    <string name="preferences_interface_general_fullscreen_title">Helskärmsläge</string>
+    <string name="preferences_interface_general_fullscreen_summary">Dölj aviseringsfältet för att expandera hemskärmen</string>
+    <string name="folder_empty_contents_title">Inga föremål funna</string>
+    <string name="preferences_interface_general_iconpack_title">Ikonpaket</string>
+    <string name="preferences_interface_general_iconpack_summary">Ikonpaket ersätter standardikonerna för appar</string>
+    <string name="dialog_pick_iconpack_title">Välj ikonpaket</string>
+    <string name="default_iconpack_title">Standard</string>
+    <string name="no_iconpacks_summary">Inga ikonpaket installerade</string>
+    <string name="effects_tablet">Surfplatta</string>
+    <string name="effects_zoom_in">Zooma in</string>
+    <string name="effects_zoom_out">Zooma ut</string>
+    <string name="effects_rotate_up">Rotera uppåt</string>
+    <string name="effects_rotate_down">Rotera nedåt</string>
+    <string name="effects_cylinder_in">Cylinder, insida</string>
+    <string name="effects_cylinder_out">Cylinder, utsida</string>
+    <string name="effects_cube_in">Kub, insida</string>
+    <string name="effects_cube_out">Kub, utsida</string>
+    <string name="effects_spin">Snurra</string>
+    <string name="effects_flip">Vänd</string>
+    <string name="effects_stack">Stapla</string>
+    <string name="effects_accordion">Dragspel</string>
+    <string name="effects_carousel_left">Karusell, vänster</string>
+    <string name="effects_carousel_right">Karusell, höger</string>
+    <string name="live_folder_cling_title">Levande mappar</string>
+    <string name="live_folder_cling_create_folder">Levande mappar möjliggör för utvecklare att skapa mappar med dynamiskt innehåll.
+    Mappinnehåll kan tas bort genom ett långtryck på en enskild post. Till skillnad från vanliga mappar kan föremål endast läggas till genom
+    applikationen som skapar mappen</string>
+    <string name="conversations_title">Konversationer</string>
+</resources>
