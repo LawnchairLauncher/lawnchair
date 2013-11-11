@@ -915,6 +915,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int verticalPadding = getPaddingTop() + getPaddingBottom();
 
         LayoutParams lp = (LayoutParams) getChildAt(startIndex).getLayoutParams();
+        LayoutParams nextLp;
 
         int childLeft = offsetX + (lp.isFullScreenPage ? 0 : getPaddingLeft());
         if (mPageScrolls == null || getChildCount() != mChildCountOnLastLayout) {
@@ -944,7 +945,24 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 int scrollOffsetLeft = lp.isFullScreenPage ? 0 : getPaddingLeft();
                 mPageScrolls[i] = childLeft - scrollOffsetLeft - offsetX;
-                childLeft += childWidth + mPageSpacing;
+
+                int pageGap = mPageSpacing;
+                int next = i + delta;
+                if (next != endIndex) {
+                    nextLp = (LayoutParams) getPageAt(next).getLayoutParams();
+                } else {
+                    nextLp = null;
+                }
+
+                // Prevent full screen pages from showing in the viewport
+                // when they are not the current page.
+                if (lp.isFullScreenPage) {
+                    pageGap = getPaddingLeft();
+                } else if (nextLp != null && nextLp.isFullScreenPage) {
+                    pageGap = getPaddingRight();
+                }
+
+                childLeft += childWidth + pageGap;
             }
         }
 

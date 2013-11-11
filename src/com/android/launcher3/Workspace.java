@@ -1546,7 +1546,7 @@ public class Workspace extends SmoothPagedView
                 mState == State.NORMAL &&
                 !mIsSwitchingState &&
                 !isInOverscroll) {
-            for (int i = 0; i < getChildCount(); i++) {
+            for (int i = numCustomPages(); i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
