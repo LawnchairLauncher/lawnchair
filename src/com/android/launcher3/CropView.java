@@ -165,7 +165,8 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
                 final float imageWidth = imageDims[0];
                 final float imageHeight = imageDims[1];
                 mMinScale = Math.max(w / imageWidth, h / imageHeight);
-                mRenderer.scale = Math.max(mMinScale, mRenderer.scale);
+                mRenderer.scale =
+                        Math.max(mMinScale, resetScale ? Float.MIN_VALUE : mRenderer.scale);
             }
         }
     }
