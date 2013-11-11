@@ -82,7 +82,9 @@ public class OverviewSettingsPanel {
         widgetButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                mLauncher.showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                if (!mLauncher.getWorkspace().isSwitchingState()) {
+                    mLauncher.showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                }
             }
         });
         widgetButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
@@ -91,7 +93,9 @@ public class OverviewSettingsPanel {
         wallpaperButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                mLauncher.startWallpaper();
+                if (!mLauncher.getWorkspace().isSwitchingState()) {
+                    mLauncher.startWallpaper();
+                }
             }
         });
         wallpaperButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
@@ -100,7 +104,9 @@ public class OverviewSettingsPanel {
         themesButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                mLauncher.startThemeSettings();
+                if (!mLauncher.getWorkspace().isSwitchingState()) {
+                    mLauncher.startThemeSettings();
+                }
             }
         });
         themesButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
@@ -109,7 +115,9 @@ public class OverviewSettingsPanel {
         defaultScreenButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                mLauncher.getWorkspace().onClickDefaultScreenButton();
+                if (!mLauncher.getWorkspace().isSwitchingState()) {
+                    mLauncher.getWorkspace().onClickDefaultScreenButton();
+                }
             }
         });
 
