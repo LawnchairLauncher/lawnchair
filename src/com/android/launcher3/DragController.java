@@ -327,7 +327,7 @@ public class DragController {
                 for (AppInfo info : appInfos) {
                     // Added null checks to prevent NPE we've seen in the wild
                     if (dragInfo != null &&
-                        dragInfo.intent != null) {
+                            dragInfo.intent != null && info != null) {
                         ComponentName cn = dragInfo.intent.getComponent();
                         boolean isSameComponent = cn.equals(info.componentName) ||
                                 packageNames.contains(cn.getPackageName());
