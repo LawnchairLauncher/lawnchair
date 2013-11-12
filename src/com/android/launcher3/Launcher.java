@@ -1880,7 +1880,7 @@ public class Launcher extends Activity
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null) {
+                    openFolder == null && shouldMoveToDefaultScreenOnHomeIntent()) {
                 mWorkspace.moveToDefaultScreen(true);
             }
 
@@ -1906,11 +1906,28 @@ public class Launcher extends Activity
             if (mAppsCustomizeLayout != null) {
                 mAppsCustomizeLayout.reset();
             }
+
+            onHomeIntent();
         }
 
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }
+    }
+
+    /**
+     * Override point for subclasses to prevent movement to the default screen when the home
+     * button is pressed. Used (for example) in GEL, to prevent movement during a search.
+     */
+    protected boolean shouldMoveToDefaultScreenOnHomeIntent() {
+        return true;
+    }
+
+    /**
+     * Override point for subclasses to provide custom behaviour for when a home intent is fired.
+     */
+    protected void onHomeIntent() {
+        // Do nothing
     }
 
     @Override
