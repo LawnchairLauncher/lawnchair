@@ -116,6 +116,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int DRAG_MODE_REORDER = 1;
     private int mDragMode = DRAG_MODE_NONE;
 
+    // We avoid measuring the scroll view with a 0 width or height, as this
+    // results in CellLayout being measured as UNSPECIFIED, which it does
+    // not support.
+    private static final int MIN_CONTENT_DIMEN = 5;
+
     private boolean mDestroyed;
 
     private AutoScrollHelper mAutoScrollHelper;
@@ -970,8 +975,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int maxContentAreaHeight = grid.availableHeightPx -
                 workspacePadding.top - workspacePadding.bottom -
                 mFolderNameHeight;
-        return Math.min(maxContentAreaHeight,
+        int height = Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());
+        return Math.max(height, MIN_CONTENT_DIMEN);
+    }
+
+    private int getContentAreaWidth() {
+        return Math.max(mContent.getDesiredWidth(), MIN_CONTENT_DIMEN);
     }
 
     private int getFolderHeight() {
@@ -983,11 +993,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         int height = getFolderHeight();
-        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
+        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(getContentAreaWidth(),
                 MeasureSpec.EXACTLY);
         int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(getContentAreaHeight(),
                 MeasureSpec.EXACTLY);
-        mContent.setFixedSize(mContent.getDesiredWidth(), mContent.getDesiredHeight());
+
+        mContent.setFixedSize(getContentAreaWidth(), getContentAreaHeight());
         mScrollView.measure(contentAreaWidthSpec, contentAreaHeightSpec);
         mFolderName.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFolderNameHeight, MeasureSpec.EXACTLY));
