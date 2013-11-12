@@ -767,6 +767,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 }
                 completeDragExit();
             }
+        } else {
+            mLauncher.getWorkspace().removeExtraEmptyScreen(true, null);
         }
 
         mDeleteFolderOnDropCompleted = false;
