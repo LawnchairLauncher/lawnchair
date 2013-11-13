@@ -39,6 +39,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private boolean mIsScreenLarge;
     private float mScreenDensity;
     private int mLongPressTimeout = 300;
+    private boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
@@ -227,6 +228,16 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public int getLongPressTimeout() {
         return mLongPressTimeout;
+    }
+
+    public void onWallpaperChanged() {
+        mWallpaperChangedSinceLastCheck = true;
+    }
+
+    public boolean hasWallpaperChangedSinceLastCheck() {
+        boolean result = mWallpaperChangedSinceLastCheck;
+        mWallpaperChangedSinceLastCheck = false;
+        return result;
     }
 
     @Override

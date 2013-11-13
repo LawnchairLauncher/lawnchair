@@ -71,6 +71,8 @@ public class WallpaperCropActivity extends Activity {
     public static final int MAX_BMAP_IN_INTENT = 750000;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
 
+    protected static Point sDefaultWallpaperSize;
+
     protected CropView mCropView;
     protected Uri mUri;
 
@@ -204,32 +206,34 @@ public class WallpaperCropActivity extends Activity {
     }
 
     static protected Point getDefaultWallpaperSize(Resources res, WindowManager windowManager) {
-        Point minDims = new Point();
-        Point maxDims = new Point();
-        windowManager.getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
+        if (sDefaultWallpaperSize == null) {
+            Point minDims = new Point();
+            Point maxDims = new Point();
+            windowManager.getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
 
-        int maxDim = Math.max(maxDims.x, maxDims.y);
-        int minDim = Math.max(minDims.x, minDims.y);
+            int maxDim = Math.max(maxDims.x, maxDims.y);
+            int minDim = Math.max(minDims.x, minDims.y);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Point realSize = new Point();
-            windowManager.getDefaultDisplay().getRealSize(realSize);
-            maxDim = Math.max(realSize.x, realSize.y);
-            minDim = Math.min(realSize.x, realSize.y);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                Point realSize = new Point();
+                windowManager.getDefaultDisplay().getRealSize(realSize);
+                maxDim = Math.max(realSize.x, realSize.y);
+                minDim = Math.min(realSize.x, realSize.y);
+            }
+
+            // We need to ensure that there is enough extra space in the wallpaper
+            // for the intended parallax effects
+            final int defaultWidth, defaultHeight;
+            if (isScreenLarge(res)) {
+                defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+                defaultHeight = maxDim;
+            } else {
+                defaultWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
+                defaultHeight = maxDim;
+            }
+            sDefaultWallpaperSize = new Point(defaultWidth, defaultHeight);
         }
-
-        // We need to ensure that there is enough extra space in the wallpaper
-        // for the intended
-        // parallax effects
-        final int defaultWidth, defaultHeight;
-        if (isScreenLarge(res)) {
-            defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
-            defaultHeight = maxDim;
-        } else {
-            defaultWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
-            defaultHeight = maxDim;
-        }
-        return new Point(defaultWidth, defaultHeight);
+        return sDefaultWallpaperSize;
     }
 
     public static int getRotationFromExif(String path) {
@@ -785,16 +789,13 @@ public class WallpaperCropActivity extends Activity {
             WindowManager windowManager,
             final WallpaperManager wallpaperManager) {
         final Point defaultWallpaperSize = getDefaultWallpaperSize(res, windowManager);
-
-        new AsyncTask<Void, Void, Void>() {
-            public Void doInBackground(Void ... args) {
-                // If we have saved a wallpaper width/height, use that instead
-                int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, defaultWallpaperSize.x);
-                int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, defaultWallpaperSize.y);
-                wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
-                return null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        // If we have saved a wallpaper width/height, use that instead
+        int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, defaultWallpaperSize.x);
+        int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, defaultWallpaperSize.y);
+        if (savedWidth != wallpaperManager.getDesiredMinimumWidth() ||
+                savedHeight != wallpaperManager.getDesiredMinimumHeight()) {
+            wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
+        }
     }
 
     protected static RectF getMaxCropRect(
