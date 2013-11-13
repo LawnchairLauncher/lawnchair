@@ -2536,8 +2536,9 @@ public class Workspace extends SmoothPagedView
             icon.clearPressedOrFocusedBackground();
         }
 
-        mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
+        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
+        dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
@@ -4138,6 +4139,11 @@ public class Workspace extends SmoothPagedView
                 fi.getFolder().addItemLocationsInDatabase();
             }
         }
+    }
+
+    @Override
+    public float getIntrinsicIconScaleFactor() {
+        return 1f;
     }
 
     @Override
