@@ -996,6 +996,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
+    public float getIntrinsicIconScaleFactor() {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        return (float) grid.allAppsIconSizePx / grid.iconSizePx;
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         cancelAllTasks();

@@ -801,6 +801,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
+    public float getIntrinsicIconScaleFactor() {
+        return 1f;
+    }
+
+    @Override
     public boolean supportsFlingToDelete() {
         return true;
     }

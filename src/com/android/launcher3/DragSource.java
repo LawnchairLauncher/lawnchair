@@ -30,6 +30,11 @@ public interface DragSource {
      */
     boolean supportsFlingToDelete();
 
+    /*
+     * @return the scale of the icons over the workspace icon size
+     */
+    float getIntrinsicIconScaleFactor();
+
     /**
      * A callback specifically made back to the source after an item from this source has been flung
      * to be deleted on a DropTarget.  In such a situation, this method will be called after
