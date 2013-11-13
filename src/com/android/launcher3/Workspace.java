@@ -2689,6 +2689,13 @@ public class Workspace extends SmoothPagedView
             icon.clearPressedOrFocusedBackground();
         }
 
+        if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
+            String msg = "Drag started with a view that has no tag set. This "
+                    + "will cause a crash (issue 11627249) down the line. "
+                    + "View: " + child + "  tag: " + child.getTag();
+            throw new IllegalStateException(msg);
+        }
+
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
 
