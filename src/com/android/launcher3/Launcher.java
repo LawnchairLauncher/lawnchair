@@ -3953,6 +3953,11 @@ public class Launcher extends Activity
         return bounceAnim;
     }
 
+    public boolean useVerticalBarLayout() {
+        return LauncherAppState.getInstance().getDynamicGrid().
+                getDeviceProfile().isVerticalBarLayout();
+    }
+
     @Override
     public void bindSearchablesChanged() {
         boolean searchVisible = updateGlobalSearchIcon();
