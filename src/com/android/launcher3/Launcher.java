@@ -615,12 +615,12 @@ public class Launcher extends Activity
             mIconCache.flush();
 
             final LocaleConfiguration localeConfiguration = sLocaleConfiguration;
-            new Thread("WriteLocaleConfiguration") {
-                @Override
-                public void run() {
+            new AsyncTask<Void, Void, Void>() {
+                public Void doInBackground(Void ... args) {
                     writeConfiguration(Launcher.this, localeConfiguration);
+                    return null;
                 }
-            }.start();
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
     }
 
@@ -1629,11 +1629,12 @@ public class Launcher extends Activity
             if (appWidgetId != -1) {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
-                new Thread("deleteAppWidgetId") {
-                    public void run() {
+                new AsyncTask<Void, Void, Void>() {
+                    public Void doInBackground(Void ... args) {
                         mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                        return null;
                     }
-                }.start();
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             }
             showOutOfSpaceMessage(isHotseatLayout(layout));
             return;
@@ -4388,13 +4389,14 @@ public class Launcher extends Activity
                 public void run() {
                     cling.cleanup();
                     // We should update the shared preferences on a background thread
-                    new Thread("dismissClingThread") {
-                        public void run() {
+                    new AsyncTask<Void, Void, Void>() {
+                        public Void doInBackground(Void ... args) {
                             SharedPreferences.Editor editor = mSharedPrefs.edit();
                             editor.putBoolean(flag, true);
                             editor.commit();
+                            return null;
                         }
-                    }.start();
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -4700,9 +4702,8 @@ public class Launcher extends Activity
 
     public void dumpLogsToLocalData() {
         if (DEBUG_DUMP_LOG) {
-            new Thread("DumpLogsToLocalData") {
-                @Override
-                public void run() {
+            new AsyncTask<Void, Void, Void>() {
+                public Void doInBackground(Void ... args) {
                     boolean success = false;
                     sDateStamp.setTime(sRunStart);
                     String FILENAME = sDateStamp.getMonth() + "-"
@@ -4740,8 +4741,9 @@ public class Launcher extends Activity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    return null;
                 }
-            }.start();
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
     }
 

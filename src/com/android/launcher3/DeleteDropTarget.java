@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -340,11 +341,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
             if (appWidgetHost != null) {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
-                new Thread("deleteAppWidgetId") {
-                    public void run() {
+                new AsyncTask<Void, Void, Void>() {
+                    public Void doInBackground(Void ... args) {
                         appWidgetHost.deleteAppWidgetId(launcherAppWidgetInfo.appWidgetId);
+                        return null;
                     }
-                }.start();
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
             }
         }
         if (wasWaitingForUninstall && !mWaitingForUninstall) {
