@@ -120,6 +120,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Default launcher application.
@@ -193,8 +194,10 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_ADD_SPAN_Y = "launcher.add_span_y";
     // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
- // Type: parcelable
+    // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_ID = "launcher.add_widget_id";
+    // Type: int[]
+    private static final String RUNTIME_STATE_VIEW_IDS = "launcher.view_ids";
 
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
@@ -223,6 +226,9 @@ public class Launcher extends Activity
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
+
+    private HashMap<Integer, Integer> mItemIdToViewId = new HashMap<Integer, Integer>();
+    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
@@ -704,6 +710,34 @@ public class Launcher extends Activity
         synchronized (sLock) {
             sScreen = screen;
         }
+    }
+
+    /**
+     * Copied from View -- the View version of the method isn't called
+     * anywhere else in our process and only exists for API level 17+,
+     * so it's ok to keep our own version with no API requirement.
+     */
+    public static int generateViewId() {
+        for (;;) {
+            final int result = sNextGeneratedId.get();
+            // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+            int newValue = result + 1;
+            if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
+            if (sNextGeneratedId.compareAndSet(result, newValue)) {
+                return result;
+            }
+        }
+    }
+
+    public int getViewIdForItem(ItemInfo info) {
+        // This cast is safe given the > 2B range for int.
+        int itemId = (int) info.id;
+        if (mItemIdToViewId.containsKey(itemId)) {
+            return mItemIdToViewId.get(itemId);
+        }
+        int viewId = generateViewId();
+        mItemIdToViewId.put(itemId, viewId);
+        return viewId;
     }
 
     /**
@@ -1304,6 +1338,7 @@ public class Launcher extends Activity
      *
      * @param savedState The previous state.
      */
+    @SuppressWarnings("unchecked")
     private void restoreState(Bundle savedState) {
         if (savedState == null) {
             return;
@@ -1355,6 +1390,8 @@ public class Launcher extends Activity
             int currentIndex = savedState.getInt("apps_customize_currentIndex");
             mAppsCustomizeContent.restorePageForIndex(currentIndex);
         }
+        mItemIdToViewId = (HashMap<Integer, Integer>)
+                savedState.getSerializable(RUNTIME_STATE_VIEW_IDS);
     }
 
     /**
@@ -1978,6 +2015,7 @@ public class Launcher extends Activity
             int currentIndex = mAppsCustomizeContent.getSaveInstanceStateIndex();
             outState.putInt("apps_customize_currentIndex", currentIndex);
         }
+        outState.putSerializable(RUNTIME_STATE_VIEW_IDS, mItemIdToViewId);
     }
 
     @Override
