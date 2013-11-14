@@ -291,7 +291,10 @@ public class LauncherModel extends BroadcastReceiver {
         addAndBindAddedApps(context, workspaceApps, cb, allAppsApps);
     }
     public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> workspaceApps,
-                                    final Callbacks callbacks, final ArrayList<AppInfo> allAppsApps) {
+                                final Callbacks callbacks, final ArrayList<AppInfo> allAppsApps) {
+        if (workspaceApps == null || allAppsApps == null) {
+            throw new RuntimeException("workspaceApps and allAppsApps must not be null");
+        }
         if (workspaceApps.isEmpty() && allAppsApps.isEmpty()) {
             return;
         }
@@ -1639,7 +1642,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
             if (!added.isEmpty()) {
                 Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                addAndBindAddedApps(context, added, cb, null);
+                addAndBindAddedApps(context, added, cb, new ArrayList<AppInfo>());
             }
         }
 
