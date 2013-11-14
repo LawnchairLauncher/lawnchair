@@ -198,7 +198,7 @@ public class DragController {
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
+    public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
             float initialDragViewScale) {
         if (PROFILE_DRAWING_DURING_DRAG) {
@@ -245,6 +245,7 @@ public class DragController {
         mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mMotionDownX, mMotionDownY);
         handleMoveEvent(mMotionDownX, mMotionDownY);
+        return dragView;
     }
 
     /**
