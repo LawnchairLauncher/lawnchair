@@ -2235,7 +2235,8 @@ public class Workspace extends SmoothPagedView
             if (stateIsSmall) {
                 finalAlpha = 0f;
             } else if (stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
-                finalAlpha = i == getNextPage() ? 1f : 0f;
+
+                finalAlpha = (i == getNextPage() || i < numCustomPages()) ? 1f : 0f;
             } else {
                 finalAlpha = 1f;
             }
@@ -2501,6 +2502,11 @@ public class Workspace extends SmoothPagedView
         // visibility after the transition animation.
         if (!mWorkspaceFadeInAdjacentScreens) {
             for (int i = 0; i < getChildCount(); i++) {
+                final CellLayout cl = (CellLayout) getChildAt(i);
+                cl.setShortcutAndWidgetAlpha(1f);
+            }
+        } else {
+            for (int i = 0; i < numCustomPages(); i++) {
                 final CellLayout cl = (CellLayout) getChildAt(i);
                 cl.setShortcutAndWidgetAlpha(1f);
             }
@@ -4718,6 +4724,7 @@ public class Workspace extends SmoothPagedView
                 child.requestFocus();
             }
          }
+        exitWidgetResizeMode();
     }
 
     @Override
