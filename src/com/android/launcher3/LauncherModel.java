@@ -48,6 +48,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -1020,6 +1021,10 @@ public class LauncherModel extends BroadcastReceiver {
      * a list of screen ids in the order that they should appear.
      */
     void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - updateWorkspaceScreenOrder()", true);
+        Launcher.addDumpLog(TAG, "11683562 -   screens: " + TextUtils.join(", ", screens), true);
+
         final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -1300,6 +1305,15 @@ public class LauncherModel extends BroadcastReceiver {
         } finally {
             sc.close();
         }
+
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - loadWorkspaceScreensDb()", true);
+        ArrayList<String> orderedScreensPairs= new ArrayList<String>();
+        for (Integer i : orderedScreens.keySet()) {
+            orderedScreensPairs.add("{ " + i + ": " + orderedScreens.get(i) + " }");
+        }
+        Launcher.addDumpLog(TAG, "11683562 -   screens: " +
+                TextUtils.join(", ", orderedScreensPairs), true);
         return orderedScreens;
     }
 

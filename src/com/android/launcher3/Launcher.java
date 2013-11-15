@@ -3884,6 +3884,10 @@ public class Launcher extends Activity
 
     @Override
     public void bindAddScreens(ArrayList<Long> orderedScreenIds) {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - bindAddScreens()", true);
+        Launcher.addDumpLog(TAG, "11683562 -   orderedScreenIds: " +
+                TextUtils.join(", ", orderedScreenIds), true);
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i));

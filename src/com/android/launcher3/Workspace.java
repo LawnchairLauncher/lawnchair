@@ -570,6 +570,10 @@ public class Workspace extends SmoothPagedView
     }
 
     public long insertNewWorkspaceScreen(long screenId, int insertIndex) {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - insertNewWorkspaceScreen(): " + screenId +
+                " at index: " + insertIndex, true);
+
         if (mWorkspaceScreens.containsKey(screenId)) {
             throw new RuntimeException("Screen id " + screenId + " already exists!");
         }
@@ -664,6 +668,8 @@ public class Workspace extends SmoothPagedView
     }
 
     public void addExtraEmptyScreensOnDrag() {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - addExtraEmptyScreenOnDrag()", true);
         boolean addLeftScreen = true;
         boolean addRightScreen = true;
 
@@ -688,6 +694,9 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean addExtraEmptyScreen() {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - addExtraEmptyScreen()", true);
+
         if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_RIGHT_ID)) {
             insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_RIGHT_ID);
             return true;
@@ -706,6 +715,9 @@ public class Workspace extends SmoothPagedView
     }
 
     private void convertFinalScreenToEmptyScreenIfNecessary() {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - convertFinalScreenToEmptyScreenIfNecessary()", true);
+
         if (hasExtraEmptyScreens() || mScreenOrder.size() == 0) return;
         long finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
@@ -721,6 +733,9 @@ public class Workspace extends SmoothPagedView
             // if this is the last non-custom content screen, convert it to the empty screen
             mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_LEFT_ID, finalScreen);
             mScreenOrder.add(EXTRA_EMPTY_SCREEN_LEFT_ID);
+
+            // XXX: Do we need to update LM workspace screens here?
+            Launcher.addDumpLog(TAG, "11683562 -   extra empty screen: " + finalScreenId, true);
         }
     }
 
@@ -730,6 +745,8 @@ public class Workspace extends SmoothPagedView
 
     public void removeExtraEmptyScreen(final boolean animate, final Runnable onComplete,
             final int delay, final boolean stripEmptyScreens) {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - removeExtraEmptyScreen()", true);
         if (delay > 0) {
             postDelayed(new Runnable() {
                 @Override
@@ -766,6 +783,9 @@ public class Workspace extends SmoothPagedView
 
     private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
             final boolean stripEmptyScreens) {
+        // Log to disk
+        // XXX: Do we need to update LM workspace screens below?
+        Launcher.addDumpLog(TAG, "11683562 - fadeAndRemoveEmptyScreen()", true);
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
         PropertyValuesHolder bgAlpha = PropertyValuesHolder.ofFloat("backgroundAlpha", 0f);
 
@@ -833,6 +853,9 @@ public class Workspace extends SmoothPagedView
     }
 
     public long commitExtraEmptyScreen(long screenId) {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - commitExtraEmptyScreen()", true);
+
         int index = getPageIndexForScreenId(screenId);
         CellLayout cl = mWorkspaceScreens.get(screenId);
         mWorkspaceScreens.remove(screenId);
@@ -890,6 +913,9 @@ public class Workspace extends SmoothPagedView
     }
 
     public void stripEmptyScreens() {
+        // Log to disk
+        Launcher.addDumpLog(TAG, "11683562 - stripEmptyScreens()", true);
+
         if (isPageMoving()) {
             mStripScreensOnPageStopMoving = true;
             return;
@@ -910,6 +936,7 @@ public class Workspace extends SmoothPagedView
 
         int pageShift = 0;
         for (Long id: removeScreens) {
+            Launcher.addDumpLog(TAG, "11683562 -   removing id: " + id, true);
             CellLayout cl = mWorkspaceScreens.get(id);
             mWorkspaceScreens.remove(id);
             mScreenOrder.remove(id);
