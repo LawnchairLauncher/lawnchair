@@ -2110,7 +2110,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         /** Filters the set of items who are directly or indirectly (via another container) on the
          * specified screen. */
-        private void filterCurrentWorkspaceItems(int currentScreen,
+        private void filterCurrentWorkspaceItems(long currentScreenId,
                 ArrayList<ItemInfo> allWorkspaceItems,
                 ArrayList<ItemInfo> currentScreenItems,
                 ArrayList<ItemInfo> otherScreenItems) {
@@ -2125,8 +2125,8 @@ public class LauncherModel extends BroadcastReceiver {
 
             // If we aren't filtering on a screen, then the set of items to load is the full set of
             // items given.
-            if (currentScreen < 0) {
-                currentScreenItems.addAll(allWorkspaceItems);
+            if (currentScreenId < 0) {
+                throw new RuntimeException("Unexpected screen id");
             }
 
             // Order the set of items by their containers first, this allows use to walk through the
@@ -2141,7 +2141,7 @@ public class LauncherModel extends BroadcastReceiver {
             });
             for (ItemInfo info : allWorkspaceItems) {
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    if (info.screenId == currentScreen) {
+                    if (info.screenId == currentScreenId) {
                         currentScreenItems.add(info);
                         itemsOnScreen.add(info.id);
                     } else {
@@ -2162,20 +2162,20 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         /** Filters the set of widgets which are on the specified screen. */
-        private void filterCurrentAppWidgets(int currentScreen,
+        private void filterCurrentAppWidgets(long currentScreenId,
                 ArrayList<LauncherAppWidgetInfo> appWidgets,
                 ArrayList<LauncherAppWidgetInfo> currentScreenWidgets,
                 ArrayList<LauncherAppWidgetInfo> otherScreenWidgets) {
             // If we aren't filtering on a screen, then the set of items to load is the full set of
             // widgets given.
-            if (currentScreen < 0) {
-                currentScreenWidgets.addAll(appWidgets);
+            if (currentScreenId < 0) {
+                throw new RuntimeException("Unexpected screen id");
             }
 
             for (LauncherAppWidgetInfo widget : appWidgets) {
                 if (widget == null) continue;
                 if (widget.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        widget.screenId == currentScreen) {
+                        widget.screenId == currentScreenId) {
                     currentScreenWidgets.add(widget);
                 } else {
                     otherScreenWidgets.add(widget);
@@ -2184,15 +2184,15 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         /** Filters the set of folders which are on the specified screen. */
-        private void filterCurrentFolders(int currentScreen,
+        private void filterCurrentFolders(long currentScreenId,
                 HashMap<Long, ItemInfo> itemsIdMap,
                 HashMap<Long, FolderInfo> folders,
                 HashMap<Long, FolderInfo> currentScreenFolders,
                 HashMap<Long, FolderInfo> otherScreenFolders) {
             // If we aren't filtering on a screen, then the set of items to load is the full set of
             // widgets given.
-            if (currentScreen < 0) {
-                currentScreenFolders.putAll(folders);
+            if (currentScreenId < 0) {
+                throw new RuntimeException("Unexpected screen id");
             }
 
             for (long id : folders.keySet()) {
@@ -2200,7 +2200,7 @@ public class LauncherModel extends BroadcastReceiver {
                 FolderInfo folder = folders.get(id);
                 if (info == null || folder == null) continue;
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        info.screenId == currentScreen) {
+                        info.screenId == currentScreenId) {
                     currentScreenFolders.put(id, folder);
                 } else {
                     otherScreenFolders.put(id, folder);
@@ -2415,13 +2415,7 @@ public class LauncherModel extends BroadcastReceiver {
                 return;
             }
 
-            final boolean isLoadingSynchronously = (synchronizeBindPage > -1);
-            final int currentScreen = isLoadingSynchronously ? synchronizeBindPage :
-                oldCallbacks.getCurrentWorkspaceScreen();
-
-            // Load all the items that are on the current page first (and in the process, unbind
-            // all the existing workspace items before we call startBinding() below.
-            unbindWorkspaceItemsOnMainThread();
+            // Save a copy of all the bg-thread collections
             ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>();
             ArrayList<LauncherAppWidgetInfo> appWidgets =
                     new ArrayList<LauncherAppWidgetInfo>();
@@ -2436,6 +2430,20 @@ public class LauncherModel extends BroadcastReceiver {
                 orderedScreenIds.addAll(sBgWorkspaceScreens);
             }
 
+            final boolean isLoadingSynchronously = (synchronizeBindPage > -1);
+            final int currentScreen = isLoadingSynchronously ? synchronizeBindPage :
+                oldCallbacks.getCurrentWorkspaceScreen();
+            if (currentScreen >= orderedScreenIds.size()) {
+                Log.w(TAG, "Invalid screen id to synchronously load");
+                return;
+            }
+            final long currentScreenId = orderedScreenIds.get(currentScreen);
+
+            // Load all the items that are on the current page first (and in the process, unbind
+            // all the existing workspace items before we call startBinding() below.
+            unbindWorkspaceItemsOnMainThread();
+
+            // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<ItemInfo>();
             ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<ItemInfo>();
             ArrayList<LauncherAppWidgetInfo> currentAppWidgets =
@@ -2445,12 +2453,11 @@ public class LauncherModel extends BroadcastReceiver {
             HashMap<Long, FolderInfo> currentFolders = new HashMap<Long, FolderInfo>();
             HashMap<Long, FolderInfo> otherFolders = new HashMap<Long, FolderInfo>();
 
-            // Separate the items that are on the current screen, and all the other remaining items
-            filterCurrentWorkspaceItems(currentScreen, workspaceItems, currentWorkspaceItems,
+            filterCurrentWorkspaceItems(currentScreenId, workspaceItems, currentWorkspaceItems,
                     otherWorkspaceItems);
-            filterCurrentAppWidgets(currentScreen, appWidgets, currentAppWidgets,
+            filterCurrentAppWidgets(currentScreenId, appWidgets, currentAppWidgets,
                     otherAppWidgets);
-            filterCurrentFolders(currentScreen, itemsIdMap, folders, currentFolders,
+            filterCurrentFolders(currentScreenId, itemsIdMap, folders, currentFolders,
                     otherFolders);
             sortWorkspaceItemsSpatially(currentWorkspaceItems);
             sortWorkspaceItemsSpatially(otherWorkspaceItems);

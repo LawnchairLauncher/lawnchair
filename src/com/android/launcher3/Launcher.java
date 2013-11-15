@@ -474,7 +474,7 @@ public class Launcher extends Activity
             } else {
                 // We only load the page synchronously if the user rotates (or triggers a
                 // configuration change) while launcher is in the foreground
-                mModel.startLoader(true, mWorkspace.getCurrentPage());
+                mModel.startLoader(true, mWorkspace.getRestorePage());
             }
         }
 
@@ -1979,7 +1979,8 @@ public class Launcher extends Activity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mWorkspace.getChildCount() > 0) {
-            outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getRestorePage());
+            outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
+                    mWorkspace.getCurrentPageOffsetFromCustomContent());
         }
         super.onSaveInstanceState(outState);
 
