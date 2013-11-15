@@ -1681,6 +1681,9 @@ public class LauncherModel extends BroadcastReceiver {
 
         /** Returns whether this is an upgradge path */
         private boolean loadWorkspace() {
+            // Log to disk
+            Launcher.addDumpLog(TAG, "11683562 - loadWorkspace()", true);
+
             final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Context context = mContext;
@@ -1699,6 +1702,8 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Check if we need to do any upgrade-path logic
             boolean loadedOldDb = LauncherAppState.getLauncherProvider().justLoadedOldDb();
+            // Log to disk
+            Launcher.addDumpLog(TAG, "11683562 -   loadedOldDb: " + loadedOldDb, true);
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
@@ -2034,6 +2039,10 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     }
                     Collections.sort(sBgWorkspaceScreens);
+                    // Log to disk
+                    Launcher.addDumpLog(TAG, "11683562 -   maxScreenId: " + maxScreenId, true);
+                    Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
+                            TextUtils.join(", ", sBgWorkspaceScreens), true);
 
                     LauncherAppState.getLauncherProvider().updateMaxScreenId(maxScreenId);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
@@ -2050,6 +2059,9 @@ public class LauncherModel extends BroadcastReceiver {
                     for (Integer i : orderedScreens.keySet()) {
                         sBgWorkspaceScreens.add(orderedScreens.get(i));
                     }
+                    // Log to disk
+                    Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
+                            TextUtils.join(", ", sBgWorkspaceScreens), true);
 
                     // Remove any empty screens
                     ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
@@ -2063,6 +2075,10 @@ public class LauncherModel extends BroadcastReceiver {
 
                     // If there are any empty screens remove them, and update.
                     if (unusedScreens.size() != 0) {
+                        // Log to disk
+                        Launcher.addDumpLog(TAG, "11683562 -   unusedScreens (to be removed): " +
+                                TextUtils.join(", ", unusedScreens), true);
+
                         sBgWorkspaceScreens.removeAll(unusedScreens);
                         updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
                     }
