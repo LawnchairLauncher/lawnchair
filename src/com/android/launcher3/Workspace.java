@@ -2489,7 +2489,9 @@ public class Workspace extends SmoothPagedView
     void hideCustomContentIfNecessary() {
         boolean hide  = mState != Workspace.State.NORMAL;
         if (hide && hasCustomContent()) {
+            disableLayoutTransitions();
             mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
+            enableLayoutTransitions();
         }
     }
 
