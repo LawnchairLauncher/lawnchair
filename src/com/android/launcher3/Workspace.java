@@ -753,7 +753,12 @@ public class Workspace extends SmoothPagedView
                         onComplete, stripEmptyScreens);
             }
             return;
+        } else if (stripEmptyScreens) {
+            // If we're not going to strip the empty screens after removing
+            // the extra empty screen, do it right away.
+            stripEmptyScreens();
         }
+
         if (onComplete != null) {
             onComplete.run();
         }
