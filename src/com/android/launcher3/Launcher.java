@@ -1191,7 +1191,9 @@ public class Launcher extends Activity
         widgetButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                if (!mWorkspace.isSwitchingState()) {
+                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                }
             }
         });
         widgetButton.setOnTouchListener(getHapticFeedbackTouchListener());
@@ -1200,7 +1202,9 @@ public class Launcher extends Activity
         wallpaperButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                startWallpaper();
+                if (!mWorkspace.isSwitchingState()) {
+                    startWallpaper();
+                }
             }
         });
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
@@ -1209,7 +1213,9 @@ public class Launcher extends Activity
         settingsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                startSettings();
+                if (!mWorkspace.isSwitchingState()) {
+                    startSettings();
+                }
             }
         });
         settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
