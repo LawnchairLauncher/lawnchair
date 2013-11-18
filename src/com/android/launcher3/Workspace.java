@@ -2239,7 +2239,6 @@ public class Workspace extends SmoothPagedView
             enableFreeScroll();
         }
 
-
         if (state != State.NORMAL) {
             if (stateIsSpringLoaded) {
                 mNewScale = mSpringLoadedShrinkFactor;

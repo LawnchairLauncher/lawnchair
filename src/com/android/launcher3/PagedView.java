@@ -151,7 +151,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected int mTouchState = TOUCH_STATE_REST;
     protected boolean mForceScreenScrolled = false;
-    private boolean mScrollAbortedFromIntercept = false;
 
 
     protected OnLongClickListener mLongClickListener;
@@ -1496,13 +1495,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                  * being flinged.
                  */
                 final int xDist = Math.abs(mScroller.getFinalX() - mScroller.getCurrX());
-                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
+                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
 
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
                     if (!mScroller.isFinished()) {
-                        mScrollAbortedFromIntercept = true;
-                        abortScrollerAnimation(false);
+                        setCurrentPage(getNextPage());
+                        pageEndMoving();
                     }
                 } else {
                     if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
@@ -1530,9 +1529,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (mScrollAbortedFromIntercept) {
-                    snapToDestination();
-                }
                 resetTouchState();
                 break;
 
@@ -2101,7 +2097,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         releaseVelocityTracker();
         endReordering();
         mCancelTap = false;
-        mScrollAbortedFromIntercept = false;
         mTouchState = TOUCH_STATE_REST;
         mActivePointerId = INVALID_POINTER;
     }
