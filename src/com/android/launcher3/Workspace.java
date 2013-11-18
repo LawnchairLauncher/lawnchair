@@ -3961,7 +3961,7 @@ public class Workspace extends SmoothPagedView
         return mDragInfo;
     }
 
-    public int getRestorePage() {
+    public int getCurrentPageOffsetFromCustomContent() {
         return getNextPage() - numCustomPages();
     }
 
