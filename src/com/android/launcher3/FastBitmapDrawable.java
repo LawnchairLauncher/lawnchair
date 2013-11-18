@@ -32,6 +32,7 @@ class FastBitmapDrawable extends Drawable {
     FastBitmapDrawable(Bitmap b) {
     	mAlpha = 255;
         mBitmap = b;
+        setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
     @Override
