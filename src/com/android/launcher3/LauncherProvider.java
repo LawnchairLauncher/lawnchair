@@ -74,6 +74,9 @@ public class LauncherProvider extends ContentProvider {
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
+    // Should we attempt to load anything from the com.android.launcher2 provider?
+    static final boolean IMPORT_LAUNCHER2_DATABASE = false;
+
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
     static final String PARAMETER_NOTIFY = "notify";
@@ -374,32 +377,38 @@ public class LauncherProvider extends ContentProvider {
                 sendAppWidgetResetNotify();
             }
 
-            // Try converting the old database
-            ContentValuesCallback permuteScreensCb = new ContentValuesCallback() {
-                public void onRow(ContentValues values) {
-                    int container = values.getAsInteger(LauncherSettings.Favorites.CONTAINER);
-                    if (container == Favorites.CONTAINER_DESKTOP) {
-                        int screen = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
-                        screen = (int) upgradeLauncherDb_permuteScreens(screen);
-                        values.put(LauncherSettings.Favorites.SCREEN, screen);
+            if (IMPORT_LAUNCHER2_DATABASE) {
+                // Try converting the old database
+                ContentValuesCallback permuteScreensCb = new ContentValuesCallback() {
+                    public void onRow(ContentValues values) {
+                        int container = values.getAsInteger(LauncherSettings.Favorites.CONTAINER);
+                        if (container == Favorites.CONTAINER_DESKTOP) {
+                            int screen = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
+                            screen = (int) upgradeLauncherDb_permuteScreens(screen);
+                            values.put(LauncherSettings.Favorites.SCREEN, screen);
+                        }
+                    }
+                };
+                Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
+                        "/old_favorites?notify=true");
+                if (!convertDatabase(db, uri, permuteScreensCb, true)) {
+                    // Try and upgrade from the Launcher2 db
+                    uri = LauncherSettings.Favorites.OLD_CONTENT_URI;
+                    if (!convertDatabase(db, uri, permuteScreensCb, false)) {
+                        // If we fail, then set a flag to load the default workspace
+                        setFlagEmptyDbCreated();
+                        return;
                     }
                 }
-            };
-            Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
-                    "/old_favorites?notify=true");
-            if (!convertDatabase(db, uri, permuteScreensCb, true)) {
-                // Try and upgrade from the Launcher2 db
-                uri = LauncherSettings.Favorites.OLD_CONTENT_URI;
-                if (!convertDatabase(db, uri, permuteScreensCb, false)) {
-                    // If we fail, then set a flag to load the default workspace
-                    setFlagEmptyDbCreated();
-                    return;
-                }
+                // Right now, in non-default workspace cases, we want to run the final
+                // upgrade code (ie. to fix workspace screen indices -> ids, etc.), so
+                // set that flag too.
+                setFlagJustLoadedOldDb();
+            } else {
+                // Fresh and clean launcher DB.
+                mMaxItemId = initializeMaxItemId(db);
+                setFlagEmptyDbCreated();
             }
-            // Right now, in non-default workspace cases, we want to run the final
-            // upgrade code (ie. to fix workspace screen indices -> ids, etc.), so
-            // set that flag too.
-            setFlagJustLoadedOldDb();
         }
 
         private void addWorkspacesTable(SQLiteDatabase db) {
