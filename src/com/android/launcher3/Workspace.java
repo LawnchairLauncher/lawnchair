@@ -734,7 +734,8 @@ public class Workspace extends SmoothPagedView
             mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_LEFT_ID, finalScreen);
             mScreenOrder.add(EXTRA_EMPTY_SCREEN_LEFT_ID);
 
-            // XXX: Do we need to update LM workspace screens here?
+            // Update the model if we have changed any screens
+            mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
             Launcher.addDumpLog(TAG, "11683562 -   extra empty screen: " + finalScreenId, true);
         }
     }
