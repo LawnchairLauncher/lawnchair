@@ -71,7 +71,14 @@ class ShortcutInfo extends ItemInfo {
     protected Intent getIntent() {
         return intent;
     }
-    
+
+    ShortcutInfo(Intent intent, CharSequence title, Bitmap icon) {
+        this();
+        this.intent = intent;
+        this.title = title;
+        mIcon = icon;
+    }
+
     public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
         title = info.title.toString();

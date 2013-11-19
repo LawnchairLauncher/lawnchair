@@ -27,7 +27,7 @@ import java.io.IOException;
 /**
  * Represents an item in the launcher.
  */
-class ItemInfo {
+public class ItemInfo {
     
     static final int NO_ID = -1;
     

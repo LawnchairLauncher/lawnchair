@@ -49,6 +49,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -4667,6 +4668,25 @@ public class Launcher extends Activity
         Cling cling = (Cling) findViewById(R.id.folder_cling);
         dismissCling(cling, null, Cling.FOLDER_CLING_DISMISSED_KEY,
                 DISMISS_CLING_DURATION, true);
+    }
+
+    public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
+        ResolveInfo ri = getPackageManager().resolveActivity(appLaunchIntent, 0);
+        if (ri == null) {
+            return null;
+        }
+        return new AppInfo(getPackageManager(), ri, mIconCache, null);
+    }
+
+    public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
+            Bitmap icon) {
+        return new ShortcutInfo(shortcutIntent, caption, icon);
+    }
+
+    public void startDrag(View dragView, ItemInfo dragInfo, DragSource source) {
+        dragView.setTag(dragInfo);
+        mWorkspace.onDragStartedWithItem(dragView);
+        mWorkspace.beginDragShared(dragView, source);
     }
 
     /**
