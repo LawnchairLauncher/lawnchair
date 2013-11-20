@@ -62,6 +62,11 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     @Override
+    public boolean isValidFragment(String fragmentName) {
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -111,6 +116,15 @@ public class SettingsActivity extends PreferenceActivity
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putBoolean(SettingsProvider.SETTINGS_CHANGED, true);
         editor.commit();
+    }
+
+    public static class HomescreenFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            addPreferencesFromResource(R.xml.preferences_homescreen);
+        }
     }
 
     private static class HeaderAdapter extends ArrayAdapter<Header> {

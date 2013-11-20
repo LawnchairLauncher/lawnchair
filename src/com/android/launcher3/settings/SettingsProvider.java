@@ -26,6 +26,8 @@ public final class SettingsProvider {
 
     public static final String SETTINGS_CHANGED = "settings_changed";
 
+    public static final String SETTINGS_UI_HOMESCREEN_SEARCH = "ui_homescreen_search";
+
     private static Map<String, ?> sKeyValues;
 
     public static void load(Context context) {
@@ -33,18 +35,30 @@ public final class SettingsProvider {
         sKeyValues = preferences.getAll();
     }
 
-    private static int getInt(String key, int def) {
+    public static int getInt(String key, int def) {
         return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof Integer ?
                 (Integer) sKeyValues.get(key) : def;
     }
 
-    private static boolean getBoolean(String key, boolean def) {
+    public static int getInt(String key, Context context, int resource) {
+        return getInt(key, context.getResources().getInteger(resource));
+    }
+
+    public static boolean getBoolean(String key, boolean def) {
         return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof Boolean ?
                 (Boolean) sKeyValues.get(key) : def;
     }
 
-    private static String getString(String key, String def) {
+    public static boolean getBoolean(String key, Context context, int resource) {
+        return getBoolean(key, context.getResources().getBoolean(resource));
+    }
+
+    public static String getString(String key, String def) {
         return sKeyValues.containsKey(key) && sKeyValues.get(key) instanceof String ?
                 (String) sKeyValues.get(key) : def;
+    }
+
+    public static String getString(String key, Context context, int resource) {
+        return getString(key, context.getResources().getString(resource));
     }
 }

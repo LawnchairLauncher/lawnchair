@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="preferences_interface_homescreen_search_default">true</bool>
+</resources>

@@ -32,6 +32,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -65,6 +66,7 @@ import android.widget.TextView;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -275,6 +277,8 @@ public class Workspace extends SmoothPagedView
         }
     };
 
+    private boolean mShowSearchBar;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -301,6 +305,9 @@ public class Workspace extends SmoothPagedView
         mDragEnforcer = new DropTarget.DragEnforcer(context);
         // With workspace, data is available straight from the get-go
         setDataIsReady();
+
+        mShowSearchBar = SettingsProvider.getBoolean(SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH, context,
+                R.bool.preferences_interface_homescreen_search_default);
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
@@ -2090,14 +2097,17 @@ public class Workspace extends SmoothPagedView
             }
             ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(hotseat, "alpha",
                     finalHotseatAndPageIndicatorAlpha);
-            ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
-                    "alpha", finalSearchBarAlpha);
+            ObjectAnimator searchBarAlpha = null;
+            if (mShowSearchBar) {
+                searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
+                        "alpha", finalSearchBarAlpha);
+            }
             ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(overviewPanel,
                     "alpha", finalOverviewPanelAlpha);
 
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
             hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
-            searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
+            if (mShowSearchBar) searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
 
             if (workspaceToOverview) {
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
@@ -2111,7 +2121,7 @@ public class Workspace extends SmoothPagedView
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
-            anim.play(searchBarAlpha);
+            if (mShowSearchBar) anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
         } else {
@@ -2123,8 +2133,10 @@ public class Workspace extends SmoothPagedView
                 getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(getPageIndicator());
             }
-            searchBar.setAlpha(finalSearchBarAlpha);
-            AlphaUpdateListener.updateVisibility(searchBar);
+            if (mShowSearchBar) {
+                searchBar.setAlpha(finalSearchBarAlpha);
+                AlphaUpdateListener.updateVisibility(searchBar);
+            }
             updateCustomContentVisibility();
             setScaleX(mNewScale);
             setScaleY(mNewScale);

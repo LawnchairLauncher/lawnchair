@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,6 +91,7 @@ class DeviceProfile {
     int hotseatAllAppsRank;
     int allAppsNumRows;
     int allAppsNumCols;
+    boolean searchBarVisible;
     int searchBarSpaceWidthPx;
     int searchBarSpaceMaxWidthPx;
     int searchBarSpaceHeightPx;
@@ -182,10 +184,12 @@ class DeviceProfile {
         updateFromConfiguration(resources, wPx, hPx, awPx, ahPx);
 
         // Search Bar
+        searchBarVisible = SettingsProvider.getBoolean(SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
+                resources.getBoolean(R.bool.preferences_interface_homescreen_search_default));
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
-        searchBarSpaceHeightPx = searchBarHeightPx + 2 * edgeMarginPx;
+        searchBarSpaceHeightPx = searchBarHeightPx + (searchBarVisible ? 2 * edgeMarginPx : 0);
 
         // Calculate the actual text height
         Paint textPaint = new Paint();
@@ -303,7 +307,7 @@ class DeviceProfile {
         if (orientation == CellLayout.LANDSCAPE &&
                 transposeLayoutWithOrientation) {
             // Pad the left and right of the workspace with search/hotseat bar sizes
-            padding.set(searchBarSpaceHeightPx, edgeMarginPx,
+            padding.set(searchBarVisible ? searchBarSpaceHeightPx : edgeMarginPx, edgeMarginPx,
                     hotseatBarHeightPx, edgeMarginPx);
         } else {
             if (isTablet()) {
@@ -317,13 +321,13 @@ class DeviceProfile {
                 int gap = (int) ((width - 2 * edgeMarginPx -
                         (numColumns * cellWidthPx)) / (2 * (numColumns + 1)));
                 padding.set(edgeMarginPx + gap,
-                        searchBarSpaceHeightPx,
+                        searchBarVisible ? searchBarSpaceHeightPx : edgeMarginPx,
                         edgeMarginPx + gap,
                         hotseatBarHeightPx + pageIndicatorHeightPx);
             } else {
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
                 padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
-                        searchBarSpaceHeightPx,
+                        searchBarVisible ? searchBarSpaceHeightPx : edgeMarginPx,
                         desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right,
                         hotseatBarHeightPx + pageIndicatorHeightPx);
             }
@@ -393,6 +397,7 @@ class DeviceProfile {
 
         // Layout the search bar
         View qsbBar = launcher.getQsbBar();
+        qsbBar.setVisibility(searchBarVisible ? View.VISIBLE : View.GONE);
         LayoutParams vglp = qsbBar.getLayoutParams();
         vglp.width = LayoutParams.MATCH_PARENT;
         vglp.height = LayoutParams.MATCH_PARENT;

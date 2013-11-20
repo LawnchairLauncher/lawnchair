@@ -49,3 +49,5 @@
 -keep class com.android.launcher3.MemoryDumpActivity {
   *;
 }
+
+-keep class com.android.launcher3.preference.Preferences$*Fragment
