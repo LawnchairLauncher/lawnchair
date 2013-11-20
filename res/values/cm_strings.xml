@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App copyright -->
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <!-- App version -->
+    <string name="application_version" translatable="false">0.1</string>
+
+    <!-- Settings -->
+    <string name="preferences_title">Settings</string>
+    <!-- UI -->
+    <string name="preferences_interface_title">Interface</string>
+    <!-- Application -->
+    <string name="preferences_application_title">App</string>
+
+    <!-- UI -->
+    <!-- Homescreen -->
+    <string name="preferences_interface_homescreen_title">Homescreen</string>
+    <string name="preferences_interface_homescreen_summary">Screens and wallpaper</string>
+
+    <!-- Drawer -->
+    <string name="preferences_interface_drawer_title">Drawer</string>
+
+    <!-- Dock -->
+    <string name="preferences_interface_dock_title">Dock</string>
+
+    <!-- Icons -->
+    <string name="preferences_interface_icons_title">Icons</string>
+
+    <!-- General -->
+    <string name="preferences_interface_general_title">General</string>
+</resources>
