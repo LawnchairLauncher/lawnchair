@@ -43,7 +43,7 @@ import java.util.ArrayList;
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
-final class Utilities {
+public final class Utilities {
     private static final String TAG = "Launcher.Utilities";
 
     private static int sIconWidth = -1;
@@ -111,7 +111,7 @@ final class Utilities {
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    static Bitmap createIconBitmap(Drawable icon, Context context) {
+    public static Bitmap createIconBitmap(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
