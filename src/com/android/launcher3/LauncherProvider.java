@@ -75,7 +75,7 @@ public class LauncherProvider extends ContentProvider {
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
     // Should we attempt to load anything from the com.android.launcher2 provider?
-    static final boolean IMPORT_LAUNCHER2_DATABASE = false;
+    static final boolean IMPORT_LAUNCHER2_DATABASE = true;
 
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
