@@ -27,12 +27,18 @@ import android.graphics.drawable.Drawable;
 class FastBitmapDrawable extends Drawable {
     private Bitmap mBitmap;
     private int mAlpha;
+    private int mWidth;
+    private int mHeight;
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
     FastBitmapDrawable(Bitmap b) {
     	mAlpha = 255;
         mBitmap = b;
+        if (b != null) {
         setBounds(0, 0, b.getWidth(), b.getHeight());
+        } else {
+            mWidth = mHeight = 0;
+        }
     }
 
     @Override
