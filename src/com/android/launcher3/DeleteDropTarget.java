@@ -96,7 +96,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private boolean isAllAppsApplication(DragSource source, Object info) {
-        return (source instanceof AppsCustomizePagedView) && (info instanceof AppInfo);
+        return source.supportsAppInfoDropTarget() && (info instanceof AppInfo);
     }
     private boolean isAllAppsWidget(DragSource source, Object info) {
         if (source instanceof AppsCustomizePagedView) {
@@ -182,6 +182,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         boolean isVisible = true;
         boolean useUninstallLabel = !AppsCustomizePagedView.DISABLE_ALL_APPS &&
                 isAllAppsApplication(source, info);
+        boolean useDeleteLabel = !useUninstallLabel && source.supportsDeleteDropTarget();
 
         // If we are dragging an application from AppsCustomize, only show the control if we can
         // delete the app (it was downloaded), and rename the string to "uninstall" in such a case.
@@ -192,15 +193,17 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         if (useUninstallLabel) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mUninstallDrawable, null, null, null);
-        } else {
+        } else if (useDeleteLabel) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mRemoveDrawable, null, null, null);
+        } else {
+            isVisible = false;
         }
         mCurrentDrawable = (TransitionDrawable) getCurrentDrawable();
 
         mActive = isVisible;
         resetHoverColor();
         ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (getText().length() > 0) {
+        if (isVisible && getText().length() > 0) {
             setText(useUninstallLabel ? R.string.delete_target_uninstall_label
                 : R.string.delete_target_label);
         }

@@ -996,6 +996,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
+    public boolean supportsAppInfoDropTarget() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsDeleteDropTarget() {
+        return false;
+    }
+
+    @Override
     public float getIntrinsicIconScaleFactor() {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();

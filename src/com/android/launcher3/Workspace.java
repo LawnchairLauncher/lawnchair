@@ -4370,6 +4370,16 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
+    public boolean supportsAppInfoDropTarget() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsDeleteDropTarget() {
+        return true;
+    }
+
+    @Override
     public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
         // Do nothing
     }
