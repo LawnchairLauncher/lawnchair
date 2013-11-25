@@ -22,7 +22,7 @@
     package="com.android.launcher3"
     android:versionName="@string/application_version">
 
-    <uses-sdk android:minSdkVersion="18" android:targetSdkVersion="19" />
+    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="19" />
 
     <permission
         android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
