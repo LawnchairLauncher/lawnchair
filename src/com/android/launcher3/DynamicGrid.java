@@ -184,8 +184,8 @@ class DeviceProfile {
         updateFromConfiguration(resources, wPx, hPx, awPx, ahPx);
 
         // Search Bar
-        searchBarVisible = SettingsProvider.getBoolean(SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
-                resources.getBoolean(R.bool.preferences_interface_homescreen_search_default));
+        searchBarVisible = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
+                R.bool.preferences_interface_homescreen_search_default);
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);

@@ -5,6 +5,9 @@
     <!-- App version -->
     <string name="application_version" translatable="false">0.1</string>
 
+    <!-- Text for default screen button -->
+    <string name="default_screen_button_text">Default Screen</string>
+
     <!-- Settings -->
     <string name="preferences_title">Settings</string>
     <!-- UI -->
