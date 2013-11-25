@@ -121,8 +121,9 @@ public class Workspace extends SmoothPagedView
     private ShortcutAndWidgetContainer mDragSourceInternal;
     private static boolean sAccessibilityEnabled;
 
-    // The screen id used for the empty screen always present to the right.
-    private final static long EXTRA_EMPTY_SCREEN_ID = -201;
+    // The screen ids used for the empty screens always present to the left/right.
+    private final static long EXTRA_EMPTY_SCREEN_LEFT_ID = -201;
+    private final static long EXTRA_EMPTY_SCREEN_RIGHT_ID = -202;
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
     private HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
@@ -383,7 +384,7 @@ public class Workspace extends SmoothPagedView
             @Override
             public void run() {
                 if (mIsDragOccuring) {
-                    addExtraEmptyScreenOnDrag();
+                    addExtraEmptyScreensOnDrag();
                 }
             }
         });
@@ -398,7 +399,11 @@ public class Workspace extends SmoothPagedView
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
         UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
 
-        removeExtraEmptyScreen();
+        // Disable all layout transitions before removing left extra pages to ensure that we don't get
+        // the transition animations competing with us changing the scroll when we remove it
+        disableLayoutTransitions();
+        removeExtraEmptyScreens();
+        enableLayoutTransitions();
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();
     }
@@ -524,7 +529,7 @@ public class Workspace extends SmoothPagedView
     public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId) {
         // Find the index to insert this view into.  If the empty screen exists, then
         // insert it before that.
-        int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
+        int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_RIGHT_ID);
         if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
@@ -629,61 +634,89 @@ public class Workspace extends SmoothPagedView
         mCustomContentCallbacks = callbacks;
     }
 
-    public void addExtraEmptyScreenOnDrag() {
-        boolean lastChildOnScreen = false;
-        boolean childOnFinalScreen = false;
+    public void addExtraEmptyScreensOnDrag() {
+        boolean addLeftScreen = true;
+        boolean addRightScreen = true;
 
         if (mDragSourceInternal != null) {
             if (mDragSourceInternal.getChildCount() == 1) {
-                lastChildOnScreen = true;
-            }
-            CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
-            if (indexOfChild(cl) == getChildCount() - 1) {
-                childOnFinalScreen = true;
+                CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
+                addLeftScreen = indexOfChild(cl) != 0;
+                addRightScreen = indexOfChild(cl) != getChildCount() - 1;
             }
         }
 
-        // If this is the last item on the final screen
-        if (lastChildOnScreen && childOnFinalScreen) {
-            return;
+        if (addLeftScreen && !mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_LEFT_ID)) {
+            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_LEFT_ID, 0);
+            setCurrentPage(getCurrentPage() + 1);
         }
-        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
-            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
+        if (addRightScreen && !mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_RIGHT_ID)) {
+            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_RIGHT_ID);
         }
     }
 
     public boolean addExtraEmptyScreen() {
-        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
-            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
+        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_RIGHT_ID)) {
+            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_RIGHT_ID);
             return true;
         }
         return false;
     }
 
-    public void removeExtraEmptyScreen() {
-        if (hasExtraEmptyScreen()) {
-            CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
-            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-            mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
+    public void removeExtraEmptyScreenLeft() {
+        if (hasExtraEmptyScreenLeft()) {
+            CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_LEFT_ID);
+            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_LEFT_ID);
+            mScreenOrder.remove(EXTRA_EMPTY_SCREEN_LEFT_ID);
+            setCurrentPage(mCurrentPage - 1);
             removeView(cl);
         }
     }
 
-    public boolean hasExtraEmptyScreen() {
-        int nScreens = getChildCount();
-        nScreens = nScreens - numCustomPages();
-        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && nScreens > 1;
+    public void removeExtraEmptyScreenRight() {
+        if (hasExtraEmptyScreenRight()) {
+            CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_RIGHT_ID);
+            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_RIGHT_ID);
+            mScreenOrder.remove(EXTRA_EMPTY_SCREEN_RIGHT_ID);
+            removeView(cl);
+        }
     }
 
-    public long commitExtraEmptyScreen() {
-        int index = getPageIndexForScreenId(EXTRA_EMPTY_SCREEN_ID);
-        CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
-        mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-        mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
+    public void removeExtraEmptyScreens() {
+        removeExtraEmptyScreenLeft();
+        removeExtraEmptyScreenRight();
+    }
+
+    public boolean hasExtraEmptyScreenLeft() {
+        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_LEFT_ID) && getChildCount() - numCustomPages() > 1;
+    }
+
+    public boolean hasExtraEmptyScreenRight() {
+        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_RIGHT_ID) && getChildCount() - numCustomPages() > 1;
+    }
+
+    public boolean hasExtraEmptyScreens() {
+        return hasExtraEmptyScreenLeft() || hasExtraEmptyScreenRight();
+    }
+
+    public int numExtraEmptyScreens() {
+        return (hasExtraEmptyScreenLeft() ? 1 : 0) + (hasExtraEmptyScreenRight() ? 1 : 0);
+    }
+
+    public long commitExtraEmptyScreen(long screenId) {
+        int index = getPageIndexForScreenId(screenId);
+        CellLayout cl = mWorkspaceScreens.get(screenId);
+        mWorkspaceScreens.remove(screenId);
+        mScreenOrder.remove(screenId);
 
         long newId = LauncherAppState.getLauncherProvider().generateNewScreenId();
         mWorkspaceScreens.put(newId, cl);
-        mScreenOrder.add(newId);
+
+        if (screenId == EXTRA_EMPTY_SCREEN_LEFT_ID) {
+            mScreenOrder.add(numCustomPages(), newId);
+        } else {
+            mScreenOrder.add(newId);
+        }
 
         // Update the page indicator marker
         if (getPageIndicator() != null) {
@@ -759,8 +792,8 @@ public class Workspace extends SmoothPagedView
                 removeView(cl);
             } else {
                 // if this is the last non-custom content screen, convert it to the empty screen
-                mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, cl);
-                mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
+                mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_RIGHT_ID, cl);
+                mScreenOrder.add(EXTRA_EMPTY_SCREEN_RIGHT_ID);
             }
         }
 
@@ -818,7 +851,7 @@ public class Workspace extends SmoothPagedView
                 return;
             }
         }
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+        if (screenId == EXTRA_EMPTY_SCREEN_LEFT_ID || screenId == EXTRA_EMPTY_SCREEN_RIGHT_ID) {
             // This should never happen
             throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
         }
@@ -1187,10 +1220,9 @@ public class Workspace extends SmoothPagedView
             }
 
             // Exclude the leftmost page
-            int emptyExtraPages = numEmptyScreensToIgnore();
-            int firstIndex = numCustomPages();
-            // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
-            int lastIndex = getChildCount() - 1 - emptyExtraPages;
+            int firstIndex = numCustomPages() + (hasExtraEmptyScreenLeft() ? 1 : 0);
+            // Exclude the last extra empty screen
+            int lastIndex = getChildCount() - 1 - (hasExtraEmptyScreenRight() ? 1 : 0);
             if (isLayoutRtl()) {
                 int temp = firstIndex;
                 firstIndex = lastIndex;
@@ -1222,17 +1254,8 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        private int numEmptyScreensToIgnore() {
-            int numScrollingPages = getChildCount() - numCustomPages();
-            if (numScrollingPages >= MIN_PARALLAX_PAGE_SPAN && hasExtraEmptyScreen()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
         private int getNumScreensExcludingEmptyAndCustom() {
-            int numScrollingPages = getChildCount() - numEmptyScreensToIgnore() - numCustomPages();
+            int numScrollingPages = getChildCount() - numExtraEmptyScreens() - numCustomPages();
             return numScrollingPages;
         }
 
@@ -2594,8 +2617,8 @@ public class Workspace extends SmoothPagedView
         }
 
         long screenId = getIdForScreen(dropTargetLayout);
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
-            commitExtraEmptyScreen();
+        if (screenId == EXTRA_EMPTY_SCREEN_LEFT_ID || screenId == EXTRA_EMPTY_SCREEN_RIGHT_ID) {
+            commitExtraEmptyScreen(screenId);
         }
 
         return true;
@@ -3853,7 +3876,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public int getRestorePage() {
-        return getNextPage() - numCustomPages();
+        return getNextPage() - numCustomPages() - (hasExtraEmptyScreenLeft() ? 1 : 0);
     }
 
     /**
@@ -4495,7 +4518,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
         long screenId = getScreenIdForPageIndex(pageIndex);
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
+        if (screenId == EXTRA_EMPTY_SCREEN_LEFT_ID || screenId == EXTRA_EMPTY_SCREEN_RIGHT_ID) {
             int count = mScreenOrder.size() - numCustomPages();
             if (count > 1) {
                 return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_current,
