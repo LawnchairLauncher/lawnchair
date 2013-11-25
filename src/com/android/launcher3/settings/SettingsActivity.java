@@ -38,6 +38,7 @@ public class SettingsActivity extends PreferenceActivity
     private static final String TAG = "Launcher3.SettingsActivity";
 
     private SharedPreferences mSettings;
+    private List<Header> mHeaders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class SettingsActivity extends PreferenceActivity
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.preferences_headers, target);
         updateHeaders(target);
+        mHeaders = target;
     }
 
     private void updateHeaders(List<Header> headers) {
@@ -107,7 +109,7 @@ public class SettingsActivity extends PreferenceActivity
         if (adapter == null) {
             super.setListAdapter(null);
         } else {
-            super.setListAdapter(new HeaderAdapter(this, getHeaders()));
+            super.setListAdapter(new HeaderAdapter(this, mHeaders));
         }
     }
 
