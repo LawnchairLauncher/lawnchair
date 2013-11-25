@@ -29,6 +29,8 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -143,6 +145,21 @@ public class IconCache {
     public void flush() {
         synchronized (mCache) {
             mCache.clear();
+        }
+    }
+
+    /**
+     * Empty out the cache that aren't of the correct grid size
+     */
+    public void flushInvalidIcons(DeviceProfile grid) {
+        synchronized (mCache) {
+            Iterator<Entry<ComponentName, CacheEntry>> it = mCache.entrySet().iterator();
+            while (it.hasNext()) {
+                final CacheEntry e = it.next().getValue();
+                if (e.icon.getWidth() != grid.iconSizePx || e.icon.getHeight() != grid.iconSizePx) {
+                    it.remove();
+                }
+            }
         }
     }
 

@@ -1446,6 +1446,12 @@ public class Workspace extends SmoothPagedView
         }
 
         if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
+
+        CellLayout cc = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
+        if (progress > 0 && cc.getVisibility() != VISIBLE && !isSmall()) {
+            cc.setVisibility(VISIBLE);
+        }
+
         mLastCustomContentScrollProgress = progress;
 
         setBackgroundAlpha(progress * 0.8f);
@@ -3046,7 +3052,9 @@ public class Workspace extends SmoothPagedView
     private void cleanupFolderCreation() {
         if (mDragFolderRingAnimator != null) {
             mDragFolderRingAnimator.animateToNaturalState();
+            mDragFolderRingAnimator = null;
         }
+        mFolderCreationAlarm.setOnAlarmListener(null);
         mFolderCreationAlarm.cancelAlarm();
     }
 
@@ -3390,9 +3398,11 @@ public class Workspace extends SmoothPagedView
         }
 
         public void onAlarm(Alarm alarm) {
-            if (mDragFolderRingAnimator == null) {
-                mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
+            if (mDragFolderRingAnimator != null) {
+                // This shouldn't happen ever, but just in case, make sure we clean up the mess.
+                mDragFolderRingAnimator.animateToNaturalState();
             }
+            mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
             mDragFolderRingAnimator.setCell(cellX, cellY);
             mDragFolderRingAnimator.setCellLayout(layout);
             mDragFolderRingAnimator.animateToAcceptState();
@@ -4077,6 +4087,7 @@ public class Workspace extends SmoothPagedView
             }
         }
         mRestoredPages.clear();
+        mSavedStates = null;
     }
 
     @Override
