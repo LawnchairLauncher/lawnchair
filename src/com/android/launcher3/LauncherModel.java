@@ -1663,13 +1663,6 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
-        private boolean checkItemDimensions(ItemInfo info) {
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            return (info.cellX + info.spanX) > (int) grid.numColumns ||
-                    (info.cellY + info.spanY) > (int) grid.numRows;
-        }
-
         /** Clears all the sBg data structures */
         private void clearSBgDataStructures() {
             synchronized (sBgLock) {
@@ -1766,7 +1759,7 @@ public class LauncherModel extends BroadcastReceiver {
                     Intent intent = null;
 
                     while (!mStopped && c.moveToNext()) {
-                        AtomicBoolean deleteOnItemOverlap = new AtomicBoolean(false);
+                        AtomicBoolean deleteOnInvalidPlacement = new AtomicBoolean(false);
                         try {
                             int itemType = c.getInt(itemTypeIndex);
 
@@ -1833,18 +1826,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     info.cellY = c.getInt(cellYIndex);
                                     info.spanX = 1;
                                     info.spanY = 1;
-                                    // Skip loading items that are out of bounds
-                                    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                        if (checkItemDimensions(info)) {
-                                            Launcher.addDumpLog(TAG, "Skipped loading out of bounds shortcut: "
-                                                    + info + ", " + grid.numColumns + "x" + grid.numRows, true);
-                                            continue;
-                                        }
-                                    }
+
                                     // check & update map of what's occupied
-                                    deleteOnItemOverlap.set(false);
-                                    if (!checkItemPlacement(occupied, info, deleteOnItemOverlap)) {
-                                        if (deleteOnItemOverlap.get()) {
+                                    deleteOnInvalidPlacement.set(false);
+                                    if (!checkItemPlacement(occupied, info, deleteOnInvalidPlacement)) {
+                                        if (deleteOnInvalidPlacement.get()) {
                                             itemsToRemove.add(id);
                                         }
                                         break;
@@ -1886,18 +1872,11 @@ public class LauncherModel extends BroadcastReceiver {
                                 folderInfo.spanX = 1;
                                 folderInfo.spanY = 1;
 
-                                // Skip loading items that are out of bounds
-                                if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    if (checkItemDimensions(folderInfo)) {
-                                        Log.d(TAG, "Skipped loading out of bounds folder");
-                                        continue;
-                                    }
-                                }
                                 // check & update map of what's occupied
-                                deleteOnItemOverlap.set(false);
+                                deleteOnInvalidPlacement.set(false);
                                 if (!checkItemPlacement(occupied, folderInfo,
-                                        deleteOnItemOverlap)) {
-                                    if (deleteOnItemOverlap.get()) {
+                                        deleteOnInvalidPlacement)) {
+                                    if (deleteOnInvalidPlacement.get()) {
                                         itemsToRemove.add(id);
                                     }
                                     break;
@@ -1953,18 +1932,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
 
                                     appWidgetInfo.container = c.getInt(containerIndex);
-                                    // Skip loading items that are out of bounds
-                                    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                        if (checkItemDimensions(appWidgetInfo)) {
-                                            Log.d(TAG, "Skipped loading out of bounds app widget");
-                                            continue;
-                                        }
-                                    }
                                     // check & update map of what's occupied
-                                    deleteOnItemOverlap.set(false);
+                                    deleteOnInvalidPlacement.set(false);
                                     if (!checkItemPlacement(occupied, appWidgetInfo,
-                                            deleteOnItemOverlap)) {
-                                        if (deleteOnItemOverlap.get()) {
+                                            deleteOnInvalidPlacement)) {
+                                        if (deleteOnInvalidPlacement.get()) {
                                             itemsToRemove.add(id);
                                         }
                                         break;
