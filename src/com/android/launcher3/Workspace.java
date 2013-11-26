@@ -659,6 +659,12 @@ public class Workspace extends SmoothPagedView
         if (customContent instanceof Insettable) {
             ((Insettable)customContent).setInsets(mInsets);
         }
+
+        // Verify that the child is removed from any existing parent.
+        if (customContent.getParent() instanceof ViewGroup) {
+            ViewGroup parent = (ViewGroup) customContent.getParent();
+            parent.removeView(customContent);
+        }
         customScreen.removeAllViews();
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
         mCustomContentDescription = description;
