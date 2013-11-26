@@ -362,6 +362,14 @@ public class Workspace extends SmoothPagedView
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+
+        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
+        if (customScreen != null) {
+            View customContent = customScreen.getShortcutsAndWidgets().getChildAt(0);
+            if (customContent instanceof Insettable) {
+                ((Insettable) customContent).setInsets(mInsets);
+            }
+        }
     }
 
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
