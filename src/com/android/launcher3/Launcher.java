@@ -2663,7 +2663,7 @@ public class Launcher extends Activity
     }
 
     public void closeFolder() {
-        Folder folder = mWorkspace.getOpenFolder();
+        Folder folder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
         if (folder != null) {
             if (folder.isEditingName()) {
                 folder.dismissEditingName();
