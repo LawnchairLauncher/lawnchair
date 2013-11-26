@@ -22,4 +22,10 @@
             android:title="@string/preferences_interface_homescreen_search_title"
             android:summary="@string/preferences_interface_homescreen_search_summary"
             android:defaultValue="@bool/preferences_interface_homescreen_search_default" />
+    <PreferenceCategory android:title="@string/preferences_interface_homescreen_scrolling_category">
+        <CheckBoxPreference android:key="ui_homescreen_scrolling_show_outlines"
+                android:title="@string/preferences_interface_homescreen_scrolling_show_outlines_title"
+                android:summary="@string/preferences_interface_homescreen_scrolling_show_outlines_summary"
+                android:defaultValue="@bool/config_workspaceDefaultShowOutlines" />
+    </PreferenceCategory>
 </PreferenceScreen>

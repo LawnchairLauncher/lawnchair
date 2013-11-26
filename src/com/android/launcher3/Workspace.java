@@ -277,6 +277,7 @@ public class Workspace extends SmoothPagedView
     };
 
     private boolean mShowSearchBar;
+    private boolean mShowOutlines;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -307,6 +308,9 @@ public class Workspace extends SmoothPagedView
 
         mShowSearchBar = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
                 R.bool.preferences_interface_homescreen_search_default);
+        mShowOutlines = SettingsProvider.getBoolean(context,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_SHOW_OUTLINES,
+                R.bool.preferences_interface_homescreen_scrolling_show_outlines_default);
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
@@ -1054,10 +1058,7 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        // Only show page outlines as we pan if we are on large screen
-        if (LauncherAppState.getInstance().isScreenLarge()) {
-            showOutlines();
-        }
+        if (mShowOutlines) showOutlines();
 
         // If we are not fading in adjacent screens, we still need to restore the alpha in case the
         // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
@@ -1084,10 +1085,8 @@ public class Workspace extends SmoothPagedView
                 mDragController.forceTouchMove();
             }
         } else {
-            // If we are not mid-dragging, hide the page outlines if we are on a large screen
-            if (LauncherAppState.getInstance().isScreenLarge()) {
-                hideOutlines();
-            }
+            // If we are not mid-dragging, hide the page outlines
+            if (mShowOutlines) hideOutlines();
         }
 
         if (mDelayedResizeRunnable != null) {
@@ -1319,7 +1318,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void showOutlines() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!mIsSwitchingState) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             mChildrenOutlineFadeInAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 1.0f);
@@ -1329,7 +1328,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void hideOutlines() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!mIsSwitchingState) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             mChildrenOutlineFadeOutAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 0.0f);

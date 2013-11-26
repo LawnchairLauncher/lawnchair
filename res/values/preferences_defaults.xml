@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="preferences_interface_homescreen_search_default">true</bool>
+    <bool name="preferences_interface_homescreen_scrolling_show_outlines_default">@bool/config_workspaceDefaultShowOutlines</bool>
 </resources>

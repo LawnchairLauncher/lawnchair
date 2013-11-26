@@ -26,6 +26,7 @@ public final class SettingsProvider {
 
     public static final String SETTINGS_UI_HOMESCREEN_DEFAULT_SCREEN_ID = "ui_homescreen_default_screen_id";
     public static final String SETTINGS_UI_HOMESCREEN_SEARCH = "ui_homescreen_search";
+    public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_SHOW_OUTLINES = "ui_homescreen_scrolling_show_outlines";
 
     public static SharedPreferences get(Context context) {
         return context.getSharedPreferences(SETTINGS_KEY, 0);
