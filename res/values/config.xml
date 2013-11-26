@@ -32,7 +32,7 @@
     <integer name="config_appsCustomizeWorkspaceAnimationStagger">40</integer>
     <integer name="config_workspaceAppsCustomizeAnimationStagger">100</integer>
 
-    <integer name="config_workspaceDefaultScreen">0</integer>
+    <integer name="config_workspaceDefaultScreen">1</integer>
 
     <!-- Tab transition animation duration -->
     <integer name="config_tabTransitionDuration">250</integer>
