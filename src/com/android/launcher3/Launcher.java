@@ -1878,7 +1878,7 @@ public class Launcher extends Activity
 
         mDragLayer.clearAllResizeFrames();
         ((ViewGroup) mWorkspace.getParent()).removeAllViews();
-        mWorkspace.removeAllViews();
+        mWorkspace.removeAllWorkspaceScreens();
         mWorkspace = null;
         mDragController = null;
 
