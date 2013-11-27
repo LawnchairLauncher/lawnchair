@@ -654,20 +654,11 @@ public class LauncherProvider extends ContentProvider {
 
                     ItemInfo info = new ItemInfo();
                     info.container = container;
-                    info.cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
-                    info.cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
-                    info.screen = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
-
-                    if (values.containsKey(LauncherSettings.Favorites.SPANX)) {
-                        info.spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
-                    } else {
-                        info.spanX = 1;
-                    }
-                    if (values.containsKey(LauncherSettings.Favorites.SPANY)) {
-                        info.spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
-                    } else {
-                        info.spanY = 1;
-                    }
+                    info.spanX = a.getInt(R.styleable.Favorite_spanX, 1);
+                    info.spanY = a.getInt(R.styleable.Favorite_spanY, 1);
+                    info.cellX = a.getInt(R.styleable.Favorite_x, 0);
+                    info.cellY = a.getInt(R.styleable.Favorite_y, 0);
+                    info.screen = a.getInt(R.styleable.Favorite_screen, 0);
 
                     if (!app.getModel().checkItemPlacement(occupied, info)) {
                         continue;
@@ -747,7 +738,24 @@ public class LauncherProvider extends ContentProvider {
                             added = false;
                         }
                     }
-                    if (added) i++;
+                    if (added) {
+                        i++;
+                    } else {
+                        int containerIndex = -1;
+                        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                            containerIndex = info.screen + Launcher.MAX_WORKSPACE_SCREEN_COUNT;
+                        } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                            containerIndex = info.screen;
+                        }
+
+                        if (containerIndex != -1) {
+                            for (int gridX = info.cellX; gridX < (info.cellX+info.spanX); gridX++) {
+                                for (int gridY = info.cellY; gridY < (info.cellY+info.spanY); gridY++) {
+                                    occupied[containerIndex][gridX][gridY] = null;
+                                }
+                            }
+                        }
+                    }
                     a.recycle();
                 }
             } catch (XmlPullParserException e) {
