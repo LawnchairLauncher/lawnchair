@@ -2125,12 +2125,6 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
 
-            // If we aren't filtering on a screen, then the set of items to load is the full set of
-            // items given.
-            if (currentScreenId < 0) {
-                throw new RuntimeException("Unexpected screen id");
-            }
-
             // Order the set of items by their containers first, this allows use to walk through the
             // list sequentially, build up a list of containers that are in the specified screen,
             // as well as all items in those containers.
@@ -2168,11 +2162,6 @@ public class LauncherModel extends BroadcastReceiver {
                 ArrayList<LauncherAppWidgetInfo> appWidgets,
                 ArrayList<LauncherAppWidgetInfo> currentScreenWidgets,
                 ArrayList<LauncherAppWidgetInfo> otherScreenWidgets) {
-            // If we aren't filtering on a screen, then the set of items to load is the full set of
-            // widgets given.
-            if (currentScreenId < 0) {
-                throw new RuntimeException("Unexpected screen id");
-            }
 
             for (LauncherAppWidgetInfo widget : appWidgets) {
                 if (widget == null) continue;
@@ -2191,11 +2180,6 @@ public class LauncherModel extends BroadcastReceiver {
                 HashMap<Long, FolderInfo> folders,
                 HashMap<Long, FolderInfo> currentScreenFolders,
                 HashMap<Long, FolderInfo> otherScreenFolders) {
-            // If we aren't filtering on a screen, then the set of items to load is the full set of
-            // widgets given.
-            if (currentScreenId < 0) {
-                throw new RuntimeException("Unexpected screen id");
-            }
 
             for (long id : folders.keySet()) {
                 ItemInfo info = itemsIdMap.get(id);
@@ -2433,13 +2417,15 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             final boolean isLoadingSynchronously = (synchronizeBindPage > -1);
-            final int currentScreen = isLoadingSynchronously ? synchronizeBindPage :
+            int currScreen = isLoadingSynchronously ? synchronizeBindPage :
                 oldCallbacks.getCurrentWorkspaceScreen();
-            if (currentScreen >= orderedScreenIds.size()) {
-                Log.w(TAG, "Invalid screen id to synchronously load");
-                return;
+            if (currScreen >= orderedScreenIds.size()) {
+                // There may be no workspace screens (just hotseat items and an empty page).
+                currScreen = -1;
             }
-            final long currentScreenId = orderedScreenIds.get(currentScreen);
+            final int currentScreen = currScreen;
+            final long currentScreenId =
+                    currentScreen < 0 ? -1 : orderedScreenIds.get(currentScreen);
 
             // Load all the items that are on the current page first (and in the process, unbind
             // all the existing workspace items before we call startBinding() below.
