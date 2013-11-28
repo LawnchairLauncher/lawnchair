@@ -4190,6 +4190,11 @@ public class Launcher extends Activity
                 getDeviceProfile().isVerticalBarLayout();
     }
 
+    protected Rect getSearchBarBounds() {
+        return LauncherAppState.getInstance().getDynamicGrid().
+                getDeviceProfile().getSearchBarBounds();
+    }
+
     @Override
     public void bindSearchablesChanged() {
         boolean searchVisible = updateGlobalSearchIcon();
