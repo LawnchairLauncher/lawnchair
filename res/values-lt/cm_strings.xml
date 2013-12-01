@@ -142,4 +142,5 @@
     <string name="effects_carousel_right">Karuselė dešinėje</string>
     <string name="live_folder_cling_title">Aktyvūs aplankai</string>
     <string name="live_folder_cling_create_folder">Aktyvūs aplankai leidžia programų kūrėjams kurti aplankus su dinaminiu turiniu. Aplanko turinys gali būti pašalintas ilgai spaudžiant vieną elementą. Kitaip nei normalūs aplankai, elementai gali būti pridedami tik programos sukūrusios aplanką.</string>
+    <string name="conversations_title">Pokalbiai</string>
 </resources>
