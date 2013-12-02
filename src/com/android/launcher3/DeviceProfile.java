@@ -310,7 +310,7 @@ public class DeviceProfile {
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
-        searchBarSpaceHeightPx = searchBarHeightPx + 2 * edgeMarginPx;
+        searchBarSpaceHeightPx = searchBarHeightPx + getSearchBarTopOffset();
 
         // Calculate the actual text height
         Paint textPaint = new Paint();
@@ -417,6 +417,15 @@ public class DeviceProfile {
         }
 
         return sum;
+    }
+
+    /** Returns the search bar top offset */
+    int getSearchBarTopOffset() {
+        if (isTablet() && !isVerticalBarLayout()) {
+            return 4 * edgeMarginPx;
+        } else {
+            return 2 * edgeMarginPx;
+        }
     }
 
     /** Returns the search bar bounds in the current orientation */
@@ -561,7 +570,7 @@ public class DeviceProfile {
         View searchBar = launcher.getSearchBar();
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         if (hasVerticalBarLayout) {
-            // Vertical search bar
+            // Vertical search bar space
             lp.gravity = Gravity.TOP | Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
             lp.height = LayoutParams.MATCH_PARENT;
@@ -569,13 +578,13 @@ public class DeviceProfile {
                     0, 2 * edgeMarginPx, 0,
                     2 * edgeMarginPx);
         } else {
-            // Horizontal search bar
+            // Horizontal search bar space
             lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
             lp.width = searchBarSpaceWidthPx;
             lp.height = searchBarSpaceHeightPx;
             searchBar.setPadding(
                     2 * edgeMarginPx,
-                    2 * edgeMarginPx,
+                    getSearchBarTopOffset(),
                     2 * edgeMarginPx, 0);
         }
         searchBar.setLayoutParams(lp);
