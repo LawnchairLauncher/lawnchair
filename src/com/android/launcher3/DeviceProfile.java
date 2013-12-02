@@ -466,10 +466,12 @@ public class DeviceProfile {
                 //      that into account here too.
                 int gap = (int) ((width - 2 * edgeMarginPx -
                         (numColumns * cellWidthPx)) / (2 * (numColumns + 1)));
-                bounds.set(edgeMarginPx + gap, 0, availableWidthPx - (edgeMarginPx + gap),
+                bounds.set(edgeMarginPx + gap, getSearchBarTopOffset(),
+                        availableWidthPx - (edgeMarginPx + gap),
                         searchBarVisible ? searchBarSpaceHeightPx : edgeMarginPx);
             } else {
-                bounds.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left, 0,
+                bounds.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
+                        getSearchBarTopOffset(),
                         availableWidthPx - (desiredWorkspaceLeftRightMarginPx -
                         defaultWidgetPadding.right), searchBarVisible ? searchBarSpaceHeightPx : edgeMarginPx);
             }
