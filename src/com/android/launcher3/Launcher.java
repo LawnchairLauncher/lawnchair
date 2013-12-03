@@ -1942,7 +1942,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps customize page
-            if (mAppsCustomizeLayout != null) {
+            if (!alreadyOnHome && mAppsCustomizeLayout != null) {
                 mAppsCustomizeLayout.reset();
             }
 
@@ -2579,7 +2579,7 @@ public class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAllAppsButton(View v) {
-        showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
+        showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
     }
 
     public void onTouchDownAllAppsButton(View v) {
