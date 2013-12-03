@@ -298,6 +298,13 @@ public class LauncherProvider extends ContentProvider {
         public void onRow(ContentValues values);
     }
 
+    private static boolean shouldImportLauncher2Database(Context context) {
+        boolean isTablet = context.getResources().getBoolean(R.bool.is_tablet);
+
+        // We don't import the old databse for tablets, as the grid size has changed.
+        return !isTablet && IMPORT_LAUNCHER2_DATABASE;
+    }
+
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
@@ -377,7 +384,7 @@ public class LauncherProvider extends ContentProvider {
                 sendAppWidgetResetNotify();
             }
 
-            if (IMPORT_LAUNCHER2_DATABASE) {
+            if (shouldImportLauncher2Database(mContext)) {
                 // Try converting the old database
                 ContentValuesCallback permuteScreensCb = new ContentValuesCallback() {
                     public void onRow(ContentValues values) {
