@@ -1765,7 +1765,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps customize page
-            if (mAppsCustomizeTabHost != null) {
+            if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
                 mAppsCustomizeTabHost.reset();
             }
 
@@ -2375,7 +2375,7 @@ public class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAllAppsButton(View v) {
-        showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
+        showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
     }
 
     public void onTouchDownAllAppsButton(View v) {
