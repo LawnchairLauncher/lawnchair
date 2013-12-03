@@ -2470,7 +2470,7 @@ public class LauncherModel extends BroadcastReceiver {
                 r = new Runnable() {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
+                        if (callbacks != null && currentScreen >= 0) {
                             callbacks.onPageBoundSynchronously(currentScreen);
                         }
                     }
