@@ -2384,20 +2384,22 @@ public class Workspace extends SmoothPagedView
             if (pageIndicator != null) {
                 pageIndicatorAlpha = new LauncherViewPropertyAnimator(pageIndicator)
                     .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
+                pageIndicatorAlpha.addListener(new AlphaUpdateListener(pageIndicator));
             } else {
                 // create a dummy animation so we don't need to do null checks later
                 pageIndicatorAlpha = ValueAnimator.ofFloat(0, 0);
             }
+
             Animator hotseatAlpha = new LauncherViewPropertyAnimator(hotseat)
                 .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
+            hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
+
             Animator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
                 .alpha(finalSearchBarAlpha).withLayer();
+            if (mShowSearchBar) searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
+
             Animator overviewPanelAlpha = new LauncherViewPropertyAnimator(overviewPanel)
                 .alpha(finalOverviewPanelAlpha).withLayer();
-
-            pageIndicatorAlpha.addListener(new AlphaUpdateListener(pageIndicator));
-            hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
-            if (mShowSearchBar) searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
 
             if (workspaceToOverview) {
