@@ -75,6 +75,7 @@ public class DeviceProfile {
     boolean isLandscape;
     boolean isTablet;
     boolean isLargeTablet;
+    boolean isLayoutRtl;
     boolean transposeLayoutWithOrientation;
 
     int desiredWorkspaceLeftRightMarginPx;
@@ -373,10 +374,11 @@ public class DeviceProfile {
 
     void updateFromConfiguration(Context context, Resources resources, int wPx, int hPx,
                                  int awPx, int ahPx) {
-        isLandscape = (resources.getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE);
+        Configuration configuration = resources.getConfiguration();
+        isLandscape = (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE);
         isTablet = resources.getBoolean(R.bool.is_tablet);
         isLargeTablet = resources.getBoolean(R.bool.is_large_tablet);
+        isLayoutRtl = (configuration.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
         widthPx = wPx;
         heightPx = hPx;
         availableWidthPx = awPx;
@@ -454,7 +456,13 @@ public class DeviceProfile {
         Rect bounds = new Rect();
         if (orientation == CellLayout.LANDSCAPE &&
                 transposeLayoutWithOrientation) {
-            bounds.set(0, edgeMarginPx, searchBarVisible ? searchBarSpaceHeightPx : edgeMarginPx, availableHeightPx - edgeMarginPx);
+            if (isLayoutRtl) {
+                bounds.set(availableWidthPx - searchBarSpaceHeightPx, edgeMarginPx,
+                        availableWidthPx, availableHeightPx - edgeMarginPx);
+            } else {
+                bounds.set(0, edgeMarginPx, searchBarSpaceHeightPx,
+                        availableHeightPx - edgeMarginPx);
+            }
         } else {
             if (isTablet()) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -489,8 +497,13 @@ public class DeviceProfile {
         if (orientation == CellLayout.LANDSCAPE &&
                 transposeLayoutWithOrientation) {
             // Pad the left and right of the workspace with search/hotseat bar sizes
-            padding.set(searchBarBounds.right, edgeMarginPx,
-                    hotseatBarHeightPx, edgeMarginPx);
+            if (isLayoutRtl) {
+                padding.set(hotseatBarHeightPx, edgeMarginPx,
+                        searchBarBounds.width(), edgeMarginPx);
+            } else {
+                padding.set(searchBarBounds.width(), edgeMarginPx,
+                        hotseatBarHeightPx, edgeMarginPx);
+            }
         } else {
             if (isTablet()) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -650,7 +663,7 @@ public class DeviceProfile {
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
         if (hasVerticalBarLayout) {
             // Vertical hotseat
-            lp.gravity = Gravity.RIGHT;
+            lp.gravity = Gravity.END;
             lp.width = hotseatBarHeightPx;
             lp.height = LayoutParams.MATCH_PARENT;
             hotseat.findViewById(R.id.layout).setPadding(0, 2 * edgeMarginPx, 0, 2 * edgeMarginPx);
