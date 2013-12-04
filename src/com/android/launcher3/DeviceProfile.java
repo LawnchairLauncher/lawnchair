@@ -745,7 +745,8 @@ public class DeviceProfile {
                 paddingTB = Math.min(paddingTB, (int)((paddingLR + paddingTB) * 0.75f));
                 int maxAllAppsWidth = (allAppsNumCols * (allAppsCellWidthPx + 2 * paddingLR));
                 int gridPaddingLR = (availableWidthPx - maxAllAppsWidth) / 2;
-                if (gridPaddingLR > (allAppsCellWidthPx / 4)) {
+                // Only adjust the side paddings on landscape phones, or tablets
+                if ((isTablet() || isLandscape) && gridPaddingLR > (allAppsCellWidthPx / 4)) {
                     padding.left = padding.right = gridPaddingLR;
                 }
                 // The icons are centered, so we can't just offset by the page indicator height
