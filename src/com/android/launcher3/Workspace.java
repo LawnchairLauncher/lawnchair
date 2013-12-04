@@ -4264,7 +4264,9 @@ public class Workspace extends SmoothPagedView
         if (mSavedStates != null) {
             mRestoredPages.add(child);
             CellLayout cl = (CellLayout) getChildAt(child);
-            cl.restoreInstanceState(mSavedStates);
+            if (cl != null) {
+                cl.restoreInstanceState(mSavedStates);
+            }
         }
     }
 
