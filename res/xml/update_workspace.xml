@@ -14,9 +14,8 @@
      limitations under the License.
 -->
 
-<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
-    <!-- Update the db with new hotseat items.  Note that we reference the browser's original
-         package name. -->
+<favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher3">
+    <!-- Update the db with new hotseat all apps button. -->
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <favorite
         launcher:packageName="com.android.dialer"
@@ -29,21 +28,26 @@
         launcher:packageName="com.android.contacts"
         launcher:className="com.android.contacts.activities.PeopleActivity"
         launcher:container="-101"
-        launcher:screen="1"
+        launcher:screen="0"
         launcher:x="1"
+        launcher:y="0" />
+    <allapps
+        launcher:container="-101"
+        launcher:screen="0"
+        launcher:x="2"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.mms"
         launcher:className="com.android.mms.ui.ConversationList"
         launcher:container="-101"
-        launcher:screen="3"
+        launcher:screen="0"
         launcher:x="3"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.browser"
         launcher:className="com.android.browser.BrowserActivity"
         launcher:container="-101"
-        launcher:screen="4"
+        launcher:screen="0"
         launcher:x="4"
         launcher:y="0" />
 </favorites>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2013-2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,13 +14,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<favorites xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet">
+<favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher3">
     <!-- Update the db with new hotseat all apps button. -->
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <favorite
-        launcher:packageName="com.android.contacts"
-        launcher:className="com.android.contacts.activities.DialtactsActivity"
+        launcher:packageName="com.android.dialer"
+        launcher:className="com.android.dialer.DialtactsActivity"
         launcher:container="-101"
         launcher:screen="0"
         launcher:x="2"
