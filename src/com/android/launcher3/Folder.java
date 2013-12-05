@@ -79,7 +79,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int mState = STATE_NONE;
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int REORDER_DELAY = 250;
-    private static final int ON_EXIT_CLOSE_DELAY = 800;
+    private static final int ON_EXIT_CLOSE_DELAY = 400;
     private boolean mRearrangeOnClose = false;
     private FolderIcon mFolderIcon;
     private int mMaxCountX;
