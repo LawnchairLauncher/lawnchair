@@ -43,6 +43,7 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
@@ -437,6 +438,9 @@ public class Workspace extends SmoothPagedView
 
         mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
+
+        // Set the wallpaper dimensions when Launcher starts up
+        setWallpaperDimension();
     }
 
     private void setupLayoutTransition() {
@@ -1232,10 +1236,16 @@ public class Workspace extends SmoothPagedView
     }
 
     protected void setWallpaperDimension() {
-        String spKey = WallpaperCropActivity.getSharedPreferencesKey();
-        SharedPreferences sp = mLauncher.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
-        WallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
-                sp, mLauncher.getWindowManager(), mWallpaperManager);
+        new AsyncTask<Void, Void, Void>() {
+            public Void doInBackground(Void ... args) {
+                String spKey = WallpaperCropActivity.getSharedPreferencesKey();
+                SharedPreferences sp =
+                        mLauncher.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
+                WallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
+                        sp, mLauncher.getWindowManager(), mWallpaperManager);
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     protected void snapToPage(int whichPage, Runnable r) {
@@ -1693,6 +1703,12 @@ public class Workspace extends SmoothPagedView
         AccessibilityManager am = (AccessibilityManager)
                 getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
         sAccessibilityEnabled = am.isEnabled();
+
+        // Update wallpaper dimensions if they were changed since last onResume
+        // (we also always set the wallpaper dimensions in the constructor)
+        if (LauncherAppState.getInstance().hasWallpaperChangedSinceLastCheck()) {
+            setWallpaperDimension();
+        }
     }
 
     @Override
@@ -4001,7 +4017,6 @@ public class Workspace extends SmoothPagedView
         // hardware layers on children are enabled on startup, but should be disabled until
         // needed
         updateChildrenLayersEnabled(false);
-        setWallpaperDimension();
     }
 
     /**
