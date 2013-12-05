@@ -1499,7 +1499,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
-                    if (!mScroller.isFinished()) {
+                    if (!mScroller.isFinished() && !mFreeScroll) {
                         setCurrentPage(getNextPage());
                         pageEndMoving();
                     }
