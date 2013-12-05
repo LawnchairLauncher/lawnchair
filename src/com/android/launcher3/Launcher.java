@@ -4110,13 +4110,6 @@ public class Launcher extends Activity
             return false;
         }
 
-        // For now, limit only to phones
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        if (grid.isTablet()) {
-            return false;
-        }
-
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 
