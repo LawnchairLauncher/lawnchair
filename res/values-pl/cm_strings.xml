@@ -142,4 +142,5 @@
     <string name="all_apps_sort_cling_add_item">Przytrzymaj kartę aplikacji aby wybrać tryb sortowania</string>
     <string name="live_folder_cling_title">Foldery-Live</string>
     <string name="live_folder_cling_create_folder">Foldery-Live pozwalają deweloperom tworzyć foldery z dynamiczną zawartością. Zawartość folderu może być usunięta, przez długie naciśnięcie na pojedyńczym wpisie. W przeciwieństwie do normalnych folderów, zawartość może być dodana tylko przez aplikację która utowrzyła folder</string>
+    <string name="conversations_title">Rozmowy</string>
 </resources>
