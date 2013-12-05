@@ -1303,6 +1303,69 @@ public class LauncherModel extends BroadcastReceiver {
         return false;
     }
 
+    // check & update map of what's occupied; used to discard overlapping/invalid items
+    public boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item,
+                                       AtomicBoolean deleteOnItemOverlap) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        int countX = (int) grid.numColumns;
+        int countY = (int) grid.numRows;
+
+        long containerIndex = item.screenId;
+        if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
+                if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                        [(int) item.screenId][0] != null) {
+                    Log.e(TAG, "Error loading shortcut into hotseat " + item
+                            + " into position (" + item.screenId + ":" + item.cellX + ","
+                            + item.cellY + ") occupied by "
+                            + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                            [(int) item.screenId][0]);
+                    if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                            [(int) item.screenId][0].itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                        deleteOnItemOverlap.set(true);
+                    }
+                    return false;
+                }
+            } else {
+                ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
+                items[(int) item.screenId][0] = item;
+                occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
+                return true;
+            }
+        } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            // Skip further checking if it is not the hotseat or workspace container
+            return true;
+        }
+
+        if (!occupied.containsKey(item.screenId)) {
+            ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
+            occupied.put(item.screenId, items);
+        }
+
+        ItemInfo[][] screens = occupied.get(item.screenId);
+        // Check if any workspace icons overlap with each other
+        for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+            for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                if (screens[x][y] != null) {
+                    Log.e(TAG, "Error loading shortcut " + item
+                        + " into cell (" + containerIndex + "-" + item.screenId + ":"
+                        + x + "," + y
+                        + ") occupied by "
+                        + screens[x][y]);
+                    return false;
+                }
+            }
+        }
+        for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+            for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                screens[x][y] = item;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Runnable for the thread that loads the contents of the launcher:
      *   - workspace icons
@@ -1569,69 +1632,6 @@ public class LauncherModel extends BroadcastReceiver {
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             return (info.cellX + info.spanX) > (int) grid.numColumns ||
                     (info.cellY + info.spanY) > (int) grid.numRows;
-        }
-
-        // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item,
-                                           AtomicBoolean deleteOnItemOverlap) {
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            int countX = (int) grid.numColumns;
-            int countY = (int) grid.numRows;
-
-            long containerIndex = item.screenId;
-            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
-                    if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                            [(int) item.screenId][0] != null) {
-                        Log.e(TAG, "Error loading shortcut into hotseat " + item
-                                + " into position (" + item.screenId + ":" + item.cellX + ","
-                                + item.cellY + ") occupied by "
-                                + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                                [(int) item.screenId][0]);
-                        if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                                [(int) item.screenId][0].itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
-                            deleteOnItemOverlap.set(true);
-                        }
-                        return false;
-                    }
-                } else {
-                    ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
-                    items[(int) item.screenId][0] = item;
-                    occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
-                    return true;
-                }
-            } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                // Skip further checking if it is not the hotseat or workspace container
-                return true;
-            }
-
-            if (!occupied.containsKey(item.screenId)) {
-                ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
-                occupied.put(item.screenId, items);
-            }
-
-            ItemInfo[][] screens = occupied.get(item.screenId);
-            // Check if any workspace icons overlap with each other
-            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    if (screens[x][y] != null) {
-                        Log.e(TAG, "Error loading shortcut " + item
-                            + " into cell (" + containerIndex + "-" + item.screenId + ":"
-                            + x + "," + y
-                            + ") occupied by "
-                            + screens[x][y]);
-                        return false;
-                    }
-                }
-            }
-            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    screens[x][y] = item;
-                }
-            }
-
-            return true;
         }
 
         /** Clears all the sBg data structures */
