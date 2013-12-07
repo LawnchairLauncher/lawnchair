@@ -222,7 +222,7 @@ public class Workspace extends SmoothPagedView
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
-    private static final int REORDER_TIMEOUT = 250;
+    public static final int REORDER_TIMEOUT = 350;
     private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
     private FolderRingAnimator mDragFolderRingAnimator = null;
@@ -2863,7 +2863,7 @@ public class Workspace extends SmoothPagedView
             }
 
             int[] resultSpan = new int[2];
-            mTargetCell = dropTargetLayout.createArea((int) mDragViewVisualCenter[0],
+            mTargetCell = dropTargetLayout.performReorder((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY,
                     null, mTargetCell, resultSpan, CellLayout.MODE_ACCEPT_DROP);
             boolean foundCell = mTargetCell[0] >= 0 && mTargetCell[1] >= 0;
@@ -3082,7 +3082,7 @@ public class Workspace extends SmoothPagedView
                 }
 
                 int[] resultSpan = new int[2];
-                mTargetCell = dropTargetLayout.createArea((int) mDragViewVisualCenter[0],
+                mTargetCell = dropTargetLayout.performReorder((int) mDragViewVisualCenter[0],
                         (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY, cell,
                         mTargetCell, resultSpan, CellLayout.MODE_ON_DROP);
 
@@ -3665,6 +3665,11 @@ public class Workspace extends SmoothPagedView
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
                     mLastReorderY != reorderY)) {
 
+                int[] resultSpan = new int[2];
+                mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
+                        (int) mDragViewVisualCenter[1], minSpanX, minSpanY, item.spanX, item.spanY,
+                        child, mTargetCell, resultSpan, CellLayout.MODE_SHOW_REORDER_HINT);
+
                 // Otherwise, if we aren't adding to or creating a folder and there's no pending
                 // reorder, then we schedule a reorder
                 ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
@@ -3769,7 +3774,7 @@ public class Workspace extends SmoothPagedView
             mLastReorderX = mTargetCell[0];
             mLastReorderY = mTargetCell[1];
 
-            mTargetCell = mDragTargetLayout.createArea((int) mDragViewVisualCenter[0],
+            mTargetCell = mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
                 (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY,
                 child, mTargetCell, resultSpan, CellLayout.MODE_DRAG_OVER);
 
@@ -3879,7 +3884,7 @@ public class Workspace extends SmoothPagedView
                     minSpanY = item.minSpanY;
                 }
                 int[] resultSpan = new int[2];
-                mTargetCell = cellLayout.createArea((int) mDragViewVisualCenter[0],
+                mTargetCell = cellLayout.performReorder((int) mDragViewVisualCenter[0],
                         (int) mDragViewVisualCenter[1], minSpanX, minSpanY, info.spanX, info.spanY,
                         null, mTargetCell, resultSpan, CellLayout.MODE_ON_DROP_EXTERNAL);
 
@@ -3972,7 +3977,7 @@ public class Workspace extends SmoothPagedView
 
             if (touchXY != null) {
                 // when dragging and dropping, just find the closest free spot
-                mTargetCell = cellLayout.createArea((int) mDragViewVisualCenter[0],
+                mTargetCell = cellLayout.performReorder((int) mDragViewVisualCenter[0],
                         (int) mDragViewVisualCenter[1], 1, 1, 1, 1,
                         null, mTargetCell, null, CellLayout.MODE_ON_DROP_EXTERNAL);
             } else {
