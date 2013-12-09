@@ -3078,6 +3078,22 @@ public class LauncherModel extends BroadcastReceiver {
             }
         };
     }
+    public static final Comparator<AppInfo> getAppLaunchCountComparator(final Stats stats) {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+            public final int compare(AppInfo a, AppInfo b) {
+                int result = stats.launchCount(b.intent) - stats.launchCount(a.intent);
+                if (result == 0) {
+                    result = collator.compare(a.title.toString().trim(),
+                            b.title.toString().trim());
+                    if (result == 0) {
+                        result = a.componentName.compareTo(b.componentName);
+                    }
+                }
+                return result;
+            }
+        };
+    }
     public static final Comparator<AppInfo> APP_INSTALL_TIME_COMPARATOR
             = new Comparator<AppInfo>() {
         public final int compare(AppInfo a, AppInfo b) {

@@ -103,6 +103,20 @@ public class Stats {
         }
     }
 
+    public int launchCount(Intent intent) {
+        intent = new Intent(intent);
+        intent.setSourceBounds(null);
+
+        final String flat = intent.toUri(0);
+
+        int pos = mIntents.indexOf(flat);
+        if (pos < 0) {
+            return 0;
+        } else {
+            return mHistogram.get(pos);
+        }
+    }
+
     public void recordLaunch(Intent intent) {
         recordLaunch(intent, null);
     }
