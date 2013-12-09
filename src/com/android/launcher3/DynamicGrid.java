@@ -63,17 +63,17 @@ public class DynamicGrid {
         DEFAULT_ICON_SIZE_PX = pxFromDp(DEFAULT_ICON_SIZE_DP, dm);
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
-                255, 300,  2, 3,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 54 : 48)));
+                255, 300,  2, 3,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 5), (useLargeIcons ? 54 : 48)));
         deviceProfiles.add(new DeviceProfile("Shorter Stubby",
-                255, 400,  3, 3,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 54 : 48)));
+                255, 400,  3, 3,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 5), (useLargeIcons ? 54 : 48)));
         deviceProfiles.add(new DeviceProfile("Short Stubby",
-                275, 420,  3, 4,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 54 : 48)));
+                275, 420,  3, 4,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 5), (useLargeIcons ? 54 : 48)));
         deviceProfiles.add(new DeviceProfile("Stubby",
-                255, 450,  3, 4,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 54 : 48)));
+                255, 450,  3, 4,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 5), (useLargeIcons ? 54 : 48)));
         deviceProfiles.add(new DeviceProfile("Nexus S",
-                296, 491.33f,  4, 4,  (useLargeIcons ? 56 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 56 : 48)));
+                296, 491.33f,  4, 4,  (useLargeIcons ? 56 : 48), 13, (hasAA ? 5 : 5), (useLargeIcons ? 56 : 48)));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
-                359, 518,  4, 4,  (useLargeIcons ? DEFAULT_ICON_SIZE_DP : 52), 13, (hasAA ? 5 : 4), (useLargeIcons ? 56 : 48)));
+                359, 518,  4, 4,  (useLargeIcons ? DEFAULT_ICON_SIZE_DP : 52), 13, (hasAA ? 5 : 5), (useLargeIcons ? 56 : 48)));
         // The tablet profile is odd in that the landscape orientation
         // also includes the nav bar on the side
         deviceProfiles.add(new DeviceProfile("Nexus 7",
