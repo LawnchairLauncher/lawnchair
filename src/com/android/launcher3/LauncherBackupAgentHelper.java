@@ -18,9 +18,13 @@ package com.android.launcher3;
 
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.BackupManager;
+import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
+
+    private static final String TAG = "LauncherBackupAgentHelper";
 
     private static BackupManager sBackupManager;
 
@@ -38,9 +42,21 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         sBackupManager.dataChanged();
     }
 
+    @Override
+    public void onDestroy() {
+        // There is only one process accessing this preference file, but the restore
+        // modifies the file outside the normal codepaths, so it looks like another
+        // process.  This forces a reload of the file, in case this process persists.
+        String spKey = LauncherAppState.getSharedPreferencesKey();
+        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
+        super.onDestroy();
+    }
 
     @Override
     public void onCreate() {
+        addHelper(LauncherBackupHelper.LAUNCHER_PREFS_PREFIX,
+                new SharedPreferencesBackupHelper(this,
+                        LauncherAppState.getSharedPreferencesKey()));
         addHelper(LauncherBackupHelper.LAUNCHER_PREFIX, new LauncherBackupHelper(this));
     }
 }
