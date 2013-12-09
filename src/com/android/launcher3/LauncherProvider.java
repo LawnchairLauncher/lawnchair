@@ -270,8 +270,7 @@ public class LauncherProvider extends ContentProvider {
 
             // Use default workspace resource if none provided
             if (workspaceResId == 0) {
-                workspaceResId =
-                        sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, getDefaultWorkspaceResourceId());
+                workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, R.xml.default_workspace);
             }
 
             // Populate favorites table with initial favorites
@@ -284,14 +283,6 @@ public class LauncherProvider extends ContentProvider {
             mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), workspaceResId);
             mOpenHelper.setFlagJustLoadedOldDb();
             editor.commit();
-        }
-    }
-
-    private static int getDefaultWorkspaceResourceId() {
-        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
-            return R.xml.default_workspace_no_all_apps;
-        } else {
-            return R.xml.default_workspace;
         }
     }
 
