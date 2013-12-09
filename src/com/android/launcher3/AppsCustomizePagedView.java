@@ -379,7 +379,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
 
-        AppsCustomizeTabHost host = (AppsCustomizeTabHost) getTabHost();
+        AppsCustomizeLayout host = (AppsCustomizeLayout) getLayout();
         final boolean hostIsTransitioning = host.isTransitioning();
 
         // Restore the page
@@ -387,7 +387,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         invalidatePageData(Math.max(0, page), hostIsTransitioning);
 
         // Show All Apps cling if we are finished transitioning, otherwise, we will try again when
-        // the transition completes in AppsCustomizeTabHost (otherwise the wrong offsets will be
+        // the transition completes in AppsCustomizeLayout (otherwise the wrong offsets will be
         // returned while animating)
         if (!hostIsTransitioning) {
             post(new Runnable() {
@@ -1587,21 +1587,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // If we have reset, then we should not continue to restore the previous state
         mSaveInstanceStateItemIndex = -1;
 
-        AppsCustomizeTabHost tabHost = getTabHost();
-        String tag = tabHost.getCurrentTabTag();
-        if (tag != null) {
-            if (!tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
-                tabHost.setCurrentTabFromContent(ContentType.Applications);
-            }
-        }
-
         if (mCurrentPage != 0) {
             invalidatePageData(0);
         }
     }
 
-    private AppsCustomizeTabHost getTabHost() {
-        return (AppsCustomizeTabHost) mLauncher.findViewById(R.id.apps_customize_pane);
+    private AppsCustomizeLayout getLayout() {
+        return (AppsCustomizeLayout) mLauncher.findViewById(R.id.apps_customize_pane);
     }
 
     public void dumpState() {

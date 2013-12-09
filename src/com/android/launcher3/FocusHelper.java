@@ -57,62 +57,7 @@ class HotseatIconKeyEventListener implements View.OnKeyListener {
     }
 }
 
-/**
- * A keyboard listener we set on the last tab button in AppsCustomize to jump to then
- * market icon and vice versa.
- */
-class AppsCustomizeTabKeyEventListener implements View.OnKeyListener {
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleAppsCustomizeTabKeyEvent(v, keyCode, event);
-    }
-}
-
 public class FocusHelper {
-    /**
-     * Private helper to get the parent TabHost in the view hiearchy.
-     */
-    private static TabHost findTabHostParent(View v) {
-        ViewParent p = v.getParent();
-        while (p != null && !(p instanceof TabHost)) {
-            p = p.getParent();
-        }
-        return (TabHost) p;
-    }
-
-    /**
-     * Handles key events in a AppsCustomize tab between the last tab view and the shop button.
-     */
-    static boolean handleAppsCustomizeTabKeyEvent(View v, int keyCode, KeyEvent e) {
-        final TabHost tabHost = findTabHostParent(v);
-        final ViewGroup contents = tabHost.getTabContentView();
-        final View shop = tabHost.findViewById(R.id.market_button);
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the shop button if we aren't on it
-                    if (v != shop) {
-                        shop.requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // Select the content view (down is handled by the tab key handler otherwise)
-                    if (v == shop) {
-                        contents.requestFocus();
-                        wasHandled = true;
-                    }
-                }
-                break;
-            default: break;
-        }
-        return wasHandled;
-    }
 
     /**
      * Returns the Viewgroup containing page contents for the page at the index specified.
@@ -134,8 +79,6 @@ public class FocusHelper {
 
         final PagedViewGridLayout parent = (PagedViewGridLayout) w.getParent();
         final PagedView container = (PagedView) parent.getParent();
-        final TabHost tabHost = findTabHostParent(container);
-        final TabWidget tabs = tabHost.getTabWidget();
         final int widgetIndex = parent.indexOfChild(w);
         final int widgetCount = parent.getChildCount();
         final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parent));
@@ -194,8 +137,6 @@ public class FocusHelper {
                         int newWidgetIndex = ((y - 1) * cellCountX) + x;
                         child = parent.getChildAt(newWidgetIndex);
                         if (child != null) child.requestFocus();
-                    } else {
-                        tabs.requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -294,8 +235,6 @@ public class FocusHelper {
         // Note we have an extra parent because of the
         // PagedViewCellLayout/PagedViewCellLayoutChildren relationship
         final PagedView container = (PagedView) parentLayout.getParent();
-        final TabHost tabHost = findTabHostParent(container);
-        final TabWidget tabs = tabHost.getTabWidget();
         final int iconIndex = itemContainer.indexOfChild(v);
         final int itemCount = itemContainer.getChildCount();
         final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parentLayout));
@@ -354,8 +293,6 @@ public class FocusHelper {
                     if (y > 0) {
                         int newiconIndex = ((y - 1) * countX) + x;
                         itemContainer.getChildAt(newiconIndex).requestFocus();
-                    } else {
-                        tabs.requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -424,60 +361,6 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the last icon on this page
                     itemContainer.getChildAt(itemCount - 1).requestFocus();
-                }
-                wasHandled = true;
-                break;
-            default: break;
-        }
-        return wasHandled;
-    }
-
-    /**
-     * Handles key events in the tab widget.
-     */
-    static boolean handleTabKeyEvent(AccessibleTabView v, int keyCode, KeyEvent e) {
-        if (!LauncherAppState.getInstance().isScreenLarge()) return false;
-
-        final FocusOnlyTabWidget parent = (FocusOnlyTabWidget) v.getParent();
-        final TabHost tabHost = findTabHostParent(parent);
-        final ViewGroup contents = tabHost.getTabContentView();
-        final int tabCount = parent.getTabCount();
-        final int tabIndex = parent.getChildTabIndex(v);
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (handleKeyEvent) {
-                    // Select the previous tab
-                    if (tabIndex > 0) {
-                        parent.getChildTabViewAt(tabIndex - 1).requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the next tab, or if the last tab has a focus right id, select that
-                    if (tabIndex < (tabCount - 1)) {
-                        parent.getChildTabViewAt(tabIndex + 1).requestFocus();
-                    } else {
-                        if (v.getNextFocusRightId() != View.NO_ID) {
-                            tabHost.findViewById(v.getNextFocusRightId()).requestFocus();
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                // Do nothing
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // Select the content view
-                    contents.requestFocus();
                 }
                 wasHandled = true;
                 break;

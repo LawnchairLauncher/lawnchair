@@ -240,7 +240,7 @@ public class Launcher extends Activity
     private View mAllAppsButton;
 
     private SearchDropTargetBar mSearchDropTargetBar;
-    private AppsCustomizeTabHost mAppsCustomizeTabHost;
+    private AppsCustomizeLayout mAppsCustomizeLayout;
     private AppsCustomizePagedView mAppsCustomizeContent;
     private boolean mAutoAdvanceRunning = false;
     private View mQsbBar;
@@ -299,10 +299,6 @@ public class Launcher extends Activity
     // External icons saved in case of resource changes, orientation, etc.
     private static Drawable.ConstantState[] sGlobalSearchIcon = new Drawable.ConstantState[2];
     private static Drawable.ConstantState[] sVoiceSearchIcon = new Drawable.ConstantState[2];
-    private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
-
-    private Intent mAppMarketIntent = null;
-    private static final boolean DISABLE_MARKET_BUTTON = true;
 
     private Drawable mWorkspaceBackgroundDrawable;
 
@@ -518,11 +514,7 @@ public class Launcher extends Activity
         boolean voiceVisible = false;
         // If we have a saved version of these external icons, we load them up immediately
         int coi = getCurrentOrientationIndexForGlobalIcons();
-        if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null ||
-                sAppMarketIcon[coi] == null) {
-            if (!DISABLE_MARKET_BUTTON) {
-                updateAppMarketIcon();
-            }
+        if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null) {
             searchVisible = updateGlobalSearchIcon();
             voiceVisible = updateVoiceSearchIcon(searchVisible);
         }
@@ -533,9 +525,6 @@ public class Launcher extends Activity
         if (sVoiceSearchIcon[coi] != null) {
             updateVoiceSearchIcon(sVoiceSearchIcon[coi]);
             voiceVisible = true;
-        }
-        if (!DISABLE_MARKET_BUTTON && sAppMarketIcon[coi] != null) {
-            updateAppMarketIcon(sAppMarketIcon[coi]);
         }
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
@@ -1128,11 +1117,10 @@ public class Launcher extends Activity
         }
 
         // Restore the AppsCustomize tab
-        if (mAppsCustomizeTabHost != null) {
-            String curTab = savedState.getString("apps_customize_currentTab");
-            if (curTab != null) {
-                mAppsCustomizeTabHost.setContentTypeImmediate(
-                        mAppsCustomizeTabHost.getContentTypeForTabTag(curTab));
+        if (mAppsCustomizeLayout != null) {
+            String curContentType = savedState.getString("apps_customize_currentContentType");
+            if (curContentType != null) {
+                mAppsCustomizeContent.setContentType(AppsCustomizePagedView.ContentType.valueOf(curContentType));
                 mAppsCustomizeContent.loadAssociatedPages(
                         mAppsCustomizeContent.getCurrentPage());
             }
@@ -1214,9 +1202,9 @@ public class Launcher extends Activity
         mSearchDropTargetBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
 
         // Setup AppsCustomize
-        mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
+        mAppsCustomizeLayout = (AppsCustomizeLayout) findViewById(R.id.apps_customize_pane);
         mAppsCustomizeContent = (AppsCustomizePagedView)
-                mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
+                mAppsCustomizeLayout.findViewById(R.id.apps_customize_pane_content);
         mAppsCustomizeContent.setup(this, dragController);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
@@ -1490,7 +1478,7 @@ public class Launcher extends Activity
 
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
-                if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
+                if (mAppsCustomizeLayout != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
                     showWorkspace(false);
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
@@ -1533,7 +1521,7 @@ public class Launcher extends Activity
         // you're in All Apps and click home to go to the workspace. onWindowVisibilityChanged
         // is a more appropriate event to handle
         if (mVisible) {
-            mAppsCustomizeTabHost.onWindowVisible();
+            mAppsCustomizeLayout.onWindowVisible();
             if (!mWorkspaceLoading) {
                 final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
                 // We want to let Launcher draw itself at least once before we force it to build
@@ -1541,6 +1529,7 @@ public class Launcher extends Activity
                 // apps is nice and speedy.
                 observer.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
                     private boolean mStarted = false;
+
                     public void onDraw() {
                         if (mStarted) return;
                         mStarted = true;
@@ -1552,22 +1541,17 @@ public class Launcher extends Activity
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
                         final ViewTreeObserver.OnDrawListener listener = this;
                         mWorkspace.post(new Runnable() {
-                                public void run() {
-                                    if (mWorkspace != null &&
-                                            mWorkspace.getViewTreeObserver() != null) {
-                                        mWorkspace.getViewTreeObserver().
-                                                removeOnDrawListener(listener);
-                                    }
+                            public void run() {
+                                if (mWorkspace != null &&
+                                        mWorkspace.getViewTreeObserver() != null) {
+                                    mWorkspace.getViewTreeObserver().
+                                            removeOnDrawListener(listener);
                                 }
-                            });
+                            }
+                        });
                         return;
                     }
                 });
-            }
-            // When Launcher comes back to foreground, a different Activity might be responsible for
-            // the app market intent, so refresh the icon
-            if (!DISABLE_MARKET_BUTTON) {
-                updateAppMarketIcon();
             }
             clearTypedText();
         }
@@ -1710,8 +1694,8 @@ public class Launcher extends Activity
             }
 
             // Reset the apps customize page
-            if (mAppsCustomizeTabHost != null) {
-                mAppsCustomizeTabHost.reset();
+            if (mAppsCustomizeLayout != null) {
+                mAppsCustomizeLayout.reset();
             }
         }
 
@@ -1757,10 +1741,10 @@ public class Launcher extends Activity
         }
 
         // Save the current AppsCustomize tab
-        if (mAppsCustomizeTabHost != null) {
-            String currentTabTag = mAppsCustomizeTabHost.getCurrentTabTag();
+        if (mAppsCustomizeLayout != null) {
+            String currentTabTag = mAppsCustomizeContent.getContentType().name();
             if (currentTabTag != null) {
-                outState.putString("apps_customize_currentTab", currentTabTag);
+                outState.putString("apps_customize_currentContentType", currentTabTag);
             }
             int currentIndex = mAppsCustomizeContent.getSaveInstanceStateIndex();
             outState.putInt("apps_customize_currentIndex", currentIndex);
@@ -2317,16 +2301,6 @@ public class Launcher extends Activity
         return mHapticFeedbackTouchListener;
     }
 
-    public void onClickAppMarketButton(View v) {
-        if (!DISABLE_MARKET_BUTTON) {
-            if (mAppMarketIntent != null) {
-                startActivitySafely(v, mAppMarketIntent, "app market");
-            } else {
-                Log.e(TAG, "Invalid app market intent.");
-            }
-        }
-    }
-
     /**
      * Called when the user stops interacting with the launcher.
      * This implies that the user is now on the homescreen and is not doing housekeeping.
@@ -2813,7 +2787,7 @@ public class Launcher extends Activity
         final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
         final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mWorkspace;
-        final AppsCustomizeTabHost toView = mAppsCustomizeTabHost;
+        final AppsCustomizeLayout toView = mAppsCustomizeLayout;
         final int startDelay =
                 res.getInteger(R.integer.config_workspaceAppsCustomizeAnimationStagger);
 
@@ -2824,7 +2798,7 @@ public class Launcher extends Activity
                 mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
         if (!AppsCustomizePagedView.DISABLE_ALL_APPS) {
             // Set the content type for the all apps space
-            mAppsCustomizeTabHost.setContentTypeImmediate(contentType);
+            mAppsCustomizeContent.setContentType(contentType);
         }
 
         if (animated) {
@@ -2869,6 +2843,7 @@ public class Launcher extends Activity
                     toView.setVisibility(View.VISIBLE);
                     toView.bringToFront();
                 }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
@@ -2965,7 +2940,7 @@ public class Launcher extends Activity
                 res.getInteger(R.integer.config_appsCustomizeFadeOutTime);
         final float scaleFactor = (float)
                 res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
-        final View fromView = mAppsCustomizeTabHost;
+        final View fromView = mAppsCustomizeLayout;
         final View toView = mWorkspace;
         Animator workspaceAnim = null;
         if (toState == Workspace.State.NORMAL) {
@@ -3043,7 +3018,7 @@ public class Launcher extends Activity
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-            mAppsCustomizeTabHost.onTrimMemory();
+            mAppsCustomizeLayout.onTrimMemory();
         }
     }
 
@@ -3105,10 +3080,10 @@ public class Launcher extends Activity
         if (mState != State.WORKSPACE) return;
 
         if (resetPageToZero) {
-            mAppsCustomizeTabHost.reset();
+            mAppsCustomizeLayout.reset();
         }
         showAppsCustomizeHelper(animated, false, contentType);
-        mAppsCustomizeTabHost.requestFocus();
+        mAppsCustomizeLayout.requestFocus();
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
@@ -3141,7 +3116,7 @@ public class Launcher extends Activity
                     // Before we show workspace, hide all apps again because
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
-                    mAppsCustomizeTabHost.setVisibility(View.GONE);
+                    mAppsCustomizeLayout.setVisibility(View.GONE);
                     showWorkspace(true, onCompleteRunnable);
                 } else {
                     exitSpringLoadedDragMode();
@@ -3442,44 +3417,6 @@ public class Launcher extends Activity
     public void disableVoiceButtonProxy(boolean disabled) {
         updateVoiceButtonProxyVisible(disabled);
     }
-    /**
-     * Sets the app market icon
-     */
-    private void updateAppMarketIcon() {
-        if (!DISABLE_MARKET_BUTTON) {
-            final View marketButton = findViewById(R.id.market_button);
-            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
-            // Find the app market activity by resolving an intent.
-            // (If multiple app markets are installed, it will return the ResolverActivity.)
-            ComponentName activityName = intent.resolveActivity(getPackageManager());
-            if (activityName != null) {
-                int coi = getCurrentOrientationIndexForGlobalIcons();
-                mAppMarketIntent = intent;
-                sAppMarketIcon[coi] = updateTextButtonWithIconFromExternalActivity(
-                        R.id.market_button, activityName, R.drawable.ic_launcher_market_holo,
-                        TOOLBAR_ICON_METADATA_NAME);
-                marketButton.setVisibility(View.VISIBLE);
-            } else {
-                // We should hide and disable the view so that we don't try and restore the visibility
-                // of it when we swap between drag & normal states from IconDropTarget subclasses.
-                marketButton.setVisibility(View.GONE);
-                marketButton.setEnabled(false);
-            }
-        }
-    }
-
-    private void updateAppMarketIcon(Drawable.ConstantState d) {
-        if (!DISABLE_MARKET_BUTTON) {
-            // Ensure that the new drawable we are creating has the approprate toolbar icon bounds
-            Resources r = getResources();
-            Drawable marketIconDrawable = d.newDrawable(r);
-            int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
-            int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
-            marketIconDrawable.setBounds(0, 0, w, h);
-
-            updateTextButtonWithDrawable(R.id.market_button, marketIconDrawable);
-        }
-    }
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
@@ -3487,8 +3424,8 @@ public class Launcher extends Activity
         final List<CharSequence> text = event.getText();
         text.clear();
         // Populate event with a fake title based on the current state.
-        if (mState == State.APPS_CUSTOMIZE) {
-            text.add(mAppsCustomizeTabHost.getCurrentTabView().getContentDescription());
+        if (mState != State.APPS_CUSTOMIZE) {
+            text.add(getString(R.string.all_apps_button_label));
         } else {
             text.add(getString(R.string.all_apps_home_button_label));
         }
@@ -3888,12 +3825,6 @@ public class Launcher extends Activity
             completeAdd(sPendingAddList.get(i));
         }
         sPendingAddList.clear();
-
-        // Update the market app icon as necessary (the other icons will be managed in response to
-        // package changes in bindSearchablesChanged()
-        if (!DISABLE_MARKET_BUTTON) {
-            updateAppMarketIcon();
-        }
 
         mWorkspaceLoading = false;
         if (upgradePath) {
