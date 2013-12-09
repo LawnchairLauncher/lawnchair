@@ -20,7 +20,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3"
-    android:versionName="@string/application_version">
+    android:versionName="@string/application_version"
+    android:versionCode="1000">
 
     <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="19" />
 
