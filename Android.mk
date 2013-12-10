@@ -26,8 +26,12 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := android-support-v13
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src) \
+    $(call all-java-files-under, wallpaper_picker_src) \
     $(call all-renderscript-files-under, src) \
     $(call all-proto-files-under, protos)
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/wallpaper_picker_res $(LOCAL_PATH)/res
+
+LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
@@ -38,7 +42,7 @@ LOCAL_PACKAGE_NAME := Trebuchet
 LOCAL_PRIVILEGED_MODULE := true
 #LOCAL_CERTIFICATE := shared
 
-LOCAL_AAPT_FLAGS := --rename-manifest-package com.cyanogenmod.trebuchet
+LOCAL_AAPT_FLAGS += --rename-manifest-package com.cyanogenmod.trebuchet
 
 LOCAL_OVERRIDES_PACKAGES := Launcher3
 

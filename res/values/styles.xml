@@ -18,23 +18,6 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperCropper" parent="@android:style/Theme.Holo">
-        <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
-    <style name="WallpaperCropperActionBar" parent="android:style/Widget.Holo.ActionBar">
-        <item name="android:displayOptions">showCustom</item>
-        <item name="android:background">#88000000</item>
-    </style>
-
-    <style name="Theme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
     <style name="ClingButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

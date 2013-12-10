@@ -27,11 +27,6 @@
     <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
     <dimen name="dynamic_grid_overview_bar_max_width">280dp</dimen>
 
-<!-- Wallpaper picker -->
-    <dimen name="wallpaperThumbnailWidth">106.5dp</dimen>
-    <dimen name="wallpaperThumbnailHeight">94.5dp</dimen>
-    <dimen name="wallpaperItemIconSize">32dp</dimen>
-
 <!-- Cling -->
     <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
     <dimen name="folderClingMarginTop">20dp</dimen>

@@ -51,12 +51,6 @@
     </style>
 
 <!-- Workspace -->
-    <style name="Theme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
     <style name="TabIndicator.AppsCustomize">
         <item name="android:paddingStart">32dp</item>
         <item name="android:paddingEnd">32dp</item>
