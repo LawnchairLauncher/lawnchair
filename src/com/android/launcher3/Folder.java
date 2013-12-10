@@ -416,6 +416,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mFolderName.setText("");
         }
         updateItemLocationsInDatabase();
+
+        // In case any children didn't come across during loading, clean up the folder accordingly
+        mFolderIcon.post(new Runnable() {
+            public void run() {
+                if (getItemCount() <= 1) {
+                    replaceFolderWithFinalItem();
+                }
+            }
+        });
     }
 
     /**
@@ -835,7 +844,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
             LauncherModel.moveItemInDatabase(mLauncher, info, mInfo.id, 0,
-                        info.cellX, info.cellY);
+                    info.cellX, info.cellY);
         }
     }
 
@@ -1084,7 +1093,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void run() {
                 CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screenId);
 
-               View child = null;
+                View child = null;
                 // Move the item from the folder to the workspace, in the position of the folder
                 if (getItemCount() == 1) {
                     ShortcutInfo finalItem = mInfo.contents.get(0);
@@ -1114,6 +1123,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         View finalChild = getItemAt(0);
         if (finalChild != null) {
             mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
+        } else {
+            onCompleteRunnable.run();
         }
         mDestroyed = true;
     }
