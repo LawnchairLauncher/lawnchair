@@ -1984,7 +1984,7 @@ public class LauncherModel extends BroadcastReceiver {
                                 break;
                             }
                         } catch (Exception e) {
-                            Launcher.addDumpLog(TAG, "Desktop items loading interrupted: " + e, true);
+                            Launcher.addDumpLog(TAG, "Desktop items loading interrupted", e, true);
                         }
                     }
                 } finally {

@@ -4757,13 +4757,22 @@ public class Launcher extends Activity
     }
 
     public static void addDumpLog(String tag, String log, boolean debugLog) {
+        addDumpLog(tag, log, null, debugLog);
+    }
+
+    public static void addDumpLog(String tag, String log, Exception e, boolean debugLog) {
         if (debugLog) {
-            Log.d(tag, log);
+            if (e != null) {
+                Log.d(tag, log, e);
+            } else {
+                Log.d(tag, log);
+            }
         }
         if (DEBUG_DUMP_LOG) {
             sDateStamp.setTime(System.currentTimeMillis());
             synchronized (sDumpLogs) {
-                sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log);
+                sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log
+                    + (e == null ? "" : (", Exception: " + e)));
             }
         }
     }
