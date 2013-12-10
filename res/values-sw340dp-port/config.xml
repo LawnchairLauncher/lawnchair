@@ -15,7 +15,4 @@
 -->
 
 <resources>
-<!-- Workspace -->
-    <!-- Whether or not to fade the side pages -->
-    <bool name="config_workspaceFadeAdjacentScreens">false</bool>
 </resources>

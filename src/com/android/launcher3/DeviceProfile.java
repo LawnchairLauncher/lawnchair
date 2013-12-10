@@ -121,7 +121,10 @@ public class DeviceProfile {
     int searchBarHeightPx;
     int pageIndicatorHeightPx;
 
+
     boolean searchBarVisible;
+
+    float dragViewScale;
 
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
@@ -292,11 +295,12 @@ public class DeviceProfile {
 
         // Check to see if the icons fit in the new available height.  If not, then we need to
         // shrink the icon size.
-        Rect workspacePadding = getWorkspacePadding();
         float scale = 1f;
         int drawablePadding = iconDrawablePaddingOriginalPx;
         updateIconSize(1f, drawablePadding, resources, dm);
         float usedHeight = (cellHeightPx * numRows);
+
+        Rect workspacePadding = getWorkspacePadding();
         int maxHeight = (availableHeightPx - workspacePadding.top - workspacePadding.bottom);
         if (usedHeight > maxHeight) {
             scale = maxHeight / usedHeight;
@@ -329,6 +333,8 @@ public class DeviceProfile {
         FontMetrics fm = textPaint.getFontMetrics();
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + (int) Math.ceil(fm.bottom - fm.top);
+        final float scaleDps = resources.getDimensionPixelSize(R.dimen.dragViewScale);
+        dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
 
         // Hotseat
         hotseatBarHeightPx = iconSizePx + 4 * edgeMarginPx;
@@ -508,17 +514,21 @@ public class DeviceProfile {
             if (isTablet()) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
+                float gapScale = 1f + (dragViewScale - 1f) / 2f;
                 int width = (orientation == CellLayout.LANDSCAPE)
                         ? Math.max(widthPx, heightPx)
                         : Math.min(widthPx, heightPx);
-                // XXX: If the icon size changes across orientations, we will have to take
-                //      that into account here too.
-                int gap = (int) ((width - 2 * edgeMarginPx -
-                        (numColumns * cellWidthPx)) / (2 * (numColumns + 1)));
-                padding.set(edgeMarginPx + gap,
-                        searchBarBounds.bottom,
-                        edgeMarginPx + gap,
-                        hotseatBarHeightPx + pageIndicatorHeightPx);
+                int height = (orientation != CellLayout.LANDSCAPE)
+                        ? Math.max(widthPx, heightPx)
+                        : Math.min(widthPx, heightPx);
+                int paddingTop = searchBarBounds.bottom;
+                int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
+                int availableWidth = Math.max(0, width - (int) ((numColumns * cellWidthPx) +
+                        (numColumns * gapScale * cellWidthPx)));
+                int availableHeight = Math.max(0, height - paddingTop - paddingBottom
+                        - (int) (2 * numRows * cellHeightPx));
+                padding.set(availableWidth / 2, paddingTop + availableHeight / 2,
+                        availableWidth / 2, paddingBottom + availableHeight / 2);
             } else {
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
                 padding.set(desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.left,
@@ -531,8 +541,8 @@ public class DeviceProfile {
     }
 
     int getWorkspacePageSpacing(int orientation) {
-        if (orientation == CellLayout.LANDSCAPE &&
-                transposeLayoutWithOrientation) {
+        if ((orientation == CellLayout.LANDSCAPE &&
+                transposeLayoutWithOrientation) || isLargeTablet()) {
             // In landscape mode the page spacing is set to the default.
             return defaultPageSpacingPx;
         } else {
@@ -668,19 +678,12 @@ public class DeviceProfile {
             lp.height = LayoutParams.MATCH_PARENT;
             hotseat.findViewById(R.id.layout).setPadding(0, 2 * edgeMarginPx, 0, 2 * edgeMarginPx);
         } else if (isTablet()) {
-            // Pad the hotseat with the grid gap calculated above
-            int gridGap = (int) ((widthPx - 2 * edgeMarginPx -
-                    (numColumns * cellWidthPx)) / (2 * (numColumns + 1)));
-            int gridWidth = (int) ((numColumns * cellWidthPx) +
-                    ((numColumns - 1) * gridGap));
-            int hotseatGap = (int) Math.max(0,
-                    (gridWidth - (numHotseatIcons * hotseatCellWidthPx))
-                            / (numHotseatIcons - 1));
+            // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx;
-            hotseat.setPadding(2 * edgeMarginPx + gridGap + hotseatGap, 0,
-                    2 * edgeMarginPx + gridGap + hotseatGap,
+            hotseat.setPadding(edgeMarginPx + padding.left, 0,
+                    edgeMarginPx + padding.right,
                     2 * edgeMarginPx);
         } else {
             // For phones, layout the hotseat without any bottom margin

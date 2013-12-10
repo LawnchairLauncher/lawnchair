@@ -98,6 +98,7 @@ public class CellLayout extends ViewGroup {
     private int mForegroundAlpha = 0;
     private float mBackgroundAlpha;
     private float mBackgroundAlphaMultiplier = 1.0f;
+    private boolean mDrawBackground = true;
 
     private Drawable mNormalBackground;
     private Drawable mActiveGlowBackground;
@@ -386,6 +387,10 @@ public class CellLayout extends ViewGroup {
         mUseActiveGlowBackground = use;
     }
 
+    void disableBackground() {
+        mDrawBackground = false;
+    }
+
     boolean getIsDragOverlapping() {
         return mIsDragOverlapping;
     }
@@ -414,7 +419,7 @@ public class CellLayout extends ViewGroup {
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (mBackgroundAlpha > 0.0f) {
+        if (mDrawBackground && mBackgroundAlpha > 0.0f) {
             Drawable bg;
 
             if (mUseActiveGlowBackground) {
