@@ -49,7 +49,7 @@ class DecoderRing {
     public static void main(String[ ] args)
             throws Exception {
         File source = null;
-        Class type = Key.class;
+        Class type = null;
         int skip = 0;
 
         for (int i = 0; i < args.length; i++) {
@@ -79,6 +79,9 @@ class DecoderRing {
             }
         }
 
+        if (type == null) {
+            usage(args);
+        }
 
         // read in the bytes
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
