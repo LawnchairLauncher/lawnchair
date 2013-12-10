@@ -471,7 +471,7 @@ public class Launcher extends Activity
             if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE || sPausedFromUserAction) {
                 // If the user leaves launcher, then we should just load items asynchronously when
                 // they return.
-                mModel.startLoader(true, -1);
+                mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
             } else {
                 // We only load the page synchronously if the user rotates (or triggers a
                 // configuration change) while launcher is in the foreground
@@ -955,7 +955,7 @@ public class Launcher extends Activity
         sPausedFromUserAction = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
-            mModel.startLoader(true, -1);
+            mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }

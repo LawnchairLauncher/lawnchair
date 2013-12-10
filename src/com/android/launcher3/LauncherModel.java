@@ -85,6 +85,7 @@ public class LauncherModel extends BroadcastReceiver {
     public static final boolean UPGRADE_USE_MORE_APPS_FOLDER = false;
 
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
+    private static final long INVALID_SCREEN_ID = -1L;
     private final boolean mAppsCanBeOnRemoveableStorage;
 
     private final LauncherAppState mApp;
@@ -1220,7 +1221,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
         if (runLoader) {
-            startLoader(false, -1);
+            startLoader(false, PagedView.INVALID_RESTORE_PAGE);
         }
     }
 
@@ -1254,7 +1255,8 @@ public class LauncherModel extends BroadcastReceiver {
                 // also, don't downgrade isLaunching if we're already running
                 isLaunching = isLaunching || stopLoaderLocked();
                 mLoaderTask = new LoaderTask(mApp.getContext(), isLaunching);
-                if (synchronousBindPage > -1 && mAllAppsLoaded && mWorkspaceLoaded) {
+                if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
+                        && mAllAppsLoaded && mWorkspaceLoaded) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
                 } else {
                     sWorkerThread.setPriority(Thread.NORM_PRIORITY);
@@ -1491,7 +1493,7 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         void runBindSynchronousPage(int synchronousBindPage) {
-            if (synchronousBindPage < 0) {
+            if (synchronousBindPage == PagedView.INVALID_RESTORE_PAGE) {
                 // Ensure that we have a valid page index to load synchronously
                 throw new RuntimeException("Should not call runBindSynchronousPage() without " +
                         "valid page index");
@@ -2417,16 +2419,17 @@ public class LauncherModel extends BroadcastReceiver {
                 orderedScreenIds.addAll(sBgWorkspaceScreens);
             }
 
-            final boolean isLoadingSynchronously = (synchronizeBindPage > -1);
+            final boolean isLoadingSynchronously =
+                    synchronizeBindPage != PagedView.INVALID_RESTORE_PAGE;
             int currScreen = isLoadingSynchronously ? synchronizeBindPage :
                 oldCallbacks.getCurrentWorkspaceScreen();
             if (currScreen >= orderedScreenIds.size()) {
                 // There may be no workspace screens (just hotseat items and an empty page).
-                currScreen = -1;
+                currScreen = PagedView.INVALID_RESTORE_PAGE;
             }
             final int currentScreen = currScreen;
-            final long currentScreenId =
-                    currentScreen < 0 ? -1 : orderedScreenIds.get(currentScreen);
+            final long currentScreenId = currentScreen < 0
+                    ? INVALID_SCREEN_ID : orderedScreenIds.get(currentScreen);
 
             // Load all the items that are on the current page first (and in the process, unbind
             // all the existing workspace items before we call startBinding() below.
@@ -2471,7 +2474,7 @@ public class LauncherModel extends BroadcastReceiver {
                 r = new Runnable() {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null && currentScreen >= 0) {
+                        if (callbacks != null && currentScreen != PagedView.INVALID_RESTORE_PAGE) {
                             callbacks.onPageBoundSynchronously(currentScreen);
                         }
                     }
