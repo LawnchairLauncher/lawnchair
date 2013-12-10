@@ -16,9 +16,9 @@
 
 package com.android.launcher3;
 
-import android.content.ContentValues;
-
 import java.util.ArrayList;
+
+import android.content.ContentValues;
 
 /**
  * Represents a folder containing shortcuts or apps.
