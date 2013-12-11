@@ -3264,13 +3264,11 @@ public class Workspace extends SmoothPagedView
         display.getCurrentSizeRange(smallestSize, largestSize);
         int countX = (int) grid.numColumns;
         int countY = (int) grid.numRows;
-        int constrainedLongEdge = largestSize.y;
-        int constrainedShortEdge = smallestSize.y;
         if (orientation == CellLayout.LANDSCAPE) {
             if (mLandscapeCellLayoutMetrics == null) {
                 Rect padding = grid.getWorkspacePadding(CellLayout.LANDSCAPE);
-                int width = constrainedLongEdge - padding.left - padding.right;
-                int height = constrainedShortEdge - padding.top - padding.bottom;
+                int width = largestSize.x - padding.left - padding.right;
+                int height = smallestSize.y - padding.top - padding.bottom;
                 mLandscapeCellLayoutMetrics = new Rect();
                 mLandscapeCellLayoutMetrics.set(
                         grid.calculateCellWidth(width, countX),
@@ -3280,8 +3278,8 @@ public class Workspace extends SmoothPagedView
         } else if (orientation == CellLayout.PORTRAIT) {
             if (mPortraitCellLayoutMetrics == null) {
                 Rect padding = grid.getWorkspacePadding(CellLayout.PORTRAIT);
-                int width = constrainedShortEdge - padding.left - padding.right;
-                int height = constrainedLongEdge - padding.top - padding.bottom;
+                int width = smallestSize.x - padding.left - padding.right;
+                int height = largestSize.y - padding.top - padding.bottom;
                 mPortraitCellLayoutMetrics = new Rect();
                 mPortraitCellLayoutMetrics.set(
                         grid.calculateCellWidth(width, countX),
