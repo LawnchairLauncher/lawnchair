@@ -5,42 +5,43 @@
 # necessary so do this with care
 import os
 import sys
+src_dir = "wallpaper_picker_src/"
 files = """
 src/android/util/Pools.java
-src/com/android/gallery3d/util/IntArray.java
-src/com/android/gallery3d/common/Utils.java
-src/com/android/gallery3d/exif/ByteBufferInputStream.java
-src/com/android/gallery3d/exif/CountedDataInputStream.java
-src/com/android/gallery3d/exif/ExifData.java
-src/com/android/gallery3d/exif/ExifInterface.java
-src/com/android/gallery3d/exif/ExifInvalidFormatException.java
-src/com/android/gallery3d/exif/ExifModifier.java
-src/com/android/gallery3d/exif/ExifOutputStream.java
-src/com/android/gallery3d/exif/ExifParser.java
-src/com/android/gallery3d/exif/ExifReader.java
-src/com/android/gallery3d/exif/ExifTag.java
-src/com/android/gallery3d/exif/IfdData.java
-src/com/android/gallery3d/exif/IfdId.java
-src/com/android/gallery3d/exif/JpegHeader.java
-src/com/android/gallery3d/exif/OrderedDataOutputStream.java
-src/com/android/gallery3d/exif/Rational.java
-src/com/android/gallery3d/glrenderer/BasicTexture.java
-src/com/android/gallery3d/glrenderer/BitmapTexture.java
-src/com/android/gallery3d/glrenderer/GLCanvas.java
-src/com/android/gallery3d/glrenderer/GLES20Canvas.java
-src/com/android/gallery3d/glrenderer/GLES20IdImpl.java
-src/com/android/gallery3d/glrenderer/GLId.java
-src/com/android/gallery3d/glrenderer/GLPaint.java
-src/com/android/gallery3d/glrenderer/RawTexture.java
-src/com/android/gallery3d/glrenderer/Texture.java
-src/com/android/gallery3d/glrenderer/UploadedTexture.java
-src/com/android/photos/BitmapRegionTileSource.java
-src/com/android/photos/views/BlockingGLTextureView.java
-src/com/android/photos/views/TiledImageRenderer.java
-src/com/android/photos/views/TiledImageView.java
-src/com/android/gallery3d/common/BitmapUtils.java
-src/com/android/launcher3/CropView.java
-src/com/android/launcher3/WallpaperCropActivity.java
+com/android/gallery3d/util/IntArray.java
+com/android/gallery3d/common/Utils.java
+com/android/gallery3d/exif/ByteBufferInputStream.java
+com/android/gallery3d/exif/CountedDataInputStream.java
+com/android/gallery3d/exif/ExifData.java
+com/android/gallery3d/exif/ExifInterface.java
+com/android/gallery3d/exif/ExifInvalidFormatException.java
+com/android/gallery3d/exif/ExifModifier.java
+com/android/gallery3d/exif/ExifOutputStream.java
+com/android/gallery3d/exif/ExifParser.java
+com/android/gallery3d/exif/ExifReader.java
+com/android/gallery3d/exif/ExifTag.java
+com/android/gallery3d/exif/IfdData.java
+com/android/gallery3d/exif/IfdId.java
+com/android/gallery3d/exif/JpegHeader.java
+com/android/gallery3d/exif/OrderedDataOutputStream.java
+com/android/gallery3d/exif/Rational.java
+com/android/gallery3d/glrenderer/BasicTexture.java
+com/android/gallery3d/glrenderer/BitmapTexture.java
+com/android/gallery3d/glrenderer/GLCanvas.java
+com/android/gallery3d/glrenderer/GLES20Canvas.java
+com/android/gallery3d/glrenderer/GLES20IdImpl.java
+com/android/gallery3d/glrenderer/GLId.java
+com/android/gallery3d/glrenderer/GLPaint.java
+com/android/gallery3d/glrenderer/RawTexture.java
+com/android/gallery3d/glrenderer/Texture.java
+com/android/gallery3d/glrenderer/UploadedTexture.java
+com/android/photos/BitmapRegionTileSource.java
+com/android/photos/views/BlockingGLTextureView.java
+com/android/photos/views/TiledImageRenderer.java
+com/android/photos/views/TiledImageView.java
+com/android/gallery3d/common/BitmapUtils.java
+com/android/launcher3/CropView.java
+com/android/launcher3/WallpaperCropActivity.java
 """
 
 if len(sys.argv) != 2:
@@ -48,8 +49,10 @@ if len(sys.argv) != 2:
     exit()
 framework_dir = sys.argv[1] + "/packages/WallpaperCropper"
 for file_path in files.split():
+    file_path = src_dir + file_path
     dir = os.path.dirname(file_path)
     dir = dir.replace("launcher3", "wallpapercropper")
+    dir = dir.replace(src_dir, "src/")
     cmd = 'cp %s %s/%s' % (file_path, framework_dir, dir)
     print cmd
     os.system(cmd)
