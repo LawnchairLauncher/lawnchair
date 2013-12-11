@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="preferences_title">Preferências</string>
+    <string name="preferences_interface_title">Interface</string>
+    <string name="preferences_application_title">Aplicação</string>
+    <string name="preferences_interface_homescreen_title">Tela Inicial</string>
+    <string name="preferences_interface_homescreen_summary">Telas e papéis de parede</string>
+    <string name="preferences_interface_general_title">Geral</string>
+    <string name="preferences_interface_drawer_title">Gaveta de apps</string>
+    <string name="preferences_interface_dock_title">Dock</string>
+    <string name="application_copyright">Copyright \u00A9 2013 The CyanogenMod Project</string>
+    <string name="sort_button_text">Ordenar</string>
+    <string name="filter_button_text">Filtrar</string>
+    <string name="default_screen_button_text">Tela Padrão</string>
+    <string name="transition_effect_button_text">Efeito de Rolagem</string>
+    <string name="sort_mode_title">Título</string>
+    <string name="sort_mode_launch_count">Contagem de inicialização</string>
+    <string name="sort_mode_install_time">Tempo de Instalação</string>
+    <string name="scrolling_page_outlines">Contorno de página</string>
+    <string name="scrolling_fade_adjacent">Esmaecer páginas laterais</string>
+    <string name="wallpaper_scroll">Rolar papel de parede</string>
+    <string name="preferences_interface_homescreen_search_title">Barra de pesquisa</string>
+    <string name="preferences_interface_homescreen_search_summary">Exibir barra de pesquisa persistente no topo da tela</string>
+    <string name="preferences_interface_general_icons_category">Ícones</string>
+    <string name="preferences_interface_general_icons_large_title">Ícones grandes</string>
+    <string name="preferences_interface_general_icons_large_summary">Usar ícones de aplicação extra grandes na tela inicial e gaveta de aplicativos</string>
+    <string name="preferences_interface_general_icons_text_style_title">Estilo da fonte</string>
+    <string name="preferences_interface_general_icons_text_style_summary">Estilo da fonte para usar nos textos dos ícones</string>
+</resources>
