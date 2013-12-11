@@ -2634,9 +2634,9 @@ public class CellLayout extends ViewGroup {
         }
 
         if (mode == MODE_SHOW_REORDER_HINT) {
-            beginOrAdjustReorderPreviewAnimations(finalSolution, dragView, 0,
-                    ReorderPreviewAnimation.MODE_HINT);
             if (finalSolution != null) {
+                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView, 0,
+                        ReorderPreviewAnimation.MODE_HINT);
                 result[0] = finalSolution.dragViewX;
                 result[1] = finalSolution.dragViewY;
                 resultSpan[0] = finalSolution.dragViewSpanX;
