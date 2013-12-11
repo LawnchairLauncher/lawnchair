@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -37,6 +38,10 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
 
     public AppsCustomizeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        int bgAlpha = (int) (255 * (getResources().getInteger(
+                R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f));
+        setBackgroundColor(Color.argb(bgAlpha, 0, 0, 0));
     }
 
     @Override
@@ -60,7 +65,6 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
         mAppsCustomizePane = appsCustomizePane;
         mContent = (FrameLayout) findViewById(R.id.apps_customize_content);
         if (mAppsCustomizePane == null) throw new Resources.NotFoundException();
-
     }
 
      public boolean onInterceptTouchEvent(MotionEvent ev) {
