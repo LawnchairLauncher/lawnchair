@@ -3113,8 +3113,9 @@ public class Launcher extends Activity
         // Shrink workspaces away if going to AppsCustomize from workspace
         Animator workspaceAnim =
                 mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS) {
-            // Set the content type for the all apps space
+        if (!AppsCustomizePagedView.DISABLE_ALL_APPS
+                || contentType == AppsCustomizePagedView.ContentType.Widgets) {
+            // Set the content type for the all apps/widgets space
             mAppsCustomizeContent.setContentType(contentType);
         }
 
@@ -4218,6 +4219,10 @@ public class Launcher extends Activity
                 }
                 mIntentsOnWorkspaceFromUpgradePath = null;
             }
+            if (mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.onPackagesUpdated(
+                        LauncherModel.getSortedWidgetsAndShortcuts(this));
+            }
         } else {
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setApps(apps);
@@ -4306,8 +4311,7 @@ public class Launcher extends Activity
         }
 
         // Update the widgets pane
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
-                mAppsCustomizeContent != null) {
+        if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated(widgetsAndShortcuts);
         }
     }
