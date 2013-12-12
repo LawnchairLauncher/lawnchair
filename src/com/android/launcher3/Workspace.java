@@ -565,6 +565,7 @@ public class Workspace extends SmoothPagedView
     public void createCustomContentPage() {
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
+        customScreen.disableBackground();
 
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
@@ -1155,11 +1156,6 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        // Only show page outlines as we pan if we are on large screen
-        if (LauncherAppState.getInstance().isScreenLarge()) {
-            showOutlines();
-        }
-
         // If we are not fading in adjacent screens, we still need to restore the alpha in case the
         // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
         if (!mWorkspaceFadeInAdjacentScreens) {
@@ -1183,11 +1179,6 @@ public class Workspace extends SmoothPagedView
                 // If we are in springloaded mode, then force an event to check if the current touch
                 // is under a new page (to scroll to)
                 mDragController.forceTouchMove();
-            }
-        } else {
-            // If we are not mid-dragging, hide the page outlines if we are on a large screen
-            if (LauncherAppState.getInstance().isScreenLarge()) {
-                hideOutlines();
             }
         }
 
