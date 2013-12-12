@@ -56,8 +56,8 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
                     mResolveInfo.activityInfo.packageName, mResolveInfo.activityInfo.name);
             Intent launchIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
             launchIntent.setComponent(itemComponentName);
-            Utilities.startActivityForResultSafely(
-                    a, launchIntent, WallpaperPickerActivity.PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);
+            a.startActivityForResultSafely(
+                    launchIntent, WallpaperPickerActivity.PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);
         }
     }
 

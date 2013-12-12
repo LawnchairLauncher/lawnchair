@@ -5,7 +5,7 @@
 # necessary so do this with care
 import os
 import sys
-src_dir = "wallpaper_picker_src/"
+src_dir = "WallpaperPicker/src/"
 files = """
 src/android/util/Pools.java
 com/android/gallery3d/util/IntArray.java

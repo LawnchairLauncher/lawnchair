@@ -123,8 +123,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
             preview.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                     mInfo.getComponent());
             a.onLiveWallpaperPickerLaunch();
-            Utilities.startActivityForResultSafely(
-                    a, preview, WallpaperPickerActivity.PICK_LIVE_WALLPAPER);
+            a.startActivityForResultSafely(preview, WallpaperPickerActivity.PICK_LIVE_WALLPAPER);
         }
     }
 

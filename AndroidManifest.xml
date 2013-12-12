@@ -94,14 +94,22 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".settings.HiddenAppsActivity"
+        <activity android:name=".settings.HiddenAppsActivity"
             android:label="@string/hidden_apps_title"
             android:exported="false">
             <intent-filter>
                 <action android:name=".settings.HiddenAppsActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.LauncherWallpaperPickerActivity"
+            android:theme="@style/Theme.WallpaperCropper"
+            android:label="@string/pick_wallpaper"
+            android:icon="@mipmap/ic_launcher_wallpaper"
+            android:finishOnCloseSystemDialogs="true"
+            android:process=":wallpaper_chooser">
         </activity>
 
         <activity
