@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"홈"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android 핵심 앱"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"배경화면 설정"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"이미지를 로드할 수 없습니다."</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"이미지를 배경화면으로 로드할 수 없습니다."</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d개 선택됨"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d개 선택됨"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d개 선택됨"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"배경화면 %1$d/%2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> 선택함"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"삭제"</string>
-    <string name="pick_image" msgid="1272073934062909527">"이미지 선택"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"배경화면"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"배경화면 잘라내기"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"앱이 설치되지 않았습니다."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"위젯"</string>
     <string name="widget_adder" msgid="3201040140710381657">"위젯"</string>

@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Início"</string>
     <string name="uid_name" msgid="7820867637514617527">"Principais aplicativos do Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Definir plano de fundo"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Não foi possível carregar a imagem"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Não foi possível carregar a imagem como plano de fundo"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d selecionados"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d selecionados"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d selecionados"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Plano de fundo %1$d de %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> selecionado"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Excluir"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Escolher imagem"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Planos de fundo"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Cortar plano de fundo"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"O aplicativo não está instalado."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
