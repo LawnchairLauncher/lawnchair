@@ -15,6 +15,7 @@
  */
 package com.android.launcher3;
 
+import com.android.launcher3.backup.BackupProtos;
 import com.android.launcher3.backup.BackupProtos.CheckedMessage;
 import com.android.launcher3.backup.BackupProtos.Favorite;
 import com.android.launcher3.backup.BackupProtos.Key;
@@ -36,20 +37,46 @@ import java.io.IOException;
 import java.lang.System;
 import java.util.zip.CRC32;
 
+import javax.xml.bind.DatatypeConverter;
+
+
 /**
- * Commandline utility for decoding protos written to the android logs during debugging.
+ * Commandline utility for decoding Launcher3 backup protocol buffers.
  *
- * base64 -D icon.log > icon.bin
- * java -classpath $ANDROID_HOST_OUT/framework/protoutil.jar:$ANDROID_HOST_OUT/../common/obj/JAVA_LIBRARIES/host-libprotobuf-java-2.3.0-nano_intermediates/javalib.jar \
- *   com.android.launcher3.DecoderRing -i icon.bin
+ * <P>When using com.android.internal.backup.LocalTransport, the file names are base64-encoded Key
+ * protocol buffers with a prefix, that have been base64-encoded again by the transport:
+ * <pre>
+ *     echo TDpDQUlnL0pxVTVnOD0= | base64 -D | dd bs=1 skip=2 | base64 -D | launcher_protoutil -k
+ * </pre>
  *
- * TODO: write a wrapper to setup the classpath
+ * <P>This tool understands these file names and will use the embedded Key to detect the type and
+ * extract the payload automatically:
+ * <pre>
+ *     launcher_protoutil /tmp/TDpDQUlnL0pxVTVnOD0=
+ * </pre>
+ *
+ * <P>With payload debugging enabled, base64-encoded protocol buffers will be written to the logs.
+ * Copy the encoded log snippet into a file, and specify the type explicitly:
+ * <pre>
+ *    base64 -D icon.log > icon.bin
+ *    launcher_protoutil -i icon.bin
+ * </pre>
  */
 class DecoderRing {
+    private static Class[] TYPES = {
+            Key.class,
+            Favorite.class,
+            Screen.class,
+            Resource.class,
+            Widget.class
+    };
+    static final int ICON_TYPE_BITMAP = 1;
+
     public static void main(String[ ] args)
             throws Exception {
         File source = null;
         Class type = null;
+        boolean extractImages = false;
         int skip = 0;
 
         for (int i = 0; i < args.length; i++) {
@@ -71,6 +98,8 @@ class DecoderRing {
                 } else {
                     usage(args);
                 }
+            } else if ("-x".equals(args[i])) {
+                extractImages = true;
             } else if (args[i] != null && !args[i].startsWith("-")) {
                 source = new File(args[i]);
             } else {
@@ -80,7 +109,35 @@ class DecoderRing {
         }
 
         if (type == null) {
-            usage(args);
+            if (source == null) {
+                usage(args);
+            } else {
+                Key key = new Key();
+                try {
+                    byte[] rawKey = DatatypeConverter.parseBase64Binary(source.getName());
+                    if (rawKey[0] != 'L' || rawKey[1] != ':') {
+                        System.err.println("you must specify the payload type. " +
+                                source.getName() + " is not a launcher backup key.");
+                        System.exit(1);
+                    }
+                    String encodedPayload = new String(rawKey, 2, rawKey.length - 2);
+                    byte[] keyProtoData = DatatypeConverter.parseBase64Binary(encodedPayload);
+                    key = Key.parseFrom(keyProtoData);
+                } catch (InvalidProtocolBufferNanoException protoException) {
+                    System.err.println("failed to extract key from filename: " + protoException);
+                    System.exit(1);
+                } catch (IllegalArgumentException base64Exception) {
+                    System.err.println("failed to extract key from filename: " + base64Exception);
+                    System.exit(1);
+                }
+                // keys are self-checked
+                if (key.checksum != checkKey(key)) {
+                    System.err.println("key ckecksum failed");
+                    System.exit(1);
+                }
+                type = TYPES[key.type];
+                System.err.println("This is a " + type.getSimpleName() + " backup");
+            }
         }
 
         // read in the bytes
@@ -114,7 +171,6 @@ class DecoderRing {
             System.err.println("failed to read input: " + e);
             System.exit(1);
         }
-        System.err.println("read this many bytes: " + byteStream.size());
 
         MessageNano proto = null;
         if (type == Key.class) {
@@ -127,7 +183,7 @@ class DecoderRing {
             }
             // keys are self-checked
             if (key.checksum != checkKey(key)) {
-                System.err.println("key ckecksum failed");
+                System.err.println("key checksum failed");
                 System.exit(1);
             }
             proto = key;
@@ -143,7 +199,7 @@ class DecoderRing {
             CRC32 checksum = new CRC32();
             checksum.update(wrapper.payload);
             if (wrapper.checksum != checksum.getValue()) {
-                System.err.println("wrapper ckecksum failed");
+                System.err.println("wrapper checksum failed");
                 System.exit(1);
             }
             // decode the actual message
@@ -159,37 +215,58 @@ class DecoderRing {
         // Generic string output
         System.out.println(proto.toString());
 
-        // save off the icon bits in a file for inspection
-        if (proto instanceof Resource) {
-            Resource icon = (Resource) proto;
-            final String path = "icon.webp";
-            FileOutputStream iconFile = new FileOutputStream(path);
-            iconFile.write(icon.data);
-            iconFile.close();
-            System.err.println("wrote " + path);
-        }
-
-        // save off the widget icon and preview bits in files for inspection
-        if (proto instanceof Widget) {
-            Widget widget = (Widget) proto;
-            if (widget.icon != null) {
-                final String path = "widget_icon.webp";
-                FileOutputStream iconFile = new FileOutputStream(path);
-                iconFile.write(widget.icon.data);
-                iconFile.close();
-                System.err.println("wrote " + path);
+        if (extractImages) {
+            String prefix = "stdin";
+            if (source != null) {
+                prefix = source.getName();
             }
-            if (widget.preview != null) {
-                final String path = "widget_preview.webp";
-                FileOutputStream iconFile = new FileOutputStream(path);
-                iconFile.write(widget.preview.data);
-                iconFile.close();
-                System.err.println("wrote " + path);
+            // save off the icon bits in a file for inspection
+            if (proto instanceof Resource) {
+                Resource icon = (Resource) proto;
+                writeImageData(icon.data, prefix + ".png");
+            }
+
+            // save off the icon bits in a file for inspection
+            if (proto instanceof Favorite) {
+                Favorite favorite = (Favorite) proto;
+                if (favorite.iconType == ICON_TYPE_BITMAP) {
+                    writeImageData(favorite.icon, prefix + ".png");
+                }
+            }
+
+            // save off the widget icon and preview bits in files for inspection
+            if (proto instanceof Widget) {
+                Widget widget = (Widget) proto;
+                if (widget.icon != null) {
+                    writeImageData(widget.icon.data, prefix + "_icon.png");
+                }
+                if (widget.preview != null) {
+                    writeImageData(widget.preview.data, prefix + "_preview.png");
+                }
             }
         }
 
         // success
         System.exit(0);
+    }
+
+    private static void writeImageData(byte[] data, String path) {
+        FileOutputStream iconFile = null;
+        try {
+            iconFile = new FileOutputStream(path);
+            iconFile.write(data);
+            System.err.println("wrote " + path);
+        } catch (IOException e) {
+            System.err.println("failed to write image file: " + e);
+        } finally {
+            if (iconFile != null) {
+                try {
+                    iconFile.close();
+                } catch (IOException e) {
+                    System.err.println("failed to close the image file: " + e);
+                }
+            }
+        }
     }
 
     private static long checkKey(Key key) {
@@ -204,13 +281,14 @@ class DecoderRing {
     }
 
     private static void usage(String[] args) {
-        System.err.println("DecoderRing type [input]");
+        System.err.println("launcher_protoutil [-x] [-S b] [-k|-f|-i|-s|-w] [filename]");
         System.err.println("\t-k\tdecode a key");
         System.err.println("\t-f\tdecode a favorite");
         System.err.println("\t-i\tdecode a icon");
         System.err.println("\t-s\tdecode a screen");
         System.err.println("\t-w\tdecode a widget");
-        System.err.println("\t-s b\tskip b bytes");
+        System.err.println("\t-S b\tskip b bytes");
+        System.err.println("\t-x\textract image data to files");
         System.err.println("\tfilename\tread from filename, not stdin");
         System.exit(1);
     }
