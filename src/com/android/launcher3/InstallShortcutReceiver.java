@@ -28,12 +28,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.json.*;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final String TAG = "InstallShortcutReceiver";

@@ -22,8 +22,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
+
 import com.android.launcher3.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;

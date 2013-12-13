@@ -28,7 +28,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import com.android.launcher3.R;
 
 import java.util.ArrayList;
 

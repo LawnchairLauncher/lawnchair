@@ -20,8 +20,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import javax.microedition.khronos.opengles.GL11;
-
 //
 // GLCanvas gives a convenient interface to draw using OpenGL.
 //

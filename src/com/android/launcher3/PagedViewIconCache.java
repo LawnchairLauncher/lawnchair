@@ -16,16 +16,16 @@
 
 package com.android.launcher3;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.pm.ComponentInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Simple cache mechanism for PagedView outlines.
