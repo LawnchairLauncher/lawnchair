@@ -18,7 +18,6 @@ package com.android.gallery3d.exif;
 
 import android.util.Log;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;

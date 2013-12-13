@@ -16,17 +16,11 @@
 
 package com.android.launcher3;
 
-import android.animation.AnimatorListenerAdapter;
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.FrameLayout;
-import com.android.launcher3.R;
+import android.widget.ImageView;
 
 public class PageIndicatorMarker extends FrameLayout {
     @SuppressWarnings("unused")
