@@ -1753,7 +1753,7 @@ public class Workspace extends SmoothPagedView
                 cl.setOverscrollTransformsDirty(true);
             }
         } else {
-            if (mOverscrollTransformsSet) {
+            if (mOverscrollTransformsSet && getChildCount() > 0) {
                 mOverscrollTransformsSet = false;
                 ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
                 ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();

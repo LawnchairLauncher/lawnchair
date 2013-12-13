@@ -1253,22 +1253,22 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        int halfScreenSize = getViewportWidth() / 2;
-        // mOverScrollX is equal to getScrollX() when we're within the normal scroll range.
-        // Otherwise it is equal to the scaled overscroll position.
-        int screenCenter = mOverScrollX + halfScreenSize;
-
-        if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
-            // set mForceScreenScrolled before calling screenScrolled so that screenScrolled can
-            // set it for the next frame
-            mForceScreenScrolled = false;
-            screenScrolled(screenCenter);
-            mLastScreenCenter = screenCenter;
-        }
-
         // Find out which screens are visible; as an optimization we only call draw on them
         final int pageCount = getChildCount();
         if (pageCount > 0) {
+            int halfScreenSize = getViewportWidth() / 2;
+            // mOverScrollX is equal to getScrollX() when we're within the normal scroll range.
+            // Otherwise it is equal to the scaled overscroll position.
+            int screenCenter = mOverScrollX + halfScreenSize;
+
+            if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
+                // set mForceScreenScrolled before calling screenScrolled so that screenScrolled can
+                // set it for the next frame
+                mForceScreenScrolled = false;
+                screenScrolled(screenCenter);
+                mLastScreenCenter = screenCenter;
+            }
+
             getVisiblePages(mTempVisiblePagesRange);
             final int leftScreen = mTempVisiblePagesRange[0];
             final int rightScreen = mTempVisiblePagesRange[1];
