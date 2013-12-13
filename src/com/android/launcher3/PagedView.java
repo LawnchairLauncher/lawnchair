@@ -464,6 +464,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return new PageIndicator.PageMarkerResources();
     }
 
+    /**
+     * Add a page change listener which will be called when a page is _finished_ listening.
+     *
+     */
     public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
         mPageSwitchListener = pageSwitchListener;
         if (mPageSwitchListener != null) {
@@ -538,6 +542,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      */
     void stopScrolling() {
         mCurrentPage = getNextPage();
+        notifyPageSwitchListener();
         forceFinishScroller();
     }
 
@@ -587,11 +592,19 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return mRestorePage;
     }
 
+    /**
+     * Should be called whenever the page changes. In the case of a scroll, we wait until the page
+     * has settled.
+     */
     protected void notifyPageSwitchListener() {
         if (mPageSwitchListener != null) {
-            mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
+            mPageSwitchListener.onPageSwitch(getPageAt(getNextPage()), getNextPage());
         }
 
+        updatePageIndicator();
+    }
+
+    private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null && !isReordering(false)) {
             mPageIndicator.setActiveMarker(getNextPage());
@@ -2345,7 +2358,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         mScroller.startScroll(mUnboundedScrollX, 0, delta, 0, duration);
 
-        notifyPageSwitchListener();
+        updatePageIndicator();
 
         // Trigger a compute() to finish switching pages if necessary
         if (immediate) {
