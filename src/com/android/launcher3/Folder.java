@@ -781,7 +781,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 }
                 completeDragExit();
             }
-        } else {
+        }
+
+        // This is kind of hacky, but in general, dropping on the workspace handles removing
+        // the extra screen, but dropping elsewhere (back to self, or onto delete) doesn't.
+        if (target != mLauncher.getWorkspace()) {
             mLauncher.getWorkspace().removeExtraEmptyScreen(true, null);
         }
 
