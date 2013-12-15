@@ -1,0 +1,3 @@
+<resources>
+    <bool name="config_largeIcons">true</bool>
+</resources>

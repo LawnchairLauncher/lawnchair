@@ -3,6 +3,7 @@
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
+    <bool name="config_largeIcons">false</bool>
 
     <!-- Max number of page indicators to show -->
     <integer name="config_maxNumberOfPageIndicatorsToShow">21</integer>
