@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/sort_mode_title"
+            android:title="@string/sort_mode_title" />
+        <item android:id="@+id/sort_mode_launch_count"
+            android:title="@string/sort_mode_launch_count" />
+        <item android:id="@+id/sort_mode_install_time"
+            android:title="@string/sort_mode_install_time" />
+    </group>
+</menu>

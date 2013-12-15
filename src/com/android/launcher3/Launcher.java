@@ -76,6 +76,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -90,9 +91,11 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -916,6 +919,7 @@ public class Launcher extends Activity
         }
         mWorkspace.updateInteractionForState();
         mWorkspace.onResume();
+        mAppsCustomizeContent.onResume();
     }
 
     @Override
@@ -984,7 +988,44 @@ public class Launcher extends Activity
         startActivity(settings);
         if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(false);
+        } else if (mAppsCustomizeContent.isInOverviewMode()) {
+            mAppsCustomizeContent.exitOverviewMode(false);
         }
+    }
+
+    public void onClickSortModeButton(View v) {
+        final PopupMenu popupMenu = new PopupMenu(this, v);
+        final Menu menu = popupMenu.getMenu();
+        popupMenu.inflate(R.menu.apps_customize_sort_mode);
+        AppsCustomizePagedView.SortMode sortMode = mAppsCustomizeContent.getSortMode();
+        switch (sortMode) {
+            case Title:
+                menu.findItem(R.id.sort_mode_title).setChecked(true);
+                break;
+            case LaunchCount:
+                menu.findItem(R.id.sort_mode_launch_count).setChecked(true);
+                break;
+            case InstallTime:
+                menu.findItem(R.id.sort_mode_install_time).setChecked(true);
+                break;
+        }
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.sort_mode_title:
+                        mAppsCustomizeContent.setSortMode(AppsCustomizePagedView.SortMode.Title);
+                        break;
+                    case R.id.sort_mode_install_time:
+                        mAppsCustomizeContent.setSortMode(AppsCustomizePagedView.SortMode.InstallTime);
+                        break;
+                    case R.id.sort_mode_launch_count:
+                        mAppsCustomizeContent.setSortMode(AppsCustomizePagedView.SortMode.LaunchCount);
+                        break;
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
     }
 
     public interface QSBScroller {
@@ -1160,6 +1201,7 @@ public class Launcher extends Activity
         }
 
         mOverviewPanel = findViewById(R.id.overview_panel);
+        mOverviewPanel.setAlpha(0f);
         View widgetButton = findViewById(R.id.widget_button);
         widgetButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -1195,7 +1237,24 @@ public class Launcher extends Activity
             }
         });
         defaultScreenButton.setOnTouchListener(getHapticFeedbackTouchListener());
-        mOverviewPanel.setAlpha(0f);
+
+        View sortButton = findViewById(R.id.sort_button);
+        sortButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickSortModeButton(v);
+            }
+        });
+        sortButton.setOnTouchListener(getHapticFeedbackTouchListener());
+
+        View filterButton = findViewById(R.id.filter_button);
+        filterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        filterButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
@@ -1891,6 +1950,12 @@ public class Launcher extends Activity
             } else {
                 mWorkspace.exitOverviewMode(true);
             }
+        } else {
+            if (!mAppsCustomizeContent.isInOverviewMode()) {
+                mAppsCustomizeContent.enterOverviewMode();
+            } else {
+                mAppsCustomizeContent.exitOverviewMode(true);
+            }
         }
         return false;
     }
@@ -2116,11 +2181,15 @@ public class Launcher extends Activity
     @Override
     public void onBackPressed() {
         if (isAllAppsVisible()) {
-            if (mAppsCustomizeContent.getContentType() ==
-                    AppsCustomizePagedView.ContentType.Applications) {
-                showWorkspace(true);
+            if (mAppsCustomizeContent.isInOverviewMode()) {
+                mAppsCustomizeContent.exitOverviewMode(true);
             } else {
-                showOverviewMode(true);
+                if (mAppsCustomizeContent.getContentType() ==
+                        AppsCustomizePagedView.ContentType.Applications) {
+                    showWorkspace(true);
+                } else {
+                    showOverviewMode(true);
+                }
             }
         } else if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(true);
@@ -2172,8 +2241,14 @@ public class Launcher extends Activity
         }
 
         if (v instanceof CellLayout) {
-            if (mWorkspace.isInOverviewMode()) {
-                mWorkspace.exitOverviewMode(mWorkspace.indexOfChild(v), true);
+            if (isAllAppsVisible()) {
+                if (mAppsCustomizeContent.isInOverviewMode()) {
+                    mAppsCustomizeContent.exitOverviewMode(mAppsCustomizeContent.indexOfChild(v), true);
+                }
+            } else {
+                if (mWorkspace.isInOverviewMode()) {
+                    mWorkspace.exitOverviewMode(mWorkspace.indexOfChild(v), true);
+                }
             }
         }
 
@@ -2671,6 +2746,25 @@ public class Launcher extends Activity
         return mWorkspace;
     }
 
+    public void updateOverviewPanel() {
+        View defaultScreenButton = mOverviewPanel.findViewById(R.id.default_screen_button);
+        View widgetButton = mOverviewPanel.findViewById(R.id.widget_button);
+        View wallpaperButton = mOverviewPanel.findViewById(R.id.wallpaper_button);
+        View sortButton = mOverviewPanel.findViewById(R.id.sort_button);
+        View filterButton = mOverviewPanel.findViewById(R.id.filter_button);
+
+        defaultScreenButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
+        widgetButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
+        wallpaperButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
+        sortButton.setVisibility(isAllAppsVisible() ? View.VISIBLE : View.GONE);
+        // TODO: implement filtering
+        // filterButton.setVisibility(isAllAppsVisible() ? View.VISIBLE : View.GONE);
+        filterButton.setVisibility(View.GONE);
+
+        // Make sure overview panel is drawn above apps customize
+        mOverviewPanel.bringToFront();
+    }
+
     public boolean isAllAppsVisible() {
         return (mState == State.APPS_CUSTOMIZE) || (mOnResumeState == State.APPS_CUSTOMIZE);
     }
@@ -3082,6 +3176,10 @@ public class Launcher extends Activity
 
     void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType,
                      boolean resetPageToZero) {
+        if (mAppsCustomizeContent.isInOverviewMode()) {
+            mAppsCustomizeContent.exitOverviewMode(false);
+        }
+
         if (mState != State.WORKSPACE) return;
 
         if (resetPageToZero) {

@@ -16,7 +16,10 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -36,13 +39,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.GridLayout;
@@ -53,6 +59,7 @@ import com.android.launcher3.DropTarget.DragObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -157,6 +164,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private ContentType mContentType = ContentType.Applications;
 
+    /**
+     * The different sort modes than can be used to order items.
+     */
+    public enum SortMode {
+        Title,
+        LaunchCount,
+        InstallTime
+    }
+    private SortMode mSortMode = SortMode.Title;
+
     // Refs
     private Launcher mLauncher;
     private DragController mDragController;
@@ -188,12 +205,33 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private int mNumAppsPages;
     private int mNumWidgetPages;
 
+    // Animation states
+    enum State { NORMAL, OVERVIEW};
+    private State mState = State.NORMAL;
+    private boolean mIsSwitchingState = false;
+
+    // Animation values
+    private float mNewScale;
+    private float[] mOldBackgroundAlphas;
+    private float[] mOldTranslationXs;
+    private float[] mOldTranslationYs;
+    private float[] mOldScaleXs;
+    private float[] mOldScaleYs;
+    private float[] mOldAlphas;
+    private float[] mNewBackgroundAlphas;
+    private float[] mNewTranslationXs;
+    private float[] mNewTranslationYs;
+    private float[] mNewScaleXs;
+    private float[] mNewScaleYs;
+    private float[] mNewAlphas;
+
     // Relating to the scroll and overscroll effects
     Workspace.ZInterpolator mZInterpolator = new Workspace.ZInterpolator(0.5f);
     private static float CAMERA_DISTANCE = 6500;
     private static float TRANSITION_SCALE_FACTOR = 0.74f;
     private static float TRANSITION_PIVOT = 0.65f;
     private static float TRANSITION_MAX_ROTATION = 22;
+    private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
     private static final boolean PERFORM_OVERSCROLL_ROTATION = true;
     private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
     private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
@@ -226,6 +264,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     private Rect mTmpRect = new Rect();
 
+    private float mOverviewModeShrinkFactor;
+    private int mOverviewModePageOffset;
+
     // Used for drawing shortcut previews
     BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
     PaintCache mCachedShortcutPreviewPaint = new PaintCache();
@@ -241,6 +282,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     private boolean mInBulkBind;
     private boolean mNeedToUpdatePageCountsAndInvalidateData;
+
+    private static boolean sAccessibilityEnabled;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -282,6 +325,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Context context = getContext();
         Resources r = context.getResources();
         setDragSlopeThreshold(r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold)/100f);
+        mOverviewModeShrinkFactor =
+                r.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
+        mOverviewModePageOffset = r.getDimensionPixelSize(R.dimen.overview_mode_page_offset);
+
+        setMinScale(mOverviewModeShrinkFactor - 0.2f);
     }
 
     public void onFinishInflate() {
@@ -527,9 +575,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    /**
+     * Called directly from a CellLayout (not by the framework), after we've been added as a
+     * listener via setOnInterceptTouchEventListener(). This allows us to tell the CellLayout
+     * that it should intercept touch events, which is not something that is normally supported.
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return isInOverviewMode() || mIsSwitchingState;
+    }
+
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return FocusHelper.handleAppsCustomizeKeyEvent(v,  keyCode, event);
     }
+
+    private final Workspace.ZoomInInterpolator mZoomInInterpolator = new Workspace.ZoomInInterpolator();
 
     /*
      * PagedViewWithDraggableItems implementation
@@ -903,6 +963,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         cancelAllTasks();
     }
 
+    protected void onResume() {
+        AccessibilityManager am = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        sAccessibilityEnabled = am.isEnabled();
+    }
+
     public void clearAllWidgetPages() {
         cancelAllTasks();
         int count = getChildCount();
@@ -976,6 +1042,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private void setupPage(AppsCustomizeCellLayout layout) {
         layout.setGridSize(mCellCountX, mCellCountY);
 
+        layout.setOnClickListener(mLauncher);
+
         // Note: We force a measure here to get around the fact that when we do layout calculations
         // immediately after syncing, we don't have a proper width.  That said, we already know the
         // expected page width, so we can actually optimize by hiding all the TextView-based
@@ -986,6 +1054,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
         setVisibilityOnChildren(layout, View.VISIBLE);
+    }
+
+    @Override
+    public void onChildViewAdded(View parent, View child) {
+        // For overview mode
+        if (child instanceof CellLayout) {
+            CellLayout cl = ((CellLayout) child);
+            cl.setOnInterceptTouchListener(this);
+            cl.setClickable(true);
+            cl.setImportantForAccessibility(ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        }
+        super.onChildViewAdded(parent, child);
     }
 
     public void syncAppsPageItems(int page, boolean immediate) {
@@ -1354,6 +1434,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
 
+        enableHwLayersOnVisiblePages();
+
+        if (isInOverviewMode()) {
+            return;
+        }
+
         for (int i = 0; i < getChildCount(); i++) {
             View v = getPageAt(i);
             if (v != null) {
@@ -1419,7 +1505,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 v.setTranslationX(translationX);
                 v.setScaleX(scale);
                 v.setScaleY(scale);
-                v.setAlpha(alpha);
+                if (v instanceof CellLayout) {
+                    ((CellLayout) v).getShortcutsAndWidgets().setAlpha(alpha);
+                } else {
+                    v.setAlpha(alpha);
+                }
 
                 // If the view has 0 alpha, we set it to be invisible so as to prevent
                 // it from accepting touches
@@ -1430,8 +1520,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 }
             }
         }
-
-        enableHwLayersOnVisiblePages();
     }
 
     private void enableHwLayersOnVisiblePages() {
@@ -1456,26 +1544,316 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         for (int i = 0; i < screenCount; i++) {
             final View layout = (View) getPageAt(i);
-            if (!(leftScreen <= i && i <= rightScreen &&
-                    (i == forceDrawScreen || shouldDrawChild(layout)))) {
-                layout.setLayerType(LAYER_TYPE_NONE, null);
-            }
-        }
-
-        for (int i = 0; i < screenCount; i++) {
-            final View layout = (View) getPageAt(i);
-
-            if (leftScreen <= i && i <= rightScreen &&
-                    (i == forceDrawScreen || shouldDrawChild(layout))) {
+            boolean enableLayer = leftScreen <= i && i <= rightScreen &&
+                    (i == forceDrawScreen || shouldDrawChild(layout));
+            if (layout instanceof CellLayout) {
+                ((CellLayout) layout).enableHardwareLayer(enableLayer);
+            } else if (enableLayer) {
                 if (layout.getLayerType() != LAYER_TYPE_HARDWARE) {
                     layout.setLayerType(LAYER_TYPE_HARDWARE, null);
                 }
+            } else {
+                layout.setLayerType(LAYER_TYPE_NONE, null);
             }
         }
     }
 
     protected void overScroll(float amount) {
         acceleratedOverScroll(amount);
+    }
+
+    public boolean isInOverviewMode() {
+        return mState == State.OVERVIEW;
+    }
+
+    public boolean enterOverviewMode() {
+        if (mTouchState != TOUCH_STATE_REST || !mIsDataReady || mContentType != ContentType.Applications) {
+            return false;
+        }
+        enableOverviewMode(true, -1, true);
+        return true;
+    }
+
+    public void exitOverviewMode(boolean animated) {
+        exitOverviewMode(-1, animated);
+    }
+
+    public void exitOverviewMode(int snapPage, boolean animated) {
+        enableOverviewMode(false, snapPage, animated);
+    }
+
+    private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
+        State finalState = AppsCustomizePagedView.State.OVERVIEW;
+        if (!enable) {
+            finalState = AppsCustomizePagedView.State.NORMAL;
+        }
+
+        mLauncher.updateOverviewPanel();
+
+        Animator appsCustomizeAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
+        if (appsCustomizeAnim != null) {
+            onTransitionPrepare();
+            appsCustomizeAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator arg0) {
+                    onTransitionEnd();
+                }
+            });
+            appsCustomizeAnim.start();
+        }
+    }
+
+    int getOverviewModeTranslationY() {
+        int childHeight = getNormalChildHeight();
+        int viewPortHeight = getViewportHeight();
+        int scaledChildHeight = (int) (mOverviewModeShrinkFactor * childHeight);
+
+        int offset = (viewPortHeight - scaledChildHeight) / 2;
+        int offsetDelta = mOverviewModePageOffset - offset + mInsets.top;
+
+        return offsetDelta;
+    }
+
+    private void setState(State state) {
+        mState = state;
+        updateAccessibilityFlags();
+    }
+
+    private void updateAccessibilityFlags() {
+        int accessible = mState == State.NORMAL ?
+                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES :
+                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+        setImportantForAccessibility(accessible);
+    }
+
+    private void initAnimationArrays() {
+        final int childCount = getChildCount();
+        if (mOldBackgroundAlphas != null) return;
+        mOldBackgroundAlphas = new float[childCount];
+        mOldTranslationXs = new float[childCount];
+        mOldTranslationYs = new float[childCount];
+        mOldScaleXs = new float[childCount];
+        mOldScaleYs = new float[childCount];
+        mOldAlphas = new float[childCount];
+        mNewBackgroundAlphas = new float[childCount];
+        mNewTranslationXs = new float[childCount];
+        mNewTranslationYs = new float[childCount];
+        mNewScaleXs = new float[childCount];
+        mNewScaleYs = new float[childCount];
+        mNewAlphas = new float[childCount];
+    }
+
+    Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
+        if (mState == state) {
+            return null;
+        }
+
+        // Initialize animation arrays for the first time if necessary
+        initAnimationArrays();
+
+        AnimatorSet anim = animated ? LauncherAnimUtils.createAnimatorSet() : null;
+
+        final State oldState = mState;
+        final boolean oldStateIsNormal = (oldState == State.NORMAL);
+        final boolean oldStateIsOverview = (oldState == State.OVERVIEW);
+        setState(state);
+        final boolean stateIsNormal = (state == State.NORMAL);
+        final boolean stateIsOverview = (state == State.OVERVIEW);
+        float finalBackgroundAlpha = stateIsOverview ? 1.0f : 0f;
+        float finalPageIndicatorAlpha = stateIsOverview ? 0f : 1f;
+        float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
+        float finalWorkspaceTranslationY = stateIsOverview ? getOverviewModeTranslationY() : 0;
+
+        boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
+        boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
+
+        mNewScale = 1.0f;
+
+        if (state != State.NORMAL) {
+            if (stateIsOverview) {
+                mNewScale = mOverviewModeShrinkFactor;
+            }
+        }
+
+        final int duration = getResources().getInteger(R.integer.config_overviewTransitionTime);
+
+        for (int i = 0; i < getChildCount(); i++) {
+            final CellLayout cl = (CellLayout) getChildAt(i);
+            float translationX = 0f;
+            float translationY = 0f;
+            float scaleX = 1f;
+            float scaleY = 1f;
+            float finalAlpha = 1f;
+
+            if (stateIsOverview) {
+                cl.setVisibility(VISIBLE);
+                cl.setTranslationX(0f);
+                cl.setScaleX(1f);
+                cl.setScaleY(1f);
+                cl.setShortcutAndWidgetAlpha(1f);
+            }
+
+            mOldAlphas[i] = cl.getShortcutsAndWidgets().getAlpha();
+            mNewAlphas[i] = finalAlpha;
+            if (animated) {
+                mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                mOldTranslationXs[i] = cl.getTranslationX();
+                mOldTranslationYs[i] = cl.getTranslationY();
+                mOldScaleXs[i] = cl.getScaleX();
+                mNewScaleXs[i] = cl.getScaleY();
+
+                mNewBackgroundAlphas[i] = finalBackgroundAlpha;
+                mNewTranslationXs[i] = translationX;
+                mNewTranslationYs[i] = translationY;
+                mNewScaleXs[i] = scaleX;
+                mNewScaleYs[i] = scaleY;
+            } else {
+                cl.setBackgroundAlpha(finalBackgroundAlpha);
+                cl.setTranslationX(translationX);
+                cl.setTranslationY(translationY);
+                cl.setScaleX(scaleX);
+                cl.setScaleY(scaleY);
+                cl.setShortcutAndWidgetAlpha(finalAlpha);
+            }
+        }
+
+        final View overviewPanel = mLauncher.getOverviewPanel();
+        if (animated) {
+            anim.setDuration(duration);
+            LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
+            scale.scaleX(mNewScale)
+                    .scaleY(mNewScale)
+                    .translationY(finalWorkspaceTranslationY)
+                    .setInterpolator(mZoomInInterpolator);
+            anim.play(scale);
+            ValueAnimator invalidate = ValueAnimator.ofFloat(0f, 1f);
+            invalidate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    invalidate();
+                }
+            });
+            anim.play(invalidate);
+            ObjectAnimator pageIndicatorAlpha = null;
+            if (getPageIndicator() != null) {
+                pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
+                        finalPageIndicatorAlpha);
+            }
+            ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(overviewPanel,
+                    "alpha", finalOverviewPanelAlpha);
+
+            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
+
+            if (overviewToWorkspace) {
+                overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
+            }
+
+            if (getPageIndicator() != null) {
+                pageIndicatorAlpha.addListener(new AlphaUpdateListener(getPageIndicator()));
+            }
+
+            anim.play(overviewPanelAlpha);
+            anim.play(pageIndicatorAlpha);
+
+            for (int index = 0; index < getChildCount(); index++) {
+                final int i = index;
+
+                final CellLayout cl = (CellLayout) getChildAt(i);
+                if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
+                    cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
+                    cl.setTranslationX(mNewTranslationXs[i]);
+                    cl.setTranslationY(mNewTranslationYs[i]);
+                    cl.setScaleX(mNewScaleXs[i]);
+                    cl.setScaleY(mNewScaleYs[i]);
+                    cl.getShortcutsAndWidgets().setAlpha(mNewAlphas[i]);
+                } else {
+                    LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl);
+                    a.translationX(mNewTranslationXs[i])
+                            .translationY(mNewTranslationYs[i])
+                            .scaleX(mNewScaleXs[i])
+                            .scaleY(mNewScaleYs[i])
+                            .setDuration(duration)
+                            .setInterpolator(mZoomInInterpolator);
+                    anim.play(a);
+                    a = new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
+                    a.translationX(mNewTranslationXs[i])
+                            .alpha(mNewAlphas[i])
+                            .setDuration(duration)
+                            .setInterpolator(mZoomInInterpolator);
+                    anim.play(a);
+                    if (mOldBackgroundAlphas[i] != 0 ||
+                            mNewBackgroundAlphas[i] != 0) {
+                        ValueAnimator bgAnim =
+                                LauncherAnimUtils.ofFloat(cl, 0f, 1f);
+                        bgAnim.setInterpolator(mZoomInInterpolator);
+                        bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                            public void onAnimationUpdate(float a, float b) {
+                                cl.setBackgroundAlpha(
+                                        a * mOldBackgroundAlphas[i] +
+                                                b * mNewBackgroundAlphas[i]);
+                            }
+                        });
+                        anim.play(bgAnim);
+                    }
+                }
+            }
+
+            anim.setStartDelay(delay);
+        } else {
+            overviewPanel.setAlpha(finalOverviewPanelAlpha);
+            AlphaUpdateListener.updateVisibility(overviewPanel);
+            if (getPageIndicator() != null) {
+                getPageIndicator().setAlpha(finalPageIndicatorAlpha);
+                AlphaUpdateListener.updateVisibility(getPageIndicator());
+            }
+            setScaleX(mNewScale);
+            setScaleY(mNewScale);
+            setTranslationY(finalWorkspaceTranslationY);
+        }
+        return anim;
+    }
+
+    static class AlphaUpdateListener implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+        View view;
+        public AlphaUpdateListener(View v) {
+            view = v;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator arg0) {
+            updateVisibility(view);
+        }
+
+        public static void updateVisibility(View view) {
+            // We want to avoid the extra layout pass by setting the views to GONE unless
+            // accessibility is on, in which case not setting them to GONE causes a glitch.
+            int invisibleState = sAccessibilityEnabled ? GONE : INVISIBLE;
+            if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != invisibleState) {
+                view.setVisibility(invisibleState);
+            } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
+                    && view.getVisibility() != VISIBLE) {
+                view.setVisibility(VISIBLE);
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator arg0) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animator arg0) {
+            updateVisibility(view);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator arg0) {
+        }
+
+        @Override
+        public void onAnimationStart(Animator arg0) {
+            // We want the views to be visible for animation, so fade-in/out is visible
+            view.setVisibility(VISIBLE);
+        }
     }
 
     /**
@@ -1493,6 +1871,49 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We reset the save index when we change pages so that it will be recalculated on next
         // rotation
         mSaveInstanceStateItemIndex = -1;
+    }
+
+    private void onTransitionPrepare() {
+        mIsSwitchingState = true;
+
+        // Invalidate here to ensure that the pages are rendered during the state change transition.
+        invalidate();
+
+        enableHwLayersOnVisiblePages();
+    }
+
+    private void onTransitionEnd() {
+        mIsSwitchingState = false;
+    }
+
+    public Comparator<AppInfo> getComparatorForSortMode() {
+        switch (mSortMode) {
+            case Title:
+                return LauncherModel.getAppNameComparator();
+            case LaunchCount:
+                return LauncherModel.getAppLaunchCountComparator(mLauncher.getStats());
+            case InstallTime:
+                return LauncherModel.getAppInstallTimeComparator();
+        }
+        return LauncherModel.getAppNameComparator();
+    }
+
+    public void setSortMode(SortMode sortMode) {
+        if (mSortMode == sortMode) return;
+
+        mSortMode = sortMode;
+
+        Collections.sort(mApps, getComparatorForSortMode());
+
+        if (mContentType == ContentType.Applications) {
+            for (int i = 0; i < getChildCount(); i++) {
+                syncAppsPageItems(i, true);
+            }
+        }
+    }
+
+    public SortMode getSortMode() {
+        return mSortMode;
     }
 
     /*
@@ -1523,7 +1944,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void setApps(ArrayList<AppInfo> list) {
         if (!DISABLE_ALL_APPS) {
             mApps = list;
-            Collections.sort(mApps, LauncherModel.getAppNameComparator());
+            Collections.sort(mApps, getComparatorForSortMode());
             updatePageCountsAndInvalidateData();
         }
     }
@@ -1532,7 +1953,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int count = list.size();
         for (int i = 0; i < count; ++i) {
             AppInfo info = list.get(i);
-            int index = Collections.binarySearch(mApps, info, LauncherModel.getAppNameComparator());
+            int index = Collections.binarySearch(mApps, info, getComparatorForSortMode());
             if (index < 0) {
                 mApps.add(-(index + 1), info);
             }

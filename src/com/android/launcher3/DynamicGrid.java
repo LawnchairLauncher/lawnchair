@@ -480,6 +480,12 @@ class DeviceProfile {
                 pageIndicator.setLayoutParams(lp);
             }
         }
+
+        // Layout the apps customize
+        View appsCustomize = launcher.findViewById(R.id.apps_customize_pane_content);
+        lp = (FrameLayout.LayoutParams) appsCustomize.getLayoutParams();
+        lp.gravity = Gravity.CENTER;
+        appsCustomize.setLayoutParams(lp);
     }
 }
 

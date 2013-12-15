@@ -50,6 +50,17 @@
             android:fontFamily="sans-serif-condensed"
             android:textAllCaps="true"
             android:textSize="12sp" />
+        <TextView
+            android:id="@+id/sort_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_button_text"
+            android:drawablePadding="4dp"
+            android:drawableTop="@drawable/wallpaper_button"
+            android:gravity="center_horizontal"
+            android:fontFamily="sans-serif-condensed"
+            android:textAllCaps="true"
+            android:textSize="12sp" />
         <Space
             android:layout_width="@dimen/overview_panel_buttonSpacing"
             android:layout_height="wrap_content"/>
@@ -58,6 +69,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/widget_button_text"
+            android:drawablePadding="4dp"
+            android:gravity="center_horizontal"
+            android:drawableTop="@drawable/widget_button"
+            android:fontFamily="sans-serif-condensed"
+            android:textAllCaps="true"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/filter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_button_text"
             android:drawablePadding="4dp"
             android:gravity="center_horizontal"
             android:drawableTop="@drawable/widget_button"

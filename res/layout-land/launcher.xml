@@ -50,10 +50,6 @@
             android:id="@+id/qsb_bar"
             layout="@layout/qsb_bar" />
 
-        <include layout="@layout/overview_panel"
-            android:id="@+id/overview_panel"
-            android:visibility="gone" />
-
         <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
              that it is still visible during the transition to AllApps and doesn't overlay on
              top of that view. -->
@@ -97,5 +93,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <include layout="@layout/overview_panel"
+            android:id="@+id/overview_panel"
+            android:visibility="gone" />
     </com.android.launcher3.DragLayer>
 </FrameLayout>

@@ -1962,6 +1962,8 @@ public class Workspace extends SmoothPagedView
             finalState = Workspace.State.NORMAL;
         }
 
+        mLauncher.updateOverviewPanel();
+
         Animator workspaceAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
         if (workspaceAnim != null) {
             onTransitionPrepare();

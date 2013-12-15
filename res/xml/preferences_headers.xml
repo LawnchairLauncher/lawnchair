@@ -28,7 +28,7 @@
             android:title="@string/preferences_interface_dock_title" />
     
     <header android:id="@+id/preferences_general_section"
-            android:fragment="org.cyanogenmod.trebuchet.settings.SettingsActivity$GeneralFragment"
+            android:fragment="com.android.launcher3.settings.SettingsActivity$GeneralFragment"
             android:title="@string/preferences_interface_general_title" />
             
     <header android:id="@+id/preferences_application_section"

@@ -44,10 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <include layout="@layout/overview_panel"
-            android:id="@+id/overview_panel"
-            android:visibility="gone" />
-
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
         <include
@@ -102,5 +98,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <include layout="@layout/overview_panel"
+            android:id="@+id/overview_panel"
+            android:visibility="gone" />
     </com.android.launcher3.DragLayer>
 </FrameLayout>
