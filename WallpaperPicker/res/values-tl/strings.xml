@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2013 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"Itakda ang wallpaper"</string>
+    <string name="image_load_fail" msgid="7538534580694411837">"Hindi ma-load ang larawan"</string>
+    <string name="wallpaper_load_fail" msgid="4800700444605404650">"Hindi ma-load ang larawan bilang wallpaper"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="9015111147509924344">"%1$d ang napili"</item>
+    <item quantity="one" msgid="8409622005831789373">"%1$d ang napili"</item>
+    <item quantity="other" msgid="479468347731745357">"%1$d ang napili"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Wallpaper %1$d ng %2$d"</string>
+    <string name="announce_selection" msgid="123723511662250539">"Napili ang <xliff:g id="LABEL">%1$s</xliff:g>"</string>
+    <string name="wallpaper_delete" msgid="1459353972739215344">"Tanggalin"</string>
+    <string name="pick_image" msgid="6704438906027442697">"Pumili ng larawan"</string>
+    <string name="pick_wallpaper" msgid="4628969645948454559">"Mga Wallpaper"</string>
+    <string name="crop_wallpaper" msgid="4882870800623585836">"I-crop ang wallpaper"</string>
+</resources>

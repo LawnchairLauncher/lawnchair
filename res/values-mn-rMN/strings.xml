@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Нүүр"</string>
     <string name="uid_name" msgid="7820867637514617527">"Андройд үндсэн апп"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Ханын зургийг тохируулах"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Зургийг ачааллаж чадсангүй"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Зургийг ханын зураг болгож ачааллаж чадсангүй"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d сонгогдсон"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d сонгогдсон"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d сонгогдсон"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"%2$d ханын цаасны %1$d нь"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> сонгогдсон"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Устгах"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Зураг сонгох"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Ханын зураг"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Ханын зургийг тайрах"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Апп суугаагүй байна."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Виджет"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Виджет"</string>

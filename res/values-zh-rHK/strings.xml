@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"主畫面"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android 核心應用程式"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"設定桌布"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"無法載入圖片"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"無法載入圖片設為桌布"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"已選取 %1$d 個"</item>
-    <item quantity="one" msgid="142482526010824029">"已選取 %1$d 個"</item>
-    <item quantity="other" msgid="1418352074806573570">"已選取 %1$d 個"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"第 %1$d 張桌布，共 %2$d 張"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"已選取「<xliff:g id="LABEL">%1$s</xliff:g>」"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"刪除"</string>
-    <string name="pick_image" msgid="1272073934062909527">"選擇圖片"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"桌布"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"裁剪桌布"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"尚未安裝應用程式。"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"小工具"</string>
     <string name="widget_adder" msgid="3201040140710381657">"小工具"</string>
