@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Accueil"</string>
     <string name="uid_name" msgid="7820867637514617527">"Applications de base Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Définir le fond d\'écran"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Impossible de charger l\'image"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Impossible de charger l\'image comme fond d\'écran"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d sélectionné"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d sélectionné"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d sélectionné(s)"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Fond d\'écran %1$d sur %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"Sélection : <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Supprimer"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Sélectionner une image"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Fonds d\'écran"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Rogner le fond d\'écran"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
