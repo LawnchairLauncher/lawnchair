@@ -24,6 +24,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -223,6 +224,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (intent == null) {
             return;
         }
+
         // This name is only used for comparisons and notifications, so fall back to activity name
         // if not supplied
         String name = ensureValidName(context, intent,
@@ -269,6 +271,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 //final Intent data = pendingInfo.data;
                 final Intent intent = pendingInfo.launchIntent;
                 final String name = pendingInfo.name;
+
+                if (AppsCustomizePagedView.DISABLE_ALL_APPS && !isValidShortcutLaunchIntent(intent)) {
+                    if (DBG) Log.d(TAG, "Ignoring shortcut with launchIntent:" + intent);
+                    continue;
+                }
+
                 final boolean exists = LauncherModel.shortcutExists(context, name, intent);
                 //final boolean allowDuplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
 
@@ -299,6 +307,30 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 app.getModel().addAndBindAddedApps(context, addShortcuts, new ArrayList<AppInfo>());
             }
         }
+    }
+
+    /**
+     * Returns true if the intent is a valid launch intent for a shortcut.
+     * This is used to identify shortcuts which are different from the ones exposed by the
+     * applications' manifest file.
+     *
+     * When DISABLE_ALL_APPS is true, shortcuts exposed via the app's manifest should never be
+     * duplicated or removed(unless the app is un-installed).
+     *
+     * @param launchIntent The intent that will be launched when the shortcut is clicked.
+     */
+    static boolean isValidShortcutLaunchIntent(Intent launchIntent) {
+        if (launchIntent != null
+                && Intent.ACTION_MAIN.equals(launchIntent.getAction())
+                && launchIntent.getComponent() != null
+                && launchIntent.getCategories() != null
+                && launchIntent.getCategories().size() == 1
+                && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                && launchIntent.getExtras() == null
+                && TextUtils.isEmpty(launchIntent.getDataString())) {
+            return false;
+        }
+        return true;
     }
 
     private static ShortcutInfo getShortcutInfo(Context context, Intent data,

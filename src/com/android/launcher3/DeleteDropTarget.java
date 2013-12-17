@@ -272,19 +272,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private boolean isUninstallFromWorkspace(DragObject d) {
         if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) d.dragInfo;
-            if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
-                Set<String> categories = shortcut.intent.getCategories();
-                boolean includesLauncherCategory = false;
-                if (categories != null) {
-                    for (String category : categories) {
-                        if (category.equals(Intent.CATEGORY_LAUNCHER)) {
-                            includesLauncherCategory = true;
-                            break;
-                        }
-                    }
-                }
-                return includesLauncherCategory;
-            }
+            // Only allow manifest shortcuts to initiate an un-install.
+            return !InstallShortcutReceiver.isValidShortcutLaunchIntent(shortcut.intent);
         }
         return false;
     }
