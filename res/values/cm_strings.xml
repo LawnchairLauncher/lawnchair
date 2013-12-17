@@ -31,8 +31,10 @@
     <string name="preferences_interface_homescreen_search_title">Search bar</string>
     <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
-    <string name="preferences_interface_homescreen_scrolling_show_outlines_title">Show outlines</string>
-    <string name="preferences_interface_homescreen_scrolling_show_outlines_summary">Show outlines when scrolling homescreens</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_scroll_title">Scroll wallpaper</string>
+    <string name="preferences_interface_homescreen_scrolling_wallpaper_scroll_summary">Pan wallpaper while scrolling homescreens</string>
+    <string name="preferences_interface_homescreen_scrolling_page_outlines_title">Page outlines</string>
+    <string name="preferences_interface_homescreen_scrolling_page_outlines_summary">Show page outlines while scrolling homescreens</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
