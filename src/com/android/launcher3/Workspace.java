@@ -3957,7 +3957,7 @@ public class Workspace extends SmoothPagedView
             }
             cellLayout.onDropChild(mDragInfo.cell);
         }
-        if ((d.cancelled || (beingCalledAfterUninstall && !mUninstallSuccessful))
+        if ((d.cancelled || target instanceof InfoDropTarget || (beingCalledAfterUninstall && !mUninstallSuccessful))
                 && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
