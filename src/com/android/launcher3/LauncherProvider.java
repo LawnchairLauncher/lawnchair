@@ -141,9 +141,10 @@ public class LauncherProvider extends ContentProvider {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
         }
-        if (!values.containsKey(LauncherSettings.Favorites._ID)) {
+        if (!values.containsKey(LauncherSettings.BaseLauncherColumns._ID)) {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
+        helper.checkId(table, values);
         return db.insert(table, nullColumnHack, values);
     }
 
@@ -274,6 +275,7 @@ public class LauncherProvider extends ContentProvider {
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
+            Log.d(TAG, "loading default workspace");
             int workspaceResId = origWorkspaceResId;
 
             // Use default workspace resource if none provided
@@ -958,6 +960,15 @@ public class LauncherProvider extends ContentProvider {
 
         public void updateMaxItemId(long id) {
             mMaxItemId = id + 1;
+        }
+
+        public void checkId(String table, ContentValues values) {
+            long id = values.getAsLong(LauncherSettings.BaseLauncherColumns._ID);
+            if (table == LauncherProvider.TABLE_WORKSPACE_SCREENS) {
+                mMaxScreenId = Math.max(id, mMaxScreenId);
+            }  else {
+                mMaxItemId = Math.max(id, mMaxItemId);
+            }
         }
 
         private long initializeMaxItemId(SQLiteDatabase db) {

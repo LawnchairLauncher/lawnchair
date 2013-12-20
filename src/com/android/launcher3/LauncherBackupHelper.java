@@ -39,6 +39,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -332,9 +333,15 @@ public class LauncherBackupHelper implements BackupHelper {
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
 
+        if (!mRestoreEnabled) {
+            if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+            return;
+        }
+
         try {
-            Favorite favorite =  unpackFavorite(buffer, 0, dataSize);
-            if (DEBUG) Log.d(TAG, "unpacked " + favorite.itemType);
+            ContentResolver cr = mContext.getContentResolver();
+            ContentValues values = unpackFavorite(buffer, 0, dataSize);
+            cr.insert(Favorites.CONTENT_URI, values);
         } catch (InvalidProtocolBufferNanoException e) {
             Log.w(TAG, "failed to decode proto", e);
         }
@@ -364,6 +371,7 @@ public class LauncherBackupHelper implements BackupHelper {
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
         try {
             cursor.moveToPosition(-1);
+            Log.d(TAG, "dumping screens after: " + in.t);
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
                 final long updateTime = cursor.getLong(ID_MODIFIED);
@@ -374,6 +382,9 @@ public class LauncherBackupHelper implements BackupHelper {
                 if (!savedIds.contains(backupKey) || updateTime >= in.t) {
                     byte[] blob = packScreen(cursor);
                     writeRowToBackup(key, blob, out, data);
+                    if (DEBUG) Log.d(TAG, "wrote screen " + id);
+                } else {
+                    if (DEBUG) Log.d(TAG, "screen " + id + " was too old: " + updateTime);
                 }
             }
         } finally {
@@ -400,9 +411,17 @@ public class LauncherBackupHelper implements BackupHelper {
         Log.v(TAG, "unpacking screen " + key.id);
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
+
+        if (!mRestoreEnabled) {
+            if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+            return;
+        }
+
         try {
-            Screen screen = unpackScreen(buffer, 0, dataSize);
-            if (DEBUG) Log.d(TAG, "unpacked " + screen.rank);
+            ContentResolver cr = mContext.getContentResolver();
+            ContentValues values = unpackScreen(buffer, 0, dataSize);
+            cr.insert(WorkspaceScreens.CONTENT_URI, values);
+
         } catch (InvalidProtocolBufferNanoException e) {
             Log.w(TAG, "failed to decode proto", e);
         }
@@ -520,6 +539,13 @@ public class LauncherBackupHelper implements BackupHelper {
             if (icon == null) {
                 Log.w(TAG, "failed to unpack icon for " + key.name);
             }
+
+            if (!mRestoreEnabled) {
+                if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+                return;
+            } else {
+                // future site of icon cache mutation
+            }
         } catch (InvalidProtocolBufferNanoException e) {
             Log.w(TAG, "failed to decode proto", e);
         }
@@ -634,6 +660,13 @@ public class LauncherBackupHelper implements BackupHelper {
                 if (icon == null) {
                     Log.w(TAG, "failed to unpack widget icon for " + key.name);
                 }
+            }
+
+            if (!mRestoreEnabled) {
+                if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+                return;
+            } else {
+                // future site of widget table mutation
             }
         } catch (InvalidProtocolBufferNanoException e) {
             Log.w(TAG, "failed to decode proto", e);
@@ -771,11 +804,43 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Deserialize a Favorite from persistence, after verifying checksum wrapper. */
-    private Favorite unpackFavorite(byte[] buffer, int offset, int dataSize)
+    private ContentValues unpackFavorite(byte[] buffer, int offset, int dataSize)
             throws InvalidProtocolBufferNanoException {
         Favorite favorite = new Favorite();
         MessageNano.mergeFrom(favorite, readCheckedBytes(buffer, offset, dataSize));
-        return favorite;
+        if (DEBUG) Log.d(TAG, "unpacked " + favorite.itemType + ", " + favorite.id);
+        ContentValues values = new ContentValues();
+        values.put(Favorites._ID, favorite.id);
+        values.put(Favorites.SCREEN, favorite.screen);
+        values.put(Favorites.CONTAINER, favorite.container);
+        values.put(Favorites.CELLX, favorite.cellX);
+        values.put(Favorites.CELLY, favorite.cellY);
+        values.put(Favorites.SPANX, favorite.spanX);
+        values.put(Favorites.SPANY, favorite.spanY);
+        values.put(Favorites.ICON_TYPE, favorite.iconType);
+        if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
+            values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
+            values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
+        }
+        if (favorite.iconType == Favorites.ICON_TYPE_BITMAP) {
+            values.put(Favorites.ICON, favorite.icon);
+        }
+        if (!TextUtils.isEmpty(favorite.title)) {
+            values.put(Favorites.TITLE, favorite.title);
+        } else {
+            values.put(Favorites.TITLE, "");
+        }
+        if (!TextUtils.isEmpty(favorite.intent)) {
+            values.put(Favorites.INTENT, favorite.intent);
+        }
+        values.put(Favorites.ITEM_TYPE, favorite.itemType);
+        if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
+            if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
+                values.put(Favorites.APPWIDGET_PROVIDER, favorite.appWidgetProvider);
+            }
+            values.put(Favorites.APPWIDGET_ID, favorite.appWidgetId);
+        }
+        return values;
     }
 
     /** Serialize a Screen for persistence, including a checksum wrapper. */
@@ -788,11 +853,15 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Deserialize a Screen from persistence, after verifying checksum wrapper. */
-    private Screen unpackScreen(byte[] buffer, int offset, int dataSize)
+    private ContentValues unpackScreen(byte[] buffer, int offset, int dataSize)
             throws InvalidProtocolBufferNanoException {
         Screen screen = new Screen();
         MessageNano.mergeFrom(screen, readCheckedBytes(buffer, offset, dataSize));
-        return screen;
+        if (DEBUG) Log.d(TAG, "unpacked " + screen.id + "/" + screen.rank);
+        ContentValues values = new ContentValues();
+        values.put(WorkspaceScreens._ID, screen.id);
+        values.put(WorkspaceScreens.SCREEN_RANK, screen.rank);
+        return values;
     }
 
     /** Serialize an icon Resource for persistence, including a checksum wrapper. */
