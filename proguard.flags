@@ -50,4 +50,4 @@
   *;
 }
 
--keep class com.android.launcher3.preference.Preferences$*Fragment
+-keep class com.android.launcher3.settings.SettingsActivity$*Fragment
