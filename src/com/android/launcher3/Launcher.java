@@ -4583,6 +4583,20 @@ public class Launcher extends Activity
         }
     }
 
+    /**
+     * Called when the SearchBar hint should be changed.
+     *
+     * @param hint the hint to be displayed in the search bar.
+     */
+    protected void onSearchBarHintChanged(String hint) {
+        Cling cling = (Cling) findViewById(R.id.first_run_cling);
+        if (cling != null && cling.getVisibility() == View.VISIBLE && !hint.isEmpty()) {
+            TextView sbHint = (TextView) cling.findViewById(R.id.search_bar_hint);
+            sbHint.setText(hint);
+            sbHint.setVisibility(View.VISIBLE);
+        }
+    }
+
     protected String getFirstRunClingSearchBarHint() {
         return "";
     }
