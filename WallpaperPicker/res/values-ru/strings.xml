@@ -23,9 +23,9 @@
     <string name="image_load_fail" msgid="7538534580694411837">"Не удалось загрузить изображение"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"Не удалось загрузить изображение"</string>
   <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9015111147509924344">"%1$d"</item>
-    <item quantity="one" msgid="8409622005831789373">"%1$d"</item>
-    <item quantity="other" msgid="479468347731745357">"%1$d"</item>
+    <item quantity="zero" msgid="9015111147509924344">"Выбрано: %1$d"</item>
+    <item quantity="one" msgid="8409622005831789373">"Выбрано: %1$d"</item>
+    <item quantity="other" msgid="479468347731745357">"Выбрано: %1$d"</item>
   </plurals>
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Обои %1$d из %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"Выбран элемент \"<xliff:g id="LABEL">%1$s</xliff:g>\""</string>
