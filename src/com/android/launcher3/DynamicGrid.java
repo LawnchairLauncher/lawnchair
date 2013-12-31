@@ -518,8 +518,8 @@ public class DynamicGrid {
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
         boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
-        boolean useLargeIcons = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_GENERAL_LARGE_ICONS,
-                R.bool.preferences_interface_general_large_icons_default);
+        boolean useLargeIcons = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_GENERAL_ICONS_LARGE,
+                R.bool.preferences_interface_general_icons_large_default);
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
                 255, 300,  2, 3,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 54 : 48)));

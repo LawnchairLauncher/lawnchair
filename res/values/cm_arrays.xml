@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Regular</item>
+        <item>Light</item>
+        <item>Condensed</item>
+    </string-array>
+    <string-array name="preferences_interface_general_icons_text_font_family_values">
+        <item>sans-serif</item>
+        <item>sans-serif-light</item>
+        <item>sans-serif-condensed</item>
+    </string-array>
+</resources>

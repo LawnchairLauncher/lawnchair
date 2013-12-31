@@ -139,6 +139,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         icon.setClipToPadding(false);
         icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
+        Utilities.applyTypeface(icon.mFolderName);
         icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();

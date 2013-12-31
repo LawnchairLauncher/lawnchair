@@ -28,7 +28,9 @@ public final class SettingsProvider {
     public static final String SETTINGS_UI_HOMESCREEN_SEARCH = "ui_homescreen_search";
     public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL = "ui_homescreen_scrolling_wallpaper_scroll";
     public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES = "ui_homescreen_scrolling_page_outlines";
-    public static final String SETTINGS_UI_GENERAL_LARGE_ICONS = "ui_general_large_icons";
+    public static final String SETTINGS_UI_GENERAL_ICONS_LARGE = "ui_general_icons_large";
+    public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_FAMILY = "ui_general_icons_text_font";
+    public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_STYLE = "ui_general_icons_text_font_style";
 
     public static SharedPreferences get(Context context) {
         return context.getSharedPreferences(SETTINGS_KEY, 0);
