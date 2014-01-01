@@ -63,12 +63,17 @@ public class InfoDropTarget extends ButtonDropTarget {
     }
 
     private ComponentName dragItemComponentName(Object dragInfo) {
-        if (dragInfo instanceof AppInfo) {
-            return ((AppInfo) dragInfo).componentName;
-        } else if (dragInfo instanceof ShortcutInfo) {
-            return ((ShortcutInfo) dragInfo).intent.getComponent();
-        } else if (dragInfo instanceof PendingAddItemInfo) {
-            return ((PendingAddItemInfo) dragInfo).componentName;
+        if (dragInfo instanceof ItemInfo) {
+            if (((ItemInfo) dragInfo).itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                return null;
+            }
+            if (dragInfo instanceof AppInfo) {
+                return ((AppInfo) dragInfo).componentName;
+            } else if (dragInfo instanceof ShortcutInfo) {
+                return ((ShortcutInfo) dragInfo).intent.getComponent();
+            } else if (dragInfo instanceof PendingAddItemInfo) {
+                return ((PendingAddItemInfo) dragInfo).componentName;
+            }
         }
         return null;
     }

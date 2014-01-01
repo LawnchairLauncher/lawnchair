@@ -2618,16 +2618,7 @@ public class Workspace extends SmoothPagedView
 
             // Don't accept the drop if there's no room for the item
             if (!foundCell) {
-                // Don't show the message if we are dropping on the AllApps button and the hotseat
-                // is full
                 boolean isHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
-                if (mTargetCell != null && isHotseat) {
-                    Hotseat hotseat = mLauncher.getHotseat();
-                    if (hotseat.isAllAppsButtonRank(
-                            hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
-                        return false;
-                    }
-                }
 
                 mLauncher.showOutOfSpaceMessage(isHotseat);
                 return false;
@@ -4026,7 +4017,7 @@ public class Workspace extends SmoothPagedView
             View v = children.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
             // Null check required as the AllApps button doesn't have an item info
-            if (info instanceof ShortcutInfo) {
+            if (info instanceof ShortcutInfo && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
                 ShortcutInfo si = (ShortcutInfo) info;
                 ComponentName cn = si.intent.getComponent();
 

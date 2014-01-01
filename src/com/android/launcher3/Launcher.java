@@ -111,6 +111,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1321,6 +1322,13 @@ public class Launcher extends Activity
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
         favorite.setOnClickListener(this);
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS && info.getIcon(mIconCache) == null) {
+            // All apps icon
+            Drawable d = getResources().getDrawable(R.drawable.all_apps_button_icon);
+            Utilities.resizeIconDrawable(d);
+            favorite.setCompoundDrawables(null, d, null, null);
+            favorite.setOnTouchListener(getHapticFeedbackTouchListener());
+        }
         Utilities.applyTypeface(favorite);
         return favorite;
     }
@@ -2257,37 +2265,41 @@ public class Launcher extends Activity
         if (tag instanceof ShortcutInfo) {
             // Open shortcut
             final ShortcutInfo shortcut = (ShortcutInfo) tag;
-            final Intent intent = shortcut.intent;
+            if (shortcut.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                showAllApps(true, AppsCustomizePagedView.ContentType.Applications, true);
+            } else {
+                final Intent intent = shortcut.intent;
 
-            // Check for special shortcuts
-            if (intent.getComponent() != null) {
-                final String shortcutClass = intent.getComponent().getClassName();
+                // Check for special shortcuts
+                if (intent.getComponent() != null) {
+                    final String shortcutClass = intent.getComponent().getClassName();
 
-                if (shortcutClass.equals(WidgetAdder.class.getName())) {
-                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
-                    return;
-                } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
-                    MemoryDumpActivity.startDump(this);
-                    return;
-                } else if (shortcutClass.equals(ToggleWeightWatcher.class.getName())) {
-                    toggleShowWeightWatcher();
-                    return;
+                    if (shortcutClass.equals(WidgetAdder.class.getName())) {
+                        showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                        return;
+                    } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
+                        MemoryDumpActivity.startDump(this);
+                        return;
+                    } else if (shortcutClass.equals(ToggleWeightWatcher.class.getName())) {
+                        toggleShowWeightWatcher();
+                        return;
+                    }
                 }
-            }
 
-            // Start activities
-            int[] pos = new int[2];
-            v.getLocationOnScreen(pos);
-            intent.setSourceBounds(new Rect(pos[0], pos[1],
-                    pos[0] + v.getWidth(), pos[1] + v.getHeight()));
+                // Start activities
+                int[] pos = new int[2];
+                v.getLocationOnScreen(pos);
+                intent.setSourceBounds(new Rect(pos[0], pos[1],
+                        pos[0] + v.getWidth(), pos[1] + v.getHeight()));
 
-            boolean success = startActivitySafely(v, intent, tag);
+                boolean success = startActivitySafely(v, intent, tag);
 
-            mStats.recordLaunch(intent, shortcut);
+                mStats.recordLaunch(intent, shortcut);
 
-            if (success && v instanceof BubbleTextView) {
-                mWaitingForResume = (BubbleTextView) v;
-                mWaitingForResume.setStayPressed(true);
+                if (success && v instanceof BubbleTextView) {
+                    mWaitingForResume = (BubbleTextView) v;
+                    mWaitingForResume.setStayPressed(true);
+                }
             }
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
@@ -3742,16 +3754,20 @@ public class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end,
+    public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
                           final boolean forceAnimateIcons) {
+        final ArrayList<ItemInfo> items = shortcuts;
+        final int s = start;
+        final int e = end;
         Runnable r = new Runnable() {
             public void run() {
-                bindItems(shortcuts, start, end, forceAnimateIcons);
+                bindItems(items, s, e, forceAnimateIcons);
             }
         };
         if (waitUntilResume(r)) {
             return;
         }
+
 
         // Get the list of added shortcuts and intersect them with the set of shortcuts here
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
@@ -3771,6 +3787,7 @@ public class Launcher extends Activity
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                     ShortcutInfo info = (ShortcutInfo) item;
                     View shortcut = createShortcut(info);
 
@@ -3942,13 +3959,6 @@ public class Launcher extends Activity
                 onFinishBindingItems();
             }
         });
-    }
-
-    public boolean isAllAppsButtonRank(int rank) {
-        if (mHotseat != null) {
-            return mHotseat.isAllAppsButtonRank(rank);
-        }
-        return false;
     }
 
     private boolean canRunNewAppsAnimation() {

@@ -104,6 +104,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 switch (addInfo.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                    case LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS:
                         return true;
                 }
             }
@@ -142,6 +143,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
             ItemInfo item = (ItemInfo) info;
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
                     item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                return true;
+            }
+
+            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS &&
+                    LauncherModel.hasMultipleAllAppsShortcuts()) {
                 return true;
             }
 

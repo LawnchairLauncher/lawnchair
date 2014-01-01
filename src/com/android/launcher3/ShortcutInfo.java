@@ -118,7 +118,7 @@ class ShortcutInfo extends ItemInfo {
     }
 
     public Bitmap getIcon(IconCache iconCache) {
-        if (mIcon == null) {
+        if (mIcon == null && itemType != LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
             updateIcon(iconCache);
         }
         return mIcon;

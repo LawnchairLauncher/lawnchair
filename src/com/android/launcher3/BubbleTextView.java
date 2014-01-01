@@ -105,10 +105,10 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
-        Bitmap b = info.getIcon(iconCache);
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
+        Bitmap b = info.getIcon(iconCache);
         setCompoundDrawables(null,
                 Utilities.createIconDrawable(b), null, null);
         setCompoundDrawablePadding((int) ((grid.folderIconSizePx - grid.iconSizePx) / 2f));

@@ -223,6 +223,11 @@ class LauncherSettings {
         static final int ITEM_TYPE_APPWIDGET = 4;
 
         /**
+         * The favorite is the all apps button
+         */
+        static final int ITEM_TYPE_ALLAPPS = 5;
+
+        /**
          * The favorite is a clock
          */
         static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
