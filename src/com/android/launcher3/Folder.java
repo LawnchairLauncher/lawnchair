@@ -146,8 +146,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         Resources res = getResources();
         mMaxCountX = (int) grid.numColumns;
-        mMaxCountY = (int) grid.numRows;
-        mMaxNumItems = mMaxCountX * mMaxCountY;
+        // Allow scrolling folders when DISABLE_ALL_APPS is true.
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            mMaxCountY = mMaxNumItems = Integer.MAX_VALUE;
+        } else {
+            mMaxCountY = (int) grid.numRows;
+            mMaxNumItems = mMaxCountX * mMaxCountY;
+        }
 
         mInputMethodManager = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1026,7 +1031,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(getContentAreaHeight(),
                 MeasureSpec.EXACTLY);
 
-        mContent.setFixedSize(getContentAreaWidth(), getContentAreaHeight());
+        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            // Don't cap the height of the content to allow scrolling.
+            mContent.setFixedSize(getContentAreaWidth(), mContent.getDesiredHeight());
+        } else {
+            mContent.setFixedSize(getContentAreaWidth(), getContentAreaHeight());
+        }
+
         mScrollView.measure(contentAreaWidthSpec, contentAreaHeightSpec);
         mFolderName.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFolderNameHeight, MeasureSpec.EXACTLY));
