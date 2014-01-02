@@ -199,7 +199,7 @@ public class CellLayout extends ViewGroup {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = mCellHeight = -1;
-        mFixedCellHeight = mFixedCellHeight = -1;
+        mFixedCellWidth = mFixedCellHeight = -1;
         mWidthGap = mOriginalWidthGap = 0;
         mHeightGap = mOriginalHeightGap = 0;
         mMaxGap = Integer.MAX_VALUE;
