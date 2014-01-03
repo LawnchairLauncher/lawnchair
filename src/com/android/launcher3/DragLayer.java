@@ -227,22 +227,19 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
-                        } else {
-                            return true;
                         }
+                        mHoverPointClosesFolder = false;
+                        break;
                     case MotionEvent.ACTION_HOVER_MOVE:
                         isOverFolder = isEventOverFolder(currentFolder, ev);
                         if (!isOverFolder && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
-                        } else {
+                        } else if (!isOverFolder) {
                             return true;
                         }
+                        mHoverPointClosesFolder = false;
                 }
             }
         }
