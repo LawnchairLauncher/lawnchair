@@ -2654,7 +2654,9 @@ public class Workspace extends SmoothPagedView
             return false;
         }
 
-        boolean aboveShortcut = (dropOverView.getTag() instanceof ShortcutInfo);
+        ItemInfo dropOverViewInfo = (ItemInfo) dropOverView.getTag();
+        boolean aboveShortcut = (dropOverViewInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                dropOverViewInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
         boolean willBecomeShortcut =
                 (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
