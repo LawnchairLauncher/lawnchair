@@ -2,11 +2,11 @@ package com.android.launcher3.settings;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.preference.ListPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FontStylePreference extends ListPreference {
-    private ListView mListView;
     private String mValue;
     public int mClickedDialogEntryIndex;
     private boolean mValueSet;
@@ -28,17 +27,32 @@ public class FontStylePreference extends ListPreference {
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        return;
-    }
+        if (getEntries() == null || getEntryValues() == null) {
+            throw new IllegalStateException(
+                    "ListPreference requires an entries array and an entryValues array.");
+        }
 
-    @Override
-    public View onCreateDialogView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.preference_font_style, null);
-        mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setAdapter(new FontStyleAdapter(getContext()));
-        mListView.setOnItemClickListener(mOnClickListener);
-        mListView.setItemChecked(getValueIndex(), true);
-        return view;
+        mClickedDialogEntryIndex = getValueIndex();
+        builder.setSingleChoiceItems(new FontStyleAdapter(getContext()), mClickedDialogEntryIndex,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mClickedDialogEntryIndex = which;
+
+                        /*
+                         * Clicking on an item simulates the positive button
+                         * click, and dismisses the dialog.
+                         */
+                        FontStylePreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                        dialog.dismiss();
+                    }
+                });
+
+        /*
+         * The typical interaction for list-based dialogs is to have
+         * click-on-an-item dismiss the dialog instead of the user having to
+         * press 'Ok'.
+         */
+        builder.setPositiveButton(null, null);
     }
 
     @Override
@@ -92,12 +106,6 @@ public class FontStylePreference extends ListPreference {
     private int getValueIndex() {
         return findIndexOfValue(mValue);
     }
-
-    private AdapterView.OnItemClickListener mOnClickListener = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            mClickedDialogEntryIndex = position;
-        }
-    };
 
     private class FontStyleAdapter extends ArrayAdapter<CharSequence> {
         private LayoutInflater mInflater;
