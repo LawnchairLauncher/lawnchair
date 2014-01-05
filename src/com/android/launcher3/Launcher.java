@@ -29,6 +29,8 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -39,6 +41,7 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -111,7 +114,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -270,6 +272,8 @@ public class Launcher extends Activity
     private static boolean sPausedFromUserAction = false;
 
     private Bundle mSavedInstanceState;
+
+    private Dialog mTransitionEffectDialog;
 
     private LauncherModel mModel;
     private IconCache mIconCache;
@@ -1029,6 +1033,88 @@ public class Launcher extends Activity
         popupMenu.show();
     }
 
+    public void onClickTransitionEffectButton(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.transition_effect_button_text);
+
+        if (isAllAppsVisible()) {
+            mAppsCustomizeContent.exitOverviewMode(true);
+        } else {
+            mWorkspace.exitOverviewMode(true);
+        }
+
+        final PagedView pagedView = isAllAppsVisible() ? mAppsCustomizeContent : mWorkspace;
+        final PagedView.TransitionEffect oldEffect = pagedView.getTransitionEffect();
+        final String oldEffectName = oldEffect != null ? oldEffect.getName() :
+                PagedView.TransitionEffect.TRANSITION_EFFECT_NONE;
+
+        final String[] entries = getResources().getStringArray(R.array.transition_effect_entries);
+        final String[] values = getResources().getStringArray(R.array.transition_effect_values);
+
+        int selected = -1;
+        for (int i = values.length - 1; i >= 0; i--) {
+            if (values[i].equals(oldEffectName)) {
+                selected = i;
+                break;
+            }
+        }
+
+        builder.setSingleChoiceItems(entries, selected, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String effect = values[which];
+                        PagedView.TransitionEffect.setFromString(pagedView, effect);
+
+                        final int currentPage = pagedView.getNextPage();
+                        final int nextPage = currentPage + (currentPage != pagedView.getPageCount() - 1 ? 1 : -1);
+
+
+                        pagedView.snapToPageImmediately(currentPage);
+                        pagedView.snapToPage(nextPage, new Runnable() {
+                            @Override
+                            public void run() {
+                                pagedView.snapToPage(currentPage);
+                            }
+                        });
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        PagedView.TransitionEffect effect = pagedView.getTransitionEffect();
+                        String name = effect != null ? effect.getName() : PagedView.TransitionEffect.TRANSITION_EFFECT_NONE;
+
+                        SettingsProvider.get(Launcher.this).edit()
+                                .putString(!isAllAppsVisible() ?
+                                        SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT :
+                                        SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT, name)
+                                .commit();
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                })
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        pagedView.setTransitionEffect(oldEffect);
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        mTransitionEffectDialog = null;
+                    }
+                });
+        mTransitionEffectDialog = builder.create();
+        mTransitionEffectDialog.show();
+        mTransitionEffectDialog.setCanceledOnTouchOutside(true);
+        mTransitionEffectDialog.getWindow().getDecorView().setAlpha(0.6f);
+    }
+
     public interface QSBScroller {
         public void setScrollY(int scrollY);
     }
@@ -1239,11 +1325,20 @@ public class Launcher extends Activity
         });
         defaultScreenButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
+        View transitionEffectButton = findViewById(R.id.transition_effect_button);
+        transitionEffectButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                onClickTransitionEffectButton(arg0);
+            }
+        });
+        transitionEffectButton.setOnTouchListener(getHapticFeedbackTouchListener());
+
         View sortButton = findViewById(R.id.sort_button);
         sortButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                onClickSortModeButton(v);
+            public void onClick(View arg0) {
+                onClickSortModeButton(arg0);
             }
         });
         sortButton.setOnTouchListener(getHapticFeedbackTouchListener());
@@ -1731,6 +1826,10 @@ public class Launcher extends Activity
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
+
+            if (mTransitionEffectDialog != null) {
+                mTransitionEffectDialog.cancel();
+            }
 
             final boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
@@ -2761,12 +2860,16 @@ public class Launcher extends Activity
 
     public void updateOverviewPanel() {
         View defaultScreenButton = mOverviewPanel.findViewById(R.id.default_screen_button);
+        View transitionEffectButton = mOverviewPanel.findViewById(R.id.transition_effect_button);
         View widgetButton = mOverviewPanel.findViewById(R.id.widget_button);
         View wallpaperButton = mOverviewPanel.findViewById(R.id.wallpaper_button);
         View sortButton = mOverviewPanel.findViewById(R.id.sort_button);
         View filterButton = mOverviewPanel.findViewById(R.id.filter_button);
 
-        defaultScreenButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
+        PagedView pagedView = !isAllAppsVisible() ? mWorkspace : mAppsCustomizeContent;
+
+        defaultScreenButton.setVisibility((!isAllAppsVisible() && pagedView.getPageCount() > 1) ? View.VISIBLE : View.GONE);
+        transitionEffectButton.setVisibility(pagedView.getPageCount() > 1 ? View.VISIBLE : View.GONE);
         widgetButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
         wallpaperButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
         sortButton.setVisibility(isAllAppsVisible() ? View.VISIBLE : View.GONE);

@@ -211,7 +211,7 @@ public class Workspace extends SmoothPagedView
     WallpaperOffsetInterpolator mWallpaperOffset;
     private boolean mScrollWallpaper;
     private Runnable mDelayedResizeRunnable;
-    private Runnable mDelayedSnapToPageRunnable;
+
     private Point mDisplaySize = new Point();
     private int mCameraDistance;
 
@@ -316,6 +316,9 @@ public class Workspace extends SmoothPagedView
         mScrollWallpaper = SettingsProvider.getBoolean(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
                 R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default);
+        TransitionEffect.setFromString(this, SettingsProvider.getString(context,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT,
+                R.string.preferences_interface_homescreen_scrolling_transition_effect));
 
         mLauncher = (Launcher) context;
         final Resources res = getResources();
@@ -473,6 +476,11 @@ public class Workspace extends SmoothPagedView
     @Override
     protected int getScrollMode() {
         return SmoothPagedView.X_LARGE_MODE;
+    }
+
+    @Override
+    public void setChildAlpha(View child, float alpha) {
+        ((CellLayout) child).setShortcutAndWidgetAlpha(alpha);
     }
 
     @Override
@@ -1101,10 +1109,6 @@ public class Workspace extends SmoothPagedView
             mDelayedResizeRunnable = null;
         }
 
-        if (mDelayedSnapToPageRunnable != null) {
-            mDelayedSnapToPageRunnable.run();
-            mDelayedSnapToPageRunnable = null;
-        }
         if (mStripScreensOnPageStopMoving) {
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
@@ -1145,14 +1149,6 @@ public class Workspace extends SmoothPagedView
         SharedPreferences sp = mLauncher.getSharedPreferences(spKey, Context.MODE_PRIVATE);
         WallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
                 sp, mLauncher.getWindowManager(), mWallpaperManager);
-    }
-
-    protected void snapToPage(int whichPage, Runnable r) {
-        if (mDelayedSnapToPageRunnable != null) {
-            mDelayedSnapToPageRunnable.run();
-        }
-        mDelayedSnapToPageRunnable = r;
-        snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION);
     }
 
     protected void snapToScreenId(long screenId, Runnable r) {
@@ -1527,6 +1523,15 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void screenScrolled(int screenCenter) {
         final boolean isRtl = isLayoutRtl();
+
+        boolean isOnLastPageBeforeCustomContent = false;
+        if (hasCustomContent()) {
+            int customContentWidth = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).getMeasuredWidth();
+            isOnLastPageBeforeCustomContent = (mOverScrollX < customContentWidth && (!hasCustomContent() || isLayoutRtl())) ||
+                    (mOverScrollX > mMaxScrollX - customContentWidth && (!hasCustomContent() || !isLayoutRtl()));
+        }
+        mUseTransitionEffect = !isOnLastPageBeforeCustomContent && mState == State.NORMAL && !mIsSwitchingState;
+
         super.screenScrolled(screenCenter);
 
         updatePageAlphaValues(screenCenter);
@@ -1780,38 +1785,6 @@ public class Workspace extends SmoothPagedView
                 ev.getAction() == MotionEvent.ACTION_UP
                         ? WallpaperManager.COMMAND_TAP : WallpaperManager.COMMAND_SECONDARY_TAP,
                 position[0], position[1], 0, null);
-    }
-
-    /*
-     * This interpolator emulates the rate at which the perceived scale of an object changes
-     * as its distance from a camera increases. When this interpolator is applied to a scale
-     * animation on a view, it evokes the sense that the object is shrinking due to moving away
-     * from the camera.
-     */
-    static class ZInterpolator implements TimeInterpolator {
-        private float focalLength;
-
-        public ZInterpolator(float foc) {
-            focalLength = foc;
-        }
-
-        public float getInterpolation(float input) {
-            return (1.0f - focalLength / (focalLength + input)) /
-                (1.0f - focalLength / (focalLength + 1.0f));
-        }
-    }
-
-    /*
-     * The exact reverse of ZInterpolator.
-     */
-    static class InverseZInterpolator implements TimeInterpolator {
-        private ZInterpolator zInterpolator;
-        public InverseZInterpolator(float foc) {
-            zInterpolator = new ZInterpolator(foc);
-        }
-        public float getInterpolation(float input) {
-            return 1 - zInterpolator.getInterpolation(1 - input);
-        }
     }
 
     /*
@@ -2099,6 +2072,20 @@ public class Workspace extends SmoothPagedView
             boolean isCurrentPage = (i == getNextPage());
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
             float finalAlpha = stateIsSmall ? 0f : 1f;
+
+            if (stateIsOverview) {
+                cl.setVisibility(VISIBLE);
+                cl.setTranslationX(0f);
+                cl.setTranslationY(0f);
+                cl.setPivotX(cl.getMeasuredWidth() * 0.5f);
+                cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                cl.setRotation(0f);
+                cl.setRotationY(0f);
+                cl.setRotationX(0f);
+                cl.setScaleX(1f);
+                cl.setScaleY(1f);
+                cl.setShortcutAndWidgetAlpha(1f);
+            }
 
             // If we are animating to/from the small state, then hide the side pages and fade the
             // current page in

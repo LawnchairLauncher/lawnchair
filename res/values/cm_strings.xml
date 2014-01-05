@@ -12,6 +12,8 @@
     <string name="filter_button_text">Filter</string>
     <!-- Text for default screen button -->
     <string name="default_screen_button_text">Default Screen</string>
+    <!-- Text for transition effect button -->
+    <string name="transition_effect_button_text">Scroll Effect</string>
 
     <string name="sort_mode_title">Title</string>
     <string name="sort_mode_launch_count">Launch Count</string>

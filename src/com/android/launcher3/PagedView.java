@@ -47,12 +47,10 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.*;
 import android.widget.Scroller;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 interface Page {
@@ -269,6 +267,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected final Rect mInsets = new Rect();
 
     protected int mFirstChildLeft;
+
+    private Runnable mDelayedSnapToPageRunnable;
+
+    // Relating to the scroll and overscroll effects
+    protected static float CAMERA_DISTANCE = 6500;
+    protected static final float TRANSITION_SCALE_FACTOR = 0.74f;
+    protected static final float TRANSITION_SCREEN_ROTATION = 12.5f;
+    protected int mCameraDistance;
+    private boolean mScrollTransformsSet;
+    protected TransitionEffect mTransitionEffect;
+    protected boolean mUseTransitionEffect = true;
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -597,6 +606,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // a method that subclasses can override to add behavior
     protected void onPageEndMoving() {
+        if (mDelayedSnapToPageRunnable != null) {
+            mDelayedSnapToPageRunnable.run();
+            mDelayedSnapToPageRunnable = null;
+        }
     }
 
     /**
@@ -997,20 +1010,68 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    protected void screenScrolled(int screenCenter) {
-        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
+    public TransitionEffect getTransitionEffect() {
+        return mTransitionEffect;
+    }
 
-        if (mFadeInAdjacentScreens && !isInOverscroll) {
+    public void setTransitionEffect(TransitionEffect effect) {
+        mTransitionEffect = effect;
+
+        // Reset scroll transforms
+        if (mScrollTransformsSet) {
             for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (child != null) {
-                    float scrollProgress = getScrollProgress(screenCenter, child, i);
-                    float alpha = 1 - Math.abs(scrollProgress);
-                    child.setAlpha(alpha);
+                View v = getPageAt(i);
+                if (v != null) {
+                    v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                    v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                    v.setRotation(0);
+                    v.setRotationX(0);
+                    v.setRotationY(0);
+                    v.setScaleX(1f);
+                    v.setScaleY(1f);
+                    v.setTranslationX(0f);
+                    v.setTranslationY(0f);
+                    v.setVisibility(VISIBLE);
+                    setChildAlpha(v, 1f);
                 }
             }
-            invalidate();
+
+            mScrollTransformsSet = false;
         }
+    }
+
+    protected void screenScrolled(int screenCenter) {
+        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
+        // Apply transition effect and adjacent screen fade if enabled
+        if (mFadeInAdjacentScreens || (mTransitionEffect != null && mUseTransitionEffect) || mScrollTransformsSet) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View v = getPageAt(i);
+                if (v != null) {
+                    float scrollProgress = getScrollProgress(screenCenter, v, i);
+                    // Fade first to allow transition effects to override alpha
+                    if (mFadeInAdjacentScreens && !isInOverscroll) {
+                        float alpha = 1 - Math.abs(scrollProgress);
+                        setChildAlpha(v, alpha);
+                    }
+                    if (mTransitionEffect != null && mUseTransitionEffect && !isInOverscroll) {
+                        mTransitionEffect.screenScrolled(v, i, scrollProgress);
+                    } else if (mScrollTransformsSet) {
+                        v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                        v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                        v.setRotation(0);
+                        v.setRotationX(0);
+                        v.setRotationY(0);
+                        v.setScaleX(1f);
+                        v.setScaleY(1f);
+                        v.setTranslationX(0f);
+                        v.setTranslationY(0f);
+                        v.setVisibility(VISIBLE);
+                        setChildAlpha(v, 1f);
+                    }
+                }
+            }
+        }
+        mScrollTransformsSet = mTransitionEffect != null && mUseTransitionEffect && !isInOverscroll;
     }
 
     protected void enablePagedViewAnimations() {
@@ -1019,6 +1080,42 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
     protected void disablePagedViewAnimations() {
         mAllowPagedViewAnimations = false;
+    }
+
+    /*
+ * This interpolator emulates the rate at which the perceived scale of an object changes
+ * as its distance from a camera increases. When this interpolator is applied to a scale
+ * animation on a view, it evokes the sense that the object is shrinking due to moving away
+ * from the camera.
+ */
+    static class ZInterpolator implements TimeInterpolator {
+        private float focalLength;
+
+        public ZInterpolator(float foc) {
+            focalLength = foc;
+        }
+
+        public float getInterpolation(float input) {
+            return (1.0f - focalLength / (focalLength + input)) /
+                    (1.0f - focalLength / (focalLength + 1.0f));
+        }
+    }
+
+    /*
+     * The exact reverse of ZInterpolator.
+     */
+    static class InverseZInterpolator implements TimeInterpolator {
+        private ZInterpolator zInterpolator;
+        public InverseZInterpolator(float foc) {
+            zInterpolator = new ZInterpolator(foc);
+        }
+        public float getInterpolation(float input) {
+            return 1 - zInterpolator.getInterpolation(1 - input);
+        }
+    }
+
+    protected void setChildAlpha(View child, float alpha) {
+        child.setAlpha(alpha);
     }
 
     @Override
@@ -2153,6 +2250,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         snapToPage(whichPage, delta, duration);
     }
 
+    protected void snapToPage(int whichPage, Runnable r) {
+        if (mDelayedSnapToPageRunnable != null) {
+            mDelayedSnapToPageRunnable.run();
+        }
+        mDelayedSnapToPageRunnable = r;
+        snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION);
+    }
+
     protected void snapToPage(int whichPage) {
         snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
     }
@@ -2814,5 +2919,295 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Override
     public boolean onHoverEvent(android.view.MotionEvent event) {
         return true;
+    }
+
+    protected static abstract class TransitionEffect {
+        public static final String TRANSITION_EFFECT_NONE = "none";
+        public static final String TRANSITION_EFFECT_ZOOM_IN = "zoom-in";
+        public static final String TRANSITION_EFFECT_ZOOM_OUT = "zoom-out";
+        public static final String TRANSITION_EFFECT_ROTATE_UP = "rotate-up";
+        public static final String TRANSITION_EFFECT_ROTATE_DOWN = "rotate-down";
+        public static final String TRANSITION_EFFECT_CUBE_IN = "cube-in";
+        public static final String TRANSITION_EFFECT_CUBE_OUT = "cube-out";
+        public static final String TRANSITION_EFFECT_STACK = "stack";
+        public static final String TRANSITION_EFFECT_ACCORDION = "accordion";
+        public static final String TRANSITION_EFFECT_FLIP = "flip";
+        public static final String TRANSITION_EFFECT_CYLINDER_IN = "cylinder-in";
+        public static final String TRANSITION_EFFECT_CYLINDER_OUT = "cylinder-out";
+        public static final String TRANSITION_EFFECT_CAROUSEL = "carousel";
+        public static final String TRANSITION_EFFECT_OVERVIEW = "overview";
+
+        protected final PagedView mPagedView;
+        private final String mName;
+
+        public TransitionEffect(PagedView pagedView, String name) {
+            mPagedView = pagedView;
+            mName = name;
+        }
+
+        public abstract void screenScrolled(View v, int i, float scrollProgress);
+
+        public final String getName() {
+            return mName;
+        }
+
+        public static void setFromString(PagedView pagedView, String effect) {
+            if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_NONE)) {
+                pagedView.setTransitionEffect(null);
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_ZOOM_IN)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Zoom(pagedView, true));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_ZOOM_OUT)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Zoom(pagedView, false));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_CUBE_IN)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Cube(pagedView, true));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_CUBE_OUT)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Cube(pagedView, false));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_ROTATE_UP)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Rotate(pagedView, true));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_ROTATE_DOWN)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Rotate(pagedView, false));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_STACK)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Stack(pagedView));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_ACCORDION)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Accordion(pagedView));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_FLIP)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Flip(pagedView));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_CYLINDER_IN)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Cylinder(pagedView, true));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_CYLINDER_OUT)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Cylinder(pagedView, false));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_CAROUSEL)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Carousel(pagedView));
+            } else if (effect.equals(PagedView.TransitionEffect.TRANSITION_EFFECT_OVERVIEW)) {
+                pagedView.setTransitionEffect(new PagedView.TransitionEffect.Overview(pagedView));
+            }
+        }
+
+        public static class Zoom extends TransitionEffect {
+            private boolean mIn;
+
+            public Zoom(PagedView pagedView, boolean in) {
+                super(pagedView, in ? TRANSITION_EFFECT_ZOOM_IN : TRANSITION_EFFECT_ZOOM_OUT);
+                mIn = in;
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float scale = 1.0f + (mIn ? -0.2f : 0.1f) * Math.abs(scrollProgress);
+
+                // Extra translation to account for the increase in size
+                if (!mIn) {
+                    float translationX = v.getMeasuredWidth() * 0.1f * -scrollProgress;
+                    v.setTranslationX(translationX);
+                }
+
+                v.setScaleX(scale);
+                v.setScaleY(scale);
+            }
+        }
+
+        public static class Rotate extends TransitionEffect {
+            private boolean mUp;
+
+            public Rotate(PagedView pagedView, boolean up) {
+                super(pagedView, up ? TRANSITION_EFFECT_ROTATE_UP : TRANSITION_EFFECT_ROTATE_DOWN);
+                mUp = up;
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float rotation =
+                        (mUp ? TRANSITION_SCREEN_ROTATION : -TRANSITION_SCREEN_ROTATION) * scrollProgress;
+
+                float translationX = v.getMeasuredWidth() * scrollProgress;
+
+                float rotatePoint =
+                        (v.getMeasuredWidth() * 0.5f) /
+                                (float) Math.tan(Math.toRadians((double) (TRANSITION_SCREEN_ROTATION * 0.5f)));
+
+                v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                if (mUp) {
+                    v.setPivotY(-rotatePoint);
+                } else {
+                    v.setPivotY(v.getMeasuredHeight() + rotatePoint);
+                }
+                v.setRotation(rotation);
+                v.setTranslationX(translationX);
+            }
+        }
+
+        public static class Cube extends TransitionEffect {
+            private boolean mIn;
+
+            public Cube(PagedView pagedView, boolean in) {
+                super(pagedView, in ? TRANSITION_EFFECT_CUBE_IN : TRANSITION_EFFECT_CUBE_OUT);
+                mIn = in;
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float rotation = (mIn ? 90.0f : -90.0f) * scrollProgress;
+
+                if (mIn) {
+                    v.setCameraDistance(mPagedView.mDensity * PagedView.CAMERA_DISTANCE);
+                }
+
+                v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
+                v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                v.setRotationY(rotation);
+            }
+        }
+
+        public static class Stack extends TransitionEffect {
+            private ZInterpolator mZInterpolator = new ZInterpolator(0.5f);
+            private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
+            protected AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
+
+            public Stack(PagedView pagedView) {
+                super(pagedView, TRANSITION_EFFECT_STACK);
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                final boolean isRtl = mPagedView.isLayoutRtl();
+                float interpolatedProgress;
+                float translationX;
+                float maxScrollProgress = Math.max(0, scrollProgress);
+                float minScrollProgress = Math.min(0, scrollProgress);
+
+                if (mPagedView.isLayoutRtl()) {
+                    translationX = maxScrollProgress * v.getMeasuredWidth();
+                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(maxScrollProgress));
+                } else {
+                    translationX = minScrollProgress * v.getMeasuredWidth();
+                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(minScrollProgress));
+                }
+                float scale = (1 - interpolatedProgress) +
+                        interpolatedProgress * TRANSITION_SCALE_FACTOR;
+
+                float alpha;
+                if (isRtl && (scrollProgress > 0)) {
+                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(maxScrollProgress));
+                } else if (!isRtl && (scrollProgress < 0)) {
+                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(scrollProgress));
+                } else {
+                    //  On large screens we need to fade the page as it nears its leftmost position
+                    alpha = mLeftScreenAlphaInterpolator.getInterpolation(1 - scrollProgress);
+                }
+
+                v.setTranslationX(translationX);
+                v.setScaleX(scale);
+                v.setScaleY(scale);
+                if (v instanceof CellLayout) {
+                    ((CellLayout) v).getShortcutsAndWidgets().setAlpha(alpha);
+                } else {
+                    v.setAlpha(alpha);
+                }
+
+                // If the view has 0 alpha, we set it to be invisible so as to prevent
+                // it from accepting touches
+                if (alpha == 0) {
+                    v.setVisibility(INVISIBLE);
+                } else if (v.getVisibility() != VISIBLE) {
+                    v.setVisibility(VISIBLE);
+                }
+            }
+        }
+
+        public static class Accordion extends TransitionEffect {
+            public Accordion(PagedView pagedView) {
+                super(pagedView, TRANSITION_EFFECT_ACCORDION);
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float scale = 1.0f - Math.abs(scrollProgress);
+
+                v.setScaleX(scale);
+                v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
+                v.setPivotY(v.getMeasuredHeight() / 2f);
+            }
+        }
+
+        public static class Flip extends TransitionEffect {
+            public Flip(PagedView pagedView) {
+                super(pagedView, TRANSITION_EFFECT_FLIP);
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float rotation = -180.0f * Math.max(-1f, Math.min(1f, scrollProgress));
+
+                v.setCameraDistance(mPagedView.mDensity * PagedView.CAMERA_DISTANCE);
+                v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                v.setRotationY(rotation);
+
+                if (scrollProgress >= -0.5f && scrollProgress <= 0.5f) {
+                    v.setTranslationX(v.getMeasuredWidth() * scrollProgress);
+                    if (v.getVisibility() != VISIBLE) {
+                        v.setVisibility(VISIBLE);
+                    }
+                } else {
+                    v.setTranslationX(0f);
+                    v.setVisibility(INVISIBLE);
+                }
+            }
+        }
+
+        public static class Cylinder extends TransitionEffect {
+            private boolean mIn;
+
+            public Cylinder(PagedView pagedView, boolean in) {
+                super(pagedView, in ? TRANSITION_EFFECT_CYLINDER_IN : TRANSITION_EFFECT_CYLINDER_OUT);
+                mIn = in;
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float rotation = (mIn ? TRANSITION_SCREEN_ROTATION : -TRANSITION_SCREEN_ROTATION) * scrollProgress;
+
+                v.setPivotX((scrollProgress + 1) * v.getMeasuredWidth() * 0.5f);
+                v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                v.setRotationY(rotation);
+            }
+        }
+
+        public static class Carousel extends TransitionEffect {
+            public Carousel(PagedView pagedView) {
+                super(pagedView, TRANSITION_EFFECT_CAROUSEL);
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float rotation = 90.0f * scrollProgress;
+
+                v.setCameraDistance(mPagedView.mDensity * PagedView.CAMERA_DISTANCE);
+                v.setTranslationX(v.getMeasuredWidth() * scrollProgress);
+                v.setPivotX(!mPagedView.isLayoutRtl() ? 0f : v.getMeasuredWidth());
+                v.setPivotY(v.getMeasuredHeight() / 2);
+                v.setRotationY(-rotation);
+            }
+        }
+
+        public static class Overview extends TransitionEffect {
+            private AccelerateDecelerateInterpolator mScaleInterpolator = new AccelerateDecelerateInterpolator();
+
+            public Overview(PagedView pagedView) {
+                super(pagedView, TRANSITION_EFFECT_OVERVIEW);
+            }
+
+            @Override
+            public void screenScrolled(View v, int i, float scrollProgress) {
+                float scale = 1.0f - 0.1f *
+                        mScaleInterpolator.getInterpolation(Math.min(0.3f, Math.abs(scrollProgress)) / 0.3f);
+
+                v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
+                v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                v.setScaleX(scale);
+                v.setScaleY(scale);
+                mPagedView.setChildAlpha(v, scale);
+            }
+        }
     }
 }

@@ -56,6 +56,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -213,28 +214,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Animation values
     private float mNewScale;
     private float[] mOldBackgroundAlphas;
-    private float[] mOldTranslationXs;
-    private float[] mOldTranslationYs;
-    private float[] mOldScaleXs;
-    private float[] mOldScaleYs;
     private float[] mOldAlphas;
     private float[] mNewBackgroundAlphas;
-    private float[] mNewTranslationXs;
-    private float[] mNewTranslationYs;
-    private float[] mNewScaleXs;
-    private float[] mNewScaleYs;
     private float[] mNewAlphas;
 
     // Relating to the scroll and overscroll effects
-    Workspace.ZInterpolator mZInterpolator = new Workspace.ZInterpolator(0.5f);
-    private static float CAMERA_DISTANCE = 6500;
-    private static float TRANSITION_SCALE_FACTOR = 0.74f;
-    private static float TRANSITION_PIVOT = 0.65f;
     private static float TRANSITION_MAX_ROTATION = 22;
     private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
-    private static final boolean PERFORM_OVERSCROLL_ROTATION = true;
-    private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
-    private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
+    private boolean mOverscrollTransformsSet;
+    private float mLastOverscrollPivotX;
 
     public static boolean DISABLE_ALL_APPS = false;
 
@@ -311,6 +299,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // (top + bottom)
         mFadeInAdjacentScreens = false;
 
+        TransitionEffect.setFromString(this, SettingsProvider.getString(context,
+                SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT,
+                R.string.preferences_interface_drawer_scrolling_transition_effect));
+
         // Unless otherwise specified this view is important for accessibility.
         if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -324,6 +316,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         Context context = getContext();
         Resources r = context.getResources();
+        mCameraDistance = (int) CAMERA_DISTANCE;//r.getInteger(R.integer.config_cameraDistance);
         setDragSlopeThreshold(r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold)/100f);
         mOverviewModeShrinkFactor =
                 r.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100.0f;
@@ -1057,6 +1050,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
+    public void setChildAlpha(View child, float alpha) {
+        if (child instanceof CellLayout) {
+            ((CellLayout) child).getShortcutsAndWidgets().setAlpha(alpha);
+        } else {
+            child.setAlpha(alpha);
+        }
+    }
+
+    @Override
     public void onChildViewAdded(View parent, View child) {
         // For overview mode
         if (child instanceof CellLayout) {
@@ -1066,6 +1068,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             cl.setImportantForAccessibility(ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO);
         }
         super.onChildViewAdded(parent, child);
+    }
+
+    protected boolean shouldDrawChild(View child) {
+        return super.shouldDrawChild(child) && (mIsSwitchingState ||
+                !(child instanceof CellLayout) ||
+                ((CellLayout) child).getShortcutsAndWidgets().getAlpha() > 0);
     }
 
     public void syncAppsPageItems(int page, boolean immediate) {
@@ -1433,92 +1441,51 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void screenScrolled(int screenCenter) {
         final boolean isRtl = isLayoutRtl();
-        super.screenScrolled(screenCenter);
 
+        mUseTransitionEffect = !isInOverviewMode() && !mIsSwitchingState;
+
+        super.screenScrolled(screenCenter);
         enableHwLayersOnVisiblePages();
 
-        if (isInOverviewMode()) {
-            return;
-        }
+        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
 
-        for (int i = 0; i < getChildCount(); i++) {
-            View v = getPageAt(i);
-            if (v != null) {
-                float scrollProgress = getScrollProgress(screenCenter, v, i);
+        if (isInOverscroll) {
+            int index = 0;
+            float pivotX = 0f;
+            final float leftBiasedPivot = 0.35f;
+            final float rightBiasedPivot = 0.65f;
+            final int lowerIndex = 0;
+            final int upperIndex = getChildCount() - 1;
 
-                float interpolatedProgress;
-                float translationX;
-                float maxScrollProgress = Math.max(0, scrollProgress);
-                float minScrollProgress = Math.min(0, scrollProgress);
+            final boolean isLeftPage = mOverScrollX < 0;
+            index = (!isRtl && isLeftPage) || (isRtl && !isLeftPage) ? lowerIndex : upperIndex;
+            pivotX = isLeftPage ? rightBiasedPivot : leftBiasedPivot;
 
-                if (isRtl) {
-                    translationX = maxScrollProgress * v.getMeasuredWidth();
-                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(maxScrollProgress));
-                } else {
-                    translationX = minScrollProgress * v.getMeasuredWidth();
-                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(minScrollProgress));
-                }
-                float scale = (1 - interpolatedProgress) +
-                        interpolatedProgress * TRANSITION_SCALE_FACTOR;
+            View v = getPageAt(index);
 
-                float alpha;
-                if (isRtl && (scrollProgress > 0)) {
-                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(maxScrollProgress));
-                } else if (!isRtl && (scrollProgress < 0)) {
-                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(scrollProgress));
-                } else {
-                    //  On large screens we need to fade the page as it nears its leftmost position
-                    alpha = mLeftScreenAlphaInterpolator.getInterpolation(1 - scrollProgress);
-                }
+            if (!mOverscrollTransformsSet || Float.compare(mLastOverscrollPivotX, pivotX) != 0) {
+                mOverscrollTransformsSet = true;
+                mLastOverscrollPivotX = pivotX;
+                v.setCameraDistance(mDensity * mCameraDistance);
+                v.setPivotX(v.getMeasuredWidth() * pivotX);
+            }
 
-                v.setCameraDistance(mDensity * CAMERA_DISTANCE);
-                int pageWidth = v.getMeasuredWidth();
-                int pageHeight = v.getMeasuredHeight();
-
-                if (PERFORM_OVERSCROLL_ROTATION) {
-                    float xPivot = isRtl ? 1f - TRANSITION_PIVOT : TRANSITION_PIVOT;
-                    boolean isOverscrollingFirstPage = isRtl ? scrollProgress > 0 : scrollProgress < 0;
-                    boolean isOverscrollingLastPage = isRtl ? scrollProgress < 0 : scrollProgress > 0;
-
-                    if (i == 0 && isOverscrollingFirstPage) {
-                        // Overscroll to the left
-                        v.setPivotX(xPivot * pageWidth);
-                        v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
-                        scale = 1.0f;
-                        alpha = 1.0f;
-                        // On the first page, we don't want the page to have any lateral motion
-                        translationX = 0;
-                    } else if (i == getChildCount() - 1 && isOverscrollingLastPage) {
-                        // Overscroll to the right
-                        v.setPivotX((1 - xPivot) * pageWidth);
-                        v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
-                        scale = 1.0f;
-                        alpha = 1.0f;
-                        // On the last page, we don't want the page to have any lateral motion.
-                        translationX = 0;
-                    } else {
-                        v.setPivotY(pageHeight / 2.0f);
-                        v.setPivotX(pageWidth / 2.0f);
-                        v.setRotationY(0f);
-                    }
-                }
-
-                v.setTranslationX(translationX);
-                v.setScaleX(scale);
-                v.setScaleY(scale);
-                if (v instanceof CellLayout) {
-                    ((CellLayout) v).getShortcutsAndWidgets().setAlpha(alpha);
-                } else {
-                    v.setAlpha(alpha);
-                }
-
-                // If the view has 0 alpha, we set it to be invisible so as to prevent
-                // it from accepting touches
-                if (alpha == 0) {
-                    v.setVisibility(INVISIBLE);
-                } else if (v.getVisibility() != VISIBLE) {
-                    v.setVisibility(VISIBLE);
-                }
+            float scrollProgress = getScrollProgress(screenCenter, v, index);
+            float rotation = -TRANSITION_MAX_ROTATION * scrollProgress;
+            v.setRotationY(rotation);
+        } else {
+            if (mOverscrollTransformsSet) {
+                mOverscrollTransformsSet = false;
+                View v0 = getPageAt(0);
+                View v1 = getPageAt(getChildCount() - 1);
+                v0.setRotationY(0);
+                v1.setRotationY(0);
+                v0.setCameraDistance(mDensity * mCameraDistance);
+                v1.setCameraDistance(mDensity * mCameraDistance);
+                v0.setPivotX(v0.getMeasuredWidth() / 2);
+                v1.setPivotX(v1.getMeasuredWidth() / 2);
+                v0.setPivotY(v0.getMeasuredHeight() / 2);
+                v1.setPivotY(v1.getMeasuredHeight() / 2);
             }
         }
     }
@@ -1631,16 +1598,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         final int childCount = getChildCount();
         if (mOldBackgroundAlphas != null) return;
         mOldBackgroundAlphas = new float[childCount];
-        mOldTranslationXs = new float[childCount];
-        mOldTranslationYs = new float[childCount];
-        mOldScaleXs = new float[childCount];
-        mOldScaleYs = new float[childCount];
         mOldAlphas = new float[childCount];
         mNewBackgroundAlphas = new float[childCount];
-        mNewTranslationXs = new float[childCount];
-        mNewTranslationYs = new float[childCount];
-        mNewScaleXs = new float[childCount];
-        mNewScaleYs = new float[childCount];
         mNewAlphas = new float[childCount];
     }
 
@@ -1680,15 +1639,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
-            float translationX = 0f;
-            float translationY = 0f;
-            float scaleX = 1f;
-            float scaleY = 1f;
             float finalAlpha = 1f;
 
             if (stateIsOverview) {
                 cl.setVisibility(VISIBLE);
                 cl.setTranslationX(0f);
+                cl.setTranslationY(0f);
+                cl.setPivotX(cl.getMeasuredWidth() * 0.5f);
+                cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                cl.setRotation(0f);
+                cl.setRotationY(0f);
+                cl.setRotationX(0f);
                 cl.setScaleX(1f);
                 cl.setScaleY(1f);
                 cl.setShortcutAndWidgetAlpha(1f);
@@ -1698,22 +1659,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             mNewAlphas[i] = finalAlpha;
             if (animated) {
                 mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                mOldTranslationXs[i] = cl.getTranslationX();
-                mOldTranslationYs[i] = cl.getTranslationY();
-                mOldScaleXs[i] = cl.getScaleX();
-                mNewScaleXs[i] = cl.getScaleY();
-
                 mNewBackgroundAlphas[i] = finalBackgroundAlpha;
-                mNewTranslationXs[i] = translationX;
-                mNewTranslationYs[i] = translationY;
-                mNewScaleXs[i] = scaleX;
-                mNewScaleYs[i] = scaleY;
             } else {
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
-                cl.setTranslationX(translationX);
-                cl.setTranslationY(translationY);
-                cl.setScaleX(scaleX);
-                cl.setScaleY(scaleY);
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
             }
         }
@@ -1762,23 +1710,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 final CellLayout cl = (CellLayout) getChildAt(i);
                 if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
                     cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
-                    cl.setTranslationX(mNewTranslationXs[i]);
-                    cl.setTranslationY(mNewTranslationYs[i]);
-                    cl.setScaleX(mNewScaleXs[i]);
-                    cl.setScaleY(mNewScaleYs[i]);
                     cl.getShortcutsAndWidgets().setAlpha(mNewAlphas[i]);
                 } else {
-                    LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl);
-                    a.translationX(mNewTranslationXs[i])
-                            .translationY(mNewTranslationYs[i])
-                            .scaleX(mNewScaleXs[i])
-                            .scaleY(mNewScaleYs[i])
-                            .setDuration(duration)
-                            .setInterpolator(mZoomInInterpolator);
-                    anim.play(a);
-                    a = new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
-                    a.translationX(mNewTranslationXs[i])
-                            .alpha(mNewAlphas[i])
+                    LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
+                    a.alpha(mNewAlphas[i])
                             .setDuration(duration)
                             .setInterpolator(mZoomInInterpolator);
                     anim.play(a);
