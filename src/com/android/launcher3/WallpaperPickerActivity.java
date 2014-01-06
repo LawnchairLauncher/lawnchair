@@ -66,6 +66,7 @@ import android.widget.ListAdapter;
 
 import com.android.gallery3d.exif.ExifInterface;
 import com.android.photos.BitmapRegionTileSource;
+import org.cyanogenmod.trebuchet.settings.SettingsProvider;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -81,6 +82,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
     public static final int PICK_LIVE_WALLPAPER = 7;
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
+
+    private static final int MENU_WALLPAPER_SCROLL = 0;
+
 
     private View mSelectedThumb;
     private boolean mIgnoreNextTap;
@@ -497,6 +501,39 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         cursor.close();
         return thumb;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, MENU_WALLPAPER_SCROLL, 0,
+                R.string.wallpaper_scroll).setCheckable(true);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem wallpaperScroll = menu.findItem(MENU_WALLPAPER_SCROLL);
+
+        wallpaperScroll.setChecked(SettingsProvider.getBoolean(this,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
+                R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default));
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case MENU_WALLPAPER_SCROLL:
+                SettingsProvider.get(this).edit()
+                        .putBoolean(SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL, !item.isChecked())
+                        .commit();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     protected void onStop() {

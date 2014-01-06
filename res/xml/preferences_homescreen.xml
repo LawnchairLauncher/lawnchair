@@ -23,10 +23,6 @@
             android:summary="@string/preferences_interface_homescreen_search_summary"
             android:defaultValue="@bool/preferences_interface_homescreen_search_default" />
     <PreferenceCategory android:title="@string/preferences_interface_homescreen_scrolling_category">
-        <CheckBoxPreference android:key="ui_homescreen_scrolling_wallpaper_scroll"
-                android:title="@string/preferences_interface_homescreen_scrolling_wallpaper_scroll_title"
-                android:summary="@string/preferences_interface_homescreen_scrolling_wallpaper_scroll_summary"
-                android:defaultValue="@bool/preferences_interface_homescreen_scrolling_wallpaper_scroll_default" />
         <CheckBoxPreference android:key="ui_homescreen_scrolling_page_outlines"
                 android:title="@string/preferences_interface_homescreen_scrolling_page_outlines_title"
                 android:summary="@string/preferences_interface_homescreen_scrolling_page_outlines_summary"

@@ -313,9 +313,6 @@ public class Workspace extends SmoothPagedView
         mShowOutlines = SettingsProvider.getBoolean(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES,
                 R.bool.preferences_interface_homescreen_scrolling_page_outlines_default);
-        mScrollWallpaper = SettingsProvider.getBoolean(context,
-                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
-                R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default);
         TransitionEffect.setFromString(this, SettingsProvider.getString(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT,
                 R.string.preferences_interface_homescreen_scrolling_transition_effect));
@@ -448,7 +445,7 @@ public class Workspace extends SmoothPagedView
             // In this case, we will skip drawing background protection
         }
 
-        if (mScrollWallpaper) mWallpaperOffset = new WallpaperOffsetInterpolator();
+        mWallpaperOffset = new WallpaperOffsetInterpolator();
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
         display.getSize(mDisplaySize);
 
@@ -1605,6 +1602,16 @@ public class Workspace extends SmoothPagedView
         AccessibilityManager am = (AccessibilityManager)
                 getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
         sAccessibilityEnabled = am.isEnabled();
+
+        mScrollWallpaper = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
+                R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default);
+
+        if (!mScrollWallpaper) {
+            if (mWindowToken != null) mWallpaperManager.setWallpaperOffsets(mWindowToken, 0f, 0.5f);
+        } else {
+            mWallpaperOffset.syncWithScroll();
+        }
     }
 
     @Override
