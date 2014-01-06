@@ -1149,15 +1149,29 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
-            // First, schedule to add these apps back in.
+            final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
-            enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
-            // Then, rebind everything.
-            startLoaderFromBackground();
+            if (!replacing) {
+                enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
+                if (mAppsCanBeOnRemoveableStorage) {
+                    // Only rebind if we support removable storage.  It catches the case where
+                    // apps on the external sd card need to be reloaded
+                    startLoaderFromBackground();
+                }
+            } else {
+                // If we are replacing then just update the packages in the list
+                enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE,
+                        packages));
+            }
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
-            String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
-            enqueuePackageUpdated(new PackageUpdatedTask(
-                        PackageUpdatedTask.OP_UNAVAILABLE, packages));
+            final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+            if (!replacing) {
+                String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
+                enqueuePackageUpdated(new PackageUpdatedTask(
+                            PackageUpdatedTask.OP_UNAVAILABLE, packages));
+            }
+            // else, we are replacing the packages, so ignore this event and wait for
+            // EXTERNAL_APPLICATIONS_AVAILABLE to update the packages at that time
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
