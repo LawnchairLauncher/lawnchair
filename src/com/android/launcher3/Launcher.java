@@ -2149,13 +2149,7 @@ public class Launcher extends Activity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (!isAllAppsVisible()) {
-            if (!mWorkspace.isInOverviewMode()) {
-                mWorkspace.enterOverviewMode();
-            } else {
-                mWorkspace.exitOverviewMode(true);
-            }
-        }
+        showOverviewMode(true);
         return false;
     }
 
