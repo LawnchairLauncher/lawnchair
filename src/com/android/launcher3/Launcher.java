@@ -200,6 +200,9 @@ public class Launcher extends Activity
     // Type: int[]
     private static final String RUNTIME_STATE_VIEW_IDS = "launcher.view_ids";
 
+
+    static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
+
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
             "com.android.launcher.toolbar_search_icon";
@@ -491,6 +494,7 @@ public class Launcher extends Activity
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
 
+        showFirstRunActivity();
         showFirstRunCling();
     }
 
@@ -539,6 +543,21 @@ public class Launcher extends Activity
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
     protected void addCustomContentToLeft() {
+    }
+
+    /**
+     * To be overridden by subclasses to indicate that there is an activity to launch
+     * before showing the standard launcher experience.
+     */
+    protected boolean hasFirstRunActivity() {
+        return false;
+    }
+
+    /**
+     * To be overridden by subclasses to launch any first run activity
+     */
+    protected Intent getFirstRunActivity() {
+        return null;
     }
 
     /**
@@ -4367,6 +4386,10 @@ public class Launcher extends Activity
         }
     }
 
+    private boolean shouldRunFirstRunActivity() {
+        return !ActivityManager.isRunningInTestHarness();
+    }
+
     /* Cling related */
     private boolean isClingsEnabled() {
         if (DISABLE_CLINGS) {
@@ -4435,15 +4458,9 @@ public class Launcher extends Activity
             final Runnable cleanUpClingCb = new Runnable() {
                 public void run() {
                     cling.cleanup();
-                    // We should update the shared preferences on a background thread
-                    new AsyncTask<Void, Void, Void>() {
-                        public Void doInBackground(Void ... args) {
-                            SharedPreferences.Editor editor = mSharedPrefs.edit();
-                            editor.putBoolean(flag, true);
-                            editor.commit();
-                            return null;
-                        }
-                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                    SharedPreferences.Editor editor = mSharedPrefs.edit();
+                    editor.putBoolean(flag, true);
+                    editor.apply();
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -4540,10 +4557,29 @@ public class Launcher extends Activity
         }
     }
 
+    public void showFirstRunActivity() {
+        if (shouldRunFirstRunActivity() && hasFirstRunActivity()
+                && !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false)) {
+            Intent firstRunIntent = getFirstRunActivity();
+            if (firstRunIntent != null) {
+                startActivity(firstRunIntent);
+                markFirstRunActivityShown();
+            }
+        }
+    }
+
+    private void markFirstRunActivityShown() {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
+        editor.apply();
+    }
+
     public void showFirstRunCling() {
         if (isClingsEnabled() &&
                 !mSharedPrefs.getBoolean(Cling.FIRST_RUN_CLING_DISMISSED_KEY, false) &&
                 !skipCustomClingIfNoAccounts() ) {
+
+
             // If we're not using the default workspace layout, replace workspace cling
             // with a custom workspace cling (usually specified in an overlay)
             // For now, only do this on tablets
