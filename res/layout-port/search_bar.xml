@@ -22,7 +22,7 @@
     android:background="@drawable/search_frame">
    <!-- Global search icon -->
    <com.android.launcher3.HolographicLinearLayout
-        style="@style/SearchButton"
+        style="@style/SearchButton.WithPaddingStart"
         launcher:sourceImageViewId="@+id/search_button"
         android:id="@+id/search_button_container"
         android:layout_width="match_parent"
@@ -31,7 +31,6 @@
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/voice_button_container"
-        android:paddingStart="8dp"
         android:onClick="onClickSearchButton"
         android:focusable="true"
         android:clickable="true"
@@ -57,6 +56,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:paddingEnd="8dp"
+        android:paddingRight="8dp"
         android:onClick="onClickVoiceButton"
         android:focusable="true"
         android:clickable="true"
