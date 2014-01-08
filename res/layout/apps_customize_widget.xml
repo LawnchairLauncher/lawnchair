@@ -28,12 +28,13 @@
     <!-- The preview of the widget or shortcut. -->
     <com.android.launcher3.PagedViewWidgetImageView
         android:id="@+id/widget_preview"
+        style="@style/PagedViewWidgetImageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingTop="@dimen/app_widget_preview_padding_top"
-        android:paddingStart="@dimen/app_widget_preview_padding_left"
         android:paddingEnd="@dimen/app_widget_preview_padding_right"
+        android:paddingRight="@dimen/app_widget_preview_padding_right"
         android:scaleType="matrix"
         android:background="@drawable/screenpanel" />
     <LinearLayout
