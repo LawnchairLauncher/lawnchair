@@ -17,8 +17,6 @@
 
 package com.android.launcher3;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -91,7 +89,6 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -122,6 +119,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  * Default launcher application.
@@ -220,6 +218,8 @@ public class Launcher extends Activity
     public static final String SHOW_WEIGHT_WATCHER = "debug.show_mem";
     public static final boolean SHOW_WEIGHT_WATCHER_DEFAULT = false;
 
+    public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
+
     /** The different states that Launcher can be in. */
     private enum State { NONE, WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
@@ -228,8 +228,6 @@ public class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
-    private static final int SHOW_CLING_DURATION = 250;
-    private static final int DISMISS_CLING_DURATION = 200;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
@@ -250,10 +248,13 @@ public class Launcher extends Activity
 
     private Workspace mWorkspace;
     private View mLauncherView;
+    private View mPageIndicators;
     private DragLayer mDragLayer;
     private DragController mDragController;
     private View mWeightWatcher;
+
     private TransitionEffectsFragment mTransitionEffectsFragment;
+    private LauncherClings mLauncherClings;
 
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -310,8 +311,6 @@ public class Launcher extends Activity
     private boolean mVisible = false;
     private boolean mHasFocus = false;
     private boolean mAttached = false;
-    private static final boolean DISABLE_CLINGS = false;
-    private static final boolean DISABLE_CUSTOM_CLINGS = true;
 
     private static LocaleConfiguration sLocaleConfiguration = null;
 
@@ -362,9 +361,6 @@ public class Launcher extends Activity
     private Rect mRectForFolderAnimation = new Rect();
 
     private BubbleTextView mWaitingForResume;
-
-    private HideFromAccessibilityHelper mHideFromAccessibilityHelper
-        = new HideFromAccessibilityHelper();
 
     // Preferences
     private boolean mHideIconLabels;
@@ -436,6 +432,7 @@ public class Launcher extends Activity
                 Context.MODE_PRIVATE);
 
         mDragController = new DragController(this);
+        mLauncherClings = new LauncherClings(this);
         mInflater = getLayoutInflater();
 
         mStats = new Stats(this);
@@ -498,7 +495,11 @@ public class Launcher extends Activity
         unlockScreenOrientation(true);
 
         showFirstRunActivity();
-        showFirstRunCling();
+        if (mModel.canMigrateFromOldLauncherDb()) {
+            mLauncherClings.showMigrationCling();
+        } else {
+            mLauncherClings.showFirstRunCling();
+        }
     }
 
     private void initializeDynamicGrid() {
@@ -711,10 +712,6 @@ public class Launcher extends Activity
 
     public LayoutInflater getInflater() {
         return mInflater;
-    }
-
-    public DragLayer getDragLayer() {
-        return mDragLayer;
     }
 
     boolean isDraggingEnabled() {
@@ -1426,6 +1423,7 @@ public class Launcher extends Activity
         mLauncherView = findViewById(R.id.launcher);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
+        mPageIndicators = mDragLayer.findViewById(R.id.page_indicator);
 
         mLauncherView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -1910,12 +1908,44 @@ public class Launcher extends Activity
         Toast.makeText(this, getString(strId), Toast.LENGTH_SHORT).show();
     }
 
+    public DragLayer getDragLayer() {
+        return mDragLayer;
+    }
+
+    public Workspace getWorkspace() {
+        return mWorkspace;
+    }
+
+    public Hotseat getHotseat() {
+        return mHotseat;
+    }
+
+    public View getDarkPanel() {
+        return mDarkPanel;
+    }
+
+    public View getOverviewPanel() {
+        return mOverviewPanel;
+    }
+
+    public SearchDropTargetBar getSearchBar() {
+        return mSearchDropTargetBar;
+    }
+
     public LauncherAppWidgetHost getAppWidgetHost() {
         return mAppWidgetHost;
     }
 
     public LauncherModel getModel() {
         return mModel;
+    }
+
+    public LauncherClings getLauncherClings() {
+        return mLauncherClings;
+    }
+
+    protected SharedPreferences getSharedPrefs() {
+        return mSharedPrefs;
     }
 
     public void closeSystemDialogs() {
@@ -2896,7 +2926,7 @@ public class Launcher extends Activity
             closeFolder(folder);
 
             // Dismiss the folder cling
-            dismissFolderCling(null);
+            mLauncherClings.dismissFolderCling(null);
         }
     }
 
@@ -2972,18 +3002,6 @@ public class Launcher extends Activity
         return mHotseat != null && layout != null &&
                 (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
     }
-    Hotseat getHotseat() {
-        return mHotseat;
-    }
-    View getOverviewPanel() {
-        return mOverviewPanel;
-    }
-    View getDarkPanel() {
-        return mDarkPanel;
-    }
-    SearchDropTargetBar getSearchBar() {
-        return mSearchDropTargetBar;
-    }
 
     /**
      * Returns the CellLayout of the specified container at the specified screen.
@@ -2998,10 +3016,6 @@ public class Launcher extends Activity
         } else {
             return (CellLayout) mWorkspace.getScreenWithId(screenId);
         }
-    }
-
-    Workspace getWorkspace() {
-        return mWorkspace;
     }
 
     protected AppsCustomizePagedView getAppsCustomizeContent() {
@@ -4402,245 +4416,13 @@ public class Launcher extends Activity
         }
     }
 
-    private boolean shouldRunFirstRunActivity() {
-        return !ActivityManager.isRunningInTestHarness();
-    }
-
-    /* Cling related */
-    private boolean isClingsEnabled() {
-        if (DISABLE_CLINGS) {
-            return false;
-        }
-
-        // For now, limit only to phones
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        if (grid.isTablet()) {
-            return false;
-        }
-        if (grid.isLandscape) {
-            return false;
-        }
-
-        // disable clings when running in a test harness
-        if(ActivityManager.isRunningInTestHarness()) return false;
-
-        // Disable clings for accessibility when explore by touch is enabled
-        final AccessibilityManager a11yManager = (AccessibilityManager) getSystemService(
-                ACCESSIBILITY_SERVICE);
-        if (a11yManager.isTouchExplorationEnabled()) {
-            return false;
-        }
-
-        // Restricted secondary users (child mode) will potentially have very few apps
-        // seeded when they start up for the first time. Clings won't work well with that
-//        boolean supportsLimitedUsers =
-//                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
-//        Account[] accounts = AccountManager.get(this).getAccounts();
-//        if (supportsLimitedUsers && accounts.length == 0) {
-//            UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
-//            Bundle restrictions = um.getUserRestrictions();
-//            if (restrictions.getBoolean(UserManager.DISALLOW_MODIFY_ACCOUNTS, false)) {
-//               return false;
-//            }
-//        }
-        return true;
-    }
-
-    private Cling initCling(int clingId, int scrimId, boolean animate,
-                            boolean dimNavBarVisibilty) {
-        Cling cling = (Cling) findViewById(clingId);
-        View scrim = null;
-        if (scrimId > 0) {
-            scrim = findViewById(R.id.cling_scrim);
-        }
-        if (cling != null) {
-            cling.init(this, scrim);
-            cling.show(animate, SHOW_CLING_DURATION);
-
-            if (dimNavBarVisibilty) {
-                cling.setSystemUiVisibility(cling.getSystemUiVisibility() |
-                        View.SYSTEM_UI_FLAG_LOW_PROFILE);
-            }
-        }
-        return cling;
-    }
-
-    private void dismissCling(final Cling cling, final Runnable postAnimationCb,
-                              final String flag, int duration, boolean restoreNavBarVisibilty) {
-        // To catch cases where siblings of top-level views are made invisible, just check whether
-        // the cling is directly set to GONE before dismissing it.
-        if (cling != null && cling.getVisibility() != View.GONE) {
-            final Runnable cleanUpClingCb = new Runnable() {
-                public void run() {
-                    cling.cleanup();
-                    SharedPreferences.Editor editor = mSharedPrefs.edit();
-                    editor.putBoolean(flag, true);
-                    editor.apply();
-                    if (postAnimationCb != null) {
-                        postAnimationCb.run();
-                    }
-                }
-            };
-            if (duration <= 0) {
-                cleanUpClingCb.run();
-            } else {
-                cling.hide(duration, cleanUpClingCb);
-            }
-            mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
-
-            if (restoreNavBarVisibilty) {
-                cling.setSystemUiVisibility(cling.getSystemUiVisibility() &
-                        ~View.SYSTEM_UI_FLAG_LOW_PROFILE);
-            }
-        }
-    }
-
-    private void removeCling(int id) {
-        final View cling = findViewById(id);
-        if (cling != null) {
-            final ViewGroup parent = (ViewGroup) cling.getParent();
-            parent.post(new Runnable() {
-                @Override
-                public void run() {
-                    parent.removeView(cling);
-                }
-            });
-            mHideFromAccessibilityHelper.restoreImportantForAccessibility(mDragLayer);
-        }
-    }
-
-    private boolean skipCustomClingIfNoAccounts() {
-        Cling cling = (Cling) findViewById(R.id.workspace_cling);
-        boolean customCling = cling.getDrawIdentifier().equals("workspace_custom");
-        if (customCling) {
-            AccountManager am = AccountManager.get(this);
-            if (am == null) return false;
-            Account[] accounts = am.getAccountsByType("com.google");
-            return accounts.length == 0;
-        }
-        return false;
-    }
-
-    public void updateCustomContentHintVisibility() {
-        Cling cling = (Cling) findViewById(R.id.first_run_cling);
-        String ccHintStr = getFirstRunCustomContentHint();
-
-        if (mWorkspace.hasCustomContent()) {
-            // Show the custom content hint if ccHintStr is not empty
-            if (cling != null) {
-                setCustomContentHintVisibility(cling, ccHintStr, true, true);
-            }
-        } else {
-            // Hide the custom content hint
-            if (cling != null) {
-                setCustomContentHintVisibility(cling, ccHintStr, false, true);
-            }
-        }
-    }
-
-    private void setCustomContentHintVisibility(Cling cling, String ccHintStr, boolean visible,
-                                                boolean animate) {
-        final TextView ccHint = (TextView) cling.findViewById(R.id.custom_content_hint);
-        if (ccHint != null) {
-            if (visible && !ccHintStr.isEmpty()) {
-                ccHint.setText(ccHintStr);
-                ccHint.setVisibility(View.VISIBLE);
-                if (animate) {
-                    ccHint.setAlpha(0f);
-                    ccHint.animate().alpha(1f)
-                                    .setDuration(SHOW_CLING_DURATION)
-                                    .start();
-                } else {
-                    ccHint.setAlpha(1f);
-                }
-            } else {
-                if (animate) {
-                    ccHint.animate().alpha(0f)
-                                    .setDuration(SHOW_CLING_DURATION)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            ccHint.setVisibility(View.GONE);
-                                        }
-                                    })
-                                    .start();
-                } else {
-                    ccHint.setAlpha(0f);
-                    ccHint.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
-    public void showFirstRunActivity() {
-        if (shouldRunFirstRunActivity() && hasFirstRunActivity()
-                && !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false)) {
-            Intent firstRunIntent = getFirstRunActivity();
-            if (firstRunIntent != null) {
-                startActivity(firstRunIntent);
-                markFirstRunActivityShown();
-            }
-        }
-    }
-
-    private void markFirstRunActivityShown() {
-        SharedPreferences.Editor editor = mSharedPrefs.edit();
-        editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
-        editor.apply();
-    }
-
-    public void showFirstRunCling() {
-        if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.FIRST_RUN_CLING_DISMISSED_KEY, false) &&
-                !skipCustomClingIfNoAccounts() ) {
-
-
-            // If we're not using the default workspace layout, replace workspace cling
-            // with a custom workspace cling (usually specified in an overlay)
-            // For now, only do this on tablets
-            if (!DISABLE_CUSTOM_CLINGS) {
-                if (mSharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
-                        getResources().getBoolean(R.bool.config_useCustomClings)) {
-                    // Use a custom cling
-                    View cling = findViewById(R.id.workspace_cling);
-                    ViewGroup clingParent = (ViewGroup) cling.getParent();
-                    int clingIndex = clingParent.indexOfChild(cling);
-                    clingParent.removeViewAt(clingIndex);
-                    View customCling = mInflater.inflate(R.layout.custom_workspace_cling, clingParent, false);
-                    clingParent.addView(customCling, clingIndex);
-                    customCling.setId(R.id.workspace_cling);
-                }
-            }
-            Cling cling = (Cling) findViewById(R.id.first_run_cling);
-            if (cling != null) {
-                String sbHintStr = getFirstRunClingSearchBarHint();
-                String ccHintStr = getFirstRunCustomContentHint();
-                if (!sbHintStr.isEmpty()) {
-                    TextView sbHint = (TextView) cling.findViewById(R.id.search_bar_hint);
-                    sbHint.setText(sbHintStr);
-                    sbHint.setVisibility(View.VISIBLE);
-                }
-                setCustomContentHintVisibility(cling, ccHintStr, true, false);
-            }
-            initCling(R.id.first_run_cling, 0, false, true);
-        } else {
-            removeCling(R.id.first_run_cling);
-        }
-    }
-
     /**
      * Called when the SearchBar hint should be changed.
      *
      * @param hint the hint to be displayed in the search bar.
      */
     protected void onSearchBarHintChanged(String hint) {
-        Cling cling = (Cling) findViewById(R.id.first_run_cling);
-        if (cling != null && cling.getVisibility() == View.VISIBLE && !hint.isEmpty()) {
-            TextView sbHint = (TextView) cling.findViewById(R.id.search_bar_hint);
-            sbHint.setText(hint);
-            sbHint.setVisibility(View.VISIBLE);
-        }
+        mLauncherClings.updateSearchBarHint(hint);
     }
 
     protected String getFirstRunClingSearchBarHint() {
@@ -4665,79 +4447,60 @@ public class Launcher extends Activity
         return "";
     }
 
-    public void showFirstRunWorkspaceCling() {
-        // Enable the clings only if they have not been dismissed before
-        if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
-            Cling c = initCling(R.id.workspace_cling, 0, false, true);
-
-            // Set the focused hotseat app if there is one
-            c.setFocusedHotseatApp(getFirstRunFocusedHotseatAppDrawableId(),
-                    getFirstRunFocusedHotseatAppRank(),
-                    getFirstRunFocusedHotseatAppComponentName(),
-                    getFirstRunFocusedHotseatAppBubbleTitle(),
-                    getFirstRunFocusedHotseatAppBubbleDescription());
-        } else {
-            removeCling(R.id.workspace_cling);
-        }
-    }
-    public Cling showFirstRunFoldersCling() {
-        // Enable the clings only if they have not been dismissed before
-        if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
-            Cling cling = initCling(R.id.folder_cling, R.id.cling_scrim,
-                    true, true);
-            return cling;
-        } else {
-            removeCling(R.id.folder_cling);
-            return null;
-        }
-    }
-    protected SharedPreferences getSharedPrefs() {
-        return mSharedPrefs;
-    }
-    public boolean isFolderClingVisible() {
-        Cling cling = (Cling) findViewById(R.id.folder_cling);
-        if (cling != null) {
-            return cling.getVisibility() == View.VISIBLE;
-        }
-        return false;
-    }
     public void dismissFirstRunCling(View v) {
-        Cling cling = (Cling) findViewById(R.id.first_run_cling);
-        Runnable cb = new Runnable() {
-            public void run() {
-                // Show the workspace cling next
-                showFirstRunWorkspaceCling();
-            }
-        };
-        dismissCling(cling, cb, Cling.FIRST_RUN_CLING_DISMISSED_KEY,
-                DISMISS_CLING_DURATION, false);
-
-        // Fade out the search bar for the workspace cling coming up
-        mSearchDropTargetBar.hideSearchBar(true);
+        mLauncherClings.dismissFirstRunCling(v);
+    }
+    public void dismissMigrationClingCopyApps(View v) {
+        mLauncherClings.dismissMigrationClingCopyApps(v);
+    }
+    public void dismissMigrationClingUseDefault(View v) {
+        mLauncherClings.dismissMigrationClingUseDefault(v);
+    }
+    public void dismissMigrationWorkspaceCling(View v) {
+        mLauncherClings.dismissMigrationWorkspaceCling(v);
     }
     public void dismissWorkspaceCling(View v) {
-        Cling cling = (Cling) findViewById(R.id.workspace_cling);
-        Runnable cb = null;
-        if (v == null) {
-            cb = new Runnable() {
-                public void run() {
-                    mWorkspace.enterOverviewMode();
-                }
-            };
-        }
-        dismissCling(cling, cb, Cling.WORKSPACE_CLING_DISMISSED_KEY,
-                DISMISS_CLING_DURATION, true);
-
-        // Fade in the search bar
-        mSearchDropTargetBar.showSearchBar(true);
+        mLauncherClings.dismissWorkspaceCling(v);
     }
     public void dismissFolderCling(View v) {
-        Cling cling = (Cling) findViewById(R.id.folder_cling);
-        dismissCling(cling, null, Cling.FOLDER_CLING_DISMISSED_KEY,
-                DISMISS_CLING_DURATION, true);
+        mLauncherClings.dismissFolderCling(v);
     }
+
+    private boolean shouldRunFirstRunActivity() {
+        return !ActivityManager.isRunningInTestHarness();
+    }
+
+    public void showFirstRunActivity() {
+        if (shouldRunFirstRunActivity() && hasFirstRunActivity()
+                && !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false)) {
+            Intent firstRunIntent = getFirstRunActivity();
+            if (firstRunIntent != null) {
+                startActivity(firstRunIntent);
+                markFirstRunActivityShown();
+            }
+        }
+    }
+
+    private void markFirstRunActivityShown() {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
+        editor.apply();
+    }
+
+    void showWorkspaceSearchAndHotseat() {
+        mWorkspace.setAlpha(1f);
+        mHotseat.setAlpha(1f);
+        mPageIndicators.setAlpha(1f);
+        mSearchDropTargetBar.showSearchBar(false);
+    }
+
+    void hideWorkspaceSearchAndHotseat() {
+        mWorkspace.setAlpha(0f);
+        mHotseat.setAlpha(0f);
+        mPageIndicators.setAlpha(0f);
+        mSearchDropTargetBar.hideSearchBar(false);
+    }
+
 
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
         ResolveInfo ri = getPackageManager().resolveActivity(appLaunchIntent, 0);

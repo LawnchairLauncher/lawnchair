@@ -175,7 +175,7 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
         }
 
         // Dismiss the workspace cling
-        l.dismissWorkspaceCling(null);
+        l.getLauncherClings().dismissWorkspaceCling(null);
     }
 
     @Override

@@ -493,6 +493,14 @@ public class DeviceProfile {
         return bounds;
     }
 
+    /** Returns the bounds of the workspace page indicators. */
+    Rect getWorkspacePageIndicatorBounds(Rect insets) {
+        Rect workspacePadding = getWorkspacePadding();
+        int pageIndicatorTop = heightPx - insets.bottom - workspacePadding.bottom;
+        return new Rect(workspacePadding.left, pageIndicatorTop,
+                widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
+    }
+
     /** Returns the workspace padding in the specified orientation */
     Rect getWorkspacePadding() {
         return getWorkspacePadding(isLandscape ? CellLayout.LANDSCAPE : CellLayout.PORTRAIT);

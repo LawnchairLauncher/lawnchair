@@ -246,7 +246,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.dismissFolderCling(null);
+            mLauncher.getLauncherClings().dismissFolderCling(null);
 
             mLauncher.getWorkspace().onDragStartedWithItem(v);
             mLauncher.getWorkspace().beginDragShared(v, this);
@@ -478,7 +478,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
                 setLayerType(LAYER_TYPE_NONE, null);
-                Cling cling = mLauncher.showFirstRunFoldersCling();
+                Cling cling = mLauncher.getLauncherClings().showFoldersCling();
                 if (cling != null) {
                     cling.bringScrimToFront();
                     bringToFront();

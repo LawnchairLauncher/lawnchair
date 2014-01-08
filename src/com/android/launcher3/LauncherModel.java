@@ -90,7 +90,9 @@ public class LauncherModel extends BroadcastReceiver {
 
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
+
     private final boolean mAppsCanBeOnRemoveableStorage;
+    private final boolean mOldContentProviderExists;
 
     private final LauncherAppState mApp;
     private final Object mLock = new Object();
@@ -193,9 +195,12 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
-        final Context context = app.getContext();
+        Context context = app.getContext();
+        ContentResolver contentResolver = context.getContentResolver();
 
         mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
+        mOldContentProviderExists = (contentResolver.acquireContentProviderClient(
+                LauncherSettings.Favorites.OLD_CONTENT_URI) != null);
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mIconCache = iconCache;
@@ -228,6 +233,10 @@ public class LauncherModel extends BroadcastReceiver {
             // If we are not on the worker thread, then post to the worker handler
             sWorker.post(r);
         }
+    }
+
+    boolean canMigrateFromOldLauncherDb() {
+        return mOldContentProviderExists;
     }
 
     static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> items, int[] xy,

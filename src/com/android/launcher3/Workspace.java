@@ -622,7 +622,7 @@ public class Workspace extends SmoothPagedView
         addFullScreenPage(customScreen);
 
         // Update the custom content hint
-        mLauncher.updateCustomContentHintVisibility();
+        mLauncher.getLauncherClings().updateCustomContentHintVisibility();
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage + 1;
         } else {
@@ -648,7 +648,7 @@ public class Workspace extends SmoothPagedView
         mCustomContentCallbacks = null;
 
         // Update the custom content hint
-        mLauncher.updateCustomContentHintVisibility();
+        mLauncher.getLauncherClings().updateCustomContentHintVisibility();
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage - 1;
         } else {
