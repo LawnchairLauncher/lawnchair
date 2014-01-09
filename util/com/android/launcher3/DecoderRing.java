@@ -86,6 +86,7 @@ class DecoderRing {
         boolean fromLogs = false;
         int skip = 0;
         List<File> files = new LinkedList<File>();
+        boolean verbose = false;
 
         for (int i = 0; i < args.length; i++) {
             if ("-k".equals(args[i])) {
@@ -108,6 +109,8 @@ class DecoderRing {
                 }
             } else if ("-x".equals(args[i])) {
                 extractImages = true;
+            } else if ("-v".equals(args[i])) {
+                verbose = true;
             } else if ("-L".equals(args[i])) {
                 fromLogs = true;
             } else if (args[i] != null && !args[i].startsWith("-")) {
@@ -123,7 +126,7 @@ class DecoderRing {
             usage(args);
         }
 
-        if (files.size() > 1) {
+        if (files.size() > 1 && defaultType != null) {
             System.err.println("Explicit type ignored for multiple files.");
             defaultType = null;
         }
@@ -136,8 +139,13 @@ class DecoderRing {
             Class type = null;
             if (defaultType == null) {
                 Key key = decodeKey(source.getName().getBytes(), fromLogs);
-                type = TYPES[key.type];
-                System.err.println("This is a " + type.getSimpleName() + " backup");
+                if (key != null) {
+                    type = TYPES[key.type];
+                    if (verbose) {
+                        System.err.println(source.getName() + " is a " + type.getSimpleName());
+                        System.out.println(key.toString());
+                    }
+                }
             } else {
                 type = defaultType;
             }
@@ -178,12 +186,14 @@ class DecoderRing {
             byte[] payload = byteStream.toByteArray();
             if (type == Key.class) {
                 proto = decodeKey(payload, fromLogs);
-            } else {
+            } else if (type != null) {
                 proto = decodeBackupData(payload, type, fromLogs);
             }
 
             // Generic string output
-            System.out.println(proto.toString());
+            if (proto != null) {
+                System.out.println(proto.toString());
+            }
 
             if (extractImages) {
                 String prefix = "stdin";
@@ -262,7 +272,7 @@ class DecoderRing {
                 byte[] rawKey = DatatypeConverter.parseBase64Binary(encodedKey);
                 if (rawKey[0] != 'L' || rawKey[1] != ':') {
                     System.err.println(encodedKey + " is not a launcher backup key.");
-                    System.exit(1);
+                    return null;
                 }
                 encodedKey = new String(rawKey, 2, rawKey.length - 2);
             }
@@ -270,16 +280,16 @@ class DecoderRing {
             key = Key.parseFrom(keyProtoData);
         } catch (InvalidProtocolBufferNanoException protoException) {
             System.err.println("failed to extract key from filename: " + protoException);
-            System.exit(1);
+            return null;
         } catch (IllegalArgumentException base64Exception) {
             System.err.println("failed to extract key from filename: " + base64Exception);
-            System.exit(1);
+            return null;
         }
 
         // keys are self-checked
         if (key.checksum != checkKey(key)) {
             System.err.println("key ckecksum failed");
-            System.exit(1);
+            return null;
         }
         return key;
     }
@@ -323,6 +333,7 @@ class DecoderRing {
         System.err.println("\t-w\tdecode a widget");
         System.err.println("\t-S b\tskip b bytes");
         System.err.println("\t-x\textract image data to files");
+        System.err.println("\t-v\tprint key type data, as well as payload");
         System.err.println("\t-l\texpect data from logcat, instead of the local transport");
         System.err.println("\tfilename\tread from filename, not stdin");
         System.exit(1);
