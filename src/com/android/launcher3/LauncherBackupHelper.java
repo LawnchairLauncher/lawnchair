@@ -297,7 +297,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 Key key = getKey(Key.FAVORITE, id);
                 keys.add(key);
                 currentIds.add(keyToBackupKey(key));
-                if (updateTime > in.t) {
+                if (updateTime >= in.t) {
                     byte[] blob = packFavorite(cursor);
                     writeRowToBackup(key, blob, out, data);
                 }
@@ -365,7 +365,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 Key key = getKey(Key.SCREEN, id);
                 keys.add(key);
                 currentIds.add(keyToBackupKey(key));
-                if (updateTime > in.t) {
+                if (updateTime >= in.t) {
                     byte[] blob = packScreen(cursor);
                     writeRowToBackup(key, blob, out, data);
                 }
