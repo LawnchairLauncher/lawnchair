@@ -155,4 +155,10 @@
     </style>
     <style name="CustomClingText">
     </style>
+    <style name="PagedViewWidgetImageView">
+        <item name="android:paddingLeft">@dimen/app_widget_preview_padding_left</item>
+    </style>
+    <style name="SearchButton.WithPaddingStart">
+        <item name="android:paddingLeft">8dp</item>
+    </style>
 </resources>
