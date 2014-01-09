@@ -140,6 +140,8 @@ public class Launcher extends Activity
     static final boolean DEBUG_RESUME_TIME = false;
     static final boolean DEBUG_DUMP_LOG = false;
 
+    static final boolean ENABLE_DEBUG_INTENTS = false; // allow DebugIntents to run
+
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPLICATION = 6;
@@ -1748,6 +1750,15 @@ public class Launcher extends Activity
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
                 updateRunning();
+            } else if (ENABLE_DEBUG_INTENTS && DebugIntents.DELETE_DATABASE.equals(action)) {
+                mModel.resetLoadedState(false, true);
+                mModel.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+                        LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE);
+            } else if (ENABLE_DEBUG_INTENTS && DebugIntents.MIGRATE_DATABASE.equals(action)) {
+                mModel.resetLoadedState(false, true);
+                mModel.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+                        LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
+                                | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
             }
         }
     };
@@ -1760,6 +1771,10 @@ public class Launcher extends Activity
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
+        if (ENABLE_DEBUG_INTENTS) {
+            filter.addAction(DebugIntents.DELETE_DATABASE);
+            filter.addAction(DebugIntents.MIGRATE_DATABASE);
+        }
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
@@ -4915,4 +4930,9 @@ interface LauncherTransitionable {
     void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace);
     void onLauncherTransitionStep(Launcher l, float t);
     void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace);
+}
+
+interface DebugIntents {
+    static final String DELETE_DATABASE = "com.android.launcher3.action.DELETE_DATABASE";
+    static final String MIGRATE_DATABASE = "com.android.launcher3.action.MIGRATE_DATABASE";
 }

@@ -84,6 +84,10 @@ public class LauncherModel extends BroadcastReceiver {
     // false = strew non-workspace apps across the workspace on upgrade
     public static final boolean UPGRADE_USE_MORE_APPS_FOLDER = false;
 
+    public static final int LOADER_FLAG_NONE = 0;
+    public static final int LOADER_FLAG_CLEAR_WORKSPACE = 1 << 0;
+    public static final int LOADER_FLAG_MIGRATE_SHORTCUTS = 1 << 1;
+
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
     private final boolean mAppsCanBeOnRemoveableStorage;
@@ -1254,6 +1258,10 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     public void startLoader(boolean isLaunching, int synchronousBindPage) {
+        startLoader(isLaunching, synchronousBindPage, LOADER_FLAG_NONE);
+    }
+
+    public void startLoader(boolean isLaunching, int synchronousBindPage, int loadFlags) {
         synchronized (mLock) {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "startLoader isLaunching=" + isLaunching);
@@ -1268,7 +1276,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // If there is already one running, tell it to stop.
                 // also, don't downgrade isLaunching if we're already running
                 isLaunching = isLaunching || stopLoaderLocked();
-                mLoaderTask = new LoaderTask(mApp.getContext(), isLaunching);
+                mLoaderTask = new LoaderTask(mApp.getContext(), isLaunching, loadFlags);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
                         && mAllAppsLoaded && mWorkspaceLoaded) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
@@ -1428,13 +1436,15 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
+        private int mFlags;
 
         private HashMap<Object, CharSequence> mLabelCache;
 
-        LoaderTask(Context context, boolean isLaunching) {
+        LoaderTask(Context context, boolean isLaunching, int flags) {
             mContext = context;
             mIsLaunching = isLaunching;
             mLabelCache = new HashMap<Object, CharSequence>();
+            mFlags = flags;
         }
 
         boolean isLaunching() {
@@ -1689,7 +1699,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
-        /** Returns whether this is an upgradge path */
+        /** Returns whether this is an upgrade path */
         private boolean loadWorkspace() {
             // Log to disk
             Launcher.addDumpLog(TAG, "11683562 - loadWorkspace()", true);
@@ -1707,8 +1717,20 @@ public class LauncherModel extends BroadcastReceiver {
             int countX = (int) grid.numColumns;
             int countY = (int) grid.numRows;
 
-            // Make sure the default workspace is loaded, if needed
-            LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
+            if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
+                Launcher.addDumpLog(TAG, "loadWorkspace: resetting launcher database", true);
+                LauncherAppState.getLauncherProvider().deleteDatabase();
+            }
+
+            if ((mFlags & LOADER_FLAG_MIGRATE_SHORTCUTS) != 0) {
+                // append the user's Launcher2 shortcuts
+                Launcher.addDumpLog(TAG, "loadWorkspace: migrating from launcher2", true);
+                LauncherAppState.getLauncherProvider().migrateLauncher2Shortcuts();
+            } else {
+                // Make sure the default workspace is loaded
+                Launcher.addDumpLog(TAG, "loadWorkspace: loading default favorites", false);
+                LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
+            }
 
             // Check if we need to do any upgrade-path logic
             // (Includes having just imported default favorites)
