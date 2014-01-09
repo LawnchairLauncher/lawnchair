@@ -367,6 +367,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mPageLayoutPaddingBottom = pageIndicatorHeight;
     }
 
+    WidgetPreviewLoader getWidgetPreviewLoader() {
+        if (mWidgetPreviewLoader == null) {
+            mWidgetPreviewLoader = new WidgetPreviewLoader(mLauncher);
+        }
+        return mWidgetPreviewLoader;
+    }
+
     /** Returns the item index of the center item on this page so that we can restore to this
      *  item index when we rotate. */
     private int getMiddleComponentIndexOnCurrentPage() {
@@ -432,10 +439,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     protected void onDataReady(int width, int height) {
-        if (mWidgetPreviewLoader == null) {
-            mWidgetPreviewLoader = new WidgetPreviewLoader(mLauncher);
-        }
-
         // Now that the data is ready, we can calculate the content width, the number of cells to
         // use for each page
         LauncherAppState app = LauncherAppState.getInstance();
@@ -807,13 +810,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
             int[] previewSizeBeforeScale = new int[1];
 
-            preview = mWidgetPreviewLoader.generateWidgetPreview(createWidgetInfo.componentName,
+            preview = getWidgetPreviewLoader().generateWidgetPreview(createWidgetInfo.componentName,
                     createWidgetInfo.previewImage, createWidgetInfo.icon, spanX, spanY,
                     maxWidth, maxHeight, null, previewSizeBeforeScale);
 
             // Compare the size of the drag preview to the preview in the AppsCustomize tray
             int previewWidthInAppsCustomize = Math.min(previewSizeBeforeScale[0],
-                    mWidgetPreviewLoader.maxWidthForWidgetPreview(spanX));
+                    getWidgetPreviewLoader().maxWidthForWidgetPreview(spanX));
             scale = previewWidthInAppsCustomize / (float) preview.getWidth();
 
             // The bitmap in the AppsCustomize tray is always the the same size, so there
@@ -1267,7 +1270,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     // do cleanup inside onSyncWidgetPageItems
                     onSyncWidgetPageItems(data, false);
                 }
-            }, mWidgetPreviewLoader);
+            }, getWidgetPreviewLoader());
 
         // Ensure that the task is appropriately prioritized and runs in parallel
         AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page,
@@ -1328,7 +1331,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.minSpanX = minSpanXY[0];
                 createItemInfo.minSpanY = minSpanXY[1];
 
-                widget.applyFromAppWidgetProviderInfo(info, -1, spanXY, mWidgetPreviewLoader);
+                widget.applyFromAppWidgetProviderInfo(info, -1, spanXY, getWidgetPreviewLoader());
                 widget.setTag(createItemInfo);
                 widget.setShortPressListener(this);
             } else if (rawInfo instanceof ResolveInfo) {
@@ -1338,7 +1341,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);
-                widget.applyFromResolveInfo(mPackageManager, info, mWidgetPreviewLoader);
+                widget.applyFromResolveInfo(mPackageManager, info, getWidgetPreviewLoader());
                 widget.setTag(createItemInfo);
             }
             widget.setOnClickListener(this);
@@ -1375,11 +1378,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     maxPreviewHeight = maxSize[1];
                 }
 
-                mWidgetPreviewLoader.setPreviewSize(
+                getWidgetPreviewLoader().setPreviewSize(
                         maxPreviewWidth, maxPreviewHeight, mWidgetSpacingLayout);
                 if (immediate) {
                     AsyncTaskPageData data = new AsyncTaskPageData(page, items,
-                            maxPreviewWidth, maxPreviewHeight, null, null, mWidgetPreviewLoader);
+                            maxPreviewWidth, maxPreviewHeight, null, null, getWidgetPreviewLoader());
                     loadWidgetPreviewsInBackground(null, data);
                     onSyncWidgetPageItems(data, immediate);
                 } else {
@@ -1416,7 +1419,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 task.syncThreadPriority();
             }
 
-            images.add(mWidgetPreviewLoader.getPreview(items.get(i)));
+            images.add(getWidgetPreviewLoader().getPreview(items.get(i)));
         }
     }
 
