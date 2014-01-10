@@ -32,9 +32,10 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
+    private final AppFilter mAppFilter;
+    private final BuildInfo mBuildInfo;
     private LauncherModel mModel;
     private IconCache mIconCache;
-    private AppFilter mAppFilter;
     private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
     private boolean mIsScreenLarge;
     private float mScreenDensity;
@@ -89,6 +90,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         mIconCache = new IconCache(sContext);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
+        mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
 
         // Register intent receivers
@@ -250,5 +252,11 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     @Override
     public void onAvailableSizeChanged(DeviceProfile grid) {
         Utilities.setIconSize(grid.iconSizePx);
+    }
+
+    public static boolean isDisableAllApps() {
+        // Returns false on non-dogfood builds.
+        return getInstance().mBuildInfo.isDogfoodBuild() &&
+                Launcher.isPropertyEnabled(Launcher.DISABLE_ALL_APPS_PROPERTY);
     }
 }

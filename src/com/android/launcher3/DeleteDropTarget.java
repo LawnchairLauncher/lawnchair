@@ -152,12 +152,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 return true;
             }
 
-            if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+            if (!LauncherAppState.isDisableAllApps() &&
                     item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
                 return true;
             }
 
-            if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+            if (!LauncherAppState.isDisableAllApps() &&
                     item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                     item instanceof AppInfo) {
                 AppInfo appInfo = (AppInfo) info;
@@ -166,7 +166,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                 item instanceof ShortcutInfo) {
-                if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+                if (LauncherAppState.isDisableAllApps()) {
                     ShortcutInfo shortcutInfo = (ShortcutInfo) info;
                     return (shortcutInfo.flags & AppInfo.DOWNLOADED_FLAG) != 0;
                 } else {
@@ -180,7 +180,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
         boolean isVisible = true;
-        boolean useUninstallLabel = !AppsCustomizePagedView.DISABLE_ALL_APPS &&
+        boolean useUninstallLabel = !LauncherAppState.isDisableAllApps() &&
                 isAllAppsApplication(source, info);
         boolean useDeleteLabel = !useUninstallLabel && source.supportsDeleteDropTarget();
 
@@ -270,7 +270,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private boolean isUninstallFromWorkspace(DragObject d) {
-        if (AppsCustomizePagedView.DISABLE_ALL_APPS && isWorkspaceOrFolderApplication(d)) {
+        if (LauncherAppState.isDisableAllApps() && isWorkspaceOrFolderApplication(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) d.dragInfo;
             // Only allow manifest shortcuts to initiate an un-install.
             return !InstallShortcutReceiver.isValidShortcutLaunchIntent(shortcut.intent);

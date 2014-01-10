@@ -131,7 +131,7 @@ public class DeviceProfile {
     DeviceProfile(String n, float w, float h, float r, float c,
                   float is, float its, float hs, float his) {
         // Ensure that we have an odd number of hotseat items (since we need to place all apps)
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS && hs % 2 == 0) {
+        if (!LauncherAppState.isDisableAllApps() && hs % 2 == 0) {
             throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
         }
 

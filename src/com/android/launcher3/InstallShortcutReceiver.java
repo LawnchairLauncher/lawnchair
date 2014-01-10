@@ -272,7 +272,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 final Intent intent = pendingInfo.launchIntent;
                 final String name = pendingInfo.name;
 
-                if (AppsCustomizePagedView.DISABLE_ALL_APPS && !isValidShortcutLaunchIntent(intent)) {
+                if (LauncherAppState.isDisableAllApps() && !isValidShortcutLaunchIntent(intent)) {
                     if (DBG) Log.d(TAG, "Ignoring shortcut with launchIntent:" + intent);
                     continue;
                 }

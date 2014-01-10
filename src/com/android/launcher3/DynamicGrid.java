@@ -57,7 +57,7 @@ public class DynamicGrid {
         DisplayMetrics dm = resources.getDisplayMetrics();
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
-        boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
+        boolean hasAA = !LauncherAppState.isDisableAllApps();
         boolean useLargeIcons = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_GENERAL_ICONS_LARGE,
                 R.bool.preferences_interface_general_icons_large_default);
         DEFAULT_ICON_SIZE_PX = pxFromDp(DEFAULT_ICON_SIZE_DP, dm);

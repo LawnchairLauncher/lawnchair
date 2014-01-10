@@ -168,6 +168,7 @@ public class Launcher extends Activity
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
     static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
+    static final String DISABLE_ALL_APPS_PROPERTY = "launcher_noallapps";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -403,7 +404,7 @@ public class Launcher extends Activity
         public void onAnimationCancel(Animator arg0) {}
     };
 
-    private static boolean isPropertyEnabled(String propertyName) {
+    static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
@@ -3126,7 +3127,7 @@ public class Launcher extends Activity
         // Shrink workspaces away if going to AppsCustomize from workspace
         Animator workspaceAnim =
                 mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS
+        if (!LauncherAppState.isDisableAllApps()
                 || contentType == AppsCustomizePagedView.ContentType.Widgets) {
             // Set the content type for the all apps/widgets space
             mAppsCustomizeContent.setContentType(contentType);
@@ -3964,7 +3965,7 @@ public class Launcher extends Activity
         // Remove the extra empty screen
         mWorkspace.removeExtraEmptyScreens();
 
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+        if (!LauncherAppState.isDisableAllApps() &&
                 addedApps != null && mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(addedApps);
         }
@@ -4224,7 +4225,7 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
-        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+        if (LauncherAppState.isDisableAllApps()) {
             if (mIntentsOnWorkspaceFromUpgradePath != null) {
                 if (LauncherModel.UPGRADE_USE_MORE_APPS_FOLDER) {
                     getHotseat().addAllAppsFolder(mIconCache, apps,
@@ -4264,7 +4265,7 @@ public class Launcher extends Activity
             mWorkspace.updateShortcuts(apps);
         }
 
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+        if (!LauncherAppState.isDisableAllApps() &&
                 mAppsCustomizeContent != null) {
             mAppsCustomizeContent.updateApps(apps);
         }
@@ -4301,7 +4302,7 @@ public class Launcher extends Activity
         mDragController.onAppsRemoved(packageNames, appInfos);
 
         // Update AllApps
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS &&
+        if (!LauncherAppState.isDisableAllApps() &&
                 mAppsCustomizeContent != null) {
             mAppsCustomizeContent.removeApps(appInfos);
         }

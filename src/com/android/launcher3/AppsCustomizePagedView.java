@@ -237,8 +237,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private boolean mOverscrollTransformsSet;
     private float mLastOverscrollPivotX;
 
-    public static boolean DISABLE_ALL_APPS = false;
-
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private static final int sPageSleepDelay = 200;
@@ -495,7 +493,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         if (!isDataReady()) {
-            if ((DISABLE_ALL_APPS || !mFilteredApps.isEmpty()) && !mFilteredWidgets.isEmpty()) {
+            if (((LauncherAppState.isDisableAllApps() || !mFilteredApps.isEmpty()) && !mFilteredWidgets.isEmpty())) {
                 setDataIsReady();
                 setMeasuredDimension(width, height);
                 onDataReady(width, height);
@@ -1991,7 +1989,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void setApps(ArrayList<AppInfo> list) {
-        if (!DISABLE_ALL_APPS) {
+        if (!LauncherAppState.isDisableAllApps()) {
             mApps = list;
             filterAppsWithoutInvalidate();
             updatePageCountsAndInvalidateData();
@@ -2011,7 +2009,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void addApps(ArrayList<AppInfo> list) {
-        if (!DISABLE_ALL_APPS) {
+        if (!LauncherAppState.isDisableAllApps()) {
             addAppsWithoutInvalidate(list);
             filterAppsWithoutInvalidate();
             updatePageCountsAndInvalidateData();
@@ -2043,7 +2041,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void removeApps(ArrayList<AppInfo> appInfos) {
-        if (!DISABLE_ALL_APPS) {
+        if (!LauncherAppState.isDisableAllApps()) {
             removeAppsWithoutInvalidate(appInfos);
             filterAppsWithoutInvalidate();
             updatePageCountsAndInvalidateData();
@@ -2054,7 +2052,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We remove and re-add the updated applications list because it's properties may have
         // changed (ie. the title), and this will ensure that the items will be in their proper
         // place in the list.
-        if (!DISABLE_ALL_APPS) {
+        if (!LauncherAppState.isDisableAllApps()) {
             removeAppsWithoutInvalidate(list);
             addAppsWithoutInvalidate(list);
             filterAppsWithoutInvalidate();

@@ -295,7 +295,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private static int getDefaultWorkspaceResourceId() {
-        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+        if (LauncherAppState.isDisableAllApps()) {
             return R.xml.default_workspace_no_all_apps;
         } else {
             return R.xml.default_workspace;
