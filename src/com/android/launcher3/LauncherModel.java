@@ -1466,7 +1466,7 @@ public class LauncherModel extends BroadcastReceiver {
                 sBgDbIconCache.clear();
             }
 
-            if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+            if (LauncherAppState.isDisableAllApps()) {
                 // Ensure that all the applications that are in the system are
                 // represented on the home screen.
                 if (!UPGRADE_USE_MORE_APPS_FOLDER || !isUpgrade) {
@@ -2564,7 +2564,7 @@ public class LauncherModel extends BroadcastReceiver {
             if (added != null) {
                 // Ensure that we add all the workspace applications to the db
                 Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                if (!AppsCustomizePagedView.DISABLE_ALL_APPS) {
+                if (!LauncherAppState.isDisableAllApps()) {
                     addAndBindAddedApps(context, new ArrayList<ItemInfo>(), cb, added);
                 } else {
                     final ArrayList<ItemInfo> addedInfos = new ArrayList<ItemInfo>(added);
