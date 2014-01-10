@@ -1120,7 +1120,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 if (getItemCount() <= 1) {
                     // Remove the folder
                     LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
-                    cellLayout.removeView(mFolderIcon);
+                    if (cellLayout != null) {
+                        // b/12446428 -- sometimes the cell layout has already gone away?
+                        cellLayout.removeView(mFolderIcon);
+                    }
                     if (mFolderIcon instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) mFolderIcon);
                     }
