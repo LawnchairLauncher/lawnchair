@@ -928,7 +928,7 @@ public class LauncherBackupHelper implements BackupHelper {
      * in that case, do a full backup.
      *
      * @param oldState the read-0only file descriptor pointing to the old journal
-     * @return a Journal protocol bugffer
+     * @return a Journal protocol buffer
      */
     private Journal readJournal(ParcelFileDescriptor oldState) {
         Journal journal = new Journal();
@@ -937,38 +937,50 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         FileInputStream inStream = new FileInputStream(oldState.getFileDescriptor());
         try {
-            int remaining = inStream.available();
-            if (DEBUG) Log.d(TAG, "available " + remaining);
-            if (remaining < MAX_JOURNAL_SIZE) {
-                byte[] buffer = new byte[remaining];
+            int availableBytes = inStream.available();
+            if (DEBUG) Log.d(TAG, "available " + availableBytes);
+            if (availableBytes < MAX_JOURNAL_SIZE) {
+                byte[] buffer = new byte[availableBytes];
                 int bytesRead = 0;
-                while (remaining > 0) {
+                boolean valid = false;
+                while (availableBytes > 0) {
                     try {
-                        int result = inStream.read(buffer, bytesRead, remaining);
+                        // OMG what are you doing? This is crazy inefficient!
+                        // If we read a byte that is not ours, we will cause trouble: b/12491813
+                        // However, we don't know how many bytes to expect (oops).
+                        // So we have to step through *slowly*, watching for the end.
+                        int result = inStream.read(buffer, bytesRead, 1);
                         if (result > 0) {
-                            if (DEBUG) Log.d(TAG, "read some bytes: " + result);
-                            remaining -= result;
+                            availableBytes -= result;
                             bytesRead += result;
+                            if (DEBUG && (bytesRead % 100 == 0)) {
+                                Log.d(TAG, "read some bytes: " + bytesRead);
+                            }
                         } else {
-                            // stop reading ands see what there is to parse
-                            Log.w(TAG, "read error: " + result);
-                            remaining = 0;
+                            Log.w(TAG, "unexpected end of file while reading journal.");
+                            // stop reading and see what there is to parse
+                            availableBytes = 0;
                         }
                     } catch (IOException e) {
-                        Log.w(TAG, "failed to read the journal", e);
+                        Log.e(TAG, "failed to read the journal", e);
                         buffer = null;
-                        remaining = 0;
+                        availableBytes = 0;
+                    }
+
+                    // check the buffer to see if we have a valid journal
+                    try {
+                        MessageNano.mergeFrom(journal, readCheckedBytes(buffer, 0, bytesRead));
+                        // if we are here, then we have read a valid, checksum-verified journal
+                        valid = true;
+                        availableBytes = 0;
+                    } catch (InvalidProtocolBufferNanoException e) {
+                        // if we don't have the whole journal yet, mergeFrom will throw. keep going.
+                        journal.clear();
                     }
                 }
                 if (DEBUG) Log.d(TAG, "journal bytes read: " + bytesRead);
-
-                if (buffer != null) {
-                    try {
-                        MessageNano.mergeFrom(journal, readCheckedBytes(buffer, 0, bytesRead));
-                    } catch (InvalidProtocolBufferNanoException e) {
-                        Log.d(TAG, "failed to read the journal", e);
-                        journal.clear();
-                    }
+                if (!valid) {
+                    Log.w(TAG, "failed to read the journal: could not find a valid journal");
                 }
             }
         } catch (IOException e) {
@@ -1038,7 +1050,9 @@ public class LauncherBackupHelper implements BackupHelper {
         FileOutputStream outStream = null;
         try {
             outStream = new FileOutputStream(newState.getFileDescriptor());
-            outStream.write(writeCheckedBytes(journal));
+            final byte[] journalBytes = writeCheckedBytes(journal);
+            if (DEBUG) Log.d(TAG, "writing " + journalBytes.length + " bytes of journal");
+            outStream.write(journalBytes);
             outStream.close();
         } catch (IOException e) {
             Log.d(TAG, "failed to write backup journal", e);
