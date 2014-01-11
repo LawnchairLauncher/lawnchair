@@ -399,10 +399,10 @@ class LauncherClings {
     public void dismissMigrationClingCopyApps(View v) {
         // Copy the shortcuts from the old database
         LauncherModel model = mLauncher.getModel();
-//        model.resetLoadedState(false, true);
-//        model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
-//                LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
-//                        | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
+        model.resetLoadedState(false, true);
+        model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+                LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
+                        | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
 
         // Set the flag to skip the folder cling
         String spKey = LauncherAppState.getSharedPreferencesKey();
@@ -418,9 +418,9 @@ class LauncherClings {
     public void dismissMigrationClingUseDefault(View v) {
         // Clear the workspace
         LauncherModel model = mLauncher.getModel();
-//        model.resetLoadedState(false, true);
-//        model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
-//                LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE);
+        model.resetLoadedState(false, true);
+        model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+                LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE);
 
         // Disable the migration cling
         dismissMigrationCling();
