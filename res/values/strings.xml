@@ -207,7 +207,7 @@ s -->
 
     <!-- Clings -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=30] -->
-    <string name="first_run_cling_title">Welcome!</string>
+    <string name="first_run_cling_title">Welcome</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
     <string name="first_run_cling_description">Make yourself at home.</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
@@ -217,13 +217,13 @@ s -->
     <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
     <string name="first_run_cling_create_screens_hint">Create more screens for apps and folders</string>
     <!-- The title text for the migration cling [CHAR_LIMIT=30] -->
-    <string name="migration_cling_title">Copy your apps?</string>
+    <string name="migration_cling_title">Copy your app icons</string>
     <!-- The description of what migration does [CHAR_LIMIT=60] -->
-    <string name="migration_cling_description">Import apps and folders from your old Home screens?</string>
+    <string name="migration_cling_description">Import icons and folders from your old Home screens?</string>
     <!-- The description of the button to migrate apps from another launcher [CHAR_LIMIT=30] -->
-    <string name="migration_cling_copy_apps">COPY APPS</string>
+    <string name="migration_cling_copy_apps">COPY ICONS</string>
     <!-- The description of the button to use the default launcher layout [CHAR_LIMIT=30] -->
-    <string name="migration_cling_use_default">USE DEFAULT</string>
+    <string name="migration_cling_use_default">START FRESH</string>
     <!-- The title text for the workspace cling [CHAR_LIMIT=30] -->
     <string name="workspace_cling_title">Organize your space</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=70] -->
