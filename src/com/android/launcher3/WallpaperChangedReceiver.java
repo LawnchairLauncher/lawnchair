@@ -22,6 +22,7 @@ import android.content.Intent;
 
 public class WallpaperChangedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent data) {
+        LauncherAppState.setApplicationContext(context.getApplicationContext());
         LauncherAppState appState = LauncherAppState.getInstance();
         appState.onWallpaperChanged();
     }
