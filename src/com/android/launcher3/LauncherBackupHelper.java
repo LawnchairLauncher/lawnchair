@@ -138,12 +138,15 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private final Context mContext;
 
+    private final boolean mRestoreEnabled;
+
     private HashMap<ComponentName, AppWidgetProviderInfo> mWidgetMap;
 
     private ArrayList<Key> mKeys;
 
-    public LauncherBackupHelper(Context context) {
+    public LauncherBackupHelper(Context context, boolean restoreEnabled) {
         mContext = context;
+        mRestoreEnabled = restoreEnabled;
     }
 
     private void dataChanged() {
