@@ -4210,7 +4210,13 @@ public class Workspace extends SmoothPagedView
             } else {
                 cellLayout = getScreenWithId(mDragInfo.screenId);
             }
-            cellLayout.onDropChild(mDragInfo.cell);
+            if (cellLayout == null && LauncherAppState.isDogfoodBuild()) {
+                throw new RuntimeException("Invalid state: cellLayout == null in "
+                        + "Workspace#onDropCompleted. Please file a bug. ");
+            }
+            if (cellLayout != null) {
+                cellLayout.onDropChild(mDragInfo.cell);
+            }
         }
         if ((d.cancelled || target instanceof InfoDropTarget || (beingCalledAfterUninstall && !mUninstallSuccessful))
                 && mDragInfo.cell != null) {
