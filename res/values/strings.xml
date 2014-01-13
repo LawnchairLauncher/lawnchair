@@ -218,7 +218,7 @@ s -->
     <string name="first_run_cling_create_screens_hint">Create more screens for apps and folders</string>
     <!-- The title text for the migration cling [CHAR_LIMIT=30] -->
     <string name="migration_cling_title">Copy your app icons</string>
-    <!-- The description of what migration does [CHAR_LIMIT=60] -->
+    <!-- The description of what migration does [CHAR_LIMIT=70] -->
     <string name="migration_cling_description">Import icons and folders from your old Home screens?</string>
     <!-- The description of the button to migrate apps from another launcher [CHAR_LIMIT=30] -->
     <string name="migration_cling_copy_apps">COPY ICONS</string>
