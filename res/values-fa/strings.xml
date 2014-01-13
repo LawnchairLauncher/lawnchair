@@ -84,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏صفحه اصلی %1$d از %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"‏صفحه برنامه‌ها %1$d از %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"‏صفحه ابزارک‌ها %1$d از %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"خوش آمدید!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"خوش آمدید"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"راحت باشید."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"صفحات بیشتری را برای برنامه‌ها و پوشه‌ها ایجاد کنید"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"کپی کردن نمادهای برنامه شما"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"نمادها و پوشه‌ها از صفحه‌های اصلی قدیمی شما وارد شوند؟"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"کپی نمادها"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"شروع تازه"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"فضای خود را سازماندهی کنید"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"برای مدیریت کاغذدیواری، ابزارک‌ها و تنظیمات، پس‌زمینه را لمس کرده و نگه‌دارید."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"اینجا یک پوشه است"</string>

@@ -148,13 +148,21 @@
     <skip />
     <!-- no translation found for apps_customize_widgets_scroll_format (3106209519974971521) -->
     <skip />
-    <!-- no translation found for first_run_cling_title (7257389003637362144) -->
+    <!-- no translation found for first_run_cling_title (2459738000155917941) -->
     <skip />
     <!-- no translation found for first_run_cling_description (6447072552696253358) -->
     <skip />
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <!-- no translation found for first_run_cling_create_screens_hint (6950729526680114157) -->
+    <skip />
+    <!-- no translation found for migration_cling_title (9181776667882933767) -->
+    <skip />
+    <!-- no translation found for migration_cling_description (2752413805582227644) -->
+    <skip />
+    <!-- no translation found for migration_cling_copy_apps (946331230090919440) -->
+    <skip />
+    <!-- no translation found for migration_cling_use_default (2626475813981258626) -->
     <skip />
     <!-- no translation found for workspace_cling_title (5626202359865825661) -->
     <skip />

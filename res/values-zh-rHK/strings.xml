@@ -84,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"主畫面 %1$d，共 %2$d 個"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"第 %1$d 個應用程式頁面，共 %2$d 頁"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"第 %1$d 個小工具頁面，共 %2$d 頁"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"歡迎！"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"歡迎"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"自訂主畫面。"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"建立更多應用程式和資料夾的畫面"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"複製您的應用程式圖示"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"要從舊主畫面匯入圖示和資料夾嗎？"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"複製圖示"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"重新開始"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"管理您的空間"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"輕觸並按住背景，即可管理桌布、小工具和設定。"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"資料夾顯示如下"</string>
