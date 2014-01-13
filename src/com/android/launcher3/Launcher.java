@@ -2781,7 +2781,8 @@ public class Launcher extends Activity
         // The hotseat touch handling does not go through Workspace, and we always allow long press
         // on hotseat items.
         final View itemUnderLongClick = longClickCellInfo.cell;
-        boolean allowLongPress = isHotseatLayout(v) || mWorkspace.allowLongPress();
+        final boolean inHotseat = isHotseatLayout(v);
+        boolean allowLongPress = inHotseat || mWorkspace.allowLongPress();
         if (allowLongPress && !mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
@@ -2794,7 +2795,11 @@ public class Launcher extends Activity
                     mWorkspace.enterOverviewMode();
                 }
             } else {
-                if (!(itemUnderLongClick instanceof Folder)) {
+                final boolean isAllAppsButton = inHotseat && isAllAppsButtonRank(
+                        mHotseat.getOrderInHotseat(
+                                longClickCellInfo.cellX,
+                                longClickCellInfo.cellY));
+                if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
                     // User long pressed on an item
                     mWorkspace.startDrag(longClickCellInfo);
                 }
