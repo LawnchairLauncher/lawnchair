@@ -84,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"მთავარი ეკრანი %1$d, %2$d-დან"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"აპების გვერდი %1$d, %2$d-დან"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ვიჯეტების გვერდი %1$d, %2$d-დან"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"კეთილი იყოს თქვენი მობრძანება!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"მოგესალმებით"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"იგრძენით თავი საკუთარ სახლში"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"აპებისა და საქაღალდეებისთვის კიდევ ერთი ეკრანის შექმნა"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"თქვენი აპის ხატულების კოპირება"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"გსურთ ძვლი მთავარი ეკრანიდან ხატულების და საქაღ. იმპორტი?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"ხატულების კოპირება"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"სტანდარტული განლაგება"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"თქვენი სივრცის ორგანიზება"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"თუ გსურთ ფონების, ვიჯეტების და პარამეტრების მართვა, შეეხეთ და არ აუშვათ ფონს."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"აი, საქაღალდე"</string>
