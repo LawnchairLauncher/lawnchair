@@ -84,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"መነሻ ማያ ገጽ %1$d ከ%2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"የመተግበሪያዎች ገጽ %1$d ከ%2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"የመግብሮች ገጽ %1$d ከ%2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"እንኳን ደህና መጡ!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"እንኳን በደህና መጡ"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"ልክ እቤትዎ እንዳሉ ሆነው ዘና ይበሉ።"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"ለመተግበሪያዎች እና አቃፊዎች ተጨማሪ ማያ ገጾችን ይፍጠሩ"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"የመተግበሪያ አዶዎችዎን ይቅዱ"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"አዶዎች እና አቃፊዎች ከድሮው የመነሻ ማያ ገጾችዎ ይምጡ?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"አዶዎችን ይቅዱ"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"እንደ አዲስ ይጀምሩ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ቦታዎን ያደራጁ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"የግድግዳ ወረቀት፣ ምግብሮችን እና ቅንብሮችን ለማቀናበር ጀርባውን ይንኩ እና ይያዙት።"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"አንድ አቃፊ እነሆ"</string>

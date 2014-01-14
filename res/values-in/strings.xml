@@ -84,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Layar utama %1$d dari %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Laman aplikasi %1$d dari %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Laman widget %1$d dari %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Selamat datang!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Selamat Datang"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Serasa di rumah sendiri."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Buat lebih banyak layar untuk aplikasi dan folder"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Salin ikon aplikasi Anda"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Impor ikon dan folder dari layar Utama lama Anda?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"IKON SALIN"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"MULAI DARI AWAL"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Kelola ruang Anda"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Sentuh lama latar belakang untuk mengelola wallpaper, widget, dan setelan."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ini adalah folder"</string>

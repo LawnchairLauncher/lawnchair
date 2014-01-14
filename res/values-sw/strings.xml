@@ -86,11 +86,15 @@
     <skip />
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Ukurasa wa programu %1$d ya %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Ukurasa wa wijeti %1$d ya %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Karibu!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Karibu"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Jisikie huru."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Unda skrini zaidi za programu na folda"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Nakili ikoni za programu yako"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Je, ungependa kuingiza ikoni na folda kutoka kwa skrini zako za Mwanzo za zamani?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"NAKILI IKONI"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ANZA UPYA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Panga nafasi yako"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Gusa na ushikilie mandharinyuma ili udhibiti mandhari, wijeti, na mipangilio."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Hii ni folda"</string>

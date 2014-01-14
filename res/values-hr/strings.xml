@@ -84,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Početni zaslon %1$d od %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Stranica aplikacija %1$d od %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Stranica widgeta %1$d od %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Dobro došli!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Dobro došli"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Osjećajte se kao kod kuće."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Izradite više zaslona za aplikacije i mape"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Kopiranje ikona aplikacija"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Želite li uvesti ikone i mape sa starih početnih zaslona?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIRAJ IKONE"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"POKRENI NOVO"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizirajte svoj prostor"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Dodirnite i držite pozadinu da biste upravljali pozadinskom slikom, widgetima i postavkama."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Evo mape"</string>
