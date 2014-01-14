@@ -85,6 +85,9 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
     }
 
     public SavedWallpaperImages(Activity context) {
+        // We used to store the saved images in the cache directory, but that meant they'd get
+        // deleted sometimes-- move them to the data directory
+        ImageDb.moveFromCacheDirectoryIfNecessary(context);
         mDb = new ImageDb(context);
         mContext = context;
         mLayoutInflater = context.getLayoutInflater();
@@ -215,11 +218,20 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         Context mContext;
 
         public ImageDb(Context context) {
-            super(context, new File(context.getCacheDir(), DB_NAME).getPath(), null, DB_VERSION);
+            super(context, context.getDatabasePath(DB_NAME).getPath(), null, DB_VERSION);
             // Store the context for later use
             mContext = context;
         }
 
+        public static void moveFromCacheDirectoryIfNecessary(Context context) {
+            // We used to store the saved images in the cache directory, but that meant they'd get
+            // deleted sometimes-- move them to the data directory
+            File oldSavedImagesFile = new File(context.getCacheDir(), ImageDb.DB_NAME);
+            File savedImagesFile = context.getDatabasePath(ImageDb.DB_NAME);
+            if (oldSavedImagesFile.exists()) {
+                oldSavedImagesFile.renameTo(savedImagesFile);
+            }
+        }
         @Override
         public void onCreate(SQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
