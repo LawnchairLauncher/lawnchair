@@ -21,12 +21,15 @@ import android.app.backup.BackupManager;
 import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     private static final String TAG = "LauncherBackupAgentHelper";
 
     private static BackupManager sBackupManager;
+
+    protected static final String SETTING_RESTORE_ENABLED = "launcher_restore_enabled";
 
     /**
      * Notify the backup manager that out database is dirty.
@@ -54,9 +57,15 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     @Override
     public void onCreate() {
+
+        boolean restoreEnabled = 0 != Settings.Secure.getInt(
+                getContentResolver(), SETTING_RESTORE_ENABLED, 0);
+
         addHelper(LauncherBackupHelper.LAUNCHER_PREFS_PREFIX,
-                new SharedPreferencesBackupHelper(this,
-                        LauncherAppState.getSharedPreferencesKey()));
-        addHelper(LauncherBackupHelper.LAUNCHER_PREFIX, new LauncherBackupHelper(this));
+                new LauncherPreferencesBackupHelper(this,
+                        LauncherAppState.getSharedPreferencesKey(),
+                        restoreEnabled));
+        addHelper(LauncherBackupHelper.LAUNCHER_PREFIX,
+                new LauncherBackupHelper(this, restoreEnabled));
     }
 }
