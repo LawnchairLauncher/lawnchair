@@ -373,14 +373,14 @@ class LauncherClings {
                         showMigrationWorkspaceCling();
                     }
                 };
-                dismissCling(cling, cb, WORKSPACE_CLING_DISMISSED_KEY,
+                dismissCling(cling, cb, MIGRATION_CLING_DISMISSED_KEY,
                         DISMISS_CLING_DURATION, true);
             }
         };
         mLauncher.getWorkspace().post(dismissCb);
     }
 
-    private void dismissAnyWorkspaceCling(Cling cling, View v) {
+    private void dismissAnyWorkspaceCling(Cling cling, String key, View v) {
         Runnable cb = null;
         if (v == null) {
             cb = new Runnable() {
@@ -389,8 +389,7 @@ class LauncherClings {
                 }
             };
         }
-        dismissCling(cling, cb, WORKSPACE_CLING_DISMISSED_KEY,
-                DISMISS_CLING_DURATION, true);
+        dismissCling(cling, cb, key, DISMISS_CLING_DURATION, true);
 
         // Fade in the search bar
         mLauncher.getSearchBar().showSearchBar(true);
@@ -428,12 +427,12 @@ class LauncherClings {
 
     public void dismissMigrationWorkspaceCling(View v) {
         Cling cling = (Cling) mLauncher.findViewById(R.id.migration_workspace_cling);
-        dismissAnyWorkspaceCling(cling, v);
+        dismissAnyWorkspaceCling(cling, MIGRATION_WORKSPACE_CLING_DISMISSED_KEY, v);
     }
 
     public void dismissWorkspaceCling(View v) {
         Cling cling = (Cling) mLauncher.findViewById(R.id.workspace_cling);
-        dismissAnyWorkspaceCling(cling, v);
+        dismissAnyWorkspaceCling(cling, WORKSPACE_CLING_DISMISSED_KEY, v);
     }
 
     public void dismissFolderCling(View v) {
