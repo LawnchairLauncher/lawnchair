@@ -330,9 +330,9 @@ public class WallpaperCropActivity extends Activity {
 
     protected void cropImageAndSetWallpaper(Uri uri,
             OnBitmapCroppedHandler onBitmapCroppedHandler, final boolean finishActivityWhenDone) {
+        boolean centerCrop = getResources().getBoolean(R.bool.center_crop);
         // Get the crop
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
-
 
         Display d = getWindowManager().getDefaultDisplay();
 
@@ -358,15 +358,25 @@ public class WallpaperCropActivity extends Activity {
         // ADJUST CROP WIDTH
         // Extend the crop all the way to the right, for parallax
         // (or all the way to the left, in RTL)
-        float extraSpace = ltr ? rotatedInSize[0] - cropRect.right : cropRect.left;
+        float extraSpace;
+        if (centerCrop) {
+            extraSpace = 2f * Math.min(rotatedInSize[0] - cropRect.right, cropRect.left);
+        } else {
+            extraSpace = ltr ? rotatedInSize[0] - cropRect.right : cropRect.left;
+        }
         // Cap the amount of extra width
         float maxExtraSpace = defaultWallpaperSize.x / cropScale - cropRect.width();
         extraSpace = Math.min(extraSpace, maxExtraSpace);
 
-        if (ltr) {
-            cropRect.right += extraSpace;
+        if (centerCrop) {
+            cropRect.left -= extraSpace / 2f;
+            cropRect.right += extraSpace / 2f;
         } else {
-            cropRect.left -= extraSpace;
+            if (ltr) {
+                cropRect.right += extraSpace;
+            } else {
+                cropRect.left -= extraSpace;
+            }
         }
 
         // ADJUST CROP HEIGHT
