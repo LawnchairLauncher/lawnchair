@@ -4468,12 +4468,13 @@ public class Launcher extends Activity
     }
 
     private boolean shouldRunFirstRunActivity() {
-        return !ActivityManager.isRunningInTestHarness();
+        return !ActivityManager.isRunningInTestHarness() &&
+                !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
     }
 
     public void showFirstRunActivity() {
-        if (shouldRunFirstRunActivity() && hasFirstRunActivity()
-                && !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false)) {
+        if (shouldRunFirstRunActivity() &&
+                hasFirstRunActivity()) {
             Intent firstRunIntent = getFirstRunActivity();
             if (firstRunIntent != null) {
                 startActivity(firstRunIntent);
