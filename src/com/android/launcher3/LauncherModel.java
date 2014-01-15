@@ -235,8 +235,8 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
-    boolean canMigrateFromOldLauncherDb() {
-        return mOldContentProviderExists;
+    boolean canMigrateFromOldLauncherDb(Launcher launcher) {
+        return mOldContentProviderExists && !launcher.isLauncherPreinstalled() ;
     }
 
     static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> items, int[] xy,

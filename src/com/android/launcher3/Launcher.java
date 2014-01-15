@@ -45,6 +45,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
@@ -497,11 +498,18 @@ public class Launcher extends Activity
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
 
+        // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
+        // on the device, then we always show the first run cling experience (or if there is no
+        // launcher2). Otherwise, we prompt the user upon started for migration
         showFirstRunActivity();
-        if (mModel.canMigrateFromOldLauncherDb()) {
-            mLauncherClings.showMigrationCling();
+        if (mLauncherClings.shouldShowFirstRunOrMigrationClings()) {
+            if (mModel.canMigrateFromOldLauncherDb(this)) {
+                mLauncherClings.showMigrationCling();
+            } else {
+                mLauncherClings.showFirstRunCling();
+            }
         } else {
-            mLauncherClings.showFirstRunCling();
+            mLauncherClings.removeFirstRunAndMigrationClings();
         }
     }
 
@@ -4439,6 +4447,21 @@ public class Launcher extends Activity
      */
     protected void onSearchBarHintChanged(String hint) {
         mLauncherClings.updateSearchBarHint(hint);
+    }
+
+    protected boolean isLauncherPreinstalled() {
+        PackageManager pm = getPackageManager();
+        try {
+            ApplicationInfo ai = pm.getApplicationInfo(getComponentName().getPackageName(), 0);
+            if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     protected String getFirstRunClingSearchBarHint() {
