@@ -22,10 +22,13 @@ import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.util.Log;
 
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     private static final String TAG = "LauncherBackupAgentHelper";
+    static final boolean VERBOSE = true;
+    static final boolean DEBUG = false;
 
     private static BackupManager sBackupManager;
 
@@ -57,9 +60,9 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     @Override
     public void onCreate() {
-
         boolean restoreEnabled = 0 != Settings.Secure.getInt(
                 getContentResolver(), SETTING_RESTORE_ENABLED, 0);
+        if (VERBOSE) Log.v(TAG, "restore is " + (restoreEnabled ? "enabled" : "disabled"));
 
         addHelper(LauncherBackupHelper.LAUNCHER_PREFS_PREFIX,
                 new LauncherPreferencesBackupHelper(this,
