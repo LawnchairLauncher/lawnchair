@@ -45,8 +45,8 @@
             android:layout_gravity="end" />
 
         <include
-            android:id="@+id/qsb_bar"
-            layout="@layout/qsb_bar" />
+            android:id="@+id/search_drop_target_bar"
+            layout="@layout/search_drop_target_bar" />
 
         <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
              that it is still visible during the transition to AllApps and doesn't overlay on

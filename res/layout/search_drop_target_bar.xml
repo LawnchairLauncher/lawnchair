@@ -15,14 +15,13 @@
 -->
 <com.android.launcher3.SearchDropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/QSBBar"
+    android:orientation="horizontal"
     android:focusable="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- Drag specific targets container -->
     <LinearLayout
-        style="@style/SearchDropTargetBar"
         android:id="@+id/drag_target_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

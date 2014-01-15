@@ -45,8 +45,8 @@
             android:layout_height="match_parent" />
 
         <include
-            android:id="@+id/qsb_bar"
-            layout="@layout/qsb_bar" />
+            android:id="@+id/search_drop_target_bar"
+            layout="@layout/search_drop_target_bar" />
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
