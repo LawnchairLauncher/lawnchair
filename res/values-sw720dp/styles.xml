@@ -58,11 +58,6 @@
         <item name="android:maxWidth">240dp</item>
     </style>
 
-    <!-- QSB Search / Drop Target bar -->
-    <style name="QSBBar">
-    </style>
-    <style name="SearchDropTargetBar">
-    </style>
     <style name="SearchButton">
     </style>
     <style name="DropTargetButtonContainer">

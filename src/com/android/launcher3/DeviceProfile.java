@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -605,10 +606,13 @@ public class DeviceProfile {
             // Vertical search bar space
             lp.gravity = Gravity.TOP | Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
-            lp.height = LayoutParams.MATCH_PARENT;
+            lp.height = LayoutParams.WRAP_CONTENT;
             searchBar.setPadding(
                     0, 2 * edgeMarginPx, 0,
                     2 * edgeMarginPx);
+
+            LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
+            targets.setOrientation(LinearLayout.VERTICAL);
         } else {
             // Horizontal search bar space
             lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
@@ -620,13 +624,6 @@ public class DeviceProfile {
                     2 * edgeMarginPx, 0);
         }
         searchBar.setLayoutParams(lp);
-
-        // Layout the search bar
-        View qsbBar = launcher.getQsbBar();
-        LayoutParams vglp = qsbBar.getLayoutParams();
-        vglp.width = LayoutParams.MATCH_PARENT;
-        vglp.height = LayoutParams.MATCH_PARENT;
-        qsbBar.setLayoutParams(vglp);
 
         // Layout the voice proxy
         View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
