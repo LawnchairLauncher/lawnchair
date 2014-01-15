@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widget"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Spazio nelle schermate Home esaurito."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Spazio nella schermata Home esaurito."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Spazio nell\'area hotseat esaurito."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Questo widget è troppo grande per l\'area hotseat."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spazio esaurito nella barra dei Preferiti"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Questo widget è troppo grande per la barra dei Preferiti"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" creata."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"La scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" è stata rimossa."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
