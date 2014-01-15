@@ -31,6 +31,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -90,7 +91,8 @@ public class DeviceProfile {
 
     int overviewModeMinIconZoneHeightPx;
     int overviewModeMaxIconZoneHeightPx;
-    int overviewModeMaxBarWidthPx;
+    int overviewModeBarItemWidthPx;
+    int overviewModeBarSpacerWidthPx;
     float overviewModeIconZoneRatio;
     float overviewModeScaleFactor;
 
@@ -175,8 +177,10 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
         overviewModeMaxIconZoneHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
-        overviewModeMaxBarWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_max_width);
+        overviewModeBarItemWidthPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
+        overviewModeBarSpacerWidthPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
         overviewModeIconZoneRatio =
                 res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
         overviewModeScaleFactor =
@@ -611,6 +615,21 @@ public class DeviceProfile {
         return isVerticalBarLayout() || isLargeTablet();
     }
 
+    int getVisibleChildCount(ViewGroup parent) {
+        int visibleChildren = 0;
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            if (parent.getChildAt(i).getVisibility() != View.GONE) {
+                visibleChildren++;
+            }
+        }
+        return visibleChildren;
+    }
+
+    int calculateOverviewModeWidth(int visibleChildCount) {
+        return visibleChildCount * overviewModeBarItemWidthPx +
+                (visibleChildCount-1) * overviewModeBarSpacerWidthPx;
+    }
+
     public void layout(Launcher launcher) {
         // Update search bar for live settings
         searchBarVisible = SettingsProvider.getBoolean(launcher, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
@@ -765,12 +784,13 @@ public class DeviceProfile {
         }
 
         // Layout the Overview Mode
-//        View overviewMode = launcher.getOverviewPanel();
+//        ViewGroup overviewMode = launcher.getOverviewPanel();
 //        if (overviewMode != null) {
 //            Rect r = getOverviewModeButtonBarRect();
 //            lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
 //            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-//            lp.width = Math.min(availableWidthPx, overviewModeMaxBarWidthPx);
+//            lp.width = Math.min(availableWidthPx,
+//                    calculateOverviewModeWidth(getVisibleChildCount(overviewMode)));
 //            lp.height = r.height();
 //            overviewMode.setLayoutParams(lp);
 //        }

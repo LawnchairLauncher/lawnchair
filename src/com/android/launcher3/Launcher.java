@@ -268,9 +268,12 @@ public class Launcher extends Activity
     private FolderInfo mFolderInfo;
 
     private Hotseat mHotseat;
+
     private View mOverviewPanel;
     private View mDarkPanel;
     OverviewSettingsPanel mOverviewSettingsPanel;
+
+//    private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
 
@@ -1260,6 +1263,13 @@ public class Launcher extends Activity
         });
 
         popupMenu.show();
+    }
+
+    protected boolean hasSettings() {
+        return false;
+    }
+
+    protected void startSettings() {
     }
 
     public interface QSBScroller {
