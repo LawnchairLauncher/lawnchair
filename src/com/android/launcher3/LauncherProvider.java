@@ -1625,6 +1625,7 @@ public class LauncherProvider extends ContentProvider {
                         final int width = (int) grid.numColumns;
                         final int height = (int) grid.numRows;
                         final int hotseatWidth = (int) grid.numHotseatIcons;
+                        PackageManager pm = mContext.getPackageManager();
 
                         final HashSet<String> seenIntents = new HashSet<String>(c.getCount());
 
@@ -1647,29 +1648,40 @@ public class LauncherProvider extends ContentProvider {
                                 + c.getString(titleIndex) + "\": " + intentStr, true);
 
                             if (itemType != Favorites.ITEM_TYPE_FOLDER) {
+
+                                final Intent intent;
+                                final ComponentName cn;
+                                try {
+                                    intent = Intent.parseUri(intentStr, 0);
+                                } catch (URISyntaxException e) {
+                                    // bogus intent?
+                                    Launcher.addDumpLog(TAG,
+                                            "skipping invalid intent uri", true);
+                                    continue;
+                                }
+
+                                cn = intent.getComponent();
+
                                 if (TextUtils.isEmpty(intentStr)) {
                                     // no intent? no icon
                                     Launcher.addDumpLog(TAG, "skipping empty intent", true);
                                     continue;
+                                } else if (!LauncherModel.isValidPackageComponent(pm, cn)) {
+                                    // component no longer exists.
+                                    Launcher.addDumpLog(TAG, "skipping item whose component" +
+                                            "no longer exists.", true);
+                                    continue;
                                 } else {
-                                    try {
-                                        // Canonicalize
-                                        final Intent intent = Intent.parseUri(intentStr, 0);
-                                        // the Play Store sets the package parameter, but Launcher
-                                        // does not, so we clear that out to keep them the same
-                                        intent.setPackage(null);
-                                        final String key = intent.toUri(0);
-                                        if (seenIntents.contains(key)) {
-                                            Launcher.addDumpLog(TAG, "skipping duplicate", true);
-                                            continue;
-                                        } else {
-                                            seenIntents.add(key);
-                                        }
-                                    } catch (URISyntaxException e) {
-                                        // bogus intent?
-                                        Launcher.addDumpLog(TAG,
-                                                "skipping invalid intent uri", true);
+                                    // Canonicalize
+                                    // the Play Store sets the package parameter, but Launcher
+                                    // does not, so we clear that out to keep them the same
+                                    intent.setPackage(null);
+                                    final String key = intent.toUri(0);
+                                    if (seenIntents.contains(key)) {
+                                        Launcher.addDumpLog(TAG, "skipping duplicate", true);
                                         continue;
+                                    } else {
+                                        seenIntents.add(key);
                                     }
                                 }
                             }

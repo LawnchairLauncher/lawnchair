@@ -2854,7 +2854,7 @@ public class LauncherModel extends BroadcastReceiver {
         return widgetsAndShortcuts;
     }
 
-    private boolean isPackageDisabled(PackageManager pm, String packageName) {
+    private static boolean isPackageDisabled(PackageManager pm, String packageName) {
         try {
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
             return !pi.applicationInfo.enabled;
@@ -2863,7 +2863,8 @@ public class LauncherModel extends BroadcastReceiver {
         }
         return false;
     }
-    private boolean isValidPackageComponent(PackageManager pm, ComponentName cn) {
+
+    public static boolean isValidPackageComponent(PackageManager pm, ComponentName cn) {
         if (cn == null) {
             return false;
         }
