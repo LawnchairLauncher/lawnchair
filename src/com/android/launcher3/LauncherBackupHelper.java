@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3;
 
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
@@ -69,7 +68,8 @@ import java.util.zip.CRC32;
 public class LauncherBackupHelper implements BackupHelper {
 
     private static final String TAG = "LauncherBackupHelper";
-    private static final boolean DEBUG = false;
+    private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
+    private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
     private static final boolean DEBUG_PAYLOAD = false;
 
     private static final int MAX_JOURNAL_SIZE = 1000000;
@@ -172,7 +172,7 @@ public class LauncherBackupHelper implements BackupHelper {
     @Override
     public void performBackup(ParcelFileDescriptor oldState, BackupDataOutput data,
             ParcelFileDescriptor newState) {
-        Log.v(TAG, "onBackup");
+        if (VERBOSE) Log.v(TAG, "onBackup");
 
         Journal in = readJournal(oldState);
         Journal out = new Journal();
@@ -182,7 +182,7 @@ public class LauncherBackupHelper implements BackupHelper {
         out.rows = 0;
         out.bytes = 0;
 
-        Log.v(TAG, "lastBackupTime=" + lastBackupTime);
+        Log.v(TAG, "lastBackupTime = " + lastBackupTime);
 
         ArrayList<Key> keys = new ArrayList<Key>();
         try {
@@ -208,7 +208,7 @@ public class LauncherBackupHelper implements BackupHelper {
      */
     @Override
     public void restoreEntity(BackupDataInputStream data) {
-        Log.v(TAG, "restoreEntity");
+        if (VERBOSE) Log.v(TAG, "restoreEntity");
         if (mKeys == null) {
             mKeys = new ArrayList<Key>();
         }
@@ -224,10 +224,11 @@ public class LauncherBackupHelper implements BackupHelper {
             bytesRead = data.read(buffer, 0, dataSize);
             if (DEBUG) Log.d(TAG, "read " + bytesRead + " of " + dataSize + " available");
         } catch (IOException e) {
-            Log.d(TAG, "failed to read entity from restore data", e);
+            Log.e(TAG, "failed to read entity from restore data", e);
         }
         try {
             key = backupKeyToKey(backupKey);
+            mKeys.add(key);
             switch (key.type) {
                 case Key.FAVORITE:
                     restoreFavorite(key, buffer, dataSize, mKeys);
@@ -306,6 +307,8 @@ public class LauncherBackupHelper implements BackupHelper {
                 if (!savedIds.contains(backupKey) || updateTime >= in.t) {
                     byte[] blob = packFavorite(cursor);
                     writeRowToBackup(key, blob, out, data);
+                } else {
+                    if (VERBOSE) Log.v(TAG, "favorite " + id + " was too old: " + updateTime);
                 }
             }
         } finally {
@@ -329,12 +332,12 @@ public class LauncherBackupHelper implements BackupHelper {
      * @param keys keys to mark as clean in the notes for next backup
      */
     private void restoreFavorite(Key key, byte[] buffer, int dataSize, ArrayList<Key> keys) {
-        Log.v(TAG, "unpacking favorite " + key.id + " (" + dataSize + " bytes)");
+        if (VERBOSE) Log.v(TAG, "unpacking favorite " + key.id);
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
 
         if (!mRestoreEnabled) {
-            if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+            if (VERBOSE) Log.v(TAG, "restore not enabled: skipping database mutation");
             return;
         }
 
@@ -343,7 +346,7 @@ public class LauncherBackupHelper implements BackupHelper {
             ContentValues values = unpackFavorite(buffer, 0, dataSize);
             cr.insert(Favorites.CONTENT_URI, values);
         } catch (InvalidProtocolBufferNanoException e) {
-            Log.w(TAG, "failed to decode proto", e);
+            Log.e(TAG, "failed to decode favorite", e);
         }
     }
 
@@ -371,7 +374,7 @@ public class LauncherBackupHelper implements BackupHelper {
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
         try {
             cursor.moveToPosition(-1);
-            Log.d(TAG, "dumping screens after: " + in.t);
+            if (DEBUG) Log.d(TAG, "dumping screens after: " + in.t);
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
                 final long updateTime = cursor.getLong(ID_MODIFIED);
@@ -382,9 +385,8 @@ public class LauncherBackupHelper implements BackupHelper {
                 if (!savedIds.contains(backupKey) || updateTime >= in.t) {
                     byte[] blob = packScreen(cursor);
                     writeRowToBackup(key, blob, out, data);
-                    if (DEBUG) Log.d(TAG, "wrote screen " + id);
                 } else {
-                    if (DEBUG) Log.d(TAG, "screen " + id + " was too old: " + updateTime);
+                    if (VERBOSE) Log.v(TAG, "screen " + id + " was too old: " + updateTime);
                 }
             }
         } finally {
@@ -408,12 +410,12 @@ public class LauncherBackupHelper implements BackupHelper {
      * @param keys keys to mark as clean in the notes for next backup
      */
     private void restoreScreen(Key key, byte[] buffer, int dataSize, ArrayList<Key> keys) {
-        Log.v(TAG, "unpacking screen " + key.id);
+        if (VERBOSE) Log.v(TAG, "unpacking screen " + key.id);
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
 
         if (!mRestoreEnabled) {
-            if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+            if (VERBOSE) Log.v(TAG, "restore not enabled: skipping database mutation");
             return;
         }
 
@@ -423,7 +425,7 @@ public class LauncherBackupHelper implements BackupHelper {
             cr.insert(WorkspaceScreens.CONTENT_URI, values);
 
         } catch (InvalidProtocolBufferNanoException e) {
-            Log.w(TAG, "failed to decode proto", e);
+            Log.e(TAG, "failed to decode screen", e);
         }
     }
 
@@ -478,14 +480,14 @@ public class LauncherBackupHelper implements BackupHelper {
                         Log.w(TAG, "empty intent on application favorite: " + id);
                     }
                     if (savedIds.contains(backupKey)) {
-                        if (DEBUG) Log.d(TAG, "already saved icon " + backupKey);
+                        if (VERBOSE) Log.v(TAG, "already saved icon " + backupKey);
 
                         // remember that we already backed this up previously
                         keys.add(key);
                     } else if (backupKey != null) {
                         if (DEBUG) Log.d(TAG, "I can count this high: " + out.rows);
                         if ((out.rows - startRows) < MAX_ICONS_PER_PASS) {
-                            if (DEBUG) Log.d(TAG, "saving icon " + backupKey);
+                            if (VERBOSE) Log.v(TAG, "saving icon " + backupKey);
                             Bitmap icon = iconCache.getIcon(intent);
                             keys.add(key);
                             if (icon != null && !iconCache.isDefaultIcon(icon)) {
@@ -493,15 +495,15 @@ public class LauncherBackupHelper implements BackupHelper {
                                 writeRowToBackup(key, blob, out, data);
                             }
                         } else {
-                            if (DEBUG) Log.d(TAG, "scheduling another run for icon " + backupKey);
+                            if (VERBOSE) Log.d(TAG, "deferring icon backup " + backupKey);
                             // too many icons for this pass, request another.
                             dataChanged();
                         }
                     }
                 } catch (URISyntaxException e) {
-                    Log.w(TAG, "invalid URI on application favorite: " + id);
+                    Log.e(TAG, "invalid URI on application favorite: " + id);
                 } catch (IOException e) {
-                    Log.w(TAG, "unable to save application icon for favorite: " + id);
+                    Log.e(TAG, "unable to save application icon for favorite: " + id);
                 }
 
             }
@@ -526,13 +528,13 @@ public class LauncherBackupHelper implements BackupHelper {
      * @param keys keys to mark as clean in the notes for next backup
      */
     private void restoreIcon(Key key, byte[] buffer, int dataSize, ArrayList<Key> keys) {
-        Log.v(TAG, "unpacking icon " + key.id);
+        if (VERBOSE) Log.v(TAG, "unpacking icon " + key.id);
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
         try {
             Resource res = unpackIcon(buffer, 0, dataSize);
-            if (DEBUG) Log.d(TAG, "unpacked " + res.dpi);
-            if (DEBUG) Log.d(TAG, "read " +
+            if (DEBUG) Log.d(TAG, "unpacked " + res.dpi + " dpi icon");
+            if (DEBUG_PAYLOAD) Log.d(TAG, "read " +
                     Base64.encodeToString(res.data, 0, res.data.length,
                             Base64.NO_WRAP));
             Bitmap icon = BitmapFactory.decodeByteArray(res.data, 0, res.data.length);
@@ -541,13 +543,13 @@ public class LauncherBackupHelper implements BackupHelper {
             }
 
             if (!mRestoreEnabled) {
-                if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+                if (VERBOSE) Log.v(TAG, "restore not enabled: skipping database mutation");
                 return;
             } else {
                 // future site of icon cache mutation
             }
         } catch (InvalidProtocolBufferNanoException e) {
-            Log.w(TAG, "failed to decode proto", e);
+            Log.e(TAG, "failed to decode icon", e);
         }
     }
 
@@ -606,14 +608,14 @@ public class LauncherBackupHelper implements BackupHelper {
                     Log.w(TAG, "empty intent on appwidget: " + id);
                 }
                 if (savedIds.contains(backupKey)) {
-                    if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
+                    if (VERBOSE) Log.v(TAG, "already saved widget " + backupKey);
 
                     // remember that we already backed this up previously
                     keys.add(key);
                 } else if (backupKey != null) {
                     if (DEBUG) Log.d(TAG, "I can count this high: " + out.rows);
                     if ((out.rows - startRows) < MAX_WIDGETS_PER_PASS) {
-                        if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
+                        if (VERBOSE) Log.v(TAG, "saving widget " + backupKey);
                         previewLoader.setPreviewSize(spanX * profile.cellWidthPx,
                                 spanY * profile.cellHeightPx, widgetSpacingLayout);
                         byte[] blob = packWidget(dpi, previewLoader, iconCache, provider);
@@ -621,7 +623,7 @@ public class LauncherBackupHelper implements BackupHelper {
                         writeRowToBackup(key, blob, out, data);
 
                     } else {
-                        if (DEBUG) Log.d(TAG, "scheduling another run for widget " + backupKey);
+                        if (VERBOSE) Log.d(TAG, "deferring widget backup " + backupKey);
                         // too many widgets for this pass, request another.
                         dataChanged();
                     }
@@ -648,7 +650,7 @@ public class LauncherBackupHelper implements BackupHelper {
      * @param keys keys to mark as clean in the notes for next backup
      */
     private void restoreWidget(Key key, byte[] buffer, int dataSize, ArrayList<Key> keys) {
-        Log.v(TAG, "unpacking widget " + key.id);
+        if (VERBOSE) Log.v(TAG, "unpacking widget " + key.id);
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
         try {
@@ -663,13 +665,13 @@ public class LauncherBackupHelper implements BackupHelper {
             }
 
             if (!mRestoreEnabled) {
-                if (DEBUG) Log.v(TAG, "restore not enabled: skipping database mutation");
+                if (VERBOSE) Log.v(TAG, "restore not enabled: skipping database mutation");
                 return;
             } else {
                 // future site of widget table mutation
             }
         } catch (InvalidProtocolBufferNanoException e) {
-            Log.w(TAG, "failed to decode proto", e);
+            Log.e(TAG, "failed to decode widget", e);
         }
     }
 
@@ -808,7 +810,8 @@ public class LauncherBackupHelper implements BackupHelper {
             throws InvalidProtocolBufferNanoException {
         Favorite favorite = new Favorite();
         MessageNano.mergeFrom(favorite, readCheckedBytes(buffer, offset, dataSize));
-        if (DEBUG) Log.d(TAG, "unpacked " + favorite.itemType + ", " + favorite.id);
+        if (VERBOSE) Log.v(TAG, "unpacked favorite " + favorite.itemType + ", " +
+                (TextUtils.isEmpty(favorite.title) ? favorite.id : favorite.title));
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, favorite.id);
         values.put(Favorites.SCREEN, favorite.screen);
@@ -857,7 +860,7 @@ public class LauncherBackupHelper implements BackupHelper {
             throws InvalidProtocolBufferNanoException {
         Screen screen = new Screen();
         MessageNano.mergeFrom(screen, readCheckedBytes(buffer, offset, dataSize));
-        if (DEBUG) Log.d(TAG, "unpacked " + screen.id + "/" + screen.rank);
+        if (VERBOSE) Log.v(TAG, "unpacked screen " + screen.id + "/" + screen.rank);
         ContentValues values = new ContentValues();
         values.put(WorkspaceScreens._ID, screen.id);
         values.put(WorkspaceScreens.SCREEN_RANK, screen.rank);
@@ -880,6 +883,7 @@ public class LauncherBackupHelper implements BackupHelper {
             throws InvalidProtocolBufferNanoException {
         Resource res = new Resource();
         MessageNano.mergeFrom(res, readCheckedBytes(buffer, offset, dataSize));
+        if (VERBOSE) Log.v(TAG, "unpacked icon " + res.dpi + "/" + res.data.length);
         return res;
     }
 
@@ -918,6 +922,7 @@ public class LauncherBackupHelper implements BackupHelper {
             throws InvalidProtocolBufferNanoException {
         Widget widget = new Widget();
         MessageNano.mergeFrom(widget, readCheckedBytes(buffer, offset, dataSize));
+        if (VERBOSE) Log.v(TAG, "unpacked widget " + widget.provider);
         return widget;
     }
 
@@ -943,6 +948,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 byte[] buffer = new byte[availableBytes];
                 int bytesRead = 0;
                 boolean valid = false;
+                InvalidProtocolBufferNanoException lastProtoException = null;
                 while (availableBytes > 0) {
                     try {
                         // OMG what are you doing? This is crazy inefficient!
@@ -962,7 +968,6 @@ public class LauncherBackupHelper implements BackupHelper {
                             availableBytes = 0;
                         }
                     } catch (IOException e) {
-                        Log.e(TAG, "failed to read the journal", e);
                         buffer = null;
                         availableBytes = 0;
                     }
@@ -973,23 +978,25 @@ public class LauncherBackupHelper implements BackupHelper {
                         // if we are here, then we have read a valid, checksum-verified journal
                         valid = true;
                         availableBytes = 0;
+                        if (VERBOSE) Log.v(TAG, "read " + bytesRead + " bytes of journal");
                     } catch (InvalidProtocolBufferNanoException e) {
                         // if we don't have the whole journal yet, mergeFrom will throw. keep going.
+                        lastProtoException = e;
                         journal.clear();
                     }
                 }
                 if (DEBUG) Log.d(TAG, "journal bytes read: " + bytesRead);
                 if (!valid) {
-                    Log.w(TAG, "failed to read the journal: could not find a valid journal");
+                    Log.w(TAG, "could not find a valid journal", lastProtoException);
                 }
             }
         } catch (IOException e) {
-            Log.d(TAG, "failed to close the journal", e);
+            Log.w(TAG, "failed to close the journal", e);
         } finally {
             try {
                 inStream.close();
             } catch (IOException e) {
-                Log.d(TAG, "failed to close the journal", e);
+                Log.w(TAG, "failed to close the journal", e);
             }
         }
         return journal;
@@ -1002,7 +1009,7 @@ public class LauncherBackupHelper implements BackupHelper {
         data.writeEntityData(blob, blob.length);
         out.rows++;
         out.bytes += blob.length;
-        Log.v(TAG, "saving " + geKeyType(key) + " " + backupKey + ": " +
+        if (VERBOSE) Log.v(TAG, "saving " + geKeyType(key) + " " + backupKey + ": " +
                 getKeyName(key) + "/" + blob.length);
         if(DEBUG_PAYLOAD) {
             String encoded = Base64.encodeToString(blob, 0, blob.length, Base64.NO_WRAP);
@@ -1010,7 +1017,7 @@ public class LauncherBackupHelper implements BackupHelper {
             for (int offset = 0; offset < encoded.length(); offset += chunkSize) {
                 int end = offset + chunkSize;
                 end = Math.min(end, encoded.length());
-                Log.d(TAG, "wrote " + encoded.substring(offset, end));
+                Log.w(TAG, "wrote " + encoded.substring(offset, end));
             }
         }
     }
@@ -1030,7 +1037,7 @@ public class LauncherBackupHelper implements BackupHelper {
             throws IOException {
         int rows = 0;
         for(String deleted: deletedIds) {
-            Log.v(TAG, "dropping icon " + deleted);
+            if (VERBOSE) Log.v(TAG, "dropping deleted item " + deleted);
             data.writeEntityHeader(deleted, -1);
             rows++;
         }
@@ -1051,11 +1058,11 @@ public class LauncherBackupHelper implements BackupHelper {
         try {
             outStream = new FileOutputStream(newState.getFileDescriptor());
             final byte[] journalBytes = writeCheckedBytes(journal);
-            if (DEBUG) Log.d(TAG, "writing " + journalBytes.length + " bytes of journal");
             outStream.write(journalBytes);
             outStream.close();
+            if (VERBOSE) Log.v(TAG, "wrote " + journalBytes.length + " bytes of journal");
         } catch (IOException e) {
-            Log.d(TAG, "failed to write backup journal", e);
+            Log.w(TAG, "failed to write backup journal", e);
         }
     }
 
