@@ -42,8 +42,10 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widgeturi"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Nu mai este loc pe ecranele de pornire."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Nu mai este loc pe acest Ecran de pornire."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Nu mai este loc în bara de lansare rapidă."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Acest widget este prea mare pentru bara de lansare rapidă."</string>
+    <!-- no translation found for hotseat_out_of_space (7448809638125333693) -->
+    <skip />
+    <!-- no translation found for invalid_hotseat_item (5779907847267573691) -->
+    <skip />
     <string name="shortcut_installed" msgid="1701742129426969556">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>\" a fost creată."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” a fost eliminată."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” există deja."</string>

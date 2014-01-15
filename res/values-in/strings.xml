@@ -42,8 +42,10 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widget"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Tidak ada ruang lagi di layar Utama Anda."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Tidak ada ruang lagi pada layar Utama ini."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Tidak ada ruang lagi di hotseat."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Widget ini terlalu besar untuk hotseat tersebut."</string>
+    <!-- no translation found for hotseat_out_of_space (7448809638125333693) -->
+    <skip />
+    <!-- no translation found for invalid_hotseat_item (5779907847267573691) -->
+    <skip />
     <string name="shortcut_installed" msgid="1701742129426969556">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" sudah dibuat."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" telah dihapus."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" sudah ada."</string>
