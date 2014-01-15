@@ -25,7 +25,8 @@
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
     <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_max_width">280dp</dimen>
+    <dimen name="dynamic_grid_overview_bar_item_width">48dp</dimen>
+    <dimen name="dynamic_grid_overview_bar_spacer_width">68dp</dimen>
 
 <!-- Cling -->
     <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
