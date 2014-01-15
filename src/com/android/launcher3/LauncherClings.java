@@ -200,14 +200,27 @@ class LauncherClings {
         }
     }
 
-    /** Shows the first run cling */
-    public void showFirstRunCling() {
+    public boolean shouldShowFirstRunOrMigrationClings() {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
-        if (isClingsEnabled() &&
-                !sharedPrefs.getBoolean(FIRST_RUN_CLING_DISMISSED_KEY, false) &&
-                !skipCustomClingIfNoAccounts() ) {
+        return isClingsEnabled() &&
+            !sharedPrefs.getBoolean(FIRST_RUN_CLING_DISMISSED_KEY, false) &&
+            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
+    }
 
+    public void removeFirstRunAndMigrationClings() {
+        removeCling(R.id.first_run_cling);
+        removeCling(R.id.migration_cling);
+    }
 
+    /**
+     * Shows the first run cling.
+     *
+     * This flow is mutually exclusive with showMigrationCling, and only runs if this Launcher
+     * package was preinstalled or there is no db to migrate from.
+     */
+    public void showFirstRunCling() {
+        if (!skipCustomClingIfNoAccounts()) {
+            SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
             // If we're not using the default workspace layout, replace workspace cling
             // with a custom workspace cling (usually specified in an overlay)
             // For now, only do this on tablets
@@ -238,22 +251,22 @@ class LauncherClings {
             }
             initCling(R.id.first_run_cling, 0, false, true);
         } else {
-            removeCling(R.id.first_run_cling);
+            removeFirstRunAndMigrationClings();
         }
     }
 
+    /**
+     * Shows the migration cling.
+     *
+     * This flow is mutually exclusive with showFirstRunCling, and only runs if this Launcher
+     * package was not preinstalled and there exists a db to migrate from.
+     */
     public void showMigrationCling() {
-        // Enable the clings only if they have not been dismissed before
-        if (isClingsEnabled() && !mLauncher.getSharedPrefs().getBoolean(
-                MIGRATION_CLING_DISMISSED_KEY, false)) {
-            mLauncher.hideWorkspaceSearchAndHotseat();
+        mLauncher.hideWorkspaceSearchAndHotseat();
 
-            Cling c = initCling(R.id.migration_cling, 0, false, true);
-            c.bringScrimToFront();
-            c.bringToFront();
-        } else {
-            removeCling(R.id.migration_cling);
-        }
+        Cling c = initCling(R.id.migration_cling, 0, false, true);
+        c.bringScrimToFront();
+        c.bringToFront();
     }
 
     public void showMigrationWorkspaceCling() {
@@ -299,7 +312,6 @@ class LauncherClings {
             return null;
         }
     }
-
 
     /** Removes the cling outright from the DragLayer */
     private void removeCling(int id) {
