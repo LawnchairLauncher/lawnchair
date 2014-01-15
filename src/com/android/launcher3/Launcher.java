@@ -248,7 +248,7 @@ public class Launcher extends Activity
     private FolderInfo mFolderInfo;
 
     private Hotseat mHotseat;
-    private View mOverviewPanel;
+    private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
 
@@ -1061,6 +1061,10 @@ public class Launcher extends Activity
         public void onScrollProgressChanged(float progress);
     }
 
+    protected boolean hasSettings() {
+        return false;
+    }
+
     protected void startSettings() {
     }
 
@@ -1242,7 +1246,7 @@ public class Launcher extends Activity
             mHotseat.setOnLongClickListener(this);
         }
 
-        mOverviewPanel = findViewById(R.id.overview_panel);
+        mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
         View widgetButton = findViewById(R.id.widget_button);
         widgetButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -1266,15 +1270,23 @@ public class Launcher extends Activity
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         View settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (!mWorkspace.isSwitchingState()) {
-                    startSettings();
-                }
-            }
-        });
-        settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        if (hasSettings()) {
+            settingsButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    if (!mWorkspace.isSwitchingState()) {
+                        startSettings();
+                    }
+                    }
+            });
+            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        } else {
+            settingsButton.setVisibility(View.GONE);
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) widgetButton.getLayoutParams();
+            lp.gravity = Gravity.END | Gravity.TOP;
+            widgetButton.requestLayout();
+        }
+
         mOverviewPanel.setAlpha(0f);
 
         // Setup the workspace
@@ -1746,7 +1758,7 @@ public class Launcher extends Activity
         return mHotseat;
     }
 
-    public View getOverviewPanel() {
+    public ViewGroup getOverviewPanel() {
         return mOverviewPanel;
     }
 
