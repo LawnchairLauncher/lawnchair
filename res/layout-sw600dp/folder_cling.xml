@@ -16,22 +16,28 @@
 <com.android.launcher3.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
-    launcher:drawIdentifier="folder_portrait">
-    <FrameLayout
-        android:layout_width="match_parent"
+    launcher:drawIdentifier="folder_large">
+    <LinearLayout
+        android:id="@+id/folder_bubble"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_gravity="left|top"
+        android:paddingTop="28dp"
+        android:paddingRight="10dp"
+        android:orientation="vertical">
         <LinearLayout
-            android:id="@+id/folder_bubble"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/cling_arrow_start" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="20dp"
@@ -49,17 +55,12 @@
                     android:layout_height="wrap_content"
                     android:text="@string/folder_cling_create_folder" />
             </LinearLayout>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/cling_arrow_down" />
         </LinearLayout>
-    </FrameLayout>
-    <Button
-        style="@style/ClingButton"
-        android:id="@+id/cling_dismiss"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_gravity="bottom|right"
-        android:onClick="dismissFolderCling" />
+        <Button
+            style="@style/ClingButton"
+            android:id="@+id/cling_dismiss"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="right"
+            android:onClick="dismissFolderCling" />
+    </LinearLayout>
 </com.android.launcher3.Cling>

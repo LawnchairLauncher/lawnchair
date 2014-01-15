@@ -4529,17 +4529,17 @@ public class Launcher extends Activity
     }
 
     void showWorkspaceSearchAndHotseat() {
-        mWorkspace.setAlpha(1f);
-        mHotseat.setAlpha(1f);
-        mPageIndicators.setAlpha(1f);
-        mSearchDropTargetBar.showSearchBar(false);
+        if (mWorkspace != null) mWorkspace.setAlpha(1f);
+        if (mHotseat != null) mHotseat.setAlpha(1f);
+        if (mPageIndicators != null) mPageIndicators.setAlpha(1f);
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.showSearchBar(false);
     }
 
     void hideWorkspaceSearchAndHotseat() {
-        mWorkspace.setAlpha(0f);
-        mHotseat.setAlpha(0f);
-        mPageIndicators.setAlpha(0f);
-        mSearchDropTargetBar.hideSearchBar(false);
+        if (mWorkspace != null) mWorkspace.setAlpha(0f);
+        if (mHotseat != null) mHotseat.setAlpha(0f);
+        if (mPageIndicators != null) mPageIndicators.setAlpha(0f);
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.hideSearchBar(false);
     }
 
 

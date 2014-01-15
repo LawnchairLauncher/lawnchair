@@ -500,9 +500,22 @@ public class DeviceProfile {
     /** Returns the bounds of the workspace page indicators. */
     Rect getWorkspacePageIndicatorBounds(Rect insets) {
         Rect workspacePadding = getWorkspacePadding();
-        int pageIndicatorTop = heightPx - insets.bottom - workspacePadding.bottom;
-        return new Rect(workspacePadding.left, pageIndicatorTop,
-                widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
+        if (isLandscape && transposeLayoutWithOrientation) {
+            if (isLayoutRtl) {
+                return new Rect(workspacePadding.left, workspacePadding.top,
+                        workspacePadding.left + pageIndicatorHeightPx,
+                        heightPx - workspacePadding.bottom - insets.bottom);
+            } else {
+                int pageIndicatorLeft = widthPx - workspacePadding.right;
+                return new Rect(pageIndicatorLeft, workspacePadding.top,
+                        pageIndicatorLeft + pageIndicatorHeightPx,
+                        heightPx - workspacePadding.bottom - insets.bottom);
+            }
+        } else {
+            int pageIndicatorTop = heightPx - insets.bottom - workspacePadding.bottom;
+            return new Rect(workspacePadding.left, pageIndicatorTop,
+                    widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
+        }
     }
 
     /** Returns the workspace padding in the specified orientation */

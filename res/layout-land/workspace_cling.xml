@@ -18,24 +18,20 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    launcher:drawIdentifier="workspace_portrait">
+    launcher:drawIdentifier="workspace_landscape">
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginTop="310dp">
+        android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/workspace_cling_bubble"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="30dp"
             android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/cling_arrow_up" />
             <LinearLayout
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
@@ -56,14 +52,57 @@
                     android:layout_height="wrap_content"
                     android:text="@string/workspace_cling_move_item" />
             </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/cling_arrow_down" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/focused_hotseat_app_bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginLeft="25dp"
+            android:layout_marginBottom="90dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <LinearLayout
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/cling">
+                <TextView
+                    android:id="@+id/focused_hotseat_app_title"
+                    style="@style/ClingTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/focused_hotseat_app_description"
+                    style="@style/ClingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="78dp"
+                android:src="@drawable/cling_arrow_down" />
         </LinearLayout>
     </FrameLayout>
+
     <Button
         style="@style/ClingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_gravity="bottom|end"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="bottom|right"
         android:onClick="dismissWorkspaceCling" />
 </com.android.launcher3.Cling>

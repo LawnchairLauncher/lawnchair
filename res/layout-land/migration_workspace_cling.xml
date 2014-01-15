@@ -19,25 +19,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     launcher:drawIdentifier="migration_workspace_landscape">
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:paddingEnd="60dp"
+        android:orientation="vertical">
         <LinearLayout
             android:id="@+id/migration_workspace_cling_bubble"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/cling">
                 <TextView
@@ -54,17 +55,15 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/cling_arrow_down" />
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/cling_arrow_end" />
         </LinearLayout>
-
         <Button
             style="@style/ClingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="20dp"
-            android:layout_gravity="bottom|right"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="right"
             android:onClick="dismissMigrationWorkspaceCling" />
-    </FrameLayout>
+    </LinearLayout>
 </com.android.launcher3.Cling>
