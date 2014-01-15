@@ -23,6 +23,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.view.LayoutInflater;
@@ -34,7 +35,8 @@ import android.widget.TextView;
 class LauncherClings {
     private static final String FIRST_RUN_CLING_DISMISSED_KEY = "cling_gel.first_run.dismissed";
     private static final String MIGRATION_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
-    private static final String MIGRATION_WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
+    private static final String MIGRATION_WORKSPACE_CLING_DISMISSED_KEY =
+            "cling_gel.migration_workspace.dismissed";
     private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
     private static final String FOLDER_CLING_DISMISSED_KEY = "cling_gel.folder.dismissed";
 
@@ -61,7 +63,7 @@ class LauncherClings {
         Cling cling = (Cling) mLauncher.findViewById(clingId);
         View scrim = null;
         if (scrimId > 0) {
-            scrim = mLauncher.findViewById(R.id.cling_scrim);
+            scrim = mLauncher.findViewById(scrimId);
         }
         if (cling != null) {
             cling.init(mLauncher, scrim);
@@ -76,18 +78,8 @@ class LauncherClings {
     }
 
     /** Returns whether the clings are enabled or should be shown */
-    private boolean isClingsEnabled() {
+    private boolean areClingsEnabled() {
         if (DISABLE_CLINGS) {
-            return false;
-        }
-
-        // For now, limit only to phones
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        if (grid.isTablet()) {
-            return false;
-        }
-        if (grid.isLandscape) {
             return false;
         }
 
@@ -202,7 +194,7 @@ class LauncherClings {
 
     public boolean shouldShowFirstRunOrMigrationClings() {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
-        return isClingsEnabled() &&
+        return areClingsEnabled() &&
             !sharedPrefs.getBoolean(FIRST_RUN_CLING_DISMISSED_KEY, false) &&
             !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
     }
@@ -271,7 +263,7 @@ class LauncherClings {
 
     public void showMigrationWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
-        if (isClingsEnabled() && !mLauncher.getSharedPrefs().getBoolean(
+        if (areClingsEnabled() && !mLauncher.getSharedPrefs().getBoolean(
                 MIGRATION_WORKSPACE_CLING_DISMISSED_KEY, false)) {
             Cling c = initCling(R.id.migration_workspace_cling, 0, false, true);
             c.updateMigrationWorkspaceBubblePosition();
@@ -284,9 +276,10 @@ class LauncherClings {
 
     public void showWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
-        if (isClingsEnabled() && !mLauncher.getSharedPrefs().getBoolean(
+        if (areClingsEnabled() && !mLauncher.getSharedPrefs().getBoolean(
                 WORKSPACE_CLING_DISMISSED_KEY, false)) {
             Cling c = initCling(R.id.workspace_cling, 0, false, true);
+            c.updateWorkspaceBubblePosition();
 
             // Set the focused hotseat app if there is one
             c.setFocusedHotseatApp(mLauncher.getFirstRunFocusedHotseatAppDrawableId(),
@@ -301,11 +294,18 @@ class LauncherClings {
     public Cling showFoldersCling() {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         // Enable the clings only if they have not been dismissed before
-        if (isClingsEnabled() &&
+        if (areClingsEnabled() &&
                 !sharedPrefs.getBoolean(FOLDER_CLING_DISMISSED_KEY, false) &&
                 !sharedPrefs.getBoolean(Launcher.USER_HAS_MIGRATED, false)) {
             Cling cling = initCling(R.id.folder_cling, R.id.cling_scrim,
                     true, true);
+            Folder openFolder = mLauncher.getWorkspace().getOpenFolder();
+            if (openFolder != null) {
+                Rect openFolderRect = new Rect();
+                openFolder.getHitRect(openFolderRect);
+                cling.setOpenFolderRect(openFolderRect);
+                openFolder.bringToFront();
+            }
             return cling;
         } else {
             removeCling(R.id.folder_cling);
