@@ -256,7 +256,7 @@ public class Launcher extends Activity
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
     private boolean mAutoAdvanceRunning = false;
-    private View mQsbBar;
+    private View mQsb;
 
     private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
@@ -1284,7 +1284,8 @@ public class Launcher extends Activity
         dragController.addDragListener(mWorkspace);
 
         // Get the search/delete bar
-        mSearchDropTargetBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
+        mSearchDropTargetBar = (SearchDropTargetBar)
+                mDragLayer.findViewById(R.id.search_drop_target_bar);
 
         // Setup AppsCustomize
         mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
@@ -3458,11 +3459,11 @@ public class Launcher extends Activity
     }
 
     public View getQsbBar() {
-        if (mQsbBar == null) {
-            mQsbBar = mInflater.inflate(R.layout.search_bar, mSearchDropTargetBar, false);
-            mSearchDropTargetBar.addView(mQsbBar);
+        if (mQsb == null) {
+            mQsb = mInflater.inflate(R.layout.qsb, mSearchDropTargetBar, false);
+            mSearchDropTargetBar.addView(mQsb);
         }
-        return mQsbBar;
+        return mQsb;
     }
 
     protected boolean updateGlobalSearchIcon() {
