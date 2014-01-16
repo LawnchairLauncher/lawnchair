@@ -75,9 +75,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     // Flag as to whether or not to draw an outer ring. Currently none is designed.
     public static final boolean HAS_OUTER_RING = true;
 
+    // Flag whether the folder should open itself when an item is dragged over is enabled.
+    public static final boolean SPRING_LOADING_ENABLED = true;
+
     // The degree to which the item in the back of the stack is scaled [0...1]
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
     private static final float PERSPECTIVE_SCALE_FACTOR = 0.35f;
+
+    // Delay when drag enters until the folder opens, in miliseconds.
+    private static final int ON_OPEN_DELAY = 800;
 
     public static Drawable sSharedFolderLeaveBehind = null;
 
@@ -102,6 +108,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private ArrayList<ShortcutInfo> mHiddenItems = new ArrayList<ShortcutInfo>();
+
+    private Alarm mOpenAlarm = new Alarm();
+    private ItemInfo mDragInfo;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -333,10 +342,31 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mFolderRingAnimator.setCellLayout(layout);
         mFolderRingAnimator.animateToAcceptState();
         layout.showFolderAccept(mFolderRingAnimator);
+        mOpenAlarm.setOnAlarmListener(mOnOpenListener);
+        if (SPRING_LOADING_ENABLED) {
+            mOpenAlarm.setAlarm(ON_OPEN_DELAY);
+        }
+        mDragInfo = (ItemInfo) dragInfo;
     }
 
     public void onDragOver(Object dragInfo) {
     }
+
+    OnAlarmListener mOnOpenListener = new OnAlarmListener() {
+        public void onAlarm(Alarm alarm) {
+            ShortcutInfo item;
+            if (mDragInfo instanceof AppInfo) {
+                // Came from all apps -- make a copy.
+                item = ((AppInfo) mDragInfo).makeShortcut();
+                item.spanX = 1;
+                item.spanY = 1;
+            } else {
+                item = (ShortcutInfo) mDragInfo;
+            }
+            mFolder.beginExternalDrag(item);
+            mLauncher.openFolder(FolderIcon.this);
+        }
+    };
 
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
             final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
@@ -373,6 +403,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void onDragExit() {
         mFolderRingAnimator.animateToNaturalState();
+        mOpenAlarm.cancelAlarm();
     }
 
     private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
