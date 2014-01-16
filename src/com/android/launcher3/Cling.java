@@ -30,6 +30,7 @@ import android.util.DisplayMetrics;
 import android.view.FocusFinder;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
     private static String MIGRATION_LANDSCAPE = "migration_landscape";
 
     private static String MIGRATION_WORKSPACE_PORTRAIT = "migration_workspace_portrait";
+    private static String MIGRATION_WORKSPACE_LARGE_PORTRAIT = "migration_workspace_large_portrait";
     private static String MIGRATION_WORKSPACE_LANDSCAPE = "migration_workspace_landscape";
 
     private static String FOLDER_PORTRAIT = "folder_portrait";
@@ -56,6 +58,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
     private static String FOLDER_LARGE = "folder_large";
 
     private static float FIRST_RUN_CIRCLE_BUFFER_DPS = 60;
+    private static float FIRST_RUN_MAX_CIRCLE_RADIUS_DPS = 180;
     private static float WORKSPACE_INNER_CIRCLE_RADIUS_DPS = 50;
     private static float WORKSPACE_OUTER_CIRCLE_RADIUS_DPS = 60;
     private static float WORKSPACE_CIRCLE_Y_OFFSET_DPS = 30;
@@ -106,7 +109,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         if (!mIsInitialized) {
             mLauncher = l;
             mScrimView = scrim;
-            mBackgroundColor = 0xdd000000;
+            mBackgroundColor = 0xcc000000;
             setOnLongClickListener(this);
             setOnClickListener(this);
             setOnTouchListener(this);
@@ -141,7 +144,9 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         Resources r = getResources();
         int appIconId = drawableId;
         Hotseat hotseat = mLauncher.getHotseat();
-        if (hotseat != null && appIconId > -1 && appRank > -1 && !title.isEmpty() &&
+        // Skip the focused app in the large layouts
+        if (!mDrawIdentifier.equals(WORKSPACE_LARGE) &&
+                hotseat != null && appIconId > -1 && appRank > -1 && !title.isEmpty() &&
                 !description.isEmpty()) {
             // Set the app bounds
             int x = hotseat.getCellXFromOrder(appRank);
@@ -175,6 +180,18 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         }
     }
 
+    void setOpenFolderRect(Rect r) {
+        if (mDrawIdentifier.equals(FOLDER_LANDSCAPE) ||
+            mDrawIdentifier.equals(FOLDER_LARGE)) {
+            ViewGroup vg = (ViewGroup) findViewById(R.id.folder_bubble);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) vg.getLayoutParams();
+            lp.topMargin = r.top - mInsets.bottom;
+            lp.leftMargin = r.right;
+            vg.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            vg.requestLayout();
+        }
+    }
+
     void updateMigrationWorkspaceBubblePosition() {
         DisplayMetrics metrics = new DisplayMetrics();
         mLauncher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -184,10 +201,59 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         Rect pageIndicatorBounds = grid.getWorkspacePageIndicatorBounds(mInsets);
 
-        View bubble = findViewById(R.id.migration_workspace_cling_bubble);
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) bubble.getLayoutParams();
-        lp.bottomMargin = grid.heightPx - pageIndicatorBounds.top;
-        bubble.requestLayout();
+        if (mDrawIdentifier.equals(MIGRATION_WORKSPACE_PORTRAIT)) {
+            View bubble = findViewById(R.id.migration_workspace_cling_bubble);
+            ViewGroup.MarginLayoutParams lp =
+                    (ViewGroup.MarginLayoutParams) bubble.getLayoutParams();
+            lp.bottomMargin = grid.heightPx - pageIndicatorBounds.top;
+            bubble.requestLayout();
+        } else if (mDrawIdentifier.equals(MIGRATION_WORKSPACE_LARGE_PORTRAIT)) {
+            View bubble = findViewById(R.id.content);
+            ViewGroup.MarginLayoutParams lp =
+                    (ViewGroup.MarginLayoutParams) bubble.getLayoutParams();
+            lp.bottomMargin = grid.heightPx - pageIndicatorBounds.top;
+            bubble.requestLayout();
+        } else if (mDrawIdentifier.equals(MIGRATION_WORKSPACE_LANDSCAPE)) {
+            View bubble = findViewById(R.id.content);
+            ViewGroup.MarginLayoutParams lp =
+                    (ViewGroup.MarginLayoutParams) bubble.getLayoutParams();
+            if (grid.isLayoutRtl) {
+                lp.leftMargin = pageIndicatorBounds.right;
+            } else {
+                lp.rightMargin = (grid.widthPx - pageIndicatorBounds.left);
+            }
+            bubble.requestLayout();
+        }
+    }
+
+    void updateWorkspaceBubblePosition() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        mLauncher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        // Get the cut-out bounds
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Rect cutOutBounds = getWorkspaceCutOutBounds(metrics);
+
+        if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+            View bubble = findViewById(R.id.workspace_cling_bubble);
+            ViewGroup.MarginLayoutParams lp =
+                    (ViewGroup.MarginLayoutParams) bubble.getLayoutParams();
+            lp.bottomMargin = grid.heightPx - cutOutBounds.top - mInsets.bottom;
+            bubble.requestLayout();
+        }
+    }
+
+    private Rect getWorkspaceCutOutBounds(DisplayMetrics metrics) {
+        int halfWidth = metrics.widthPixels / 2;
+        int halfHeight = metrics.heightPixels / 2;
+        int yOffset = DynamicGrid.pxFromDp(WORKSPACE_CIRCLE_Y_OFFSET_DPS, metrics);
+        if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+            yOffset = 0;
+        }
+        int radius = DynamicGrid.pxFromDp(WORKSPACE_OUTER_CIRCLE_RADIUS_DPS, metrics);
+        return new Rect(halfWidth - radius, halfHeight - yOffset - radius, halfWidth + radius,
+                halfHeight - yOffset + radius);
     }
 
     void show(boolean animate, int duration) {
@@ -198,6 +264,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                 mDrawIdentifier.equals(WORKSPACE_LARGE) ||
                 mDrawIdentifier.equals(WORKSPACE_CUSTOM) ||
                 mDrawIdentifier.equals(MIGRATION_WORKSPACE_PORTRAIT) ||
+                mDrawIdentifier.equals(MIGRATION_WORKSPACE_LARGE_PORTRAIT) ||
                 mDrawIdentifier.equals(MIGRATION_WORKSPACE_LANDSCAPE)) {
             View content = getContent();
             content.setAlpha(0f);
@@ -381,6 +448,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
             mLauncher.getLauncherClings().dismissWorkspaceCling(null);
             return true;
         } else if (mDrawIdentifier.equals(MIGRATION_WORKSPACE_PORTRAIT) ||
+                mDrawIdentifier.equals(MIGRATION_WORKSPACE_LARGE_PORTRAIT) ||
                 mDrawIdentifier.equals(MIGRATION_WORKSPACE_LANDSCAPE)) {
             mLauncher.getLauncherClings().dismissMigrationWorkspaceCling(null);
             return true;
@@ -417,6 +485,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                     mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
                     mDrawIdentifier.equals(WORKSPACE_LARGE) ||
                     mDrawIdentifier.equals(MIGRATION_WORKSPACE_PORTRAIT) ||
+                    mDrawIdentifier.equals(MIGRATION_WORKSPACE_LARGE_PORTRAIT) ||
                     mDrawIdentifier.equals(MIGRATION_WORKSPACE_LANDSCAPE)) {
                 // Initialize the draw buffer (to allow punching through)
                 eraseBg = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
@@ -443,24 +512,23 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                 bubbleContent.getGlobalVisibleRect(bubbleRect);
                 mBubblePaint.setAlpha((int) (255 * alpha));
                 float buffer = DynamicGrid.pxFromDp(FIRST_RUN_CIRCLE_BUFFER_DPS, metrics);
+                float maxRadius = DynamicGrid.pxFromDp(FIRST_RUN_MAX_CIRCLE_RADIUS_DPS, metrics);
+                float radius = Math.min(maxRadius, (bubbleContent.getMeasuredWidth() + buffer) / 2);
                 canvas.drawCircle(metrics.widthPixels / 2,
-                        bubbleRect.centerY(),
-                        (bubbleContent.getMeasuredWidth() + buffer) / 2,
+                        bubbleRect.centerY(), radius,
                         mBubblePaint);
             } else if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                     mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
                     mDrawIdentifier.equals(WORKSPACE_LARGE)) {
-                int offset = DynamicGrid.pxFromDp(WORKSPACE_CIRCLE_Y_OFFSET_DPS, metrics);
+                Rect cutOutBounds = getWorkspaceCutOutBounds(metrics);
                 // Draw the outer circle
                 mErasePaint.setAlpha(128);
-                eraseCanvas.drawCircle(metrics.widthPixels / 2,
-                        metrics.heightPixels / 2 - offset,
+                eraseCanvas.drawCircle(cutOutBounds.centerX(), cutOutBounds.centerY(),
                         DynamicGrid.pxFromDp(WORKSPACE_OUTER_CIRCLE_RADIUS_DPS, metrics),
                         mErasePaint);
                 // Draw the inner circle
                 mErasePaint.setAlpha(0);
-                eraseCanvas.drawCircle(metrics.widthPixels / 2,
-                        metrics.heightPixels / 2 - offset,
+                eraseCanvas.drawCircle(cutOutBounds.centerX(), cutOutBounds.centerY(),
                         DynamicGrid.pxFromDp(WORKSPACE_INNER_CIRCLE_RADIUS_DPS, metrics),
                         mErasePaint);
                 canvas.drawBitmap(eraseBg, 0, 0, null);
@@ -476,6 +544,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                     mFocusedHotseatApp.draw(canvas);
                 }
             } else if (mDrawIdentifier.equals(MIGRATION_WORKSPACE_PORTRAIT) ||
+                    mDrawIdentifier.equals(MIGRATION_WORKSPACE_LARGE_PORTRAIT) ||
                     mDrawIdentifier.equals(MIGRATION_WORKSPACE_LANDSCAPE)) {
                 int offset = DynamicGrid.pxFromDp(WORKSPACE_CIRCLE_Y_OFFSET_DPS, metrics);
                 // Draw the outer circle
