@@ -94,6 +94,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private View mSelectedTile;
 
+    private View mSetWallpaperButton;
     private boolean mIgnoreNextTap;
     private OnClickListener mThumbnailOnClickListener;
 
@@ -150,11 +151,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 onLoad = null;
             } else {
                 mFirstClick = false;
+                a.mSetWallpaperButton.setVisibility(View.INVISIBLE);
                 onLoad = new Runnable() {
                     public void run() {
                         if (mBitmapSource != null &&
                                 mBitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
                             a.selectTile(mView);
+                            a.mSetWallpaperButton.setVisibility(View.VISIBLE);
                         } else {
                             ViewGroup parent = (ViewGroup) mView.getParent();
                             if (parent != null) {
@@ -470,6 +473,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         }
                     }
                 });
+        mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);
 
         // CAB for deleting items
         mActionModeCallback = new ActionMode.Callback() {
