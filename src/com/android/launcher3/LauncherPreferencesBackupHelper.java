@@ -19,8 +19,12 @@ package com.android.launcher3;
 import android.app.backup.BackupDataInputStream;
 import android.app.backup.SharedPreferencesBackupHelper;
 import android.content.Context;
+import android.util.Log;
 
 public class LauncherPreferencesBackupHelper extends SharedPreferencesBackupHelper {
+
+    private static final String TAG = "LauncherPreferencesBackupHelper";
+    private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
 
     private final boolean mRestoreEnabled;
 
@@ -33,6 +37,7 @@ public class LauncherPreferencesBackupHelper extends SharedPreferencesBackupHelp
     @Override
     public void restoreEntity(BackupDataInputStream data) {
         if (mRestoreEnabled) {
+            if (VERBOSE) Log.v(TAG, "restoring preferences");
             super.restoreEntity(data);
         }
     }
