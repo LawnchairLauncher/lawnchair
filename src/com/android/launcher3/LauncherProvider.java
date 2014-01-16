@@ -68,7 +68,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -409,7 +409,8 @@ public class LauncherProvider extends ContentProvider {
                     "uri TEXT," +
                     "displayMode INTEGER," +
                     "appWidgetProvider TEXT," +
-                    "modified INTEGER NOT NULL DEFAULT 0" +
+                    "modified INTEGER NOT NULL DEFAULT 0," +
+                    "restored INTEGER NOT NULL DEFAULT 0" +
                     ");");
             addWorkspacesTable(db);
 
@@ -716,7 +717,6 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
 
-
             if (version < 15) {
                 db.beginTransaction();
                 try {
@@ -727,6 +727,23 @@ public class LauncherProvider extends ContentProvider {
                             "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
                     db.setTransactionSuccessful();
                     version = 15;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+            }
+
+
+            if (version < 16) {
+                db.beginTransaction();
+                try {
+                    // Insert new column for holding restore status
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN restored INTEGER NOT NULL DEFAULT 0;");
+                    db.setTransactionSuccessful();
+                    version = 16;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
                     Log.e(TAG, ex.getMessage(), ex);
