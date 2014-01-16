@@ -1215,7 +1215,7 @@ public class Workspace extends SmoothPagedView
         if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
             if (mCustomContentCallbacks != null) {
-                mCustomContentCallbacks.onShow();
+                mCustomContentCallbacks.onShow(false);
                 mCustomContentShowTime = System.currentTimeMillis();
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }

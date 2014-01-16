@@ -1011,7 +1011,7 @@ public class Launcher extends Activity
             // It is also poassible that onShow will instead be called slightly after first layout
             // if PagedView#setRestorePage was set to the custom content page in onCreate().
             if (mWorkspace.isOnOrMovingToCustomContent()) {
-                mWorkspace.getCustomContentCallbacks().onShow();
+                mWorkspace.getCustomContentCallbacks().onShow(true);
             }
         }
         mWorkspace.updateInteractionForState();
@@ -1055,8 +1055,9 @@ public class Launcher extends Activity
     }
 
     public interface CustomContentCallbacks {
-        // Custom content is completely shown
-        public void onShow();
+        // Custom content is completely shown. {@code fromResume} indicates whether this was caused
+        // by a onResume or by scrolling otherwise.
+        public void onShow(boolean fromResume);
 
         // Custom content is completely hidden
         public void onHide();
@@ -2927,7 +2928,7 @@ public class Launcher extends Activity
                 mWorkspaceBackgroundDrawable : null);
     }
 
-    void updateWallpaperVisibility(boolean visible) {
+    protected void changeWallpaperVisiblity(boolean visible) {
         int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int curflags = getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
