@@ -75,7 +75,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 18;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -434,7 +434,8 @@ public class LauncherProvider extends ContentProvider {
                     "uri TEXT," +
                     "displayMode INTEGER," +
                     "appWidgetProvider TEXT," +
-                    "modified INTEGER NOT NULL DEFAULT 0" +
+                    "modified INTEGER NOT NULL DEFAULT 0," +
+                    "restored INTEGER NOT NULL DEFAULT 0" +
                     ");");
             addWorkspacesTable(db);
 
@@ -746,7 +747,6 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
 
-
             if (version < 15) {
                 db.beginTransaction();
                 try {
@@ -823,12 +823,27 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
 
-
             // Artificially inflate the version to make sure we're fully up to date
             // after a possible 10.2-Trebuchet migration
 
             if (version == 15) {
                 version = 17;
+            }
+
+            if (version < 18) {
+                db.beginTransaction();
+                try {
+                    // Insert new column for holding restore status
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN restored INTEGER NOT NULL DEFAULT 0;");
+                    db.setTransactionSuccessful();
+                    version = 18;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             if (version != DATABASE_VERSION) {

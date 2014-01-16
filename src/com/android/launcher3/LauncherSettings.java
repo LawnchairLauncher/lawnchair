@@ -288,5 +288,11 @@ class LauncherSettings {
          * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
          */
         static final String DISPLAY_MODE = "displayMode";
+
+        /**
+         * Boolean indicating that his item was restored and not yet successfully bound.
+         * <P>Type: INTEGER</P>
+         */
+        static final String RESTORED = "restored";
     }
 }
