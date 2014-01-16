@@ -1583,7 +1583,6 @@ public class LauncherProvider extends ContentProvider {
                 // Ignore
             }
 
-
             // We already have a favorites database in the old provider
             if (c != null) {
                 try {
@@ -1629,7 +1628,8 @@ public class LauncherProvider extends ContentProvider {
 
                         final HashSet<String> seenIntents = new HashSet<String>(c.getCount());
 
-                        final ContentValues[] rows = new ContentValues[c.getCount()];
+                        final ArrayList<ContentValues> shortcuts = new ArrayList<ContentValues>();
+                        final ArrayList<ContentValues> folders = new ArrayList<ContentValues>();
 
                         while (c.moveToNext()) {
                             final int itemType = c.getInt(itemTypeIndex);
@@ -1661,17 +1661,20 @@ public class LauncherProvider extends ContentProvider {
                                 }
 
                                 cn = intent.getComponent();
-
                                 if (TextUtils.isEmpty(intentStr)) {
                                     // no intent? no icon
                                     Launcher.addDumpLog(TAG, "skipping empty intent", true);
                                     continue;
-                                } else if (!LauncherModel.isValidPackageComponent(pm, cn)) {
+                                } else if (cn != null &&
+                                        !LauncherModel.isValidPackageComponent(pm, cn)) {
                                     // component no longer exists.
-                                    Launcher.addDumpLog(TAG, "skipping item whose component" +
+                                    Launcher.addDumpLog(TAG, "skipping item whose component " +
                                             "no longer exists.", true);
                                     continue;
-                                } else {
+                                } else if (container ==
+                                        LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                    // Dedupe icons directly on the workspace
+
                                     // Canonicalize
                                     // the Play Store sets the package parameter, but Launcher
                                     // does not, so we clear that out to keep them the same
@@ -1704,7 +1707,8 @@ public class LauncherProvider extends ContentProvider {
                                     c.getInt(displayModeIndex));
 
                             if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                                    && screen >= hotseatWidth) {
+                                    && (screen >= hotseatWidth ||
+                                        screen == grid.hotseatAllAppsRank)) {
                                 // no room for you in the hotseat? it's off to the desktop with you
                                 container = Favorites.CONTAINER_DESKTOP;
                             }
@@ -1715,32 +1719,53 @@ public class LauncherProvider extends ContentProvider {
                                 values.put(LauncherSettings.Favorites.CELLX, cellX);
                                 values.put(LauncherSettings.Favorites.CELLY, cellY);
                             } else {
-                                values.put(LauncherSettings.Favorites.SCREEN, curScreen);
-                                values.put(LauncherSettings.Favorites.CELLX, curX);
-                                values.put(LauncherSettings.Favorites.CELLY, curY);
-                                curX = (curX + 1) % width;
-                                if (curX == 0) {
-                                    curY = (curY + 1);
-                                }
-                                // Leave the last row of icons blank on screen 0
-                                if (curScreen == 0 && curY == height - 1 || curY == height) {
-                                    curScreen = (int) generateNewScreenId();
-                                    curY = 0;
-                                }
+                                // For items contained directly on one of the workspace screen,
+                                // we'll determine their location (screen, x, y) in a second pass.
                             }
 
                             values.put(LauncherSettings.Favorites.CONTAINER, container);
 
-                            rows[i++] = values;
+                            if (itemType != Favorites.ITEM_TYPE_FOLDER) {
+                                shortcuts.add(values);
+                            } else {
+                                folders.add(values);
+                            }
                         }
 
-                        if (i > 0) {
+                        final ArrayList<ContentValues> allItems = new ArrayList<ContentValues>();
+                        // Folders first
+                        allItems.addAll(folders);
+                        // Then shortcuts
+                        allItems.addAll(shortcuts);
+
+                        // Layout all the folders
+                        for (ContentValues values: allItems) {
+                            if (values.getAsInteger(LauncherSettings.Favorites.CONTAINER) !=
+                                    LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                // Hotseat items and folder items have already had their
+                                // location information set. Nothing to be done here.
+                                continue;
+                            }
+                            values.put(LauncherSettings.Favorites.SCREEN, curScreen);
+                            values.put(LauncherSettings.Favorites.CELLX, curX);
+                            values.put(LauncherSettings.Favorites.CELLY, curY);
+                            curX = (curX + 1) % width;
+                            if (curX == 0) {
+                                curY = (curY + 1);
+                            }
+                            // Leave the last row of icons blank on every screen
+                            if (curY == height - 1) {
+                                curScreen = (int) generateNewScreenId();
+                                curY = 0;
+                            }
+                        }
+
+                        if (allItems.size() > 0) {
                             db.beginTransaction();
                             try {
-                                final int N = rows.length;
-                                for (i = 0; i < N; i++) {
-                                    if (rows[i] == null) continue;
-                                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, rows[i])
+                                for (ContentValues row: allItems) {
+                                    if (row == null) continue;
+                                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, row)
                                             < 0) {
                                         return;
                                     } else {
