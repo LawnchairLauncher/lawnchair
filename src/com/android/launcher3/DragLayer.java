@@ -65,8 +65,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
-    private int mWorkspaceIndex = -1;
-    private int mQsbIndex = -1;
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_FADE_OUT = 1;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
@@ -74,6 +72,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     private TouchCompleteListener mTouchCompleteListener;
 
     private final Rect mInsets = new Rect();
+
+    private int mDragViewIndex;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -771,31 +771,26 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     private void updateChildIndices() {
-        if (mLauncher != null) {
-            mWorkspaceIndex = indexOfChild(mLauncher.getWorkspace());
-            mQsbIndex = indexOfChild(mLauncher.getSearchBar());
+        mDragViewIndex = -1;
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            if (getChildAt(i) instanceof DragView) {
+                mDragViewIndex = i;
+            }
         }
     }
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        // TODO: We have turned off this custom drawing order because it now effects touch
-        // dispatch order. We need to sort that issue out and then decide how to go about this.
-        if (true || LauncherAppState.isScreenLandscape(getContext()) ||
-                mWorkspaceIndex == -1 || mQsbIndex == -1 ||
-                mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
+        if (mDragViewIndex == -1) {
             return i;
-        }
-
-        // This ensures that the workspace is drawn above the hotseat and qsb,
-        // except when the workspace is drawing a background gradient, in which
-        // case we want the workspace to stay behind these elements.
-        if (i == mQsbIndex) {
-            return mWorkspaceIndex;
-        } else if (i == mWorkspaceIndex) {
-            return mQsbIndex;
+        } else if (i == mDragViewIndex) {
+            return getChildCount()-1;
+        } else if (i < mDragViewIndex) {
+            return i;
         } else {
-            return i;
+            // i > mDragViewIndex
+            return i-1;
         }
     }
 
