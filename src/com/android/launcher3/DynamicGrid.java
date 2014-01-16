@@ -74,6 +74,8 @@ public class DynamicGrid {
                 296, 491.33f,  4, 4,  (useLargeIcons ? 56 : 48), 13, (hasAA ? 5 : 5), (useLargeIcons ? 56 : 48)));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
                 359, 518,  4, 4,  (useLargeIcons ? DEFAULT_ICON_SIZE_DP : 52), 13, (hasAA ? 5 : 5), (useLargeIcons ? 56 : 48)));
+        deviceProfiles.add(new DeviceProfile("Large Phone",
+                400, 680,  5, 5,  (useLargeIcons ? 64 : 56), 14.4f,  5, (useLargeIcons ? 64 : 56)));
         // The tablet profile is odd in that the landscape orientation
         // also includes the nav bar on the side
         deviceProfiles.add(new DeviceProfile("Nexus 7",
