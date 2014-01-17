@@ -2233,7 +2233,16 @@ public class Launcher extends Activity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        showOverviewMode(true);
+        // Close any open folders
+        closeFolder();
+        // Stop resizing any widgets
+        mWorkspace.exitWidgetResizeMode();
+        if (!mWorkspace.isInOverviewMode()) {
+            // Show the overview mode
+            showOverviewMode(true);
+        } else {
+            showWorkspace(true);
+        }
         return false;
     }
 
