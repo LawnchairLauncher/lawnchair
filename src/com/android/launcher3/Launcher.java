@@ -505,11 +505,11 @@ public class Launcher extends Activity
     }
 
     /**
-     * To be overridden by subclasses to create the custom content and call
+     * To be overridden by subclasses to populate the custom content container and call
      * {@link #addToCustomContentPage}. This will only be invoked if
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
-    protected void addCustomContentToLeft() {
+    protected void populateCustomContentContainer() {
     }
 
     /**
@@ -539,8 +539,8 @@ public class Launcher extends Activity
 
         if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
             // Create the custom content page and call the subclass to populate it.
-            mWorkspace.createCustomContentPage();
-            addCustomContentToLeft();
+            mWorkspace.createCustomContentContainer();
+            populateCustomContentContainer();
         } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
             mWorkspace.removeCustomContentPage();
         }
@@ -1030,12 +1030,6 @@ public class Launcher extends Activity
         // debounce excess onHide calls.
         if (mWorkspace.getCustomContentCallbacks() != null) {
             mWorkspace.getCustomContentCallbacks().onHide();
-        }
-    }
-
-    protected void onFinishBindingItems() {
-        if (mWorkspace != null && hasCustomContentToLeft() && mWorkspace.hasCustomContent()) {
-            addCustomContentToLeft();
         }
     }
 
@@ -3788,9 +3782,9 @@ public class Launcher extends Activity
 
         // Create the custom content page (this call updates mDefaultScreen which calls
         // setCurrentPage() so ensure that all pages are added before calling this).
-        // The actual content of the custom page will be added during onFinishBindingItems().
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            mWorkspace.createCustomContentPage();
+        if (hasCustomContentToLeft()) {
+            mWorkspace.createCustomContentContainer();
+            populateCustomContentContainer();
         }
     }
 
@@ -4072,13 +4066,6 @@ public class Launcher extends Activity
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
-
-        mWorkspace.post(new Runnable() {
-            @Override
-            public void run() {
-                onFinishBindingItems();
-            }
-        });
     }
 
     public boolean isAllAppsButtonRank(int rank) {
