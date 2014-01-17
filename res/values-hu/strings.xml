@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Modulok"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Nincs több hely a kezdőképernyőkön."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Nincs több hely ezen a kezdőképernyőn."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Nincs több hely az egyéni mezőben."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ez a modul túl nagy az egyéni mező számára."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nincs több hely a Kedvencek tálcán"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ez a widget túl nagy a Kedvencek tálcán való elhelyezéshez"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"A(z) „<xliff:g id="NAME">%s</xliff:g>” parancsikon létrehozva."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"A(z) „<xliff:g id="NAME">%s</xliff:g>” parancsikon eltávolítva."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"A(z) „<xliff:g id="NAME">%s</xliff:g>” parancsikon már létezik."</string>
