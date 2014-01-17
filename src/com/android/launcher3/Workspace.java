@@ -453,7 +453,7 @@ public class Workspace extends SmoothPagedView
         setClipChildren(false);
         setClipToPadding(false);
         setChildrenDrawnWithCacheEnabled(true);
-        
+
         setMinScale(mOverviewModeShrinkFactor);
         setupLayoutTransition();
 
@@ -606,7 +606,7 @@ public class Workspace extends SmoothPagedView
         return screenId;
     }
 
-    public void createCustomContentPage() {
+    public void createCustomContentContainer() {
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
         customScreen.disableBackground();
