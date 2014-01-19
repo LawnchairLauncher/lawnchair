@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/scrolling_page_outlines"
+          android:checkable="true"
+          android:title="@string/scrolling_page_outlines"/>
+    <item android:id="@+id/scrolling_fade_adjacent"
+          android:checkable="true"
+          android:title="@string/scrolling_fade_adjacent"/>
+</menu>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <LinearLayout android:id="@+id/title_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:minHeight="64dip"
+        android:layout_marginStart="16dip"
+        android:layout_marginEnd="16dip">
+        <ImageView android:id="@android:id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dip"
+            android:src="@null" />
+        <TextView android:id="@android:id/title"
+            android:textAppearance="@android:style/TextAppearance.Holo.DialogWindowTitle"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="viewStart" />
+        <ImageButton android:id="@+id/overflow_menu_button"
+            android:background="?android:actionBarItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:padding="6dip"
+            android:src="@drawable/ic_menu_overflow"/>
+    </LinearLayout>
+</LinearLayout>

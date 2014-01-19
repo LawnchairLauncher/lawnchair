@@ -50,7 +50,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -95,9 +97,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Advanceable;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,6 +123,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -1003,17 +1011,9 @@ public class Launcher extends Activity
         final Menu menu = popupMenu.getMenu();
         popupMenu.inflate(R.menu.apps_customize_sort_mode);
         AppsCustomizePagedView.SortMode sortMode = mAppsCustomizeContent.getSortMode();
-        switch (sortMode) {
-            case Title:
-                menu.findItem(R.id.sort_mode_title).setChecked(true);
-                break;
-            case LaunchCount:
-                menu.findItem(R.id.sort_mode_launch_count).setChecked(true);
-                break;
-            case InstallTime:
-                menu.findItem(R.id.sort_mode_install_time).setChecked(true);
-                break;
-        }
+        menu.findItem(R.id.sort_mode_title).setChecked(sortMode == AppsCustomizePagedView.SortMode.Title);
+        menu.findItem(R.id.sort_mode_launch_count).setChecked(sortMode == AppsCustomizePagedView.SortMode.LaunchCount);
+        menu.findItem(R.id.sort_mode_install_time).setChecked(sortMode == AppsCustomizePagedView.SortMode.InstallTime);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
@@ -1035,20 +1035,14 @@ public class Launcher extends Activity
 
     public void onClickTransitionEffectButton(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.transition_effect_button_text);
 
-        if (isAllAppsVisible()) {
-            mAppsCustomizeContent.exitOverviewMode(true);
-        } else {
-            mWorkspace.exitOverviewMode(true);
-        }
-
+        // Load values
         final PagedView pagedView = isAllAppsVisible() ? mAppsCustomizeContent : mWorkspace;
         final PagedView.TransitionEffect oldEffect = pagedView.getTransitionEffect();
         final String oldEffectName = oldEffect != null ? oldEffect.getName() :
                 PagedView.TransitionEffect.TRANSITION_EFFECT_NONE;
 
-        final String[] entries = getResources().getStringArray(R.array.transition_effect_entries);
+        final String[] titles = getResources().getStringArray(R.array.transition_effect_entries);
         final String[] values = getResources().getStringArray(R.array.transition_effect_values);
 
         int selected = -1;
@@ -1059,50 +1053,53 @@ public class Launcher extends Activity
             }
         }
 
-        builder.setSingleChoiceItems(entries, selected, new DialogInterface.OnClickListener() {
+        // Create title view with overflow menu
+        View customTitle = getLayoutInflater().inflate(R.layout.dialog_title_overflow_menu, null);
+        TextView title = (TextView) customTitle.findViewById(android.R.id.title);
+        title.setText(R.string.transition_effect_button_text);
+
+        View overflowMenu = customTitle.findViewById(R.id.overflow_menu_button);
+        overflowMenu.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickTransitionEffectOverflowMenuButton(v);
+            }
+        });
+
+        builder.setCustomTitle(customTitle);
+
+        builder.setSingleChoiceItems(titles, selected, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String effect = values[which];
+                PagedView.TransitionEffect.setFromString(pagedView, effect);
+
+                // Show the changes immediately
+                final int currentPage = pagedView.getNextPage();
+                final int nextPage = currentPage + (currentPage != pagedView.getPageCount() - 1 ? 1 : -1);
+                pagedView.snapToPageImmediately(currentPage);
+                pagedView.snapToPage(nextPage, new Runnable() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String effect = values[which];
-                        PagedView.TransitionEffect.setFromString(pagedView, effect);
-
-                        final int currentPage = pagedView.getNextPage();
-                        final int nextPage = currentPage + (currentPage != pagedView.getPageCount() - 1 ? 1 : -1);
-
-
-                        pagedView.snapToPageImmediately(currentPage);
-                        pagedView.snapToPage(nextPage, new Runnable() {
-                            @Override
-                            public void run() {
-                                pagedView.snapToPage(currentPage);
-                            }
-                        });
+                    public void run() {
+                        pagedView.snapToPage(currentPage);
                     }
-                })
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        PagedView.TransitionEffect effect = pagedView.getTransitionEffect();
-                        String name = effect != null ? effect.getName() : PagedView.TransitionEffect.TRANSITION_EFFECT_NONE;
+                });
 
-                        SettingsProvider.get(Launcher.this).edit()
-                                .putString(!isAllAppsVisible() ?
-                                        SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT :
-                                        SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT, name)
-                                .commit();
+                SettingsProvider.get(Launcher.this).edit()
+                        .putString(!isAllAppsVisible() ?
+                                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT :
+                                SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT, effect)
+                        .commit();
+            }
+        });
 
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        pagedView.setTransitionEffect(oldEffect);
-                    }
-                })
+        if (isAllAppsVisible()) {
+            mAppsCustomizeContent.exitOverviewMode(true);
+        } else {
+            mWorkspace.exitOverviewMode(true);
+        }
+
+        builder.setPositiveButton(android.R.string.ok, null)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
@@ -1113,6 +1110,58 @@ public class Launcher extends Activity
         mTransitionEffectDialog.show();
         mTransitionEffectDialog.setCanceledOnTouchOutside(true);
         mTransitionEffectDialog.getWindow().getDecorView().setAlpha(0.6f);
+    }
+
+    public void onClickTransitionEffectOverflowMenuButton(View v) {
+        final PopupMenu popupMenu = new PopupMenu(this, v);
+
+        final Menu menu = popupMenu.getMenu();
+        popupMenu.inflate(R.menu.scrolling_settings);
+        MenuItem pageOutlines = menu.findItem(R.id.scrolling_page_outlines);
+        MenuItem fadeAdjacent = menu.findItem(R.id.scrolling_fade_adjacent);
+
+        pageOutlines.setVisible(!isAllAppsVisible());
+        pageOutlines.setChecked(SettingsProvider.getBoolean(this,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES,
+                R.bool.preferences_interface_homescreen_scrolling_page_outlines_default
+        ));
+
+        fadeAdjacent.setChecked(SettingsProvider.getBoolean(this,
+                !isAllAppsVisible() ?
+                        SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT :
+                        SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT,
+                !isAllAppsVisible() ?
+                        R.bool.preferences_interface_homescreen_scrolling_fade_adjacent_default :
+                        R.bool.preferences_interface_drawer_scrolling_fade_adjacent_default
+        ));
+
+        final PagedView pagedView = !isAllAppsVisible() ? mWorkspace : mAppsCustomizeContent;
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.scrolling_page_outlines:
+                        SettingsProvider.get(Launcher.this).edit()
+                                .putBoolean(SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES, !item.isChecked()).commit();
+                        mWorkspace.setShowOutlines(!item.isChecked());
+                        break;
+                    case R.id.scrolling_fade_adjacent:
+                        SettingsProvider.get(Launcher.this).edit()
+                                .putBoolean(!isAllAppsVisible() ?
+                                        SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT :
+                                        SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT, !item.isChecked()).commit();
+                        pagedView.setFadeInAdjacentScreens(!item.isChecked());
+                        break;
+                    default:
+                        return false;
+                }
+
+                return true;
+            }
+        });
+
+        popupMenu.show();
     }
 
     public interface QSBScroller {

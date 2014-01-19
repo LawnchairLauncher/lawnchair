@@ -19,6 +19,9 @@
     <string name="sort_mode_launch_count">Launch Count</string>
     <string name="sort_mode_install_time">Install Time</string>
 
+    <string name="scrolling_page_outlines">Page outlines</string>
+    <string name="scrolling_fade_adjacent">Fade side pages</string>
+
 
     <string name="wallpaper_scroll">Scroll wallpaper</string>
 
@@ -35,9 +38,6 @@
     <string name="preferences_interface_homescreen_summary">Screens and wallpaper</string>
     <string name="preferences_interface_homescreen_search_title">Search bar</string>
     <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
-    <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
-    <string name="preferences_interface_homescreen_scrolling_page_outlines_title">Page outlines</string>
-    <string name="preferences_interface_homescreen_scrolling_page_outlines_summary">Show page outlines while scrolling homescreens</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>

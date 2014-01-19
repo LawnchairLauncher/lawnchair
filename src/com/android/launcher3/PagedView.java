@@ -1040,6 +1040,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
+    public void setFadeInAdjacentScreens(boolean fade) {
+        mFadeInAdjacentScreens = fade;
+    }
+
     protected void screenScrolled(int screenCenter) {
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
         // Apply transition effect and adjacent screen fade if enabled

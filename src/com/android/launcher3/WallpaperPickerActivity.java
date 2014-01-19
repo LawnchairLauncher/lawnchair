@@ -66,7 +66,7 @@ import android.widget.ListAdapter;
 
 import com.android.gallery3d.exif.ExifInterface;
 import com.android.photos.BitmapRegionTileSource;
-import org.cyanogenmod.trebuchet.settings.SettingsProvider;
+import com.android.launcher3.settings.SettingsProvider;
 
 import java.io.BufferedInputStream;
 import java.io.File;

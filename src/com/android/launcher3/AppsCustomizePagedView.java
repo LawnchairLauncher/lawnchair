@@ -210,6 +210,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     enum State { NORMAL, OVERVIEW};
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
+    private boolean mAppsCustomizeFadeInAdjacentScreens;
 
     // Animation values
     private float mNewScale;
@@ -297,7 +298,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // The padding on the non-matched dimension for the default widget preview icons
         // (top + bottom)
-        mFadeInAdjacentScreens = false;
+        mAppsCustomizeFadeInAdjacentScreens = SettingsProvider.getBoolean(context,                SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT,
+                R.bool.preferences_interface_drawer_scrolling_fade_adjacent_default);
 
         TransitionEffect.setFromString(this, SettingsProvider.getString(context,
                 SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT,
@@ -1437,14 +1439,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return getChildCount() - index - 1;
     }
 
-    // In apps customize, we have a scrolling effect which emulates pulling cards off of a stack.
+    @Override
+    public void setFadeInAdjacentScreens(boolean fade) {
+        mAppsCustomizeFadeInAdjacentScreens = fade;
+    }
+
     @Override
     protected void screenScrolled(int screenCenter) {
         final boolean isRtl = isLayoutRtl();
 
         mUseTransitionEffect = !isInOverviewMode() && !mIsSwitchingState;
 
+        updatePageAlphaValues(screenCenter);
+
         super.screenScrolled(screenCenter);
+
         enableHwLayersOnVisiblePages();
 
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
@@ -1528,6 +1537,23 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     protected void overScroll(float amount) {
         acceleratedOverScroll(amount);
+    }
+
+    private void updatePageAlphaValues(int screenCenter) {
+        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
+        if (mAppsCustomizeFadeInAdjacentScreens &&
+                mState == State.NORMAL &&
+                !mIsSwitchingState &&
+                !isInOverscroll) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getPageAt(i);
+                if (child != null) {
+                    float scrollProgress = getScrollProgress(screenCenter, child, i);
+                    float alpha = 1 - Math.abs(scrollProgress);
+                    setChildAlpha(child, alpha);
+                }
+            }
+        }
     }
 
     public boolean isInOverviewMode() {
