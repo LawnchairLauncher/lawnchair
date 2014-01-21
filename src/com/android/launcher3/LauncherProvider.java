@@ -328,9 +328,11 @@ public class LauncherProvider extends ContentProvider {
     public void deleteDatabase() {
         // Are you sure? (y/n)
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final String dbFile = db.getPath();
+        final File dbFile = new File(db.getPath());
         mOpenHelper.close();
-        SQLiteDatabase.deleteDatabase(new File(dbFile));
+        if (dbFile.exists()) {
+            SQLiteDatabase.deleteDatabase(dbFile);
+        }
         mOpenHelper = new DatabaseHelper(getContext());
     }
 
