@@ -196,7 +196,8 @@ class LauncherClings {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         return areClingsEnabled() &&
             !sharedPrefs.getBoolean(FIRST_RUN_CLING_DISMISSED_KEY, false) &&
-            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
+            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false) &&
+            LauncherAppState.getLauncherProvider().wasNewDbCreated();
     }
 
     public void removeFirstRunAndMigrationClings() {

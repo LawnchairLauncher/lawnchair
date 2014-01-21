@@ -111,6 +111,10 @@ public class LauncherProvider extends ContentProvider {
         return true;
     }
 
+    public boolean wasNewDbCreated() {
+        return mOpenHelper.wasNewDbCreated();
+    }
+
     @Override
     public String getType(Uri uri) {
         SqlArguments args = new SqlArguments(uri, null, null);
@@ -352,6 +356,8 @@ public class LauncherProvider extends ContentProvider {
         private long mMaxItemId = -1;
         private long mMaxScreenId = -1;
 
+        private boolean mNewDbCreated = false;
+
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
@@ -365,6 +371,10 @@ public class LauncherProvider extends ContentProvider {
             if (mMaxScreenId == -1) {
                 mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
             }
+        }
+
+        public boolean wasNewDbCreated() {
+            return mNewDbCreated;
         }
 
         /**
@@ -384,6 +394,7 @@ public class LauncherProvider extends ContentProvider {
 
             mMaxItemId = 1;
             mMaxScreenId = 0;
+            mNewDbCreated = true;
 
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
