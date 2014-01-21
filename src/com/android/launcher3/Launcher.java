@@ -4126,9 +4126,11 @@ public class Launcher extends Activity
                     // when we are loading right after we return to launcher.
                     mWorkspace.postDelayed(new Runnable() {
                         public void run() {
-                            mWorkspace.snapToPage(newScreenIndex);
-                            mWorkspace.postDelayed(startBounceAnimRunnable,
-                                    NEW_APPS_ANIMATION_DELAY);
+                            if (mWorkspace != null) {
+                                mWorkspace.snapToPage(newScreenIndex);
+                                mWorkspace.postDelayed(startBounceAnimRunnable,
+                                        NEW_APPS_ANIMATION_DELAY);
+                            }
                         }
                     }, NEW_APPS_PAGE_MOVE_DELAY);
                 } else {
