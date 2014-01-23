@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"小工具"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"主畫面已無空間。"</string>
     <string name="out_of_space" msgid="4691004494942118364">"主畫面已無空間。"</string>
-    <string name="hotseat_out_of_space" msgid="7448809638125333693">"我的收藏系統匣沒有足夠空間"</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"這個小工具過大，我的收藏系統匣沒有足夠空間"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"我的收藏寄存區沒有足夠空間"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"這個小工具過大，我的收藏寄存區沒有足夠空間"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"已建立「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"已移除「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"「<xliff:g id="NAME">%s</xliff:g>」捷徑已存在。"</string>
