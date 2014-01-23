@@ -245,6 +245,9 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
             try {
                 ei.readExif(mPath);
                 return true;
+            } catch (NullPointerException e) {
+                Log.w("BitmapRegionTileSource", "reading exif failed", e);
+                return false;
             } catch (IOException e) {
                 Log.w("BitmapRegionTileSource", "getting decoder failed", e);
                 return false;
@@ -310,6 +313,9 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 return false;
             } catch (IOException e) {
                 Log.e("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
+                return false;
+            } catch (NullPointerException e) {
+                Log.e("BitmapRegionTileSource", "Failed to read EXIF for URI " + mUri, e);
                 return false;
             } finally {
                 Utils.closeSilently(is);

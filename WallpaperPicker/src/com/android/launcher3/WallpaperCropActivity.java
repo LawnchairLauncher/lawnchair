@@ -276,6 +276,9 @@ public class WallpaperCropActivity extends Activity {
             }
         } catch (IOException e) {
             Log.w(LOGTAG, "Getting exif data failed", e);
+        } catch (NullPointerException e) {
+            // Sometimes the ExifInterface has an internal NPE if Exif data isn't valid
+            Log.w(LOGTAG, "Getting exif data failed", e);
         } finally {
             Utils.closeSilently(bis);
             Utils.closeSilently(is);
