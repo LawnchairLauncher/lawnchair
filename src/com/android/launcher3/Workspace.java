@@ -1257,12 +1257,13 @@ public class Workspace extends SmoothPagedView
 
         if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
+
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onShow();
                 mCustomContentShowTime = System.currentTimeMillis();
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
-        } else if (hasCustomContent() && getNextPage() != 0 && mCustomContentShowing) {
+        } else if (hasCustomContent() && mCustomContentShowing) {
             mCustomContentShowing = false;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onHide();
@@ -1294,6 +1295,22 @@ public class Workspace extends SmoothPagedView
 
     protected void snapToPage(int whichPage, Runnable r) {
         snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION, r);
+    }
+
+    @Override
+    protected void snapToPage(int whichPage, int delta, int duration, boolean immediate,
+                              TimeInterpolator interpolator) {
+        super.snapToPage(whichPage, delta, duration, immediate, interpolator);
+
+        // Trigger onCustomContentLaunch if we have just snapped to the custom page.
+        int customPageIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
+        if (hasCustomContent() && whichPage == customPageIndex && !mCustomContentShowing) {
+            if(!isInOverviewMode()) {
+                mCustomContentShowing = true;
+                // Start Google Now and register the gesture to return to Trebuchet
+                mLauncher.onCustomContentLaunch();
+            }
+        }
     }
 
     protected void snapToPage(int whichPage, int duration, Runnable r) {
@@ -1379,6 +1396,7 @@ public class Workspace extends SmoothPagedView
             int firstIndex = numCustomPages();
             // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
             int lastIndex = getChildCount() - 1 - emptyExtraPages;
+
             if (isLayoutRtl()) {
                 int temp = firstIndex;
                 firstIndex = lastIndex;
@@ -1619,7 +1637,13 @@ public class Workspace extends SmoothPagedView
     }
 
     public int numCustomPages() {
-        return hasCustomContent() ? 1 : 0;
+        // GEL integration is a special case (not a *real* screen) and should
+        // not be counted as custom content.
+        if(mLauncher.isGelIntegrationEnabled()) {
+            return 0;
+        } else {
+            return hasCustomContent() ? 1 : 0;
+        }
     }
 
     public boolean isOnOrMovingToCustomContent() {
@@ -1801,6 +1825,16 @@ public class Workspace extends SmoothPagedView
         // Force the wallpaper offset steps to be set again, because another app might have changed
         // them
         mLastSetWallpaperOffsetSteps = 0f;
+
+        // Never resume to the custom page if GEL integration is enabled.
+        int customPageIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
+        // mCustomContentShowing can be lost if the Activity is recreated,
+        // So make sure it is set to the right value.
+        mCustomContentShowing = mCustomContentShowing
+                                || (customPageIndex == getCurrentPage() && hasCustomContent());
+        if (mCustomContentShowing && mLauncher.isGelIntegrationEnabled()) {
+            moveToScreen((customPageIndex + 1), true);
+        }
     }
 
     @Override
@@ -2081,6 +2115,11 @@ public class Workspace extends SmoothPagedView
     protected void getOverviewModePages(int[] range) {
         int start = numCustomPages();
         int end = getChildCount() - 1;
+
+        // For GEL integration, do not include the first page (GEL)
+        if(mLauncher.isGelIntegrationEnabled()) {
+            start += 1;
+        }
 
         range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
         range[1] = Math.max(0,  end);
@@ -4811,7 +4850,15 @@ public class Workspace extends SmoothPagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        moveToScreen(getPageIndexForScreenId(mDefaultScreenId), animate);
+        // Do not use the custom page or index -1 as default,
+        // if GEL integration is enabled.
+        int idx = getPageIndexForScreenId(mDefaultScreenId);
+        int ccIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
+        if(hasCustomContent() && (idx == ccIndex || idx == -1)
+           && mLauncher.isGelIntegrationEnabled()) {
+            idx = 1;
+        }
+        moveToScreen(idx, animate);
     }
 
     void moveToCustomContentScreen(boolean animate) {

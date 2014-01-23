@@ -241,6 +241,8 @@ public class Launcher extends Activity
     private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     private static int NEW_APPS_ANIMATION_DELAY = 500;
 
+    private boolean mGelIntegrationEnabled = false;
+
     private final BroadcastReceiver mCloseSystemDialogsReceiver
             = new CloseSystemDialogsIntentReceiver();
     private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
@@ -484,6 +486,8 @@ public class Launcher extends Activity
         mSavedState = savedInstanceState;
         restoreState(mSavedState);
 
+        restoreGelSetting();
+
         if (PROFILE_STARTUP) {
             android.os.Debug.stopMethodTracing();
         }
@@ -531,6 +535,12 @@ public class Launcher extends Activity
                 "cyanogenmod.permission.PROTECTED_APP", null);
     }
 
+    public void restoreGelSetting() {
+        mGelIntegrationEnabled = SettingsProvider.getBoolean(this,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_SCREEN_LEFT,
+                R.bool.preferences_interface_homescreen_search_screen_left_default);
+    }
+
     private void initializeDynamicGrid() {
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
@@ -538,6 +548,8 @@ public class Launcher extends Activity
         mHideIconLabels = SettingsProvider.getBoolean(this,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
                 R.bool.preferences_interface_homescreen_hide_icon_labels_default);
+
+        restoreGelSetting();
 
         // Determine the dynamic grid properties
         Point smallestSize = new Point();
@@ -565,13 +577,41 @@ public class Launcher extends Activity
         sPausedFromUserAction = true;
     }
 
-    /** To be overriden by subclasses to hint to Launcher that we have custom content */
+    /** To be overridden by subclasses to hint to Launcher that we have custom content */
     protected boolean hasCustomContentToLeft() {
-        return false;
+       return isGelIntegrationSupported() && isGelIntegrationEnabled();
+    }
+
+    public boolean isGelIntegrationSupported() {
+        final SearchManager searchManager =
+            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
+
+        // Currently the only custom content available is the GEL launcher integration,
+        // only supported on CyanogenMod.
+        return globalSearchActivity != null && isCM();
+    }
+
+    public boolean isGelIntegrationEnabled() {
+        return mGelIntegrationEnabled;
+    }
+
+    public void onCustomContentLaunch() {
+        if(isGelIntegrationEnabled() && isGelIntegrationSupported()) {
+            GelIntegrationHelper.getInstance().registerSwipeBackGestureListenerAndStartGel(this);
+        }
     }
 
     /**
-     * To be overridden by subclasses to populate the custom content container and call
+     * Check if the device running this application is running CyanogenMod.
+     * @return true if this device is running CM.
+     */
+    protected boolean isCM() {
+        return getPackageManager().hasSystemFeature("com.cyanogenmod.android");
+    }
+
+    /**
+     * To be overridden by subclasses to create the custom content and call
      * {@link #addToCustomContentPage}. This will only be invoked if
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
@@ -1000,6 +1040,10 @@ public class Launcher extends Activity
             Log.v(TAG, "Launcher.onResume()");
         }
         super.onResume();
+
+        if(isGelIntegrationEnabled() && isGelIntegrationSupported()) {
+            GelIntegrationHelper.getInstance().handleGelResume();
+        }
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {

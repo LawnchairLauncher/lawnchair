@@ -68,6 +68,9 @@
     <string name="preferences_interface_drawer_hide_icon_labels_title">Hide icon labels</string>
     <string name="preferences_interface_drawer_hide_icon_labels_summary">Hide icon labels in drawer</string>
 
+    <!-- Settings toast messages -->
+    <string name="preferences_search_screen_left_unsupported_toast">You must have a supported search app and CyanogenMod to use this feature.</string>
+
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
 
@@ -106,6 +109,8 @@
     <string name="hide_icon_labels">Hide icon labels</string>
     <!-- Protected Apps -->
     <string name="protected_app_settings">Protected apps</string>
+    <!-- Text for hiding/showing search screen on left (if installed) -->
+    <string name="search_screen_left_text">Search panel</string>
     <!-- Settings states -->
     <string name="setting_state_on">ON</string>
     <string name="setting_state_off">OFF</string>
