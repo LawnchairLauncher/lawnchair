@@ -48,7 +48,7 @@
         />
 
     <original-package android:name="com.cyanogenmod.trebuchet" />
-    <original-package android:name="org.cyanogenmod.trebuchet" />
+    <original-package android:name="com.android.launcher3" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
