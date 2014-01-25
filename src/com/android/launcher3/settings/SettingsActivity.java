@@ -94,7 +94,7 @@ public class SettingsActivity extends PreferenceActivity
 
             // Version preference
             if (header.id == R.id.preferences_application_version) {
-                header.title = getString(R.string.application_name) + " " + getString(R.string.application_version);
+                header.title = getString(R.string.cm_application_name) + " " + getString(R.string.application_version);
             }
 
             // Increment if not removed

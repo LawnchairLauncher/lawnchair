@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application name -->
+    <string name="cm_application_name">Trebuchet</string>
     <!-- App copyright -->
     <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
     <!-- App version -->
