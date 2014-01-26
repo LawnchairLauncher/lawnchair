@@ -928,7 +928,9 @@ public class Workspace extends SmoothPagedView
         }
 
         if (!(child instanceof Folder)) {
-            child.setHapticFeedbackEnabled(false);
+            if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                child.setHapticFeedbackEnabled(false);
+            }
             child.setOnLongClickListener(mLongClickListener);
         }
         if (child instanceof DropTarget) {
