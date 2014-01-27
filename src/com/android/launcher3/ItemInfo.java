@@ -122,6 +122,10 @@ public class ItemInfo {
         throw new RuntimeException("Unexpected Intent");
     }
 
+    protected Intent getRestoredIntent() {
+        throw new RuntimeException("Unexpected Intent");
+    }
+
     /**
      * Write the fields of this item to the DB
      * 
