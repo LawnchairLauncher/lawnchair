@@ -2373,7 +2373,7 @@ public class Launcher extends Activity
                 final String shortcutClass = intent.getComponent().getClassName();
 
                 if (shortcutClass.equals(WidgetAdder.class.getName())) {
-                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                    onClickAddWidgetButton();
                     return;
                 } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
                     MemoryDumpActivity.startDump(this);
@@ -2464,6 +2464,14 @@ public class Launcher extends Activity
      */
     public void onClickAllAppsButton(View v) {
         showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+    }
+
+    /**
+     * Event handler for the (Add) Widgets button that appears after a long press
+     * on the home screen.
+     */
+    protected void onClickAddWidgetButton() {
+        showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
     }
 
     public void onTouchDownAllAppsButton(View v) {
