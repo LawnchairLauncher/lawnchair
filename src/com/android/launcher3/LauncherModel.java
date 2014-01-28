@@ -1714,6 +1714,7 @@ public class LauncherModel extends BroadcastReceiver {
                 clearSBgDataStructures();
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
+                final ArrayList<Long> restoredRows = new ArrayList<Long>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
                 if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
@@ -1754,6 +1755,8 @@ public class LauncherModel extends BroadcastReceiver {
                             (LauncherSettings.Favorites.SPANX);
                     final int spanYIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.SPANY);
+                    final int restoredIndex = c.getColumnIndexOrThrow(
+                            LauncherSettings.Favorites.RESTORED);
                     //final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
                     //final int displayModeIndex = c.getColumnIndexOrThrow(
                     //        LauncherSettings.Favorites.DISPLAY_MODE);
@@ -1769,6 +1772,7 @@ public class LauncherModel extends BroadcastReceiver {
                         AtomicBoolean deleteOnInvalidPlacement = new AtomicBoolean(false);
                         try {
                             int itemType = c.getInt(itemTypeIndex);
+                            boolean restored = 0 != c.getInt(restoredIndex);
 
                             switch (itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -1779,24 +1783,44 @@ public class LauncherModel extends BroadcastReceiver {
                                     intent = Intent.parseUri(intentDescription, 0);
                                     ComponentName cn = intent.getComponent();
                                     if (cn != null && !isValidPackageComponent(manager, cn)) {
-                                        if (!mAppsCanBeOnRemoveableStorage) {
-                                            // Log the invalid package, and remove it from the db
-                                            Launcher.addDumpLog(TAG, "Invalid package removed: " + cn, true);
-                                            itemsToRemove.add(id);
+                                        if (restored) {
+                                            // might be installed later
+                                            Launcher.addDumpLog(TAG,
+                                                    "package not yet restored: " + cn, true);
                                         } else {
-                                            // If apps can be on external storage, then we just
-                                            // leave them for the user to remove (maybe add
-                                            // visual treatment to it)
-                                            Launcher.addDumpLog(TAG, "Invalid package found: " + cn, true);
+                                            if (!mAppsCanBeOnRemoveableStorage) {
+                                                // Log the invalid package, and remove it
+                                                Launcher.addDumpLog(TAG,
+                                                        "Invalid package removed: " + cn, true);
+                                                itemsToRemove.add(id);
+                                            } else {
+                                                // If apps can be on external storage, then we just
+                                                // leave them for the user to remove (maybe add
+                                                // visual treatment to it)
+                                                Launcher.addDumpLog(TAG,
+                                                        "Invalid package found: " + cn, true);
+                                            }
+                                            continue;
                                         }
-                                        continue;
+                                    } else if (restored) {
+                                        // no special handling necessary for this restored item
+                                        restoredRows.add(id);
+                                        restored = false;
                                     }
                                 } catch (URISyntaxException e) {
-                                    Launcher.addDumpLog(TAG, "Invalid uri: " + intentDescription, true);
+                                    Launcher.addDumpLog(TAG,
+                                            "Invalid uri: " + intentDescription, true);
                                     continue;
                                 }
 
-                                if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                if (restored) {
+                                    Launcher.addDumpLog(TAG,
+                                            "constructing info for partially restored package",
+                                            true);
+                                    info = getRestoredItemInfo(c, titleIndex);
+                                    intent = getRestoredItemIntent(c, context, intent);
+                                } else if (itemType ==
+                                        LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                     info = getShortcutInfo(manager, intent, context, c, iconIndex,
                                             titleIndex, mLabelCache);
                                 } else {
@@ -1888,6 +1912,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
                                         sBgWorkspaceItems.add(folderInfo);
                                         break;
+                                }
+
+                                if (restored) {
+                                    // no special handling required for restored folders
+                                    restoredRows.add(id);
                                 }
 
                                 sBgItemsIdMap.put(folderInfo.id, folderInfo);
@@ -1987,6 +2016,25 @@ public class LauncherModel extends BroadcastReceiver {
                         } catch (RemoteException e) {
                             Log.w(TAG, "Could not remove id = " + id);
                         }
+                    }
+                }
+
+                if (restoredRows.size() > 0) {
+                    ContentProviderClient updater = contentResolver.acquireContentProviderClient(
+                            LauncherSettings.Favorites.CONTENT_URI);
+                    // Update restored items that no longer require special handling
+                    try {
+                        StringBuilder selectionBuilder = new StringBuilder();
+                        selectionBuilder.append(LauncherSettings.Favorites._ID);
+                        selectionBuilder.append(" IN (");
+                        selectionBuilder.append(TextUtils.join(", ", restoredRows));
+                        selectionBuilder.append(")");
+                        ContentValues values = new ContentValues();
+                        values.put(LauncherSettings.Favorites.RESTORED, 0);
+                        updater.update(LauncherSettings.Favorites.CONTENT_URI,
+                                values, selectionBuilder.toString(), null);
+                    } catch (RemoteException e) {
+                        Log.w(TAG, "Could not update restored rows");
                     }
                 }
 
@@ -2734,6 +2782,40 @@ public class LauncherModel extends BroadcastReceiver {
         } catch (NameNotFoundException e) {
             return false;
         }
+    }
+
+    /**
+     * Make an ShortcutInfo object for a restored application or shortcut item that points
+     * to a package that is not yet installed on the system.
+     */
+    public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex) {
+        final ShortcutInfo info = new ShortcutInfo();
+        info.usingFallbackIcon = true;
+        info.setIcon(getFallbackIcon());
+        if (cursor != null) {
+            info.title =  cursor.getString(titleIndex);
+        } else {
+            info.title = "";
+        }
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        return info;
+    }
+
+    /**
+     * Make an Intent object for a restored application or shortcut item that points
+     * to the market page for the item.
+     */
+    private Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
+        ComponentName componentName = intent.getComponent();
+        Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+        Uri marketUri = new Uri.Builder()
+                .scheme("market")
+                .authority("details")
+                .appendQueryParameter("id", componentName.getPackageName())
+                .build();
+        Log.d(TAG, "manufactured intent uri: " + marketUri.toString());
+        marketIntent.setData(marketUri);
+        return marketIntent;
     }
 
     /**
