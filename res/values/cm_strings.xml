@@ -54,4 +54,8 @@
     <string name="preferences_interface_general_icons_large_summary">Use extra large application icons in homescreen and drawer</string>
     <string name="preferences_interface_general_icons_text_style_title">Text font style</string>
     <string name="preferences_interface_general_icons_text_style_summary">Variant and style of font to use for icon text</string>
+    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
+    <string name="default_iconpack_title">Default icons</string>
+    <string name="icon_packs_title">Icon packs</string>
+    <string name="no_iconpacks_summary">No icon packs installed</string>
 </resources>

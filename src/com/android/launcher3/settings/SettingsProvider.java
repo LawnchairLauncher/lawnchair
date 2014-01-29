@@ -35,6 +35,7 @@ public final class SettingsProvider {
     public static final String SETTINGS_UI_GENERAL_ICONS_LARGE = "ui_general_icons_large";
     public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_FAMILY = "ui_general_icons_text_font";
     public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_STYLE = "ui_general_icons_text_font_style";
+    public static final String SETTINGS_UI_GENERAL_ICONS_ICON_PACK = "ui_general_iconpack";
 
     public static SharedPreferences get(Context context) {
         return context.getSharedPreferences(SETTINGS_KEY, Context.MODE_MULTI_PROCESS);
@@ -70,5 +71,9 @@ public final class SettingsProvider {
 
     public static String getString(Context context, String key, int resource) {
         return getStringCustomDefault(context, key, context.getResources().getString(resource));
+    }
+
+    public static void putString(Context context, String key, String value) {
+        get(context).edit().putString(key, value).commit();
     }
 }

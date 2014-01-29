@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (C) 2013 The Android Open Source Project
 
-     Licensed under the Apache License, Version 2.0 (the "License");
+      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
 
@@ -28,7 +28,8 @@
 
         <TextView
             android:id="@+id/default_screen_button"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/overview_panel_button_spacing"
             android:paddingRight="@dimen/overview_panel_button_spacing"
@@ -42,13 +43,29 @@
 
         <TextView
             android:id="@+id/transition_effect_button"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/overview_panel_button_spacing"
             android:paddingRight="@dimen/overview_panel_button_spacing"
             android:text="@string/transition_effect_button_text"
             android:drawablePadding="4dp"
             android:drawableTop="@drawable/wallpaper_button"
+            android:gravity="center_horizontal"
+            android:fontFamily="sans-serif-condensed"
+            android:textAllCaps="true"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/icon_pack_button"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/overview_panel_button_spacing"
+            android:paddingRight="@dimen/overview_panel_button_spacing"
+            android:text="@string/icon_packs_title"
+            android:drawablePadding="4dp"
+            android:drawableTop="@drawable/ic_iconpacks"
             android:gravity="center_horizontal"
             android:fontFamily="sans-serif-condensed"
             android:textAllCaps="true"
