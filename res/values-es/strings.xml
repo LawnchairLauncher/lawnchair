@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widgets"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"No queda espacio en las pantallas de inicio."</string>
     <string name="out_of_space" msgid="4691004494942118364">"No queda espacio en la pantalla de inicio."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"No queda espacio en la barra de accesos directos."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Este widget es demasiado grande para la barra de accesos directos."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"La bandeja de favoritos está completa"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Este widget es demasiado grande para la bandeja de favoritos"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Se ha creado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Se ha eliminado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
@@ -92,7 +92,7 @@
     <string name="migration_cling_title" msgid="9181776667882933767">"Copiar iconos de aplicaciones"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"¿Importar iconos y carpetas de pantallas de inicio antiguas?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIAR ICONOS"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"INICIAR ACTUALIZACIÓN"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"AJUSTES PREDETERMINADOS"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiza tu espacio"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén pulsado el fondo para gestionar el fondo de pantalla, los widgets y los ajustes."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Esto es una carpeta"</string>

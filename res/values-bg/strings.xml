@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Приспособления"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"На началните ви екрани няма повече място."</string>
     <string name="out_of_space" msgid="4691004494942118364">"На този начален екран няма повече място."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"В трамплина няма повече място."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Това приспособление е твърде голямо за трамплина."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Няма повече място в областта с любимите"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Това приспособление е твърде голямо за областта с любимите"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Прекият път към <xliff:g id="NAME">%s</xliff:g> е създаден."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Прекият път към <xliff:g id="NAME">%s</xliff:g> бе премахнат."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Прекият път към <xliff:g id="NAME">%s</xliff:g> вече съществува."</string>
@@ -84,20 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Начален екран %1$d от %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Страница с приложения %1$d от %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Страница с приспособления %1$d от %2$d"</string>
-    <!-- no translation found for first_run_cling_title (2459738000155917941) -->
-    <skip />
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Добре дошли"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Персонализиране и приспособяване."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Създаване на още екрани за приложения и папки"</string>
-    <!-- no translation found for migration_cling_title (9181776667882933767) -->
-    <skip />
-    <!-- no translation found for migration_cling_description (2752413805582227644) -->
-    <skip />
-    <!-- no translation found for migration_cling_copy_apps (946331230090919440) -->
-    <skip />
-    <!-- no translation found for migration_cling_use_default (2626475813981258626) -->
-    <skip />
+    <string name="migration_cling_title" msgid="9181776667882933767">"Икони на прилож. ви: Копиране"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Да се импортират ли иконите и папките от старите ви начални екрани?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"КОПИРАНЕ НА ИКОНИТЕ"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"СТАРТИРАНЕ ОТНАЧАЛО"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Организиране на мястото ви"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Докоснете и задръжте фона, за да управлявате тапета, приспособленията и настройките."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ето една папка"</string>
