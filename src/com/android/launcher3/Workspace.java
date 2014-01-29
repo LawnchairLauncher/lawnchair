@@ -213,7 +213,12 @@ public class Workspace extends SmoothPagedView
     private boolean mWorkspaceFadeInAdjacentScreens;
 
     WallpaperOffsetInterpolator mWallpaperOffset;
+
     private boolean mScrollWallpaper;
+    private boolean mWallpaperIsLiveWallpaper;
+    private int mNumPagesForWallpaperParallax;
+    private float mLastSetWallpaperOffsetSteps = 0;
+
     private Runnable mDelayedResizeRunnable;
 
     private Point mDisplaySize = new Point();
@@ -1395,7 +1400,14 @@ public class Workspace extends SmoothPagedView
                 // Don't use up all the wallpaper parallax until you have at least
                 // MIN_PARALLAX_PAGE_SPAN pages
                 int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
-                int parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
+                int parallaxPageSpan;
+                if (mWallpaperIsLiveWallpaper) {
+                    parallaxPageSpan = numScrollingPages - 1;
+                } else {
+                    parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
+                }
+                mNumPagesForWallpaperParallax = parallaxPageSpan;
+
                 // On RTL devices, push the wallpaper offset to the right if we don't have enough
                 // pages (ie if numScrollingPages < MIN_PARALLAX_PAGE_SPAN)
                 int padding = isLayoutRtl() ? parallaxPageSpan - numScrollingPages + 1 : 0;
@@ -1439,7 +1451,11 @@ public class Workspace extends SmoothPagedView
 
         private void setWallpaperOffsetSteps() {
             // Set wallpaper offset steps (1 / (number of screens - 1))
-            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
+            float xOffset = 1.0f / mNumPagesForWallpaperParallax;
+            if (xOffset != mLastSetWallpaperOffsetSteps) {
+                mWallpaperManager.setWallpaperOffsetSteps(xOffset, 1.0f);
+                mLastSetWallpaperOffsetSteps = xOffset;
+            }
         }
 
         public void setFinalX(float x) {
@@ -1781,6 +1797,10 @@ public class Workspace extends SmoothPagedView
         if (LauncherAppState.getInstance().hasWallpaperChangedSinceLastCheck()) {
             setWallpaperDimension();
         }
+        mWallpaperIsLiveWallpaper = mWallpaperManager.getWallpaperInfo() != null;
+        // Force the wallpaper offset steps to be set again, because another app might have changed
+        // them
+        mLastSetWallpaperOffsetSteps = 0f;
     }
 
     @Override
