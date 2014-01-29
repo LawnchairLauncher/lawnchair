@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public final class SettingsProvider {
-    public static final String SETTINGS_KEY = "com.android.launcher3_preferences";
+    public static final String SETTINGS_KEY = "com.cyanogenmod.trebuchet_preferences";
 
     public static final String SETTINGS_CHANGED = "settings_changed";
 
