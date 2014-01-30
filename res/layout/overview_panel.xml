@@ -65,7 +65,7 @@
             android:paddingRight="@dimen/overview_panel_button_spacing"
             android:text="@string/icon_packs_title"
             android:drawablePadding="4dp"
-            android:drawableTop="@drawable/ic_iconpacks"
+            android:drawableTop="@drawable/iconpack_button"
             android:gravity="center_horizontal"
             android:fontFamily="sans-serif-condensed"
             android:textAllCaps="true"
