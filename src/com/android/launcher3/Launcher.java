@@ -2913,7 +2913,7 @@ public class Launcher extends Activity
         }
     }
 
-    Workspace getWorkspace() {
+    protected Workspace getWorkspace() {
         return mWorkspace;
     }
 
