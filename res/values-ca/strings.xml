@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widgets"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"No queda espai a les pantalles d\'inici."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ja no queda espai en aquesta pantalla d\'inici."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"No queda espai al hotseat."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Aquest widget és massa gran per al hotseat."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Aquest widget és massa gran per a la safata Preferits."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"S\'ha creat la drecera \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"S\'ha suprimit la drecera \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"La drecera \"<xliff:g id="NAME">%s</xliff:g>\" ja existeix."</string>

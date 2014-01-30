@@ -42,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"ვიჯეტები"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"მთავარ ეკრანებზე ადგილი აღარ არის."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ამ მთავარ ეკრანზე ადგილი აღარ არის."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"hotseat-ში მეტი ადგილი არ არის."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"ეს ვიჯეტი ძალიან დიდია hotseat-ისთვის."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"რჩეულების თაროზე ადგილი არ არის"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"ეს ვიჯეტი ძალიან დიდია რჩეულების თაროსთვის"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"შეიქმნა მალსახმობი „<xliff:g id="NAME">%s</xliff:g>“."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"მასლახმობი „<xliff:g id="NAME">%s</xliff:g>“ წაშლილია."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"მალსახმობი „<xliff:g id="NAME">%s</xliff:g>“ უკვე არსებობს."</string>
@@ -90,7 +90,7 @@
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"აპებისა და საქაღალდეებისთვის კიდევ ერთი ეკრანის შექმნა"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"თქვენი აპის ხატულების კოპირება"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"გსურთ ძვლი მთავარი ეკრანიდან ხატულების და საქაღ. იმპორტი?"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"გსურთ, ძველი მთავარი ეკრანიდან ხატულების და საქაღ. იმპორტი?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ხატულების კოპირება"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"სტანდარტული განლაგება"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"თქვენი სივრცის ორგანიზება"</string>
