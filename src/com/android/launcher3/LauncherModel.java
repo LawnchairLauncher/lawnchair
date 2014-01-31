@@ -1313,19 +1313,24 @@ public class LauncherModel extends BroadcastReceiver {
 
         long containerIndex = item.screenId;
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            if (occupied.containsKey(LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
-                if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+            if (occupied.containsKey((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
+                if (occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                         [(int) item.screenId][0] != null) {
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                             + " into position (" + item.screenId + ":" + item.cellX + ","
                             + item.cellY + ") occupied by "
-                            + occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                            + occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                             [(int) item.screenId][0]);
                     if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                             [(int) item.screenId][0].itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
                         deleteOnItemOverlap.set(true);
                     }
                     return false;
+                } else {
+                    ItemInfo[][] hotseatItems = occupied.get(
+                            (long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                    hotseatItems[(int) item.screenId][0] = item;
+                    return true;
                 }
             } else {
                 ItemInfo[][] items = new ItemInfo[countX + 1][countY + 1];
