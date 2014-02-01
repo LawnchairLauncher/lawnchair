@@ -69,7 +69,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 17;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -687,6 +687,72 @@ public class LauncherProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
+            }
+
+            // This was the old L2-based Trebuchet's version. Do steps that come after version 12 
+            // (Launcher2's original version) so the new things get added, but skip the intermediate
+            // workspaceScreens updates (addWorkspacesTable() takes care of that)
+
+            if (version == 16) {
+                Log.w(TAG, "Found pre-11 Trebuchet, preparing update");
+
+                // With the new shrink-wrapped and re-orderable workspaces, it makes sense
+                // to persist workspace screens and their relative order.
+                mMaxScreenId = 0;
+
+                // This will never happen in the wild, but when we switch to using workspace
+                // screen ids, redo the import from old launcher.
+                sJustLoadedFromOldDb = true;
+
+                addWorkspacesTable(db);
+
+                Cursor c = null;
+                long screenId = -1;
+                try {
+                    c = db.rawQuery("SELECT max(screen) FROM favorites", null);
+                    if (c != null && c.moveToNext()) {
+                        screenId = c.getLong(0);
+                    }
+                    if (c != null) {
+                        c.close();
+                    }
+                } catch (SQLException ex) {
+                    Log.e(TAG, ex.getMessage(), ex);
+                }
+
+
+                db.beginTransaction();
+                try {
+                    // Insert new column for holding widget provider name
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN appWidgetProvider TEXT;");
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                    // Create workspaces for the migrated things
+                    if (screenId > 0) {
+                        for (int sId = 0; sId <= screenId; sId++) {
+                            db.execSQL("INSERT INTO workspaceScreens (_id, screenRank) " +
+                                    "VALUES (" + (sId+1) + ", " + sId + ")");
+                        }
+                    }
+                    // Adjust hotseat format
+                    db.execSQL("UPDATE favorites SET screen=cellX WHERE container=-101;");
+                    db.setTransactionSuccessful();
+                    version = 17;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+            }
+
+
+            // Artificially inflate the version to make sure we're fully up to date
+            // after a possible 10.2-Trebuchet migration
+
+            if (version == 15) {
+                version = 17;
             }
 
             if (version != DATABASE_VERSION) {

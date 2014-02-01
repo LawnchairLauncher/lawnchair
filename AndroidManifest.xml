@@ -23,6 +23,8 @@
     android:versionName="@string/application_version"
     android:versionCode="1000">
 
+    <original-package android:name="com.android.launcher3" />
+
     <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="19" />
 
     <permission
@@ -46,9 +48,6 @@
         android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS"
         android:protectionLevel="signature"
         />
-
-    <original-package android:name="com.cyanogenmod.trebuchet" />
-    <original-package android:name="com.android.launcher3" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
