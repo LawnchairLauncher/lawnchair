@@ -62,10 +62,6 @@ public class InfoDropTarget extends ButtonDropTarget {
         }
     }
 
-    private boolean isFromAllApps(DragSource source) {
-        return (source instanceof AppsCustomizePagedView);
-    }
-
     @Override
     public boolean acceptDrop(DragObject d) {
         // acceptDrop is called just before onDrop. We do the work here, rather than
@@ -93,7 +89,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         boolean isVisible = true;
 
         // Hide this button unless we are dragging something from AllApps
-        if (!isFromAllApps(source)) {
+        if (!source.supportsAppInfoDropTarget()) {
             isVisible = false;
         }
 

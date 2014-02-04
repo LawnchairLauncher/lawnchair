@@ -26,27 +26,6 @@
     <!-- no translation found for uid_name (7820867637514617527) -->
     <skip />
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for wallpaper_instructions (563973358787555519) -->
-    <skip />
-    <!-- no translation found for image_load_fail (2821429163328561136) -->
-    <skip />
-    <!-- no translation found for wallpaper_load_fail (1261270681127096352) -->
-    <skip />
-    <!-- no translation found for number_of_items_selected:zero (7464587177007785408) -->
-    <!-- no translation found for number_of_items_selected:one (142482526010824029) -->
-    <!-- no translation found for number_of_items_selected:other (1418352074806573570) -->
-    <!-- no translation found for wallpaper_accessibility_name (1655953108132967972) -->
-    <skip />
-    <!-- no translation found for announce_selection (8338254712932127413) -->
-    <skip />
-    <!-- no translation found for wallpaper_delete (8095005658756613921) -->
-    <skip />
-    <!-- no translation found for pick_image (1272073934062909527) -->
-    <skip />
-    <!-- no translation found for pick_wallpaper (8179698221502010609) -->
-    <skip />
-    <!-- no translation found for crop_wallpaper (8334345984491368009) -->
-    <skip />
     <!-- no translation found for activity_not_found (8071924732094499514) -->
     <skip />
     <!-- no translation found for widgets_tab_label (2921133187116603919) -->
@@ -85,9 +64,9 @@
     <skip />
     <!-- no translation found for out_of_space (4691004494942118364) -->
     <skip />
-    <!-- no translation found for hotseat_out_of_space (9139760413395605841) -->
+    <!-- no translation found for hotseat_out_of_space (7448809638125333693) -->
     <skip />
-    <!-- no translation found for invalid_hotseat_item (1211534262129849507) -->
+    <!-- no translation found for invalid_hotseat_item (5779907847267573691) -->
     <skip />
     <!-- no translation found for shortcut_installed (1701742129426969556) -->
     <skip />
@@ -169,13 +148,21 @@
     <skip />
     <!-- no translation found for apps_customize_widgets_scroll_format (3106209519974971521) -->
     <skip />
-    <!-- no translation found for first_run_cling_title (7257389003637362144) -->
+    <!-- no translation found for first_run_cling_title (2459738000155917941) -->
     <skip />
     <!-- no translation found for first_run_cling_description (6447072552696253358) -->
     <skip />
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <!-- no translation found for first_run_cling_create_screens_hint (6950729526680114157) -->
+    <skip />
+    <!-- no translation found for migration_cling_title (9181776667882933767) -->
+    <skip />
+    <!-- no translation found for migration_cling_description (2752413805582227644) -->
+    <skip />
+    <!-- no translation found for migration_cling_copy_apps (946331230090919440) -->
+    <skip />
+    <!-- no translation found for migration_cling_use_default (2626475813981258626) -->
     <skip />
     <!-- no translation found for workspace_cling_title (5626202359865825661) -->
     <skip />

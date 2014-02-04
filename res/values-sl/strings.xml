@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Začetni zaslon"</string>
     <string name="uid_name" msgid="7820867637514617527">"Osnovne aplikacije sistema Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Nastavi ozadje"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Slike ni bilo mogoče naložiti"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Slike ni bilo mogoče naložiti kot ozadja"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"Št. izbranih: %1$d"</item>
-    <item quantity="one" msgid="142482526010824029">"Št. izbranih: %1$d"</item>
-    <item quantity="other" msgid="1418352074806573570">"Št. izbranih: %1$d"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Ozadje %1$d od %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"Izbrano: <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Izbriši"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Izberi sliko"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Ozadja"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Obrezovanje ozadja"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikacija ni nameščena."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Pripomočki"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Pripomočki"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Pripomočki"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Na začetnih zaslonih ni več prostora."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na tem začetnem zaslonu ni več prostora."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"V vrstici z ikonami ni več prostora."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ta pripomoček je prevelik za vrstico z ikonami."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"V vrstici za priljubljene ni več prostora"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ta pripomoček je prevelik za vrstico s priljubljenimi"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Bližnjica »<xliff:g id="NAME">%s</xliff:g>« je ustvarjena."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Bližnjica »<xliff:g id="NAME">%s</xliff:g>« je bila odstranjena."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Bližnjica »<xliff:g id="NAME">%s</xliff:g>« že obstaja."</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Začetni zaslon %1$d od %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Stran aplikacij %1$d od %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Stran pripomočkov %1$d od %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Pozdravljeni!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Pozdravljeni"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Počutite se kot doma."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Ustvarite več zaslonov za aplikacije in mape"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Kopiranje ikon aplikacij"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Želite uvoziti ikone in mape iz starih začetnih zaslonov?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIRAJ IKONE"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"SVEŽ ZAČETEK"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizirajte svoj prostor"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Če želite upravljati ozadje, pripomočke in nastavitve, se dotaknite ozadja in ga pridržite."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"To je mapa"</string>

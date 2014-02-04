@@ -43,7 +43,7 @@ import java.util.ArrayList;
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
-final class Utilities {
+public final class Utilities {
     private static final String TAG = "Launcher.Utilities";
 
     private static int sIconWidth = -1;
@@ -65,6 +65,12 @@ final class Utilities {
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
 
+
+    // To turn on these properties, type
+    // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
+    public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
+
     /**
      * Returns a FastBitmapDrawable with the icon, accurately sized.
      */
@@ -80,6 +86,16 @@ final class Utilities {
      */
     static void resizeIconDrawable(Drawable icon) {
         icon.setBounds(0, 0, sIconTextureWidth, sIconTextureHeight);
+    }
+
+    private static boolean isPropertyEnabled(String propertyName) {
+        return Log.isLoggable(propertyName, Log.VERBOSE);
+    }
+
+    public static boolean isRotationEnabled(Context c) {
+        boolean enableRotation = sForceEnableRotation ||
+                c.getResources().getBoolean(R.bool.allow_rotation);
+        return enableRotation;
     }
 
     /**
@@ -111,7 +127,7 @@ final class Utilities {
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    static Bitmap createIconBitmap(Drawable icon, Context context) {
+    public static Bitmap createIconBitmap(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);

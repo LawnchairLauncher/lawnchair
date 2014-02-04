@@ -20,6 +20,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
+    <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="16"/>
 
     <permission
         android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
@@ -104,7 +105,7 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.WallpaperPickerActivity"
+            android:name="com.android.launcher3.LauncherWallpaperPickerActivity"
             android:theme="@style/Theme.WallpaperCropper"
             android:label="@string/pick_wallpaper"
             android:icon="@mipmap/ic_launcher_wallpaper"
@@ -157,6 +158,13 @@
             android:permission="com.android.launcher3.permission.PRELOAD_WORKSPACE">
             <intent-filter>
                 <action android:name="com.android.launcher3.action.PRELOAD_WORKSPACE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.WallpaperChangedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.WALLPAPER_CHANGED" />
             </intent-filter>
         </receiver>
 

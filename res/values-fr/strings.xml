@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Accueil"</string>
     <string name="uid_name" msgid="7820867637514617527">"Applications de base Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Définir comme fond d\'écran"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Impossible de charger l\'image."</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Impossible de charger l\'image comme fond d\'écran."</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d fond d\'écran sélectionné"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d fond d\'écran sélectionné"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d fonds d\'écran sélectionnés"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Fond d\'écran %1$d sur %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> est sélectionné."</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Supprimer"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Sélectionner une image"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Fonds d\'écran"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Rogner le fond d\'écran"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widgets"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Vous n\'avez plus d\'espace libre sur vos écrans d\'accueil."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur cet écran d\'accueil."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Vous n\'avez plus de place sur la barre d\'accès rapide."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ce widget est trop volumineux pour la barre d\'accès rapide."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ce widget est trop volumineux pour la zone de favoris."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été créé."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été supprimé."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" existe déjà."</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Page des applications %1$d sur %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Page des widgets %1$d sur %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Bienvenue !"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Bienvenue"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Familiarisez-vous avec l\'écran d\'accueil."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Créez des écrans personnalisés pour vos applis et dossiers"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Copier les icônes de vos applis"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Importer les icônes et dossiers des anciens écrans d\'accueil ?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIER LES ICÔNES"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"DISPOSITION PAR DÉFAUT"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organisez votre espace"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Voici un dossier"</string>

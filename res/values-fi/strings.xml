@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Aloitusruutu"</string>
     <string name="uid_name" msgid="7820867637514617527">"Androidin ydinsovellukset"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Aseta taustakuva"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Kuvan lataus epäonnistui"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Kuvaa ei voitu ladata taustakuvaksi"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d valittu"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d valittu"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d valittu"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Taustakuva %1$d/%2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"Valittu: <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Poista"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Valitse kuva"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Taustakuvat"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Rajaa taustakuva"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Sovellusta ei ole asennettu."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgetit"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgetit"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widgetit"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Aloitusruuduilla ei ole enää tilaa."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Tässä aloitusruudussa ei ole enää tilaa."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Hotseatissa ei ole enää tilaa."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Tämä widget on liian suuri tähän hotseat-paikkaan."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Suosikit-valikossa ei ole enää tilaa"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Tämä widget on liian suuri Suosikit-valikkoon lisättäväksi"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Pikakuvake <xliff:g id="NAME">%s</xliff:g> luotiin."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Pikakuvake <xliff:g id="NAME">%s</xliff:g> poistettiin."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Pikakuvake <xliff:g id="NAME">%s</xliff:g> on jo olemassa."</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Aloitusruutu %1$d/%2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Apps-sivu %1$d / %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Widgetit-sivu %1$d / %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Tervetuloa!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Tervetuloa"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Ole kuin kotonasi."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Luo lisää ruutuja sovelluksille ja kansioille"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Kopioi sovelluskuvakkeet"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Tuodaanko kuvakkeet ja kansiot vanhoista aloitusruuduista?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIOI KUVAKKEET"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ALOITA ALUSTA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Järjestä tilasi"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Hallitse taustakuvaa, widgetejä ja asetuksia koskettamalla taustaa pitkään."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Tässä on kansio"</string>

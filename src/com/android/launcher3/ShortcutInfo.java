@@ -20,9 +20,9 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -71,7 +71,14 @@ class ShortcutInfo extends ItemInfo {
     protected Intent getIntent() {
         return intent;
     }
-    
+
+    ShortcutInfo(Intent intent, CharSequence title, Bitmap icon) {
+        this();
+        this.intent = intent;
+        this.title = title;
+        mIcon = icon;
+    }
+
     public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
         title = info.title.toString();

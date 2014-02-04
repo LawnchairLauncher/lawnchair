@@ -57,8 +57,8 @@
             android:layout_gravity="center_horizontal" />
 
         <include
-            android:id="@+id/qsb_bar"
-            layout="@layout/qsb_bar" />
+            android:id="@+id/search_drop_target_bar"
+            layout="@layout/search_drop_target_bar" />
 
         <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
              that it is still visible during the transition to AllApps and doesn't overlay on
@@ -70,6 +70,16 @@
             android:visibility="gone" />
         <include layout="@layout/first_run_cling"
             android:id="@+id/first_run_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+        <include layout="@layout/migration_cling"
+            android:id="@+id/migration_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+        <include layout="@layout/migration_workspace_cling"
+            android:id="@+id/migration_workspace_cling"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />

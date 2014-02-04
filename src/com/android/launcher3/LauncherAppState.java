@@ -22,9 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.Display;
 
 import java.lang.ref.WeakReference;
 
@@ -32,13 +30,15 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
+    private final AppFilter mAppFilter;
+    private final BuildInfo mBuildInfo;
     private LauncherModel mModel;
     private IconCache mIconCache;
-    private AppFilter mAppFilter;
     private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
     private boolean mIsScreenLarge;
     private float mScreenDensity;
     private int mLongPressTimeout = 300;
+    private boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
@@ -84,10 +84,11 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         mIsScreenLarge = isScreenLarge(sContext.getResources());
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
 
-        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
+        recreateWidgetPreviewDb();
         mIconCache = new IconCache(sContext);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
+        mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
 
         // Register intent receivers
@@ -113,6 +114,13 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
+    }
+    
+    public void recreateWidgetPreviewDb() {
+        if (mWidgetPreviewCacheDb != null) {
+            mWidgetPreviewCacheDb.close();
+        }
+        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
     }
 
     /**
@@ -191,7 +199,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
                 availableWidth, availableHeight);
         return grid;
     }
-    DynamicGrid getDynamicGrid() {
+    public DynamicGrid getDynamicGrid() {
         return mDynamicGrid;
     }
 
@@ -217,8 +225,28 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return mLongPressTimeout;
     }
 
+    public void onWallpaperChanged() {
+        mWallpaperChangedSinceLastCheck = true;
+    }
+
+    public boolean hasWallpaperChangedSinceLastCheck() {
+        boolean result = mWallpaperChangedSinceLastCheck;
+        mWallpaperChangedSinceLastCheck = false;
+        return result;
+    }
+
     @Override
     public void onAvailableSizeChanged(DeviceProfile grid) {
         Utilities.setIconSize(grid.iconSizePx);
+    }
+
+    public static boolean isDisableAllApps() {
+        // Returns false on non-dogfood builds.
+        return getInstance().mBuildInfo.isDogfoodBuild() &&
+                Launcher.isPropertyEnabled(Launcher.DISABLE_ALL_APPS_PROPERTY);
+    }
+
+    public static boolean isDogfoodBuild() {
+        return getInstance().mBuildInfo.isDogfoodBuild();
     }
 }

@@ -168,7 +168,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
 
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null && !mLauncher.isFolderClingVisible() && intercept) {
+        if (currentFolder != null && !mLauncher.getLauncherClings().isFolderClingVisible() &&
+                intercept) {
             if (currentFolder.isEditingName()) {
                 if (!isEventOverFolderTextRegion(currentFolder, ev)) {
                     currentFolder.dismissEditingName();
@@ -224,22 +225,19 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
-                        } else {
-                            return true;
                         }
+                        mHoverPointClosesFolder = false;
+                        break;
                     case MotionEvent.ACTION_HOVER_MOVE:
                         isOverFolder = isEventOverFolder(currentFolder, ev);
                         if (!isOverFolder && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
-                        } else {
+                        } else if (!isOverFolder) {
                             return true;
                         }
+                        mHoverPointClosesFolder = false;
                 }
             }
         }
@@ -534,14 +532,18 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         scale *= childScale;
         int toX = coord[0];
         int toY = coord[1];
+        float toScale = scale;
         if (child instanceof TextView) {
             TextView tv = (TextView) child;
+            // Account for the source scale of the icon (ie. from AllApps to Workspace, in which
+            // the workspace may have smaller icon bounds).
+            toScale = scale / dragView.getIntrinsicIconScaleFactor();
 
             // The child may be scaled (always about the center of the view) so to account for it,
             // we have to offset the position by the scaled size.  Once we do that, we can center
             // the drag view about the scaled child view.
-            toY += Math.round(scale * tv.getPaddingTop());
-            toY -= dragView.getMeasuredHeight() * (1 - scale) / 2;
+            toY += Math.round(toScale * tv.getPaddingTop());
+            toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
@@ -567,7 +569,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 }
             }
         };
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, scale, scale,
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
                 onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
     }
 

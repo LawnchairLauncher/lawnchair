@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"홈"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android 핵심 앱"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"배경화면 설정"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"이미지를 로드할 수 없습니다."</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"이미지를 배경화면으로 로드할 수 없습니다."</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d개 선택됨"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d개 선택됨"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d개 선택됨"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"배경화면 %1$d/%2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> 선택함"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"삭제"</string>
-    <string name="pick_image" msgid="1272073934062909527">"이미지 선택"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"배경화면"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"배경화면 잘라내기"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"앱이 설치되지 않았습니다."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"위젯"</string>
     <string name="widget_adder" msgid="3201040140710381657">"위젯"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"위젯"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="out_of_space" msgid="4691004494942118364">"홈 화면에 더 이상 공간이 없습니다."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"즐겨찾는 앱 모음에 더 이상 빈 공간이 없습니다."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"이 위젯은 너무 커서 즐겨찾는 앱 모음에 들어갈 수 없습니다."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"위젯이 너무 커서 즐겨찾기 트레이에 들어갈 수 없습니다."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 생성되었습니다."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"홈 화면 %1$d/%2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"앱 페이지 %1$d/%2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"위젯 페이지 %1$d/%2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"환영합니다!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"환영합니다."</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"편리한 사용 환경을 만드세요."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"앱 및 폴더를 표시할 화면 더 만들기"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"앱 아이콘 복사"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"이전 메인 스크린에서 아이콘과 폴더를 가져오시겠습니까?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"아이콘 복사"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"새로 시작"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"공간 관리하기"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"배경화면, 위젯, 설정을 관리하려면 백그라운드를 길게 터치합니다."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"폴더"</string>

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.android.launcher3;
 
 import android.animation.ValueAnimator;
@@ -29,8 +28,6 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-
-import com.android.launcher3.R;
 
 public class DragView extends View {
     private static float sDragAlpha = 1f;
@@ -51,6 +48,9 @@ public class DragView extends View {
     private float mOffsetX = 0.0f;
     private float mOffsetY = 0.0f;
     private float mInitialScale = 1f;
+    // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
+    // size.  This is ignored for non-icons.
+    private float mIntrinsicIconScale = 1f;
 
     /**
      * Construct the drag view.
@@ -118,6 +118,15 @@ public class DragView extends View {
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+    }
+
+    /** Sets the scale of the view over the normal workspace icon size. */
+    public void setIntrinsicIconScaleFactor(float scale) {
+        mIntrinsicIconScale = scale;
+    }
+
+    public float getIntrinsicIconScaleFactor() {
+        return mIntrinsicIconScale;
     }
 
     public float getOffsetY() {

@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"ដើម"</string>
     <string name="uid_name" msgid="7820867637514617527">"កម្មវិធី​​សំខាន់​ៗ​របស់ Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"កំណត់​ផ្ទាំង​រូបភាព"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"មិន​អាច​ផ្ទុក​រូបភាព"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"មិន​អាច​ផ្ទុក​រូបភាព​ជា​ផ្ទាំង​រូបភាព"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="one" msgid="142482526010824029">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="other" msgid="1418352074806573570">"បាន​ជ្រើស %1$d"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"ផ្ទាំង​រូបភាព %1$d នៃ %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"​បាន​ជ្រើស <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"លុប"</string>
-    <string name="pick_image" msgid="1272073934062909527">"ជ្រើស​យក​រូបភាព"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"ផ្ទាំង​រូបភាព"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"ច្រឹប​ផ្ទាំង​រូបភាព"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"មិន​បាន​ដំឡើង​កម្មវិធី។"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="widget_adder" msgid="3201040140710381657">"ធាតុ​ក្រាហ្វិក"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​រស់​អ្នក​ទៀត​ទេ។"</string>
     <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"គ្មាន​បន្ទប់​នៅ​ក្នុង​មជ្ឈមណ្ឌល​ទៀត​ទេ។"</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"ធាតុ​ក្រាហ្វិក​នេះ​ធំ​ពេក​សម្រាប់​មជ្ឈមណ្ឌល។"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"ធាតុ​ក្រាហ្វិក​នេះ​ធំ​ពេក​សម្រាប់​ថាស​និយម​ប្រើ"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"បាន​បង្កើត​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"បាន​លុប​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"មាន​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" រួច​ហើយ។"</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"អេក្រង់​ដើម %1$d នៃ %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ទំព័រ​កម្មវិធី %1$d នៃ %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ទំព័រ​ធាតុ​ក្រាហ្វិក ​%1$d នៃ %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"សូម​ស្វាគមន៍​!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"សូម​ស្វាគមន៍"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"ធ្វើ​ដោយ​ខ្លួន​ឯង​នៅ​លើ​អេក្រង់​ដើម។"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"បង្កើត​អេក្រង់​ច្រើន​សម្រាប់​កម្មវិធី​ ​និង​ថតឯកសារ"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"ចម្លង​រូបតំណាង​កម្មវិធី​របស់​អ្នក"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"នាំចូល​រូបតំណាង និង​ថត​ពី​អេក្រង់​ដើម​ចាស់​របស់​អ្នក?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"រូប​តំណាង​ច្បាប់​ចម្លង"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ចាប់ផ្ដើម​ធ្វើ​ឲ្យ​ស្រស់"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"រៀបចំ​ចន្លោះ​របស់​អ្នក"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"ប៉ះ &amp; សង្កត់​លើ​ផ្ទៃ​ខាង​ក្រោម ដើម្បី​គ្រប់គ្រង​ផ្ទាំង​រូបភាព, ធាតុ​ក្រាហ្វិក និង​ការ​កំណត់។"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"នេះ​ជា​ថត"</string>

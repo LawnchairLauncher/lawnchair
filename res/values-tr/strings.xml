@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Ana ekran"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android Çekirdek Uygulamaları"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Duvar kağıdını ayarla"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Resim yüklenemedi"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Resim duvar kağıdı olarak yüklenemedi"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d tane seçildi"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d tane seçildi"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d tane seçildi"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Duvar kağıdı %1$d / %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> seçildi"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Sil"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Resim seç"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Duvar Kağıtları"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Duvar kağıdını kırp"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Uygulama yüklü değil."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widget\'lar"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widget\'lar"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widget\'lar"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Ana ekranlarınızda yer kalmadı."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Bu Ana ekranda yer kalmadı."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Favori kısa yollarda yer yok"</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Bu widget, favori kısa yollar için çok büyük."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoriler tepsisinde başka yer kalmadı"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Bu widget, Favoriler tepsisi için çok geniş"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu oluşturuldu."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu kaldırıldı."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu zaten var."</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ana ekran %1$d / %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Uygulama sayfası %1$d / %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Widget sayfası %1$d / %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Hoş geldiniz!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Hoş geldiniz"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Rahatınıza bakın."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Uygulamalar ve klasörler için daha fazla ekran oluşturun"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Uygulama simgelerini kopyala"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Eski Ana ekranlarınızdaki simgeler ve klasörler içe aktarılsın mı?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"SİMGELERİ KOPYALA"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"VARSAYILANI KULLAN"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Alanınızı düzenleyin"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Duvar kağıdını, widget\'ları ve ayarları yönetmek için arka plana uzun basın."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"İşte bir klasör"</string>

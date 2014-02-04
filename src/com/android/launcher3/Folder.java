@@ -31,9 +31,7 @@ import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,8 +41,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -82,7 +78,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int mState = STATE_NONE;
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int REORDER_DELAY = 250;
-    private static final int ON_EXIT_CLOSE_DELAY = 800;
+    private static final int ON_EXIT_CLOSE_DELAY = 400;
     private boolean mRearrangeOnClose = false;
     private FolderIcon mFolderIcon;
     private int mMaxCountX;
@@ -119,6 +115,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int DRAG_MODE_REORDER = 1;
     private int mDragMode = DRAG_MODE_NONE;
 
+    // We avoid measuring the scroll view with a 0 width or height, as this
+    // results in CellLayout being measured as UNSPECIFIED, which it does
+    // not support.
+    private static final int MIN_CONTENT_DIMEN = 5;
+
     private boolean mDestroyed;
 
     private AutoScrollHelper mAutoScrollHelper;
@@ -144,8 +145,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         Resources res = getResources();
         mMaxCountX = (int) grid.numColumns;
-        mMaxCountY = (int) grid.numRows;
-        mMaxNumItems = mMaxCountX * mMaxCountY;
+        // Allow scrolling folders when DISABLE_ALL_APPS is true.
+        if (LauncherAppState.isDisableAllApps()) {
+            mMaxCountY = mMaxNumItems = Integer.MAX_VALUE;
+        } else {
+            mMaxCountY = (int) grid.numRows;
+            mMaxNumItems = mMaxCountX * mMaxCountY;
+        }
 
         mInputMethodManager = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -232,7 +238,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.dismissFolderCling(null);
+            mLauncher.getLauncherClings().dismissFolderCling(null);
 
             mLauncher.getWorkspace().onDragStartedWithItem(v);
             mLauncher.getWorkspace().beginDragShared(v, this);
@@ -403,6 +409,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mFolderName.setText("");
         }
         updateItemLocationsInDatabase();
+
+        // In case any children didn't come across during loading, clean up the folder accordingly
+        mFolderIcon.post(new Runnable() {
+            public void run() {
+                if (getItemCount() <= 1) {
+                    replaceFolderWithFinalItem();
+                }
+            }
+        });
     }
 
     /**
@@ -451,7 +466,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
                 setLayerType(LAYER_TYPE_NONE, null);
-                Cling cling = mLauncher.showFirstRunFoldersCling();
+                Cling cling = mLauncher.getLauncherClings().showFoldersCling();
                 if (cling != null) {
                     cling.bringScrimToFront();
                     bringToFront();
@@ -760,6 +775,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         }
 
+        // This is kind of hacky, but in general, dropping on the workspace handles removing
+        // the extra screen, but dropping elsewhere (back to self, or onto delete) doesn't.
+        if (target != mLauncher.getWorkspace()) {
+            mLauncher.getWorkspace().removeExtraEmptyScreen(true, null);
+        }
+
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
         mItemAddedBackToSelfViaIcon = false;
@@ -785,7 +806,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
+    public float getIntrinsicIconScaleFactor() {
+        return 1f;
+    }
+
+    @Override
     public boolean supportsFlingToDelete() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsAppInfoDropTarget() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsDeleteDropTarget() {
         return true;
     }
 
@@ -804,7 +840,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
             LauncherModel.moveItemInDatabase(mLauncher, info, mInfo.id, 0,
-                        info.cellX, info.cellY);
+                    info.cellX, info.cellY);
         }
     }
 
@@ -959,8 +995,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int maxContentAreaHeight = grid.availableHeightPx -
                 workspacePadding.top - workspacePadding.bottom -
                 mFolderNameHeight;
-        return Math.min(maxContentAreaHeight,
+        int height = Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());
+        return Math.max(height, MIN_CONTENT_DIMEN);
+    }
+
+    private int getContentAreaWidth() {
+        return Math.max(mContent.getDesiredWidth(), MIN_CONTENT_DIMEN);
     }
 
     private int getFolderHeight() {
@@ -972,11 +1013,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         int height = getFolderHeight();
-        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
+        int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(getContentAreaWidth(),
                 MeasureSpec.EXACTLY);
         int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(getContentAreaHeight(),
                 MeasureSpec.EXACTLY);
-        mContent.setFixedSize(mContent.getDesiredWidth(), mContent.getDesiredHeight());
+
+        if (LauncherAppState.isDisableAllApps()) {
+            // Don't cap the height of the content to allow scrolling.
+            mContent.setFixedSize(getContentAreaWidth(), mContent.getDesiredHeight());
+        } else {
+            mContent.setFixedSize(getContentAreaWidth(), getContentAreaHeight());
+        }
+
         mScrollView.measure(contentAreaWidthSpec, contentAreaHeightSpec);
         mFolderName.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFolderNameHeight, MeasureSpec.EXACTLY));
@@ -1047,7 +1095,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void run() {
                 CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screenId);
 
-               View child = null;
+                View child = null;
                 // Move the item from the folder to the workspace, in the position of the folder
                 if (getItemCount() == 1) {
                     ShortcutInfo finalItem = mInfo.contents.get(0);
@@ -1059,7 +1107,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 if (getItemCount() <= 1) {
                     // Remove the folder
                     LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
-                    cellLayout.removeView(mFolderIcon);
+                    if (cellLayout != null) {
+                        // b/12446428 -- sometimes the cell layout has already gone away?
+                        cellLayout.removeView(mFolderIcon);
+                    }
                     if (mFolderIcon instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) mFolderIcon);
                     }
@@ -1077,6 +1128,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         View finalChild = getItemAt(0);
         if (finalChild != null) {
             mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
+        } else {
+            onCompleteRunnable.run();
         }
         mDestroyed = true;
     }

@@ -52,8 +52,6 @@
 <!-- Workspace -->
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">false</bool>
-    <!-- Whether or not to fade the side pages -->
-    <bool name="config_workspaceFadeAdjacentScreens">false</bool>
 
     <!-- The transition duration for the background of the drop targets -->
     <integer name="config_dropTargetBgTransitionDuration">0</integer>
@@ -96,4 +94,7 @@
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>
 
+    <!-- Name of a subclass of com.android.launcher3.BuildInfo used to
+         get build information. Can be empty. -->
+    <string name="build_info_class" translatable="false"></string>
 </resources>

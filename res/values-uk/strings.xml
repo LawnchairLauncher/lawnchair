@@ -23,20 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Головний екран"</string>
     <string name="uid_name" msgid="7820867637514617527">"Базові програми Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Установити фон"</string>
-    <string name="image_load_fail" msgid="2821429163328561136">"Не вдалося завантажити зображення"</string>
-    <string name="wallpaper_load_fail" msgid="1261270681127096352">"Не вдалося завантажити зображення як фоновий малюнок"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"Вибрано %1$d"</item>
-    <item quantity="one" msgid="142482526010824029">"Вибрано %1$d"</item>
-    <item quantity="other" msgid="1418352074806573570">"Вибрано %1$d"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Фоновий малюнок %1$d з %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"Вибрано <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Видалити"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Вибрати зображення"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Фонові малюнки"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Обрізати фоновий малюнок"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Програму не встановлено."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Віджети"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Віджети"</string>
@@ -56,8 +42,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Віджети"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"На головних екранах більше немає місця."</string>
     <string name="out_of_space" msgid="4691004494942118364">"На цьому головному екрані більше немає місця."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Немає вільного місця."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Цей віджет завеликий."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"В області \"Вибране\" немає місця"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Цей віджет завеликий для області \"Вибране\""</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" створено."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" вилучено."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" уже існує."</string>
@@ -98,11 +84,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Головний екран %1$d з %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Сторінка програм %1$d з %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Сторінка віджетів %1$d з %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Вітаємо!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Вітаємо"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Будьте як удома."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Створюйте нові екрани для програм і папок"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Копіювати значки програм"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Імпортувати значки та папки зі старих головних екранів?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"КОПІЮВАТИ ЗНАЧКИ"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ПАНЕЛЬ ЗАПУСКУ ЗА УМОВЧАННЯМ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Організуйте робочий простір"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Натисніть і утримуйте фон, щоб керувати фоновим малюнком, віджетами та налаштуваннями."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Це папка"</string>
