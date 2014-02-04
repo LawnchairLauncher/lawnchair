@@ -51,6 +51,12 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     @Override
+    public SharedPreferences getSharedPreferences(String name, int mode) {
+        return super.getSharedPreferences(SettingsProvider.SETTINGS_KEY,
+                Context.MODE_PRIVATE);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mSettings.registerOnSharedPreferenceChangeListener(this);
