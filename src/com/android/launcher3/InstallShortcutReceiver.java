@@ -304,7 +304,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Add the new apps to the model and bind them
             if (!addShortcuts.isEmpty()) {
                 LauncherAppState app = LauncherAppState.getInstance();
-                app.getModel().addAndBindAddedApps(context, addShortcuts, new ArrayList<AppInfo>());
+                app.getModel().addAndBindAddedWorkspaceApps(context, addShortcuts);
             }
         }
     }
