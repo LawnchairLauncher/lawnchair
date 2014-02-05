@@ -16,10 +16,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="preferences_title">Preferências</string>
-    <string name="preferences_interface_title">Interface</string>
     <string name="preferences_application_title">Aplicação</string>
     <string name="preferences_interface_homescreen_title">Tela Inicial</string>
-    <string name="preferences_interface_homescreen_summary">Telas e papéis de parede</string>
     <string name="preferences_interface_general_title">Geral</string>
     <string name="preferences_interface_drawer_title">Gaveta de apps</string>
     <string name="preferences_interface_dock_title">Dock</string>

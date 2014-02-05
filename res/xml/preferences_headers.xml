@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,19 +14,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header android:id="@+id/preferences_homescreen_section"
             android:fragment="com.android.launcher3.settings.SettingsActivity$HomescreenFragment"
-            android:title="@string/preferences_interface_homescreen_title"
-            android:summary="@string/preferences_interface_homescreen_summary" />
+            android:title="@string/preferences_interface_homescreen_title" />
 
-    <header android:id="@+id/preferences_drawer_section"
+    <!--<header android:id="@+id/preferences_drawer_section"
             android:title="@string/preferences_interface_drawer_title" />
             
     <header android:id="@+id/preferences_dock_section"
-            android:title="@string/preferences_interface_dock_title" />
+            android:title="@string/preferences_interface_dock_title" />-->
     
     <header android:id="@+id/preferences_general_section"
             android:fragment="com.android.launcher3.settings.SettingsActivity$GeneralFragment"

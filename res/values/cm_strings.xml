@@ -44,15 +44,12 @@
 
     <!-- Settings -->
     <string name="preferences_title">Settings</string>
-    <!-- UI -->
-    <string name="preferences_interface_title">Interface</string>
     <!-- Application -->
     <string name="preferences_application_title">App</string>
 
     <!-- UI -->
     <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">Homescreen</string>
-    <string name="preferences_interface_homescreen_summary">Screens and wallpaper</string>
     <string name="preferences_interface_homescreen_search_title">Search bar</string>
     <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
 
