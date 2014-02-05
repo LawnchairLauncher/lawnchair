@@ -1321,7 +1321,7 @@ public class LauncherModel extends BroadcastReceiver {
                             + item.cellY + ") occupied by "
                             + occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                             [(int) item.screenId][0]);
-                    if (occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                    if (occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
                             [(int) item.screenId][0].itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
                         deleteOnItemOverlap.set(true);
                     }
