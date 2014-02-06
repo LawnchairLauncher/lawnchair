@@ -494,12 +494,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     MediaStore.Images.ImageColumns.DATE_TAKEN},
                 null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC LIMIT 1");
         Bitmap thumb = null;
-        if (cursor.moveToNext()) {
-            int id = cursor.getInt(0);
-            thumb = MediaStore.Images.Thumbnails.getThumbnail(getContentResolver(),
-                    id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int id = cursor.getInt(0);
+                thumb = MediaStore.Images.Thumbnails.getThumbnail(getContentResolver(),
+                        id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            }
+            cursor.close();
         }
-        cursor.close();
         return thumb;
     }
 
