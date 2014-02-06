@@ -292,17 +292,40 @@ public class LauncherModel extends BroadcastReceiver {
         return null;
     }
 
-    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> workspaceApps,
-                                    final ArrayList<AppInfo> allAppsApps) {
-        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-        addAndBindAddedApps(context, workspaceApps, cb, allAppsApps);
+    public void addAppsToAllApps(final Context ctx, final ArrayList<AppInfo> allAppsApps) {
+        final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+
+        if (allAppsApps == null) {
+            throw new RuntimeException("allAppsApps must not be null");
+        }
+        if (allAppsApps.isEmpty()) {
+            return;
+        }
+
+        // Process the newly added applications and add them to the database first
+        Runnable r = new Runnable() {
+            public void run() {
+                runOnMainThread(new Runnable() {
+                    public void run() {
+                        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                        if (callbacks == cb && cb != null) {
+                            callbacks.bindAppsAdded(null, null, null, allAppsApps);
+                        }
+                    }
+                });
+            }
+        };
+        runOnWorkerThread(r);
     }
-    public void addAndBindAddedApps(final Context context, final ArrayList<ItemInfo> workspaceApps,
-                                final Callbacks callbacks, final ArrayList<AppInfo> allAppsApps) {
-        if (workspaceApps == null || allAppsApps == null) {
+
+    public void addAndBindAddedWorkspaceApps(final Context context,
+            final ArrayList<ItemInfo> workspaceApps) {
+        final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+
+        if (workspaceApps == null) {
             throw new RuntimeException("workspaceApps and allAppsApps must not be null");
         }
-        if (workspaceApps.isEmpty() && allAppsApps.isEmpty()) {
+        if (workspaceApps.isEmpty()) {
             return;
         }
         // Process the newly added applications and add them to the database first
@@ -385,7 +408,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // Update the workspace screens
                 updateWorkspaceScreenOrder(context, workspaceScreens);
 
-                if (!addedShortcutsFinal.isEmpty() || !allAppsApps.isEmpty()) {
+                if (!addedShortcutsFinal.isEmpty()) {
                     runOnMainThread(new Runnable() {
                         public void run() {
                             Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
@@ -404,7 +427,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                 }
                                 callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
-                                        addNotAnimated, addAnimated, allAppsApps);
+                                        addNotAnimated, addAnimated, null);
                             }
                         }
                     });
@@ -1561,8 +1584,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
             if (!added.isEmpty()) {
-                Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                addAndBindAddedApps(context, added, cb, new ArrayList<AppInfo>());
+                addAndBindAddedWorkspaceApps(context, added);
             }
         }
 
@@ -2642,14 +2664,14 @@ public class LauncherModel extends BroadcastReceiver {
 
             if (added != null) {
                 // Ensure that we add all the workspace applications to the db
-                Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
-                if (!LauncherAppState.isDisableAllApps()) {
-                    addAndBindAddedApps(context, new ArrayList<ItemInfo>(), cb, added);
-                } else {
+                if (LauncherAppState.isDisableAllApps()) {
                     final ArrayList<ItemInfo> addedInfos = new ArrayList<ItemInfo>(added);
-                    addAndBindAddedApps(context, addedInfos, cb, added);
+                    addAndBindAddedWorkspaceApps(context, addedInfos);
+                } else {
+                    addAppsToAllApps(context, added);
                 }
             }
+
             if (modified != null) {
                 final ArrayList<AppInfo> modifiedFinal = modified;
 
