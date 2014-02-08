@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Обычный</item>
+        <item>Облегчённый</item>
+        <item>Сжатый</item>
+    </string-array>
+
+    <string-array name="transition_effect_entries">
+        <item>Нет</item>
+        <item>Увеличение</item>
+        <item>Уменьшение</item>
+        <item>Поворот вверх</item>
+        <item>Поворот вниз</item>
+        <item>Внутри куба</item>
+        <item>Снаружи куба</item>
+        <item>Стопка</item>
+        <item>Сжатие</item>
+        <item>Переворот</item>
+        <item>Внутри цилиндра</item>
+        <item>Снаружи цилиндра</item>
+        <item>Карусель</item>
+        <item>Обзор</item>
+    </string-array>
+</resources>
