@@ -2849,12 +2849,13 @@ public class Workspace extends SmoothPagedView
                     mTargetCell);
             float distance = dropTargetLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                     mDragViewVisualCenter[1], mTargetCell);
-            if (willCreateUserFolder((ItemInfo) d.dragInfo, dropTargetLayout,
-                    mTargetCell, distance, true)) {
+            if (mCreateUserFolderOnDrop && willCreateUserFolder((ItemInfo) d.dragInfo,
+                    dropTargetLayout, mTargetCell, distance, true)) {
                 return true;
             }
-            if (willAddToExistingUserFolder((ItemInfo) d.dragInfo, dropTargetLayout,
-                    mTargetCell, distance)) {
+
+            if (mAddToExistingFolderOnDrop && willAddToExistingUserFolder((ItemInfo) d.dragInfo,
+                    dropTargetLayout, mTargetCell, distance)) {
                 return true;
             }
 
