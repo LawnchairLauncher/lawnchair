@@ -18,7 +18,7 @@
     <!-- Application name -->
     <string name="cm_application_name" translatable="false">Trebuchet</string>
     <!-- App copyright -->
-    <string name="application_copyright" translatable="false">Copyright \u00A9 2014 The CyanogenMod Project</string>
+    <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
     <!-- App version -->
     <string name="application_version" translatable="false">1.0</string>
 
