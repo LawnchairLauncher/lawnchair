@@ -52,9 +52,9 @@
     <string name="all_apps_button_label" msgid="9110807029020582876">"ແອັບຯ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ໜ້າຫຼັກ"</string>
     <string name="delete_zone_label_workspace" msgid="4009607676751398685">"ລຶບ"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ຖອນການຕິດຕັ້ງ"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ຖອນ​ການ​ຕິດ​ຕັ້ງ"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"ລຶບ"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ຖອນການຕິດຕັ້ງ"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ຖອນ​ການ​ຕິດ​ຕັ້ງ"</string>
     <string name="info_target_label" msgid="8053346143994679532">"ຂໍ້ມູນແອັບຯ"</string>
     <string name="accessibility_search_button" msgid="1628520399424565142">"ຊອກຫາ"</string>
     <string name="accessibility_voice_search_button" msgid="4637324840434406584">"ຊອກຫາດ້ວຍສຽງ"</string>
