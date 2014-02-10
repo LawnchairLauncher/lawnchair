@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import com.android.launcher3.backup.BackupProtos;
+
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,11 +27,21 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -43,6 +55,10 @@ public class IconCache {
     private static final String TAG = "Launcher.IconCache";
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
+    private static final String RESOURCE_FILE_PREFIX = "icon_";
+
+    private static final boolean DEBUG = true;
+
     private IconPackHelper mIconPackHelper;
 
     private static class CacheEntry {
@@ -129,6 +145,7 @@ public class IconCache {
                 return getFullResIcon(resources, iconId);
             }
         }
+
         return getFullResDefaultActivityIcon();
     }
 
@@ -160,6 +177,21 @@ public class IconCache {
     public void remove(ComponentName componentName) {
         synchronized (mCache) {
             mCache.remove(componentName);
+        }
+    }
+
+    /**
+     * Remove any records for the supplied package name.
+     */
+    public void remove(String packageName) {
+        HashSet<ComponentName> forDeletion = new HashSet<ComponentName>();
+        for (ComponentName componentName: mCache.keySet()) {
+            if (componentName.getPackageName().equals(packageName)) {
+                forDeletion.add(componentName);
+            }
+        }
+        for (ComponentName condemned: forDeletion) {
+            remove(condemned);
         }
     }
 
@@ -202,15 +234,22 @@ public class IconCache {
     }
 
     public Bitmap getIcon(Intent intent) {
+        return getIcon(intent, null);
+    }
+
+    public Bitmap getIcon(Intent intent, String title) {
         synchronized (mCache) {
             final ResolveInfo resolveInfo = mPackageManager.resolveActivity(intent, 0);
             ComponentName component = intent.getComponent();
 
-            if (resolveInfo == null || component == null) {
+            if (component == null) {
                 return mDefaultIcon;
             }
 
             CacheEntry entry = cacheLocked(component, resolveInfo, null);
+            if (title != null) {
+                entry.title = title;
+            }
             return entry.icon;
         }
     }
@@ -239,21 +278,35 @@ public class IconCache {
 
             mCache.put(componentName, entry);
 
-            ComponentName key = LauncherModel.getComponentNameFromResolveInfo(info);
-            if (labelCache != null && labelCache.containsKey(key)) {
-                entry.title = labelCache.get(key).toString();
+            if (info != null) {
+                ComponentName key = LauncherModel.getComponentNameFromResolveInfo(info);
+                if (labelCache != null && labelCache.containsKey(key)) {
+                    entry.title = labelCache.get(key).toString();
+                } else {
+                    entry.title = info.loadLabel(mPackageManager).toString();
+                    if (labelCache != null) {
+                        labelCache.put(key, entry.title);
+                    }
+                }
+                if (entry.title == null) {
+                    entry.title = info.activityInfo.name;
+                }
+
+                entry.icon = Utilities.createIconBitmap(
+                        getFullResIcon(info), mContext);
             } else {
-                entry.title = info.loadLabel(mPackageManager).toString();
-                if (labelCache != null) {
-                    labelCache.put(key, entry.title);
+                entry.title = "";
+                Bitmap preloaded = getPreloadedIcon(componentName);
+                if (preloaded != null) {
+                    if (DEBUG) Log.d(TAG, "using preloaded icon for " +
+                            componentName.toShortString());
+                    entry.icon = preloaded;
+                } else {
+                    if (DEBUG) Log.d(TAG, "using default icon for " +
+                            componentName.toShortString());
+                    entry.icon = mDefaultIcon;
                 }
             }
-            if (entry.title == null) {
-                entry.title = info.activityInfo.name;
-            }
-
-            entry.icon = Utilities.createIconBitmap(
-                    getFullResIcon(info), mContext);
         }
         return entry;
     }
@@ -267,5 +320,138 @@ public class IconCache {
             }
             return set;
         }
+    }
+
+    /**
+     * Pre-load an icon into the persistent cache.
+     *
+     * <P>Queries for a component that does not exist in the package manager
+     * will be answered by the persistent cache.
+     *
+     * @param context application context
+     * @param componentName the icon should be returned for this component
+     * @param icon the icon to be persisted
+     * @param dpi the native density of the icon
+     */
+    public static void preloadIcon(Context context, ComponentName componentName, Bitmap icon,
+            int dpi) {
+        // TODO rescale to the correct native DPI
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            packageManager.getActivityIcon(componentName);
+            // component is present on the system already, do nothing
+            return;
+        } catch (PackageManager.NameNotFoundException e) {
+            // pass
+        }
+
+        final String key = componentName.flattenToString();
+        FileOutputStream resourceFile = null;
+        try {
+            resourceFile = context.openFileOutput(getResourceFilename(componentName),
+                    Context.MODE_PRIVATE);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            if (icon.compress(android.graphics.Bitmap.CompressFormat.PNG, 75, os)) {
+                byte[] buffer = os.toByteArray();
+                resourceFile.write(buffer, 0, buffer.length);
+            } else {
+                Log.w(TAG, "failed to encode cache for " + key);
+                return;
+            }
+        } catch (FileNotFoundException e) {
+            Log.w(TAG, "failed to pre-load cache for " + key, e);
+        } catch (IOException e) {
+            Log.w(TAG, "failed to pre-load cache for " + key, e);
+        } finally {
+            if (resourceFile != null) {
+                try {
+                    resourceFile.close();
+                } catch (IOException e) {
+                    Log.d(TAG, "failed to save restored icon for: " + key, e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Read a pre-loaded icon from the persistent icon cache.
+     *
+     * @param componentName the component that should own the icon
+     * @returns a bitmap if one is cached, or null.
+     */
+    private Bitmap getPreloadedIcon(ComponentName componentName) {
+        final String key = componentName.flattenToShortString();
+
+        if (DEBUG) Log.v(TAG, "looking for pre-load icon for " + key);
+        Bitmap icon = null;
+        FileInputStream resourceFile = null;
+        try {
+            resourceFile = mContext.openFileInput(getResourceFilename(componentName));
+            byte[] buffer = new byte[1024];
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            int bytesRead = 0;
+            while(bytesRead >= 0) {
+                bytes.write(buffer, 0, bytesRead);
+                bytesRead = resourceFile.read(buffer, 0, buffer.length);
+            }
+            if (DEBUG) Log.d(TAG, "read " + bytes.size());
+            icon = BitmapFactory.decodeByteArray(bytes.toByteArray(), 0, bytes.size());
+            if (icon == null) {
+                Log.w(TAG, "failed to decode pre-load icon for " + key);
+            }
+        } catch (FileNotFoundException e) {
+            if (DEBUG) Log.d(TAG, "there is no restored icon for: " + key, e);
+        } catch (IOException e) {
+            Log.w(TAG, "failed to read pre-load icon for: " + key, e);
+        } finally {
+            if(resourceFile != null) {
+                try {
+                    resourceFile.close();
+                } catch (IOException e) {
+                    Log.d(TAG, "failed to manage pre-load icon file: " + key, e);
+                }
+            }
+        }
+
+        if (icon != null) {
+            // TODO: handle alpha mask in the view layer
+            Bitmap b = Bitmap.createBitmap(Math.max(icon.getWidth(), 1),
+                    Math.max(icon.getHeight(), 1),
+                    Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            Paint paint = new Paint();
+            paint.setAlpha(127);
+            c.drawBitmap(icon, 0, 0, paint);
+            c.setBitmap(null);
+            icon.recycle();
+            icon = b;
+        }
+
+        return icon;
+    }
+
+    /**
+     * Remove a pre-loaded icon from the persistent icon cache.
+     *
+     * @param componentName the component that should own the icon
+     * @returns true on success
+     */
+    public boolean deletePreloadedIcon(ComponentName componentName) {
+        if (componentName == null) {
+            return false;
+        }
+        if (mCache.remove(componentName) != null) {
+            if (DEBUG) Log.d(TAG, "removed pre-loaded icon from the in-memory cache");
+        }
+        boolean success = mContext.deleteFile(getResourceFilename(componentName));
+        if (DEBUG && success) Log.d(TAG, "removed pre-loaded icon from persistent cache");
+
+        return success;
+    }
+
+    private static String getResourceFilename(ComponentName component) {
+        String resourceName = component.flattenToShortString();
+        String filename = resourceName.replace(File.separatorChar, '_');
+        return RESOURCE_FILE_PREFIX + filename;
     }
 }
