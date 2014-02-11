@@ -16,33 +16,50 @@
 <com.android.launcher3.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
-    launcher:drawIdentifier="all_apps_portrait">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    launcher:drawIdentifier="all_apps">
     <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="30dp"
             android:orientation="vertical">
-            <TextView
-                style="@style/ClingTitleText"
-                android:id="@+id/all_apps_cling_title"
-                android:text="@string/all_apps_cling_title" />
-            <TextView
-                style="@style/ClingText"
-                android:id="@+id/all_apps_cling_add_item"
-                android:layout_width="285dp"
+            <LinearLayout
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/all_apps_cling_add_item" />
+                android:orientation="vertical"
+                android:background="@drawable/cling">
+                <TextView
+                    style="@style/ClingTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_apps_cling_cm" />
+                <TextView
+                    style="@style/ClingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_apps_cling_summary" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
+
     <Button
         style="@style/ClingButton"
-        android:id="@+id/cling_dismiss"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="10dp"
-        android:layout_gravity="bottom|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="bottom|right"
         android:onClick="dismissAllAppsCling" />
 </com.android.launcher3.Cling>

@@ -15,54 +15,16 @@
      limitations under the License.
 -->
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher3">
-    <!-- Far-left screen [0] -->
-
-    <!-- Left screen [1] -->
-    <appwidget
-        launcher:packageName="com.google.android.music"
-        launcher:className="com.android.music.MediaAppWidgetProvider"
-        launcher:screen="1"
-        launcher:x="0"
-        launcher:y="0"
-        launcher:spanX="4"
-        launcher:spanY="1" />
-    <appwidget
-        launcher:packageName="com.andrew.apollo"
-        launcher:className="com.andrew.apollo.appwidgets.AppWidgetSmall"
-        launcher:screen="1"
-        launcher:x="0"
-        launcher:y="0"
-        launcher:spanX="4"
-        launcher:spanY="1" />
-    <favorite
-        launcher:packageName="com.bel.android.dspmanager"
-        launcher:className="com.bel.android.dspmanager.activity.DSPManager"
-        launcher:screen="1"
-        launcher:x="1"
-        launcher:y="3" />
-    <favorite
-        launcher:packageName="com.google.android.music"
-        launcher:className="com.android.music.activitymanagement.TopLevelActivity"
-        launcher:screen="1"
-        launcher:x="2"
-        launcher:y="3" />
-    <favorite
-        launcher:packageName="com.andrew.apollo"
-        launcher:className="com.andrew.apollo.ui.activities.HomeActivity"
-        launcher:screen="1"
-        launcher:x="2"
-        launcher:y="3" />
-
-    <!-- Middle screen [2] -->
+    <!-- Screen [1] -->
     <appwidget
         launcher:packageName="com.cyanogenmod.lockclock"
         launcher:className="com.cyanogenmod.lockclock.ClockWidgetProvider"
-        launcher:screen="2"
+        launcher:screen="1"
         launcher:x="0"
         launcher:y="0"
         launcher:spanX="4"
         launcher:spanY="2" />
-    <folder launcher:screen="2" launcher:x="0" launcher:y="3" launcher:title="@string/google_title">
+    <folder launcher:screen="1" launcher:x="0" launcher:y="3" launcher:title="@string/google_title">
         <favorite
             launcher:className="com.google.android.maps.MapsActivity"
             launcher:packageName="com.google.android.apps.maps" />
@@ -92,17 +54,29 @@
             launcher:packageName="com.google.android.apps.plus" />
     </folder>
     <favorite
+        launcher:packageName="com.andrew.apollo"
+        launcher:className="com.andrew.apollo.ui.activities.HomeActivity"
+        launcher:screen="1"
+        launcher:x="0"
+        launcher:y="3" />
+    <favorite
         launcher:packageName="com.android.vending"
         launcher:className="com.android.vending.AssetBrowserActivity"
-        launcher:screen="2"
+        launcher:screen="1"
+        launcher:x="3"
+        launcher:y="3" />
+    <favorite
+        launcher:packageName="com.bel.android.dspmanager"
+        launcher:className="com.bel.android.dspmanager.activity.DSPManager"
+        launcher:screen="1"
         launcher:x="3"
         launcher:y="3" />
 
-    <!-- Right screen [3] -->
+    <!-- Screen [2] -->
     <appwidget
         launcher:packageName="com.android.vending"
         launcher:className="com.google.android.finsky.widget.consumption.NowPlayingWidgetProvider"
-        launcher:screen="3"
+        launcher:screen="2"
         launcher:x="0"
         launcher:y="0"
         launcher:spanX="4"
@@ -110,25 +84,29 @@
     <appwidget
         launcher:packageName="com.android.settings"
         launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
-        launcher:screen="3"
+        launcher:screen="2"
         launcher:x="0"
         launcher:y="0"
         launcher:spanX="4"
         launcher:spanY="1" />
     <favorite
+        launcher:packageName="com.cyanogenmod.gallerynext"
+        launcher:className="com.cyanogenmod.gallerynext.app.GalleryActivity"
+        launcher:screen="2"
+        launcher:x="0"
+        launcher:y="3" />
+    <favorite
         launcher:packageName="com.android.gallery3d"
         launcher:className="com.android.gallery3d.app.Gallery"
-        launcher:screen="3"
-        launcher:x="1"
+        launcher:screen="2"
+        launcher:x="0"
         launcher:y="3" />
     <favorite
         launcher:packageName="com.android.settings"
         launcher:className="com.android.settings.Settings"
-        launcher:screen="3"
-        launcher:x="2"
+        launcher:screen="2"
+        launcher:x="3"
         launcher:y="3" />
-
-    <!-- Far-right screen [4] -->
 
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <favorite
@@ -149,21 +127,21 @@
         launcher:packageName="com.android.email"
         launcher:className="com.android.email.activity.Welcome"
         launcher:container="-101"
-        launcher:screen="3"
+        launcher:screen="1"
         launcher:x="1"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.chrome"
         launcher:className="com.google.android.apps.chrome.Main"
         launcher:container="-101"
-        launcher:screen="0"
+        launcher:screen="3"
         launcher:x="3"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.browser"
         launcher:className="com.android.browser.BrowserActivity"
         launcher:container="-101"
-        launcher:screen="4"
+        launcher:screen="3"
         launcher:x="3"
         launcher:y="0" />
     <favorite

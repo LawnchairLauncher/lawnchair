@@ -30,11 +30,9 @@
     <string name="wallpaper_scroll">Posouvání tapety</string>
 
     <string name="preferences_title">Nastavení</string>
-    <string name="preferences_interface_title">Rozhraní</string>
     <string name="preferences_application_title">Aplikace</string>
 
     <string name="preferences_interface_homescreen_title">Domovská plocha</string>
-    <string name="preferences_interface_homescreen_summary">Plochy a tapety</string>
     <string name="preferences_interface_homescreen_search_title">Vyhledávací lišta</string>
     <string name="preferences_interface_homescreen_search_summary">Trvale zobrazit lištu vyhledávání vždy u horní hrany plochy</string>
 

@@ -18,7 +18,7 @@
     <!-- Application name -->
     <string name="cm_application_name" translatable="false">Trebuchet</string>
     <!-- App copyright -->
-    <string name="application_copyright" translatable="false">Copyright \u00A9 2014 The CyanogenMod Project</string>
+    <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
     <!-- App version -->
     <string name="application_version" translatable="false">1.0</string>
 
@@ -44,15 +44,12 @@
 
     <!-- Settings -->
     <string name="preferences_title">Settings</string>
-    <!-- UI -->
-    <string name="preferences_interface_title">Interface</string>
     <!-- Application -->
     <string name="preferences_application_title">App</string>
 
     <!-- UI -->
     <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">Homescreen</string>
-    <string name="preferences_interface_homescreen_summary">Screens and wallpaper</string>
     <string name="preferences_interface_homescreen_search_title">Search bar</string>
     <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
 
@@ -76,4 +73,9 @@
 
     <!-- Folder titles -->
     <string name="google_title" translatable="false">Google</string>
+
+    <!-- The title text for the all apps cling [CHAR_LIMIT=60] -->
+    <string name="all_apps_cling_cm">Customize your drawer</string>
+    <!-- The description of how to access Trebuchet settings [CHAR_LIMIT=160] -->
+    <string name="all_apps_cling_summary">Tap the page indicator to view additional configuration settings</string>
 </resources>
