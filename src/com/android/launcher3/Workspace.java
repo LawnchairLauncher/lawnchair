@@ -2709,12 +2709,13 @@ public class Workspace extends SmoothPagedView
                     mTargetCell);
             float distance = dropTargetLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                     mDragViewVisualCenter[1], mTargetCell);
-            if (willCreateUserFolder((ItemInfo) d.dragInfo, dropTargetLayout,
-                    mTargetCell, distance, true)) {
+            if (mCreateUserFolderOnDrop && willCreateUserFolder((ItemInfo) d.dragInfo,
+                    dropTargetLayout, mTargetCell, distance, true)) {
                 return true;
             }
-            if (willAddToExistingUserFolder((ItemInfo) d.dragInfo, dropTargetLayout,
-                    mTargetCell, distance)) {
+
+            if (mAddToExistingFolderOnDrop && willAddToExistingUserFolder((ItemInfo) d.dragInfo,
+                    dropTargetLayout, mTargetCell, distance)) {
                 return true;
             }
 
@@ -4612,11 +4613,15 @@ public class Workspace extends SmoothPagedView
     private void updateShortcut(HashMap<ComponentName, AppInfo> appsMap, ItemInfo info,
                                 View child) {
         ComponentName cn = info.getIntent().getComponent();
+        if (info.getRestoredIntent() != null) {
+            cn = info.getRestoredIntent().getComponent();
+        }
         if (cn != null) {
-            AppInfo appInfo = appsMap.get(info.getIntent().getComponent());
+            AppInfo appInfo = appsMap.get(cn);
             if ((appInfo != null) && LauncherModel.isShortcutInfoUpdateable(info)) {
                 ShortcutInfo shortcutInfo = (ShortcutInfo) info;
                 BubbleTextView shortcut = (BubbleTextView) child;
+                shortcutInfo.restore();
                 shortcutInfo.updateIcon(mIconCache);
                 shortcutInfo.title = appInfo.title.toString();
                 shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache);
