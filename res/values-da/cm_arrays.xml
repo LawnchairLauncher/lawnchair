@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Regulær</item>
+        <item>Lys</item>
+        <item>Kondenseret</item>
+    </string-array>
+    <string-array name="transition_effect_entries">
+        <item>Ingen</item>
+        <item>Zoom ind</item>
+        <item>Zoom ud</item>
+        <item>Rotér op</item>
+        <item>Rotér ned</item>
+        <item>Terning ind</item>
+        <item>Terning ud</item>
+        <item>Stak</item>
+        <item>Harmonika</item>
+        <item>Flip</item>
+        <item>Cylinder ind</item>
+        <item>Cylinder ud</item>
+        <item>Karrusel</item>
+        <item>Overblik</item>
+    </string-array>
+</resources>
