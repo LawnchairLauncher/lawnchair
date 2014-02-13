@@ -22,13 +22,11 @@
         <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowActionBarOverlay">true</item>
-    </style>
-
-    <style name="WallpaperCropperActionBar" parent="android:style/Widget.Holo.ActionBar">
-        <item name="android:displayOptions">showCustom</item>
-        <item name="android:background">#88000000</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="Theme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 </resources>
