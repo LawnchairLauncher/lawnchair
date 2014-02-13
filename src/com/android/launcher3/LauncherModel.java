@@ -2825,7 +2825,8 @@ public class LauncherModel extends BroadcastReceiver {
             ItemInfoFilter f) {
         HashSet<ItemInfo> filtered = new HashSet<ItemInfo>();
         for (ItemInfo i : infos) {
-            if (i instanceof ShortcutInfo) {
+            if (i instanceof ShortcutInfo &&
+                    (i.itemType != LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS)) {
                 ShortcutInfo info = (ShortcutInfo) i;
                 ComponentName cn = info.intent.getComponent();
                 if (cn != null && f.filterItem(null, info, cn)) {
@@ -2871,7 +2872,8 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     public static boolean isShortcutInfoUpdateable(ItemInfo i) {
-        if (i instanceof ShortcutInfo) {
+        if (i instanceof ShortcutInfo &&
+                i.itemType != LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
             ShortcutInfo info = (ShortcutInfo) i;
             // We need to check for ACTION_MAIN otherwise getComponent() might
             // return null for some shortcuts (for instance, for shortcuts to
