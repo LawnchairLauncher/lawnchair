@@ -1067,9 +1067,6 @@ public class Launcher extends Activity
         return false;
     }
 
-    protected void startSettings() {
-    }
-
     public interface QSBScroller {
         public void setScrollY(int scrollY);
     }
@@ -1254,7 +1251,7 @@ public class Launcher extends Activity
             @Override
             public void onClick(View arg0) {
                 if (!mWorkspace.isSwitchingState()) {
-                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                    onClickAddWidgetButton();
                 }
             }
         });
@@ -1265,7 +1262,7 @@ public class Launcher extends Activity
             @Override
             public void onClick(View arg0) {
                 if (!mWorkspace.isSwitchingState()) {
-                    startWallpaper();
+                    onClickWallpaperPicker();
                 }
             }
         });
@@ -1277,9 +1274,9 @@ public class Launcher extends Activity
                 @Override
                 public void onClick(View arg0) {
                     if (!mWorkspace.isSwitchingState()) {
-                        startSettings();
+                        onClickSettingsButton();
                     }
-                    }
+                }
             });
             settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
         } else {
@@ -2255,12 +2252,6 @@ public class Launcher extends Activity
         sFolders.remove(folder.id);
     }
 
-    protected void startWallpaper() {
-        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-        pickWallpaper.setComponent(getWallpaperPickerComponent());
-        startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
-    }
-
     protected ComponentName getWallpaperPickerComponent() {
         return new ComponentName(getPackageName(), LauncherWallpaperPickerActivity.class.getName());
     }
@@ -2364,51 +2355,13 @@ public class Launcher extends Activity
 
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
-            // Open shortcut
-            final ShortcutInfo shortcut = (ShortcutInfo) tag;
-            final Intent intent = shortcut.intent;
-
-            // Check for special shortcuts
-            if (intent.getComponent() != null) {
-                final String shortcutClass = intent.getComponent().getClassName();
-
-                if (shortcutClass.equals(WidgetAdder.class.getName())) {
-                    onClickAddWidgetButton();
-                    return;
-                } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
-                    MemoryDumpActivity.startDump(this);
-                    return;
-                } else if (shortcutClass.equals(ToggleWeightWatcher.class.getName())) {
-                    toggleShowWeightWatcher();
-                    return;
-                }
-            }
-
-            // Start activities
-            int[] pos = new int[2];
-            v.getLocationOnScreen(pos);
-            intent.setSourceBounds(new Rect(pos[0], pos[1],
-                    pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-
-            boolean success = startActivitySafely(v, intent, tag);
-
-            mStats.recordLaunch(intent, shortcut);
-
-            if (success && v instanceof BubbleTextView) {
-                mWaitingForResume = (BubbleTextView) v;
-                mWaitingForResume.setStayPressed(true);
-            }
+            onClickAppShortcut(v);
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
-                FolderIcon fi = (FolderIcon) v;
-                handleFolderClick(fi);
+                onClickFolderIcon(v);
             }
         } else if (v == mAllAppsButton) {
-            if (isAllAppsVisible()) {
-                showWorkspace(true);
-            } else {
-                onClickAllAppsButton(v);
-            }
+            onClickAllAppsButton(v);
         }
     }
 
@@ -2462,8 +2415,103 @@ public class Launcher extends Activity
      *
      * @param v The view that was clicked.
      */
-    public void onClickAllAppsButton(View v) {
-        showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+    protected void onClickAllAppsButton(View v) {
+        if (LOGD) Log.d(TAG, "onClickAllAppsButton");
+        if (isAllAppsVisible()) {
+            showWorkspace(true);
+        } else {
+            showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+        }
+    }
+
+    /**
+     * Event handler for an app shortcut click.
+     *
+     * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
+     */
+    protected void onClickAppShortcut(View v) {
+        if (LOGD) Log.d(TAG, "onClickAppShortcut");
+        Object tag = v.getTag();
+        if (!(tag instanceof ShortcutInfo)) {
+            throw new IllegalArgumentException("Input must be a Shortcut");
+        }
+
+        // Open shortcut
+        final ShortcutInfo shortcut = (ShortcutInfo) tag;
+        final Intent intent = shortcut.intent;
+
+        // Check for special shortcuts
+        if (intent.getComponent() != null) {
+            final String shortcutClass = intent.getComponent().getClassName();
+
+            if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
+                MemoryDumpActivity.startDump(this);
+                return;
+            } else if (shortcutClass.equals(ToggleWeightWatcher.class.getName())) {
+                toggleShowWeightWatcher();
+                return;
+            }
+        }
+
+        // Start activities
+        int[] pos = new int[2];
+        v.getLocationOnScreen(pos);
+        intent.setSourceBounds(new Rect(pos[0], pos[1],
+                pos[0] + v.getWidth(), pos[1] + v.getHeight()));
+
+        boolean success = startActivitySafely(v, intent, tag);
+
+        mStats.recordLaunch(intent, shortcut);
+
+        if (success && v instanceof BubbleTextView) {
+            mWaitingForResume = (BubbleTextView) v;
+            mWaitingForResume.setStayPressed(true);
+        }
+    }
+
+    /**
+     * Event handler for a folder icon click.
+     *
+     * @param v The view that was clicked. Must be an instance of {@link FolderIcon}.
+     */
+    protected void onClickFolderIcon(View v) {
+        if (LOGD) Log.d(TAG, "onClickFolder");
+        if (!(v instanceof FolderIcon)){
+            throw new IllegalArgumentException("Input must be a FolderIcon");
+        }
+
+        FolderIcon folderIcon = (FolderIcon) v;
+        final FolderInfo info = folderIcon.getFolderInfo();
+        Folder openFolder = mWorkspace.getFolderForTag(info);
+
+        // If the folder info reports that the associated folder is open, then verify that
+        // it is actually opened. There have been a few instances where this gets out of sync.
+        if (info.opened && openFolder == null) {
+            Log.d(TAG, "Folder info marked as open, but associated folder is not open. Screen: "
+                    + info.screenId + " (" + info.cellX + ", " + info.cellY + ")");
+            info.opened = false;
+        }
+
+        if (!info.opened && !folderIcon.getFolder().isDestroyed()) {
+            // Close any open folder
+            closeFolder();
+            // Open the requested folder
+            openFolder(folderIcon);
+        } else {
+            // Find the open folder...
+            int folderScreen;
+            if (openFolder != null) {
+                folderScreen = mWorkspace.getPageForView(openFolder);
+                // .. and close it
+                closeFolder(openFolder);
+                if (folderScreen != mWorkspace.getCurrentPage()) {
+                    // Close any folder open on the current screen
+                    closeFolder();
+                    // Pull the folder onto this screen
+                    openFolder(folderIcon);
+                }
+            }
+        }
     }
 
     /**
@@ -2471,7 +2519,27 @@ public class Launcher extends Activity
      * on the home screen.
      */
     protected void onClickAddWidgetButton() {
+        if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
         showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+    }
+
+    /**
+     * Event handler for the wallpaper picker button that appears after a long press
+     * on the home screen.
+     */
+    protected void onClickWallpaperPicker() {
+        if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
+        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
+        pickWallpaper.setComponent(getWallpaperPickerComponent());
+        startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
+    }
+
+    /**
+     * Event handler for a click on the settings button that appears after a long press
+     * on the home screen.
+     */
+    protected void onClickSettingsButton() {
+        if (LOGD) Log.d(TAG, "onClickSettingsButton");
     }
 
     public void onTouchDownAllAppsButton(View v) {
@@ -2591,40 +2659,6 @@ public class Launcher extends Activity
             Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
         }
         return success;
-    }
-
-    private void handleFolderClick(FolderIcon folderIcon) {
-        final FolderInfo info = folderIcon.getFolderInfo();
-        Folder openFolder = mWorkspace.getFolderForTag(info);
-
-        // If the folder info reports that the associated folder is open, then verify that
-        // it is actually opened. There have been a few instances where this gets out of sync.
-        if (info.opened && openFolder == null) {
-            Log.d(TAG, "Folder info marked as open, but associated folder is not open. Screen: "
-                    + info.screenId + " (" + info.cellX + ", " + info.cellY + ")");
-            info.opened = false;
-        }
-
-        if (!info.opened && !folderIcon.getFolder().isDestroyed()) {
-            // Close any open folder
-            closeFolder();
-            // Open the requested folder
-            openFolder(folderIcon);
-        } else {
-            // Find the open folder...
-            int folderScreen;
-            if (openFolder != null) {
-                folderScreen = mWorkspace.getPageForView(openFolder);
-                // .. and close it
-                closeFolder(openFolder);
-                if (folderScreen != mWorkspace.getCurrentPage()) {
-                    // Close any folder open on the current screen
-                    closeFolder();
-                    // Pull the folder onto this screen
-                    openFolder(folderIcon);
-                }
-            }
-        }
     }
 
     /**
