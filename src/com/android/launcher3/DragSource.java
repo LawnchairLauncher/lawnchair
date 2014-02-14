@@ -30,6 +30,17 @@ public interface DragSource {
      */
     boolean supportsFlingToDelete();
 
+    /**
+     * @return whether items dragged from this source supports 'App Info'
+     */
+    boolean supportsAppInfoDropTarget();
+
+    /**
+     * @return whether items dragged from this source supports 'Delete' drop target (e.g. to remove
+     * a shortcut.
+     */
+    boolean supportsDeleteDropTarget();
+
     /*
      * @return the scale of the icons over the workspace icon size
      */
