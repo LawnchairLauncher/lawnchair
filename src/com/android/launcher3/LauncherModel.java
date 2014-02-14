@@ -1636,7 +1636,9 @@ public class LauncherModel extends BroadcastReceiver {
             LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
 
             // Check if we need to do any upgrade-path logic
+            // (Includes having just imported default favorites)
             boolean loadedOldDb = LauncherAppState.getLauncherProvider().justLoadedOldDb();
+
             // Log to disk
             Launcher.addDumpLog(TAG, "11683562 -   loadedOldDb: " + loadedOldDb, true);
 
