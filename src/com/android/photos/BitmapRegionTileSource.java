@@ -94,7 +94,6 @@ class SimpleBitmapRegionDecoderWrapper implements SimpleBitmapRegionDecoder {
 }
 
 class DumbBitmapRegionDecoder implements SimpleBitmapRegionDecoder {
-    //byte[] mStreamCopy;
     Bitmap mBuffer;
     Canvas mTempCanvas;
     Paint mTempPaint;
