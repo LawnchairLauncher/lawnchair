@@ -1532,16 +1532,9 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
-        private boolean checkItemDimensions(ItemInfo info) {
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            return (info.cellX + info.spanX) > (int) grid.numColumns ||
-                    (info.cellY + info.spanY) > (int) grid.numRows;
-        }
-
         // check & update map of what's occupied; used to discard overlapping/invalid items
         private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item,
-                                           AtomicBoolean deleteOnItemOverlap) {
+                                           AtomicBoolean deleteOnInvalidPlacement) {
             LauncherAppState app = LauncherAppState.getInstance();
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             final int countX = (int) grid.numColumns;
@@ -1552,7 +1545,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // Return early if we detect that an item is under the hotseat button
                 if (mCallbacks == null ||
                         mCallbacks.get().isAllAppsButtonRank((int) item.screenId)) {
-                    deleteOnItemOverlap.set(true);
+                    deleteOnInvalidPlacement.set(true);
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                             + " into position (" + item.screenId + ":" + item.cellX + ","
                             + item.cellY + ") occupied by all apps");
@@ -1561,6 +1554,14 @@ public class LauncherModel extends BroadcastReceiver {
 
                 final ItemInfo[][] hotseatItems =
                         occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+
+                if (item.screenId >= grid.numHotseatIcons) {
+                    Log.e(TAG, "Error loading shortcut " + item
+                            + " into hotseat position " + item.screenId
+                            + ", position out of bounds: (0 to " + (grid.numHotseatIcons - 1)
+                            + ")");
+                    return false;
+                }
 
                 if (hotseatItems != null) {
                     if (hotseatItems[(int) item.screenId][0] != null) {
@@ -1575,7 +1576,7 @@ public class LauncherModel extends BroadcastReceiver {
                         return true;
                     }
                 } else {
-                    final ItemInfo[][] items = new ItemInfo[(int) grid.numHotseatIcons + 1][1];
+                    final ItemInfo[][] items = new ItemInfo[(int) grid.numHotseatIcons][1];
                     items[(int) item.screenId][0] = item;
                     occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
                     return true;
@@ -1591,6 +1592,16 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             final ItemInfo[][] screens = occupied.get(item.screenId);
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                    item.cellX < 0 || item.cellY < 0 ||
+                    item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
+                Log.e(TAG, "Error loading shortcut " + item
+                        + " into cell (" + containerIndex + "-" + item.screenId + ":"
+                        + item.cellX + "," + item.cellY
+                        + ") out of screen bounds ( " + countX + "x" + countY + ")");
+                return false;
+            }
+
             // Check if any workspace icons overlap with each other
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
@@ -1709,7 +1720,7 @@ public class LauncherModel extends BroadcastReceiver {
                     Intent intent;
 
                     while (!mStopped && c.moveToNext()) {
-                        AtomicBoolean deleteOnItemOverlap = new AtomicBoolean(false);
+                        AtomicBoolean deleteOnInvalidPlacement = new AtomicBoolean(false);
                         try {
                             int itemType = c.getInt(itemTypeIndex);
 
@@ -1770,18 +1781,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     info.cellY = c.getInt(cellYIndex);
                                     info.spanX = 1;
                                     info.spanY = 1;
-                                    // Skip loading items that are out of bounds
-                                    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                        if (checkItemDimensions(info)) {
-                                            Launcher.addDumpLog(TAG, "Skipped loading out of bounds shortcut: "
-                                                    + info + ", " + grid.numColumns + "x" + grid.numRows, true);
-                                            continue;
-                                        }
-                                    }
+
                                     // check & update map of what's occupied
-                                    deleteOnItemOverlap.set(false);
-                                    if (!checkItemPlacement(occupied, info, deleteOnItemOverlap)) {
-                                        if (deleteOnItemOverlap.get()) {
+                                    deleteOnInvalidPlacement.set(false);
+                                    if (!checkItemPlacement(occupied, info, deleteOnInvalidPlacement)) {
+                                        if (deleteOnInvalidPlacement.get()) {
                                             itemsToRemove.add(id);
                                         }
                                         break;
@@ -1823,18 +1827,11 @@ public class LauncherModel extends BroadcastReceiver {
                                 folderInfo.spanX = 1;
                                 folderInfo.spanY = 1;
 
-                                // Skip loading items that are out of bounds
-                                if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    if (checkItemDimensions(folderInfo)) {
-                                        Log.d(TAG, "Skipped loading out of bounds folder");
-                                        continue;
-                                    }
-                                }
                                 // check & update map of what's occupied
-                                deleteOnItemOverlap.set(false);
+                                deleteOnInvalidPlacement.set(false);
                                 if (!checkItemPlacement(occupied, folderInfo,
-                                        deleteOnItemOverlap)) {
-                                    if (deleteOnItemOverlap.get()) {
+                                        deleteOnInvalidPlacement)) {
+                                    if (deleteOnInvalidPlacement.get()) {
                                         itemsToRemove.add(id);
                                     }
                                     break;
@@ -1890,18 +1887,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
 
                                     appWidgetInfo.container = c.getInt(containerIndex);
-                                    // Skip loading items that are out of bounds
-                                    if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                        if (checkItemDimensions(appWidgetInfo)) {
-                                            Log.d(TAG, "Skipped loading out of bounds app widget");
-                                            continue;
-                                        }
-                                    }
                                     // check & update map of what's occupied
-                                    deleteOnItemOverlap.set(false);
+                                    deleteOnInvalidPlacement.set(false);
                                     if (!checkItemPlacement(occupied, appWidgetInfo,
-                                            deleteOnItemOverlap)) {
-                                        if (deleteOnItemOverlap.get()) {
+                                            deleteOnInvalidPlacement)) {
+                                        if (deleteOnInvalidPlacement.get()) {
                                             itemsToRemove.add(id);
                                         }
                                         break;
