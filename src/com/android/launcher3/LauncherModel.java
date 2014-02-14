@@ -173,6 +173,7 @@ public class LauncherModel extends BroadcastReceiver {
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
+        public void updatePackageState(String pkgName, int state);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
@@ -294,6 +295,19 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
         return null;
+    }
+
+    public void setPackageState(final String pkgName, final int state) {
+        // Process the updated package state
+        Runnable r = new Runnable() {
+            public void run() {
+                Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+                if (callbacks != null) {
+                    callbacks.updatePackageState(pkgName, state);
+                }
+            }
+        };
+        mHandler.post(r);
     }
 
     public void addAppsToAllApps(final Context ctx, final ArrayList<AppInfo> allAppsApps) {
@@ -2193,7 +2207,12 @@ public class LauncherModel extends BroadcastReceiver {
                                 line += " | ";
                             }
                             for (int x = 0; x < countX; x++) {
-                                line += ((occupied.get(screenId)[x][y] != null) ? "#" : ".");
+                                ItemInfo[][] screen = occupied.get(screenId);
+                                if (x < screen.length && y < screen[x].length) {
+                                    line += (screen[x][y] != null) ? "#" : ".";
+                                } else {
+                                    line += "!";
+                                }
                             }
                         }
                         Log.d(TAG, "[ " + line + " ]");

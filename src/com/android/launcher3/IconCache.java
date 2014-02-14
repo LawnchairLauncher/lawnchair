@@ -387,20 +387,6 @@ public class IconCache {
             }
         }
 
-        if (icon != null) {
-            // TODO: handle alpha mask in the view layer
-            Bitmap b = Bitmap.createBitmap(Math.max(icon.getWidth(), 1),
-                    Math.max(icon.getHeight(), 1),
-                    Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(b);
-            Paint paint = new Paint();
-            paint.setAlpha(127);
-            c.drawBitmap(icon, 0, 0, paint);
-            c.setBitmap(null);
-            icon.recycle();
-            icon = b;
-        }
-
         return icon;
     }
 
