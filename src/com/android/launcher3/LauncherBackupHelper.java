@@ -31,9 +31,8 @@ import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
 
 import android.app.backup.BackupDataInputStream;
-import android.app.backup.BackupHelper;
-import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
+import android.app.backup.BackupHelper;
 import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
