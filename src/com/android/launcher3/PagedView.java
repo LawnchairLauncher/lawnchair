@@ -152,6 +152,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected int mTouchState = TOUCH_STATE_REST;
     protected boolean mForceScreenScrolled = false;
+    private boolean mScrollAbortedFromIntercept = false;
+
 
     protected OnLongClickListener mLongClickListener;
 
@@ -1368,6 +1370,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
+                    mScrollAbortedFromIntercept = true;
                     abortScrollerAnimation(false);
                 } else {
                     if (isTouchPointInViewportWithBuffer((int) mDownMotionX, (int) mDownMotionY)) {
@@ -1395,6 +1398,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                if (mScrollAbortedFromIntercept) {
+                    snapToDestination();
+                }
                 resetTouchState();
                 break;
 
@@ -1871,15 +1877,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         snapToPageWithVelocity(finalPage, velocityX);
                     } else {
                         snapToDestination();
-                    }            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
-                    // at this point we have not moved beyond the touch slop
-                    // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
-                    // we can just page
-                    int nextPage = Math.max(0, mCurrentPage - 1);
-                    if (nextPage != mCurrentPage) {
-                        snapToPage(nextPage);
-                    } else {
-                        snapToDestination();
                     }
                 } else {
                     if (!mScroller.isFinished()) {
@@ -1893,6 +1890,16 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     mScroller.fling(initialScrollX,
                             getScrollY(), vX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
                     invalidate();
+                }
+            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
+                // at this point we have not moved beyond the touch slop
+                // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
+                // we can just page
+                int nextPage = Math.max(0, mCurrentPage - 1);
+                if (nextPage != mCurrentPage) {
+                    snapToPage(nextPage);
+                } else {
+                    snapToDestination();
                 }
             } else if (mTouchState == TOUCH_STATE_NEXT_PAGE) {
                 // at this point we have not moved beyond the touch slop
@@ -1965,6 +1972,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         releaseVelocityTracker();
         endReordering();
         mCancelTap = false;
+        mScrollAbortedFromIntercept = false;
         mTouchState = TOUCH_STATE_REST;
         mActivePointerId = INVALID_POINTER;
     }
