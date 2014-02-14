@@ -42,6 +42,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -133,11 +134,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onClick(WallpaperPickerActivity a) {
-            CropView v = a.getCropView();
-            int rotation = WallpaperCropActivity.getRotationFromExif(a, mUri);
-            a.getDefaultWallpaperView().setVisibility(View.INVISIBLE);
-            v.setTileSource(new BitmapRegionTileSource(a, mUri, 1024, rotation), null);
-            v.setTouchEnabled(true);
+            a.setCropViewTileSource(
+                    new BitmapRegionTileSource.UriBitmapSource(a, mUri, 1024), true, false);
         }
         @Override
         public void onSave(final WallpaperPickerActivity a) {
@@ -175,9 +173,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onClick(WallpaperPickerActivity a) {
-            int rotation = WallpaperCropActivity.getRotationFromExif(mResources, mResId);
-            BitmapRegionTileSource source = new BitmapRegionTileSource(
-                    mResources, a, mResId, 1024, rotation);
+            BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
+                    new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId, 1024);
+            bitmapSource.loadInBackground();
+            BitmapRegionTileSource source = new BitmapRegionTileSource(a, bitmapSource);
             CropView v = a.getCropView();
             a.getDefaultWallpaperView().setVisibility(View.INVISIBLE);
             v.setTileSource(source, null);
@@ -528,6 +527,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             }
         };
     }
+    @Override
+    public void setCropViewTileSource(final BitmapRegionTileSource.BitmapSource bitmapSource,
+            final boolean touchEnabled, boolean moveToLeft) {
+        getDefaultWallpaperView().setVisibility(View.INVISIBLE);
+        super.setCropViewTileSource(bitmapSource, touchEnabled, moveToLeft);
+    }
 
     private void initializeScrollForRtl() {
         final HorizontalScrollView scroll =
@@ -687,26 +692,34 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    private void addTemporaryWallpaperTile(Uri uri) {
+    private void addTemporaryWallpaperTile(final Uri uri) {
         mTempWallpaperTiles.add(uri);
         // Add a tile for the image picked from Gallery
         FrameLayout pickedImageThumbnail = (FrameLayout) getLayoutInflater().
                 inflate(R.layout.wallpaper_picker_item, mWallpapersView, false);
         setWallpaperItemPaddingToZero(pickedImageThumbnail);
+        mWallpapersView.addView(pickedImageThumbnail, 0);
 
         // Load the thumbnail
-        ImageView image = (ImageView) pickedImageThumbnail.findViewById(R.id.wallpaper_image);
-        Point defaultSize = getDefaultThumbnailSize(this.getResources());
-        int rotation = WallpaperCropActivity.getRotationFromExif(this, uri);
-        Bitmap thumb = createThumbnail(defaultSize, this, uri, null, null, 0, rotation, false);
-        if (thumb != null) {
-            image.setImageBitmap(thumb);
-            Drawable thumbDrawable = image.getDrawable();
-            thumbDrawable.setDither(true);
-        } else {
-            Log.e(TAG, "Error loading thumbnail for uri=" + uri);
-        }
-        mWallpapersView.addView(pickedImageThumbnail, 0);
+        final ImageView image = (ImageView) pickedImageThumbnail.findViewById(R.id.wallpaper_image);
+        final Point defaultSize = getDefaultThumbnailSize(this.getResources());
+        final Context context = this;
+        new AsyncTask<Void, Bitmap, Bitmap>() {
+            protected Bitmap doInBackground(Void...args) {
+                int rotation = WallpaperCropActivity.getRotationFromExif(context, uri);
+                return createThumbnail(defaultSize, context, uri, null, null, 0, rotation, false);
+
+            }
+            protected void onPostExecute(Bitmap thumb) {
+                if (thumb != null) {
+                    image.setImageBitmap(thumb);
+                    Drawable thumbDrawable = image.getDrawable();
+                    thumbDrawable.setDither(true);
+                } else {
+                    Log.e(TAG, "Error loading thumbnail for uri=" + uri);
+                }
+            }
+        }.execute();
 
         UriWallpaperInfo info = new UriWallpaperInfo(uri);
         pickedImageThumbnail.setTag(info);
