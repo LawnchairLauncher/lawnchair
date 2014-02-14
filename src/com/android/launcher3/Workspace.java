@@ -31,7 +31,6 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -55,10 +54,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -2181,6 +2177,7 @@ public class Workspace extends SmoothPagedView
         final View searchBar = mLauncher.getQsbBar();
         final View overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
+        final View pageIndicator = getPageIndicator();
         if (animated) {
             anim.setDuration(duration);
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
@@ -2220,31 +2217,36 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             }
-            ObjectAnimator pageIndicatorAlpha = null;
-            if (getPageIndicator() != null) {
-                pageIndicatorAlpha = ObjectAnimator.ofFloat(getPageIndicator(), "alpha",
-                        finalHotseatAndPageIndicatorAlpha);
+            Animator pageIndicatorAlpha = null;
+            if (pageIndicator != null) {
+                pageIndicatorAlpha = new LauncherViewPropertyAnimator(pageIndicator)
+                    .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
+            } else {
+                // create a dummy animation so we don't need to do null checks later
+                pageIndicatorAlpha = ValueAnimator.ofFloat(0, 0);
             }
-            ObjectAnimator hotseatAlpha = ObjectAnimator.ofFloat(hotseat, "alpha",
-                    finalHotseatAndPageIndicatorAlpha);
-            ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(searchBar,
-                    "alpha", finalSearchBarAlpha);
-            ObjectAnimator overviewPanelAlpha = ObjectAnimator.ofFloat(overviewPanel,
-                    "alpha", finalOverviewPanelAlpha);
+            Animator hotseatAlpha = new LauncherViewPropertyAnimator(hotseat)
+                .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
+            Animator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
+                .alpha(finalSearchBarAlpha).withLayer();
+            Animator overviewPanelAlpha = new LauncherViewPropertyAnimator(overviewPanel)
+                .alpha(finalOverviewPanelAlpha).withLayer();
 
-            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
+            pageIndicatorAlpha.addListener(new AlphaUpdateListener(pageIndicator));
             hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
             searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
+            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
 
             if (workspaceToOverview) {
+                pageIndicatorAlpha.setInterpolator(new DecelerateInterpolator(2));
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
+                overviewPanelAlpha.setInterpolator(null);
             } else if (overviewToWorkspace) {
+                pageIndicatorAlpha.setInterpolator(null);
+                hotseatAlpha.setInterpolator(null);
                 overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
             }
-
-            if (getPageIndicator() != null) {
-                pageIndicatorAlpha.addListener(new AlphaUpdateListener(getPageIndicator()));
-            }
+            searchBarAlpha.setInterpolator(null);
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
@@ -2256,9 +2258,9 @@ public class Workspace extends SmoothPagedView
             AlphaUpdateListener.updateVisibility(overviewPanel);
             hotseat.setAlpha(finalHotseatAndPageIndicatorAlpha);
             AlphaUpdateListener.updateVisibility(hotseat);
-            if (getPageIndicator() != null) {
-                getPageIndicator().setAlpha(finalHotseatAndPageIndicatorAlpha);
-                AlphaUpdateListener.updateVisibility(getPageIndicator());
+            if (pageIndicator != null) {
+                pageIndicator.setAlpha(finalHotseatAndPageIndicatorAlpha);
+                AlphaUpdateListener.updateVisibility(pageIndicator);
             }
             searchBar.setAlpha(finalSearchBarAlpha);
             AlphaUpdateListener.updateVisibility(searchBar);
