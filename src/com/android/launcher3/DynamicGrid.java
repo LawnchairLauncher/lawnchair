@@ -86,6 +86,12 @@ class DeviceProfile {
     int availableHeightPx;
     int defaultPageSpacingPx;
 
+    int overviewModeMinIconZoneHeightPx;
+    int overviewModeMaxIconZoneHeightPx;
+    int overviewModeMaxBarWidthPx;
+    float overviewModeIconZoneRatio;
+    float overviewModeScaleFactor;
+
     int iconSizePx;
     int iconTextSizePx;
     int iconDrawablePaddingPx;
@@ -158,6 +164,16 @@ class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         allAppsCellPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_all_apps_cell_padding);
+        overviewModeMinIconZoneHeightPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
+        overviewModeMaxIconZoneHeightPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
+        overviewModeMaxBarWidthPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_max_width);
+        overviewModeIconZoneRatio =
+                res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
+        overviewModeScaleFactor =
+                res.getInteger(R.integer.config_dynamic_grid_overview_scale_percentage) / 100f;
 
         // Interpolate the rows
         for (DeviceProfile p : profiles) {
@@ -454,6 +470,20 @@ class DeviceProfile {
         }
     }
 
+    Rect getOverviewModeButtonBarRect() {
+        int zoneHeight = (int) (overviewModeIconZoneRatio * availableHeightPx);
+        zoneHeight = Math.min(overviewModeMaxIconZoneHeightPx,
+                Math.max(overviewModeMinIconZoneHeightPx, zoneHeight));
+        return new Rect(0, availableHeightPx - zoneHeight, 0, availableHeightPx);
+    }
+
+    float getOverviewModeScale() {
+        Rect workspacePadding = getWorkspacePadding();
+        Rect overviewBar = getOverviewModeButtonBarRect();
+        int pageSpace = availableHeightPx - workspacePadding.top - workspacePadding.bottom;
+        return (overviewModeScaleFactor * (pageSpace - overviewBar.height())) / pageSpace;
+    }
+
     // The rect returned will be extended to below the system ui that covers the workspace
     Rect getHotseatRect() {
         if (isVerticalBarLayout()) {
@@ -601,6 +631,7 @@ class DeviceProfile {
             }
         }
 
+        // Layout AllApps
         AppsCustomizeTabHost host = (AppsCustomizeTabHost)
                 launcher.findViewById(R.id.apps_customize_pane);
         if (host != null) {
@@ -638,6 +669,17 @@ class DeviceProfile {
                 pagedView.setAllAppsPadding(padding);
                 pagedView.setWidgetsPageIndicatorPadding(pageIndicatorHeight);
             }
+        }
+
+        // Layout the Overview Mode
+        View overviewMode = launcher.getOverviewPanel();
+        if (overviewMode != null) {
+            Rect r = getOverviewModeButtonBarRect();
+            lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+            lp.width = Math.min(availableWidthPx, overviewModeMaxBarWidthPx);
+            lp.height = r.height();
+            overviewMode.setLayoutParams(lp);
         }
     }
 }
