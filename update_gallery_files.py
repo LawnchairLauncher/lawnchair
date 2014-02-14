@@ -49,6 +49,6 @@ for file_path in files.split():
     dir = os.path.dirname(file_path)
     if file_path.find('exif') != -1 or file_path.find('common') != -1:
         file_path = 'gallerycommon/' + file_path
-    cmd = 'cp %s/%s %s/' % (gallery_dir, file_path, dir)
+    cmd = 'cp %s/%s WallpaperPicker/%s/' % (gallery_dir, file_path, dir)
     print cmd
     os.system(cmd)
