@@ -90,7 +90,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private LinearLayout mWallpapersView;
     private View mWallpaperStrip;
-    private ImageView mDefaultWallpaperView;
 
     private ActionMode.Callback mActionModeCallback;
     private ActionMode mActionMode;
@@ -134,8 +133,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onClick(WallpaperPickerActivity a) {
-            a.setCropViewTileSource(
-                    new BitmapRegionTileSource.UriBitmapSource(a, mUri, 1024), true, false);
+            a.setCropViewTileSource(new BitmapRegionTileSource.UriBitmapSource(
+                    a, mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE), true, false);
         }
         @Override
         public void onSave(final WallpaperPickerActivity a) {
@@ -174,11 +173,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(WallpaperPickerActivity a) {
             BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId, 1024);
+                    new BitmapRegionTileSource.ResourceBitmapSource(
+                            mResources, mResId, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
             bitmapSource.loadInBackground();
             BitmapRegionTileSource source = new BitmapRegionTileSource(a, bitmapSource);
             CropView v = a.getCropView();
-            a.getDefaultWallpaperView().setVisibility(View.INVISIBLE);
             v.setTileSource(source, null);
             Point wallpaperSize = WallpaperCropActivity.getDefaultWallpaperSize(
                     a.getResources(), a.getWindowManager());
@@ -210,15 +209,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onClick(WallpaperPickerActivity a) {
-            a.getCropView().setTouchEnabled(false);
-            ImageView defaultWallpaperView = a.getDefaultWallpaperView();
-            defaultWallpaperView.setVisibility(View.VISIBLE);
+            CropView c = a.getCropView();
+
             Drawable defaultWallpaper = WallpaperManager.getInstance(a).getBuiltInDrawable(
-                    defaultWallpaperView.getWidth(), defaultWallpaperView.getHeight(),
-                    false, 0.5f, 0.5f);
-            if (defaultWallpaper != null) {
-                defaultWallpaperView.setBackgroundDrawable(defaultWallpaper);
-            }
+                    c.getWidth(), c.getHeight(), false, 0.5f, 0.5f);
+
+            c.setTileSource(
+                    new DrawableTileSource(a, defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE), null);
+            c.setScale(1f);
+            c.setTouchEnabled(false);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
@@ -248,7 +247,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         setContentView(R.layout.wallpaper_picker);
 
         mCropView = (CropView) findViewById(R.id.cropView);
-        mDefaultWallpaperView = (ImageView) findViewById(R.id.defaultWallpaperView);
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
         mCropView.setTouchCallback(new CropView.TouchCallback() {
             LauncherViewPropertyAnimator mAnim;
@@ -409,7 +407,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
         // Select the first item; wait for a layout pass so that we initialize the dimensions of
         // cropView or the defaultWallpaperView first
-        mDefaultWallpaperView.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+        mCropView.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                     int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -530,7 +528,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     @Override
     public void setCropViewTileSource(final BitmapRegionTileSource.BitmapSource bitmapSource,
             final boolean touchEnabled, boolean moveToLeft) {
-        getDefaultWallpaperView().setVisibility(View.INVISIBLE);
         super.setCropViewTileSource(bitmapSource, touchEnabled, moveToLeft);
     }
 
@@ -897,10 +894,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public CropView getCropView() {
         return mCropView;
-    }
-
-    public ImageView getDefaultWallpaperView() {
-        return mDefaultWallpaperView;
     }
 
     public SavedWallpaperImages getSavedImages() {
