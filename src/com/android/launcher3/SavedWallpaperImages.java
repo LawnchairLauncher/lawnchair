@@ -62,7 +62,7 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             File file = new File(a.getFilesDir(), imageFilename);
             BitmapRegionTileSource.FilePathBitmapSource bitmapSource =
                     new BitmapRegionTileSource.FilePathBitmapSource(file.getAbsolutePath(), 1024);
-            a.setCropViewTileSource(bitmapSource, false, true);
+            a.setCropViewTileSource(bitmapSource, false, true, null);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
