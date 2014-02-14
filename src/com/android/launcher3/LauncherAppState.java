@@ -191,7 +191,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
                 availableWidth, availableHeight);
         return grid;
     }
-    DynamicGrid getDynamicGrid() {
+    public DynamicGrid getDynamicGrid() {
         return mDynamicGrid;
     }
 
