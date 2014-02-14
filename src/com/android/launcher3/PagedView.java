@@ -571,6 +571,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     void setRestorePage(int restorePage) {
         mRestorePage = restorePage;
     }
+    int getRestorePage() {
+        return mRestorePage;
+    }
 
     protected void notifyPageSwitchListener() {
         if (mPageSwitchListener != null) {
