@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -39,12 +40,12 @@ public class PreloadReceiver extends BroadcastReceiver {
             if (LOGD) {
                 Log.d(TAG, "workspace name: " + name + " id: " + workspaceResId);
             }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+            new AsyncTask<Void, Void, Void>() {
+                public Void doInBackground(Void ... args) {
                     provider.loadDefaultFavoritesIfNecessary(workspaceResId);
+                    return null;
                 }
-            }).start();
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
     }
 }

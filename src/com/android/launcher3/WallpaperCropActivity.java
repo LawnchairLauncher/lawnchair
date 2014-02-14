@@ -786,14 +786,15 @@ public class WallpaperCropActivity extends Activity {
             final WallpaperManager wallpaperManager) {
         final Point defaultWallpaperSize = getDefaultWallpaperSize(res, windowManager);
 
-        new Thread("suggestWallpaperDimension") {
-            public void run() {
+        new AsyncTask<Void, Void, Void>() {
+            public Void doInBackground(Void ... args) {
                 // If we have saved a wallpaper width/height, use that instead
                 int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, defaultWallpaperSize.x);
                 int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, defaultWallpaperSize.y);
                 wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
+                return null;
             }
-        }.start();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
     protected static RectF getMaxCropRect(
