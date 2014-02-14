@@ -84,7 +84,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
     public static final int PICK_LIVE_WALLPAPER = 7;
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
-    private static final String DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb.jpg";
+    private static final String OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb.jpg";
+    private static final String DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb2.jpg";
 
     private View mSelectedTile;
     private boolean mIgnoreNextTap;
@@ -860,16 +861,19 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             thumb = BitmapFactory.decodeFile(defaultThumbFile.getAbsolutePath());
             defaultWallpaperExists = true;
         } else {
+            // Delete old thumbnail file, since we had a bug where the thumbnail wasn't being drawn
+            // before
+            new File(getFilesDir(), OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
+
             Resources res = getResources();
             Point defaultThumbSize = getDefaultThumbnailSize(res);
-            Paint p = new Paint();
-            p.setFilterBitmap(true);
             Drawable wallpaperDrawable = WallpaperManager.getInstance(this).getBuiltInDrawable(
                     defaultThumbSize.x, defaultThumbSize.y, true, 0.5f, 0.5f);
             if (wallpaperDrawable != null) {
                 thumb = Bitmap.createBitmap(
                         defaultThumbSize.x, defaultThumbSize.y, Bitmap.Config.ARGB_8888);
                 Canvas c = new Canvas(thumb);
+                wallpaperDrawable.setBounds(0, 0, defaultThumbSize.x, defaultThumbSize.y);
                 wallpaperDrawable.draw(c);
                 c.setBitmap(null);
             }
