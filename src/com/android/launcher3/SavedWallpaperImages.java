@@ -60,13 +60,9 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         public void onClick(WallpaperPickerActivity a) {
             String imageFilename = a.getSavedImages().getImageFilename(mDbId);
             File file = new File(a.getFilesDir(), imageFilename);
-            CropView v = a.getCropView();
-            int rotation = WallpaperCropActivity.getRotationFromExif(file.getAbsolutePath());
-            a.getDefaultWallpaperView().setVisibility(View.INVISIBLE);
-            v.setTileSource(
-                    new BitmapRegionTileSource(a, file.getAbsolutePath(), 1024, rotation), null);
-            v.moveToLeft();
-            v.setTouchEnabled(false);
+            BitmapRegionTileSource.FilePathBitmapSource bitmapSource =
+                    new BitmapRegionTileSource.FilePathBitmapSource(file.getAbsolutePath(), 1024);
+            a.setCropViewTileSource(bitmapSource, false, true);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
