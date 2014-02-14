@@ -39,16 +39,14 @@
                 android:layout_marginBottom="10dp"
                 android:text="@string/first_run_cling_title"
                 android:textColor="#FFFFFFFF"
-                android:textSize="30sp"
                 android:gravity="center" />
             <TextView
-                style="@style/ClingAltTitleText"
+                style="@style/ClingAltText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/first_run_cling_description"
                 android:textColor="#80000000"
-                android:textSize="16sp"
                 android:gravity="center" />
         </LinearLayout>
         <TextView
