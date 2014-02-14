@@ -30,5 +30,8 @@
         android:src="@drawable/portal_ring_inner_holo"/>
     <com.android.launcher3.BubbleTextView
         style="@style/WorkspaceIcon"
-        android:id="@+id/folder_icon_name" />
+        android:id="@+id/folder_icon_name"
+        android:layout_gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </com.android.launcher3.FolderIcon>
