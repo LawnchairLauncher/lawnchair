@@ -869,7 +869,7 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS_CUSTOMIZE) {
-            showAllApps(false, AppsCustomizePagedView.ContentType.Applications, false);
+            showAllApps(false, mAppsCustomizeContent.getContentType(), false);
         }
         mOnResumeState = State.NONE;
 
@@ -1770,7 +1770,8 @@ public class Launcher extends Activity
 
         // Save the current AppsCustomize tab
         if (mAppsCustomizeTabHost != null) {
-            String currentTabTag = mAppsCustomizeTabHost.getCurrentTabTag();
+            AppsCustomizePagedView.ContentType type = mAppsCustomizeContent.getContentType();
+            String currentTabTag = mAppsCustomizeTabHost.getTabTagForContentType(type);
             if (currentTabTag != null) {
                 outState.putString("apps_customize_currentTab", currentTabTag);
             }
