@@ -40,6 +40,11 @@ import com.android.launcher3.settings.SettingsProvider;
 
 public class IconPackHelper {
 
+    static final String ICON_MASK_TAG = "iconmask";
+    static final String ICON_BACK_TAG = "iconback";
+    static final String ICON_UPON_TAG = "iconupon";
+    static final String ICON_SCALE_TAG = "scale";
+
     public final static String[] sSupportedActions = new String[] {
         "org.adw.launcher.THEMES",
         "com.gau.go.launcherex.theme"
@@ -56,10 +61,41 @@ public class IconPackHelper {
     private final Context mContext;
     private String mLoadedIconPackName;
     private Resources mLoadedIconPackResource;
+    private Drawable mIconBack, mIconUpon, mIconMask;
+    private float mIconScale;
+
+    public Drawable getIconBack() {
+        return mIconBack;
+    }
+
+    public Drawable getIconMask() {
+        return mIconMask;
+    }
+
+    public Drawable getIconUpon() {
+        return mIconUpon;
+    }
+
+    public float getIconScale() {
+        return mIconScale;
+    }
 
     IconPackHelper(Context context) {
         mContext = context;
         mIconPackResources = new HashMap<String, String>();
+    }
+
+    private Drawable getDrawableForName(String name) {
+        if (isIconPackLoaded()) {
+            String item = mIconPackResources.get(name);
+            if (!TextUtils.isEmpty(item)) {
+                int id = getResourceIdForDrawable(item);
+                if (id != 0) {
+                    return mLoadedIconPackResource.getDrawable(id);
+                }
+            }
+        }
+        return null;
     }
 
     public static Map<String, IconPackInfo> getSupportedPackages(Context context) {
@@ -91,6 +127,30 @@ public class IconPackHelper {
         do {
 
             if (eventType != XmlPullParser.START_TAG) {
+                continue;
+            }
+
+            if (parser.getName().equalsIgnoreCase(ICON_MASK_TAG) ||
+                    parser.getName().equalsIgnoreCase(ICON_BACK_TAG) ||
+                    parser.getName().equalsIgnoreCase(ICON_UPON_TAG)) {
+                String icon = parser.getAttributeValue(null, "img");
+                if (icon == null) {
+                    if (parser.getAttributeCount() == 1) {
+                        icon = parser.getAttributeValue(0);
+                    }
+                }
+                iconPackResources.put(parser.getName().toLowerCase(), icon);
+                continue;
+            }
+
+            if (parser.getName().equalsIgnoreCase(ICON_SCALE_TAG)) {
+                String factor = parser.getAttributeValue(null, "factor");
+                if (factor == null) {
+                    if (parser.getAttributeCount() == 1) {
+                        factor = parser.getAttributeValue(0);
+                    }
+                }
+                iconPackResources.put(parser.getName().toLowerCase(), factor);
                 continue;
             }
 
@@ -179,6 +239,16 @@ public class IconPackHelper {
         }
         mLoadedIconPackResource = res;
         mLoadedIconPackName = packageName;
+        mIconBack = getDrawableForName(ICON_BACK_TAG);
+        mIconMask = getDrawableForName(ICON_MASK_TAG);
+        mIconUpon = getDrawableForName(ICON_UPON_TAG);
+        String scale = mIconPackResources.get(ICON_SCALE_TAG);
+        if (scale != null) {
+            try {
+                mIconScale = Float.valueOf(scale);
+            } catch (NumberFormatException e) {
+            }
+        }
         return true;
     }
 
@@ -280,9 +350,11 @@ public class IconPackHelper {
     public void unloadIconPack() {
         mLoadedIconPackResource = null;
         mLoadedIconPackName = null;
-        if (mIconPackResources != null) {
-            mIconPackResources.clear();
-        }
+        mIconPackResources = null;
+        mIconMask = null;
+        mIconBack = null;
+        mIconUpon = null;
+        mIconScale = 1f;
     }
 
     public static void pickIconPack(final Context context, final boolean pickIcon) {
@@ -298,7 +370,7 @@ public class IconPackHelper {
         if (!pickIcon) {
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int position) {
-                    if (adapter.isOriginalIconPack(position)) {
+                    if (adapter.isCurrentIconPack(position)) {
                         ((Launcher) context).getWorkspace().exitOverviewMode(true);
                         return;
                     }
@@ -382,7 +454,7 @@ public class IconPackHelper {
         ArrayList<IconPackInfo> mSupportedPackages;
         LayoutInflater mLayoutInflater;
         String mCurrentIconPack;
-        int mCurrentIconPackPosition;
+        int mCurrentIconPackPosition = -1;
 
         IconAdapter(Context ctx, Map<String, IconPackInfo> supportedPackages) {
             mLayoutInflater = LayoutInflater.from(ctx);
@@ -390,7 +462,7 @@ public class IconPackHelper {
             Collections.sort(mSupportedPackages, new Comparator<IconPackInfo>() {
                 @Override
                 public int compare(IconPackInfo lhs, IconPackInfo rhs) {
-                    return lhs.label.toString().compareToIgnoreCase(rhs.toString());
+                    return lhs.label.toString().compareToIgnoreCase(rhs.label.toString());
                 }
             });
 
@@ -418,7 +490,7 @@ public class IconPackHelper {
             return 0;
         }
 
-        public boolean isOriginalIconPack(int position) {
+        public boolean isCurrentIconPack(int position) {
             return mCurrentIconPackPosition == position;
         }
 
