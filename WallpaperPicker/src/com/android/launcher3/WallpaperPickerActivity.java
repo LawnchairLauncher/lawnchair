@@ -57,6 +57,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AccelerateInterpolator;
@@ -125,7 +126,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onClick(WallpaperPickerActivity a) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            Utilities.startActivityForResultSafely(a, intent, IMAGE_PICK);
+            a.startActivityForResultSafely(intent, IMAGE_PICK);
         }
     }
 
@@ -278,7 +279,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         mCropView = (CropView) findViewById(R.id.cropView);
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
         mCropView.setTouchCallback(new CropView.TouchCallback() {
-            LauncherViewPropertyAnimator mAnim;
+            ViewPropertyAnimator mAnim;
             @Override
             public void onTouchDown() {
                 if (mAnim != null) {
@@ -287,17 +288,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 if (mWallpaperStrip.getAlpha() == 1f) {
                     mIgnoreNextTap = true;
                 }
-                mAnim = new LauncherViewPropertyAnimator(mWallpaperStrip);
+                mAnim = mWallpaperStrip.animate();
                 mAnim.alpha(0f)
-                     .setDuration(150)
-                     .addListener(new Animator.AnimatorListener() {
-                         public void onAnimationStart(Animator animator) { }
-                         public void onAnimationEnd(Animator animator) {
-                             mWallpaperStrip.setVisibility(View.INVISIBLE);
-                         }
-                         public void onAnimationCancel(Animator animator) { }
-                         public void onAnimationRepeat(Animator animator) { }
-                     });
+                    .setDuration(150)
+                    .withEndAction(new Runnable() {
+                        public void run() {
+                            mWallpaperStrip.setVisibility(View.INVISIBLE);
+                        }
+                    });
                 mAnim.setInterpolator(new AccelerateInterpolator(0.75f));
                 mAnim.start();
             }
@@ -314,7 +312,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                         mAnim.cancel();
                     }
                     mWallpaperStrip.setVisibility(View.VISIBLE);
-                    mAnim = new LauncherViewPropertyAnimator(mWallpaperStrip);
+                    mAnim = mWallpaperStrip.animate();
                     mAnim.alpha(1f)
                          .setDuration(150)
                          .setInterpolator(new DecelerateInterpolator(0.75f));
@@ -574,10 +572,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 }
             });
         }
-    }
-
-    public boolean enableRotation() {
-        return super.enableRotation() || Launcher.sForceEnableRotation;
     }
 
     protected Bitmap getThumbnailOfLastPhoto() {
@@ -1000,5 +994,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
 
         return view;
+    }
+
+    // In Launcher3, we override this with a method that catches exceptions
+    // from starting activities; didn't want to copy and paste code into here
+    public void startActivityForResultSafely(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
     }
 }
