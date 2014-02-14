@@ -91,6 +91,11 @@ class DeviceProfile {
     int iconDrawablePaddingPx;
     int cellWidthPx;
     int cellHeightPx;
+    int allAppsIconSizePx;
+    int allAppsIconTextSizePx;
+    int allAppsCellWidthPx;
+    int allAppsCellHeightPx;
+    int allAppsCellPaddingPx;
     int folderBackgroundOffset;
     int folderIconSizePx;
     int folderCellWidthPx;
@@ -151,6 +156,8 @@ class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
+        allAppsCellPaddingPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_all_apps_cell_padding);
 
         // Interpolate the rows
         for (DeviceProfile p : profiles) {
@@ -177,6 +184,8 @@ class DeviceProfile {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.iconSize));
         }
         iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
+        // AllApps uses the original non-scaled icon size
+        allAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
 
         // Interpolate the icon text size
         points.clear();
@@ -186,6 +195,8 @@ class DeviceProfile {
         iconTextSize = invDistWeightedInterpolate(minWidth, minHeight, points);
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
+        // AllApps uses the original non-scaled icon text size
+        allAppsIconTextSizePx = DynamicGrid.pxFromDp(iconTextSize, dm);
 
         // Interpolate the hotseat icon size
         points.clear();
@@ -309,14 +320,23 @@ class DeviceProfile {
                 CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
         int pageIndicatorOffset =
                 resources.getDimensionPixelSize(R.dimen.apps_customize_page_indicator_offset);
-        if (isLandscape) {
-            allAppsNumRows = (availableHeightPx - pageIndicatorOffset - 4 * edgeMarginPx) /
-                    (iconSizePx + iconTextSizePx + 2 * edgeMarginPx);
-        } else {
-            allAppsNumRows = (int) numRows + 1;
-        }
-        allAppsNumCols = (availableWidthPx - padding.left - padding.right - 2 * edgeMarginPx) /
-                (iconSizePx + 2 * edgeMarginPx);
+        allAppsCellWidthPx = allAppsIconSizePx;
+        allAppsCellHeightPx = allAppsIconSizePx + drawablePadding + iconTextSizePx;
+        int maxLongEdgeCellCount =
+                resources.getInteger(R.integer.config_dynamic_grid_max_long_edge_cell_count);
+        int maxShortEdgeCellCount =
+                resources.getInteger(R.integer.config_dynamic_grid_max_short_edge_cell_count);
+        int minEdgeCellCount =
+                resources.getInteger(R.integer.config_dynamic_grid_min_edge_cell_count);
+        int maxRows = (isLandscape ? maxShortEdgeCellCount : maxLongEdgeCellCount);
+        int maxCols = (isLandscape ? maxLongEdgeCellCount : maxShortEdgeCellCount);
+
+        allAppsNumRows = (availableHeightPx - pageIndicatorHeightPx) /
+                (allAppsCellHeightPx + allAppsCellPaddingPx);
+        allAppsNumRows = Math.max(minEdgeCellCount, Math.min(maxRows, allAppsNumRows));
+        allAppsNumCols = (availableWidthPx) /
+                (allAppsCellWidthPx + allAppsCellPaddingPx);
+        allAppsNumCols = Math.max(minEdgeCellCount, Math.min(maxCols, allAppsNumCols));
     }
 
     void updateFromConfiguration(Context context, Resources resources, int wPx, int hPx,
@@ -580,6 +600,45 @@ class DeviceProfile {
                 pageIndicator.setLayoutParams(lp);
             }
         }
+
+        AppsCustomizeTabHost host = (AppsCustomizeTabHost)
+                launcher.findViewById(R.id.apps_customize_pane);
+        if (host != null) {
+            // Center the all apps page indicator
+            int pageIndicatorHeight = (int) (pageIndicatorHeightPx * Math.min(1f,
+                    (allAppsIconSizePx / DynamicGrid.DEFAULT_ICON_SIZE_PX)));
+            pageIndicator = host.findViewById(R.id.apps_customize_page_indicator);
+            if (pageIndicator != null) {
+                lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
+                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+                lp.width = LayoutParams.WRAP_CONTENT;
+                lp.height = pageIndicatorHeight;
+                pageIndicator.setLayoutParams(lp);
+            }
+
+            AppsCustomizePagedView pagedView = (AppsCustomizePagedView)
+                    host.findViewById(R.id.apps_customize_pane_content);
+            padding = new Rect();
+            if (pagedView != null) {
+                // Constrain the dimensions of all apps so that it does not span the full width
+                int paddingLR = (availableWidthPx - (allAppsCellWidthPx * allAppsNumCols)) /
+                        (2 * (allAppsNumCols + 1));
+                int paddingTB = (availableHeightPx - (allAppsCellHeightPx * allAppsNumRows)) /
+                        (2 * (allAppsNumRows + 1));
+                paddingLR = Math.min(paddingLR, (int)((paddingLR + paddingTB) * 0.75f));
+                paddingTB = Math.min(paddingTB, (int)((paddingLR + paddingTB) * 0.75f));
+                int maxAllAppsWidth = (allAppsNumCols * (allAppsCellWidthPx + 2 * paddingLR));
+                int gridPaddingLR = (availableWidthPx - maxAllAppsWidth) / 2;
+                if (gridPaddingLR > (allAppsCellWidthPx / 4)) {
+                    padding.left = padding.right = gridPaddingLR;
+                }
+                // The icons are centered, so we can't just offset by the page indicator height
+                // because the empty space will actually be pageIndicatorHeight + paddingTB
+                padding.bottom = Math.max(0, pageIndicatorHeight - paddingTB);
+                pagedView.setAllAppsPadding(padding);
+                pagedView.setWidgetsPageIndicatorPadding(pageIndicatorHeight);
+            }
+        }
     }
 }
 
@@ -590,6 +649,10 @@ public class DynamicGrid {
     private DeviceProfile mProfile;
     private float mMinWidth;
     private float mMinHeight;
+
+    // This is a static that we use for the default icon size on a 4/5-inch phone
+    static float DEFAULT_ICON_SIZE_DP = 60;
+    static float DEFAULT_ICON_SIZE_PX = 0;
 
     public static float dpiFromPx(int size, DisplayMetrics metrics){
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
@@ -612,6 +675,7 @@ public class DynamicGrid {
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
         boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
+        DEFAULT_ICON_SIZE_PX = pxFromDp(DEFAULT_ICON_SIZE_DP, dm);
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
                 255, 300,  2, 3,  48, 13, (hasAA ? 5 : 4), 48));
@@ -624,7 +688,7 @@ public class DynamicGrid {
         deviceProfiles.add(new DeviceProfile("Nexus S",
                 296, 491.33f,  4, 4,  48, 13, (hasAA ? 5 : 4), 48));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
-                359, 518,  4, 4,  60, 13, (hasAA ? 5 : 4), 56));
+                359, 518,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, (hasAA ? 5 : 4), 56));
         // The tablet profile is odd in that the landscape orientation
         // also includes the nav bar on the side
         deviceProfiles.add(new DeviceProfile("Nexus 7",
