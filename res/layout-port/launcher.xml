@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
-            launcher:pageIndicator="@id/page_indicator">
+            launcher:pageIndicator="@+id/page_indicator">
         </com.android.launcher3.Workspace>
 
         <include layout="@layout/hotseat"
