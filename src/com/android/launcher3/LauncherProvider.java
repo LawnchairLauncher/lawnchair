@@ -1046,7 +1046,6 @@ public class LauncherProvider extends ContentProvider {
                             // recursively load some more favorites, why not?
                             i += loadFavorites(db, resId);
                             added = false;
-                            mMaxItemId = -1;
                         } else {
                             Log.w(TAG, String.format("Skipping <include workspace=0x%08x>", resId));
                         }
