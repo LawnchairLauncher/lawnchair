@@ -203,6 +203,10 @@ public class BubbleTextView extends TextView {
         destCanvas.restore();
     }
 
+    public void setGlowColor(int color) {
+        mFocusedOutlineColor = mFocusedGlowColor = mPressedOutlineColor = mPressedGlowColor = color;
+    }
+
     /**
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
