@@ -54,10 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"小部件"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"您的主屏幕上没有空间了。"</string>
     <string name="out_of_space" msgid="4691004494942118364">"此主屏幕上已没有空间。"</string>
-    <!-- no translation found for hotseat_out_of_space (7448809638125333693) -->
-    <skip />
-    <!-- no translation found for invalid_hotseat_item (5779907847267573691) -->
-    <skip />
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"收藏栏已满"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"该小部件太大，收藏栏中放不下"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"已创建“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"已删除“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"“<xliff:g id="NAME">%s</xliff:g>”快捷方式已存在。"</string>
