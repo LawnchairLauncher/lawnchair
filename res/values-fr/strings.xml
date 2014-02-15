@@ -54,8 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widgets"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Vous n\'avez plus d\'espace libre sur vos écrans d\'accueil."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur cet écran d\'accueil."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Vous n\'avez plus de place sur la barre d\'accès rapide."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ce widget est trop volumineux pour la barre d\'accès rapide."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ce widget est trop volumineux pour la zone de favoris."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été créé."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été supprimé."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" existe déjà."</string>

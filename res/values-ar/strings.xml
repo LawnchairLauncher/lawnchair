@@ -54,8 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"الأدوات"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"ليس هناك مساحة أخرى في الشاشات الرئيسية."</string>
     <string name="out_of_space" msgid="4691004494942118364">"ليس هناك مساحة أخرى في هذه الشاشة الرئيسية."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"ليست هناك مساحة أخرى في منطقة الإرساء القابلة للتخصيص."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"حجم هذه الأداة كبير للغاية بحيث لا تتسع له منطقة الإرساء القابلة للتخصيص."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"لا يوجد المزيد من الحقول في علبة المفضلة"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"هذه الأداة كبيرة جدًا مما يحول دون قبولها في علبة المفضّلة"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"تم إنشاء الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"تمت إزالة الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"الاختصار \"<xliff:g id="NAME">%s</xliff:g>\" موجود من قبل."</string>

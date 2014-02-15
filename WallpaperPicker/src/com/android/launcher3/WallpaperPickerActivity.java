@@ -85,6 +85,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
     public static final int PICK_LIVE_WALLPAPER = 7;
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
+    private static final String SELECTED_INDEX = "SELECTED_INDEX";
     private static final String OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb.jpg";
     private static final String DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb2.jpg";
 
@@ -103,6 +104,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
     private SavedWallpaperImages mSavedImages;
     private WallpaperInfo mLiveWallpaperInfoOnPickerLaunch;
+    private int mSelectedIndex;
 
     public static abstract class WallpaperTileInfo {
         protected View mView;
@@ -148,7 +150,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     public void run() {
                         if (mBitmapSource != null &&
                                 mBitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
-                            mView.setVisibility(View.VISIBLE);
                             a.selectTile(mView);
                         } else {
                             ViewGroup parent = (ViewGroup) mView.getParent();
@@ -430,8 +431,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                     int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if ((right - left) > 0 && (bottom - top) > 0) {
-                    if (mWallpapersView.getChildCount() > 0) {
-                        mThumbnailOnClickListener.onClick(mWallpapersView.getChildAt(0));
+                    if (mSelectedIndex >= 0 && mSelectedIndex < mWallpapersView.getChildCount()) {
+                        mThumbnailOnClickListener.onClick(
+                                mWallpapersView.getChildAt(mSelectedIndex));
                     }
                     v.removeOnLayoutChangeListener(this);
                 }
@@ -551,6 +553,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         mSelectedTile = v;
         v.setSelected(true);
+        mSelectedIndex = mWallpapersView.indexOfChild(v);
         // TODO: Remove this once the accessibility framework and
         // services have better support for selection state.
         v.announceForAccessibility(
@@ -601,13 +604,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(TEMP_WALLPAPER_TILES, mTempWallpaperTiles);
+        outState.putInt(SELECTED_INDEX, mSelectedIndex);
     }
 
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         ArrayList<Uri> uris = savedInstanceState.getParcelableArrayList(TEMP_WALLPAPER_TILES);
         for (Uri uri : uris) {
-            addTemporaryWallpaperTile(uri);
+            addTemporaryWallpaperTile(uri, true);
         }
+        mSelectedIndex = savedInstanceState.getInt(SELECTED_INDEX, 0);
     }
 
     private void populateWallpapersFromAdapter(ViewGroup parent, BaseAdapter adapter,
@@ -711,7 +716,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    private void addTemporaryWallpaperTile(final Uri uri) {
+    private void addTemporaryWallpaperTile(final Uri uri, boolean fromRestore) {
         mTempWallpaperTiles.add(uri);
         // Add a tile for the image picked from Gallery
         final FrameLayout pickedImageThumbnail = (FrameLayout) getLayoutInflater().
@@ -735,6 +740,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     image.setImageBitmap(thumb);
                     Drawable thumbDrawable = image.getDrawable();
                     thumbDrawable.setDither(true);
+                    pickedImageThumbnail.setVisibility(View.VISIBLE);
                 } else {
                     Log.e(TAG, "Error loading thumbnail for uri=" + uri);
                 }
@@ -747,14 +753,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         addLongPressHandler(pickedImageThumbnail);
         updateTileIndices();
         pickedImageThumbnail.setOnClickListener(mThumbnailOnClickListener);
-        mThumbnailOnClickListener.onClick(pickedImageThumbnail);
+        if (!fromRestore) {
+            mThumbnailOnClickListener.onClick(pickedImageThumbnail);
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
             if (data != null && data.getData() != null) {
                 Uri uri = data.getData();
-                addTemporaryWallpaperTile(uri);
+                addTemporaryWallpaperTile(uri, false);
             }
         } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY) {
             setResult(RESULT_OK);
