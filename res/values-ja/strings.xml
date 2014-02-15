@@ -54,10 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"ウィジェット"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"ホーム画面に空きスペースがありません。"</string>
     <string name="out_of_space" msgid="4691004494942118364">"このホーム画面に空きスペースがありません。"</string>
-    <!-- no translation found for hotseat_out_of_space (7448809638125333693) -->
-    <skip />
-    <!-- no translation found for invalid_hotseat_item (5779907847267573691) -->
-    <skip />
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"お気に入りトレイに空きスペースがありません"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"このウィジェットはお気に入りトレイには大きすぎます"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」を作成しました。"</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」を削除しました。"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」は既に存在します。"</string>

@@ -54,10 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Vidinad"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Teie avaekraanidel ei ole enam ruumi."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Sellel avaekraanil pole enam ruumi."</string>
-    <!-- no translation found for hotseat_out_of_space (7448809638125333693) -->
-    <skip />
-    <!-- no translation found for invalid_hotseat_item (5779907847267573691) -->
-    <skip />
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Salves Lemmikud pole rohkem ruumi"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"See vidin on salve Lemmikud jaoks liiga suur"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Otsetee „<xliff:g id="NAME">%s</xliff:g>” on loodud."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Otsetee „<xliff:g id="NAME">%s</xliff:g>” on eemaldatud."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Otsetee „<xliff:g id="NAME">%s</xliff:g>” on juba olemas."</string>
