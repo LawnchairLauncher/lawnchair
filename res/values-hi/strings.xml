@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"एप्लिकेशन पृष्ठ %2$d में से %1$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"विजेट पृष्ठ %2$d में से %1$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"स्वागत है!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागत है"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"जैसा चाहें वैसा उपयोग करें."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"एप्लिकेशन और फ़ोल्डर के लिए और अधिक स्क्रीन बनाएं"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"ऐप्स आइकन की प्रतिलिपि बनाएं"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"अपनी पुरानी होम स्क्रीन से आइकन और फ़ोल्डर आयात करें?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"आइकन की प्रतिलिपि बनाएं"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"फिर से शुरू करें"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"अपने स्थान को व्यवस्थित करें"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, विजेट और सेटिंग प्रबंधित करने के लिए पृष्ठभूमि को स्पर्श करके रखें."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"कुछ एप्लिकेशन चुनें"</string>

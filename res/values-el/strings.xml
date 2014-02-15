@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Αρχική οθόνη %1$d από %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Σελίδα εφαρμογών %1$d από %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Σελίδα γραφικών στοιχείων %1$d από %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Καλώς ορίσατε!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Καλώς ορίσατε"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Νιώστε σαν στο σπίτι σας."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Δημιουργία περισσότερων οθονών για εφαρμογές και φακέλους"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Αντιγραφή εικονιδίων εφαρμογών"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Εισαγωγή εικονιδίων και φακέλων από παλιές αρχικές οθόνες;"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"ΑΝΤΙΓΡΑΦΗ ΕΙΚΟΝΙΔΙΩΝ"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ΝΕΑ ΕΝΑΡΞΗ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Οργανώστε το χώρο σας"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Αγγίξτε παρατεταμένα το φόντο για να διαχειριστείτε την ταπετσαρία, τα γραφικά στοιχεία και τις ρυθμίσεις."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Επιλέξτε ορισμένες εφαρμογές"</string>

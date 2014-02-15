@@ -126,7 +126,7 @@ public class DeviceProfile {
     DeviceProfile(String n, float w, float h, float r, float c,
                   float is, float its, float hs, float his) {
         // Ensure that we have an odd number of hotseat items (since we need to place all apps)
-        if (!AppsCustomizePagedView.DISABLE_ALL_APPS && hs % 2 == 0) {
+        if (!LauncherAppState.isDisableAllApps() && hs % 2 == 0) {
             throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
         }
 
@@ -473,6 +473,14 @@ public class DeviceProfile {
             }
         }
         return bounds;
+    }
+
+    /** Returns the bounds of the workspace page indicators. */
+    Rect getWorkspacePageIndicatorBounds(Rect insets) {
+        Rect workspacePadding = getWorkspacePadding();
+        int pageIndicatorTop = heightPx - insets.bottom - workspacePadding.bottom;
+        return new Rect(workspacePadding.left, pageIndicatorTop,
+                widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
     }
 
     /** Returns the workspace padding in the specified orientation */

@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"អេក្រង់​ដើម %1$d នៃ %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ទំព័រ​កម្មវិធី %1$d នៃ %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ទំព័រ​ធាតុ​ក្រាហ្វិក ​%1$d នៃ %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"សូម​ស្វាគមន៍​!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"សូម​ស្វាគមន៍"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"ធ្វើ​ដោយ​ខ្លួន​ឯង​នៅ​លើ​អេក្រង់​ដើម។"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"បង្កើត​អេក្រង់​ច្រើន​សម្រាប់​កម្មវិធី​ ​និង​ថតឯកសារ"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"ចម្លង​រូបតំណាង​កម្មវិធី​របស់​អ្នក"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"នាំចូល​រូបតំណាង និង​ថត​ពី​អេក្រង់​ដើម​ចាស់​របស់​អ្នក?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"រូប​តំណាង​ច្បាប់​ចម្លង"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ចាប់ផ្ដើម​ធ្វើ​ឲ្យ​ស្រស់"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"រៀបចំ​ចន្លោះ​របស់​អ្នក"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"ប៉ះ &amp; សង្កត់​លើ​ផ្ទៃ​ខាង​ក្រោម ដើម្បី​គ្រប់គ្រង​ផ្ទាំង​រូបភាព, ធាតុ​ក្រាហ្វិក និង​ការ​កំណត់។"</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"ជ្រើស​កម្មវិធី​មួយ​ចំនួន"</string>
