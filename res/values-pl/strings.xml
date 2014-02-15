@@ -54,8 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Widżety"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Brak miejsca na ekranach głównych."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Brak miejsca na tym ekranie głównym."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Brak miejsca w kieszonce."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ten widżet jest za duży, by umieścić go w kieszonce."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Brak miejsca w Ulubionych"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ten widżet jest za duży, by zmieścił się w Ulubionych"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został utworzony."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został usunięty."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Skrót „<xliff:g id="NAME">%s</xliff:g>” już istnieje."</string>

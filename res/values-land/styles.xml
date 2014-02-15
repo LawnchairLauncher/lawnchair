@@ -19,10 +19,6 @@
 
 <resources>
 <!-- Search Bar -->
-    <style name="QSBBar">
-    </style>
-    <style name="SearchDropTargetBar">
-    </style>
     <style name="SearchButton">
     </style>
     <style name="DropTargetButtonContainer">

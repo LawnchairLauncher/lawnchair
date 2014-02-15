@@ -54,8 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Pripomočki"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Na začetnih zaslonih ni več prostora."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na tem začetnem zaslonu ni več prostora."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"V vrstici z ikonami ni več prostora."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Ta pripomoček je prevelik za vrstico z ikonami."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"V vrstici za priljubljene ni več prostora"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ta pripomoček je prevelik za vrstico s priljubljenimi"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Bližnjica »<xliff:g id="NAME">%s</xliff:g>« je ustvarjena."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Bližnjica »<xliff:g id="NAME">%s</xliff:g>« je bila odstranjena."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Bližnjica »<xliff:g id="NAME">%s</xliff:g>« že obstaja."</string>
