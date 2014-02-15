@@ -25,10 +25,8 @@
   <string name="scrolling_page_outlines">תיאור דף</string>
   <string name="wallpaper_scroll">גלילת טפט</string>
   <string name="preferences_title">העדפות</string>
-  <string name="preferences_interface_title">ממשק</string>
   <string name="preferences_application_title">יישום</string>
   <string name="preferences_interface_homescreen_title">מסך הבית</string>
-  <string name="preferences_interface_homescreen_summary">מסכים וטפטים</string>
   <string name="preferences_interface_homescreen_search_title">סרגל החיפוש</string>
   <string name="preferences_interface_homescreen_search_summary">הצג את שורת החיפוש תמיד בחלק העליון של המסך</string>
   <string name="preferences_interface_drawer_title">מגירה</string>
