@@ -31,9 +31,11 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +90,8 @@ public class DeviceProfile {
 
     int overviewModeMinIconZoneHeightPx;
     int overviewModeMaxIconZoneHeightPx;
-    int overviewModeMaxBarWidthPx;
+    int overviewModeBarItemWidthPx;
+    int overviewModeBarSpacerWidthPx;
     float overviewModeIconZoneRatio;
     float overviewModeScaleFactor;
 
@@ -170,8 +173,10 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
         overviewModeMaxIconZoneHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
-        overviewModeMaxBarWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_max_width);
+        overviewModeBarItemWidthPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
+        overviewModeBarSpacerWidthPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
         overviewModeIconZoneRatio =
                 res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
         overviewModeScaleFactor =
@@ -478,9 +483,22 @@ public class DeviceProfile {
     /** Returns the bounds of the workspace page indicators. */
     Rect getWorkspacePageIndicatorBounds(Rect insets) {
         Rect workspacePadding = getWorkspacePadding();
-        int pageIndicatorTop = heightPx - insets.bottom - workspacePadding.bottom;
-        return new Rect(workspacePadding.left, pageIndicatorTop,
-                widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
+        if (isLandscape && transposeLayoutWithOrientation) {
+            if (isLayoutRtl) {
+                return new Rect(workspacePadding.left, workspacePadding.top,
+                        workspacePadding.left + pageIndicatorHeightPx,
+                        heightPx - workspacePadding.bottom - insets.bottom);
+            } else {
+                int pageIndicatorLeft = widthPx - workspacePadding.right;
+                return new Rect(pageIndicatorLeft, workspacePadding.top,
+                        pageIndicatorLeft + pageIndicatorHeightPx,
+                        heightPx - workspacePadding.bottom - insets.bottom);
+            }
+        } else {
+            int pageIndicatorTop = heightPx - insets.bottom - workspacePadding.bottom;
+            return new Rect(workspacePadding.left, pageIndicatorTop,
+                    widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
+        }
     }
 
     /** Returns the workspace padding in the specified orientation */
@@ -539,7 +557,7 @@ public class DeviceProfile {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            return 2 * getWorkspacePadding().left;
+            return Math.max(defaultPageSpacingPx, 2 * getWorkspacePadding().left);
         }
     }
 
@@ -593,6 +611,21 @@ public class DeviceProfile {
         return isVerticalBarLayout() || isLargeTablet();
     }
 
+    int getVisibleChildCount(ViewGroup parent) {
+        int visibleChildren = 0;
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            if (parent.getChildAt(i).getVisibility() != View.GONE) {
+                visibleChildren++;
+            }
+        }
+        return visibleChildren;
+    }
+
+    int calculateOverviewModeWidth(int visibleChildCount) {
+        return visibleChildCount * overviewModeBarItemWidthPx +
+                (visibleChildCount-1) * overviewModeBarSpacerWidthPx;
+    }
+
     public void layout(Launcher launcher) {
         FrameLayout.LayoutParams lp;
         Resources res = launcher.getResources();
@@ -605,10 +638,13 @@ public class DeviceProfile {
             // Vertical search bar space
             lp.gravity = Gravity.TOP | Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
-            lp.height = LayoutParams.MATCH_PARENT;
+            lp.height = LayoutParams.WRAP_CONTENT;
             searchBar.setPadding(
                     0, 2 * edgeMarginPx, 0,
                     2 * edgeMarginPx);
+
+            LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
+            targets.setOrientation(LinearLayout.VERTICAL);
         } else {
             // Horizontal search bar space
             lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
@@ -620,13 +656,6 @@ public class DeviceProfile {
                     2 * edgeMarginPx, 0);
         }
         searchBar.setLayoutParams(lp);
-
-        // Layout the search bar
-        View qsbBar = launcher.getQsbBar();
-        LayoutParams vglp = qsbBar.getLayoutParams();
-        vglp.width = LayoutParams.MATCH_PARENT;
-        vglp.height = LayoutParams.MATCH_PARENT;
-        qsbBar.setLayoutParams(vglp);
 
         // Layout the voice proxy
         View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
@@ -739,12 +768,13 @@ public class DeviceProfile {
         }
 
         // Layout the Overview Mode
-        View overviewMode = launcher.getOverviewPanel();
+        ViewGroup overviewMode = launcher.getOverviewPanel();
         if (overviewMode != null) {
             Rect r = getOverviewModeButtonBarRect();
             lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            lp.width = Math.min(availableWidthPx, overviewModeMaxBarWidthPx);
+            lp.width = Math.min(availableWidthPx,
+                    calculateOverviewModeWidth(getVisibleChildCount(overviewMode)));
             lp.height = r.height();
             overviewMode.setLayoutParams(lp);
         }

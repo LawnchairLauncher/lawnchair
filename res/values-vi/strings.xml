@@ -54,8 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"Tiện ích con"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"Không còn chỗ trên Màn hình chính của bạn."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Không còn chỗ trên Màn hình chính này."</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"Không còn chỗ trên vùng gắn."</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"Tiện ích con này quá lớn cho vùng gắn."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Không còn chỗ trong khay Mục yêu thích"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Tiện ích con này có kích thước quá lớn để đặt vào khay Mục yêu thích"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã được tạo."</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã bị xóa."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã tồn tại."</string>

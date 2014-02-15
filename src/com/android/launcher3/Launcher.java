@@ -249,7 +249,7 @@ public class Launcher extends Activity
     private FolderInfo mFolderInfo;
 
     private Hotseat mHotseat;
-    private View mOverviewPanel;
+    private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
 
@@ -257,7 +257,7 @@ public class Launcher extends Activity
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
     private boolean mAutoAdvanceRunning = false;
-    private View mQsbBar;
+    private View mQsb;
 
     private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
@@ -1069,6 +1069,10 @@ public class Launcher extends Activity
         public void onScrollProgressChanged(float progress);
     }
 
+    protected boolean hasSettings() {
+        return false;
+    }
+
     protected void startSettings() {
     }
 
@@ -1250,7 +1254,7 @@ public class Launcher extends Activity
             mHotseat.setOnLongClickListener(this);
         }
 
-        mOverviewPanel = findViewById(R.id.overview_panel);
+        mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
         View widgetButton = findViewById(R.id.widget_button);
         widgetButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -1274,15 +1278,23 @@ public class Launcher extends Activity
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         View settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (!mWorkspace.isSwitchingState()) {
-                    startSettings();
-                }
-            }
-        });
-        settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        if (hasSettings()) {
+            settingsButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    if (!mWorkspace.isSwitchingState()) {
+                        startSettings();
+                    }
+                    }
+            });
+            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        } else {
+            settingsButton.setVisibility(View.GONE);
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) widgetButton.getLayoutParams();
+            lp.gravity = Gravity.END | Gravity.TOP;
+            widgetButton.requestLayout();
+        }
+
         mOverviewPanel.setAlpha(0f);
 
         // Setup the workspace
@@ -1292,7 +1304,8 @@ public class Launcher extends Activity
         dragController.addDragListener(mWorkspace);
 
         // Get the search/delete bar
-        mSearchDropTargetBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
+        mSearchDropTargetBar = (SearchDropTargetBar)
+                mDragLayer.findViewById(R.id.search_drop_target_bar);
 
         // Setup AppsCustomize
         mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
@@ -1754,7 +1767,7 @@ public class Launcher extends Activity
         return mHotseat;
     }
 
-    public View getOverviewPanel() {
+    public ViewGroup getOverviewPanel() {
         return mOverviewPanel;
     }
 
@@ -2040,7 +2053,16 @@ public class Launcher extends Activity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        showOverviewMode(true);
+        // Close any open folders
+        closeFolder();
+        // Stop resizing any widgets
+        mWorkspace.exitWidgetResizeMode();
+        if (!mWorkspace.isInOverviewMode()) {
+            // Show the overview mode
+            showOverviewMode(true);
+        } else {
+            showWorkspace(true);
+        }
         return false;
     }
 
@@ -2789,7 +2811,8 @@ public class Launcher extends Activity
         // The hotseat touch handling does not go through Workspace, and we always allow long press
         // on hotseat items.
         final View itemUnderLongClick = longClickCellInfo.cell;
-        boolean allowLongPress = isHotseatLayout(v) || mWorkspace.allowLongPress();
+        final boolean inHotseat = isHotseatLayout(v);
+        boolean allowLongPress = inHotseat || mWorkspace.allowLongPress();
         if (allowLongPress && !mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
@@ -2802,7 +2825,11 @@ public class Launcher extends Activity
                     mWorkspace.enterOverviewMode();
                 }
             } else {
-                if (!(itemUnderLongClick instanceof Folder)) {
+                final boolean isAllAppsButton = inHotseat && isAllAppsButtonRank(
+                        mHotseat.getOrderInHotseat(
+                                longClickCellInfo.cellX,
+                                longClickCellInfo.cellY));
+                if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
                     // User long pressed on an item
                     mWorkspace.startDrag(longClickCellInfo);
                 }
@@ -3461,11 +3488,11 @@ public class Launcher extends Activity
     }
 
     public View getQsbBar() {
-        if (mQsbBar == null) {
-            mQsbBar = mInflater.inflate(R.layout.search_bar, mSearchDropTargetBar, false);
-            mSearchDropTargetBar.addView(mQsbBar);
+        if (mQsb == null) {
+            mQsb = mInflater.inflate(R.layout.qsb, mSearchDropTargetBar, false);
+            mSearchDropTargetBar.addView(mQsb);
         }
-        return mQsbBar;
+        return mQsb;
     }
 
     protected boolean updateGlobalSearchIcon() {
@@ -3924,9 +3951,11 @@ public class Launcher extends Activity
                     // when we are loading right after we return to launcher.
                     mWorkspace.postDelayed(new Runnable() {
                         public void run() {
-                            mWorkspace.snapToPage(newScreenIndex);
-                            mWorkspace.postDelayed(startBounceAnimRunnable,
-                                    NEW_APPS_ANIMATION_DELAY);
+                            if (mWorkspace != null) {
+                                mWorkspace.snapToPage(newScreenIndex);
+                                mWorkspace.postDelayed(startBounceAnimRunnable,
+                                        NEW_APPS_ANIMATION_DELAY);
+                            }
                         }
                     }, NEW_APPS_PAGE_MOVE_DELAY);
                 } else {
@@ -4327,12 +4356,13 @@ public class Launcher extends Activity
     }
 
     private boolean shouldRunFirstRunActivity() {
-        return !ActivityManager.isRunningInTestHarness();
+        return !ActivityManager.isRunningInTestHarness() &&
+                !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
     }
 
     public void showFirstRunActivity() {
-        if (shouldRunFirstRunActivity() && hasFirstRunActivity()
-                && !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false)) {
+        if (shouldRunFirstRunActivity() &&
+                hasFirstRunActivity()) {
             Intent firstRunIntent = getFirstRunActivity();
             if (firstRunIntent != null) {
                 startActivity(firstRunIntent);
@@ -4348,17 +4378,17 @@ public class Launcher extends Activity
     }
 
     void showWorkspaceSearchAndHotseat() {
-        mWorkspace.setAlpha(1f);
-        mHotseat.setAlpha(1f);
-        mPageIndicators.setAlpha(1f);
-        mSearchDropTargetBar.showSearchBar(false);
+        if (mWorkspace != null) mWorkspace.setAlpha(1f);
+        if (mHotseat != null) mHotseat.setAlpha(1f);
+        if (mPageIndicators != null) mPageIndicators.setAlpha(1f);
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.showSearchBar(false);
     }
 
     void hideWorkspaceSearchAndHotseat() {
-        mWorkspace.setAlpha(0f);
-        mHotseat.setAlpha(0f);
-        mPageIndicators.setAlpha(0f);
-        mSearchDropTargetBar.hideSearchBar(false);
+        if (mWorkspace != null) mWorkspace.setAlpha(0f);
+        if (mHotseat != null) mHotseat.setAlpha(0f);
+        if (mPageIndicators != null) mPageIndicators.setAlpha(0f);
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.hideSearchBar(false);
     }
 
 

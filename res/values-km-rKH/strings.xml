@@ -54,8 +54,8 @@
     <string name="group_widgets" msgid="1569030723286851002">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​រស់​អ្នក​ទៀត​ទេ។"</string>
     <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
-    <string name="hotseat_out_of_space" msgid="9139760413395605841">"គ្មាន​បន្ទប់​នៅ​ក្នុង​មជ្ឈមណ្ឌល​ទៀត​ទេ។"</string>
-    <string name="invalid_hotseat_item" msgid="1211534262129849507">"ធាតុ​ក្រាហ្វិក​នេះ​ធំ​ពេក​សម្រាប់​មជ្ឈមណ្ឌល។"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"ធាតុ​ក្រាហ្វិក​នេះ​ធំ​ពេក​សម្រាប់​ថាស​និយម​ប្រើ"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"បាន​បង្កើត​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"បាន​លុប​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"មាន​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" រួច​ហើយ។"</string>

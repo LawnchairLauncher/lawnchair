@@ -108,6 +108,10 @@ public class LauncherProvider extends ContentProvider {
         return true;
     }
 
+    public boolean wasNewDbCreated() {
+        return mOpenHelper.wasNewDbCreated();
+    }
+
     @Override
     public String getType(Uri uri) {
         SqlArguments args = new SqlArguments(uri, null, null);
@@ -138,9 +142,10 @@ public class LauncherProvider extends ContentProvider {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
         }
-        if (!values.containsKey(LauncherSettings.Favorites._ID)) {
+        if (!values.containsKey(LauncherSettings.BaseLauncherColumns._ID)) {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
+        helper.checkId(table, values);
         return db.insert(table, nullColumnHack, values);
     }
 
@@ -271,6 +276,7 @@ public class LauncherProvider extends ContentProvider {
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
+            Log.d(TAG, "loading default workspace");
             int workspaceResId = origWorkspaceResId;
 
             // Use default workspace resource if none provided
@@ -319,9 +325,11 @@ public class LauncherProvider extends ContentProvider {
     public void deleteDatabase() {
         // Are you sure? (y/n)
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final String dbFile = db.getPath();
+        final File dbFile = new File(db.getPath());
         mOpenHelper.close();
-        SQLiteDatabase.deleteDatabase(new File(dbFile));
+        if (dbFile.exists()) {
+            SQLiteDatabase.deleteDatabase(dbFile);
+        }
         mOpenHelper = new DatabaseHelper(getContext());
     }
 
@@ -341,6 +349,8 @@ public class LauncherProvider extends ContentProvider {
         private long mMaxItemId = -1;
         private long mMaxScreenId = -1;
 
+        private boolean mNewDbCreated = false;
+
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
@@ -354,6 +364,10 @@ public class LauncherProvider extends ContentProvider {
             if (mMaxScreenId == -1) {
                 mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
             }
+        }
+
+        public boolean wasNewDbCreated() {
+            return mNewDbCreated;
         }
 
         /**
@@ -373,6 +387,7 @@ public class LauncherProvider extends ContentProvider {
 
             mMaxItemId = 1;
             mMaxScreenId = 0;
+            mNewDbCreated = true;
 
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
@@ -880,6 +895,15 @@ public class LauncherProvider extends ContentProvider {
 
         public void updateMaxItemId(long id) {
             mMaxItemId = id + 1;
+        }
+
+        public void checkId(String table, ContentValues values) {
+            long id = values.getAsLong(LauncherSettings.BaseLauncherColumns._ID);
+            if (table == LauncherProvider.TABLE_WORKSPACE_SCREENS) {
+                mMaxScreenId = Math.max(id, mMaxScreenId);
+            }  else {
+                mMaxItemId = Math.max(id, mMaxItemId);
+            }
         }
 
         private long initializeMaxItemId(SQLiteDatabase db) {
@@ -1463,7 +1487,6 @@ public class LauncherProvider extends ContentProvider {
                 // Ignore
             }
 
-
             // We already have a favorites database in the old provider
             if (c != null) {
                 try {
@@ -1505,10 +1528,12 @@ public class LauncherProvider extends ContentProvider {
                         final int width = (int) grid.numColumns;
                         final int height = (int) grid.numRows;
                         final int hotseatWidth = (int) grid.numHotseatIcons;
+                        PackageManager pm = mContext.getPackageManager();
 
                         final HashSet<String> seenIntents = new HashSet<String>(c.getCount());
 
-                        final ContentValues[] rows = new ContentValues[c.getCount()];
+                        final ArrayList<ContentValues> shortcuts = new ArrayList<ContentValues>();
+                        final ArrayList<ContentValues> folders = new ArrayList<ContentValues>();
 
                         while (c.moveToNext()) {
                             final int itemType = c.getInt(itemTypeIndex);
@@ -1527,29 +1552,43 @@ public class LauncherProvider extends ContentProvider {
                                 + c.getString(titleIndex) + "\": " + intentStr, true);
 
                             if (itemType != Favorites.ITEM_TYPE_FOLDER) {
+
+                                final Intent intent;
+                                final ComponentName cn;
+                                try {
+                                    intent = Intent.parseUri(intentStr, 0);
+                                } catch (URISyntaxException e) {
+                                    // bogus intent?
+                                    Launcher.addDumpLog(TAG,
+                                            "skipping invalid intent uri", true);
+                                    continue;
+                                }
+
+                                cn = intent.getComponent();
                                 if (TextUtils.isEmpty(intentStr)) {
                                     // no intent? no icon
                                     Launcher.addDumpLog(TAG, "skipping empty intent", true);
                                     continue;
-                                } else {
-                                    try {
-                                        // Canonicalize
-                                        final Intent intent = Intent.parseUri(intentStr, 0);
-                                        // the Play Store sets the package parameter, but Launcher
-                                        // does not, so we clear that out to keep them the same
-                                        intent.setPackage(null);
-                                        final String key = intent.toUri(0);
-                                        if (seenIntents.contains(key)) {
-                                            Launcher.addDumpLog(TAG, "skipping duplicate", true);
-                                            continue;
-                                        } else {
-                                            seenIntents.add(key);
-                                        }
-                                    } catch (URISyntaxException e) {
-                                        // bogus intent?
-                                        Launcher.addDumpLog(TAG,
-                                                "skipping invalid intent uri", true);
+                                } else if (cn != null &&
+                                        !LauncherModel.isValidPackageComponent(pm, cn)) {
+                                    // component no longer exists.
+                                    Launcher.addDumpLog(TAG, "skipping item whose component " +
+                                            "no longer exists.", true);
+                                    continue;
+                                } else if (container ==
+                                        LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                    // Dedupe icons directly on the workspace
+
+                                    // Canonicalize
+                                    // the Play Store sets the package parameter, but Launcher
+                                    // does not, so we clear that out to keep them the same
+                                    intent.setPackage(null);
+                                    final String key = intent.toUri(0);
+                                    if (seenIntents.contains(key)) {
+                                        Launcher.addDumpLog(TAG, "skipping duplicate", true);
                                         continue;
+                                    } else {
+                                        seenIntents.add(key);
                                     }
                                 }
                             }
@@ -1572,7 +1611,8 @@ public class LauncherProvider extends ContentProvider {
                                     c.getInt(displayModeIndex));
 
                             if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                                    && screen >= hotseatWidth) {
+                                    && (screen >= hotseatWidth ||
+                                        screen == grid.hotseatAllAppsRank)) {
                                 // no room for you in the hotseat? it's off to the desktop with you
                                 container = Favorites.CONTAINER_DESKTOP;
                             }
@@ -1583,32 +1623,53 @@ public class LauncherProvider extends ContentProvider {
                                 values.put(LauncherSettings.Favorites.CELLX, cellX);
                                 values.put(LauncherSettings.Favorites.CELLY, cellY);
                             } else {
-                                values.put(LauncherSettings.Favorites.SCREEN, curScreen);
-                                values.put(LauncherSettings.Favorites.CELLX, curX);
-                                values.put(LauncherSettings.Favorites.CELLY, curY);
-                                curX = (curX + 1) % width;
-                                if (curX == 0) {
-                                    curY = (curY + 1);
-                                }
-                                // Leave the last row of icons blank on screen 0
-                                if (curScreen == 0 && curY == height - 1 || curY == height) {
-                                    curScreen = (int) generateNewScreenId();
-                                    curY = 0;
-                                }
+                                // For items contained directly on one of the workspace screen,
+                                // we'll determine their location (screen, x, y) in a second pass.
                             }
 
                             values.put(LauncherSettings.Favorites.CONTAINER, container);
 
-                            rows[i++] = values;
+                            if (itemType != Favorites.ITEM_TYPE_FOLDER) {
+                                shortcuts.add(values);
+                            } else {
+                                folders.add(values);
+                            }
                         }
 
-                        if (i > 0) {
+                        final ArrayList<ContentValues> allItems = new ArrayList<ContentValues>();
+                        // Folders first
+                        allItems.addAll(folders);
+                        // Then shortcuts
+                        allItems.addAll(shortcuts);
+
+                        // Layout all the folders
+                        for (ContentValues values: allItems) {
+                            if (values.getAsInteger(LauncherSettings.Favorites.CONTAINER) !=
+                                    LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                // Hotseat items and folder items have already had their
+                                // location information set. Nothing to be done here.
+                                continue;
+                            }
+                            values.put(LauncherSettings.Favorites.SCREEN, curScreen);
+                            values.put(LauncherSettings.Favorites.CELLX, curX);
+                            values.put(LauncherSettings.Favorites.CELLY, curY);
+                            curX = (curX + 1) % width;
+                            if (curX == 0) {
+                                curY = (curY + 1);
+                            }
+                            // Leave the last row of icons blank on every screen
+                            if (curY == height - 1) {
+                                curScreen = (int) generateNewScreenId();
+                                curY = 0;
+                            }
+                        }
+
+                        if (allItems.size() > 0) {
                             db.beginTransaction();
                             try {
-                                final int N = rows.length;
-                                for (i = 0; i < N; i++) {
-                                    if (rows[i] == null) continue;
-                                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, rows[i])
+                                for (ContentValues row: allItems) {
+                                    if (row == null) continue;
+                                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, row)
                                             < 0) {
                                         return;
                                     } else {
