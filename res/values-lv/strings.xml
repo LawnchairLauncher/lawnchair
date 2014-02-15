@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Sākuma ekrāns: %1$d no %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"%1$d. lietotņu lapa no %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"%1$d. logrīku lapa no %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Laipni lūdzam!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Laipni lūdzam!"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Informācija par pamatfunkcijām"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Izveidojiet vairāk ekrānu lietotnēm un mapēm."</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Lietotņu ikonu kopēšana"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Vai importēt ikonas, mapes no iepriekšējiem sākuma ekrāniem?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPĒT IKONAS"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"SĀKT NO SĀKUMA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Kārtojiet savu darbvietu"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Pieskarieties fonam un turiet to, lai pārvaldītu fona tapeti, logrīkus un iestatījumus."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Izvēlieties dažas lietotnes"</string>

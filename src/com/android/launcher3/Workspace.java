@@ -579,7 +579,7 @@ public class Workspace extends SmoothPagedView
         mDefaultPage = mOriginalDefaultPage + 1;
 
         // Update the custom content hint
-        mLauncher.updateCustomContentHintVisibility();
+        mLauncher.getLauncherClings().updateCustomContentHintVisibility();
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage + 1;
         } else {
@@ -608,7 +608,7 @@ public class Workspace extends SmoothPagedView
         mDefaultPage = mOriginalDefaultPage - 1;
 
         // Update the custom content hint
-        mLauncher.updateCustomContentHintVisibility();
+        mLauncher.getLauncherClings().updateCustomContentHintVisibility();
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage - 1;
         } else {

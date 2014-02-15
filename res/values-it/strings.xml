@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Schermata Home %1$d di %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Pagina di applicazioni %1$d di %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Pagina di widget %1$d di %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Benvenuto!"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Benvenuto"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Personalizza la schermata Home."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Creare più schermate per app e cartelle"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Copia le icone delle tue app"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Importare icone e cartelle dalle schermate Home precedenti?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIA ICONE"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"RICOMINCIA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizza il tuo spazio"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Tocca e tieni premuto lo sfondo per gestire sfondi, widget e impostazioni."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Scegli alcune applicazioni"</string>

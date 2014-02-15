@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ekran główny %1$d z %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Strona aplikacji: %1$d z %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Strona widżetów: %1$d z %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Witamy"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Witamy"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Poczuj się jak u siebie."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Dodaj więcej ekranów na aplikacje i foldery"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Kopiuj ikony aplikacji"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Zaimportować ikony i foldery ze starych ekranów głównych?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIUJ IKONY"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ZACZNIJ OD NOWA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Uporządkuj obszar roboczy"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Kliknij i przytrzymaj tło, by zmienić tapetę, widżety lub ustawienia."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Wybierz kilka aplikacji"</string>

@@ -8,6 +8,9 @@
   public void onClickAllAppsButton(android.view.View);
   public void onClickAppMarketButton(android.view.View);
   public void dismissFirstRunCling(android.view.View);
+  public void dismissMigrationClingCopyApps(android.view.View);
+  public void dismissMigrationClingUseDefault(android.view.View);
+  public void dismissMigrationWorkspaceCling(android.view.View);
   public void dismissWorkspaceCling(android.view.View);
   public void dismissAllAppsCling(android.view.View);
 }

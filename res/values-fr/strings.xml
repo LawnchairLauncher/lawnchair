@@ -96,11 +96,15 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Page des applications %1$d sur %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Page des widgets %1$d sur %2$d"</string>
-    <string name="first_run_cling_title" msgid="7257389003637362144">"Bienvenue !"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Bienvenue"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Familiarisez-vous avec l\'écran d\'accueil."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Créez des écrans personnalisés pour vos applis et dossiers"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Copier les icônes de vos applis"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Importer les icônes et dossiers des anciens écrans d\'accueil ?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIER LES ICÔNES"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"DISPOSITION PAR DÉFAUT"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organisez votre espace"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
     <string name="all_apps_cling_title" msgid="34929250753095858">"Sélectionner des applications"</string>

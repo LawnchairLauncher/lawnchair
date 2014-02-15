@@ -407,7 +407,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
 
         // Dismiss the workspace cling
-        l.dismissWorkspaceCling(null);
+        l.getLauncherClings().dismissWorkspaceCling(null);
     }
 
     @Override
