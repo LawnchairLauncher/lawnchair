@@ -80,7 +80,6 @@ public class HolographicImageView extends ImageView {
     protected void drawableStateChanged() {
         super.drawableStateChanged();
 
-        mHolographicHelper.generatePressedFocusedStates(this);
         Drawable d = getDrawable();
         if (d instanceof StateListDrawable) {
             StateListDrawable sld = (StateListDrawable) d;

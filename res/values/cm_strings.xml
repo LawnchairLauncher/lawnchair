@@ -78,4 +78,17 @@
     <string name="all_apps_cling_cm">Customize your drawer</string>
     <!-- The description of how to access Trebuchet settings [CHAR_LIMIT=160] -->
     <string name="all_apps_cling_summary">Tap the page indicator to view additional configuration settings</string>
+
+    <!-- AOSP dummy strings (required by old Launcher3 code) -->
+    <string name="chooser_wallpaper" translatable="false">""</string>
+    <string name="folder_cling_move_item" translatable="false">""</string>
+    <string name="group_wallpapers" translatable="false">""</string>
+    <string name="menu_add" translatable="false">""</string>
+    <string name="menu_help" translatable="false">""</string>
+    <string name="menu_manage_apps" translatable="false">""</string>
+    <string name="menu_notifications" translatable="false">""</string>
+    <string name="menu_search" translatable="false">""</string>
+    <string name="menu_settings" translatable="false">""</string>
+    <string name="menu_wallpaper" translatable="false">""</string>
+    <string name="workspace_cling_open_all_apps" translatable="false">""</string>
 </resources>

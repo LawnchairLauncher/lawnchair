@@ -23,7 +23,6 @@
     <string name="home" msgid="5921706419368316758">"Kodu"</string>
     <string name="uid_name" msgid="3371120195364560632">"Androidi tuumrakendused"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="6063168087625352235">"Taustapildi valimiskoht:"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Määra taustapilt"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Taustapildid"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Rakendus pole installitud."</string>
@@ -41,7 +40,6 @@
     <string name="group_applications" msgid="2103752818818161976">"Rakendused"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Otseteed"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Vidinad"</string>
-    <string name="group_wallpapers" msgid="1568191644272224858">"Taustapildid"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Teie avakuvadel ei ole enam ruumi."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Sellel avalehel pole enam ruumi."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Kohandataval dokialal pole rohkem ruumi."</string>
@@ -63,13 +61,6 @@
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Rakendused"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Eemalda"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Desinstalli värskendus"</string>
-    <string name="menu_add" msgid="3065046628354640854">"Lisa"</string>
-    <string name="menu_manage_apps" msgid="2308685199463588895">"Rakenduste haldamine"</string>
-    <string name="menu_wallpaper" msgid="5837429080911269832">"Taustapilt"</string>
-    <string name="menu_search" msgid="4826514464423239041">"Otsing"</string>
-    <string name="menu_notifications" msgid="6424587053194766192">"Teadistused"</string>
-    <string name="menu_settings" msgid="3946232973327980394">"Süsteemiseaded"</string>
-    <string name="menu_help" msgid="4901160661634590633">"Abi"</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Rakenduse desinstallimine"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Rakenduse üksikasjad"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"Valitud on 1 rakendus"</string>
@@ -95,11 +86,9 @@
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Vidinate leht %1$d/%2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Tunne end nagu kodus"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Võite panna oma lemmikrakendused siia."</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Kõikide oma rakenduste nägemiseks puudutage ringi."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Valige mõned rakendused"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Rakenduse lisamiseks avakuvale puudutage seda pikalt."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Korraldage oma rakendused kaustadesse"</string>
-    <string name="folder_cling_move_item" msgid="270598675060435169">"Rakenduse liigutamiseks pange sõrm rakendusele ja hoidke seda."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Avakuval uue kausta tegemiseks virnastage üks rakendus teisele."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Kaust on avatud, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>

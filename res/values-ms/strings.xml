@@ -23,7 +23,6 @@
     <string name="home" msgid="5921706419368316758">"Laman Utama"</string>
     <string name="uid_name" msgid="3371120195364560632">"Apl Teras Android"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="6063168087625352235">"Pilih kertas dinding dari"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Tetapkan kertas dinding"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Kertas dinding"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Aplikasi tidak dipasang."</string>
@@ -41,7 +40,6 @@
     <string name="group_applications" msgid="2103752818818161976">"Aplikasi"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Pintasan"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widget"</string>
-    <string name="group_wallpapers" msgid="1568191644272224858">"Kertas dinding"</string>
     <string name="completely_out_of_space" msgid="1759078539443491182">"Tiada lagi ruang pada skrin Utama anda."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Tiada lagi ruang pada skrin Utama ini"</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Tiada lagi ruang pada kerusi panas."</string>
@@ -63,13 +61,6 @@
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Aplikasi"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Alih keluar"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Nyahpasang kemas kini"</string>
-    <string name="menu_add" msgid="3065046628354640854">"Tambah"</string>
-    <string name="menu_manage_apps" msgid="2308685199463588895">"Mengurus apl"</string>
-    <string name="menu_wallpaper" msgid="5837429080911269832">"Kertas dinding"</string>
-    <string name="menu_search" msgid="4826514464423239041">"Cari"</string>
-    <string name="menu_notifications" msgid="6424587053194766192">"Pemberitahuan"</string>
-    <string name="menu_settings" msgid="3946232973327980394">"Tetapan sistem"</string>
-    <string name="menu_help" msgid="4901160661634590633">"Bantuan"</string>
     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Nyahpasang aplikasi"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"Butiran aplikasi"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"1 aplikasi dipilih"</string>
@@ -95,11 +86,9 @@
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Halaman widget %1$d dari %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Buat diri anda seperti di rumah"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Anda boleh meletakkan aplikasi kegemaran anda di sini."</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Untuk melihat semua aplikasi anda, sentuh bulatan."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Pilih beberapa aplikasi"</string>
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Untuk menambahkan aplikasi pada skrin Utama anda, sentuh &amp; tahankannya."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Susun aplikasi anda dengan folder"</string>
-    <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindahkan aplikasi, sentuh &amp; tahankannya."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Untuk membuat folder baharu pada skrin Utama anda, tindihkan satu aplikasi di atas yang lain."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Folder dibuka, <xliff:g id="WIDTH">%1$d</xliff:g> kali <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
