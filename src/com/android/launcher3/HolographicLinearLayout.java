@@ -84,7 +84,6 @@ public class HolographicLinearLayout extends LinearLayout {
         super.drawableStateChanged();
 
         if (mImageView != null) {
-            mHolographicHelper.generatePressedFocusedStates(mImageView);
             Drawable d = mImageView.getDrawable();
             if (d instanceof StateListDrawable) {
                 StateListDrawable sld = (StateListDrawable) d;
