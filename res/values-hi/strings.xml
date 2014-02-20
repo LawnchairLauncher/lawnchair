@@ -23,18 +23,6 @@
     <string name="home" msgid="7658288663002113681">"होम"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android के मुख्य एप्लिकेशन"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"वॉलपेपर सेट करें"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d चयनित"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d चयनित"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d चयनित"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"वॉलपेपर %2$d में से %1$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"चयनित <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"हटाएं"</string>
-    <string name="pick_image" msgid="1272073934062909527">"चित्र चुनें"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"वॉलपेपर"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"वॉलपेपर काटें"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"एप्‍लिकेशन इंस्‍टॉल नहीं है."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"विजेट"</string>
     <string name="widget_adder" msgid="3201040140710381657">"विजेट"</string>
@@ -107,8 +95,6 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"फिर से शुरू करें"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"अपने स्थान को व्यवस्थित करें"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, विजेट और सेटिंग प्रबंधित करने के लिए पृष्ठभूमि को स्पर्श करके रखें."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"कुछ एप्लिकेशन चुनें"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"किसी एप्लिकेशन को अपनी होम स्‍क्रीन से जोड़ने के लिए, उसे स्‍पर्श करके रखें."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"यहां एक फ़ोल्डर है"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"इसके जैसा कोई एक बनाने के लिए, किसी एप्लिकेशन को स्पर्श करके रखें, फिर इसे किसी दूसरे पर ले जाएं."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ठीक"</string>

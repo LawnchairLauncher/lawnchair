@@ -23,18 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Tuis"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android-kernprogramme"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Stel muurpapier"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d gekies"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d gekies"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d gekies"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Muurpapier %1$d van %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"Het <xliff:g id="LABEL">%1$s</xliff:g> gekies"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Vee uit"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Kies prent"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Muurpapiere"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Snoei muurpapier"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Program is nie geïnstalleer nie."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Legstukke"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Legstukke"</string>
@@ -107,8 +95,6 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"BEGIN VAN NUUTS AF"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiseer jou spasie"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Raak en hou agtergrond om muurpapier, legstukke en instellings te bestuur."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Kies \'n paar programme"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Om \'n program by jou Tuisskerm te voeg, raak en hou dit."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Hier\'s \'n vouer"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Om een soos dié te skep, raak en hou \'n program en skuif dit dan oor \'n ander een."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
