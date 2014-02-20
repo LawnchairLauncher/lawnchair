@@ -23,18 +23,6 @@
     <string name="home" msgid="7658288663002113681">"Màn hình chính"</string>
     <string name="uid_name" msgid="7820867637514617527">"Ứng dụng lõi Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"Đặt hình nền"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"Đã chọn %1$d"</item>
-    <item quantity="one" msgid="142482526010824029">"Đã chọn %1$d"</item>
-    <item quantity="other" msgid="1418352074806573570">"Đã chọn %1$d"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"Hình nền %1$d / %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> được chọn"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"Xóa"</string>
-    <string name="pick_image" msgid="1272073934062909527">"Chọn hình ảnh"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"Hình nền"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"Cắt hình nền"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Ứng dụng chưa được cài đặt."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Tiện ích con"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Tiện ích con"</string>
@@ -107,8 +95,6 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"BẮT ĐẦU LÀM MỚI"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Sắp xếp không gian của bạn"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Chạm và giữ nền để quản lý hình nền, tiện ích con và cài đặt."</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"Chọn một số ứng dụng"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"Để thêm ứng dụng vào Màn hình chính của bạn, chạm và giữ ứng dụng đó."</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Đây là một thư mục"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Để tạo thư mục như thế này, hãy chạm và giữ một ứng dụng, sau đó di chuyển ứng dụng đó lên trên một ứng dụng khác."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

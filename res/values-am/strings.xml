@@ -23,18 +23,6 @@
     <string name="home" msgid="7658288663002113681">"መነሻ"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android ዋና መተግበሪያዎች"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"የግድግዳ ወረቀት አዘጋጅ"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"%1$d ተመርጧል"</item>
-    <item quantity="one" msgid="142482526010824029">"%1$d ተመርጧል"</item>
-    <item quantity="other" msgid="1418352074806573570">"%1$d ተመርጧል"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"የግድግዳ ወረቀት %1$d ከ%2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> ተመርጧል"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"ሰርዝ"</string>
-    <string name="pick_image" msgid="1272073934062909527">"ምስል ምረጥ"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"የግድግዳ ወረቀቶች"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"የግድግዳ ወረቀት ከርክም"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"መተግበሪያ አልተጫነም።"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"ፍርግሞች"</string>
     <string name="widget_adder" msgid="3201040140710381657">"ፍርግሞች"</string>
@@ -107,8 +95,6 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"እንደ አዲስ ይጀምሩ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ቦታዎን ያደራጁ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"የግድግዳ ወረቀት፣ ምግብሮችን እና ቅንብሮችን ለማቀናበር ጀርባውን ይንኩ እና ይያዙት።"</string>
-    <string name="all_apps_cling_title" msgid="34929250753095858">"አንዳንድ መተግበሪያዎችን ይምረጡ"</string>
-    <string name="all_apps_cling_add_item" msgid="400866858451850784">"አንድ መተግበሪያ ወደ መነሻ ማያ ገጽዎ ለማከል ይንኩት እና ይያዙት።"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"አንድ አቃፊ እነሆ"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"አንድ እንደዚህ አይነት ለመፍጠር መተግበሪያውን ነክተው ይያዙት እና ወደ ሌላ ያንቀሳቅሱት።"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"እሺ"</string>

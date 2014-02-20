@@ -23,18 +23,6 @@
     <string name="home" msgid="7658288663002113681">"ໜ້າຫຼັກ"</string>
     <string name="uid_name" msgid="7820867637514617527">"ແອັບພລິເຄຊັນຫຼັກຂອງ Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="wallpaper_instructions" msgid="563973358787555519">"ຕັ້ງເປັນພາບພື້ນຫຼັງ"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="7464587177007785408">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="one" msgid="142482526010824029">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="other" msgid="1418352074806573570">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-  </plurals>
-    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"ຮູບພືື້ນຫຼັງ %1$d ໃນ %2$d"</string>
-    <string name="announce_selection" msgid="8338254712932127413">"ເລືອກແລ້ວ <xliff:g id="LABEL">%1$s</xliff:g> ອັນ"</string>
-    <string name="wallpaper_delete" msgid="8095005658756613921">"ລຶບ"</string>
-    <string name="pick_image" msgid="1272073934062909527">"ເລືອກຮູບ"</string>
-    <string name="pick_wallpaper" msgid="8179698221502010609">"ພາບພື້ນຫຼັງ"</string>
-    <string name="crop_wallpaper" msgid="8334345984491368009">"ຕັດຮູບພື້ນຫຼັງ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ແອັບຯບໍ່ໄດ້ຖືກຕິດຕັ້ງ."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"ວິດເຈັດ"</string>
     <string name="widget_adder" msgid="3201040140710381657">"ວິດເຈັດ"</string>
