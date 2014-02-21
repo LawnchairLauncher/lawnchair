@@ -41,7 +41,6 @@ class LauncherClings {
     private static final String FOLDER_CLING_DISMISSED_KEY = "cling_gel.folder.dismissed";
 
     private static final boolean DISABLE_CLINGS = false;
-    private static final boolean DISABLE_CUSTOM_CLINGS = true;
 
     private static final int SHOW_CLING_DURATION = 250;
     private static final int DISMISS_CLING_DURATION = 200;
@@ -196,8 +195,7 @@ class LauncherClings {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         return areClingsEnabled() &&
             !sharedPrefs.getBoolean(FIRST_RUN_CLING_DISMISSED_KEY, false) &&
-            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false) &&
-            LauncherAppState.getLauncherProvider().wasNewDbCreated();
+            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
     }
 
     public void removeFirstRunAndMigrationClings() {
@@ -213,24 +211,6 @@ class LauncherClings {
      */
     public void showFirstRunCling() {
         if (!skipCustomClingIfNoAccounts()) {
-            SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
-            // If we're not using the default workspace layout, replace workspace cling
-            // with a custom workspace cling (usually specified in an overlay)
-            // For now, only do this on tablets
-            if (!DISABLE_CUSTOM_CLINGS) {
-                if (sharedPrefs.getInt(LauncherProvider.DEFAULT_WORKSPACE_RESOURCE_ID, 0) != 0 &&
-                        mLauncher.getResources().getBoolean(R.bool.config_useCustomClings)) {
-                    // Use a custom cling
-                    View cling = mLauncher.findViewById(R.id.workspace_cling);
-                    ViewGroup clingParent = (ViewGroup) cling.getParent();
-                    int clingIndex = clingParent.indexOfChild(cling);
-                    clingParent.removeViewAt(clingIndex);
-                    View customCling = mInflater.inflate(R.layout.custom_workspace_cling,
-                            clingParent, false);
-                    clingParent.addView(customCling, clingIndex);
-                    customCling.setId(R.id.workspace_cling);
-                }
-            }
             Cling cling = (Cling) mLauncher.findViewById(R.id.first_run_cling);
             if (cling != null) {
                 String sbHintStr = mLauncher.getFirstRunClingSearchBarHint();
@@ -292,6 +272,7 @@ class LauncherClings {
             removeCling(R.id.workspace_cling);
         }
     }
+
     public Cling showFoldersCling() {
         SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         // Enable the clings only if they have not been dismissed before
@@ -312,6 +293,14 @@ class LauncherClings {
             removeCling(R.id.folder_cling);
             return null;
         }
+    }
+
+    public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {
+        SharedPreferences prefs = ctx.getSharedPreferences(
+                LauncherAppState.getSharedPreferencesKey(),Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(LauncherClings.FIRST_RUN_CLING_DISMISSED_KEY, true);
+        editor.commit();
     }
 
     /** Removes the cling outright from the DragLayer */
