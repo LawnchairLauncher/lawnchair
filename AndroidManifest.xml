@@ -73,7 +73,7 @@
         android:largeHeap="@bool/config_largeHeap"
         android:supportsRtl="true">
         <activity
-            android:name="com.android.launcher3.Launcher"
+            android:name="org.cyanogenmod.trebuchet.TrebuchetLauncher"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"

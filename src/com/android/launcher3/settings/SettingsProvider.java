@@ -40,6 +40,8 @@ public final class SettingsProvider {
     public static final String SETTINGS_UI_GENERAL_ICONS_LARGE = "ui_general_icons_large";
     public static final String SETTINGS_UI_DRAWER_SORT_MODE = "ui_drawer_sort_mode";
 
+    public static final String SETTINGS_HOME_LAST_APP = "home_last_app";
+
     public static SharedPreferences get(Context context) {
         return context.getSharedPreferences(SETTINGS_KEY, Context.MODE_MULTI_PROCESS);
     }

@@ -18,7 +18,7 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/search_frame">
+    android:background="@drawable/search_bg">
    <!-- Global search icon -->
    <com.android.launcher3.HolographicLinearLayout
         style="@style/SearchButton.WithPaddingStart"
