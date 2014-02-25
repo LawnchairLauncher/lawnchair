@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
+    <string name="sort_button_text">Ordina</string>
+    <string name="filter_button_text">Filtro</string>
+    <string name="default_screen_button_text">Schermata predefinita</string>
+    <string name="transition_effect_button_text">Effetto scorrimento</string>
+    <string name="sort_mode_title">Titolo</string>
+    <string name="sort_mode_launch_count">Conteggio avvio</string>
+    <string name="sort_mode_install_time">Tempo installazione</string>
+    <string name="scrolling_page_outlines">Contorni pagina</string>
+    <string name="scrolling_fade_adjacent">Dissolvenza pagine laterali</string>
+    <string name="wallpaper_scroll">Scorrimento wallpaper</string>
+    <string name="preferences_title">Impostazioni</string>
+    <string name="preferences_application_title">App</string>
+    <string name="preferences_interface_homescreen_title">Schermata home</string>
+    <string name="preferences_interface_homescreen_search_title">Barra di ricerca</string>
+    <string name="preferences_interface_homescreen_search_summary">Mostra la barra di ricerca persistente nella parte superiore dello schermo</string>
+    <string name="preferences_interface_drawer_title">Drawer</string>
+    <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_general_title">Generale</string>
+    <string name="preferences_interface_general_icons_category">Icone</string>
+    <string name="preferences_interface_general_icons_large_title">Icone più grandi</string>
+    <string name="preferences_interface_general_icons_large_summary">Usa le più grandi icone delle app nella schermata home e nel drawer</string>
+    <string name="preferences_interface_general_icons_text_style_title">Stile font testo</string>
+    <string name="preferences_interface_general_icons_text_style_summary">Varianti e stile del font da utilizzare per il testo dell\'icona</string>
+    <string name="dialog_pick_iconpack_title">Scegli pacchetto icone</string>
+    <string name="default_iconpack_title">Icone predefinite</string>
+    <string name="icon_packs_title">Pacchetti icone</string>
+    <string name="no_iconpacks_summary">Nessun pacchetto di icone installato</string>
+    <string name="all_apps_cling_cm">Personalizza il drawer</string>
+    <string name="all_apps_cling_summary">Tocca l\'indicatore della pagina per visualizzare le impostazioni di configurazione aggiuntive</string>
+</resources>
