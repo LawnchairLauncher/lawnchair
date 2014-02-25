@@ -252,18 +252,6 @@ s -->
     <!-- Folder name format -->
     <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
 
-    <!-- Strings used in device overlays -->
-
-    <!-- Clings -->
-    <!-- Dummy string [CHAR_LIMIT=40] -->
-    <string name="custom_workspace_cling_title_1"></string>
-    <!-- Dummy string [CHAR_LIMIT=60] -->
-    <string name="custom_workspace_cling_description_1"></string>
-    <!-- Dummy string [CHAR_LIMIT=40] -->
-    <string name="custom_workspace_cling_title_2"></string>
-    <!-- Dummy string [CHAR_LIMIT=60] -->
-    <string name="custom_workspace_cling_description_2"></string>
-
     <!-- Debug-only activity name. [DO NOT TRANSLATE] -->
     <string name="debug_memory_activity">* HPROF</string>
 
