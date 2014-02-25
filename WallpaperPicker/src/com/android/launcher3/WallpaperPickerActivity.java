@@ -334,6 +334,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     }
                     return;
                 }
+                mSetWallpaperButton.setVisibility(View.VISIBLE);
                 WallpaperTileInfo info = (WallpaperTileInfo) v.getTag();
                 if (info.isSelectable() && v.getVisibility() == View.VISIBLE) {
                     selectTile(v);
