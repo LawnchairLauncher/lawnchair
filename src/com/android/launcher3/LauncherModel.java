@@ -318,10 +318,16 @@ public class LauncherModel extends BroadcastReceiver {
                     public void run() {
                         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindAppsAdded(null, null, null, allAppsApps);
                             if (!restoredAppsFinal.isEmpty()) {
+                                for (AppInfo info : restoredAppsFinal) {
+                                    final Intent intent = info.getIntent();
+                                    if (intent != null) {
+                                        mIconCache.deletePreloadedIcon(intent.getComponent());
+                                    }
+                                }
                                 callbacks.bindAppsUpdated(restoredAppsFinal);
                             }
+                            callbacks.bindAppsAdded(null, null, null, allAppsApps);
                         }
                     }
                 });
@@ -2667,6 +2673,7 @@ public class LauncherModel extends BroadcastReceiver {
                 case OP_ADD:
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
+                        mIconCache.remove(packages[i]);
                         mBgAllAppsList.addPackage(context, packages[i]);
                     }
                     break;
@@ -2862,13 +2869,12 @@ public class LauncherModel extends BroadcastReceiver {
      */
     public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent) {
         final ShortcutInfo info = new ShortcutInfo();
-        info.usingFallbackIcon = true;
-        info.setIcon(getFallbackIcon());
         if (cursor != null) {
             info.title =  cursor.getString(titleIndex);
         } else {
             info.title = "";
         }
+        info.setIcon(mIconCache.getIcon(intent, info.title.toString()));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.restoredIntent = intent;
         return info;
