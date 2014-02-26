@@ -30,7 +30,7 @@
     <permission
         android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="system|signature" />
+        android:protectionLevel="signatureOrSystem" />
     <permission
         android:name="com.android.launcher3.permission.READ_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
@@ -40,7 +40,7 @@
     <permission
         android:name="com.android.launcher3.permission.WRITE_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="dangerous"
+        android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
 
