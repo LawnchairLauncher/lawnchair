@@ -137,6 +137,8 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private static final int SCREEN_RANK_INDEX = 2;
 
+    private static IconCache mIconCache;
+
     private final Context mContext;
 
     private final boolean mRestoreEnabled;
@@ -185,16 +187,20 @@ public class LauncherBackupHelper implements BackupHelper {
         Log.v(TAG, "lastBackupTime = " + lastBackupTime);
 
         ArrayList<Key> keys = new ArrayList<Key>();
-        try {
-            backupFavorites(in, data, out, keys);
-            backupScreens(in, data, out, keys);
-            backupIcons(in, data, out, keys);
-            backupWidgets(in, data, out, keys);
-        } catch (IOException e) {
-            Log.e(TAG, "launcher backup has failed", e);
+        if (launcherIsReady()) {
+            try {
+                backupFavorites(in, data, out, keys);
+                backupScreens(in, data, out, keys);
+                backupIcons(in, data, out, keys);
+                backupWidgets(in, data, out, keys);
+            } catch (IOException e) {
+                Log.e(TAG, "launcher backup has failed", e);
+            }
+            out.key = keys.toArray(new BackupProtos.Key[keys.size()]);
+        } else {
+            out = in;
         }
 
-        out.key = keys.toArray(new BackupProtos.Key[keys.size()]);
         writeJournal(newState, out);
         Log.v(TAG, "onBackup: wrote " + out.bytes + "b in " + out.rows + " rows.");
     }
@@ -1099,6 +1105,42 @@ public class LauncherBackupHelper implements BackupHelper {
             }
         }
         return mWidgetMap.get(component);
+    }
+
+    private boolean initializeIconCache() {
+        if (mIconCache != null) {
+            return true;
+        }
+
+        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        if (appState == null) {
+            Throwable stackTrace = new Throwable();
+            stackTrace.fillInStackTrace();
+            Log.w(TAG, "Failed to get app state during backup/restore", stackTrace);
+            return false;
+        }
+        mIconCache = appState.getIconCache();
+        return mIconCache != null;
+    }
+
+
+   // check if the launcher is in a state to support backup
+    private boolean launcherIsReady() {
+        ContentResolver cr = mContext.getContentResolver();
+        Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION, null, null, null);
+        if (cursor == null) {
+            // launcher data has been wiped, do nothing
+            return false;
+        }
+        cursor.close();
+
+        if (!initializeIconCache()) {
+            // launcher services are unavailable, try again later
+            dataChanged();
+            return false;
+        }
+
+        return true;
     }
 
     private class KeyParsingException extends Throwable {
