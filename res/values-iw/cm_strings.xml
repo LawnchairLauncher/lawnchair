@@ -41,25 +41,4 @@
   <string name="default_iconpack_title">סמלי ברירת מחדל</string>
   <string name="icon_packs_title">אוסף סמלים</string>
   <string name="no_iconpacks_summary">לא מותקנות ערכות סמל</string>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>רגיל</item>
-    <item>לבן</item>
-    <item>מרוכז</item>
-  </string-array>
-  <string-array name="transition_effect_entries">
-    <item>ללא</item>
-    <item>התקרבות</item>
-    <item>התרחקות</item>
-    <item>סובב שמאלה</item>
-    <item>סובב ימינה</item>
-    <item>קוביית פנים</item>
-    <item>קוביית חוץ</item>
-    <item>מחסנית</item>
-    <item>אקורדיון</item>
-    <item>היפוך</item>
-    <item>גליל פנימי</item>
-    <item>גליל חיצוני</item>
-    <item>קרוסלה</item>
-    <item>תקציר</item>
-  </string-array>
 </resources>

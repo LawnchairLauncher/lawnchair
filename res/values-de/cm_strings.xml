@@ -45,25 +45,4 @@
   <string name="no_iconpacks_summary">Es sind keine Symbolpakete installiert</string>
   <string name="all_apps_cling_cm">App-Übersicht konfigurieren</string>
   <string name="all_apps_cling_summary">Berühren Sie den Seitenindikator, um die erweiterten Einstellungen zu öffnen.</string>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Dünn</item>
-    <item>Schmal</item>
-  </string-array>
-  <string-array name="transition_effect_entries">
-    <item>Keine</item>
-    <item>Hineinzoomen</item>
-    <item>Herauszoomen</item>
-    <item>Rotieren oben</item>
-    <item>Rotieren unten</item>
-    <item>Würfel innen</item>
-    <item>Würfel außen</item>
-    <item>Stapeln</item>
-    <item>Akkordeon</item>
-    <item>Blättern</item>
-    <item>Zylinder innen</item>
-    <item>Zylinder außen</item>
-    <item>Karussell</item>
-    <item>Übersicht</item>
-  </string-array>
 </resources>
