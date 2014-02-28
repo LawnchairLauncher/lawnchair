@@ -96,6 +96,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.PagedView.PageSwitchListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -119,7 +120,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   View.OnTouchListener {
+                   View.OnTouchListener, PageSwitchListener {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -1230,6 +1231,7 @@ public class Launcher extends Activity
         mLauncherView = findViewById(R.id.launcher);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
+        mWorkspace.setPageSwitchListener(this);
         mPageIndicators = mDragLayer.findViewById(R.id.page_indicator);
 
         mLauncherView.setSystemUiVisibility(
@@ -4448,6 +4450,10 @@ public class Launcher extends Activity
         dragView.setTag(dragInfo);
         mWorkspace.onDragStartedWithItem(dragView);
         mWorkspace.beginDragShared(dragView, source);
+    }
+
+    @Override
+    public void onPageSwitch(View newPage, int newPageIndex) {
     }
 
     /**
