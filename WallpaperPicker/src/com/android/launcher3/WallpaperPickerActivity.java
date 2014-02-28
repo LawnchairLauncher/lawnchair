@@ -257,6 +257,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onSave(WallpaperPickerActivity a) {
             try {
                 WallpaperManager.getInstance(a).clear();
+                a.setResult(RESULT_OK);
             } catch (IOException e) {
                 Log.w("Setting wallpaper to default threw exception", e);
             }
