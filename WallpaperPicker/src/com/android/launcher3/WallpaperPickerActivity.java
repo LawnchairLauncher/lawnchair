@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -33,7 +32,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -248,6 +246,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             Drawable defaultWallpaper = WallpaperManager.getInstance(a).getBuiltInDrawable(
                     c.getWidth(), c.getHeight(), false, 0.5f, 0.5f);
 
+            if (defaultWallpaper == null) {
+                Log.w(TAG, "Null default wallpaper encountered.");
+                c.setTileSource(null, null);
+                return;
+            }
+
             c.setTileSource(
                     new DrawableTileSource(a, defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE), null);
             c.setScale(1f);
@@ -419,13 +423,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // Add a tile for the default wallpaper
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             DefaultWallpaperInfo defaultWallpaperInfo = getDefaultWallpaper();
-            FrameLayout defaultWallpaperTile = (FrameLayout) createImageTileView(
-                    getLayoutInflater(), 0, null, mWallpapersView, defaultWallpaperInfo.mThumb);
-            setWallpaperItemPaddingToZero(defaultWallpaperTile);
-            defaultWallpaperTile.setTag(defaultWallpaperInfo);
-            mWallpapersView.addView(defaultWallpaperTile, 0);
-            defaultWallpaperTile.setOnClickListener(mThumbnailOnClickListener);
-            defaultWallpaperInfo.setView(defaultWallpaperTile);
+            if (defaultWallpaperInfo != null) {
+                FrameLayout defaultWallpaperTile = (FrameLayout) createImageTileView(
+                        getLayoutInflater(), 0, null, mWallpapersView, defaultWallpaperInfo.mThumb);
+                setWallpaperItemPaddingToZero(defaultWallpaperTile);
+                defaultWallpaperTile.setTag(defaultWallpaperInfo);
+                mWallpapersView.addView(defaultWallpaperTile, 0);
+                defaultWallpaperTile.setOnClickListener(mThumbnailOnClickListener);
+                defaultWallpaperInfo.setView(defaultWallpaperTile);
+            }
         }
 
         // Select the first item; wait for a layout pass so that we initialize the dimensions of
