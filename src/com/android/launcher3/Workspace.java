@@ -863,7 +863,7 @@ public class Workspace extends SmoothPagedView
         // Log to disk
         Launcher.addDumpLog(TAG, "11683562 - stripEmptyScreens()", true);
 
-        if (isWorkspaceLoading()) {
+        if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading
             Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
             return;
