@@ -2078,6 +2078,10 @@ public class Launcher extends Activity
         return mWorkspaceLoading || mWaitingForResult;
     }
 
+    public boolean isWorkspaceLoading() {
+        return mWorkspaceLoading;
+    }
+
     private void resetAddInfo() {
         mPendingAddInfo.container = ItemInfo.NO_ID;
         mPendingAddInfo.screenId = -1;
@@ -2887,7 +2891,7 @@ public class Launcher extends Activity
                 mWorkspaceBackgroundDrawable : null);
     }
 
-    protected void changeWallpaperVisiblity(boolean visible) {
+    void updateWallpaperVisibility(boolean visible) {
         int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int curflags = getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
@@ -3771,6 +3775,8 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
+        mWorkspaceLoading = true;
+
         // If we're starting binding all over again, clear any bind calls we'd postponed in
         // the past (see waitUntilResume) -- we don't need them since we're starting binding
         // from scratch again
