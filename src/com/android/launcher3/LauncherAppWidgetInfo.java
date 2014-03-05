@@ -23,7 +23,7 @@ import android.content.ContentValues;
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
  */
-class LauncherAppWidgetInfo extends ItemInfo {
+public class LauncherAppWidgetInfo extends ItemInfo {
 
     /**
      * Indicates that the widget hasn't been instantiated yet.
