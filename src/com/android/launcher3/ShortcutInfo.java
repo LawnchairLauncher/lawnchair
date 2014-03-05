@@ -31,7 +31,7 @@ import java.util.ArrayList;
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-class ShortcutInfo extends ItemInfo {
+public class ShortcutInfo extends ItemInfo {
 
     /**
      * The intent used to start the application.

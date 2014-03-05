@@ -1254,7 +1254,7 @@ public class Launcher extends Activity
             @Override
             public void onClick(View arg0) {
                 if (!mWorkspace.isSwitchingState()) {
-                    onClickAddWidgetButton();
+                    onClickAddWidgetButton(arg0);
                 }
             }
         });
@@ -1265,7 +1265,7 @@ public class Launcher extends Activity
             @Override
             public void onClick(View arg0) {
                 if (!mWorkspace.isSwitchingState()) {
-                    onClickWallpaperPicker();
+                    onClickWallpaperPicker(arg0);
                 }
             }
         });
@@ -1277,7 +1277,7 @@ public class Launcher extends Activity
                 @Override
                 public void onClick(View arg0) {
                     if (!mWorkspace.isSwitchingState()) {
-                        onClickSettingsButton();
+                        onClickSettingsButton(arg0);
                     }
                 }
             });
@@ -2525,7 +2525,7 @@ public class Launcher extends Activity
      * Event handler for the (Add) Widgets button that appears after a long press
      * on the home screen.
      */
-    protected void onClickAddWidgetButton() {
+    protected void onClickAddWidgetButton(View view) {
         if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
         showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
     }
@@ -2534,7 +2534,7 @@ public class Launcher extends Activity
      * Event handler for the wallpaper picker button that appears after a long press
      * on the home screen.
      */
-    protected void onClickWallpaperPicker() {
+    protected void onClickWallpaperPicker(View v) {
         if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
         pickWallpaper.setComponent(getWallpaperPickerComponent());
@@ -2545,7 +2545,7 @@ public class Launcher extends Activity
      * Event handler for a click on the settings button that appears after a long press
      * on the home screen.
      */
-    protected void onClickSettingsButton() {
+    protected void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
     }
 
