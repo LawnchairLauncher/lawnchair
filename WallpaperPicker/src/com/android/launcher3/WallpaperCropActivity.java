@@ -141,7 +141,21 @@ public class WallpaperCropActivity extends Activity {
         final AsyncTask<Void, Void, Void> loadBitmapTask = new AsyncTask<Void, Void, Void>() {
             protected Void doInBackground(Void...args) {
                 if (!isCancelled()) {
-                    bitmapSource.loadInBackground();
+                    try {
+                        bitmapSource.loadInBackground();
+                    } catch (SecurityException securityException) {
+                        if (isDestroyed()) {
+                            // Temporarily granted permissions are revoked when the activity
+                            // finishes, potentially resulting in a SecurityException here.
+                            // Even though {@link #isDestroyed} might also return true in different
+                            // situations where the configuration changes, we are fine with
+                            // catching these cases here as well.
+                            cancel(false);
+                        } else {
+                            // otherwise it had a different cause and we throw it further
+                            throw securityException;
+                        }
+                    }
                 }
                 return null;
             }
