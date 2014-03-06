@@ -908,7 +908,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 }
             });
         } else {
-            mLauncher.getWorkspace().removeExtraEmptyScreen(true, null);
             mLauncher.unlockScreenOrientation(false);
         }
     }
