@@ -383,12 +383,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Get the list of widgets and shortcuts
         mWidgets.clear();
         for (Object o : widgetsAndShortcuts) {
-            if (o instanceof AppWidgetProviderInfo) {
-                AppWidgetProviderInfo widget = (AppWidgetProviderInfo) o;
-                if (!app.shouldShowAppOrWidgetProvider(widget.provider)) {
+            if (o instanceof LauncherAppWidgetProviderInfo) {
+                LauncherAppWidgetProviderInfo widget = (LauncherAppWidgetProviderInfo) o;
+                if (!app.shouldShowAppOrWidgetProvider(widget.provider) && !widget.isCustomWidget) {
                     continue;
                 }
-                if (widget.minWidth > 0 && widget.minHeight > 0) {
+
+                if (widget.minSpanX > 0 && widget.minSpanY > 0) {
                     // Ensure that all widgets we show can be added on a workspace of this size
                     int[] spanXY = Launcher.getSpanForWidget(mLauncher, widget);
                     int[] minSpanXY = Launcher.getMinSpanForWidget(mLauncher, widget);
@@ -410,6 +411,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 mWidgets.add(o);
             }
         }
+
         updatePageCountsAndInvalidateData();
     }
 
@@ -503,8 +505,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     private void preloadWidget(final PendingAddWidgetInfo info) {
-        final AppWidgetProviderInfo pInfo = info.info;
-        final Bundle options = getDefaultOptionsForWidget(mLauncher, info);
+        final LauncherAppWidgetProviderInfo pInfo = info.info;
+        final Bundle options = pInfo.isCustomWidget ? null :
+                getDefaultOptionsForWidget(mLauncher, info);
 
         if (pInfo.configure != null) {
             info.bindOptions = options;
@@ -515,11 +518,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mBindWidgetRunnable = new Runnable() {
             @Override
             public void run() {
+                if (pInfo.isCustomWidget) {
+                    mWidgetCleanupState = WIDGET_BOUND;
+                    return;
+                }
+
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
                 if(AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
                         mWidgetLoadingId, pInfo, options)) {
                     mWidgetCleanupState = WIDGET_BOUND;
                 }
+
             }
         };
         post(mBindWidgetRunnable);
@@ -530,8 +539,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (mWidgetCleanupState != WIDGET_BOUND) {
                     return;
                 }
-                AppWidgetHostView hostView = mLauncher.
-                        getAppWidgetHost().createView(getContext(), mWidgetLoadingId, pInfo);
+                AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
+                        getContext(), mWidgetLoadingId, pInfo);
                 info.boundWidget = hostView;
                 mWidgetCleanupState = WIDGET_INFLATED;
                 hostView.setVisibility(INVISIBLE);
@@ -575,7 +584,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 removeCallbacks(mInflateWidgetRunnable);
             } else if (mWidgetCleanupState == WIDGET_BOUND) {
                  // Delete the widget id which was allocated
-                if (mWidgetLoadingId != -1) {
+                if (mWidgetLoadingId != -1 && !info.isCustomWidget()) {
                     mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
                 }
 
@@ -583,7 +592,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 removeCallbacks(mInflateWidgetRunnable);
             } else if (mWidgetCleanupState == WIDGET_INFLATED) {
                 // Delete the widget id which was allocated
-                if (mWidgetLoadingId != -1) {
+                if (mWidgetLoadingId != -1 && !info.isCustomWidget()) {
                     mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
                 }
 
@@ -645,7 +654,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             maxHeight = Math.min((int) (previewDrawable.getIntrinsicHeight() * minScale), size[1]);
 
             int[] previewSizeBeforeScale = new int[1];
-
             preview = getWidgetPreviewLoader().generateWidgetPreview(createWidgetInfo.info,
                     spanX, spanY, maxWidth, maxHeight, null, previewSizeBeforeScale);
 
@@ -1125,20 +1133,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             PendingAddItemInfo createItemInfo = null;
             PagedViewWidget widget = (PagedViewWidget) mLayoutInflater.inflate(
                     R.layout.apps_customize_widget, layout, false);
-            if (rawInfo instanceof AppWidgetProviderInfo) {
+
+            if (rawInfo instanceof LauncherAppWidgetProviderInfo) {
                 // Fill in the widget information
-                AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                createItemInfo = new PendingAddWidgetInfo(info, null, null);
+                LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) rawInfo;
+                createItemInfo = new PendingAddWidgetInfo(info, null);
 
-                // Determine the widget spans and min resize spans.
-                int[] spanXY = Launcher.getSpanForWidget(mLauncher, info);
-                createItemInfo.spanX = spanXY[0];
-                createItemInfo.spanY = spanXY[1];
-                int[] minSpanXY = Launcher.getMinSpanForWidget(mLauncher, info);
-                createItemInfo.minSpanX = minSpanXY[0];
-                createItemInfo.minSpanY = minSpanXY[1];
-
-                widget.applyFromAppWidgetProviderInfo(info, -1, spanXY, getWidgetPreviewLoader());
+                widget.applyFromAppWidgetProviderInfo(info, -1, getWidgetPreviewLoader());
                 widget.setTag(createItemInfo);
                 widget.setShortPressListener(this);
             } else if (rawInfo instanceof ResolveInfo) {
@@ -1151,6 +1152,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 widget.applyFromResolveInfo(mPackageManager, info, getWidgetPreviewLoader());
                 widget.setTag(createItemInfo);
             }
+
             widget.setOnClickListener(this);
             widget.setOnLongClickListener(this);
             widget.setOnTouchListener(this);
@@ -1421,6 +1423,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             updatePageCountsAndInvalidateData();
         }
     }
+
+    public ArrayList<AppInfo> getApps() {
+        return mApps;
+    }
+
     private void addAppsWithoutInvalidate(ArrayList<AppInfo> list) {
         // We add it in place, in alphabetical order
         int count = list.size();

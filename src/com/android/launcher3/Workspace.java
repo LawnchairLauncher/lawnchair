@@ -3178,9 +3178,9 @@ public class Workspace extends SmoothPagedView
                         // in its final location
 
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
-                        AppWidgetProviderInfo pinfo = hostView.getAppWidgetInfo();
-                        if (pinfo != null &&
-                                pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
+                        LauncherAppWidgetProviderInfo pInfo = (LauncherAppWidgetProviderInfo)
+                                hostView.getAppWidgetInfo();
+                        if (pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
                             final Runnable addResizeFrame = new Runnable() {
                                 public void run() {
                                     DragLayer dragLayer = mLauncher.getDragLayer();
@@ -3228,7 +3228,9 @@ public class Workspace extends SmoothPagedView
             mAnimatingViewIntoPlace = true;
             if (d.dragView.hasDrawn()) {
                 final ItemInfo info = (ItemInfo) cell.getTag();
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
+                boolean isWidget = info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
+                        || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+                if (isWidget) {
                     int animationType = resizeOnDrop ? ANIMATE_INTO_POSITION_AND_RESIZE :
                             ANIMATE_INTO_POSITION_AND_DISAPPEAR;
                     animateWidgetDrop(info, parent, d.dragView,
@@ -3951,6 +3953,7 @@ public class Workspace extends SmoothPagedView
                     // When dragging and dropping from customization tray, we deal with creating
                     // widgets/shortcuts/folders in a slightly different way
                     switch (pendingInfo.itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                         int span[] = new int[2];
                         span[0] = item.spanX;
@@ -3968,8 +3971,10 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             };
-            View finalView = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
-                    ? ((PendingAddWidgetInfo) pendingInfo).boundWidget : null;
+            boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
+                    || pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+
+            View finalView = isWidget ? ((PendingAddWidgetInfo) pendingInfo).boundWidget : null;
 
             if (finalView instanceof AppWidgetHostView && updateWidgetSize) {
                 AppWidgetHostView awhv = (AppWidgetHostView) finalView;
@@ -3978,7 +3983,7 @@ public class Workspace extends SmoothPagedView
             }
 
             int animationStyle = ANIMATE_INTO_POSITION_AND_DISAPPEAR;
-            if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
+            if (isWidget && ((PendingAddWidgetInfo) pendingInfo).info != null &&
                     ((PendingAddWidgetInfo) pendingInfo).info.configure != null) {
                 animationStyle = ANIMATE_INTO_POSITION_AND_REMAIN;
             }
@@ -4130,11 +4135,14 @@ public class Workspace extends SmoothPagedView
             Log.d(TAG, "6557954 Animate widget drop, final view is appWidgetHostView");
             mLauncher.getDragLayer().removeView(finalView);
         }
+
+        boolean isWidget = info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
+                info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         if ((animationType == ANIMATE_INTO_POSITION_AND_RESIZE || external) && finalView != null) {
             Bitmap crossFadeBitmap = createWidgetBitmap(info, finalView);
             dragView.setCrossFadeBitmap(crossFadeBitmap);
             dragView.crossFade((int) (duration * 0.8f));
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET && external) {
+        } else if (isWidget && external) {
             scaleXY[0] = scaleXY[1] = Math.min(scaleXY[0],  scaleXY[1]);
         }
 
@@ -4984,7 +4992,7 @@ public class Workspace extends SmoothPagedView
         if (!changedInfo.isEmpty()) {
             DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
                     mLauncher.getAppWidgetHost());
-            if (LauncherModel.findAppWidgetProviderInfoWithComponent(getContext(),
+            if (LauncherModel.getProviderInfo(getContext(),
                     changedInfo.get(0).providerName) != null) {
                 // Re-inflate the widgets which have changed status
                 widgetRefresh.run();

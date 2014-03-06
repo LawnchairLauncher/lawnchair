@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -173,6 +172,10 @@ public class LauncherModel extends BroadcastReceiver
 
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
+
+    // sBgWidgetProviders is the set of widget providers including custom internal widgets
+    public static HashMap<ComponentName, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
+    public static boolean sWidgetProvidersDirty;
 
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
@@ -1265,7 +1268,6 @@ public class LauncherModel extends BroadcastReceiver
                     PackageUpdatedTask.OP_UNAVAILABLE, packageNames,
                     user));
         }
-
     }
 
     /**
@@ -1837,7 +1839,6 @@ public class LauncherModel extends BroadcastReceiver
             final Context context = mContext;
             final ContentResolver contentResolver = context.getContentResolver();
             final PackageManager manager = context.getPackageManager();
-            final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
             final boolean isSafeMode = manager.isSafeMode();
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
             final boolean isSdCardReady = context.registerReceiver(null,
@@ -2174,7 +2175,11 @@ public class LauncherModel extends BroadcastReceiver
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                                 // Read all Launcher-specific widget details
+                                boolean customWidget = itemType ==
+                                    LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
                                 String savedProvider = c.getString(appWidgetProviderIndex);
                                 id = c.getLong(idIndex);
@@ -2188,14 +2193,16 @@ public class LauncherModel extends BroadcastReceiver
                                 final boolean wasProviderReady = (restoreStatus &
                                         LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
 
-                                final AppWidgetProviderInfo provider = isIdValid
-                                        ? widgets.getAppWidgetInfo(appWidgetId)
-                                        : findAppWidgetProviderInfoWithComponent(context, component);
+                                final LauncherAppWidgetProviderInfo provider =
+                                        LauncherModel.getProviderInfo(context,
+                                                ComponentName.unflattenFromString(savedProvider));
 
                                 final boolean isProviderReady = isValidProvider(provider);
-                                if (!isSafeMode && wasProviderReady && !isProviderReady) {
+                                if (!isSafeMode && !customWidget &&
+                                        wasProviderReady && !isProviderReady) {
                                     String log = "Deleting widget that isn't installed anymore: "
                                             + "id=" + id + " appWidgetId=" + appWidgetId;
+
                                     Log.e(TAG, log);
                                     Launcher.addDumpLog(TAG, log, false);
                                     itemsToRemove.add(id);
@@ -2203,10 +2210,13 @@ public class LauncherModel extends BroadcastReceiver
                                     if (isProviderReady) {
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 provider.provider);
-                                        int[] minSpan =
-                                                Launcher.getMinSpanForWidget(context, provider);
-                                        appWidgetInfo.minSpanX = minSpan[0];
-                                        appWidgetInfo.minSpanY = minSpan[1];
+
+                                        if (!customWidget) {
+                                            int[] minSpan =
+                                                    Launcher.getMinSpanForWidget(context, provider);
+                                            appWidgetInfo.minSpanX = minSpan[0];
+                                            appWidgetInfo.minSpanY = minSpan[1];
+                                        }
 
                                         int status = restoreStatus;
                                         if (!wasProviderReady) {
@@ -2251,6 +2261,12 @@ public class LauncherModel extends BroadcastReceiver
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
                                     appWidgetInfo.spanY = c.getInt(spanYIndex);
 
+                                    if (!customWidget) {
+                                        int[] minSpan = Launcher.getMinSpanForWidget(context, provider);
+                                        appWidgetInfo.minSpanX = minSpan[0];
+                                        appWidgetInfo.minSpanY = minSpan[1];
+                                    }
+
                                     container = c.getInt(containerIndex);
                                     if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                         container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -2266,17 +2282,21 @@ public class LauncherModel extends BroadcastReceiver
                                         break;
                                     }
 
-                                    String providerName = appWidgetInfo.providerName.flattenToString();
-                                    if (!providerName.equals(savedProvider) ||
-                                            (appWidgetInfo.restoreStatus != restoreStatus)) {
-                                        ContentValues values = new ContentValues();
-                                        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
-                                                providerName);
-                                        values.put(LauncherSettings.Favorites.RESTORED,
-                                                appWidgetInfo.restoreStatus);
-                                        String where = BaseColumns._ID + "= ?";
-                                        String[] args = {Long.toString(id)};
-                                        contentResolver.update(contentUri, values, where, args);
+                                    if (!customWidget) {
+                                        String providerName =
+                                                appWidgetInfo.providerName.flattenToString();
+                                        if (!providerName.equals(savedProvider) ||
+                                                (appWidgetInfo.restoreStatus != restoreStatus)) {
+                                            ContentValues values = new ContentValues();
+                                            values.put(
+                                                    LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                                                    providerName);
+                                            values.put(LauncherSettings.Favorites.RESTORED,
+                                                    appWidgetInfo.restoreStatus);
+                                            String where = BaseColumns._ID + "= ?";
+                                            String[] args = {Long.toString(id)};
+                                            contentResolver.update(contentUri, values, where, args);
+                                        }
                                     }
                                     sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
                                     sBgAppWidgets.add(appWidgetInfo);
@@ -3292,12 +3312,44 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context) {
+        synchronized (sBgLock) {
+            if (sBgWidgetProviders != null && !sWidgetProvidersDirty) {
+                return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
+            }
+            sBgWidgetProviders = new HashMap<ComponentName, LauncherAppWidgetProviderInfo>();
+            List<AppWidgetProviderInfo> widgets =
+                    AppWidgetManagerCompat.getInstance(context).getAllProviders();
+            LauncherAppWidgetProviderInfo info;
+            for (AppWidgetProviderInfo pInfo : widgets) {
+                info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
+                sBgWidgetProviders.put(info.provider, info);
+            }
+
+            Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
+            for (CustomAppWidget widget : customWidgets) {
+                info = new LauncherAppWidgetProviderInfo(context, widget);
+                sBgWidgetProviders.put(info.provider, info);
+            }
+            sWidgetProvidersDirty = false;
+            return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
+        }
+    }
+
+    public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name) {
+        synchronized (sBgLock) {
+            if (sBgWidgetProviders == null) {
+                getWidgetProviders(ctx);
+            }
+            return sBgWidgetProviders.get(name);
+        }
+    }
+
     // Returns a list of ResolveInfos/AppWindowInfos in sorted order
     public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
-        widgetsAndShortcuts.addAll(AppWidgetManagerCompat.getInstance(context).getAllProviders());
-
+        widgetsAndShortcuts.addAll(getWidgetProviders(context));
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
         Collections.sort(widgetsAndShortcuts, new WidgetAndShortcutNameComparator(context));
@@ -3583,21 +3635,6 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    /**
-     * Attempts to find an AppWidgetProviderInfo that matches the given component.
-     */
-    static AppWidgetProviderInfo findAppWidgetProviderInfoWithComponent(Context context,
-            ComponentName component) {
-        List<AppWidgetProviderInfo> widgets =
-            AppWidgetManager.getInstance(context).getInstalledProviders();
-        for (AppWidgetProviderInfo info : widgets) {
-            if (info.provider.equals(component)) {
-                return info;
-            }
-        }
-        return null;
-    }
-
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
@@ -3783,16 +3820,16 @@ public class LauncherModel extends BroadcastReceiver
             if (mLabelCache.containsKey(a)) {
                 labelA = mLabelCache.get(a);
             } else {
-                labelA = (a instanceof AppWidgetProviderInfo)
-                        ? mManager.loadLabel((AppWidgetProviderInfo) a)
+                labelA = (a instanceof LauncherAppWidgetProviderInfo)
+                        ? mManager.loadLabel((LauncherAppWidgetProviderInfo) a)
                         : ((ResolveInfo) a).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(a, labelA);
             }
             if (mLabelCache.containsKey(b)) {
                 labelB = mLabelCache.get(b);
             } else {
-                labelB = (b instanceof AppWidgetProviderInfo)
-                        ? mManager.loadLabel((AppWidgetProviderInfo) b)
+                labelB = (b instanceof LauncherAppWidgetProviderInfo)
+                        ? mManager.loadLabel((LauncherAppWidgetProviderInfo) a)
                         : ((ResolveInfo) b).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(b, labelB);
             }

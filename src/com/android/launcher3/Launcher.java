@@ -260,7 +260,7 @@ public class Launcher extends Activity
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private ItemInfo mPendingAddInfo = new ItemInfo();
-    private AppWidgetProviderInfo mPendingAddWidgetInfo;
+    private LauncherAppWidgetProviderInfo mPendingAddWidgetInfo;
     private int mPendingAddWidgetId = -1;
 
     private int[] mTmpAddItemCellCoordinates = new int[2];
@@ -350,6 +350,16 @@ public class Launcher extends Activity
     private Rect mRectForFolderAnimation = new Rect();
 
     private BubbleTextView mWaitingForResume;
+
+    protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
+            new HashMap<String, CustomAppWidget>();
+
+    private static final boolean ENABLE_CUSTOM_WIDGET_TEST = false;
+    static {
+        if (ENABLE_CUSTOM_WIDGET_TEST) {
+            sCustomAppWidgets.put(DummyWidget.class.getName(), new DummyWidget());
+        }
+    }
 
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
@@ -760,7 +770,7 @@ public class Launcher extends Activity
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
+                addAppWidgetImpl(appWidgetId, (PendingAddWidgetInfo) mPendingAddInfo, null,
                         mPendingAddWidgetInfo, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
             }
             return;
@@ -1487,7 +1497,7 @@ public class Launcher extends Activity
      *
      * @return A View inflated from layoutResId.
      */
-    View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
+    public View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache, true);
         favorite.setOnClickListener(this);
@@ -1586,86 +1596,45 @@ public class Launcher extends Activity
      * @param appWidgetId The app widget id
      * @param cellInfo The position on screen where to create the widget.
      */
-    private void completeAddAppWidget(final int appWidgetId, long container, long screenId,
-            AppWidgetHostView hostView, AppWidgetProviderInfo appWidgetInfo) {
+    private void completeAddAppWidget(int appWidgetId, long container, long screenId,
+            AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
+
+        ItemInfo info = mPendingAddInfo;
         if (appWidgetInfo == null) {
-            appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            appWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(this,
+                    mAppWidgetManager.getAppWidgetInfo(appWidgetId));
         }
 
-        // Calculate the grid spans needed to fit this widget
-        CellLayout layout = getCellLayout(container, screenId);
-
-        int[] minSpanXY = getMinSpanForWidget(this, appWidgetInfo);
-        int[] spanXY = getSpanForWidget(this, appWidgetInfo);
-
-        // Try finding open space on Launcher screen
-        // We have saved the position to which the widget was dragged-- this really only matters
-        // if we are placing widgets on a "spring-loaded" screen
-        int[] cellXY = mTmpAddItemCellCoordinates;
-        int[] touchXY = mPendingAddInfo.dropPos;
-        int[] finalSpan = new int[2];
-        boolean foundCellSpan = false;
-        if (mPendingAddInfo.cellX >= 0 && mPendingAddInfo.cellY >= 0) {
-            cellXY[0] = mPendingAddInfo.cellX;
-            cellXY[1] = mPendingAddInfo.cellY;
-            spanXY[0] = mPendingAddInfo.spanX;
-            spanXY[1] = mPendingAddInfo.spanY;
-            foundCellSpan = true;
-        } else if (touchXY != null) {
-            // when dragging and dropping, just find the closest free spot
-            int[] result = layout.findNearestVacantArea(
-                    touchXY[0], touchXY[1], minSpanXY[0], minSpanXY[1], spanXY[0],
-                    spanXY[1], cellXY, finalSpan);
-            spanXY[0] = finalSpan[0];
-            spanXY[1] = finalSpan[1];
-            foundCellSpan = (result != null);
-        } else {
-            foundCellSpan = layout.findCellForSpan(cellXY, minSpanXY[0], minSpanXY[1]);
+        if (appWidgetInfo.isCustomWidget) {
+            appWidgetId = LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
         }
 
-        if (!foundCellSpan) {
-            if (appWidgetId != -1) {
-                // Deleting an app widget ID is a void call but writes to disk before returning
-                // to the caller...
-                new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void ... args) {
-                        mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-                        return null;
-                    }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-            }
-            showOutOfSpaceMessage(isHotseatLayout(layout));
-            return;
-        }
-
-        // Build Launcher-specific widget info and save to database
-        LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId,
-                appWidgetInfo.provider);
-        launcherInfo.spanX = spanXY[0];
-        launcherInfo.spanY = spanXY[1];
-        launcherInfo.minSpanX = mPendingAddInfo.minSpanX;
-        launcherInfo.minSpanY = mPendingAddInfo.minSpanY;
+        LauncherAppWidgetInfo launcherInfo;
+        launcherInfo = new LauncherAppWidgetInfo(appWidgetId, appWidgetInfo.provider);
+        launcherInfo.spanX = info.spanX;
+        launcherInfo.spanY = info.spanY;
+        launcherInfo.minSpanX = info.minSpanX;
+        launcherInfo.minSpanY = info.minSpanY;
         launcherInfo.user = mAppWidgetManager.getUser(appWidgetInfo);
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
-                container, screenId, cellXY[0], cellXY[1], false);
+                container, screenId, info.cellX, info.cellY, false);
 
         if (!mRestoring) {
             if (hostView == null) {
                 // Perform actual inflation because we're live
-                launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-                launcherInfo.hostView.setAppWidget(appWidgetId, appWidgetInfo);
+                launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId,
+                        appWidgetInfo);
             } else {
                 // The AppWidgetHostView has already been inflated and instantiated
                 launcherInfo.hostView = hostView;
             }
-
             launcherInfo.hostView.setTag(launcherInfo);
             launcherInfo.hostView.setVisibility(View.VISIBLE);
             launcherInfo.notifyWidgetSizeChanged(this);
 
-            mWorkspace.addInScreen(launcherInfo.hostView, container, screenId, cellXY[0], cellXY[1],
-                    launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
+            mWorkspace.addInScreen(launcherInfo.hostView, container, screenId, info.cellX,
+                    info.cellY, launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
             addWidgetToAutoAdvanceIfNeeded(launcherInfo.hostView, appWidgetInfo);
         }
@@ -1894,6 +1863,10 @@ public class Launcher extends Activity
     void showOutOfSpaceMessage(boolean isHotseatLayout) {
         int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
         Toast.makeText(this, getString(strId), Toast.LENGTH_SHORT).show();
+    }
+
+    public ArrayList<AppInfo> getAllAppsList() {
+        return mAppsCustomizeContent.getApps();
     }
 
     public DragLayer getDragLayer() {
@@ -2284,14 +2257,14 @@ public class Launcher extends Activity
         mPendingAddInfo.dropPos = null;
     }
 
-    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
-            final AppWidgetHostView boundWidget, final AppWidgetProviderInfo appWidgetInfo) {
+    void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info, final
+            AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo) {
         addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
     }
 
-    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
-            final AppWidgetHostView boundWidget, final AppWidgetProviderInfo appWidgetInfo, int
-            delay) {
+    void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info,
+            final AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo,
+            int delay) {
         if (appWidgetInfo.configure != null) {
             mPendingAddWidgetInfo = appWidgetInfo;
             mPendingAddWidgetId = appWidgetId;
@@ -2585,7 +2558,8 @@ public class Launcher extends Activity
             int widgetId = info.appWidgetId;
             AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
             if (appWidgetInfo != null) {
-                mPendingAddWidgetInfo = appWidgetInfo;
+                mPendingAddWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(
+                        this, appWidgetInfo);
                 mPendingAddInfo.copyFrom(info);
                 mPendingAddWidgetId = widgetId;
 
@@ -4373,12 +4347,12 @@ public class Launcher extends Activity
         }
         final Workspace workspace = mWorkspace;
 
-        AppWidgetProviderInfo appWidgetInfo;
+        LauncherAppWidgetProviderInfo appWidgetInfo =
+                LauncherModel.getProviderInfo(this, item.providerName);
+
         if (!mIsSafeModeEnabled
                 && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0)
                 && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0)) {
-
-            appWidgetInfo = mModel.findAppWidgetProviderInfoWithComponent(this, item.providerName);
             if (appWidgetInfo == null) {
                 if (DEBUG_WIDGETS) {
                     Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
@@ -4391,7 +4365,7 @@ public class Launcher extends Activity
             // Note: This assumes that the id remap broadcast is received before this step.
             // If that is not the case, the id remap will be ignored and user may see the
             // click to setup view.
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo, null, null);
+            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo, null);
             pendingInfo.spanX = item.spanX;
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;
@@ -4428,9 +4402,9 @@ public class Launcher extends Activity
 
         if (!mIsSafeModeEnabled && item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
             final int appWidgetId = item.appWidgetId;
-            appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             if (DEBUG_WIDGETS) {
-                Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component " + appWidgetInfo.provider);
+                Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component "
+                        + appWidgetInfo.provider);
             }
 
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
@@ -4449,7 +4423,9 @@ public class Launcher extends Activity
 
         workspace.addInScreen(item.hostView, item.container, item.screenId, item.cellX,
                 item.cellY, item.spanX, item.spanY, false);
-        addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
+        if (!item.isCustomWidget()) {
+            addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
+        }
 
         workspace.requestLayout();
 
@@ -5123,6 +5099,14 @@ public class Launcher extends Activity
                     + (e == null ? "" : (", Exception: " + e)));
             }
         }
+    }
+
+    public static CustomAppWidget getCustomAppWidget(String name) {
+        return sCustomAppWidgets.get(name);
+    }
+
+    public static HashMap<String, CustomAppWidget> getCustomAppWidgets() {
+        return sCustomAppWidgets;
     }
 
     public void dumpLogsToLocalData() {

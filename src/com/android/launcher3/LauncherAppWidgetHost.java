@@ -21,8 +21,10 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.os.TransactionTooLargeException;
+import android.view.LayoutInflater;
 
 import java.util.ArrayList;
+
 
 /**
  * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}
@@ -84,5 +86,30 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         for (Runnable callback : mProviderChangeListeners) {
             callback.run();
         }
+    }
+
+    public AppWidgetHostView createView(Context context, int appWidgetId,
+            LauncherAppWidgetProviderInfo appWidget) {
+        if (appWidget.isCustomWidget) {
+            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
+            LayoutInflater inflater = (LayoutInflater)
+                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(appWidget.initialLayout, lahv);
+            lahv.setAppWidget(0, appWidget);
+            lahv.updateLastInflationOrientation();
+            return lahv;
+        } else {
+            return super.createView(context, appWidgetId, appWidget);
+        }
+    }
+
+    /**
+     * Called when the AppWidget provider for a AppWidget has been upgraded to a new apk.
+     */
+    @Override
+    protected void onProviderChanged(int appWidgetId, AppWidgetProviderInfo appWidget) {
+        LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo.fromProviderInfo(
+                mLauncher, appWidget);
+        super.onProviderChanged(appWidgetId, info);
     }
 }

@@ -333,7 +333,6 @@ public class WidgetPreviewLoader {
             sb.setLength(0);
         } else {
             sb.append(SHORTCUT_PREFIX);
-
             ResolveInfo info = (ResolveInfo) o;
             sb.append(new ComponentName(info.activityInfo.packageName,
                     info.activityInfo.name).flattenToString());
@@ -479,20 +478,19 @@ public class WidgetPreviewLoader {
                 preview.getHeight() != mPreviewBitmapHeight)) {
             throw new RuntimeException("Improperly sized bitmap passed as argument");
         }
-        if (info instanceof AppWidgetProviderInfo) {
-            return generateWidgetPreview((AppWidgetProviderInfo) info, preview);
+        if (info instanceof LauncherAppWidgetProviderInfo) {
+            return generateWidgetPreview((LauncherAppWidgetProviderInfo) info, preview);
         } else {
             return generateShortcutPreview(
                     (ResolveInfo) info, mPreviewBitmapWidth, mPreviewBitmapHeight, preview);
         }
     }
 
-    public Bitmap generateWidgetPreview(AppWidgetProviderInfo info, Bitmap preview) {
-        int[] cellSpans = Launcher.getSpanForWidget(mContext, info);
-        int maxWidth = maxWidthForWidgetPreview(cellSpans[0]);
-        int maxHeight = maxHeightForWidgetPreview(cellSpans[1]);
-        return generateWidgetPreview(info, cellSpans[0], cellSpans[1],
-                maxWidth, maxHeight, preview, null);
+    public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info, Bitmap preview) {
+        int maxWidth = maxWidthForWidgetPreview(info.spanX);
+        int maxHeight = maxHeightForWidgetPreview(info.spanY);
+        return generateWidgetPreview(info, info.spanX, info.spanY, maxWidth,
+                maxHeight, preview, null);
     }
 
     public int maxWidthForWidgetPreview(int spanX) {
@@ -505,7 +503,7 @@ public class WidgetPreviewLoader {
                 mWidgetSpacingLayout.estimateCellHeight(spanY));
     }
 
-    public Bitmap generateWidgetPreview(AppWidgetProviderInfo info, int cellHSpan, int cellVSpan,
+    public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info, int cellHSpan, int cellVSpan,
             int maxPreviewWidth, int maxPreviewHeight, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
         if (maxPreviewWidth < 0) maxPreviewWidth = Integer.MAX_VALUE;

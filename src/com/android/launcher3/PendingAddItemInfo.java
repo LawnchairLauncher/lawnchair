@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -54,17 +53,16 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
     int minResizeHeight;
     int previewImage;
     int icon;
-    AppWidgetProviderInfo info;
+    LauncherAppWidgetProviderInfo info;
     AppWidgetHostView boundWidget;
     Bundle bindOptions = null;
 
-    // Any configuration data that we want to pass to a configuration activity when
-    // starting up a widget
-    String mimeType;
-    Parcelable configurationData;
-
-    public PendingAddWidgetInfo(AppWidgetProviderInfo i, String dataMimeType, Parcelable data) {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+    public PendingAddWidgetInfo(LauncherAppWidgetProviderInfo i, Parcelable data) {
+        if (i.isCustomWidget) {
+            itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+        } else {
+            itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+        }
         this.info = i;
         componentName = i.provider;
         minWidth = i.minWidth;
@@ -73,10 +71,15 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
         minResizeHeight = i.minResizeHeight;
         previewImage = i.previewImage;
         icon = i.icon;
-        if (dataMimeType != null && data != null) {
-            mimeType = dataMimeType;
-            configurationData = data;
-        }
+
+        spanX = i.spanX;
+        spanY = i.spanY;
+        minSpanX = i.minSpanX;
+        minSpanY = i.minSpanY;
+    }
+
+    public boolean isCustomWidget() {
+        return itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
     }
 
     // Copy constructor
@@ -89,8 +92,6 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
         icon = copy.icon;
         info = copy.info;
         boundWidget = copy.boundWidget;
-        mimeType = copy.mimeType;
-        configurationData = copy.configurationData;
         componentName = copy.componentName;
         itemType = copy.itemType;
         spanX = copy.spanX;

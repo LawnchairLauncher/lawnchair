@@ -239,6 +239,11 @@ class LauncherSettings {
         static final int ITEM_TYPE_APPWIDGET = 4;
 
         /**
+         * The favorite is a custom widget provided by the launcher
+         */
+        static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+
+        /**
          * The favorite is a clock
          */
         static final int ITEM_TYPE_WIDGET_CLOCK = 1000;

@@ -906,7 +906,8 @@ public class LauncherBackupHelper implements BackupHelper {
     /** Serialize a widget for persistence, including a checksum wrapper. */
     private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
             ComponentName provider) {
-        final AppWidgetProviderInfo info = findAppWidgetProviderInfo(provider);
+        final LauncherAppWidgetProviderInfo info =
+                LauncherModel.getProviderInfo(mContext, provider);
         Widget widget = new Widget();
         widget.provider = provider.flattenToShortString();
         widget.label = info.label;
@@ -1073,19 +1074,6 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         return wrapper.payload;
     }
-
-    private AppWidgetProviderInfo findAppWidgetProviderInfo(ComponentName component) {
-        if (mWidgetMap == null) {
-            List<AppWidgetProviderInfo> widgets =
-                    AppWidgetManager.getInstance(mContext).getInstalledProviders();
-            mWidgetMap = new HashMap<ComponentName, AppWidgetProviderInfo>(widgets.size());
-            for (AppWidgetProviderInfo info : widgets) {
-                mWidgetMap.put(info.provider, info);
-            }
-        }
-        return mWidgetMap.get(component);
-    }
-
 
     private boolean initializeIconCache() {
         if (mIconCache != null) {

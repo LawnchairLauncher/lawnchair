@@ -28,6 +28,8 @@
     <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
     <dimen name="dynamic_grid_overview_bar_spacer_width">20dp</dimen>
 
+    <dimen name="default_widget_padding">8dp</dimen>
+
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">240dp</dimen>
     <dimen name="cling_migration_logo_width">165dp</dimen>

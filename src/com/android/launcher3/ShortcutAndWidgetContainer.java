@@ -23,6 +23,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
@@ -73,6 +74,14 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             }
         }
         return null;
+    }
+
+    public void addView(View child, int index, LayoutParams params, boolean inLayout) {
+        if (!inLayout) {
+            addView(child, index, params);
+        } else {
+            addViewInLayout(child, index, params, false);
+        }
     }
 
     @Override

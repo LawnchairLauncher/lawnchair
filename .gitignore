@@ -1,1 +1,5 @@
 db_files
+*.iml
+gen/
+tests/stress/gen/
+WallpaperPicker/gen/

@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -54,10 +55,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
+    public void updateLastInflationOrientation() {
+        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
+    }
+
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
         // Store the orientation in which the widget was inflated
-        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
+        updateLastInflationOrientation();
         super.updateAppWidget(remoteViews);
     }
 
@@ -134,6 +139,16 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     public void cancelLongPress() {
         super.cancelLongPress();
         mLongPressHelper.cancelLongPress();
+    }
+
+    @Override
+    public AppWidgetProviderInfo getAppWidgetInfo() {
+        AppWidgetProviderInfo info = super.getAppWidgetInfo();
+        if (!(info instanceof LauncherAppWidgetProviderInfo)) {
+            throw new IllegalStateException("Launcher widget must have"
+                    + "LauncherAppWidgetProviderInfo");
+        }
+        return info;
     }
 
     @Override
