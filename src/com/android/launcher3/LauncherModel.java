@@ -191,8 +191,12 @@ public class LauncherModel extends BroadcastReceiver {
         ContentResolver contentResolver = context.getContentResolver();
 
         mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
-        mOldContentProviderExists = (contentResolver.acquireContentProviderClient(
-                LauncherSettings.Favorites.OLD_CONTENT_URI) != null);
+        ContentProviderClient client = contentResolver.acquireContentProviderClient(
+                LauncherSettings.Favorites.OLD_CONTENT_URI);
+        mOldContentProviderExists = (client != null);
+        if (client != null) {
+            client.release();
+        }
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mIconCache = iconCache;
