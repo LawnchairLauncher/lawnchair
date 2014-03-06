@@ -2766,6 +2766,9 @@ public class Workspace extends SmoothPagedView
         if (child instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedOrFocusedBackground();
+        } else if (child instanceof FolderIcon) {
+            // Dismiss the folder cling if we haven't already
+            mLauncher.getLauncherClings().markFolderClingDismissed();
         }
 
         if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {

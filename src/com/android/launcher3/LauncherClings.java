@@ -314,6 +314,20 @@ class LauncherClings {
         }
     }
 
+    public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {
+        SharedPreferences prefs = ctx.getSharedPreferences(
+                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(LauncherClings.FIRST_RUN_CLING_DISMISSED_KEY, true);
+        editor.commit();
+    }
+
+    public void markFolderClingDismissed() {
+        SharedPreferences.Editor editor = mLauncher.getSharedPrefs().edit();
+        editor.putBoolean(LauncherClings.FOLDER_CLING_DISMISSED_KEY, true);
+        editor.apply();
+    }
+
     /** Removes the cling outright from the DragLayer */
     private void removeCling(int id) {
         final View cling = mLauncher.findViewById(id);
