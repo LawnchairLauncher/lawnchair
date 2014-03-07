@@ -171,6 +171,14 @@ class LauncherSettings {
         static final int CONTAINER_DESKTOP = -100;
         static final int CONTAINER_HOTSEAT = -101;
 
+        static final String containerToString(int container) {
+            switch (container) {
+                case CONTAINER_DESKTOP: return "desktop";
+                case CONTAINER_HOTSEAT: return "hotseat";
+                default: return String.valueOf(container);
+            }
+        }
+
         /**
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
