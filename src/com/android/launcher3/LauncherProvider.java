@@ -32,7 +32,9 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
@@ -352,6 +354,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
+        private static final String TAG_RESOLVE = "resolve";
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
         private static final String TAG_CLOCK = "clock";
@@ -1216,6 +1219,32 @@ public class LauncherProvider extends ContentProvider {
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
                         added = id >= 0;
+                    } else if (TAG_RESOLVE.equals(name)) {
+                        // This looks through the contained favorites (or meta-favorites) and
+                        // attempts to add them as shortcuts in the fallback group's location
+                        // until one is added successfully.
+                        added = false;
+                        final int groupDepth = parser.getDepth();
+                        while ((type = parser.next()) != XmlPullParser.END_TAG ||
+                                parser.getDepth() > groupDepth) {
+                            if (type != XmlPullParser.START_TAG) {
+                                continue;
+                            }
+                            final String fallback_item_name = parser.getName();
+                            final TypedArray ar = mContext.obtainStyledAttributes(attrs,
+                                    R.styleable.Favorite);
+                            if (!added) {
+                                if (TAG_FAVORITE.equals(fallback_item_name)) {
+                                    final long id =
+                                        addAppShortcut(db, values, ar, packageManager, intent);
+                                    added = id >= 0;
+                                } else {
+                                    Log.e(TAG, "Fallback groups can contain only favorites "
+                                            + ar.toString());
+                                }
+                            }
+                            ar.recycle();
+                        }
                     } else if (TAG_FOLDER.equals(name)) {
                         String title;
                         int titleResId =  a.getResourceId(R.styleable.Favorite_title, -1);
@@ -1298,41 +1327,137 @@ public class LauncherProvider extends ContentProvider {
             return i;
         }
 
-        private long addAppShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
+        // A meta shortcut attempts to resolve an intent specified as a URI in the XML, if a
+        // logical choice for what shortcut should be used for that intent exists, then it is
+        // added. Otherwise add nothing.
+        private long addAppShortcutByUri(SQLiteDatabase db, ContentValues values, TypedArray a,
                 PackageManager packageManager, Intent intent) {
-            long id = -1;
-            ActivityInfo info;
-            String packageName = a.getString(R.styleable.Favorite_packageName);
-            String className = a.getString(R.styleable.Favorite_className);
+            final String intentUri = a.getString(R.styleable.Favorite_uri);
+
+            Intent metaIntent;
             try {
-                ComponentName cn;
-                try {
-                    cn = new ComponentName(packageName, className);
-                    info = packageManager.getActivityInfo(cn, 0);
-                } catch (PackageManager.NameNotFoundException nnfe) {
-                    String[] packages = packageManager.currentToCanonicalPackageNames(
-                        new String[] { packageName });
-                    cn = new ComponentName(packages[0], className);
-                    info = packageManager.getActivityInfo(cn, 0);
-                }
-                id = generateNewItemId();
-                intent.setComponent(cn);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                values.put(Favorites.INTENT, intent.toUri(0));
-                values.put(Favorites.TITLE, info.loadLabel(packageManager).toString());
-                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
-                values.put(Favorites.SPANX, 1);
-                values.put(Favorites.SPANY, 1);
-                values.put(Favorites._ID, generateNewItemId());
-                if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) < 0) {
+                metaIntent = Intent.parseUri(intentUri, 0);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Unable to add meta-favorite: " + intentUri, e);
+                return -1;
+            }
+
+            ResolveInfo resolved = packageManager.resolveActivity(metaIntent,
+                    PackageManager.MATCH_DEFAULT_ONLY);
+            final List<ResolveInfo> appList = packageManager.queryIntentActivities(
+                    metaIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+            // Verify that the result is an app and not just the resolver dialog asking which
+            // app to use.
+            if (wouldLaunchResolverActivity(resolved, appList)) {
+                // If only one of the results is a system app then choose that as the default.
+                final ResolveInfo systemApp = getSingleSystemActivity(appList, packageManager);
+                if (systemApp == null) {
+                    // There is no logical choice for this meta-favorite, so rather than making
+                    // a bad choice just add nothing.
+                    Log.w(TAG, "No preference or single system activity found for "
+                            + metaIntent.toString());
                     return -1;
                 }
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.w(TAG, "Unable to add favorite: " + packageName +
-                        "/" + className, e);
+                resolved = systemApp;
             }
-            return id;
+            final ActivityInfo info = resolved.activityInfo;
+            intent.setComponent(new ComponentName(info.packageName, info.name));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+            return addAppShortcut(db, values, info.loadLabel(packageManager).toString(), intent);
+        }
+
+        private ResolveInfo getSingleSystemActivity(List<ResolveInfo> appList,
+                PackageManager packageManager) {
+            ResolveInfo systemResolve = null;
+            final int N = appList.size();
+            for (int i = 0; i < N; ++i) {
+                try {
+                    ApplicationInfo info = packageManager.getApplicationInfo(
+                            appList.get(i).activityInfo.packageName, 0);
+                    if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                        if (systemResolve != null) {
+                            return null;
+                        } else {
+                            systemResolve = appList.get(i);
+                        }
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.w(TAG, "Unable to get info about resolve results", e);
+                    return null;
+                }
+            }
+            return systemResolve;
+        }
+
+        private boolean wouldLaunchResolverActivity(ResolveInfo resolved,
+                List<ResolveInfo> appList) {
+            // If the list contains the above resolved activity, then it can't be
+            // ResolverActivity itself.
+            for (int i = 0; i < appList.size(); ++i) {
+                ResolveInfo tmp = appList.get(i);
+                if (tmp.activityInfo.name.equals(resolved.activityInfo.name)
+                        && tmp.activityInfo.packageName.equals(resolved.activityInfo.packageName)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private long addAppShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
+                PackageManager packageManager, Intent intent) {
+            if (a.hasValue(R.styleable.Favorite_packageName)
+                    && a.hasValue(R.styleable.Favorite_className)) {
+                ActivityInfo info;
+                String packageName = a.getString(R.styleable.Favorite_packageName);
+                String className = a.getString(R.styleable.Favorite_className);
+                try {
+                    ComponentName cn;
+                    try {
+                        cn = new ComponentName(packageName, className);
+                        info = packageManager.getActivityInfo(cn, 0);
+                    } catch (PackageManager.NameNotFoundException nnfe) {
+                        String[] packages = packageManager.currentToCanonicalPackageNames(
+                                new String[] { packageName });
+                        cn = new ComponentName(packages[0], className);
+                        info = packageManager.getActivityInfo(cn, 0);
+                    }
+                    intent.setComponent(cn);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+                    return addAppShortcut(db, values, info.loadLabel(packageManager).toString(),
+                            intent);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.w(TAG, "Unable to add favorite: " + packageName +
+                            "/" + className, e);
+                }
+                return -1;
+            } else if (a.hasValue(R.styleable.Favorite_uri)) {
+                // If no component specified try to find a shortcut to add from the URI.
+                return addAppShortcutByUri(db, values, a, packageManager, intent);
+            } else {
+                Log.e(TAG, "Skipping invalid <favorite> with no component or uri");
+                return -1;
+            }
+        }
+
+        private long addAppShortcut(SQLiteDatabase db, ContentValues values, String title,
+                Intent intent) {
+            long id = generateNewItemId();
+            values.put(Favorites.INTENT, intent.toUri(0));
+            values.put(Favorites.TITLE, title);
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
+            values.put(Favorites.SPANX, 1);
+            values.put(Favorites.SPANY, 1);
+            values.put(Favorites._ID, id);
+            if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values) < 0) {
+                return -1;
+            } else {
+                return id;
+            }
         }
 
         private long addFolder(SQLiteDatabase db, ContentValues values) {
