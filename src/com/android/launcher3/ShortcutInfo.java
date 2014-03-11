@@ -33,6 +33,24 @@ import java.util.ArrayList;
  */
 public class ShortcutInfo extends ItemInfo {
 
+    /** This package is not installed, and there is no other information available. */
+    public static final int PACKAGE_STATE_UNKNOWN = -2;
+
+    /** This package is not installed, because installation failed. */
+    public static final int PACKAGE_STATE_ERROR = -1;
+
+    /** This package is installed.  This is the typical case */
+    public static final int PACKAGE_STATE_DEFAULT = 0;
+
+    /** This package is not installed, but some external entity has promised to install it. */
+    public static final int PACKAGE_STATE_ENQUEUED = 1;
+
+    /** This package is not installed, but some external entity is downloading it. */
+    public static final int PACKAGE_STATE_DOWNLOADING = 2;
+
+    /** This package is not installed, but some external entity is installing it. */
+    public static final int PACKAGE_STATE_INSTALLING = 3;
+
     /**
      * The intent used to start the application.
      */
@@ -218,6 +236,16 @@ public class ShortcutInfo extends ItemInfo {
             Log.d(tag, "   title=\"" + info.title + " icon=" + info.mIcon
                     + " customIcon=" + info.customIcon);
         }
+    }
+
+    public boolean isPromise() {
+        return restoredIntent != null;
+    }
+
+    public boolean isPromiseFor(String pkgName) {
+        return restoredIntent != null
+                && pkgName != null
+                && pkgName.equals(restoredIntent.getComponent().getPackageName());
     }
 }
 

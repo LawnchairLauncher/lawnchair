@@ -96,6 +96,9 @@ public class Workspace extends SmoothPagedView
 
     private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
+    private static final boolean MAP_NO_RECURSE = false;
+    private static final boolean MAP_RECURSE = true;
+
     // These animators are used to fade the children's outlines
     private ObjectAnimator mChildrenOutlineFadeInAnimation;
     private ObjectAnimator mChildrenOutlineFadeOutAnimation;
@@ -4452,51 +4455,50 @@ public class Workspace extends SmoothPagedView
         return childrenLayouts;
     }
 
-    public Folder getFolderForTag(Object tag) {
-        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
-                getAllShortcutAndWidgetContainers();
-        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
-            int count = layout.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View child = layout.getChildAt(i);
-                if (child instanceof Folder) {
-                    Folder f = (Folder) child;
+    public Folder getFolderForTag(final Object tag) {
+        final Folder[] value = new Folder[1];
+        mapOverShortcuts(MAP_NO_RECURSE, new ShortcutOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (v instanceof Folder) {
+                    Folder f = (Folder) v;
                     if (f.getInfo() == tag && f.getInfo().opened) {
-                        return f;
+                        value[0] = f;
+                        return true;
                     }
                 }
+                return false;
             }
-        }
-        return null;
+        });
+        return value[0];
     }
 
-    public View getViewForTag(Object tag) {
-        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
-                getAllShortcutAndWidgetContainers();
-        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
-            int count = layout.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View child = layout.getChildAt(i);
-                if (child.getTag() == tag) {
-                    return child;
+    public View getViewForTag(final Object tag) {
+        final View[] value = new View[1];
+        mapOverShortcuts(MAP_NO_RECURSE, new ShortcutOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (v.getTag() == tag) {
+                    value[0] = v;
+                    return true;
                 }
+                return false;
             }
-        }
-        return null;
+        });
+        return value[0];
     }
 
     void clearDropTargets() {
-        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
-                getAllShortcutAndWidgetContainers();
-        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
-            int childCount = layout.getChildCount();
-            for (int j = 0; j < childCount; j++) {
-                View v = layout.getChildAt(j);
+        mapOverShortcuts(MAP_NO_RECURSE, new ShortcutOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (v instanceof DropTarget) {
                     mDragController.removeDropTarget((DropTarget) v);
                 }
+                // not done, process all the shortcuts
+                return false;
             }
-        }
+        });
     }
 
     // Removes ALL items that match a given package name, this is usually called when a package
@@ -4638,6 +4640,55 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    interface ShortcutOperator {
+        /**
+         * Process the next shortcut, possibly with side-effect on {@link ShortcutOperator#value}.
+         *
+         * @param info info for the shortcut
+         * @param view view for the shortcut
+         * @param parent containing folder, or null
+         * @return true if done, false to continue the map
+         */
+        public boolean evaluate(ItemInfo info, View view, View parent);
+    }
+
+    /**
+     * Map the operator over the shortcuts, return the first-non-null value.
+     *
+     * @param recurse true: iterate over folder children. false: op get the folders themselves.
+     * @param op the operator to map over the shortcuts
+     */
+    void mapOverShortcuts(boolean recurse, ShortcutOperator op) {
+        ArrayList<ShortcutAndWidgetContainer> containers = getAllShortcutAndWidgetContainers();
+        final int containerCount = containers.size();
+        for (int containerIdx = 0; containerIdx < containerCount; containerIdx++) {
+            ShortcutAndWidgetContainer container = containers.get(containerIdx);
+            // map over all the shortcuts on the workspace
+            final int itemCount = container.getChildCount();
+            for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
+                View item = container.getChildAt(itemIdx);
+                ItemInfo info = (ItemInfo) item.getTag();
+                if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
+                    FolderIcon folder = (FolderIcon) item;
+                    ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
+                    // map over all the children in the folder
+                    final int childCount = folderChildren.size();
+                    for (int childIdx = 0; childIdx < childCount; childIdx++) {
+                        View child = folderChildren.get(childIdx);
+                        info = (ItemInfo) child.getTag();
+                        if (op.evaluate(info, child, folder)) {
+                            return;
+                        }
+                    }
+                } else {
+                    if (op.evaluate(info, item, null)) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     void updateShortcuts(ArrayList<AppInfo> apps) {
         // Create a map of the apps to test against
         final HashMap<ComponentName, AppInfo> appsMap = new HashMap<ComponentName, AppInfo>();
@@ -4645,26 +4696,34 @@ public class Workspace extends SmoothPagedView
             appsMap.put(ai.componentName, ai);
         }
 
-        ArrayList<ShortcutAndWidgetContainer> childrenLayouts = getAllShortcutAndWidgetContainers();
-        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
-            // Update all the children shortcuts
-            final HashMap<ItemInfo, View> children = new HashMap<ItemInfo, View>();
-            for (int j = 0; j < layout.getChildCount(); j++) {
-                View v = layout.getChildAt(j);
-                ItemInfo info = (ItemInfo) v.getTag();
-                if (info instanceof FolderInfo && v instanceof FolderIcon) {
-                    FolderIcon folder = (FolderIcon) v;
-                    ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
-                    for (View fv : folderChildren) {
-                        info = (ItemInfo) fv.getTag();
-                        updateShortcut(appsMap, info, fv);
-                    }
-                    folder.invalidate();
-                } else if (info instanceof ShortcutInfo) {
+        mapOverShortcuts(MAP_RECURSE, new ShortcutOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (info instanceof ShortcutInfo) {
                     updateShortcut(appsMap, info, v);
+                    if (parent != null) {
+                        parent.invalidate();
+                    }
                 }
+                // process all the shortcuts
+                return false;
             }
-        }
+        });
+    }
+
+    public void updatePackageState(final String pkgName, final int state) {
+        mapOverShortcuts(MAP_RECURSE, new ShortcutOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (info instanceof ShortcutInfo
+                        && ((ShortcutInfo) info).isPromiseFor(pkgName)
+                        && v instanceof BubbleTextView) {
+                    ((BubbleTextView)v).setState(state);
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
     }
 
     private void moveToScreen(int page, boolean animate) {
