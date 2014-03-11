@@ -1334,6 +1334,17 @@ public class Launcher extends Activity
     }
 
     /**
+     * Sets the all apps button. This method is called from {@link Hotseat}.
+     */
+    public void setAllAppsButton(View allAppsButton) {
+        mAllAppsButton = allAppsButton;
+    }
+
+    public View getAllAppsButton() {
+        return mAllAppsButton;
+    }
+
+    /**
      * Creates a view representing a shortcut.
      *
      * @param info The data structure describing the shortcut.

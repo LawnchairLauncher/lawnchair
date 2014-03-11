@@ -156,15 +156,9 @@ public class Hotseat extends FrameLayout {
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
             if (mLauncher != null) {
                 allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
+                mLauncher.setAllAppsButton(allAppsButton);
+                allAppsButton.setOnClickListener(mLauncher);
             }
-            allAppsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(android.view.View v) {
-                    if (mLauncher != null) {
-                        mLauncher.onClickAllAppsButton(v);
-                    }
-                }
-            });
 
             // Note: We do this to ensure that the hotseat is always laid out in the orientation of
             // the hotseat in order regardless of which orientation they were added
