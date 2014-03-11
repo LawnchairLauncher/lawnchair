@@ -2598,6 +2598,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void beginDragShared(View child, DragSource source) {
+        mLauncher.onDragStarted(child);
         // The drag bitmap follows the touch point around on the screen
         final Bitmap b = createDragBitmap(child, new Canvas(), DRAG_BITMAP_PADDING);
 
