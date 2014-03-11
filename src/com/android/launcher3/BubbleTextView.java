@@ -25,6 +25,7 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.widget.TextView;
@@ -42,6 +43,10 @@ public class BubbleTextView extends TextView {
     static final int SHADOW_SMALL_COLOUR = 0xCC000000;
     static final float PADDING_H = 8.0f;
     static final float PADDING_V = 3.0f;
+
+    private static final String TAG = "BubbleTextView";
+
+    private static final boolean DEBUG = false;
 
     private int mPrevAlpha = -1;
 
@@ -64,6 +69,11 @@ public class BubbleTextView extends TextView {
 
     private boolean mStayPressed;
     private CheckLongPressHelper mLongPressHelper;
+    private int mInstallState;
+
+    private int mState;
+
+    private CharSequence mDefaultText = "";
 
     public BubbleTextView(Context context) {
         super(context);
@@ -108,11 +118,14 @@ public class BubbleTextView extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-        setCompoundDrawables(null,
-                Utilities.createIconDrawable(b), null, null);
+        Drawable iconDrawable = Utilities.createIconDrawable(b);
+        setCompoundDrawables(null, iconDrawable, null, null);
         setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         setText(info.title);
         setTag(info);
+        if (info.isPromise()) {
+            setState(ShortcutInfo.PACKAGE_STATE_UNKNOWN); // TODO: persist this state somewhere
+        }
     }
 
     @Override
@@ -391,5 +404,53 @@ public class BubbleTextView extends TextView {
         super.cancelLongPress();
 
         mLongPressHelper.cancelLongPress();
+    }
+
+    public void setState(int state) {
+        if (mState == ShortcutInfo.PACKAGE_STATE_DEFAULT && mState != state) {
+            mDefaultText = getText();
+        }
+        mState = state;
+        applyState();
+    }
+
+    private void applyState() {
+        int alpha = getResources().getInteger(R.integer.promise_icon_alpha);
+        if (DEBUG) Log.d(TAG, "applying icon state: " + mState);
+
+        switch(mState) {
+            case ShortcutInfo.PACKAGE_STATE_DEFAULT:
+                super.setText(mDefaultText);
+                alpha = 255;
+                break;
+
+            case ShortcutInfo.PACKAGE_STATE_ENQUEUED:
+                setText(R.string.package_state_enqueued);
+                break;
+
+            case ShortcutInfo.PACKAGE_STATE_DOWNLOADING:
+                setText(R.string.package_state_downloading);
+                break;
+
+            case ShortcutInfo.PACKAGE_STATE_INSTALLING:
+                setText(R.string.package_state_installing);
+                break;
+
+            case ShortcutInfo.PACKAGE_STATE_ERROR:
+                setText(R.string.package_state_error);
+                break;
+
+            case ShortcutInfo.PACKAGE_STATE_UNKNOWN:
+            default:
+                setText(R.string.package_state_unknown);
+                break;
+        }
+        if (DEBUG) Log.d(TAG, "setting icon alpha to: " + alpha);
+        Drawable[] drawables = getCompoundDrawables();
+        for (int i = 0; i < drawables.length; i++) {
+            if (drawables[i] != null) {
+                drawables[i].setAlpha(alpha);
+            }
+        }
     }
 }

@@ -4223,6 +4223,17 @@ public class Launcher extends Activity
     }
 
     /**
+     * Update the state of a package, typically related to install state.
+     *
+     * Implementation of the method from LauncherModel.Callbacks.
+     */
+    public void updatePackageState(String pkgName, int state) {
+        if (mWorkspace != null) {
+            mWorkspace.updatePackageState(pkgName, state);
+        }
+    }
+
+    /**
      * A package was uninstalled.  We take both the super set of packageNames
      * in addition to specific applications to remove, the reason being that
      * this can be called when a package is updated as well.  In that scenario,

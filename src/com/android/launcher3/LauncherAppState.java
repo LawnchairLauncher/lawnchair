@@ -30,6 +30,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
+    private static final boolean DEBUG = true; // TODO STOPSHIP: set this to false
+
     private final AppFilter mAppFilter;
     private final BuildInfo mBuildInfo;
     private LauncherModel mModel;
@@ -248,5 +250,10 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public static boolean isDogfoodBuild() {
         return getInstance().mBuildInfo.isDogfoodBuild();
+    }
+
+    public void setPackageState(String pkgName, int state) {
+        if (DEBUG) Log.d(TAG, "setPackageState(" + pkgName + ", " +  state  + ")");
+        mModel.setPackageState(pkgName, state);
     }
 }
