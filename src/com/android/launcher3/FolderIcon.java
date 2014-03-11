@@ -308,7 +308,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    Folder getFolder() {
+    public Folder getFolder() {
         return mFolder;
     }
 
