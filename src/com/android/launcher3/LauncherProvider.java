@@ -95,6 +95,8 @@ public class LauncherProvider extends ContentProvider {
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
+    private LauncherProviderChangeListener mListener;
+
     /**
      * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
      * {@link AppWidgetHost#deleteHost()} is called during database creation.
@@ -116,6 +118,10 @@ public class LauncherProvider extends ContentProvider {
 
     public boolean wasNewDbCreated() {
         return mOpenHelper.wasNewDbCreated();
+    }
+
+    public void setLauncherProviderChangeListener(LauncherProviderChangeListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -244,6 +250,9 @@ public class LauncherProvider extends ContentProvider {
 
         // always notify the backup agent
         LauncherBackupAgentHelper.dataChanged(getContext());
+        if (mListener != null) {
+            mListener.onLauncherProviderChange();
+        }
     }
 
     private void addModifiedTime(ContentValues values) {
