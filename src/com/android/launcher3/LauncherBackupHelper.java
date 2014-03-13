@@ -461,7 +461,8 @@ public class LauncherBackupHelper implements BackupHelper {
 
         int startRows = out.rows;
         if (DEBUG) Log.d(TAG, "starting here: " + startRows);
-        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION;
+        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION + " OR " +
+                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT;
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
