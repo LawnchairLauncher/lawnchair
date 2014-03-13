@@ -303,6 +303,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mFolderName;
     }
 
+    public CellLayout getContent() {
+        return mContent;
+    }
+
     /**
      * We need to handle touch events to prevent them from falling through to the workspace below.
      */
