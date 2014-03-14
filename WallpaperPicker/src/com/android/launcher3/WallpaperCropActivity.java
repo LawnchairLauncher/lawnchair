@@ -366,6 +366,14 @@ public class WallpaperCropActivity extends Activity {
                 getWindowManager());
         // Get the crop
         RectF cropRect = mCropView.getCrop();
+
+        // due to rounding errors in the cropview renderer the edges can be slightly offset
+        // therefore we ensure that the boundaries are sanely defined
+        cropRect.left = Math.max(0, cropRect.left);
+        cropRect.right = Math.min(mCropView.getWidth(), cropRect.right);
+        cropRect.top = Math.max(0, cropRect.top);
+        cropRect.bottom = Math.min(mCropView.getHeight(), cropRect.bottom);
+
         int cropRotation = mCropView.getImageRotation();
         float cropScale = mCropView.getWidth() / (float) cropRect.width();
 
