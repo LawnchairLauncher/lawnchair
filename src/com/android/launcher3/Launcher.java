@@ -191,6 +191,7 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_VIEW_IDS = "launcher.view_ids";
 
 
+    static final String INTRO_SCREEN_DISMISSED = "launcher.intro_screen_dismissed";
     static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
 
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
@@ -213,6 +214,7 @@ public class Launcher extends Activity
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT_FOLDER_CLOSE = 400;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
+    private static final int ACTIVITY_START_DELAY = 500;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
@@ -481,10 +483,15 @@ public class Launcher extends Activity
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
 
+        if (shouldShowIntroScreen()) {
+            showIntroScreen();
+        } else {
+            showFirstRunActivity();
+        }
+
         // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
         // on the device, then we always show the first run cling experience (or if there is no
         // launcher2). Otherwise, we prompt the user upon started for migration
-        showFirstRunActivity();
         if (mLauncherClings.shouldShowFirstRunOrMigrationClings()) {
             if (mModel.canMigrateFromOldLauncherDb(this)) {
                 mLauncherClings.showMigrationCling();
@@ -515,21 +522,6 @@ public class Launcher extends Activity
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
     protected void populateCustomContentContainer() {
-    }
-
-    /**
-     * To be overridden by subclasses to indicate that there is an activity to launch
-     * before showing the standard launcher experience.
-     */
-    protected boolean hasFirstRunActivity() {
-        return false;
-    }
-
-    /**
-     * To be overridden by subclasses to launch any first run activity
-     */
-    protected Intent getFirstRunActivity() {
-        return null;
     }
 
     /**
@@ -4441,25 +4433,98 @@ public class Launcher extends Activity
         mLauncherClings.dismissFolderCling(v);
     }
 
+
+    /**
+     * To be overridden by subclasses to indicate that there is an activity to launch
+     * before showing the standard launcher experience.
+     */
+    protected boolean hasFirstRunActivity() {
+        return false;
+    }
+
+    /**
+     * To be overridden by subclasses to launch any first run activity
+     */
+    protected Intent getFirstRunActivity() {
+        return null;
+    }
+
     private boolean shouldRunFirstRunActivity() {
         return !ActivityManager.isRunningInTestHarness() &&
                 !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
     }
 
-    public void showFirstRunActivity() {
+    public boolean showFirstRunActivity() {
         if (shouldRunFirstRunActivity() &&
                 hasFirstRunActivity()) {
             Intent firstRunIntent = getFirstRunActivity();
             if (firstRunIntent != null) {
                 startActivity(firstRunIntent);
                 markFirstRunActivityShown();
+                return true;
             }
         }
+        return false;
     }
 
     private void markFirstRunActivityShown() {
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
+        editor.apply();
+    }
+
+    /**
+     * To be overridden by subclasses to indicate that there is an in-activity full-screen intro
+     * screen that must be displayed and dismissed.
+     */
+    protected boolean hasDismissableIntroScreen() {
+        return false;
+    }
+
+    /**
+     * Full screen intro screen to be shown and dismissed before the launcher can be used.
+     */
+    protected View getIntroScreen() {
+        return null;
+    }
+
+    /**
+     * To be overriden by subclasses to indicate whether the in-activity intro screen has been
+     * dismissed. This method is ignored if #hasDismissableIntroScreen returns false.
+     */
+    private boolean shouldShowIntroScreen() {
+        return hasDismissableIntroScreen() &&
+                !mSharedPrefs.getBoolean(INTRO_SCREEN_DISMISSED, false);
+    }
+
+    protected void showIntroScreen() {
+        View introScreen = getIntroScreen();
+        changeWallpaperVisiblity(false);
+        if (introScreen != null) {
+            mDragLayer.showOverlayView(introScreen);
+        }
+    }
+
+    public void dismissIntroScreen() {
+        markIntroScreenDismissed();
+        if (showFirstRunActivity()) {
+            // We delay hiding the intro view until the first run activity is showing. This
+            // avoids a blip.
+            mWorkspace.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mDragLayer.dismissOverlayView();
+                }
+            }, ACTIVITY_START_DELAY);
+        } else {
+            mDragLayer.dismissOverlayView();
+        }
+        changeWallpaperVisiblity(true);
+    }
+
+    private void markIntroScreenDismissed() {
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putBoolean(INTRO_SCREEN_DISMISSED, true);
         editor.apply();
     }
 

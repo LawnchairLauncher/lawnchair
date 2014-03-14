@@ -73,7 +73,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     private final Rect mInsets = new Rect();
 
-    private int mDragViewIndex;
+    private View mOverlayView;
+    private int mTopViewIndex;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -118,6 +119,16 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     public void addView(View child, int index, android.view.ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
         setInsets(child, mInsets, new Rect());
+    }
+
+    public void showOverlayView(View introScreen) {
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        mOverlayView = introScreen;
+        addView(introScreen, lp);
+    }
+
+    public void dismissOverlayView() {
+        removeView(mOverlayView);
     }
 
     private void setInsets(View child, Rect newInsets, Rect oldInsets) {
@@ -770,27 +781,38 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         updateChildIndices();
     }
 
+    @Override
+    public void bringChildToFront(View child) {
+        super.bringChildToFront(child);
+        updateChildIndices();
+    }
+
     private void updateChildIndices() {
-        mDragViewIndex = -1;
+        mTopViewIndex = -1;
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
-            if (getChildAt(i) instanceof DragView) {
-                mDragViewIndex = i;
+            if (getChildAt(i) instanceof DragView ||
+                    getChildAt(i) == mOverlayView) {
+                mTopViewIndex = i;
             }
         }
     }
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        if (mDragViewIndex == -1) {
+        // i represents the current draw iteration
+        if (mTopViewIndex == -1) {
+            // in general we do nothing
             return i;
-        } else if (i == mDragViewIndex) {
-            return getChildCount()-1;
-        } else if (i < mDragViewIndex) {
+        } else if (i == childCount - 1) {
+            // if we have a top index, we return it when drawing last item (highest z-order)
+            return mTopViewIndex;
+        } else if (i < mTopViewIndex) {
             return i;
         } else {
-            // i > mDragViewIndex
-            return i-1;
+            // for indexes greater than the top index, we fetch one item above to shift for the
+            // displacement of the top index
+            return i + 1;
         }
     }
 
