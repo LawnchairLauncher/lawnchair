@@ -2596,6 +2596,8 @@ public class Launcher extends Activity
         }
     }
 
+    public void onDragStarted(View view) {}
+
     /**
      * Called when the user stops interacting with the launcher.
      * This implies that the user is now on the homescreen and is not doing housekeeping.
