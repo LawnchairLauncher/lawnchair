@@ -120,7 +120,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   View.OnTouchListener, PageSwitchListener {
+                   View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -394,7 +394,7 @@ public class Launcher extends Activity
 
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
-
+        LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
         // Determine the dynamic grid properties
         Point smallestSize = new Point();
         Point largestSize = new Point();
@@ -495,6 +495,9 @@ public class Launcher extends Activity
             mLauncherClings.removeFirstRunAndMigrationClings();
         }
     }
+
+    @Override
+    public void onLauncherProviderChange() { }
 
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
