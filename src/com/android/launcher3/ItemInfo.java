@@ -34,7 +34,7 @@ public class ItemInfo {
     /**
      * The id in the settings database for this item
      */
-    long id = NO_ID;
+    public long id = NO_ID;
     
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
@@ -42,7 +42,7 @@ public class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_FOLDER}, or
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
-    int itemType;
+    public int itemType;
     
     /**
      * The id of the container that holds this item. For the desktop, this will be 
@@ -50,27 +50,27 @@ public class ItemInfo {
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
-    long container = NO_ID;
+    public long container = NO_ID;
     
     /**
      * Iindicates the screen in which the shortcut appears.
      */
-    long screenId = -1;
+    public long screenId = -1;
     
     /**
      * Indicates the X position of the associated cell.
      */
-    int cellX = -1;
+    public int cellX = -1;
 
     /**
      * Indicates the Y position of the associated cell.
      */
-    int cellY = -1;
+    public int cellY = -1;
 
     /**
      * Indicates the X cell span.
      */
-    int spanX = 1;
+    public int spanX = 1;
 
     /**
      * Indicates the Y cell span.
@@ -80,17 +80,17 @@ public class ItemInfo {
     /**
      * Indicates the minimum X cell span.
      */
-    int minSpanX = 1;
+    public int minSpanX = 1;
 
     /**
      * Indicates the minimum Y cell span.
      */
-    int minSpanY = 1;
+    public int minSpanY = 1;
 
     /**
      * Indicates that this item needs to be updated in the db
      */
-    boolean requiresDbUpdate = false;
+    public boolean requiresDbUpdate = false;
 
     /**
      * Title of the item
@@ -118,7 +118,7 @@ public class ItemInfo {
         LauncherModel.checkItemInfo(this);
     }
 
-    protected Intent getIntent() {
+    public Intent getIntent() {
         throw new RuntimeException("Unexpected Intent");
     }
 
