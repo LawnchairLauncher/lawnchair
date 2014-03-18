@@ -511,8 +511,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (mPressedIcon != null) {
                 mPressedIcon.lockDrawableState();
             }
-            mLauncher.startActivitySafely(v, appInfo.intent, appInfo);
-            mLauncher.getStats().recordLaunch(appInfo.intent);
+            mLauncher.onClickPagedViewIcon(v, appInfo);
         } else if (v instanceof PagedViewWidget) {
             // Let the user know that they have to long press to add a widget
             if (mWidgetInstructionToast != null) {
