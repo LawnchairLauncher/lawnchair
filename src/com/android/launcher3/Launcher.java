@@ -2447,6 +2447,17 @@ public class Launcher extends Activity
     }
 
     /**
+     * Event handler for a paged view icon click.
+     * @param v The view that was clicked.
+     * @param appInfo The {link AppInfo} of the view.
+     */
+    public void onClickPagedViewIcon(View v, AppInfo appInfo) {
+        if (LOGD) Log.d(TAG, "onClickPagedViewIcon");
+        startActivitySafely(v, appInfo.intent, appInfo);
+        getStats().recordLaunch(appInfo.intent);
+    }
+
+    /**
      * Event handler for an app shortcut click.
      *
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
