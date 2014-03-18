@@ -127,13 +127,13 @@ public class WidgetPreviewLoader {
     private int mAppIconSize;
     private IconCache mIconCache;
 
-    private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
+    private static final float sWidgetPreviewIconPaddingPercentage = 0.25f;
 
     private CacheDb mDb;
 
-    private HashMap<String, WeakReference<Bitmap>> mLoadedPreviews;
-    private ArrayList<SoftReference<Bitmap>> mUnusedBitmaps;
-    private static HashSet<String> sInvalidPackages;
+    private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews;
+    private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps;
+    private final static HashSet<String> sInvalidPackages;
 
     static {
         sInvalidPackages = new HashSet<String>();
@@ -184,18 +184,19 @@ public class WidgetPreviewLoader {
         final String name = getObjectName(o);
         final String packageName = getObjectPackage(o);
         // check if the package is valid
-        boolean packageValid = true;
         synchronized(sInvalidPackages) {
-            packageValid = !sInvalidPackages.contains(packageName);
+            boolean packageValid = !sInvalidPackages.contains(packageName);
+            if (!packageValid) {
+                return null;
+            }
         }
-        if (!packageValid) {
-            return null;
-        }
-        if (packageValid) {
-            synchronized(mLoadedPreviews) {
-                // check if it exists in our existing cache
-                if (mLoadedPreviews.containsKey(name) && mLoadedPreviews.get(name).get() != null) {
-                    return mLoadedPreviews.get(name).get();
+        synchronized(mLoadedPreviews) {
+            // check if it exists in our existing cache
+            if (mLoadedPreviews.containsKey(name)) {
+                WeakReference<Bitmap> bitmapReference = mLoadedPreviews.get(name);
+                Bitmap bitmap = bitmapReference.get();
+                if (bitmap != null) {
+                    return bitmap;
                 }
             }
         }
@@ -203,11 +204,13 @@ public class WidgetPreviewLoader {
         Bitmap unusedBitmap = null;
         synchronized(mUnusedBitmaps) {
             // not in cache; we need to load it from the db
-            while ((unusedBitmap == null || !unusedBitmap.isMutable() ||
-                    unusedBitmap.getWidth() != mPreviewBitmapWidth ||
-                    unusedBitmap.getHeight() != mPreviewBitmapHeight)
-                    && mUnusedBitmaps.size() > 0) {
-                unusedBitmap = mUnusedBitmaps.remove(0).get();
+            while (unusedBitmap == null && mUnusedBitmaps.size() > 0) {
+                Bitmap candidate = mUnusedBitmaps.remove(0).get();
+                if (candidate != null && candidate.isMutable() &&
+                        candidate.getWidth() == mPreviewBitmapWidth &&
+                        candidate.getHeight() == mPreviewBitmapHeight) {
+                    unusedBitmap = candidate;
+                }
             }
             if (unusedBitmap != null) {
                 final Canvas c = mCachedAppWidgetPreviewCanvas.get();
@@ -221,12 +224,7 @@ public class WidgetPreviewLoader {
             unusedBitmap = Bitmap.createBitmap(mPreviewBitmapWidth, mPreviewBitmapHeight,
                     Bitmap.Config.ARGB_8888);
         }
-
-        Bitmap preview = null;
-
-        if (packageValid) {
-            preview = readFromDb(name, unusedBitmap);
-        }
+        Bitmap preview = readFromDb(name, unusedBitmap);
 
         if (preview != null) {
             synchronized(mLoadedPreviews) {
@@ -520,13 +518,11 @@ public class WidgetPreviewLoader {
             previewWidth = previewDrawableWidth * cellHSpan;
             previewHeight = previewDrawableHeight * cellVSpan;
 
-            defaultPreview = Bitmap.createBitmap(previewWidth, previewHeight,
-                    Config.ARGB_8888);
+            defaultPreview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             final Canvas c = mCachedAppWidgetPreviewCanvas.get();
             c.setBitmap(defaultPreview);
             previewDrawable.setBounds(0, 0, previewWidth, previewHeight);
-            previewDrawable.setTileModeXY(Shader.TileMode.REPEAT,
-                    Shader.TileMode.REPEAT);
+            previewDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
             previewDrawable.draw(c);
             c.setBitmap(null);
 
