@@ -107,4 +107,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"วิดเจ็ต"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"การตั้งค่า"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"กำลังรอ"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"กำลังดาวน์โหลด"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"กำลังติดตั้ง"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"ไม่รู้จัก"</string>
+    <string name="package_state_error" msgid="6858560020210815018">"ข้อผิดพลาด"</string>
 </resources>

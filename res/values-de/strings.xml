@@ -84,7 +84,7 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startbildschirm %1$d von %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Apps-Seite %1$d von %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Widgets-Seite %1$d von %2$d"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Willkommen"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Hallo!"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Gerät personalisieren"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
@@ -107,4 +107,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hintergründe"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Einstellungen"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"Warten"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"Download läuft"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"Installation"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"Unbekannt"</string>
+    <string name="package_state_error" msgid="6858560020210815018">"Fehler"</string>
 </resources>

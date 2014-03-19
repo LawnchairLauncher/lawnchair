@@ -107,4 +107,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"위젯"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"배경화면"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"설정"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"대기 중"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"다운로드 중"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"설치 중"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
+    <string name="package_state_error" msgid="6858560020210815018">"오류"</string>
 </resources>
