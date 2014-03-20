@@ -505,11 +505,11 @@ public class Launcher extends Activity
     }
 
     /**
-     * To be overridden by subclasses to create the custom content and call
+     * To be overridden by subclasses to populate the custom content container and call
      * {@link #addToCustomContentPage}. This will only be invoked if
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
-    protected void addCustomContentToLeft() {
+    protected void populateCustomContentContainer() {
     }
 
     /**
@@ -539,8 +539,8 @@ public class Launcher extends Activity
 
         if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
             // Create the custom content page and call the subclass to populate it.
-            mWorkspace.createCustomContentPage();
-            addCustomContentToLeft();
+            mWorkspace.createCustomContentContainer();
+            populateCustomContentContainer();
         } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
             mWorkspace.removeCustomContentPage();
         }
@@ -1030,12 +1030,6 @@ public class Launcher extends Activity
         // debounce excess onHide calls.
         if (mWorkspace.getCustomContentCallbacks() != null) {
             mWorkspace.getCustomContentCallbacks().onHide();
-        }
-    }
-
-    protected void onFinishBindingItems() {
-        if (mWorkspace != null && hasCustomContentToLeft() && mWorkspace.hasCustomContent()) {
-            addCustomContentToLeft();
         }
     }
 
@@ -2373,7 +2367,7 @@ public class Launcher extends Activity
                 final String shortcutClass = intent.getComponent().getClassName();
 
                 if (shortcutClass.equals(WidgetAdder.class.getName())) {
-                    showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+                    onClickAddWidgetButton();
                     return;
                 } else if (shortcutClass.equals(MemoryDumpActivity.class.getName())) {
                     MemoryDumpActivity.startDump(this);
@@ -2466,6 +2460,14 @@ public class Launcher extends Activity
         showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
     }
 
+    /**
+     * Event handler for the (Add) Widgets button that appears after a long press
+     * on the home screen.
+     */
+    protected void onClickAddWidgetButton() {
+        showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+    }
+
     public void onTouchDownAllAppsButton(View v) {
         // Provide the same haptic feedback that the system offers for virtual keys.
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
@@ -2522,7 +2524,8 @@ public class Launcher extends Activity
         String packageName = componentName.getPackageName();
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivitySafely(null, intent, "startApplicationDetailsActivity");
     }
 
@@ -2877,7 +2880,7 @@ public class Launcher extends Activity
                 mWorkspaceBackgroundDrawable : null);
     }
 
-    void updateWallpaperVisibility(boolean visible) {
+    protected void changeWallpaperVisiblity(boolean visible) {
         int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int curflags = getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
@@ -3787,9 +3790,9 @@ public class Launcher extends Activity
 
         // Create the custom content page (this call updates mDefaultScreen which calls
         // setCurrentPage() so ensure that all pages are added before calling this).
-        // The actual content of the custom page will be added during onFinishBindingItems().
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            mWorkspace.createCustomContentPage();
+        if (hasCustomContentToLeft()) {
+            mWorkspace.createCustomContentContainer();
+            populateCustomContentContainer();
         }
     }
 
@@ -4071,13 +4074,6 @@ public class Launcher extends Activity
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
-
-        mWorkspace.post(new Runnable() {
-            @Override
-            public void run() {
-                onFinishBindingItems();
-            }
-        });
     }
 
     public boolean isAllAppsButtonRank(int rank) {
