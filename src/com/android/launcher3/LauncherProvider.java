@@ -71,7 +71,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -767,6 +767,16 @@ public class LauncherProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
+            }
+
+            if (version < 17) {
+                // We use the db version upgrade here to identify users who may not have seen
+                // clings yet (because they weren't available), but for whom the clings are now
+                // available (tablet users). Because one of the possible cling flows (migration)
+                // is very destructive (wipes out workspaces), we want to prevent this from showing
+                // until clear data. We do so by marking that the clings have been shown.
+                LauncherClings.synchonouslyMarkFirstRunClingDismissed(mContext);
+                version = 17;
             }
 
             if (version != DATABASE_VERSION) {

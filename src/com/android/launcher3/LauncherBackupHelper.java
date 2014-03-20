@@ -50,7 +50,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -135,6 +137,8 @@ public class LauncherBackupHelper implements BackupHelper {
     };
 
     private static final int SCREEN_RANK_INDEX = 2;
+
+    private static IconCache mIconCache;
 
     private final Context mContext;
 
@@ -441,14 +445,12 @@ public class LauncherBackupHelper implements BackupHelper {
     private void backupIcons(Journal in, BackupDataOutput data, Journal out,
             ArrayList<Key> keys) throws IOException {
         // persist icons that haven't been persisted yet
-        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (appState == null) {
+        if (!initializeIconCache()) {
             dataChanged(); // try again later
             if (DEBUG) Log.d(TAG, "Launcher is not initialized, delaying icon backup");
             return;
         }
         final ContentResolver cr = mContext.getContentResolver();
-        final IconCache iconCache = appState.getIconCache();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
 
         // read the old ID set
@@ -487,9 +489,9 @@ public class LauncherBackupHelper implements BackupHelper {
                         if (DEBUG) Log.d(TAG, "I can count this high: " + out.rows);
                         if ((out.rows - startRows) < MAX_ICONS_PER_PASS) {
                             if (VERBOSE) Log.v(TAG, "saving icon " + backupKey);
-                            Bitmap icon = iconCache.getIcon(intent);
+                            Bitmap icon = mIconCache.getIcon(intent);
                             keys.add(key);
-                            if (icon != null && !iconCache.isDefaultIcon(icon)) {
+                            if (icon != null && !mIconCache.isDefaultIcon(icon)) {
                                 byte[] blob = packIcon(dpi, icon);
                                 writeRowToBackup(key, blob, out, data);
                             }
@@ -530,25 +532,33 @@ public class LauncherBackupHelper implements BackupHelper {
         if (VERBOSE) Log.v(TAG, "unpacking icon " + key.id);
         if (DEBUG) Log.d(TAG, "read (" + buffer.length + "): " +
                 Base64.encodeToString(buffer, 0, dataSize, Base64.NO_WRAP));
+
         try {
             Resource res = unpackIcon(buffer, 0, dataSize);
-            if (DEBUG) Log.d(TAG, "unpacked " + res.dpi + " dpi icon");
-            if (DEBUG_PAYLOAD) Log.d(TAG, "read " +
-                    Base64.encodeToString(res.data, 0, res.data.length,
-                            Base64.NO_WRAP));
+            if (DEBUG) {
+                Log.d(TAG, "unpacked " + res.dpi + " dpi icon");
+            }
+            if (DEBUG_PAYLOAD) {
+                Log.d(TAG, "read " +
+                        Base64.encodeToString(res.data, 0, res.data.length,
+                                Base64.NO_WRAP));
+            }
             Bitmap icon = BitmapFactory.decodeByteArray(res.data, 0, res.data.length);
             if (icon == null) {
                 Log.w(TAG, "failed to unpack icon for " + key.name);
             }
 
             if (!mRestoreEnabled) {
-                if (VERBOSE) Log.v(TAG, "restore not enabled: skipping database mutation");
+                if (VERBOSE) {
+                    Log.v(TAG, "restore not enabled: skipping database mutation");
+                }
                 return;
             } else {
-                // future site of icon cache mutation
+                IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(key.name),
+                        icon, res.dpi);
             }
-        } catch (InvalidProtocolBufferNanoException e) {
-            Log.e(TAG, "failed to decode icon", e);
+        } catch (IOException e) {
+            Log.d(TAG, "failed to save restored icon for: " + key.name, e);
         }
     }
 
@@ -566,15 +576,13 @@ public class LauncherBackupHelper implements BackupHelper {
             ArrayList<Key> keys) throws IOException {
         // persist static widget info that hasn't been persisted yet
         final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (appState == null) {
-            dataChanged(); // try again later
-            if (DEBUG) Log.d(TAG, "Launcher is not initialized, delaying widget backup");
+        if (appState == null || !initializeIconCache()) {
+            Log.w(TAG, "Failed to get icon cache during restore");
             return;
         }
         final ContentResolver cr = mContext.getContentResolver();
         final WidgetPreviewLoader previewLoader = new WidgetPreviewLoader(mContext);
         final PagedViewCellLayout widgetSpacingLayout = new PagedViewCellLayout(mContext);
-        final IconCache iconCache = appState.getIconCache();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
         final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
         if (DEBUG) Log.d(TAG, "cellWidthPx: " + profile.cellWidthPx);
@@ -617,7 +625,7 @@ public class LauncherBackupHelper implements BackupHelper {
                         if (VERBOSE) Log.v(TAG, "saving widget " + backupKey);
                         previewLoader.setPreviewSize(spanX * profile.cellWidthPx,
                                 spanY * profile.cellHeightPx, widgetSpacingLayout);
-                        byte[] blob = packWidget(dpi, previewLoader, iconCache, provider);
+                        byte[] blob = packWidget(dpi, previewLoader, mIconCache, provider);
                         keys.add(key);
                         writeRowToBackup(key, blob, out, data);
 
@@ -882,7 +890,7 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Deserialize an icon resource from persistence, after verifying checksum wrapper. */
-    private Resource unpackIcon(byte[] buffer, int offset, int dataSize)
+    private static Resource unpackIcon(byte[] buffer, int offset, int dataSize)
             throws InvalidProtocolBufferNanoException {
         Resource res = new Resource();
         MessageNano.mergeFrom(res, readCheckedBytes(buffer, offset, dataSize));
@@ -1080,7 +1088,7 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Unwrap a proto message from a CheckedMessage, verifying the checksum. */
-    private byte[] readCheckedBytes(byte[] buffer, int offset, int dataSize)
+    private static byte[] readCheckedBytes(byte[] buffer, int offset, int dataSize)
             throws InvalidProtocolBufferNanoException {
         CheckedMessage wrapper = new CheckedMessage();
         MessageNano.mergeFrom(wrapper, buffer, offset, dataSize);
@@ -1102,6 +1110,23 @@ public class LauncherBackupHelper implements BackupHelper {
             }
         }
         return mWidgetMap.get(component);
+    }
+
+
+    private boolean initializeIconCache() {
+        if (mIconCache != null) {
+            return true;
+        }
+
+        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        if (appState == null) {
+            Throwable stackTrace = new Throwable();
+            stackTrace.fillInStackTrace();
+            Log.w(TAG, "Failed to get app state during backup/restore", stackTrace);
+            return false;
+        }
+        mIconCache = appState.getIconCache();
+        return mIconCache != null;
     }
 
     private class KeyParsingException extends Throwable {

@@ -32,7 +32,7 @@ import java.util.List;
  */
 class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
-    
+
     /** The list off all apps. */
     public ArrayList<AppInfo> data =
             new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
@@ -115,8 +115,7 @@ class AllAppsList {
                 data.remove(i);
             }
         }
-        // This is more aggressive than it needs to be.
-        mIconCache.flush();
+        mIconCache.remove(packageName);
     }
 
     /**
