@@ -112,6 +112,18 @@ public class TiledImageView extends FrameLayout {
         //setTileSource(new ColoredTiles());
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        // need to update inner view's visibility because it seems like we're causing it to draw
+        // from {@link #dispatchDraw} or {@link #invalidate} even if we are invisible.
+        if (USE_TEXTURE_VIEW) {
+            mTextureView.setVisibility(visibility);
+        } else {
+            mGLSurfaceView.setVisibility(visibility);
+        }
+    }
+
     public void destroy() {
         if (!IS_SUPPORTED) {
             return;

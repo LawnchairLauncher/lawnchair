@@ -24,11 +24,21 @@
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 
+    <style name="Theme.WallpaperPicker" parent="Theme.WallpaperCropper">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+
     <style name="WallpaperCropperActionBar" parent="android:style/Widget.Holo.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">#88000000</item>
     </style>
 
     <style name="Theme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
+    </style>
+
+    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.Holo.ActionButton">
+        <item name="android:textColor">#ffffffff</item>
     </style>
 </resources>
