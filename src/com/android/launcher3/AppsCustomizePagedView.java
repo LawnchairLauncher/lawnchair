@@ -225,17 +225,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     private Rect mTmpRect = new Rect();
 
-    // Used for drawing shortcut previews
-    BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
-    PaintCache mCachedShortcutPreviewPaint = new PaintCache();
-    CanvasCache mCachedShortcutPreviewCanvas = new CanvasCache();
-
-    // Used for drawing widget previews
-    CanvasCache mCachedAppWidgetPreviewCanvas = new CanvasCache();
-    RectCache mCachedAppWidgetPreviewSrcRect = new RectCache();
-    RectCache mCachedAppWidgetPreviewDestRect = new RectCache();
-    PaintCache mCachedAppWidgetPreviewPaint = new PaintCache();
-
     WidgetPreviewLoader mWidgetPreviewLoader;
 
     private boolean mInBulkBind;
