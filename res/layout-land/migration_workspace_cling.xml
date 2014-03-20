@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
         android:paddingEnd="60dp"
+        android:paddingRight="60dp"
         android:orientation="vertical">
         <LinearLayout
             android:id="@+id/migration_workspace_cling_bubble"
