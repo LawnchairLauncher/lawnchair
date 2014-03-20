@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -121,6 +122,7 @@ public class WidgetPreviewLoader {
     private RectCache mCachedAppWidgetPreviewSrcRect = new RectCache();
     private RectCache mCachedAppWidgetPreviewDestRect = new RectCache();
     private PaintCache mCachedAppWidgetPreviewPaint = new PaintCache();
+    private PaintCache mDefaultAppWidgetPreviewPaint = new PaintCache();
     private String mCachedSelectQuery;
     private BitmapFactoryOptionsCache mCachedBitmapFactoryOptions = new BitmapFactoryOptionsCache();
 
@@ -521,9 +523,16 @@ public class WidgetPreviewLoader {
             defaultPreview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             final Canvas c = mCachedAppWidgetPreviewCanvas.get();
             c.setBitmap(defaultPreview);
-            previewDrawable.setBounds(0, 0, previewWidth, previewHeight);
-            previewDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-            previewDrawable.draw(c);
+            Paint p = mDefaultAppWidgetPreviewPaint.get();
+            if (p == null) {
+                p = new Paint();
+                p.setShader(new BitmapShader(previewDrawable.getBitmap(),
+                        Shader.TileMode.REPEAT, Shader.TileMode.REPEAT));
+                mDefaultAppWidgetPreviewPaint.set(p);
+            }
+            final Rect dest = mCachedAppWidgetPreviewDestRect.get();
+            dest.set(0, 0, previewWidth, previewHeight);
+            c.drawRect(dest, p);
             c.setBitmap(null);
 
             // Draw the icon in the top left corner
