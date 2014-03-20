@@ -995,18 +995,23 @@ public class LauncherModel extends BroadcastReceiver {
         Runnable r = new Runnable() {
             @Override
             public void run() {
+                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
                 // Clear the table
-                cr.delete(uri, null, null);
+                ops.add(ContentProviderOperation.newDelete(uri).build());
                 int count = screensCopy.size();
-                ContentValues[] values = new ContentValues[count];
                 for (int i = 0; i < count; i++) {
                     ContentValues v = new ContentValues();
                     long screenId = screensCopy.get(i);
                     v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
                     v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    values[i] = v;
+                    ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
                 }
-                cr.bulkInsert(uri, values);
+
+                try {
+                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 synchronized (sBgLock) {
                     sBgWorkspaceScreens.clear();

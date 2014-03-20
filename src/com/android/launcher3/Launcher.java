@@ -210,6 +210,7 @@ public class Launcher extends Activity
 
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
+    public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT_FOLDER_CLOSE = 400;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
 
     private static final Object sLock = new Object();
