@@ -302,6 +302,15 @@ public class LauncherModel extends BroadcastReceiver {
             return;
         }
 
+        final ArrayList<AppInfo> restoredAppsFinal = new ArrayList<AppInfo>();
+        Iterator<AppInfo> iter = allAppsApps.iterator();
+        while (iter.hasNext()) {
+            ItemInfo a = iter.next();
+            if (LauncherModel.appWasRestored(ctx, a.getIntent())) {
+                restoredAppsFinal.add((AppInfo) a);
+            }
+        }
+
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
             public void run() {
@@ -310,6 +319,9 @@ public class LauncherModel extends BroadcastReceiver {
                         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                         if (callbacks == cb && cb != null) {
                             callbacks.bindAppsAdded(null, null, null, allAppsApps);
+                            if (!restoredAppsFinal.isEmpty()) {
+                                callbacks.bindAppsUpdated(restoredAppsFinal);
+                            }
                         }
                     }
                 });
@@ -333,6 +345,7 @@ public class LauncherModel extends BroadcastReceiver {
             public void run() {
                 final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<ItemInfo>();
                 final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
+                final ArrayList<AppInfo> restoredAppsFinal = new ArrayList<AppInfo>();
 
                 // Get the list of workspace screens.  We need to append to this list and
                 // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
@@ -353,6 +366,11 @@ public class LauncherModel extends BroadcastReceiver {
 
                         // Short-circuit this logic if the icon exists somewhere on the workspace
                         if (LauncherModel.shortcutExists(context, name, launchIntent)) {
+                            // Only InstallShortcutReceiver sends us shortcutInfos, ignore them
+                            if (a instanceof AppInfo &&
+                                    LauncherModel.appWasRestored(context, launchIntent)) {
+                                restoredAppsFinal.add((AppInfo) a);
+                            }
                             continue;
                         }
 
@@ -428,6 +446,9 @@ public class LauncherModel extends BroadcastReceiver {
                                 }
                                 callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
                                         addNotAnimated, addAnimated, null);
+                                if (!restoredAppsFinal.isEmpty()) {
+                                    callbacks.bindAppsUpdated(restoredAppsFinal);
+                                }
                             }
                         }
                     });
@@ -789,6 +810,30 @@ public class LauncherModel extends BroadcastReceiver {
         } finally {
             c.close();
         }
+        return result;
+    }
+
+    /**
+     * Returns true if the shortcuts already exists in the database.
+     * we identify a shortcut by the component name of the intent.
+     */
+    static boolean appWasRestored(Context context, Intent intent) {
+        final ContentResolver cr = context.getContentResolver();
+        final ComponentName component = intent.getComponent();
+        if (component == null) {
+            return false;
+        }
+        String componentName = component.flattenToString();
+        final String where = "intent glob \"*component=" + componentName + "*\" and restored = 1";
+        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{"intent", "restored"}, where, null, null);
+        boolean result = false;
+        try {
+            result = c.moveToFirst();
+        } finally {
+            c.close();
+        }
+        Log.d(TAG, "shortcutWasRestored is " + result + " for " + componentName);
         return result;
     }
 
@@ -1839,7 +1884,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     Launcher.addDumpLog(TAG,
                                             "constructing info for partially restored package",
                                             true);
-                                    info = getRestoredItemInfo(c, titleIndex);
+                                    info = getRestoredItemInfo(c, titleIndex, intent);
                                     intent = getRestoredItemIntent(c, context, intent);
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -2810,7 +2855,7 @@ public class LauncherModel extends BroadcastReceiver {
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex) {
+    public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent) {
         final ShortcutInfo info = new ShortcutInfo();
         info.usingFallbackIcon = true;
         info.setIcon(getFallbackIcon());
@@ -2820,6 +2865,7 @@ public class LauncherModel extends BroadcastReceiver {
             info.title = "";
         }
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        info.restoredIntent = intent;
         return info;
     }
 
@@ -2828,6 +2874,7 @@ public class LauncherModel extends BroadcastReceiver {
      * to the market page for the item.
      */
     private Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
+        final boolean debug = false;
         ComponentName componentName = intent.getComponent();
         Intent marketIntent = new Intent(Intent.ACTION_VIEW);
         Uri marketUri = new Uri.Builder()
@@ -2835,7 +2882,7 @@ public class LauncherModel extends BroadcastReceiver {
                 .authority("details")
                 .appendQueryParameter("id", componentName.getPackageName())
                 .build();
-        Log.d(TAG, "manufactured intent uri: " + marketUri.toString());
+        if (debug) Log.d(TAG, "manufactured intent uri: " + marketUri.toString());
         marketIntent.setData(marketUri);
         return marketIntent;
     }
@@ -2999,6 +3046,10 @@ public class LauncherModel extends BroadcastReceiver {
             ComponentName name = intent.getComponent();
             if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                     Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                return true;
+            }
+            // placeholder shortcuts get special treatment, let them through too.
+            if (info.getRestoredIntent() != null) {
                 return true;
             }
         }
