@@ -842,6 +842,10 @@ public class LauncherBackupHelper implements BackupHelper {
             }
             values.put(Favorites.APPWIDGET_ID, favorite.appWidgetId);
         }
+
+        // Let LauncherModel know we've been here.
+        values.put(LauncherSettings.Favorites.RESTORED, 1);
+
         return values;
     }
 
