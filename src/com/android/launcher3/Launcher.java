@@ -3852,15 +3852,17 @@ public class Launcher extends Activity
         }
 
         // Add the new screens
-        bindAddScreens(newScreens);
+        if (newScreens != null) {
+            bindAddScreens(newScreens);
+        }
 
         // We add the items without animation on non-visible pages, and with
         // animations on the new page (which we will try and snap to).
-        if (!addNotAnimated.isEmpty()) {
+        if (addNotAnimated != null && !addNotAnimated.isEmpty()) {
             bindItems(addNotAnimated, 0,
                     addNotAnimated.size(), false);
         }
-        if (!addAnimated.isEmpty()) {
+        if (addAnimated != null && !addAnimated.isEmpty()) {
             bindItems(addAnimated, 0,
                     addAnimated.size(), true);
         }
