@@ -192,4 +192,14 @@
     <skip />
     <!-- no translation found for settings_button_text (8119458837558863227) -->
     <skip />
+    <!-- no translation found for package_state_enqueued (6227252464303085641) -->
+    <skip />
+    <!-- no translation found for package_state_downloading (4088770468458724721) -->
+    <skip />
+    <!-- no translation found for package_state_installing (7588193972189849870) -->
+    <skip />
+    <!-- no translation found for package_state_unknown (7592128424511031410) -->
+    <skip />
+    <!-- no translation found for package_state_error (6858560020210815018) -->
+    <skip />
 </resources>

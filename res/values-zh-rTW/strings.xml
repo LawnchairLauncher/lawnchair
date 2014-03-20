@@ -107,4 +107,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"小工具"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"設定"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"等待中"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"下載中…"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"安裝中"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
+    <string name="package_state_error" msgid="6858560020210815018">"發生錯誤"</string>
 </resources>

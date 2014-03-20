@@ -107,4 +107,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widget"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Kertas dinding"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Tetapan"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"Menunggu"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"Memuat turun"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"Memasang"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"Tidak diketahui"</string>
+    <string name="package_state_error" msgid="6858560020210815018">"Ralat"</string>
 </resources>

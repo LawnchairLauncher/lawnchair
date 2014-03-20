@@ -35,7 +35,7 @@
     <string name="rename_folder_label" msgid="3727762225964550653">"አቃፊ ስም"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"አቃፊ ዳግም ሰይም"</string>
     <string name="rename_action" msgid="5559600076028658757">"እሺ"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"ተው"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"ይቅር"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"ወደ መነሻ ማያ ገጽ ያክሉ"</string>
     <string name="group_applications" msgid="3797214114206693605">"መተግበሪያዎች"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"አቋራጮች"</string>
@@ -107,4 +107,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ፍርግሞች"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"የግድግዳ ወረቀቶች"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ቅንብሮች"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"በመጠበቅ ላይ"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"በማውረድ ላይ"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"በመጫን ላይ"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"የማይታወቅ"</string>
+    <string name="package_state_error" msgid="6858560020210815018">"ስህተት"</string>
 </resources>
