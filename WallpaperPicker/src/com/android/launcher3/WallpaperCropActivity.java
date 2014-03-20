@@ -75,6 +75,7 @@ public class WallpaperCropActivity extends Activity {
 
     protected CropView mCropView;
     protected Uri mUri;
+    private View mSetWallpaperButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,10 +112,12 @@ public class WallpaperCropActivity extends Activity {
                         cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
                     }
                 });
+        mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);
 
         // Load image in background
         final BitmapRegionTileSource.UriBitmapSource bitmapSource =
                 new BitmapRegionTileSource.UriBitmapSource(this, imageUri, 1024);
+        mSetWallpaperButton.setVisibility(View.INVISIBLE);
         Runnable onLoad = new Runnable() {
             public void run() {
                 if (bitmapSource.getLoadingState() != BitmapSource.State.LOADED) {
@@ -122,6 +125,8 @@ public class WallpaperCropActivity extends Activity {
                             getString(R.string.wallpaper_load_fail),
                             Toast.LENGTH_LONG).show();
                     finish();
+                } else {
+                    mSetWallpaperButton.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -270,6 +275,9 @@ public class WallpaperCropActivity extends Activity {
                 return ExifInterface.getRotationForOrientationValue(ori.shortValue());
             }
         } catch (IOException e) {
+            Log.w(LOGTAG, "Getting exif data failed", e);
+        } catch (NullPointerException e) {
+            // Sometimes the ExifInterface has an internal NPE if Exif data isn't valid
             Log.w(LOGTAG, "Getting exif data failed", e);
         } finally {
             Utils.closeSilently(bis);
