@@ -369,13 +369,6 @@ public class WallpaperCropActivity extends Activity {
 
         Point inSize = mCropView.getSourceDimensions();
 
-        // due to rounding errors in the cropview renderer the edges can be slightly offset
-        // therefore we ensure that the boundaries are sanely defined
-        cropRect.left = Math.max(0, cropRect.left);
-        cropRect.right = Math.min(inSize.x, cropRect.right);
-        cropRect.top = Math.max(0, cropRect.top);
-        cropRect.bottom = Math.min(inSize.y, cropRect.bottom);
-
         int cropRotation = mCropView.getImageRotation();
         float cropScale = mCropView.getWidth() / (float) cropRect.width();
 
@@ -386,6 +379,14 @@ public class WallpaperCropActivity extends Activity {
         rotateMatrix.mapPoints(rotatedInSize);
         rotatedInSize[0] = Math.abs(rotatedInSize[0]);
         rotatedInSize[1] = Math.abs(rotatedInSize[1]);
+
+
+        // due to rounding errors in the cropview renderer the edges can be slightly offset
+        // therefore we ensure that the boundaries are sanely defined
+        cropRect.left = Math.max(0, cropRect.left);
+        cropRect.right = Math.min(rotatedInSize[0], cropRect.right);
+        cropRect.top = Math.max(0, cropRect.top);
+        cropRect.bottom = Math.min(rotatedInSize[1], cropRect.bottom);
 
         // ADJUST CROP WIDTH
         // Extend the crop all the way to the right, for parallax
