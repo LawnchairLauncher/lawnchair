@@ -26,32 +26,41 @@
         launcher:spanY="2" />
     <folder launcher:screen="1" launcher:x="0" launcher:y="3" launcher:title="@string/google_title">
         <favorite
-            launcher:className="com.google.android.maps.MapsActivity"
-            launcher:packageName="com.google.android.apps.maps" />
-        <favorite
             launcher:className="com.google.android.gm.GmailActivity"
             launcher:packageName="com.google.android.gm" />
         <favorite
             launcher:className="com.google.android.apps.plus.phone.HomeActivity"
             launcher:packageName="com.google.android.apps.plus" />
         <favorite
+            launcher:className="com.google.android.maps.MapsActivity"
+            launcher:packageName="com.google.android.apps.maps" />
+        <favorite
             launcher:className="com.android.music.activitymanagement.TopLevelActivity"
             launcher:packageName="com.google.android.music" />
+        <favorite
+            launcher:className="com.google.android.youtube.videos.EntryPoint"
+            launcher:packageName="com.google.android.videos" />
+        <favorite
+            launcher:className="com.google.android.apps.books.app.BooksActivity"
+            launcher:packageName="com.google.android.apps.books" />
+        <favorite
+            launcher:className="com.google.apps.dots.android.app.activity.CurrentsStartActivity"
+            launcher:packageName="com.google.android.apps.magazines" />
+        <favorite
+            launcher:className="com.google.android.gms.games.ui.destination.main.MainActivity"
+            launcher:packageName="com.google.android.play.games" />
+        <favorite
+            launcher:className="com.google.android.apps.docs.app.NewMainProxyActivity"
+            launcher:packageName="com.google.android.apps.docs" />
         <favorite
             launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity"
             launcher:packageName="com.google.android.youtube" />
         <favorite
-            launcher:className="com.google.android.talk.SigningInActivity"
-            launcher:packageName="com.google.android.talk" />
-        <favorite
-            launcher:className="com.android.calendar.AllInOneActivity"
-            launcher:packageName="com.google.android.calendar" />
-        <favorite
-            launcher:className="com.google.android.maps.driveabout.app.DestinationActivity"
-            launcher:packageName="com.google.android.apps.maps" />
-        <favorite
             launcher:className="com.google.android.apps.plus.phone.ConversationListActivity"
             launcher:packageName="com.google.android.apps.plus" />
+        <favorite
+            launcher:className="com.google.android.talk.SigningInActivity"
+            launcher:packageName="com.google.android.talk" />
     </folder>
     <favorite
         launcher:packageName="com.andrew.apollo"
