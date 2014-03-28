@@ -31,6 +31,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import com.android.launcher3.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity
@@ -38,7 +39,6 @@ public class SettingsActivity extends PreferenceActivity
     private static final String TAG = "Launcher3.SettingsActivity";
 
     private SharedPreferences mSettings;
-    private List<Header> mHeaders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,6 @@ public class SettingsActivity extends PreferenceActivity
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.preferences_headers, target);
         updateHeaders(target);
-        mHeaders = target;
     }
 
     private void updateHeaders(List<Header> headers) {
@@ -115,7 +114,8 @@ public class SettingsActivity extends PreferenceActivity
         if (adapter == null) {
             super.setListAdapter(null);
         } else {
-            super.setListAdapter(new HeaderAdapter(this, mHeaders));
+            List<Header> headers = getHeadersFromAdapter(adapter);
+            super.setListAdapter(new HeaderAdapter(this, headers));
         }
     }
 
@@ -124,6 +124,15 @@ public class SettingsActivity extends PreferenceActivity
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putBoolean(SettingsProvider.SETTINGS_CHANGED, true);
         editor.commit();
+    }
+
+    private List<Header> getHeadersFromAdapter(ListAdapter adapter) {
+        List<Header> headers = new ArrayList<Header>();
+        int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
+            headers.add((Header)adapter.getItem(i));
+        }
+        return headers;
     }
 
     public static class HomescreenFragment extends PreferenceFragment {

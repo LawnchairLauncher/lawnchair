@@ -1539,8 +1539,8 @@ public class Workspace extends SmoothPagedView
         boolean isOnLastPageBeforeCustomContent = false;
         if (hasCustomContent()) {
             int customContentWidth = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).getMeasuredWidth();
-            isOnLastPageBeforeCustomContent = (mOverScrollX < customContentWidth && (!hasCustomContent() || isLayoutRtl())) ||
-                    (mOverScrollX > mMaxScrollX - customContentWidth && (!hasCustomContent() || !isLayoutRtl()));
+            isOnLastPageBeforeCustomContent = (mOverScrollX < customContentWidth && !isLayoutRtl()) ||
+                    ((mOverScrollX > mMaxScrollX - customContentWidth) && isLayoutRtl());
         }
         mUseTransitionEffect = !isOnLastPageBeforeCustomContent && mState == State.NORMAL && !mIsSwitchingState;
 

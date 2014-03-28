@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"باش بەت"</string>
+    <string name="uid_name" msgid="7820867637514617527">"ئاندىرويىد يادرولۇق ئەپلەر"</string>
+    <string name="folder_name" msgid="7371454440695724752"/>
+    <string name="wallpaper_instructions" msgid="563973358787555519">"تام قەغەز تەڭشىكى"</string>
+  <plurals name="number_of_items_selected">
+    <item quantity="zero" msgid="7464587177007785408">"%1$d تاللاندى"</item>
+    <item quantity="one" msgid="142482526010824029">"%1$d تاللاندى"</item>
+    <item quantity="other" msgid="1418352074806573570">"%1$d تاللاندى"</item>
+  </plurals>
+    <string name="wallpaper_accessibility_name" msgid="1655953108132967972">"%2$d دىن %1$d تام قەغەز" </string>
+    <string name="announce_selection" msgid="8338254712932127413">"<xliff:g id="LABEL">%1$s</xliff:g> تاللاندى"</string>
+    <string name="wallpaper_delete" msgid="8095005658756613921">"ئۆچۈر"</string>
+    <string name="pick_image" msgid="1272073934062909527">"سۈرەت تاللاڭ"</string>
+    <string name="pick_wallpaper" msgid="8179698221502010609">"تام قەغەزلەر"</string>
+    <string name="crop_wallpaper" msgid="8334345984491368009">"تام قەغەز كەس"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"ئەپ ئورنىتىلمىغان."</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"ئەپچەلەر"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"ئەپچەلەر"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"ئەسلەكنى كۆرسەت"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"چېكىپ بېسىلسا ئەپچە تاللىغىلى بولىدۇ."</string>
+    <string name="market" msgid="2619650989819296998">"دۇكان"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"بۇ باش ئېكرانغا تۈر تاشلىغىلى بولمايدۇ."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"قۇرىدىغان ئەپچەنى تاللاڭ"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"قىسقۇچ ئاتى"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"قىسقۇچ ئاتىنى ئۆزگەرت"</string>
+    <string name="rename_action" msgid="5559600076028658757">"جەزملە"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"ۋاز كەچ"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"باش ئېكرانغا قوش"</string>
+    <string name="group_applications" msgid="3797214114206693605">"ئەپلەر"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"قىسقا يول"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"ئەپچەلەر"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"باش ئېكرانىڭىزدا ئورۇن يوق."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"باش ئېكراندا ئورۇن يوق."</string>
+    <string name="hotseat_out_of_space" msgid="9139760413395605841">"ئاساسىي تەگلىكتە ئورۇن يوق."</string>
+    <string name="invalid_hotseat_item" msgid="1211534262129849507">"ئاساسىي تەگلىك ئۈچۈن بۇ ئەپچە بەك چوڭ."</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">""<xliff:g id="NAME">%s</xliff:g>" قىسقا يول قۇرۇلدى."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">""<xliff:g id="NAME">%s</xliff:g>" قىسقا يول چىقىرىۋېتىلدى."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">""<xliff:g id="NAME">%s</xliff:g>" قىسقا يول مەۋجۇد."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"قىسقا يول تاللاڭ"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"ئەپ تاللاڭ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"ئەپلەر"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"باش بەت"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"چىقىرىۋەت"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ئۆچۈر"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"چىقىرىۋەت"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ئۆچۈر"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"ئەپ ئۇچۇرى"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"ئىزدە"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"تاۋۇش ئىزدەش"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"ئەپلەر"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"چىقىرىۋەت"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"يېڭىلاش ئۆچۈرەمدۇ"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"ئەپنى ئۆچۈر"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"ئەپ تەپسىلاتى"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 ئەپ تاللاندى"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 ئەپچە تاللاندى"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 قىسقۇچ تاللاندى"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 قىسقا يول تاللاندى"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"قىسقا يول ئورنىتىش"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ئەپنىڭ ئىشلەتكۈچى ئارىلاشمىغان ئەھۋالدا قىسقا يول قۇرۇشقا يول قويىدۇ."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"قىسقا يول ئۆچۈر"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"ئەپنىڭ ئىشلەتكۈچى ئارىلاشمىغان ئەھۋالدا قىسقا يولنى چىقىرىۋېتىشكە يول قويىدۇ."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"باش بەتتىكى تەڭشەك ۋە قىسقا يولنى ئوقۇيدۇ"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"ئەپنىڭ باش بەتتىكى تەڭشەك ۋە قىسقا يولنى ئوقۇشىغا يول قويىدۇ."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"باش بەتتىكى تەڭشەك ۋە قىسقا يولنى ياز"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"ئەپنىڭ باش بەتتىكى تەڭشەك ۋە قىسقا يولنى ئۆزگەرتىشىگە يول قويىدۇ."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"ئەپچە يۈكلەشتە خاتالىق كۆرۈلدى."</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"بۇ سىستېما ئەپ، ئۆچۈرگىلى بولمايدۇ."</string>
+    <string name="dream_name" msgid="1530253749244328964">"Rocket قوزغاتقۇچ"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"ئاتسىز قىسقۇچ"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"باش ئېكران %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"%1$d-بەت، جەمئىي %2$d بەت"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"باش ئېكران %1$d/%2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"%1$d-ئەپ بەت، جەمئىي %2$d بەت"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"%1$d-ئەپچە بەت، جەمئىي %2$d بەت"</string>
+    <string name="first_run_cling_title" msgid="7257389003637362144">"مەرھابا!"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"ئۆزىڭىزنىڭ باش ئېكرانىنى ھاسىل قىلىڭ."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"/>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"/>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"ئەپ ۋە قىسقۇچلار ئۈچۈن تېخىمۇ كۆپ ئېكران قۇرىدۇ"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"بوشلۇقىڭىزنى تەشكىللەڭ"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"تەگلىك چېكىلىپ بېسىپ تۇرۇلسا، تام قەغەز، ئەپچە ۋە تەڭشەكلەرنى باشقۇرىدۇ."</string>
+    <string name="all_apps_cling_title" msgid="34929250753095858">"ئەپلەرنى تاللاڭ"</string>
+    <string name="all_apps_cling_add_item" msgid="400866858451850784">"باش ئېكرانغا ئەپ قوشۇشتا، ئەپنى تۇتۇپ، ئۇنى بېسىپ تۇرۇڭ."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"بۇ بىر قىسقۇچ"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"ئوخشاش بىر قىسقۇچ قۇرۇشتا، مەلۇم بىر ئەپنى چېكىپ بېسىپ تۇرۇپ ئاندىن ئۇنى باشقا بىر ئەپ ئۈستىگە يۆتكەڭ."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"جەزملە"</string>
+    <string name="folder_opened" msgid="94695026776264709">"قىسقۇچ ئېچىلدى، سىغىمى <xliff:g id="WIDTH">%1$d</xliff:g>×<xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"چېكىلسە قىسقۇچ ياپىدۇ"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"چېكىلسە ئات ئۆزگەرتىشنى ساقلايدۇ"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"قىسقۇچ تاقالدى"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"قىسقۇچ ئاتى <xliff:g id="NAME">%1$s</xliff:g> غا ئۆزگەردى"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"قىسقۇچ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="custom_workspace_cling_title_1" msgid="3750880082935033085"/>
+    <string name="custom_workspace_cling_description_1" msgid="939966842147696724"/>
+    <string name="custom_workspace_cling_title_2" msgid="662588444436552198"/>
+    <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"/>
+    <string name="widget_button_text" msgid="2880537293434387943">"ئەپچەلەر"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"تام قەغەزلەر"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"تەڭشەكلەر"</string>
+</resources>
