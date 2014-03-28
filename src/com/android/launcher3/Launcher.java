@@ -4454,6 +4454,10 @@ public class Launcher extends Activity
                 !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
     }
 
+    protected boolean hasRunFirstRunActivity() {
+        return mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
+    }
+
     public boolean showFirstRunActivity() {
         if (shouldRunFirstRunActivity() &&
                 hasFirstRunActivity()) {
@@ -4541,7 +4545,6 @@ public class Launcher extends Activity
         if (mPageIndicators != null) mPageIndicators.setAlpha(0f);
         if (mSearchDropTargetBar != null) mSearchDropTargetBar.hideSearchBar(false);
     }
-
 
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
         ResolveInfo ri = getPackageManager().resolveActivity(appLaunchIntent, 0);
