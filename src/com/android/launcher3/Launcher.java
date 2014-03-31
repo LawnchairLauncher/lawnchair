@@ -1011,10 +1011,17 @@ public class Launcher extends Activity
         final PopupMenu popupMenu = new PopupMenu(this, v);
         final Menu menu = popupMenu.getMenu();
         popupMenu.inflate(R.menu.apps_customize_sort_mode);
-        AppsCustomizePagedView.SortMode sortMode = mAppsCustomizeContent.getSortMode();
-        menu.findItem(R.id.sort_mode_title).setChecked(sortMode == AppsCustomizePagedView.SortMode.Title);
-        menu.findItem(R.id.sort_mode_launch_count).setChecked(sortMode == AppsCustomizePagedView.SortMode.LaunchCount);
-        menu.findItem(R.id.sort_mode_install_time).setChecked(sortMode == AppsCustomizePagedView.SortMode.InstallTime);
+        switch(mAppsCustomizeContent.getSortMode()) {
+            case Title:
+                menu.findItem(R.id.sort_mode_title).setChecked(true);
+                break;
+            case LaunchCount:
+                menu.findItem(R.id.sort_mode_launch_count).setChecked(true);
+                break;
+            case InstallTime:
+                menu.findItem(R.id.sort_mode_install_time).setChecked(true);
+                break;
+        }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
