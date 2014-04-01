@@ -272,5 +272,5 @@ s -->
     <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
     <string name="package_state_unknown">Unknown</string>
     <!-- Label on an icon that references an uninstalled package, for which restore from market has failed. [CHAR_LIMIT=15] -->
-    <string name="package_state_error">Error</string>
+    <string name="package_state_error">Not restored</string>
 </resources>
