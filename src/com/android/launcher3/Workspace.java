@@ -696,6 +696,12 @@ public class Workspace extends SmoothPagedView
         // Log to disk
         Launcher.addDumpLog(TAG, "11683562 - convertFinalScreenToEmptyScreenIfNecessary()", true);
 
+        if (mLauncher.isWorkspaceLoading()) {
+            // Invalid and dangerous operation if workspace is loading
+            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
+            return;
+        }
+
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
         long finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
@@ -726,6 +732,12 @@ public class Workspace extends SmoothPagedView
             final int delay, final boolean stripEmptyScreens) {
         // Log to disk
         Launcher.addDumpLog(TAG, "11683562 - removeExtraEmptyScreen()", true);
+        if (mLauncher.isWorkspaceLoading()) {
+            // Don't strip empty screens if the workspace is still loading
+            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
+            return;
+        }
+
         if (delay > 0) {
             postDelayed(new Runnable() {
                 @Override
@@ -810,6 +822,11 @@ public class Workspace extends SmoothPagedView
     public long commitExtraEmptyScreen() {
         // Log to disk
         Launcher.addDumpLog(TAG, "11683562 - commitExtraEmptyScreen()", true);
+        if (mLauncher.isWorkspaceLoading()) {
+            // Invalid and dangerous operation if workspace is loading
+            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
+            return -1;
+        }
 
         int index = getPageIndexForScreenId(EXTRA_EMPTY_SCREEN_ID);
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
@@ -867,7 +884,8 @@ public class Workspace extends SmoothPagedView
         Launcher.addDumpLog(TAG, "11683562 - stripEmptyScreens()", true);
 
         if (mLauncher.isWorkspaceLoading()) {
-            // Don't strip empty screens if the workspace is still loading
+            // Don't strip empty screens if the workspace is still loading.
+            // This is dangerous and can result in data loss.
             Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
             return;
         }
@@ -2021,6 +2039,11 @@ public class Workspace extends SmoothPagedView
 
     protected void onEndReordering() {
         super.onEndReordering();
+
+        if (mLauncher.isWorkspaceLoading()) {
+            // Invalid and dangerous operation if workspace is loading
+            return;
+        }
 
         hideOutlines();
         mScreenOrder.clear();
