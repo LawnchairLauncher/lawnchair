@@ -153,6 +153,15 @@ public class SettingsActivity extends PreferenceActivity
         }
     }
 
+    public static class DrawerFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            addPreferencesFromResource(R.xml.preferences_drawer);
+        }
+    }
+
     private static class HeaderAdapter extends ArrayAdapter<Header> {
         private static final int HEADER_TYPE_NORMAL = 0;
         private static final int HEADER_TYPE_CATEGORY = 1;

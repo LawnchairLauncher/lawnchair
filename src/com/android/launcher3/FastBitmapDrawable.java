@@ -32,7 +32,7 @@ class FastBitmapDrawable extends Drawable {
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
     FastBitmapDrawable(Bitmap b) {
-	mAlpha = 255;
+    	mAlpha = 255;
         mBitmap = b;
         if (b != null) {
             mWidth = mBitmap.getWidth();
