@@ -111,5 +111,6 @@
     <string name="package_state_downloading" msgid="4088770468458724721">"Téléchargement…"</string>
     <string name="package_state_installing" msgid="7588193972189849870">"Installation…"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
-    <string name="package_state_error" msgid="6858560020210815018">"Erreur"</string>
+    <!-- no translation found for package_state_error (7672093962724223588) -->
+    <skip />
 </resources>
