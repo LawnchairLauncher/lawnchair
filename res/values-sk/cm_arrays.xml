@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Fina</item>
-    <item>Comprimida</item>
+    <item>Pravidelný</item>
+    <item>Svetlý</item>
+    <item>Zhustený</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Ninguno</item>
-    <item>Zoom entrante</item>
-    <item>Zoom saliente</item>
-    <item>Rotar arriba</item>
-    <item>Rotar abajo</item>
-    <item>Cúbico entrante</item>
-    <item>Cúbico saliente</item>
-    <item>Apilar</item>
-    <item>Acordeón</item>
-    <item>Voltear</item>
-    <item>Cilíndrico entrante</item>
-    <item>Cilíndrico saliente</item>
-    <item>Carrusel</item>
-    <item>Perspectiva</item>
+    <item>Žiadny</item>
+    <item>Priblíženie</item>
+    <item>Oddialenie</item>
+    <item>Otočenie hore</item>
+    <item>Otočenie dolu</item>
+    <item>Kocka zvnútra</item>
+    <item>Kocka zvonku</item>
+    <item>Hromadenie</item>
+    <item>Akordeón</item>
+    <item>Preklopenie</item>
+    <item>Valec zvnútra</item>
+    <item>Valec zvonku</item>
+    <item>Kolotoč</item>
+    <item>Prehľad</item>
   </string-array>
 </resources>
