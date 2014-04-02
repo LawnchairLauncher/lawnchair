@@ -1114,11 +1114,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.removeAllViewsOnPage();
         ArrayList<Object> items = new ArrayList<Object>();
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
+        boolean hideIconLabels = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_DRAWER_HIDE_ICON_LABELS,
+                R.bool.preferences_interface_drawer_hide_icon_labels_default);
         for (int i = startIndex; i < endIndex; ++i) {
             AppInfo info = mFilteredApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
             icon.applyFromApplicationInfo(info, true, this);
+            icon.setTextVisibility(!hideIconLabels);
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);

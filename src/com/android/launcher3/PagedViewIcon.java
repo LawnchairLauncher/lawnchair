@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Region;
-import android.graphics.Region.Op;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -44,6 +43,9 @@ public class PagedViewIcon extends TextView {
 
     private Bitmap mIcon;
 
+    private int mTextColor;
+    private boolean mIsTextVisible;
+
     public PagedViewIcon(Context context) {
         this(context, null);
     }
@@ -63,6 +65,8 @@ public class PagedViewIcon extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.iconTextSize);
+        mTextColor = getCurrentTextColor();
+        mIsTextVisible = mTextColor != getResources().getColor(android.R.color.transparent);
     }
 
     public void applyFromApplicationInfo(AppInfo info, boolean scaleUp,
@@ -125,5 +129,24 @@ public class PagedViewIcon extends TextView {
                 BubbleTextView.SHADOW_SMALL_COLOUR);
         super.draw(canvas);
         canvas.restore();
+    }
+
+    @Override
+    public void setTextColor(int color) {
+        mTextColor = color;
+        super.setTextColor(color);
+    }
+
+    public void setTextVisibility(boolean visible) {
+        if (visible) {
+            super.setTextColor(mTextColor);
+        } else {
+            super.setTextColor(getResources().getColor(android.R.color.transparent));
+        }
+        mIsTextVisible = visible;
+    }
+
+    public boolean isTextVisible() {
+        return mIsTextVisible;
     }
 }

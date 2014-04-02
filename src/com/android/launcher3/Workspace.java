@@ -54,10 +54,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -282,6 +279,7 @@ public class Workspace extends SmoothPagedView
 
     private boolean mShowSearchBar;
     private boolean mShowOutlines;
+    private boolean mHideIconLabels;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -315,6 +313,9 @@ public class Workspace extends SmoothPagedView
         mShowOutlines = SettingsProvider.getBoolean(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES,
                 R.bool.preferences_interface_homescreen_scrolling_page_outlines_default);
+        mHideIconLabels = SettingsProvider.getBoolean(context,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
+                R.bool.preferences_interface_homescreen_hide_icon_labels);
         mWorkspaceFadeInAdjacentScreens = SettingsProvider.getBoolean(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT,
                 R.bool.preferences_interface_homescreen_scrolling_fade_adjacent_default);
@@ -895,7 +896,9 @@ public class Workspace extends SmoothPagedView
         } else {
             // Show folder title if not in the hotseat
             if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(true);
+                ((FolderIcon) child).setTextVisible(!mHideIconLabels);
+            } else if (child instanceof BubbleTextView) {
+                ((BubbleTextView) child).setTextVisibility(!mHideIconLabels);
             }
             layout = getScreenWithId(screenId);
             child.setOnKeyListener(new IconKeyEventListener());
@@ -3707,6 +3710,7 @@ public class Workspace extends SmoothPagedView
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
                         (FolderInfo) info, mIconCache);
+                    ((FolderIcon) view).setTextVisible(!mHideIconLabels);
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);

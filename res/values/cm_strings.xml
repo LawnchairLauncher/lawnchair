@@ -52,6 +52,8 @@
     <string name="preferences_interface_homescreen_title">Homescreen</string>
     <string name="preferences_interface_homescreen_search_title">Search bar</string>
     <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide icon labels on homescreen</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
@@ -63,6 +65,8 @@
     <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remove the shortcuts of hidden apps from the homescreen</string>
     <string name="preferences_interface_drawer_hidden_apps_widgets_title">Remove widgets</string>
     <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remove the widgets of hidden apps from the homescreen</string>
+    <string name="preferences_interface_drawer_hide_icon_labels_title">Hide icon labels</string>
+    <string name="preferences_interface_drawer_hide_icon_labels_summary">Hide icon labels in drawer</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>

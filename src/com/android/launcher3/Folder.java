@@ -31,9 +31,7 @@ import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,8 +41,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -52,6 +48,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -195,6 +192,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mAutoScrollHelper = new FolderAutoScrollHelper(mScrollView);
+
+        if (SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
+                R.bool.preferences_interface_homescreen_hide_icon_labels)) {
+            mFolderName.setVisibility(View.GONE);
+            mFolderNameHeight = getPaddingBottom();
+        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -270,7 +274,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
-        mInfo.setTitle(newTitle);
+        if (!SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
+                R.bool.preferences_interface_homescreen_hide_icon_labels)) {
+            mInfo.setTitle(newTitle);
+        }
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
 
         if (commit) {

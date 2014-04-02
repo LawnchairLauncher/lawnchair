@@ -33,4 +33,10 @@
             android:summary="@string/preferences_interface_drawer_hidden_apps_widgets_summary"
             android:defaultValue="@bool/preferences_interface_drawer_remove_hidden_apps_widgets_default" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_interface_general_icons_category">
+        <CheckBoxPreference android:key="ui_drawer_hide_icon_labels"
+            android:title="@string/preferences_interface_drawer_hide_icon_labels_title"
+            android:summary="@string/preferences_interface_drawer_hide_icon_labels_summary"
+            android:defaultValue="@bool/preferences_interface_drawer_hide_icon_labels_default" />
+    </PreferenceCategory>
 </PreferenceScreen>
