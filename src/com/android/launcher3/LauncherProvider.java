@@ -74,7 +74,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 18;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -492,6 +492,13 @@ public class LauncherProvider extends ContentProvider {
                     ");");
         }
 
+        private void removeOrphanedItems(SQLiteDatabase db) {
+            db.execSQL("DELETE FROM " + TABLE_FAVORITES + " WHERE " +
+                    LauncherSettings.Favorites.SCREEN + " NOT IN (SELECT " +
+                    LauncherSettings.WorkspaceScreens._ID + " FROM " + TABLE_WORKSPACE_SCREENS +
+                    ")");
+        }
+
         private void setFlagJustLoadedOldDb() {
             String spKey = LauncherAppState.getSharedPreferencesKey();
             SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
@@ -790,6 +797,15 @@ public class LauncherProvider extends ContentProvider {
                 // until clear data. We do so by marking that the clings have been shown.
                 LauncherClings.synchonouslyMarkFirstRunClingDismissed(mContext);
                 version = 17;
+            }
+
+            if (version < 18) {
+                // Due to a data loss bug, some users may have items associated with screen ids
+                // which no longer exist. Since this can cause other problems, and since the user
+                // will never see these items anyway, we use database upgrade as an opportunity to
+                // clean things up.
+                removeOrphanedItems(db);
+                version = 18;
             }
 
             if (version != DATABASE_VERSION) {
