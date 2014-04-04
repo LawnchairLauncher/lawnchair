@@ -21,8 +21,11 @@ import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserManager;
@@ -262,12 +265,21 @@ class LauncherClings {
             Cling c = initCling(R.id.workspace_cling, 0, false, true);
             c.updateWorkspaceBubblePosition();
 
-            // Set the focused hotseat app if there is one
-            c.setFocusedHotseatApp(mLauncher.getFirstRunFocusedHotseatAppDrawableId(),
-                    mLauncher.getFirstRunFocusedHotseatAppRank(),
-                    mLauncher.getFirstRunFocusedHotseatAppComponentName(),
-                    mLauncher.getFirstRunFocusedHotseatAppBubbleTitle(),
-                    mLauncher.getFirstRunFocusedHotseatAppBubbleDescription());
+            try {
+                // We only enable the focused hotseat app if we are preinstalled
+                PackageManager pm = mLauncher.getPackageManager();
+                ApplicationInfo ai = pm.getApplicationInfo(mLauncher.getPackageName(), 0);
+                if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    // Set the focused hotseat app
+                    c.setFocusedHotseatApp(mLauncher.getFirstRunFocusedHotseatAppDrawableId(),
+                        mLauncher.getFirstRunFocusedHotseatAppRank(),
+                        mLauncher.getFirstRunFocusedHotseatAppComponentName(),
+                        mLauncher.getFirstRunFocusedHotseatAppBubbleTitle(),
+                        mLauncher.getFirstRunFocusedHotseatAppBubbleDescription());
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         } else {
             removeCling(R.id.workspace_cling);
         }
