@@ -3982,7 +3982,15 @@ public class Launcher extends Activity
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                         CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
                         if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
-                            throw new RuntimeException("OCCUPIED");
+                            View v = cl.getChildAt(item.cellX, item.cellY);
+                            Object tag = v.getTag();
+                            String desc = "Collision while binding workspace item: " + item
+                                    + ". Collides with " + tag;
+                            if (LauncherAppState.isDogfoodBuild()) {
+                                throw (new RuntimeException(desc));
+                            } else {
+                                Log.d(TAG, desc);
+                            }
                         }
                     }
 
