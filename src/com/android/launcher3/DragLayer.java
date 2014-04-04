@@ -736,7 +736,13 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             mDropAnim.cancel();
         }
         if (mDropView != null) {
-            mDragController.onDeferredEndDrag(mDropView);
+            final DragView dropView = mDropView;
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    mDragController.onDeferredEndDrag(dropView);
+                }
+            });
         }
         mDropView = null;
         invalidate();
