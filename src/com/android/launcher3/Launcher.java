@@ -3628,7 +3628,7 @@ public class Launcher extends Activity
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         ComponentName activityName = searchManager.getGlobalSearchActivity();
-        if (activityName != null && mWorkspace.shouldVoiceButtonProxyBeVisible()) {
+        if (activityName != null) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
                     R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
