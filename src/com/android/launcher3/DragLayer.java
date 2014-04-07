@@ -75,6 +75,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     private View mOverlayView;
     private int mTopViewIndex;
+    private int mChildCountOnLastUpdate = -1;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -736,13 +737,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             mDropAnim.cancel();
         }
         if (mDropView != null) {
-            final DragView dropView = mDropView;
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    mDragController.onDeferredEndDrag(dropView);
-                }
-            });
+            mDragController.onDeferredEndDrag(mDropView);
         }
         mDropView = null;
         invalidate();
@@ -802,10 +797,19 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 mTopViewIndex = i;
             }
         }
+        mChildCountOnLastUpdate = childCount;
     }
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
+        if (mChildCountOnLastUpdate != childCount) {
+            // between platform versions 17 and 18, behavior for onChildViewRemoved / Added changed.
+            // Pre-18, the child was not added / removed by the time of those callbacks. We need to
+            // force update our representation of things here to avoid crashing on pre-18 devices
+            // in certain instances.
+            updateChildIndices();
+        }
+
         // i represents the current draw iteration
         if (mTopViewIndex == -1) {
             // in general we do nothing
