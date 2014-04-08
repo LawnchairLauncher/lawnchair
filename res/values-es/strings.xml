@@ -111,6 +111,5 @@
     <string name="package_state_downloading" msgid="4088770468458724721">"Descargando"</string>
     <string name="package_state_installing" msgid="7588193972189849870">"Instalando"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconocido"</string>
-    <!-- no translation found for package_state_error (7672093962724223588) -->
-    <skip />
+    <string name="package_state_error" msgid="7672093962724223588">"No restaurado"</string>
 </resources>
