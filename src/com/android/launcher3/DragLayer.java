@@ -122,10 +122,14 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         setInsets(child, mInsets, new Rect());
     }
 
-    public void showOverlayView(View introScreen) {
+    public void showOverlayView(View overlayView) {
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        mOverlayView = introScreen;
-        addView(introScreen, lp);
+        mOverlayView = overlayView;
+        addView(overlayView, lp);
+
+        // ensure that the overlay view stays on top. we can't use drawing order for this
+        // because in API level 16 touch dispatch doesn't respect drawing order.
+        mOverlayView.bringToFront();
     }
 
     public void dismissOverlayView() {
@@ -774,6 +778,11 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     @Override
     public void onChildViewAdded(View parent, View child) {
+        if (mOverlayView != null) {
+            // ensure that the overlay view stays on top. we can't use drawing order for this
+            // because in API level 16 touch dispatch doesn't respect drawing order.
+            mOverlayView.bringToFront();
+        }
         updateChildIndices();
     }
 
@@ -785,6 +794,11 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     @Override
     public void bringChildToFront(View child) {
         super.bringChildToFront(child);
+        if (child != mOverlayView && mOverlayView != null) {
+            // ensure that the overlay view stays on top. we can't use drawing order for this
+            // because in API level 16 touch dispatch doesn't respect drawing order.
+            mOverlayView.bringToFront();
+        }
         updateChildIndices();
     }
 
@@ -792,8 +806,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         mTopViewIndex = -1;
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
-            if (getChildAt(i) instanceof DragView ||
-                    getChildAt(i) == mOverlayView) {
+            if (getChildAt(i) instanceof DragView) {
                 mTopViewIndex = i;
             }
         }
