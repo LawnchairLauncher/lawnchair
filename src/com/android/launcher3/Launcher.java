@@ -214,7 +214,7 @@ public class Launcher extends Activity
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT_FOLDER_CLOSE = 400;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
-    private static final int ACTIVITY_START_DELAY = 800;
+    private static final int ACTIVITY_START_DELAY = 1000;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
