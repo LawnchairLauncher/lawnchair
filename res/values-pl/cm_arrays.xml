@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Leve</item>
-    <item>Condensado</item>
+    <item>Regularna</item>
+    <item>Lekka</item>
+    <item>Skondensowana</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Nenhum</item>
-    <item>Dar Zoom</item>
-    <item>Tirar Zoom</item>
-    <item>Rotacionar p/ Cima</item>
-    <item>Rotacionar p/ Baixo</item>
-    <item>Cubo Interno</item>
-    <item>Cubo Externo</item>
-    <item>Pilha</item>
-    <item>Acordeão</item>
-    <item>Girar</item>
-    <item>Cilindro Interno</item>
-    <item>Cilindro Externo</item>
-    <item>Carrossel</item>
-    <item>Visão Geral</item>
+    <item>Brak</item>
+    <item>Przybliżenie</item>
+    <item>Oddalenie</item>
+    <item>Obrót w górę</item>
+    <item>Obrót w dół</item>
+    <item>Kostka do wewnątrz</item>
+    <item>Kostka do zewnątrz</item>
+    <item>Stos</item>
+    <item>Akordeon</item>
+    <item>Obrót</item>
+    <item>Cylinder do wewnątrz</item>
+    <item>Cylinder do zewnątrz</item>
+    <item>Karuzela</item>
+    <item>Przegląd</item>
   </string-array>
 </resources>

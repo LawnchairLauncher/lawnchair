@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Leve</item>
-    <item>Condensado</item>
+    <item>Tavallinen</item>
+    <item>Ohut</item>
+    <item>Tiivistetty</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Nenhum</item>
-    <item>Dar Zoom</item>
-    <item>Tirar Zoom</item>
-    <item>Rotacionar p/ Cima</item>
-    <item>Rotacionar p/ Baixo</item>
-    <item>Cubo Interno</item>
-    <item>Cubo Externo</item>
-    <item>Pilha</item>
-    <item>Acordeão</item>
-    <item>Girar</item>
-    <item>Cilindro Interno</item>
-    <item>Cilindro Externo</item>
-    <item>Carrossel</item>
-    <item>Visão Geral</item>
+    <item>Ei mitään</item>
+    <item>Lähennä</item>
+    <item>Loitonna</item>
+    <item>Käännä ylös</item>
+    <item>Käännä alas</item>
+    <item>Kuutio sisään</item>
+    <item>Kuutio ulos</item>
+    <item>Pino</item>
+    <item>Harmonikka</item>
+    <item>Käännä</item>
+    <item>Sylinteri sisään</item>
+    <item>Sylinteri ulos</item>
+    <item>Karuselli</item>
+    <item>Yhteenveto</item>
   </string-array>
 </resources>
