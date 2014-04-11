@@ -3960,7 +3960,7 @@ public class Workspace extends SmoothPagedView
                 // be done post drop animation.
                 stripEmptyScreens();
             }
-        } else if (mDragInfo != null && (!(target instanceof InfoDropTarget))) {
+        } else if (mDragInfo != null && target != null && (!(target instanceof InfoDropTarget))) {
             CellLayout cellLayout;
             if (mLauncher.isHotseatLayout(target)) {
                 cellLayout = mLauncher.getHotseat().getLayout();

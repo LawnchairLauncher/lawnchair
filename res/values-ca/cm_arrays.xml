@@ -19,22 +19,22 @@
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
     <item>Normal</item>
     <item>Fina</item>
-    <item>Comprimida</item>
+    <item>Condensada</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Ninguno</item>
-    <item>Zoom entrante</item>
-    <item>Zoom saliente</item>
-    <item>Rotar arriba</item>
-    <item>Rotar abajo</item>
-    <item>Cúbico entrante</item>
-    <item>Cúbico saliente</item>
-    <item>Apilar</item>
-    <item>Acordeón</item>
-    <item>Voltear</item>
-    <item>Cilíndrico entrante</item>
-    <item>Cilíndrico saliente</item>
+    <item>Cap</item>
+    <item>Amplia</item>
+    <item>Allunya</item>
+    <item>Rota amunt</item>
+    <item>Rota avall</item>
+    <item>Cúbic entrant</item>
+    <item>Cúbic sortint</item>
+    <item>Apila</item>
+    <item>Acordió</item>
+    <item>Regira</item>
+    <item>Cilíndric entrant</item>
+    <item>Cilíndric sortint</item>
     <item>Carrusel</item>
-    <item>Perspectiva</item>
+    <item>Perspectiva general</item>
   </string-array>
 </resources>

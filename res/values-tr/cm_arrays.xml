@@ -18,23 +18,23 @@
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
     <item>Normal</item>
-    <item>Fina</item>
-    <item>Comprimida</item>
+    <item>İnce</item>
+    <item>Kalın</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Ninguno</item>
-    <item>Zoom entrante</item>
-    <item>Zoom saliente</item>
-    <item>Rotar arriba</item>
-    <item>Rotar abajo</item>
-    <item>Cúbico entrante</item>
-    <item>Cúbico saliente</item>
-    <item>Apilar</item>
-    <item>Acordeón</item>
-    <item>Voltear</item>
-    <item>Cilíndrico entrante</item>
-    <item>Cilíndrico saliente</item>
-    <item>Carrusel</item>
-    <item>Perspectiva</item>
+    <item>Hiçbiri</item>
+    <item>Yakınlaştır</item>
+    <item>Uzaklaştır</item>
+    <item>Yukarı Döndür</item>
+    <item>Aşağı Döndür</item>
+    <item>İçeri Küp</item>
+    <item>Dışarı Küp</item>
+    <item>Yığın</item>
+    <item>Akordiyon</item>
+    <item>Çevir</item>
+    <item>İçine Silindir</item>
+    <item>Dışına Silindir</item>
+    <item>Karusel</item>
+    <item>GenelGörünüm</item>
   </string-array>
 </resources>

@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Fina</item>
-    <item>Comprimida</item>
+    <item>Regularna</item>
+    <item>Lekka</item>
+    <item>Skondensowana</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Ninguno</item>
-    <item>Zoom entrante</item>
-    <item>Zoom saliente</item>
-    <item>Rotar arriba</item>
-    <item>Rotar abajo</item>
-    <item>Cúbico entrante</item>
-    <item>Cúbico saliente</item>
-    <item>Apilar</item>
-    <item>Acordeón</item>
-    <item>Voltear</item>
-    <item>Cilíndrico entrante</item>
-    <item>Cilíndrico saliente</item>
-    <item>Carrusel</item>
-    <item>Perspectiva</item>
+    <item>Brak</item>
+    <item>Przybliżenie</item>
+    <item>Oddalenie</item>
+    <item>Obrót w górę</item>
+    <item>Obrót w dół</item>
+    <item>Kostka do wewnątrz</item>
+    <item>Kostka do zewnątrz</item>
+    <item>Stos</item>
+    <item>Akordeon</item>
+    <item>Obrót</item>
+    <item>Cylinder do wewnątrz</item>
+    <item>Cylinder do zewnątrz</item>
+    <item>Karuzela</item>
+    <item>Przegląd</item>
   </string-array>
 </resources>
