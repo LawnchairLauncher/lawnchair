@@ -4567,6 +4567,10 @@ public class Launcher extends Activity
         return new ShortcutInfo(shortcutIntent, caption, icon);
     }
 
+    protected void moveWorkspaceToDefaultScreen() {
+        mWorkspace.moveToDefaultScreen(false);
+    }
+
     public void startDrag(View dragView, ItemInfo dragInfo, DragSource source) {
         dragView.setTag(dragInfo);
         mWorkspace.onDragStartedWithItem(dragView);
