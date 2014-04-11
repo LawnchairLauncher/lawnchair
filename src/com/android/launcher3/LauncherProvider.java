@@ -804,7 +804,9 @@ public class LauncherProvider extends ContentProvider {
                 // which no longer exist. Since this can cause other problems, and since the user
                 // will never see these items anyway, we use database upgrade as an opportunity to
                 // clean things up.
-                removeOrphanedItems(db);
+
+                // TODO: this needs to be fixed, currently causes data loss.
+                //removeOrphanedItems(db);
                 version = 18;
             }
 
