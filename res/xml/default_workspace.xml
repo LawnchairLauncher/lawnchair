@@ -147,6 +147,13 @@
         launcher:x="3"
         launcher:y="0" />
     <favorite
+        launcher:packageName="com.cyngn.cameranext"
+        launcher:className="com.android.camera.CameraLauncher"
+        launcher:container="-101"
+        launcher:screen="4"
+        launcher:x="4"
+        launcher:y="0" />
+    <favorite
         launcher:packageName="com.android.camera2"
         launcher:className="com.android.camera.CameraLauncher"
         launcher:container="-101"
