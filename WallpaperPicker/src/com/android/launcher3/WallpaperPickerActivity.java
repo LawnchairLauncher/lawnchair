@@ -887,14 +887,24 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private ArrayList<ResourceWallpaperInfo> findBundledWallpapers() {
-        ArrayList<ResourceWallpaperInfo> bundledWallpapers =
-                new ArrayList<ResourceWallpaperInfo>(24);
+        final PackageManager pm = getPackageManager();
+        final ArrayList<ResourceWallpaperInfo> bundled = new ArrayList<ResourceWallpaperInfo>(24);
+
+        Partner partner = Partner.get(pm);
+        if (partner != null) {
+            final Resources partnerRes = partner.getResources();
+            final int resId = partnerRes.getIdentifier(Partner.RESOURCE_WALLPAPERS, "array",
+                    partner.getPackageName());
+            if (resId != 0) {
+                addWallpapers(bundled, partnerRes, partner.getPackageName(), resId);
+            }
+        }
 
         Pair<ApplicationInfo, Integer> r = getWallpaperArrayResourceId();
         if (r != null) {
             try {
                 Resources wallpaperRes = getPackageManager().getResourcesForApplication(r.first);
-                bundledWallpapers = addWallpapers(wallpaperRes, r.first.packageName, r.second);
+                addWallpapers(bundled, wallpaperRes, r.first.packageName, r.second);
             } catch (PackageManager.NameNotFoundException e) {
             }
         }
@@ -903,10 +913,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             ResourceWallpaperInfo defaultWallpaperInfo = getPreKKDefaultWallpaperInfo();
             if (defaultWallpaperInfo != null) {
-                bundledWallpapers.add(0, defaultWallpaperInfo);
+                bundled.add(0, defaultWallpaperInfo);
             }
         }
-        return bundledWallpapers;
+        return bundled;
     }
 
     private boolean writeImageToFileAsJpeg(File f, Bitmap b) {
@@ -998,10 +1008,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    private ArrayList<ResourceWallpaperInfo> addWallpapers(
-            Resources res, String packageName, int listResId) {
-        ArrayList<ResourceWallpaperInfo> bundledWallpapers =
-                new ArrayList<ResourceWallpaperInfo>(24);
+    private void addWallpapers(ArrayList<ResourceWallpaperInfo> known, Resources res,
+            String packageName, int listResId) {
         final String[] extras = res.getStringArray(listResId);
         for (String extra : extras) {
             int resId = res.getIdentifier(extra, "drawable", packageName);
@@ -1011,14 +1019,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 if (thumbRes != 0) {
                     ResourceWallpaperInfo wallpaperInfo =
                             new ResourceWallpaperInfo(res, resId, res.getDrawable(thumbRes));
-                    bundledWallpapers.add(wallpaperInfo);
+                    known.add(wallpaperInfo);
                     // Log.d(TAG, "add: [" + packageName + "]: " + extra + " (" + res + ")");
                 }
             } else {
                 Log.e(TAG, "Couldn't find wallpaper " + extra);
             }
         }
-        return bundledWallpapers;
     }
 
     public CropView getCropView() {
