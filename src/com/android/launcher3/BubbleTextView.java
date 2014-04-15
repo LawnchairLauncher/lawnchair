@@ -28,6 +28,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.widget.TextView;
 
 /**
@@ -59,6 +60,8 @@ public class BubbleTextView extends TextView {
     private int mFocusedGlowColor;
     private int mPressedOutlineColor;
     private int mPressedGlowColor;
+
+    private float mSlop;
 
     private int mTextColor;
     private boolean mShadowsEnabled = true;
@@ -272,6 +275,11 @@ public class BubbleTextView extends TextView {
 
                 mLongPressHelper.cancelLongPress();
                 break;
+            case MotionEvent.ACTION_MOVE:
+                if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
+                    mLongPressHelper.cancelLongPress();
+                }
+                break;
         }
         return result;
     }
@@ -356,6 +364,7 @@ public class BubbleTextView extends TextView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mBackground != null) mBackground.setCallback(this);
+        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     @Override

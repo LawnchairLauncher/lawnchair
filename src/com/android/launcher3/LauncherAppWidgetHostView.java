@@ -21,6 +21,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
@@ -35,6 +36,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private Context mContext;
     private int mPreviousOrientation;
     private DragLayer mDragLayer;
+
+    private float mSlop;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -90,6 +93,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             case MotionEvent.ACTION_CANCEL:
                 mLongPressHelper.cancelLongPress();
                 break;
+            case MotionEvent.ACTION_MOVE:
+                if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
+                    mLongPressHelper.cancelLongPress();
+                }
+                break;
         }
 
         // Otherwise continue letting touch events fall through to children
@@ -104,8 +112,19 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             case MotionEvent.ACTION_CANCEL:
                 mLongPressHelper.cancelLongPress();
                 break;
+            case MotionEvent.ACTION_MOVE:
+                if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
+                    mLongPressHelper.cancelLongPress();
+                }
+                break;
         }
         return false;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     @Override
