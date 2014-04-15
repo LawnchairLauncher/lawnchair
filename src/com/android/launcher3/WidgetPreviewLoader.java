@@ -35,6 +35,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 abstract class SoftReferenceThreadLocal<T> {
     private ThreadLocal<SoftReference<T>> mThreadLocal;
@@ -136,6 +138,8 @@ public class WidgetPreviewLoader {
     private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews;
     private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps;
     private final static HashSet<String> sInvalidPackages;
+
+    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
 
     static {
         sInvalidPackages = new HashSet<String>();
@@ -492,7 +496,8 @@ public class WidgetPreviewLoader {
 
         Drawable drawable = null;
         if (previewImage != 0) {
-            drawable = mPackageManager.getDrawable(packageName, previewImage, null);
+            drawable = mutateOnMainThread(
+                    mPackageManager.getDrawable(packageName, previewImage, null));
             if (drawable == null) {
                 Log.w(TAG, "Can't load widget preview drawable 0x" +
                         Integer.toHexString(previewImage) + " for provider: " + provider);
@@ -511,6 +516,7 @@ public class WidgetPreviewLoader {
             if (cellHSpan < 1) cellHSpan = 1;
             if (cellVSpan < 1) cellVSpan = 1;
 
+            // This Drawable is not directly drawn, so there's no need to mutate it.
             BitmapDrawable previewDrawable = (BitmapDrawable) mContext.getResources()
                     .getDrawable(R.drawable.widget_tile);
             final int previewDrawableWidth = previewDrawable
@@ -548,7 +554,7 @@ public class WidgetPreviewLoader {
                 int yoffset =
                         (int) ((previewDrawableHeight - mAppIconSize * iconScale) / 2);
                 if (iconId > 0)
-                    icon = mIconCache.getFullResIcon(packageName, iconId);
+                    icon = mutateOnMainThread(mIconCache.getFullResIcon(packageName, iconId));
                 if (icon != null) {
                     renderDrawableToBitmap(icon, defaultPreview, hoffset,
                             yoffset, (int) (mAppIconSize * iconScale),
@@ -617,7 +623,7 @@ public class WidgetPreviewLoader {
             c.setBitmap(null);
         }
         // Render the icon
-        Drawable icon = mIconCache.getFullResIcon(info);
+        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info));
 
         int paddingTop = mContext.
                 getResources().getDimensionPixelOffset(R.dimen.shortcut_preview_padding_top);
@@ -677,4 +683,19 @@ public class WidgetPreviewLoader {
         }
     }
 
+    private Drawable mutateOnMainThread(final Drawable drawable) {
+        try {
+            return mMainThreadExecutor.submit(new Callable<Drawable>() {
+                @Override
+                public Drawable call() throws Exception {
+                    return drawable.mutate();
+                }
+            }).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
