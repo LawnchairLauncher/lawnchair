@@ -37,6 +37,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -59,7 +60,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
-
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -1992,6 +1992,35 @@ public class Workspace extends SmoothPagedView
         mDragOutline = createDragOutline(v, canvas, DRAG_BITMAP_PADDING);
     }
 
+    public void onExternalDragStartedWithItem(View v) {
+        final Canvas canvas = new Canvas();
+
+        // Compose a drag bitmap with the view scaled to the icon size
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        int iconSize = grid.iconSizePx;
+        int bmpWidth = v.getMeasuredWidth();
+        int bmpHeight = v.getMeasuredHeight();
+
+        // If this is a text view, use its drawable instead
+        if (v instanceof TextView) {
+            TextView tv = (TextView) v;
+            Drawable d = tv.getCompoundDrawables()[1];
+            bmpWidth = d.getIntrinsicWidth();
+            bmpHeight = d.getIntrinsicHeight();
+        }
+
+        // Compose the bitmap to create the icon from
+        Bitmap b = Bitmap.createBitmap(bmpWidth, bmpHeight,
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        drawDragView(v, c, 0, true);
+        c.setBitmap(null);
+
+        // The outline is used to visualize where the item will land if dropped
+        mDragOutline = createDragOutline(b, canvas, DRAG_BITMAP_PADDING, iconSize, iconSize, true);
+    }
+
     public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, boolean clipAlpha) {
         final Canvas canvas = new Canvas();
 
@@ -2629,10 +2658,8 @@ public class Workspace extends SmoothPagedView
         final int bmpHeight = b.getHeight();
 
         float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
-        int dragLayerX =
-                Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
-        int dragLayerY =
-                Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
+        int dragLayerX = Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
+        int dragLayerY = Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
                         - DRAG_BITMAP_PADDING / 2);
 
         LauncherAppState app = LauncherAppState.getInstance();
@@ -2680,6 +2707,52 @@ public class Workspace extends SmoothPagedView
         }
 
         b.recycle();
+    }
+
+    public void beginExternalDragShared(View child, DragSource source) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        int iconSize = grid.iconSizePx;
+
+        // Notify launcher of drag start
+        mLauncher.onDragStarted(child);
+
+        // Compose a new drag bitmap that is of the icon size
+        final Bitmap tmpB = createDragBitmap(child, new Canvas(), DRAG_BITMAP_PADDING);
+        Bitmap b = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+        Paint p = new Paint();
+        p.setFilterBitmap(true);
+        Canvas c = new Canvas(b);
+        c.drawBitmap(tmpB, new Rect(0, 0, tmpB.getWidth(), tmpB.getHeight()),
+                new Rect(0, 0, iconSize, iconSize), p);
+        c.setBitmap(null);
+
+        // Find the child's location on the screen
+        int bmpWidth = tmpB.getWidth();
+        float iconScale = (float) bmpWidth / iconSize;
+        float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY) * iconScale;
+        int dragLayerX = Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
+        int dragLayerY = Math.round(mTempXY[1]);
+
+        // Note: The drag region is used to calculate drag layer offsets, but the
+        // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
+        Point dragVisualizeOffset = new Point(-DRAG_BITMAP_PADDING / 2, DRAG_BITMAP_PADDING / 2);
+        Rect dragRect = new Rect(0, 0, iconSize, iconSize);
+
+        if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
+            String msg = "Drag started with a view that has no tag set. This "
+                    + "will cause a crash (issue 11627249) down the line. "
+                    + "View: " + child + "  tag: " + child.getTag();
+            throw new IllegalStateException(msg);
+        }
+
+        // Start the drag
+        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
+        dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
+
+        // Recycle temporary bitmaps
+        tmpB.recycle();
     }
 
     void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, long screenId,
