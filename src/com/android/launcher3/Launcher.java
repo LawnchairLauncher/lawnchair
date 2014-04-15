@@ -4573,8 +4573,8 @@ public class Launcher extends Activity
 
     public void startDrag(View dragView, ItemInfo dragInfo, DragSource source) {
         dragView.setTag(dragInfo);
-        mWorkspace.onDragStartedWithItem(dragView);
-        mWorkspace.beginDragShared(dragView, source);
+        mWorkspace.onExternalDragStartedWithItem(dragView);
+        mWorkspace.beginExternalDragShared(dragView, source);
     }
 
     @Override
