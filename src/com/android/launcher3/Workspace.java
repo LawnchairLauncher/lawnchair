@@ -1992,6 +1992,15 @@ public class Workspace extends SmoothPagedView
         mDragOutline = createDragOutline(v, canvas, DRAG_BITMAP_PADDING);
     }
 
+    private Rect getDrawableBounds(Drawable d) {
+        Rect bounds = new Rect();
+        d.copyBounds(bounds);
+        if (bounds.width() == 0 || bounds.height() == 0) {
+            bounds.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        }
+        return bounds;
+    }
+
     public void onExternalDragStartedWithItem(View v) {
         final Canvas canvas = new Canvas();
 
@@ -2006,8 +2015,9 @@ public class Workspace extends SmoothPagedView
         if (v instanceof TextView) {
             TextView tv = (TextView) v;
             Drawable d = tv.getCompoundDrawables()[1];
-            bmpWidth = d.getIntrinsicWidth();
-            bmpHeight = d.getIntrinsicHeight();
+            Rect bounds = getDrawableBounds(d);
+            bmpWidth = bounds.width();
+            bmpHeight = bounds.height();
         }
 
         // Compose the bitmap to create the icon from
@@ -2527,7 +2537,8 @@ public class Workspace extends SmoothPagedView
         destCanvas.save();
         if (v instanceof TextView && pruneToDrawable) {
             Drawable d = ((TextView) v).getCompoundDrawables()[1];
-            clipRect.set(0, 0, d.getIntrinsicWidth() + padding, d.getIntrinsicHeight() + padding);
+            Rect bounds = getDrawableBounds(d);
+            clipRect.set(0, 0, bounds.width() + padding, bounds.height() + padding);
             destCanvas.translate(padding / 2, padding / 2);
             d.draw(destCanvas);
         } else {
@@ -2568,8 +2579,9 @@ public class Workspace extends SmoothPagedView
 
         if (v instanceof TextView) {
             Drawable d = ((TextView) v).getCompoundDrawables()[1];
-            b = Bitmap.createBitmap(d.getIntrinsicWidth() + padding,
-                    d.getIntrinsicHeight() + padding, Bitmap.Config.ARGB_8888);
+            Rect bounds = getDrawableBounds(d);
+            b = Bitmap.createBitmap(bounds.width() + padding,
+                    bounds.height() + padding, Bitmap.Config.ARGB_8888);
         } else {
             b = Bitmap.createBitmap(
                     v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
