@@ -61,7 +61,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
     @Override
     public void onCreate() {
         boolean restoreEnabled = 0 != Settings.Secure.getInt(
-                getContentResolver(), SETTING_RESTORE_ENABLED, 1);
+                getContentResolver(), SETTING_RESTORE_ENABLED, 0);
         if (VERBOSE) Log.v(TAG, "restore is " + (restoreEnabled ? "enabled" : "disabled"));
 
         addHelper(LauncherBackupHelper.LAUNCHER_PREFS_PREFIX,
