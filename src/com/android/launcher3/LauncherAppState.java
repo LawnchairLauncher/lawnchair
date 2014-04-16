@@ -30,7 +30,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;  // STOPSHIP(cwren) temporary for debugging
 
     private final AppFilter mAppFilter;
     private final BuildInfo mBuildInfo;

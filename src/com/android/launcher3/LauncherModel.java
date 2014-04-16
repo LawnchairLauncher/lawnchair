@@ -69,12 +69,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = false;
+    private static final boolean DEBUG_RECEIVER = true;  // STOPSHIP(cwren) temporary for debugging
+
     static final String TAG = "Launcher.Model";
 
     // true = use a "More Apps" folder for non-workspace apps on upgrade
     // false = strew non-workspace apps across the workspace on upgrade
     public static final boolean UPGRADE_USE_MORE_APPS_FOLDER = false;
-
     public static final int LOADER_FLAG_NONE = 0;
     public static final int LOADER_FLAG_CLEAR_WORKSPACE = 1 << 0;
     public static final int LOADER_FLAG_MIGRATE_SHORTCUTS = 1 << 1;
@@ -1161,7 +1162,7 @@ public class LauncherModel extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (DEBUG_LOADERS) Log.d(TAG, "onReceive intent=" + intent);
+        if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
 
         final String action = intent.getAction();
 
