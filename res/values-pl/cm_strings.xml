@@ -17,7 +17,7 @@
 -->
 <resources>
   <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
-  <string name="sort_button_text">Sortuj</string>
+  <string name="sort_button_text">Sortowanie</string>
   <string name="filter_button_text">Filtruj</string>
   <string name="default_screen_button_text">Ekran domyślny</string>
   <string name="transition_effect_button_text">Efekt przewijania</string>

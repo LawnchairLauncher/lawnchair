@@ -16,5 +16,33 @@
      limitations under the License.
 -->
 <resources>
-  <string name="preferences_title">设置</string>
+  <string name="application_copyright">版权所有 \u00A9 2014 CyanogenMod 项目</string>
+  <string name="sort_button_text">排序</string>
+  <string name="filter_button_text">过滤器</string>
+  <string name="default_screen_button_text">默认屏幕</string>
+  <string name="transition_effect_button_text">滚动特效</string>
+  <string name="sort_mode_title">标题</string>
+  <string name="sort_mode_launch_count">启动次数</string>
+  <string name="sort_mode_install_time">安装时间</string>
+  <string name="scrolling_page_outlines">页概述</string>
+  <string name="scrolling_fade_adjacent">边页淡出</string>
+  <string name="wallpaper_scroll">滚动壁纸</string>
+  <string name="preferences_application_title">应用程序</string>
+  <string name="preferences_interface_homescreen_title">主屏</string>
+  <string name="preferences_interface_homescreen_search_title">搜索栏</string>
+  <string name="preferences_interface_homescreen_search_summary">在屏幕上方始终显示搜索栏</string>
+  <string name="preferences_interface_drawer_title">抽屉</string>
+  <string name="preferences_interface_dock_title">基座</string>
+  <string name="preferences_interface_general_title">通用</string>
+  <string name="preferences_interface_general_icons_category">图标</string>
+  <string name="preferences_interface_general_icons_large_title">大图标</string>
+  <string name="preferences_interface_general_icons_large_summary">显示大图标</string>
+  <string name="preferences_interface_general_icons_text_style_title">字体样式</string>
+  <string name="preferences_interface_general_icons_text_style_summary">图标字体样式</string>
+  <string name="dialog_pick_iconpack_title">选择图标包</string>
+  <string name="default_iconpack_title">默认图标</string>
+  <string name="icon_packs_title">图标包</string>
+  <string name="no_iconpacks_summary">没有安装的图标包</string>
+  <string name="all_apps_cling_cm">自定义抽屉</string>
+  <string name="all_apps_cling_summary">点击页面指示器以查看其他设置</string>
 </resources>
