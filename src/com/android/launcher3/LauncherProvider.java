@@ -329,7 +329,7 @@ public class LauncherProvider extends ContentProvider {
 
     public void migrateLauncher2Shortcuts() {
         mOpenHelper.migrateLauncher2Shortcuts(mOpenHelper.getWritableDatabase(),
-                LauncherSettings.Favorites.OLD_CONTENT_URI);
+                Uri.parse(getContext().getString(R.string.old_launcher_provider_uri)));
     }
 
     private static int getDefaultWorkspaceResourceId() {
@@ -466,7 +466,7 @@ public class LauncherProvider extends ContentProvider {
                         "/old_favorites?notify=true");
                 if (!convertDatabase(db, uri, permuteScreensCb, true)) {
                     // Try and upgrade from the Launcher2 db
-                    uri = LauncherSettings.Favorites.OLD_CONTENT_URI;
+                    uri = Uri.parse(mContext.getString(R.string.old_launcher_provider_uri));
                     if (!convertDatabase(db, uri, permuteScreensCb, false)) {
                         // If we fail, then set a flag to load the default workspace
                         setFlagEmptyDbCreated();
