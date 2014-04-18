@@ -194,7 +194,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
         ContentProviderClient client = contentResolver.acquireContentProviderClient(
-                LauncherSettings.Favorites.OLD_CONTENT_URI);
+                Uri.parse(context.getString(R.string.old_launcher_provider_uri)));
         mOldContentProviderExists = (client != null);
         if (client != null) {
             client.release();
