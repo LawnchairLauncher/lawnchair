@@ -74,7 +74,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 18;
+    private static final int DATABASE_VERSION = 19;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -493,10 +493,34 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private void removeOrphanedItems(SQLiteDatabase db) {
-            db.execSQL("DELETE FROM " + TABLE_FAVORITES + " WHERE " +
+            // Delete items directly on the workspace who's screen id doesn't exist
+            //  "DELETE FROM favorites WHERE screen NOT IN (SELECT _id FROM workspaceScreens)
+            //   AND container = -100"
+            String removeOrphanedDesktopItems = "DELETE FROM " + TABLE_FAVORITES +
+                    " WHERE " +
                     LauncherSettings.Favorites.SCREEN + " NOT IN (SELECT " +
-                    LauncherSettings.WorkspaceScreens._ID + " FROM " + TABLE_WORKSPACE_SCREENS +
-                    ")");
+                    LauncherSettings.WorkspaceScreens._ID + " FROM " + TABLE_WORKSPACE_SCREENS + ")" +
+                    " AND " +
+                    LauncherSettings.Favorites.CONTAINER + " = " +
+                    LauncherSettings.Favorites.CONTAINER_DESKTOP;
+            db.execSQL(removeOrphanedDesktopItems);
+
+            // Delete items contained in folders which no longer exist (after above statement)
+            //  "DELETE FROM favorites  WHERE container <> -100 AND container <> -101 AND container
+            //   NOT IN (SELECT _id FROM favorites WHERE itemType = 2)"
+            String removeOrphanedFolderItems = "DELETE FROM " + TABLE_FAVORITES +
+                    " WHERE " +
+                    LauncherSettings.Favorites.CONTAINER + " <> " +
+                    LauncherSettings.Favorites.CONTAINER_DESKTOP +
+                    " AND "
+                    + LauncherSettings.Favorites.CONTAINER + " <> " +
+                    LauncherSettings.Favorites.CONTAINER_HOTSEAT +
+                    " AND "
+                    + LauncherSettings.Favorites.CONTAINER + " NOT IN (SELECT " +
+                    LauncherSettings.Favorites._ID + " FROM " + TABLE_FAVORITES +
+                    " WHERE " + LauncherSettings.Favorites.ITEM_TYPE + " = " +
+                    LauncherSettings.Favorites.ITEM_TYPE_FOLDER + ")";
+            db.execSQL(removeOrphanedFolderItems);
         }
 
         private void setFlagJustLoadedOldDb() {
@@ -800,14 +824,17 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (version < 18) {
+                // No-op
+                version = 18;
+            }
+
+            if (version < 19) {
                 // Due to a data loss bug, some users may have items associated with screen ids
                 // which no longer exist. Since this can cause other problems, and since the user
                 // will never see these items anyway, we use database upgrade as an opportunity to
                 // clean things up.
-
-                // TODO: this needs to be fixed, currently causes data loss.
-                //removeOrphanedItems(db);
-                version = 18;
+                removeOrphanedItems(db);
+                version = 19;
             }
 
             if (version != DATABASE_VERSION) {
