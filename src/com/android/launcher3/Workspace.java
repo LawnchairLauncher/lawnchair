@@ -2878,7 +2878,9 @@ public class Workspace extends SmoothPagedView
                     final ItemInfo info = (ItemInfo) cell.getTag();
                     if (hasMovedLayouts) {
                         // Reparent the view
-                        getParentCellLayoutForView(cell).removeView(cell);
+                        CellLayout parent = getParentCellLayoutForView(cell);
+                        if (parent != null)
+                            parent.removeView(cell);
                         addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
                                 info.spanX, info.spanY);
                     }
