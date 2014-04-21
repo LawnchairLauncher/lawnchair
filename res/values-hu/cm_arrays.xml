@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Régulier</item>
+    <item>Szokásos</item>
     <item>Light</item>
-    <item>Condensé</item>
+    <item>Tömörített</item>
   </string-array>
   <string-array name="transition_effect_entries">
     <item>None</item>
-    <item>Zoom avant</item>
-    <item>Zoom arrière</item>
-    <item>Rotation vers le haut</item>
-    <item>Rotation vers le bas</item>
-    <item>Cube intérieur</item>
-    <item>Cube extérieur</item>
-    <item>Empilement</item>
-    <item>Accordéon</item>
-    <item>Retourner</item>
-    <item>Cylindre intérieur</item>
-    <item>Cylindre extérieur</item>
-    <item>Carrousel</item>
-    <item>Aperçu</item>
+    <item>Nagyítás befelé</item>
+    <item>Nagyítás kifelé</item>
+    <item>Forgatás felfelé</item>
+    <item>Forgatás lefelé</item>
+    <item>Kocka belül</item>
+    <item>Kocka kívül</item>
+    <item>Kártyapakli</item>
+    <item>Harmónika</item>
+    <item>Forgatás</item>
+    <item>Henger belül</item>
+    <item>Henger kívül</item>
+    <item>Körhinta</item>
+    <item>Áttekintés</item>
   </string-array>
 </resources>

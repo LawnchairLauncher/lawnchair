@@ -19,7 +19,7 @@
   <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
   <string name="sort_button_text">Sorteren</string>
   <string name="filter_button_text">Filteren</string>
-  <string name="default_screen_button_text">Standaardscherm</string>
+  <string name="default_screen_button_text">Standaard\nscherm</string>
   <string name="transition_effect_button_text">Overgangseffect</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Aantal starts</string>
@@ -42,7 +42,7 @@
   <string name="preferences_interface_general_icons_text_style_summary">Stijl van tekst bij pictogrammen</string>
   <string name="dialog_pick_iconpack_title">Pictogrammenpakket kiezen</string>
   <string name="default_iconpack_title">Standaard</string>
-  <string name="icon_packs_title">Pictogrammenpakketten</string>
+  <string name="icon_packs_title">Pictogrammen\npakketten</string>
   <string name="no_iconpacks_summary">Geen pictogrammenpakketten geïnstalleerd</string>
   <string name="all_apps_cling_cm">App-overzicht aanpassen</string>
   <string name="all_apps_cling_summary">Tik op de pagina-indicator voor extra instellingen</string>

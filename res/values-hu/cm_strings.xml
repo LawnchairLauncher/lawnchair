@@ -16,5 +16,32 @@
      limitations under the License.
 -->
 <resources>
-  <string name="preferences_title">Beállítások</string>
+  <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
+  <string name="sort_button_text">Rendezés</string>
+  <string name="filter_button_text">Szűrő</string>
+  <string name="default_screen_button_text">Alapértelmezett képernyő</string>
+  <string name="transition_effect_button_text">Görgetés effekt</string>
+  <string name="sort_mode_title">Név</string>
+  <string name="sort_mode_launch_count">Indítások száma</string>
+  <string name="sort_mode_install_time">Telepítés ideje</string>
+  <string name="scrolling_page_outlines">Oldal körvonalak</string>
+  <string name="scrolling_fade_adjacent">Elhalványuló váltás az oldalak közt</string>
+  <string name="wallpaper_scroll">Háttérkép görgetése</string>
+  <string name="preferences_application_title">Alkamazás</string>
+  <string name="preferences_interface_homescreen_title">Kezdőképernyő</string>
+  <string name="preferences_interface_homescreen_search_title">Keresési sáv</string>
+  <string name="preferences_interface_homescreen_search_summary">Állandó keresési sáv megjelenítése a képernyő felső </string>
+  <string name="preferences_interface_drawer_title">Alkalmazásképernyők</string>
+  <string name="preferences_interface_dock_title">Dokkoló</string>
+  <string name="preferences_interface_general_icons_category">Ikonok</string>
+  <string name="preferences_interface_general_icons_large_title">Nagyobb ikonok</string>
+  <string name="preferences_interface_general_icons_large_summary">Extra méretű ikonok a kezdő ill. alkalmazás képernyőkön</string>
+  <string name="preferences_interface_general_icons_text_style_title">Szöveg betűtípusa</string>
+  <string name="preferences_interface_general_icons_text_style_summary">Ikon szövegének típusa</string>
+  <string name="dialog_pick_iconpack_title">Ikoncsomag választása</string>
+  <string name="default_iconpack_title">Alapértelmezett ikonok</string>
+  <string name="icon_packs_title">Ikon csomagok</string>
+  <string name="no_iconpacks_summary">Nincsenek telepítve ikoncsomagok</string>
+  <string name="all_apps_cling_cm">Alkalmazásképernyők testreszabása</string>
+  <string name="all_apps_cling_summary">Érintse meg az oldaljelölőt a további konfigurációs beállítások megtekintéséhez</string>
 </resources>

@@ -17,9 +17,9 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Regularna</item>
-    <item>Lekka</item>
-    <item>Skondensowana</item>
+    <item>Regularny</item>
+    <item>Lekki</item>
+    <item>Skondensowany</item>
   </string-array>
   <string-array name="transition_effect_entries">
     <item>Brak</item>

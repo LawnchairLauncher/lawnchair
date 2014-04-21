@@ -27,14 +27,12 @@
   <string name="scrolling_page_outlines">Espacement des pages</string>
   <string name="scrolling_fade_adjacent">Estomper les pages adjacentes</string>
   <string name="wallpaper_scroll">Défilement du fond d\'écran</string>
-  <string name="preferences_title">Paramètres</string>
   <string name="preferences_application_title">Application</string>
   <string name="preferences_interface_homescreen_title">Écran d\'accueil</string>
   <string name="preferences_interface_homescreen_search_title">Barre de recherche</string>
   <string name="preferences_interface_homescreen_search_summary">Afficher la barre de recherche persistante en haut de l\'écran</string>
   <string name="preferences_interface_drawer_title">Liste d\'applications</string>
   <string name="preferences_interface_dock_title">Dock</string>
-  <string name="preferences_interface_general_title">Général</string>
   <string name="preferences_interface_general_icons_category">Icônes</string>
   <string name="preferences_interface_general_icons_large_title">Grandes icônes</string>
   <string name="preferences_interface_general_icons_large_summary">Utiliser des icônes extra-larges dans l\'écran d\'accueil et la liste d\'applications</string>

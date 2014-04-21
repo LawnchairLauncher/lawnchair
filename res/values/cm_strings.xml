@@ -28,13 +28,13 @@
     <!-- Text for filter button -->
     <string name="filter_button_text">Filter</string>
     <!-- Text for default screen button -->
-    <string name="default_screen_button_text">Default Screen</string>
+    <string name="default_screen_button_text">Default screen</string>
     <!-- Text for transition effect button -->
-    <string name="transition_effect_button_text">Scroll Effect</string>
+    <string name="transition_effect_button_text">Scroll effect</string>
 
     <string name="sort_mode_title">Title</string>
-    <string name="sort_mode_launch_count">Launch Count</string>
-    <string name="sort_mode_install_time">Install Time</string>
+    <string name="sort_mode_launch_count">Launch count</string>
+    <string name="sort_mode_install_time">Install time</string>
 
     <string name="scrolling_page_outlines">Page outlines</string>
     <string name="scrolling_fade_adjacent">Fade side pages</string>
@@ -78,17 +78,4 @@
     <string name="all_apps_cling_cm">Customize your drawer</string>
     <!-- The description of how to access Trebuchet settings [CHAR_LIMIT=160] -->
     <string name="all_apps_cling_summary">Tap the page indicator to view additional configuration settings</string>
-
-    <!-- AOSP dummy strings (required by old Launcher3 code) -->
-    <string name="chooser_wallpaper" translatable="false">""</string>
-    <string name="folder_cling_move_item" translatable="false">""</string>
-    <string name="group_wallpapers" translatable="false">""</string>
-    <string name="menu_add" translatable="false">""</string>
-    <string name="menu_help" translatable="false">""</string>
-    <string name="menu_manage_apps" translatable="false">""</string>
-    <string name="menu_notifications" translatable="false">""</string>
-    <string name="menu_search" translatable="false">""</string>
-    <string name="menu_settings" translatable="false">""</string>
-    <string name="menu_wallpaper" translatable="false">""</string>
-    <string name="workspace_cling_open_all_apps" translatable="false">""</string>
 </resources>

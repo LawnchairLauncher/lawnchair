@@ -16,5 +16,25 @@
      limitations under the License.
 -->
 <resources>
-  <string name="preferences_interface_general_title">一般</string>
+  <string-array name="preferences_interface_general_icons_text_font_family_entries">
+    <item>標準</item>
+    <item>Light</item>
+    <item>Condensed</item>
+  </string-array>
+  <string-array name="transition_effect_entries">
+    <item>なし</item>
+    <item>ズームイン</item>
+    <item>ズームアウト</item>
+    <item>上回転</item>
+    <item>下回転</item>
+    <item>キューブイン</item>
+    <item>キューブアウト</item>
+    <item>スタック</item>
+    <item>アコーディオン</item>
+    <item>フリップ</item>
+    <item>シリンダーイン</item>
+    <item>シリンダーアウト</item>
+    <item>カルーセル</item>
+    <item>オーバービュー</item>
+  </string-array>
 </resources>
