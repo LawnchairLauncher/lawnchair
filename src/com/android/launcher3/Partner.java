@@ -1,0 +1,84 @@
+/*
+ * Copyright (C) 2014 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.launcher3;
+
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.util.Log;
+
+/**
+ * Utilities to discover and interact with partner customizations. There can
+ * only be one set of customizations on a device, and it must be bundled with
+ * the system.
+ */
+public class Partner {
+    private static final String TAG = "Partner";
+
+    /** Marker action used to discover partner */
+    private static final String
+            ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
+
+    public static final String RESOURCE_FOLDER = "partner_folder";
+    public static final String RESOURCE_WALLPAPERS = "partner_wallpapers";
+
+    private static boolean sSearched = false;
+    private static Partner sPartner;
+
+    /**
+     * Find and return partner details, or {@code null} if none exists.
+     */
+    public static synchronized Partner get(PackageManager pm) {
+        if (!sSearched) {
+            final Intent intent = new Intent(ACTION_PARTNER_CUSTOMIZATION);
+            for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
+                if (info.activityInfo != null &&
+                        (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    final String packageName = info.activityInfo.packageName;
+                    try {
+                        final Resources res = pm.getResourcesForApplication(packageName);
+                        sPartner = new Partner(packageName, res);
+                        break;
+                    } catch (NameNotFoundException e) {
+                        Log.w(TAG, "Failed to find resources for " + packageName);
+                    }
+                }
+            }
+            sSearched = true;
+        }
+        return sPartner;
+    }
+
+    private final String mPackageName;
+    private final Resources mResources;
+
+    private Partner(String packageName, Resources res) {
+        mPackageName = packageName;
+        mResources = res;
+    }
+
+    public String getPackageName() {
+        return mPackageName;
+    }
+
+    public Resources getResources() {
+        return mResources;
+    }
+}
