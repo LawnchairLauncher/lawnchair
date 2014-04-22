@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -137,7 +138,8 @@ public class AppInfo extends ItemInfo {
         return "ApplicationInfo(title=" + title.toString() + " id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container
                 + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY
-                + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + dropPos + ")";
+                + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
+                + ")";
     }
 
     public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
