@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.ContentValues;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -114,6 +115,6 @@ public class FolderInfo extends ItemInfo {
         return "FolderInfo(id=" + this.id + " type=" + this.itemType
                 + " container=" + this.container + " screen=" + screenId
                 + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-                + " spanY=" + spanY + " dropPos=" + dropPos + ")";
+                + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos) + ")";
     }
 }
