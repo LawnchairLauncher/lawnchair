@@ -1334,7 +1334,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void hideOutlines() {
-        if (!mIsSwitchingState) {
+        if (!isSmall() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             mChildrenOutlineFadeOutAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 0.0f);
