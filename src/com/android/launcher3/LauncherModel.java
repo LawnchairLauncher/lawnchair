@@ -499,7 +499,9 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         // Clear any deferred bind runnables
-        mDeferredBindRunnables.clear();
+        synchronized (mDeferredBindRunnables) {
+            mDeferredBindRunnables.clear();
+        }
         // Remove any queued bind runnables
         mHandler.cancelAllRunnablesOfType(MAIN_THREAD_BINDING_RUNNABLE);
         // Unbind all the workspace items
@@ -1316,7 +1318,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Clear any deferred bind-runnables from the synchronized load process
             // We must do this before any loading/binding is scheduled below.
-            mDeferredBindRunnables.clear();
+            synchronized (mDeferredBindRunnables) {
+                mDeferredBindRunnables.clear();
+            }
 
             // Don't bother to start the thread if we know it's not going to do anything
             if (mCallbacks != null && mCallbacks.get() != null) {
@@ -1338,10 +1342,15 @@ public class LauncherModel extends BroadcastReceiver {
     void bindRemainingSynchronousPages() {
         // Post the remaining side pages to be loaded
         if (!mDeferredBindRunnables.isEmpty()) {
-            for (final Runnable r : mDeferredBindRunnables) {
+            Runnable[] deferredBindRunnables = null;
+            synchronized (mDeferredBindRunnables) {
+                deferredBindRunnables = mDeferredBindRunnables.toArray(
+                        new Runnable[mDeferredBindRunnables.size()]);
+                mDeferredBindRunnables.clear();
+            }
+            for (final Runnable r : deferredBindRunnables) {
                 mHandler.post(r, MAIN_THREAD_BINDING_RUNNABLE);
             }
-            mDeferredBindRunnables.clear();
         }
     }
 
@@ -2368,7 +2377,9 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 };
                 if (postOnMainThread) {
-                    deferredBindRunnables.add(r);
+                    synchronized (deferredBindRunnables) {
+                        deferredBindRunnables.add(r);
+                    }
                 } else {
                     runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                 }
@@ -2385,7 +2396,9 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 };
                 if (postOnMainThread) {
-                    deferredBindRunnables.add(r);
+                    synchronized (deferredBindRunnables) {
+                        deferredBindRunnables.add(r);
+                    }
                 } else {
                     runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                 }
@@ -2507,7 +2520,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Load all the remaining pages (if we are loading synchronously, we want to defer this
             // work until after the first render)
-            mDeferredBindRunnables.clear();
+            synchronized (mDeferredBindRunnables) {
+                mDeferredBindRunnables.clear();
+            }
             bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, otherFolders,
                     (isLoadingSynchronously ? mDeferredBindRunnables : null));
 
@@ -2529,7 +2544,9 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             };
             if (isLoadingSynchronously) {
-                mDeferredBindRunnables.add(r);
+                synchronized (mDeferredBindRunnables) {
+                    mDeferredBindRunnables.add(r);
+                }
             } else {
                 runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
             }
