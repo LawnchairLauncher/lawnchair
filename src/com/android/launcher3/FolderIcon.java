@@ -33,6 +33,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -104,6 +105,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private float mMaxPerspectiveShift;
     boolean mAnimating = false;
     private Rect mOldBounds = new Rect();
+
+    private float mSlop;
 
     private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
@@ -386,7 +389,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void performDestroyAnimation(final View finalView, Runnable onCompleteRunnable) {
         Drawable animateDrawable = ((TextView) finalView).getCompoundDrawables()[1];
-        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), 
+        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 finalView.getMeasuredWidth());
 
         // This will animate the first item from it's position as an icon into its
@@ -703,8 +706,19 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             case MotionEvent.ACTION_UP:
                 mLongPressHelper.cancelLongPress();
                 break;
+            case MotionEvent.ACTION_MOVE:
+                if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
+                    mLongPressHelper.cancelLongPress();
+                }
+                break;
         }
         return result;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     @Override
