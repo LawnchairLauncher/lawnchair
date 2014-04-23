@@ -72,9 +72,9 @@
     <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"Verknüpfungen deinstallieren"</string>
     <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Ermöglicht einer App das Entfernen von Verknüpfungen ohne Eingreifen des Nutzers"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Einstellungen und Verknüpfungen auf dem Startbildschirm lesen"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Ermöglicht einer App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"Einstellungen und Verknüpfungen für den Startbildschirm schreiben"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Ermöglicht einer App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem beim Laden des Widgets"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
