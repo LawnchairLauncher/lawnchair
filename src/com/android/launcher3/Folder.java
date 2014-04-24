@@ -391,7 +391,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // We rearrange the items in case there are any empty gaps
         setupContentForNumItems(count);
 
-        // If our folder has too many items we prune them from the list. This is an issue 
+        // If our folder has too many items we prune them from the list. This is an issue
         // when upgrading from the old Folders implementation which could contain an unlimited
         // number of items.
         for (ShortcutInfo item: overflow) {
@@ -583,7 +583,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // by another item.
         if (mContent.getChildAt(item.cellX, item.cellY) != null || item.cellX < 0 || item.cellY < 0
                 || item.cellX >= mContent.getCountX() || item.cellY >= mContent.getCountY()) {
-            // This shouldn't happen, log it. 
+            // This shouldn't happen, log it.
             Log.e(TAG, "Folder order not properly persisted during bind");
             if (!findAndSetEmptyCells(item)) {
                 return null;
@@ -1177,7 +1177,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         Runnable cleanUpRunnable = null;
 
         // If we are coming from All Apps space, we need to remove the extra empty screen (which is
-        // normally done in Workspace#onDropExternal, as well zoom back in and close the folder.
+        // normally done in Workspace#onDropExternal, as well zoom back in.
         if (d.dragSource != mLauncher.getWorkspace() && !(d.dragSource instanceof Folder)) {
             cleanUpRunnable = new Runnable() {
                 @Override
@@ -1185,7 +1185,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     mLauncher.getWorkspace().removeExtraEmptyScreen(false, new Runnable() {
                         @Override
                         public void run() {
-                            mLauncher.closeFolder();
                             mLauncher.exitSpringLoadedDragModeDelayed(true,
                                     Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT_FOLDER_CLOSE,
                                     null);
