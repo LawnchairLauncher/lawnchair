@@ -1466,6 +1466,14 @@ public class Workspace extends SmoothPagedView
         mWallpaperOffset.syncWithScroll();
     }
 
+    @Override
+    public void announceForAccessibility(CharSequence text) {
+        // Don't announce if apps is on top of us.
+        if (!mLauncher.isAllAppsVisible()) {
+            super.announceForAccessibility(text);
+        }
+    }
+
     void showOutlines() {
         if (!isSmall() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();

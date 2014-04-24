@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -429,6 +430,14 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // Make sure adjacent pages are loaded (we wait until after the transition to
             // prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
+
+            // Opening apps, need to announce what page we are on.
+            AccessibilityManager am = (AccessibilityManager)
+                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            if (am.isEnabled()) {
+                // Notify the user when the page changes
+                announceForAccessibility(mAppsCustomizePane.getCurrentPageDescription());
+            }
 
             // Going from Workspace -> All Apps
             // NOTE: We should do this at the end since we check visibility state in some of the
