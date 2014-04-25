@@ -19,11 +19,11 @@
   <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
   <string name="sort_button_text">Ordenar</string>
   <string name="filter_button_text">Filtrar</string>
-  <string name="default_screen_button_text">Tela Padrão</string>
-  <string name="transition_effect_button_text">Efeito de Rolagem</string>
+  <string name="default_screen_button_text">Tela padrão</string>
+  <string name="transition_effect_button_text">Efeito de rolagem</string>
   <string name="sort_mode_title">Título</string>
-  <string name="sort_mode_launch_count">Contagem de inicialização</string>
-  <string name="sort_mode_install_time">Tempo de Instalação</string>
+  <string name="sort_mode_launch_count">Contador de inicialização</string>
+  <string name="sort_mode_install_time">Hora da instalação</string>
   <string name="scrolling_page_outlines">Contorno de página</string>
   <string name="scrolling_fade_adjacent">Esmaecer páginas laterais</string>
   <string name="wallpaper_scroll">Rolar papel de parede</string>

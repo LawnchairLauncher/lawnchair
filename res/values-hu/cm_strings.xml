@@ -27,12 +27,14 @@
   <string name="scrolling_page_outlines">Oldal körvonalak</string>
   <string name="scrolling_fade_adjacent">Elhalványuló váltás az oldalak közt</string>
   <string name="wallpaper_scroll">Háttérkép görgetése</string>
+  <string name="preferences_title">Beállítások</string>
   <string name="preferences_application_title">Alkamazás</string>
   <string name="preferences_interface_homescreen_title">Kezdőképernyő</string>
   <string name="preferences_interface_homescreen_search_title">Keresési sáv</string>
   <string name="preferences_interface_homescreen_search_summary">Állandó keresési sáv megjelenítése a képernyő felső </string>
   <string name="preferences_interface_drawer_title">Alkalmazásképernyők</string>
   <string name="preferences_interface_dock_title">Dokkoló</string>
+  <string name="preferences_interface_general_title">Általános</string>
   <string name="preferences_interface_general_icons_category">Ikonok</string>
   <string name="preferences_interface_general_icons_large_title">Nagyobb ikonok</string>
   <string name="preferences_interface_general_icons_large_summary">Extra méretű ikonok a kezdő ill. alkalmazás képernyőkön</string>

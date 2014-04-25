@@ -18,11 +18,11 @@
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
     <item>Szokásos</item>
-    <item>Light</item>
+    <item>Világos</item>
     <item>Tömörített</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>None</item>
+    <item>Nincs</item>
     <item>Nagyítás befelé</item>
     <item>Nagyítás kifelé</item>
     <item>Forgatás felfelé</item>

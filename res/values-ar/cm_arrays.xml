@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Régulier</item>
-    <item>Léger</item>
-    <item>Condensé</item>
+    <item>العادية</item>
+    <item>فاتح</item>
+    <item>مكثف</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Aucun</item>
-    <item>Zoom avant</item>
-    <item>Zoom arrière</item>
-    <item>Rotation vers le haut</item>
-    <item>Rotation vers le bas</item>
-    <item>Cube intérieur</item>
-    <item>Cube extérieur</item>
-    <item>Empilement</item>
-    <item>Accordéon</item>
-    <item>Retourner</item>
-    <item>Cylindre intérieur</item>
-    <item>Cylindre extérieur</item>
-    <item>Carrousel</item>
-    <item>Aperçu</item>
+    <item>لا شيء</item>
+    <item>تكبير</item>
+    <item>تصغير</item>
+    <item>تدوير للأعلى</item>
+    <item>تدوير لأسفل</item>
+    <item>مكعب لداخل</item>
+    <item>مكعب للخارج</item>
+    <item>جميع</item>
+    <item>Accordion</item>
+    <item>لف</item>
+    <item>اسطوانة الداخل</item>
+    <item>اسطوانة الخارج</item>
+    <item>دائري</item>
+    <item>نظرة عامّة</item>
   </string-array>
 </resources>

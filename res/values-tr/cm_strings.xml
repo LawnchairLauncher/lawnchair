@@ -19,11 +19,7 @@
   <string name="application_copyright">Telif Hakkı \u00A9 2014 CyanogenMod Projesi</string>
   <string name="sort_button_text">Sırala</string>
   <string name="filter_button_text">Filtrele</string>
-  <string name="default_screen_button_text">Varsayılan Ekran</string>
-  <string name="transition_effect_button_text">Kaydırma Efekti</string>
   <string name="sort_mode_title">Başlık</string>
-  <string name="sort_mode_launch_count">Çalıştırma Sayısı</string>
-  <string name="sort_mode_install_time">Kurulum Zamanı</string>
   <string name="scrolling_page_outlines">Sayfa anahatları</string>
   <string name="scrolling_fade_adjacent">Yan sayfaları soldur</string>
   <string name="wallpaper_scroll">Duvarkağıdını kaydır</string>

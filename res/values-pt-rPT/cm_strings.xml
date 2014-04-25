@@ -20,7 +20,7 @@
   <string name="sort_button_text">Ordenar</string>
   <string name="filter_button_text">Filtrar</string>
   <string name="default_screen_button_text">Ecrã Padrão</string>
-  <string name="transition_effect_button_text">Efeito de deslocamento</string>
+  <string name="transition_effect_button_text">Efeito de transição</string>
   <string name="sort_mode_title">Título</string>
   <string name="sort_mode_launch_count">Contagem de inicializações</string>
   <string name="sort_mode_install_time">Data de instalação</string>

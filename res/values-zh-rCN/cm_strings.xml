@@ -27,6 +27,7 @@
   <string name="scrolling_page_outlines">页概述</string>
   <string name="scrolling_fade_adjacent">边页淡出</string>
   <string name="wallpaper_scroll">滚动壁纸</string>
+  <string name="preferences_title">设置</string>
   <string name="preferences_application_title">应用程序</string>
   <string name="preferences_interface_homescreen_title">主屏</string>
   <string name="preferences_interface_homescreen_search_title">搜索栏</string>
