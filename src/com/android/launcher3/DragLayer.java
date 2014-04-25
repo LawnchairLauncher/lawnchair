@@ -800,7 +800,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     /**
      * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
      */
-    private boolean isLayoutRtl() {
+    @Override
+    public boolean isLayoutRtl() {
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 

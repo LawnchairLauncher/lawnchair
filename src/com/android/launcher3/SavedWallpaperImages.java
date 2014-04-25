@@ -49,7 +49,7 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
     Context mContext;
     LayoutInflater mLayoutInflater;
 
-    public static class SavedWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
+    public static class SavedWallpaperTile extends WallpaperCropActivity.WallpaperTileInfo {
         private int mDbId;
         private Drawable mThumb;
         public SavedWallpaperTile(int dbId, Drawable thumb) {
@@ -57,7 +57,7 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             mThumb = thumb;
         }
         @Override
-        public void onClick(WallpaperPickerActivity a) {
+        public void onClick(WallpaperCropActivity a) {
             String imageFilename = a.getSavedImages().getImageFilename(mDbId);
             File file = new File(a.getFilesDir(), imageFilename);
             CropView v = a.getCropView();
@@ -68,13 +68,13 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             v.setTouchEnabled(false);
         }
         @Override
-        public void onSave(WallpaperPickerActivity a) {
+        public void onSave(WallpaperCropActivity a) {
             boolean finishActivityWhenDone = true;
             String imageFilename = a.getSavedImages().getImageFilename(mDbId);
             a.setWallpaper(imageFilename, finishActivityWhenDone);
         }
         @Override
-        public void onDelete(WallpaperPickerActivity a) {
+        public void onDelete(WallpaperCropActivity a) {
             a.getSavedImages().deleteImage(mDbId);
         }
         @Override

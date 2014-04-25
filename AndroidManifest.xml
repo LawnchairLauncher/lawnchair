@@ -52,6 +52,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.SET_KEYGUARD_WALLPAPER" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -113,6 +114,19 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.LockWallpaperPickerActivity"
+            android:theme="@style/Theme.WallpaperCropper"
+            android:label="@string/pick_wallpaper"
+            android:icon="@mipmap/ic_launcher_wallpaper"
+            android:finishOnCloseSystemDialogs="true"
+            android:process=":wallpaper_chooser">
+            <intent-filter>
+                <action android:name="android.intent.action.SET_KEYGUARD_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

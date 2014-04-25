@@ -59,7 +59,7 @@ public class WallpaperCropActivity extends Activity {
 
     protected static final String WALLPAPER_WIDTH_KEY = "wallpaper.width";
     protected static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
-    private static final int DEFAULT_COMPRESS_QUALITY = 90;
+    protected static final int DEFAULT_COMPRESS_QUALITY = 90;
     /**
      * The maximum bitmap size we allow to be returned through the intent.
      * Intents have a maximum of 1MB in total size. However, the Bitmap seems to
@@ -68,10 +68,27 @@ public class WallpaperCropActivity extends Activity {
      * array instead of a Bitmap instance to avoid overhead.
      */
     public static final int MAX_BMAP_IN_INTENT = 750000;
-    private static final float WALLPAPER_SCREENS_SPAN = 2f;
+    protected static final float WALLPAPER_SCREENS_SPAN = 2f;
 
     protected CropView mCropView;
     protected Uri mUri;
+
+    public static abstract class WallpaperTileInfo {
+        protected View mView;
+        public void setView(View v) {
+            mView = v;
+        }
+        public void onClick(WallpaperCropActivity a) {}
+        public void onSave(WallpaperCropActivity a) {}
+        public void onDelete(WallpaperCropActivity a) {}
+        public boolean isSelectable() { return false; }
+        public boolean isNamelessWallpaper() { return false; }
+        public void onIndexUpdated(CharSequence label) {
+            if (isNamelessWallpaper()) {
+                mView.setContentDescription(label);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +140,7 @@ public class WallpaperCropActivity extends Activity {
 
     // As a ratio of screen height, the total distance we want the parallax effect to span
     // horizontally
-    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+    protected static float wallpaperTravelToScreenWidthRatio(int width, int height) {
         float aspectRatio = width / (float) height;
 
         // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
@@ -210,6 +227,8 @@ public class WallpaperCropActivity extends Activity {
             }
         } catch (IOException e) {
             Log.w(LOGTAG, "Getting exif data failed", e);
+        } catch (NullPointerException e) {
+            Log.w(LOGTAG, "Getting exif data failed", e);
         }
         return 0;
     }
@@ -259,7 +278,7 @@ public class WallpaperCropActivity extends Activity {
         cropTask.execute();
     }
 
-    private static boolean isScreenLarge(Resources res) {
+    protected static boolean isScreenLarge(Resources res) {
         Configuration config = res.getConfiguration();
         return config.smallestScreenWidthDp >= 720;
     }
@@ -751,5 +770,24 @@ public class WallpaperCropActivity extends Activity {
         return (outputFormat.equals("png") || outputFormat.equals("gif"))
                 ? "png" // We don't support gif compression.
                 : "jpg";
+    }
+
+    protected void setWallpaperStripYOffset(int bottom) {
+        //
+    }
+
+    protected SavedWallpaperImages getSavedImages() {
+        // for subclasses
+        throw new UnsupportedOperationException("Not implemented for WallpaperCropActivity");
+    }
+
+    protected CropView getCropView() {
+        // for subclasses
+        throw new UnsupportedOperationException("Not implemented for WallpaperCropActivity");
+    }
+
+    protected void onLiveWallpaperPickerLaunch() {
+        // for subclasses
+        throw new UnsupportedOperationException("Not implemented for WallpaperCropActivity");
     }
 }
