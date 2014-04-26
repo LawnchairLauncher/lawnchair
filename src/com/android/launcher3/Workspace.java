@@ -315,7 +315,7 @@ public class Workspace extends SmoothPagedView
                 R.bool.preferences_interface_homescreen_scrolling_page_outlines_default);
         mHideIconLabels = SettingsProvider.getBoolean(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels);
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default);
         mWorkspaceFadeInAdjacentScreens = SettingsProvider.getBoolean(context,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT,
                 R.bool.preferences_interface_homescreen_scrolling_fade_adjacent_default);

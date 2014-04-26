@@ -195,7 +195,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         if (SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels)) {
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default)) {
             mFolderName.setVisibility(View.GONE);
             mFolderNameHeight = getPaddingBottom();
         }
@@ -276,7 +276,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         String newTitle = mFolderName.getText().toString();
         if (!SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels)) {
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default)) {
             mInfo.setTitle(newTitle);
         }
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
