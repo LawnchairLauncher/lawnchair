@@ -22,7 +22,7 @@
   <string name="default_screen_button_text">Schermata predefinita</string>
   <string name="transition_effect_button_text">Effetto scorrimento</string>
   <string name="sort_mode_title">Titolo</string>
-  <string name="sort_mode_launch_count">Conteggio avvio</string>
+  <string name="sort_mode_launch_count">Numero avvii</string>
   <string name="sort_mode_install_time">Tempo installazione</string>
   <string name="scrolling_page_outlines">Contorni pagina</string>
   <string name="scrolling_fade_adjacent">Dissolvenza pagine laterali</string>

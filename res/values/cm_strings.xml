@@ -52,9 +52,21 @@
     <string name="preferences_interface_homescreen_title">Homescreen</string>
     <string name="preferences_interface_homescreen_search_title">Search bar</string>
     <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide icon labels on homescreen</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
+    <string name="preferences_interface_drawer_summary">Apps and widgets drawer</string>
+    <string name="preferences_interface_drawer_apps_category">Apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_title">Hidden apps</string>
+    <string name="preferences_interface_drawer_hidden_apps_summary">Hide apps from the drawer</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Remove shortcuts</string>
+    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remove the shortcuts of hidden apps from the homescreen</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Remove widgets</string>
+    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remove the widgets of hidden apps from the homescreen</string>
+    <string name="preferences_interface_drawer_hide_icon_labels_title">Hide icon labels</string>
+    <string name="preferences_interface_drawer_hide_icon_labels_summary">Hide icon labels in drawer</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
@@ -78,4 +90,10 @@
     <string name="all_apps_cling_cm">Customize your drawer</string>
     <!-- The description of how to access Trebuchet settings [CHAR_LIMIT=160] -->
     <string name="all_apps_cling_summary">Tap the page indicator to view additional configuration settings</string>
+
+    <!-- Noun, menu item used to reset hidden apps list -->
+    <string name="menu_hidden_apps_delete">Reset</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Hidden apps</string>
 </resources>

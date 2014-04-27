@@ -45,5 +45,5 @@
   <string name="icon_packs_title">アイコンパック</string>
   <string name="no_iconpacks_summary">アイコンパックがインストールされていません</string>
   <string name="all_apps_cling_cm">ドロワーをカスタマイズ</string>
-  <string name="all_apps_cling_summary">追加の構成設定を表示するには、ページインジケーターをタップします。</string>
+  <string name="all_apps_cling_summary">追加の構成設定を表示するには、ページインジケータをタップします。</string>
 </resources>

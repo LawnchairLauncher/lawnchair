@@ -17,7 +17,7 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Regular</item>
+    <item>Normal</item>
     <item>Fino</item>
     <item>Condensado</item>
   </string-array>

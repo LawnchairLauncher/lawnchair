@@ -19,7 +19,7 @@
   <string name="application_copyright">Copyright \u00A9 2014 CyanogenMod projekt</string>
   <string name="sort_button_text">Třídit</string>
   <string name="filter_button_text">Filtr</string>
-  <string name="default_screen_button_text">Výchozí plocha</string>
+  <string name="default_screen_button_text">Výchozí obrazovka</string>
   <string name="transition_effect_button_text">Efekt přechodu</string>
   <string name="sort_mode_title">Název</string>
   <string name="sort_mode_launch_count">Počet spuštění</string>

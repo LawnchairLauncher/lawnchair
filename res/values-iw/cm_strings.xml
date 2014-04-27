@@ -22,7 +22,7 @@
   <string name="default_screen_button_text">מסך ברירת מחדל</string>
   <string name="transition_effect_button_text">אפקט גלילה</string>
   <string name="sort_mode_title">כותרת</string>
-  <string name="sort_mode_launch_count">הפעל ספירה</string>
+  <string name="sort_mode_launch_count">מספר הפעלות</string>
   <string name="sort_mode_install_time">זמן התקנה</string>
   <string name="scrolling_page_outlines">תיאור דף</string>
   <string name="wallpaper_scroll">גלילת טפט</string>

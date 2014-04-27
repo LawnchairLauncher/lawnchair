@@ -85,12 +85,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.launcher3.settings.SettingsActivity"
+        <activity android:name=".settings.SettingsActivity"
                 android:label="@string/preferences_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.cyanogenmod.category.LAUNCHER_PREFERENCES" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".settings.HiddenAppsActivity"
+            android:label="@string/hidden_apps_title"
+            android:exported="false">
+            <intent-filter>
+                <action android:name=".settings.HiddenAppsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

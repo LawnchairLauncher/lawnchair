@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Régulier</item>
-    <item>Léger</item>
-    <item>Condensé</item>
+    <item>Įprastas</item>
+    <item>Plonas</item>
+    <item>Suglaustas</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Aucun</item>
-    <item>Zoom avant</item>
-    <item>Zoom arrière</item>
-    <item>Rotation vers le haut</item>
-    <item>Rotation vers le bas</item>
-    <item>Cube intérieur</item>
-    <item>Cube extérieur</item>
-    <item>Empilement</item>
-    <item>Accordéon</item>
-    <item>Retourner</item>
-    <item>Cylindre intérieur</item>
-    <item>Cylindre extérieur</item>
-    <item>Carrousel</item>
-    <item>Aperçu</item>
+    <item>Joks</item>
+    <item>Padidinti</item>
+    <item>Pamažinti</item>
+    <item>Pasukti aukštyn</item>
+    <item>Pasukti žemyn</item>
+    <item>Kubo vidus</item>
+    <item>Kubo išorė</item>
+    <item>Krūva</item>
+    <item>Akordeonas</item>
+    <item>Apversti</item>
+    <item>Cilindro vidus</item>
+    <item>Cilindro išorė</item>
+    <item>Karuselė</item>
+    <item>Apžvalga</item>
   </string-array>
 </resources>

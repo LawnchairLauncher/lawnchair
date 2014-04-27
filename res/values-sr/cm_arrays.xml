@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Régulier</item>
-    <item>Léger</item>
-    <item>Condensé</item>
+    <item>Обично</item>
+    <item>Светло</item>
+    <item>Кондензовано</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Aucun</item>
-    <item>Zoom avant</item>
-    <item>Zoom arrière</item>
-    <item>Rotation vers le haut</item>
-    <item>Rotation vers le bas</item>
-    <item>Cube intérieur</item>
-    <item>Cube extérieur</item>
-    <item>Empilement</item>
-    <item>Accordéon</item>
-    <item>Retourner</item>
-    <item>Cylindre intérieur</item>
-    <item>Cylindre extérieur</item>
-    <item>Carrousel</item>
-    <item>Aperçu</item>
+    <item>Без ефекта</item>
+    <item>Увећај</item>
+    <item>Умањи</item>
+    <item>Ротирај нагоре</item>
+    <item>Ротирај надоле</item>
+    <item>Коцка унутра</item>
+    <item>Коцка споља</item>
+    <item>Фабрички</item>
+    <item>Хармонијски</item>
+    <item>Флип</item>
+    <item>Цилиндар унутра</item>
+    <item>Цилиндар споља</item>
+    <item>Рингишпил</item>
+    <item>Прегледно</item>
   </string-array>
 </resources>

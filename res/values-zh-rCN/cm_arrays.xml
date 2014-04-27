@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Régulier</item>
-    <item>Léger</item>
-    <item>Condensé</item>
+    <item>常规</item>
+    <item>Light</item>
+    <item>Condensed</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Aucun</item>
-    <item>Zoom avant</item>
-    <item>Zoom arrière</item>
-    <item>Rotation vers le haut</item>
-    <item>Rotation vers le bas</item>
-    <item>Cube intérieur</item>
-    <item>Cube extérieur</item>
-    <item>Empilement</item>
-    <item>Accordéon</item>
-    <item>Retourner</item>
-    <item>Cylindre intérieur</item>
-    <item>Cylindre extérieur</item>
-    <item>Carrousel</item>
-    <item>Aperçu</item>
+    <item>无</item>
+    <item>放大</item>
+    <item>缩小</item>
+    <item>向上旋转</item>
+    <item>向下旋转</item>
+    <item>立方体内部</item>
+    <item>立方体外部</item>
+    <item>堆叠</item>
+    <item>手风琴</item>
+    <item>翻转</item>
+    <item>圆柱体内部</item>
+    <item>圆柱体外部</item>
+    <item>旋转木马</item>
+    <item>概览</item>
   </string-array>
 </resources>

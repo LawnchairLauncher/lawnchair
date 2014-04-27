@@ -40,10 +40,10 @@
   <string name="preferences_interface_general_icons_large_summary">Extra grote pictogrammen gebruiken voor apps op het startscherm en in het overzicht</string>
   <string name="preferences_interface_general_icons_text_style_title">Lettertypestijl</string>
   <string name="preferences_interface_general_icons_text_style_summary">Stijl van tekst bij pictogrammen</string>
-  <string name="dialog_pick_iconpack_title">Pictogrammenpakket kiezen</string>
+  <string name="dialog_pick_iconpack_title">Pictogrampakket kiezen</string>
   <string name="default_iconpack_title">Standaard</string>
-  <string name="icon_packs_title">Pictogrammen\npakketten</string>
-  <string name="no_iconpacks_summary">Geen pictogrammenpakketten geïnstalleerd</string>
+  <string name="icon_packs_title">Pictogram\npakket</string>
+  <string name="no_iconpacks_summary">Geen pictogrampakketten geïnstalleerd</string>
   <string name="all_apps_cling_cm">App-overzicht aanpassen</string>
   <string name="all_apps_cling_summary">Tik op de pagina-indicator voor extra instellingen</string>
 </resources>

@@ -23,7 +23,7 @@
   <string name="transition_effect_button_text">Rol effek</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Begin telling</string>
-  <string name="sort_mode_install_time">Installerings tyd</string>
+  <string name="sort_mode_install_time">Iinstalleer tyd</string>
   <string name="scrolling_page_outlines">Bladsy buitelyne</string>
   <string name="scrolling_fade_adjacent">Vervaag kant bladsye</string>
   <string name="wallpaper_scroll">Rol muurpapier</string>
