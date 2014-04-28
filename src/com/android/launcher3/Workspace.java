@@ -126,7 +126,7 @@ public class Workspace extends SmoothPagedView
     private static boolean sAccessibilityEnabled;
 
     // The screen id used for the empty screen always present to the right.
-    private final static long EXTRA_EMPTY_SCREEN_ID = -201;
+    final static long EXTRA_EMPTY_SCREEN_ID = -201;
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
     private HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
