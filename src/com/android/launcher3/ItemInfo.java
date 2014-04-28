@@ -132,7 +132,7 @@ public class ItemInfo {
      * 
      * @param values
      */
-    void onAddToDatabase(ContentValues values) { 
+    void onAddToDatabase(ContentValues values) {
         values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
         values.put(LauncherSettings.Favorites.CONTAINER, container);
         values.put(LauncherSettings.Favorites.SCREEN, screenId);
@@ -140,6 +140,11 @@ public class ItemInfo {
         values.put(LauncherSettings.Favorites.CELLY, cellY);
         values.put(LauncherSettings.Favorites.SPANX, spanX);
         values.put(LauncherSettings.Favorites.SPANY, spanY);
+
+        if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
+            // We should never persist an item on the extra empty screen.
+            throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
+        }
     }
 
     void updateValuesWithCoordinates(ContentValues values, int cellX, int cellY) {
