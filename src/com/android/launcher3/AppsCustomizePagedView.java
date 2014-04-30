@@ -1575,7 +1575,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int length = list.size();
         for (int i = 0; i < length; ++i) {
             AppInfo info = list.get(i);
-            if (info.intent.getComponent().equals(removeComponent)) {
+            if (info.user.equals(item.user)
+                    && info.intent.getComponent().equals(removeComponent)) {
                 return i;
             }
         }

@@ -26,6 +26,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.android.launcher3.compat.UserHandleCompat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -111,12 +113,12 @@ public class ShortcutInfo extends ItemInfo {
         }
     }
 
-
-    ShortcutInfo(Intent intent, CharSequence title, Bitmap icon) {
+    ShortcutInfo(Intent intent, CharSequence title, Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
         this.title = title;
         mIcon = icon;
+        this.user = user;
     }
 
     public ShortcutInfo(Context context, ShortcutInfo info) {
@@ -130,8 +132,9 @@ public class ShortcutInfo extends ItemInfo {
         }
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
         customIcon = info.customIcon;
-        initFlagsAndFirstInstallTime(
-                getPackageInfo(context, intent.getComponent().getPackageName()));
+        flags = info.flags;
+        firstInstallTime = info.firstInstallTime;
+        user = info.user;
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
@@ -142,22 +145,6 @@ public class ShortcutInfo extends ItemInfo {
         customIcon = false;
         flags = info.flags;
         firstInstallTime = info.firstInstallTime;
-    }
-
-    public static PackageInfo getPackageInfo(Context context, String packageName) {
-        PackageInfo pi = null;
-        try {
-            PackageManager pm = context.getPackageManager();
-            pi = pm.getPackageInfo(packageName, 0);
-        } catch (NameNotFoundException e) {
-            Log.d("ShortcutInfo", "PackageManager.getPackageInfo failed for " + packageName);
-        }
-        return pi;
-    }
-
-    void initFlagsAndFirstInstallTime(PackageInfo pi) {
-        flags = AppInfo.initFlags(pi);
-        firstInstallTime = AppInfo.initFirstInstallTime(pi);
     }
 
     public void setIcon(Bitmap b) {
@@ -172,30 +159,13 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void updateIcon(IconCache iconCache) {
-        mIcon = iconCache.getIcon(intent);
-        usingFallbackIcon = iconCache.isDefaultIcon(mIcon);
-    }
-
-    /**
-     * Creates the application intent based on a component name and various launch flags.
-     * Sets {@link #itemType} to {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
-     *
-     * @param className the class name of the component representing the intent
-     * @param launchFlags the launch flags
-     */
-    final void setActivity(Context context, ComponentName className, int launchFlags) {
-        intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setComponent(className);
-        intent.setFlags(launchFlags);
-        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-        initFlagsAndFirstInstallTime(
-                getPackageInfo(context, intent.getComponent().getPackageName()));
+        mIcon = iconCache.getIcon(intent, user);
+        usingFallbackIcon = iconCache.isDefaultIcon(mIcon, user);
     }
 
     @Override
-    void onAddToDatabase(ContentValues values) {
-        super.onAddToDatabase(values);
+    void onAddToDatabase(Context context, ContentValues values) {
+        super.onAddToDatabase(context, values);
 
         String titleStr = title != null ? title.toString() : null;
         values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
@@ -224,10 +194,10 @@ public class ShortcutInfo extends ItemInfo {
 
     @Override
     public String toString() {
-        return "ShortcutInfo(title=" + title.toString() + "intent=" + intent + "id=" + this.id
+        return "ShortcutInfo(title=" + title + "intent=" + intent + "id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container + " screen=" + screenId
                 + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX + " spanY=" + spanY
-                + " dropPos=" + Arrays.toString(dropPos) + ")";
+                + " dropPos=" + Arrays.toString(dropPos) + " user=" + user + ")";
     }
 
     public static void dumpShortcutInfoList(String tag, String label,

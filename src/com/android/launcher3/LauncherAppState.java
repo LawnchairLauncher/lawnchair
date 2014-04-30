@@ -24,6 +24,8 @@ import android.database.ContentObserver;
 import android.os.Handler;
 import android.util.Log;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+
 import java.lang.ref.WeakReference;
 
 public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
@@ -92,16 +94,11 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
         mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
+        launcherApps.addOnAppsChangedListener(mModel);
 
         // Register intent receivers
-        IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        filter.addDataScheme("package");
-        sContext.registerReceiver(mModel, filter);
-        filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
-        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
+        IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         sContext.registerReceiver(mModel, filter);

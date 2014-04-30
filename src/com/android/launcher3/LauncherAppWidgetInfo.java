@@ -19,6 +19,9 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
+
+import com.android.launcher3.compat.UserHandleCompat;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -59,11 +62,13 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         // to indicate that they should be calculated based on the layout and minWidth/minHeight
         spanX = -1;
         spanY = -1;
+        // We only support app widgets on current user.
+        user = UserHandleCompat.myUserHandle();
     }
 
     @Override
-    void onAddToDatabase(ContentValues values) {
-        super.onAddToDatabase(values);
+    void onAddToDatabase(Context context, ContentValues values) {
+        super.onAddToDatabase(context, values);
         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
         values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString());
     }

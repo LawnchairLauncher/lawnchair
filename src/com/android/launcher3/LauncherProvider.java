@@ -56,8 +56,10 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.Xml;
 
-import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -75,7 +77,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -429,6 +431,10 @@ public class LauncherProvider extends ContentProvider {
             mMaxScreenId = 0;
             mNewDbCreated = true;
 
+            UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+            long userSerialNumber = userManager.getSerialNumberForUser(
+                    UserHandleCompat.myUserHandle());
+
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
@@ -450,7 +456,8 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
-                    "restored INTEGER NOT NULL DEFAULT 0" +
+                    "restored INTEGER NOT NULL DEFAULT 0," +
+                    "profileId INTEGER DEFAULT " + userSerialNumber +
                     ");");
             addWorkspacesTable(db);
 
@@ -847,6 +854,14 @@ public class LauncherProvider extends ContentProvider {
                 version = 19;
             }
 
+            if (version < 20) {
+                // Add userId column
+                if (addProfileColumn(db)) {
+                    version = 20;
+                }
+                // else old version remains, which means we wipe old data
+            }
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
@@ -854,6 +869,29 @@ public class LauncherProvider extends ContentProvider {
 
                 onCreate(db);
             }
+        }
+
+        private boolean addProfileColumn(SQLiteDatabase db) {
+            db.beginTransaction();
+            try {
+                UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+                // Default to the serial number of this user, for older
+                // shortcuts.
+                long userSerialNumber = userManager.getSerialNumberForUser(
+                        UserHandleCompat.myUserHandle());
+                // Insert new column for holding user serial number
+                db.execSQL("ALTER TABLE favorites " +
+                        "ADD COLUMN profileId INTEGER DEFAULT "
+                                        + userSerialNumber + ";");
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                // Old version remains, which means we wipe old data
+                Log.e(TAG, ex.getMessage(), ex);
+                return false;
+            } finally {
+                db.endTransaction();
+            }
+            return true;
         }
 
         private boolean updateContactsShortcuts(SQLiteDatabase db) {
@@ -1786,6 +1824,8 @@ public class LauncherProvider extends ContentProvider {
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
                         final int displayModeIndex
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.DISPLAY_MODE);
+                        final int profileIndex
+                                = c.getColumnIndex(LauncherSettings.Favorites.PROFILE_ID);
 
                         int i = 0;
                         int curX = 0;
@@ -1817,6 +1857,19 @@ public class LauncherProvider extends ContentProvider {
                             final int screen = c.getInt(screenIndex);
                             int container = c.getInt(containerIndex);
                             final String intentStr = c.getString(intentIndex);
+
+                            UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+                            UserHandleCompat userHandle;
+                            final long userSerialNumber;
+                            if (profileIndex != -1 && !c.isNull(profileIndex)) {
+                                userSerialNumber = c.getInt(profileIndex);
+                                userHandle = userManager.getUserForSerialNumber(userSerialNumber);
+                            } else {
+                                // Default to the serial number of this user, for older
+                                // shortcuts.
+                                userHandle = UserHandleCompat.myUserHandle();
+                                userSerialNumber = userManager.getSerialNumberForUser(userHandle);
+                            }
                             Launcher.addDumpLog(TAG, "migrating \""
                                 + c.getString(titleIndex) + "\" ("
                                 + cellX + "," + cellY + "@"
@@ -1843,7 +1896,8 @@ public class LauncherProvider extends ContentProvider {
                                     Launcher.addDumpLog(TAG, "skipping empty intent", true);
                                     continue;
                                 } else if (cn != null &&
-                                        !LauncherModel.isValidPackageComponent(pm, cn)) {
+                                        !LauncherModel.isValidPackageActivity(mContext, cn,
+                                                userHandle)) {
                                     // component no longer exists.
                                     Launcher.addDumpLog(TAG, "skipping item whose component " +
                                             "no longer exists.", true);
@@ -1882,6 +1936,7 @@ public class LauncherProvider extends ContentProvider {
                             values.put(LauncherSettings.Favorites.URI, c.getString(uriIndex));
                             values.put(LauncherSettings.Favorites.DISPLAY_MODE,
                                     c.getInt(displayModeIndex));
+                            values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
                             if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                 hotseat.put(screen, values);
