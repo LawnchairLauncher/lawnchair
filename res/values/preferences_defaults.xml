@@ -8,8 +8,8 @@
     <bool name="preferences_interface_homescreen_hide_icon_labels">false</bool>
     <string name="preferences_interface_drawer_scrolling_transition_effect">stack</string>
     <bool name="preferences_interface_drawer_scrolling_fade_adjacent_default">false</bool>
-    <bool name="preferences_interface_drawer_remove_hidden_apps_shortcuts_default">true</bool>
-    <bool name="preferences_interface_drawer_remove_hidden_apps_widgets_default">true</bool>
+    <bool name="preferences_interface_drawer_remove_hidden_apps_shortcuts_default">false</bool>
+    <bool name="preferences_interface_drawer_remove_hidden_apps_widgets_default">false</bool>
     <bool name="preferences_interface_drawer_hide_icon_labels_default">false</bool>
     <bool name="preferences_interface_general_icons_large_default">@bool/config_largeIcons</bool>
     <string name="preferences_interface_general_icons_text_font_family_default">sans-serif-condensed</string>
