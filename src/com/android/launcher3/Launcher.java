@@ -763,7 +763,7 @@ public class Launcher extends Activity
     protected void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         // Reset the startActivity waiting flag
-        mWaitingForResult = false;
+        setWaitingForResult(false);
         int pendingAddWidgetId = mPendingAddWidgetId;
         mPendingAddWidgetId = -1;
 
@@ -936,7 +936,7 @@ public class Launcher extends Activity
         mPaused = false;
         sPausedFromUserAction = false;
         if (mRestoring || mOnResumeNeedsLoad) {
-            mWorkspaceLoading = true;
+            setWorkspaceLoading(true);
             mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
@@ -1190,7 +1190,7 @@ public class Launcher extends Activity
             mPendingAddInfo.spanY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y);
             mPendingAddWidgetInfo = savedState.getParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
             mPendingAddWidgetId = savedState.getInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID);
-            mWaitingForResult = true;
+            setWaitingForResult(true);
             mRestoring = true;
         }
 
@@ -1796,7 +1796,7 @@ public class Launcher extends Activity
         getWindow().closeAllPanels();
 
         // Whatever we were doing is hereby canceled.
-        mWaitingForResult = false;
+        setWaitingForResult(false);
     }
 
     @Override
@@ -1974,7 +1974,9 @@ public class Launcher extends Activity
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        if (requestCode >= 0) mWaitingForResult = true;
+        if (requestCode >= 0) {
+            setWaitingForResult(true);
+        }
         super.startActivityForResult(intent, requestCode);
     }
 
@@ -2087,6 +2089,24 @@ public class Launcher extends Activity
     public boolean isWorkspaceLoading() {
         return mWorkspaceLoading;
     }
+
+    private void setWorkspaceLoading(boolean value) {
+        boolean isLocked = isWorkspaceLocked();
+        mWorkspaceLoading = value;
+        if (isLocked != isWorkspaceLocked()) {
+            onWorkspaceLockedChanged();
+        }
+    }
+
+    private void setWaitingForResult(boolean value) {
+        boolean isLocked = isWorkspaceLocked();
+        mWaitingForResult = value;
+        if (isLocked != isWorkspaceLocked()) {
+            onWorkspaceLockedChanged();
+        }
+    }
+
+    protected void onWorkspaceLockedChanged() { }
 
     private void resetAddInfo() {
         mPendingAddInfo.container = ItemInfo.NO_ID;
@@ -3831,7 +3851,7 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
-        mWorkspaceLoading = true;
+        setWorkspaceLoading(true);
 
         // If we're starting binding all over again, clear any bind calls we'd postponed in
         // the past (see waitUntilResume) -- we don't need them since we're starting binding
@@ -4148,7 +4168,7 @@ public class Launcher extends Activity
             updateAppMarketIcon();
         }
 
-        mWorkspaceLoading = false;
+        setWorkspaceLoading(false);
         if (upgradePath) {
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
