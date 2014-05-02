@@ -28,6 +28,8 @@ import com.android.launcher3.backup.BackupProtos.Key;
 import com.android.launcher3.backup.BackupProtos.Resource;
 import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
+import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.compat.UserHandleCompat;
 
 import android.app.backup.BackupDataInputStream;
 import android.app.backup.BackupDataOutput;
@@ -459,10 +461,15 @@ public class LauncherBackupHelper implements BackupHelper {
         Set<String> savedIds = getSavedIdsByType(Key.ICON, in);
         if (DEBUG) Log.d(TAG, "icon savedIds.size()=" + savedIds.size());
 
+        // Don't backup apps in other profiles for now.
+        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+        long userSerialNumber =
+                UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         int startRows = out.rows;
         if (DEBUG) Log.d(TAG, "starting here: " + startRows);
-        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION + " OR " +
-                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT;
+        String where = "(" + Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION + " OR " +
+                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT + ") AND" +
+                Favorites.PROFILE_ID + "=" + userSerialNumber;
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
@@ -492,9 +499,9 @@ public class LauncherBackupHelper implements BackupHelper {
                         if (DEBUG) Log.d(TAG, "I can count this high: " + out.rows);
                         if ((out.rows - startRows) < MAX_ICONS_PER_PASS) {
                             if (VERBOSE) Log.v(TAG, "saving icon " + backupKey);
-                            Bitmap icon = mIconCache.getIcon(intent);
+                            Bitmap icon = mIconCache.getIcon(intent, myUserHandle);
                             keys.add(key);
-                            if (icon != null && !mIconCache.isDefaultIcon(icon)) {
+                            if (icon != null && !mIconCache.isDefaultIcon(icon, myUserHandle)) {
                                 byte[] blob = packIcon(dpi, icon);
                                 writeRowToBackup(key, blob, out, data);
                             }

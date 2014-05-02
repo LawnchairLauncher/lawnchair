@@ -60,6 +60,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
+
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -4621,7 +4623,7 @@ public class Workspace extends SmoothPagedView
     // Removes ALL items that match a given package name, this is usually called when a package
     // has been removed and we want to remove all components (widgets, shortcuts, apps) that
     // belong to that package.
-    void removeItemsByPackageName(final ArrayList<String> packages) {
+    void removeItemsByPackageName(final ArrayList<String> packages, final UserHandleCompat user) {
         final HashSet<String> packageNames = new HashSet<String>();
         packageNames.addAll(packages);
 
@@ -4641,7 +4643,8 @@ public class Workspace extends SmoothPagedView
             @Override
             public boolean filterItem(ItemInfo parent, ItemInfo info,
                                       ComponentName cn) {
-                if (packageNames.contains(cn.getPackageName())) {
+                if (packageNames.contains(cn.getPackageName())
+                        && info.user.equals(user)) {
                     cns.add(cn);
                     return true;
                 }
@@ -4651,13 +4654,13 @@ public class Workspace extends SmoothPagedView
         LauncherModel.filterItemInfos(infos, filter);
 
         // Remove the affected components
-        removeItemsByComponentName(cns);
+        removeItemsByComponentName(cns, user);
     }
 
     // Removes items that match the application info specified, when applications are removed
     // as a part of an update, this is called to ensure that other widgets and application
     // shortcuts are not removed.
-    void removeItemsByApplicationInfo(final ArrayList<AppInfo> appInfos) {
+    void removeItemsByApplicationInfo(final ArrayList<AppInfo> appInfos, UserHandleCompat user) {
         // Just create a hash table of all the specific components that this will affect
         HashSet<ComponentName> cns = new HashSet<ComponentName>();
         for (AppInfo info : appInfos) {
@@ -4665,10 +4668,11 @@ public class Workspace extends SmoothPagedView
         }
 
         // Remove all the things
-        removeItemsByComponentName(cns);
+        removeItemsByComponentName(cns, user);
     }
 
-    void removeItemsByComponentName(final HashSet<ComponentName> componentNames) {
+    void removeItemsByComponentName(final HashSet<ComponentName> componentNames,
+            final UserHandleCompat user) {
         ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
         for (final CellLayout layoutParent: cellLayouts) {
             final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
@@ -4687,7 +4691,7 @@ public class Workspace extends SmoothPagedView
                 public boolean filterItem(ItemInfo parent, ItemInfo info,
                                           ComponentName cn) {
                     if (parent instanceof FolderInfo) {
-                        if (componentNames.contains(cn)) {
+                        if (componentNames.contains(cn) && info.user.equals(user)) {
                             FolderInfo folder = (FolderInfo) parent;
                             ArrayList<ShortcutInfo> appsToRemove;
                             if (folderAppsToRemove.containsKey(folder)) {
@@ -4700,7 +4704,7 @@ public class Workspace extends SmoothPagedView
                             return true;
                         }
                     } else {
-                        if (componentNames.contains(cn)) {
+                        if (componentNames.contains(cn) && info.user.equals(user)) {
                             childrenToRemove.add(children.get(info));
                             return true;
                         }

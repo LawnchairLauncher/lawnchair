@@ -38,6 +38,9 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserHandleCompat;
+
 import java.util.List;
 import java.util.Set;
 
@@ -184,6 +187,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (!willAcceptDrop(info) || isAllAppsWidget(source, info)) {
             isVisible = false;
         }
+        if (useUninstallLabel &&
+                !(((ItemInfo) info).user.equals(UserHandleCompat.myUserHandle()))) {
+            // Don't support uninstall for apps from other profiles.
+            isVisible = false;
+        }
 
         if (useUninstallLabel) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mUninstallDrawable, null, null, null);
@@ -279,25 +287,27 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (isAllAppsApplication(d.dragSource, item)) {
             // Uninstall the application if it is being dragged from AppsCustomize
             AppInfo appInfo = (AppInfo) item;
-            mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags);
+            // We don't support uninstalling apps from other profiles.
+            if (item.user.equals(UserHandleCompat.myUserHandle())) {
+                mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags);
+            }
         } else if (isUninstallFromWorkspace(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) item;
-            if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
+            // We don't support uninstalling apps from other profiles.
+            if (shortcut.intent != null && shortcut.intent.getComponent() != null &&
+                    shortcut.user.equals(UserHandleCompat.myUserHandle())) {
                 final ComponentName componentName = shortcut.intent.getComponent();
                 final DragSource dragSource = d.dragSource;
-                int flags = AppInfo.initFlags(
-                    ShortcutInfo.getPackageInfo(getContext(), componentName.getPackageName()));
                 mWaitingForUninstall =
-                    mLauncher.startApplicationUninstallActivity(componentName, flags);
+                        mLauncher.startApplicationUninstallActivity(componentName, shortcut.flags);
                 if (mWaitingForUninstall) {
                     final Runnable checkIfUninstallWasSuccess = new Runnable() {
                         @Override
                         public void run() {
                             mWaitingForUninstall = false;
                             String packageName = componentName.getPackageName();
-                            List<ResolveInfo> activities =
-                                    AllAppsList.findActivitiesForPackage(getContext(), packageName);
-                            boolean uninstallSuccessful = activities.size() == 0;
+                            boolean uninstallSuccessful = !AllAppsList.packageHasActivities(
+                                    getContext(), packageName, UserHandleCompat.myUserHandle());
                             if (dragSource instanceof Folder) {
                                 ((Folder) dragSource).
                                     onUninstallActivityReturned(uninstallSuccessful);

@@ -23,6 +23,10 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserHandleCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +70,7 @@ class AllAppsList {
         if (mAppFilter != null && !mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
-        if (findActivity(data, info.componentName)) {
+        if (findActivity(data, info.componentName, info.user)) {
             return;
         }
         data.add(info);
@@ -92,12 +96,14 @@ class AllAppsList {
     /**
      * Add the icons for the supplied apk called packageName.
      */
-    public void addPackage(Context context, String packageName) {
-        final List<ResolveInfo> matches = findActivitiesForPackage(context, packageName);
+    public void addPackage(Context context, String packageName, UserHandleCompat user) {
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        final List<LauncherActivityInfoCompat> matches = launcherApps.getActivityList(packageName,
+                user);
 
         if (matches.size() > 0) {
-            for (ResolveInfo info : matches) {
-                add(new AppInfo(context.getPackageManager(), info, mIconCache, null));
+            for (LauncherActivityInfoCompat info : matches) {
+                add(new AppInfo(context, info, user, mIconCache, null));
             }
         }
     }
@@ -105,34 +111,37 @@ class AllAppsList {
     /**
      * Remove the apps for the given apk identified by packageName.
      */
-    public void removePackage(String packageName) {
+    public void removePackage(String packageName, UserHandleCompat user) {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
             final ComponentName component = info.intent.getComponent();
-            if (packageName.equals(component.getPackageName())) {
+            if (info.user.equals(user) && packageName.equals(component.getPackageName())) {
                 removed.add(info);
                 data.remove(i);
             }
         }
-        mIconCache.remove(packageName);
+        mIconCache.remove(packageName, user);
     }
 
     /**
      * Add and remove icons for this package which has been updated.
      */
-    public void updatePackage(Context context, String packageName) {
-        final List<ResolveInfo> matches = findActivitiesForPackage(context, packageName);
+    public void updatePackage(Context context, String packageName, UserHandleCompat user) {
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        final List<LauncherActivityInfoCompat> matches = launcherApps.getActivityList(packageName,
+                user);
         if (matches.size() > 0) {
             // Find disabled/removed activities and remove them from data and add them
             // to the removed list.
             for (int i = data.size() - 1; i >= 0; i--) {
                 final AppInfo applicationInfo = data.get(i);
                 final ComponentName component = applicationInfo.intent.getComponent();
-                if (packageName.equals(component.getPackageName())) {
+                if (user.equals(applicationInfo.user)
+                        && packageName.equals(component.getPackageName())) {
                     if (!findActivity(matches, component)) {
                         removed.add(applicationInfo);
-                        mIconCache.remove(component);
+                        mIconCache.remove(component, user);
                         data.remove(i);
                     }
                 }
@@ -142,14 +151,14 @@ class AllAppsList {
             // Also updates existing activities with new labels/icons
             int count = matches.size();
             for (int i = 0; i < count; i++) {
-                final ResolveInfo info = matches.get(i);
+                final LauncherActivityInfoCompat info = matches.get(i);
                 AppInfo applicationInfo = findApplicationInfoLocked(
-                        info.activityInfo.applicationInfo.packageName,
-                        info.activityInfo.name);
+                        info.getComponentName().getPackageName(), user,
+                        info.getComponentName().getShortClassName());
                 if (applicationInfo == null) {
-                    add(new AppInfo(context.getPackageManager(), info, mIconCache, null));
+                    add(new AppInfo(context, info, user, mIconCache, null));
                 } else {
-                    mIconCache.remove(applicationInfo.componentName);
+                    mIconCache.remove(applicationInfo.componentName, user);
                     mIconCache.getTitleAndIcon(applicationInfo, info, null);
                     modified.add(applicationInfo);
                 }
@@ -159,37 +168,24 @@ class AllAppsList {
             for (int i = data.size() - 1; i >= 0; i--) {
                 final AppInfo applicationInfo = data.get(i);
                 final ComponentName component = applicationInfo.intent.getComponent();
-                if (packageName.equals(component.getPackageName())) {
+                if (user.equals(applicationInfo.user)
+                        && packageName.equals(component.getPackageName())) {
                     removed.add(applicationInfo);
-                    mIconCache.remove(component);
+                    mIconCache.remove(component, user);
                     data.remove(i);
                 }
             }
         }
     }
 
-    /**
-     * Query the package manager for MAIN/LAUNCHER activities in the supplied package.
-     */
-    static List<ResolveInfo> findActivitiesForPackage(Context context, String packageName) {
-        final PackageManager packageManager = context.getPackageManager();
-
-        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        mainIntent.setPackage(packageName);
-
-        final List<ResolveInfo> apps = packageManager.queryIntentActivities(mainIntent, 0);
-        return apps != null ? apps : new ArrayList<ResolveInfo>();
-    }
 
     /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
-    private static boolean findActivity(List<ResolveInfo> apps, ComponentName component) {
-        final String className = component.getClassName();
-        for (ResolveInfo info : apps) {
-            final ActivityInfo activityInfo = info.activityInfo;
-            if (activityInfo.name.equals(className)) {
+    private static boolean findActivity(List<LauncherActivityInfoCompat> apps,
+            ComponentName component) {
+        for (LauncherActivityInfoCompat info : apps) {
+            if (info.getComponentName().equals(component)) {
                 return true;
             }
         }
@@ -197,13 +193,24 @@ class AllAppsList {
     }
 
     /**
+     * Query the launcher apps service for whether the supplied package has
+     * MAIN/LAUNCHER activities in the supplied package.
+     */
+    static boolean packageHasActivities(Context context, String packageName,
+            UserHandleCompat user) {
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        return launcherApps.getActivityList(packageName, user).size() > 0;
+    }
+
+    /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
-    private static boolean findActivity(ArrayList<AppInfo> apps, ComponentName component) {
+    private static boolean findActivity(ArrayList<AppInfo> apps, ComponentName component,
+            UserHandleCompat user) {
         final int N = apps.size();
-        for (int i=0; i<N; i++) {
+        for (int i = 0; i < N; i++) {
             final AppInfo info = apps.get(i);
-            if (info.componentName.equals(component)) {
+            if (info.user.equals(user) && info.componentName.equals(component)) {
                 return true;
             }
         }
@@ -213,10 +220,11 @@ class AllAppsList {
     /**
      * Find an ApplicationInfo object for the given packageName and className.
      */
-    private AppInfo findApplicationInfoLocked(String packageName, String className) {
+    private AppInfo findApplicationInfoLocked(String packageName, UserHandleCompat user,
+            String className) {
         for (AppInfo info: data) {
             final ComponentName component = info.intent.getComponent();
-            if (packageName.equals(component.getPackageName())
+            if (user.equals(info.user) && packageName.equals(component.getPackageName())
                     && className.equals(component.getClassName())) {
                 return info;
             }

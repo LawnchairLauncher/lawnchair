@@ -95,6 +95,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 
@@ -134,7 +138,6 @@ public class Launcher extends Activity
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
-    private static final int REQUEST_PICK_APPLICATION = 6;
     private static final int REQUEST_PICK_SHORTCUT = 7;
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_PICK_WALLPAPER = 10;
@@ -734,10 +737,6 @@ public class Launcher extends Activity
     private boolean completeAdd(PendingAddArguments args) {
         boolean result = false;
         switch (args.requestCode) {
-            case REQUEST_PICK_APPLICATION:
-                completeAddApplication(args.intent, args.container, args.screenId, args.cellX,
-                        args.cellY);
-                break;
             case REQUEST_PICK_SHORTCUT:
                 processShortcut(args.intent);
                 break;
@@ -1365,38 +1364,6 @@ public class Launcher extends Activity
         favorite.applyFromShortcutInfo(info, mIconCache);
         favorite.setOnClickListener(this);
         return favorite;
-    }
-
-    /**
-     * Add an application shortcut to the workspace.
-     *
-     * @param data The intent describing the application.
-     * @param cellInfo The position on screen where to create the shortcut.
-     */
-    void completeAddApplication(Intent data, long container, long screenId, int cellX, int cellY) {
-        final int[] cellXY = mTmpAddItemCellCoordinates;
-        final CellLayout layout = getCellLayout(container, screenId);
-
-        // First we check if we already know the exact location where we want to add this item.
-        if (cellX >= 0 && cellY >= 0) {
-            cellXY[0] = cellX;
-            cellXY[1] = cellY;
-        } else if (!layout.findCellForSpan(cellXY, 1, 1)) {
-            showOutOfSpaceMessage(isHotseatLayout(layout));
-            return;
-        }
-
-        final ShortcutInfo info = mModel.getShortcutInfo(getPackageManager(), data, this);
-
-        if (info != null) {
-            info.setActivity(this, data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            info.container = ItemInfo.NO_ID;
-            mWorkspace.addApplicationShortcut(info, layout, container, screenId, cellXY[0], cellXY[1],
-                    isWorkspaceLocked(), cellX, cellY);
-        } else {
-            Log.e(TAG, "Couldn't find ActivityInfo for selected application: " + data);
-        }
     }
 
     /**
@@ -2220,21 +2187,7 @@ public class Launcher extends Activity
     }
 
     void processShortcut(Intent intent) {
-        // Handle case where user selected "Applications"
-        String applicationName = getResources().getString(R.string.group_applications);
-        String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-
-        if (applicationName != null && applicationName.equals(shortcutName)) {
-            Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-            Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-            pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-            pickIntent.putExtra(Intent.EXTRA_TITLE, getText(R.string.title_select_application));
-            Utilities.startActivityForResultSafely(this, pickIntent, REQUEST_PICK_APPLICATION);
-        } else {
-            Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_SHORTCUT);
-        }
+        Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_SHORTCUT);
     }
 
     void processWallpaper(Intent intent) {
@@ -2651,18 +2604,29 @@ public class Launcher extends Activity
     }
 
     boolean startActivity(View v, Intent intent, Object tag) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try {
             // Only launch using the new animation if the shortcut has not opted out (this is a
             // private contract between launcher and may be ignored in the future).
             boolean useLaunchAnimation = (v != null) &&
                     !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
+            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
+            UserManagerCompat userManager = UserManagerCompat.getInstance(this);
+            long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, 0);
+            UserHandleCompat user = serialNumber == 0 ? null :
+                    userManager.getUserForSerialNumber(serialNumber);
+
             if (useLaunchAnimation) {
                 ActivityOptions opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
                         v.getMeasuredWidth(), v.getMeasuredHeight());
-
-                startActivity(intent, opts.toBundle());
+                if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
+                    // Could be launching some bookkeeping activity
+                    startActivity(intent, opts.toBundle());
+                } else {
+                    launcherApps.startActivityForProfile(intent.getComponent(),
+                            intent.getSourceBounds(),
+                            opts.toBundle(), user);
+                }
             } else {
                 startActivity(intent);
             }
@@ -4270,10 +4234,10 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindComponentsRemoved(final ArrayList<String> packageNames,
-                                      final ArrayList<AppInfo> appInfos) {
+            final ArrayList<AppInfo> appInfos, final UserHandleCompat user) {
         Runnable r = new Runnable() {
             public void run() {
-                bindComponentsRemoved(packageNames, appInfos);
+                bindComponentsRemoved(packageNames, appInfos, user);
             }
         };
         if (waitUntilResume(r)) {
@@ -4281,10 +4245,10 @@ public class Launcher extends Activity
         }
 
         if (!packageNames.isEmpty()) {
-            mWorkspace.removeItemsByPackageName(packageNames);
+            mWorkspace.removeItemsByPackageName(packageNames, user);
         }
         if (!appInfos.isEmpty()) {
-            mWorkspace.removeItemsByApplicationInfo(appInfos);
+            mWorkspace.removeItemsByApplicationInfo(appInfos, user);
         }
 
         // Notify the drag controller
@@ -4555,16 +4519,27 @@ public class Launcher extends Activity
     }
 
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
-        ResolveInfo ri = getPackageManager().resolveActivity(appLaunchIntent, 0);
-        if (ri == null) {
+        // Called from search suggestion, not supported in other profiles.
+        final UserHandleCompat myUser = UserHandleCompat.myUserHandle();
+        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
+        LauncherActivityInfoCompat activityInfo = launcherApps.resolveActivity(appLaunchIntent,
+                myUser);
+        if (activityInfo == null) {
             return null;
         }
-        return new AppInfo(getPackageManager(), ri, mIconCache, null);
+        return new AppInfo(this, activityInfo, myUser, mIconCache, null);
     }
 
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
             Bitmap icon) {
-        return new ShortcutInfo(shortcutIntent, caption, icon);
+        // Called from search suggestion, not supported in other profiles.
+        return createShortcutDragInfo(shortcutIntent, caption, icon,
+                UserHandleCompat.myUserHandle());
+    }
+
+    public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
+            Bitmap icon, UserHandleCompat user) {
+        return new ShortcutInfo(shortcutIntent, caption, icon, user);
     }
 
     protected void moveWorkspaceToDefaultScreen() {

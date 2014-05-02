@@ -212,6 +212,14 @@ class LauncherSettings {
         static final String SPANY = "spanY";
 
         /**
+         * The profile id of the item in the cell.
+         * <P>
+         * Type: INTEGER
+         * </P>
+         */
+        static final String PROFILE_ID = "profileId";
+
+        /**
          * The favorite is a user created folder
          */
         static final int ITEM_TYPE_FOLDER = 2;

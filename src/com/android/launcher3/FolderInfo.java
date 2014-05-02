@@ -17,6 +17,9 @@
 package com.android.launcher3;
 
 import android.content.ContentValues;
+import android.content.Context;
+
+import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +43,7 @@ public class FolderInfo extends ItemInfo {
 
     FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
+        user = UserHandleCompat.myUserHandle();
     }
 
     /**
@@ -76,8 +80,8 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(ContentValues values) {
-        super.onAddToDatabase(values);
+    void onAddToDatabase(Context context, ContentValues values) {
+        super.onAddToDatabase(context, values);
         values.put(LauncherSettings.Favorites.TITLE, title.toString());
     }
 

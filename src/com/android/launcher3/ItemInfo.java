@@ -17,9 +17,13 @@
 package com.android.launcher3;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
+
+import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,6 +33,11 @@ import java.util.Arrays;
  * Represents an item in the launcher.
  */
 public class ItemInfo {
+
+    /**
+     * Intent extra to store the profile. Format: UserHandle
+     */
+    static final String EXTRA_PROFILE = "profile";
     
     static final int NO_ID = -1;
     
@@ -103,6 +112,8 @@ public class ItemInfo {
      */
     int[] dropPos = null;
 
+    UserHandleCompat user;
+
     ItemInfo() {
     }
 
@@ -115,6 +126,7 @@ public class ItemInfo {
         screenId = info.screenId;
         itemType = info.itemType;
         container = info.container;
+        user = info.user;
         // tempdebug:
         LauncherModel.checkItemInfo(this);
     }
@@ -130,9 +142,11 @@ public class ItemInfo {
     /**
      * Write the fields of this item to the DB
      * 
+     * @param context A context object to use for getting UserManagerCompat
      * @param values
      */
-    void onAddToDatabase(ContentValues values) {
+
+    void onAddToDatabase(Context context, ContentValues values) {
         values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
         values.put(LauncherSettings.Favorites.CONTAINER, container);
         values.put(LauncherSettings.Favorites.SCREEN, screenId);
@@ -140,6 +154,8 @@ public class ItemInfo {
         values.put(LauncherSettings.Favorites.CELLY, cellY);
         values.put(LauncherSettings.Favorites.SPANX, spanX);
         values.put(LauncherSettings.Favorites.SPANY, spanY);
+        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
+        values.put(LauncherSettings.Favorites.PROFILE_ID, serialNumber);
 
         if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
             // We should never persist an item on the extra empty screen.
@@ -188,6 +204,7 @@ public class ItemInfo {
     public String toString() {
         return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
             + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-            + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos) + ")";
+            + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
+            + " user=" + user + ")";
     }
 }
