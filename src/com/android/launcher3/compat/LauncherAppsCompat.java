@@ -34,6 +34,11 @@ import java.util.Map;
 
 public abstract class LauncherAppsCompat {
 
+    public static final String ACTION_MANAGED_PROFILE_ADDED =
+            "android.intent.action.MANAGED_PROFILE_ADDED";
+    public static final String ACTION_MANAGED_PROFILE_REMOVED =
+            "android.intent.action.MANAGED_PROFILE_REMOVED";
+
     public interface OnAppsChangedListenerCompat {
         void onPackageRemoved(UserHandleCompat user, String packageName);
         void onPackageAdded(UserHandleCompat user, String packageName);
