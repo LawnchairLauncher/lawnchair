@@ -31,6 +31,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
 import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
@@ -401,6 +403,14 @@ class DeviceProfile {
                     2 * edgeMarginPx, 0);
         }
         searchBar.setLayoutParams(lp);
+
+        // Layout the drop target icons
+        LinearLayout dropTargetBar = (LinearLayout) launcher.getSearchBar().getDropTargetBar();
+        if (hasVerticalBarLayout) {
+            dropTargetBar.setOrientation(LinearLayout.VERTICAL);
+        } else {
+            dropTargetBar.setOrientation(LinearLayout.HORIZONTAL);
+        }
 
         // Layout the search bar
         View qsbBar = launcher.getQsbBar();
