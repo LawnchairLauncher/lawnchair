@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDiskIOException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -30,11 +31,14 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -362,6 +366,9 @@ public class WidgetPreviewLoader {
             db.insert(CacheDb.TABLE_NAME, null, values);
         } catch (SQLiteDiskIOException e) {
             recreateDb();
+        } catch (SQLiteCantOpenDatabaseException e) {
+            dumpOpenFiles();
+            throw e;
         }
     }
 
@@ -371,6 +378,9 @@ public class WidgetPreviewLoader {
         try {
             db.delete(CacheDb.TABLE_NAME, null, null);
         } catch (SQLiteDiskIOException e) {
+        } catch (SQLiteCantOpenDatabaseException e) {
+            dumpOpenFiles();
+            throw e;
         }
     }
 
@@ -391,6 +401,9 @@ public class WidgetPreviewLoader {
                             } // args to SELECT query
                     );
                 } catch (SQLiteDiskIOException e) {
+                } catch (SQLiteCantOpenDatabaseException e) {
+                    dumpOpenFiles();
+                    throw e;
                 }
                 synchronized(sInvalidPackages) {
                     sInvalidPackages.remove(packageName);
@@ -409,6 +422,9 @@ public class WidgetPreviewLoader {
                             CacheDb.COLUMN_NAME + " = ? ", // SELECT query
                             new String[] { objectName }); // args to SELECT query
                 } catch (SQLiteDiskIOException e) {
+                } catch (SQLiteCantOpenDatabaseException e) {
+                    dumpOpenFiles();
+                    throw e;
                 }
                 return null;
             }
@@ -434,6 +450,9 @@ public class WidgetPreviewLoader {
         } catch (SQLiteDiskIOException e) {
             recreateDb();
             return null;
+        } catch (SQLiteCantOpenDatabaseException e) {
+            dumpOpenFiles();
+            throw e;
         }
         if (result.getCount() > 0) {
             result.moveToFirst();
@@ -696,6 +715,85 @@ public class WidgetPreviewLoader {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static final int MAX_OPEN_FILES = 1024;
+    private static final int SAMPLE_RATE = 23;
+    /**
+     * Dumps all files that are open in this process without allocating a file descriptor.
+     */
+    private static void dumpOpenFiles() {
+        try {
+            Log.i(TAG, "DUMP OF OPEN FILES (sample rate: 1 every " + SAMPLE_RATE + "):");
+            final String TYPE_APK = "apk";
+            final String TYPE_JAR = "jar";
+            final String TYPE_PIPE = "pipe";
+            final String TYPE_SOCKET = "socket";
+            final String TYPE_DB = "db";
+            final String TYPE_ANON_INODE = "anon_inode";
+            final String TYPE_DEV = "dev";
+            final String TYPE_NON_FS = "non-fs";
+            final String TYPE_OTHER = "other";
+            List<String> types = Arrays.asList(TYPE_APK, TYPE_JAR, TYPE_PIPE, TYPE_SOCKET, TYPE_DB,
+                    TYPE_ANON_INODE, TYPE_DEV, TYPE_NON_FS, TYPE_OTHER);
+            int[] count = new int[types.size()];
+            int[] duplicates = new int[types.size()];
+            HashSet<String> files = new HashSet<String>();
+            int total = 0;
+            for (int i = 0; i < MAX_OPEN_FILES; i++) {
+                // This is a gigantic hack but unfortunately the only way to resolve an fd
+                // to a file name. Note that we have to loop over all possible fds because
+                // reading the directory would require allocating a new fd. The kernel is
+                // currently implemented such that no fd is larger then the current rlimit,
+                // which is why it's safe to loop over them in such a way.
+                String fd = "/proc/self/fd/" + i;
+                try {
+                    // getCanonicalPath() uses readlink behind the scene which doesn't require
+                    // a file descriptor.
+                    String resolved = new File(fd).getCanonicalPath();
+                    int type = types.indexOf(TYPE_OTHER);
+                    if (resolved.startsWith("/dev/")) {
+                        type = types.indexOf(TYPE_DEV);
+                    } else if (resolved.endsWith(".apk")) {
+                        type = types.indexOf(TYPE_APK);
+                    } else if (resolved.endsWith(".jar")) {
+                        type = types.indexOf(TYPE_JAR);
+                    } else if (resolved.contains("/fd/pipe:")) {
+                        type = types.indexOf(TYPE_PIPE);
+                    } else if (resolved.contains("/fd/socket:")) {
+                        type = types.indexOf(TYPE_SOCKET);
+                    } else if (resolved.contains("/fd/anon_inode:")) {
+                        type = types.indexOf(TYPE_ANON_INODE);
+                    } else if (resolved.endsWith(".db") || resolved.contains("/databases/")) {
+                        type = types.indexOf(TYPE_DB);
+                    } else if (resolved.startsWith("/proc/") && resolved.contains("/fd/")) {
+                        // Those are the files that don't point anywhere on the file system.
+                        // getCanonicalPath() wrongly interprets these as relative symlinks and
+                        // resolves them within /proc/<pid>/fd/.
+                        type = types.indexOf(TYPE_NON_FS);
+                    }
+                    count[type]++;
+                    total++;
+                    if (files.contains(resolved)) {
+                        duplicates[type]++;
+                    }
+                    files.add(resolved);
+                    if (total % SAMPLE_RATE == 0) {
+                        Log.i(TAG, " fd " + i + ": " + resolved
+                                + " (" + types.get(type) + ")");
+                    }
+                } catch (IOException e) {
+                    // Ignoring exceptions for non-existing file descriptors.
+                }
+            }
+            for (int i = 0; i < types.size(); i++) {
+                Log.i(TAG, String.format("Open %10s files: %4d total, %4d duplicates",
+                        types.get(i), count[i], duplicates[i]));
+            }
+        } catch (Throwable t) {
+            // Catch everything. This is called from an exception handler that we shouldn't upset.
+            Log.e(TAG, "Unable to log open files.", t);
         }
     }
 }
