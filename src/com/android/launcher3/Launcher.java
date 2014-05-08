@@ -2638,23 +2638,26 @@ public class Launcher extends Activity
                     !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
             LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
             UserManagerCompat userManager = UserManagerCompat.getInstance(this);
-            long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, 0);
-            UserHandleCompat user = serialNumber == 0 ? null :
-                    userManager.getUserForSerialNumber(serialNumber);
 
+            UserHandleCompat user = null;
+            if (intent.hasExtra(AppInfo.EXTRA_PROFILE)) {
+                long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, -1);
+                user = userManager.getUserForSerialNumber(serialNumber);
+            }
+
+            Bundle optsBundle = null;
             if (useLaunchAnimation) {
                 ActivityOptions opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
                         v.getMeasuredWidth(), v.getMeasuredHeight());
-                if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
-                    // Could be launching some bookkeeping activity
-                    startActivity(intent, opts.toBundle());
-                } else {
-                    launcherApps.startActivityForProfile(intent.getComponent(),
-                            intent.getSourceBounds(),
-                            opts.toBundle(), user);
-                }
+                optsBundle = opts.toBundle();
+            }
+
+            if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
+                // Could be launching some bookkeeping activity
+                startActivity(intent, optsBundle);
             } else {
-                startActivity(intent);
+                launcherApps.startActivityForProfile(intent.getComponent(),
+                        intent.getSourceBounds(), optsBundle, user);
             }
             return true;
         } catch (SecurityException e) {

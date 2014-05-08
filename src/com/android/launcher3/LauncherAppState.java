@@ -114,7 +114,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
     }
-    
+
     public void recreateWidgetPreviewDb() {
         if (mWidgetPreviewCacheDb != null) {
             mWidgetPreviewCacheDb.close();
@@ -127,6 +127,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
      */
     public void onTerminate() {
         sContext.unregisterReceiver(mModel);
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
+        launcherApps.removeOnAppsChangedListener(mModel);
 
         ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
