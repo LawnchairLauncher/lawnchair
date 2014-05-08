@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Pantalla de inicio</string>
   <string name="preferences_interface_homescreen_search_title">Barra de búsqueda</string>
   <string name="preferences_interface_homescreen_search_summary">Habilitar la barra de búsqueda permanentemente</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ocultar etiquetas</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ocultar las etiquetas de los iconos en la pantalla de inicio</string>
   <string name="preferences_interface_drawer_title">Aplicaciones</string>
+  <string name="preferences_interface_drawer_summary">Aplicaciones y widgets</string>
+  <string name="preferences_interface_drawer_apps_category">Aplicaciones</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Ocultar aplicaciones</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Ocultar aplicaciones para que no se muestren</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Eliminar iconos</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Eliminar iconos de aplicaciones ocultas de la pantalla de inicio</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Eliminar widgets</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Eliminar widgets de aplicaciones ocultas de la pantalla de inicio</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Ocultar etiquetas</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Ocultar las etiquetas de los iconos de la pantalla de inicio</string>
   <string name="preferences_interface_dock_title">Barra de aplicaciones</string>
   <string name="preferences_interface_general_title">General</string>
   <string name="preferences_interface_general_icons_category">Iconos</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Iconos por defecto</string>
   <string name="icon_packs_title">Paquetes de iconos</string>
   <string name="no_iconpacks_summary">No hay paquetes de iconos instalados</string>
+  <string name="clear_keyguard_wallpaper">Limpiar</string>
   <string name="all_apps_cling_cm">Personalizar tus aplicaciones</string>
   <string name="all_apps_cling_summary">Tocar el indicador de página para mostrar ajustes adicionales</string>
+  <string name="menu_hidden_apps_delete">Restablecer</string>
+  <string name="hidden_apps_title">Ocultar aplicaciones</string>
 </resources>

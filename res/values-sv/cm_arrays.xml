@@ -16,10 +16,25 @@
      limitations under the License.
 -->
 <resources>
-  <string name="application_copyright">版權所有 \u00A9 2013年 CyanogenMod 計畫</string>
-  <string name="default_screen_button_text">預設螢幕</string>
-  <string name="sort_mode_launch_count">啟動次數</string>
-  <string name="wallpaper_scroll">滾動牆紙</string>
-  <string name="preferences_title">設定</string>
-  <string name="default_iconpack_title">預設圖示</string>
+  <string-array name="preferences_interface_general_icons_text_font_family_entries">
+    <item>Vanlig</item>
+    <item>Ljus</item>
+    <item>Kondenserad</item>
+  </string-array>
+  <string-array name="transition_effect_entries">
+    <item>Ingen</item>
+    <item>Zooma In</item>
+    <item>Zooma ut</item>
+    <item>Rotera upp</item>
+    <item>Rotera ner</item>
+    <item>Kub in</item>
+    <item>Kub ut</item>
+    <item>Stack</item>
+    <item>Dragspel</item>
+    <item>Flip</item>
+    <item>Cylinder in</item>
+    <item>Cylinder ut</item>
+    <item>Karusell</item>
+    <item>Översikt</item>
+  </string-array>
 </resources>

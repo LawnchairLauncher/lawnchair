@@ -25,13 +25,26 @@
   <string name="sort_mode_launch_count">מספר הפעלות</string>
   <string name="sort_mode_install_time">זמן התקנה</string>
   <string name="scrolling_page_outlines">תיאור דף</string>
+  <string name="scrolling_fade_adjacent">עימום דפים צדדיים</string>
   <string name="wallpaper_scroll">גלילת טפט</string>
   <string name="preferences_title">העדפות</string>
   <string name="preferences_application_title">יישום</string>
   <string name="preferences_interface_homescreen_title">מסך הבית</string>
   <string name="preferences_interface_homescreen_search_title">סרגל החיפוש</string>
   <string name="preferences_interface_homescreen_search_summary">הצג את שורת החיפוש תמיד בחלק העליון של המסך</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">הסתר תוויות הסמלים</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">הסתר תוויות הסמלים על מסך הבית</string>
   <string name="preferences_interface_drawer_title">מגירה</string>
+  <string name="preferences_interface_drawer_summary">מגירת הווידג\'טים והיישומים</string>
+  <string name="preferences_interface_drawer_apps_category">יישומים</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">יישומים מוסתרים</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">הסתר יישומים מהמגירה</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">הסר קיצורי דרך</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">הסר את קיצורי הדרך של היישומים המוסתרים ממסך הבית</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">הסר ווידג\'טים</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">הסר את הווידג\'טים של היישומים המוסתרים ממסך הבית</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">הסתר תוויות הסמלים</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">הסתר תוויות הסמלים במגירה</string>
   <string name="preferences_interface_dock_title">עגינה</string>
   <string name="preferences_interface_general_title">כללי</string>
   <string name="preferences_interface_general_icons_category">סמלים</string>
@@ -43,4 +56,8 @@
   <string name="default_iconpack_title">סמלי ברירת מחדל</string>
   <string name="icon_packs_title">אוסף סמלים</string>
   <string name="no_iconpacks_summary">לא מותקנות ערכות סמל</string>
+  <string name="all_apps_cling_cm">התאמה אישית של מגירת היישומים</string>
+  <string name="all_apps_cling_summary">הקש על מחוון הדף כדי להציג הגדרות נוספות</string>
+  <string name="menu_hidden_apps_delete">אפס</string>
+  <string name="hidden_apps_title">יישומים מוסתרים</string>
 </resources>

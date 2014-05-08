@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Tuis skerm</string>
   <string name="preferences_interface_homescreen_search_title">Soekbalk</string>
   <string name="preferences_interface_homescreen_search_summary">Wys soekbalk altyd aan die bokant van die skerm</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Steek ikoon etikette weg</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Steek ikoon etikette op Tuis Skerm weg</string>
   <string name="preferences_interface_drawer_title">Laai</string>
+  <string name="preferences_interface_drawer_summary">Program en legstuk laai</string>
+  <string name="preferences_interface_drawer_apps_category">Programme</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Versteekte programme</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Steek programme van die laai weg</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Verwyder kortpaaie</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Verwyder kortpaaie of versteekte programme van die tuis skerm</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Verwyder legstukke</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Verwyder legstukke of versteekte programme van die tuis skerm</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Steek ikoon etikette weg</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Steek ikoon etikette weg in die laai</string>
   <string name="preferences_interface_dock_title">Dok</string>
   <string name="preferences_interface_general_title">Algemeen</string>
   <string name="preferences_interface_general_icons_category">Ikone</string>
@@ -46,4 +58,6 @@
   <string name="no_iconpacks_summary">Geen ikoon stelle geïnstalleer</string>
   <string name="all_apps_cling_cm">Verpersoonlik jou laai</string>
   <string name="all_apps_cling_summary">Tik die bladsy aanwyser vir bykomende konfigurasie-instellings</string>
+  <string name="menu_hidden_apps_delete">Herstel</string>
+  <string name="hidden_apps_title">Versteekte programme</string>
 </resources>

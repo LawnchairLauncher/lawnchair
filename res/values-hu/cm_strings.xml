@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Kezdőképernyő</string>
   <string name="preferences_interface_homescreen_search_title">Keresési sáv</string>
   <string name="preferences_interface_homescreen_search_summary">Állandó keresési sáv megjelenítése a képernyő felső </string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ikon feliratok elrejtése</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Elrejti a kezdőképernyőn lévő ikonok neveit</string>
   <string name="preferences_interface_drawer_title">Alkalmazásképernyők</string>
+  <string name="preferences_interface_drawer_summary">Alkalmazások és modulok</string>
+  <string name="preferences_interface_drawer_apps_category">Alkalmazások</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Rejtett alkalmazások</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Alkalmazások elrejtése az alkalmazásképernyőről</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Rejtett alkalmazások (parancsikonok)</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Rejtett alkalmazások ikonjainak eltávolítása</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Rejtett alkalmazások (modulok)</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Rejtett alkalmazás moduljának eltávolítása</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Ikon feliratok elrejtése</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Ikon feliratok elrejtése az alkalmazásképernyőkről</string>
   <string name="preferences_interface_dock_title">Dokkoló</string>
   <string name="preferences_interface_general_title">Általános</string>
   <string name="preferences_interface_general_icons_category">Ikonok</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Alapértelmezett ikonok</string>
   <string name="icon_packs_title">Ikon csomagok</string>
   <string name="no_iconpacks_summary">Nincsenek telepítve ikoncsomagok</string>
+  <string name="clear_keyguard_wallpaper">Törlés</string>
   <string name="all_apps_cling_cm">Alkalmazásképernyők testreszabása</string>
   <string name="all_apps_cling_summary">Érintse meg az oldaljelölőt a további konfigurációs beállítások megtekintéséhez</string>
+  <string name="menu_hidden_apps_delete">Visszaállítás</string>
+  <string name="hidden_apps_title">Rejtett alkalmazások</string>
 </resources>

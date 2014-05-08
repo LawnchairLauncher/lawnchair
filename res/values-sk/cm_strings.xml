@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Domovská obrazovka</string>
   <string name="preferences_interface_homescreen_search_title">Vyhľadávací panel</string>
   <string name="preferences_interface_homescreen_search_summary">Zobraziť pretrvávajúci vyhľadávací panel v hornej časti obrazovky</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skryť menovky ikon</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skryť menovky ikon z domovskej obrazovky</string>
   <string name="preferences_interface_drawer_title">Ponuka aplikácií</string>
+  <string name="preferences_interface_drawer_summary">Aplikácie a miniaplikácie ponuky</string>
+  <string name="preferences_interface_drawer_apps_category">Aplikácie</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Skryté aplikácie</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Skryť aplikácie zo zoznamu aplikácií</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Vymazať odkazy</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Vymazať odkazy skrytých aplikácií z domovskej obrazovky</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Vymazať miniaplikácie</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Vymazať miniaplikácie skrytých aplikácií z domovskej obrazovky</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Skryť menovky ikon</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Skryť menovky ikon v ponuke aplikácií</string>
   <string name="preferences_interface_dock_title">Dok</string>
   <string name="preferences_interface_general_title">Všeobecné</string>
   <string name="preferences_interface_general_icons_category">Ikony</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Predvolené ikony</string>
   <string name="icon_packs_title">Balíky ikon</string>
   <string name="no_iconpacks_summary">Žiadne balíky ikon nie sú nainštalované</string>
+  <string name="clear_keyguard_wallpaper">Vymazať</string>
   <string name="all_apps_cling_cm">Prispôsobte si vašu ponuku</string>
   <string name="all_apps_cling_summary">Kliknite na ukazovateľ stránky pre zobrazenie ďalších nastavení</string>
+  <string name="menu_hidden_apps_delete">Obnoviť</string>
+  <string name="hidden_apps_title">Skryté aplikácie</string>
 </resources>

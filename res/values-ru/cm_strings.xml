@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Домашний экран</string>
   <string name="preferences_interface_homescreen_search_title">Строка поиска</string>
   <string name="preferences_interface_homescreen_search_summary">Показывать постоянную строку поиска вверху экрана</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Скрывать подписи значков</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Не отображать текст у ярлыков на домашнем экране</string>
   <string name="preferences_interface_drawer_title">Меню приложений</string>
+  <string name="preferences_interface_drawer_summary">Список приложений и виджетов</string>
+  <string name="preferences_interface_drawer_apps_category">Приложения</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Скрытые приложения</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Выбрать приложения, которые не будут отображаться в меню</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Удалять ярлыки</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Убирать ярлыки скрытых приложений с домашнего экрана</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Удалять виджеты</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Убирать виджеты скрытых приложений с домашнего экрана</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Скрывать подписи значков</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Не отображать текст у ярлыков в меню приложений</string>
   <string name="preferences_interface_dock_title">Нижняя панель</string>
   <string name="preferences_interface_general_title">Общие</string>
   <string name="preferences_interface_general_icons_category">Значки</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Значки по умолчанию</string>
   <string name="icon_packs_title">Наборы значков</string>
   <string name="no_iconpacks_summary">Наборы значков не установлены</string>
+  <string name="clear_keyguard_wallpaper">Очистить</string>
   <string name="all_apps_cling_cm">Настройте меню приложений по своему вкусу</string>
   <string name="all_apps_cling_summary">Коснитесь индикатора страницы внизу для перехода к настройкам.</string>
+  <string name="menu_hidden_apps_delete">Сброс</string>
+  <string name="hidden_apps_title">Скрытые приложения</string>
 </resources>

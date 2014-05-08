@@ -19,7 +19,10 @@
   <string name="application_copyright">Telif Hakkı \u00A9 2014 CyanogenMod Projesi</string>
   <string name="sort_button_text">Sırala</string>
   <string name="filter_button_text">Filtrele</string>
+  <string name="default_screen_button_text">Varsayılan ekran</string>
+  <string name="transition_effect_button_text">Kaydırma efekti</string>
   <string name="sort_mode_title">Başlık</string>
+  <string name="sort_mode_install_time">Kurulum zamanı</string>
   <string name="scrolling_page_outlines">Sayfa anahatları</string>
   <string name="scrolling_fade_adjacent">Yan sayfaları soldur</string>
   <string name="wallpaper_scroll">Duvarkağıdını kaydır</string>
@@ -28,7 +31,19 @@
   <string name="preferences_interface_homescreen_title">Ana Ekran</string>
   <string name="preferences_interface_homescreen_search_title">Arama kutusu</string>
   <string name="preferences_interface_homescreen_search_summary">Ekranın üstünde kalıcı arama çubuğu göster</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Simge etiketlerini gizle</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ana ekranda simge etiketlerini gizle</string>
   <string name="preferences_interface_drawer_title">Uygulama çekmecesi</string>
+  <string name="preferences_interface_drawer_summary">Uygulama ve widget çekmecesi</string>
+  <string name="preferences_interface_drawer_apps_category">Uygulamalar</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Gizli uygulamalar</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Uygulamaları menüden gizle</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Kısayolları kaldır</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Ana ekrandan gizli uygulamaların kısayollarını kaldır</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Ekran araçlarını kaldır</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Ana ekrandan gizli uygulamaların widgetlarını kaldır</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Simge etiketlerini gizle</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Çekmecedeki simge etiketlerini gizle</string>
   <string name="preferences_interface_dock_title">Kilit</string>
   <string name="preferences_interface_general_title">Genel</string>
   <string name="preferences_interface_general_icons_category">Simgeler</string>
@@ -40,6 +55,9 @@
   <string name="default_iconpack_title">Varsayılan simgeler</string>
   <string name="icon_packs_title">Simge paketleri</string>
   <string name="no_iconpacks_summary">Yüklü simge paketi yok</string>
+  <string name="clear_keyguard_wallpaper">Temizle</string>
   <string name="all_apps_cling_cm">Uygulama çekmecesini özelleştir</string>
   <string name="all_apps_cling_summary">Ek ayarlara bakmak için sayfa göstergesine dokun</string>
+  <string name="menu_hidden_apps_delete">Sıfırla</string>
+  <string name="hidden_apps_title">Gizli uygulamalar</string>
 </resources>
