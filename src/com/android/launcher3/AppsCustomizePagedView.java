@@ -233,6 +233,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Relating to the scroll and overscroll effects
     private static float TRANSITION_MAX_ROTATION = 22;
     private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
+    private boolean mOverscrollTransformsSet;
+    private float mLastOverscrollPivotX;
 
     public static boolean DISABLE_ALL_APPS = false;
 
@@ -1487,15 +1489,42 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         if (isInOverscroll) {
             int index = 0;
+            float pivotX = 0f;
+            final float leftBiasedPivot = 0.35f;
+            final float rightBiasedPivot = 0.65f;
             final int lowerIndex = 0;
             final int upperIndex = getChildCount() - 1;
 
             final boolean isLeftPage = mOverScrollX < 0;
             index = (!isRtl && isLeftPage) || (isRtl && !isLeftPage) ? lowerIndex : upperIndex;
+            pivotX = isLeftPage ? rightBiasedPivot : leftBiasedPivot;
+
             View v = getPageAt(index);
+
+            if (!mOverscrollTransformsSet || Float.compare(mLastOverscrollPivotX, pivotX) != 0) {
+                mOverscrollTransformsSet = true;
+                mLastOverscrollPivotX = pivotX;
+                v.setCameraDistance(mDensity * mCameraDistance);
+                v.setPivotX(v.getMeasuredWidth() * pivotX);
+            }
+
             float scrollProgress = getScrollProgress(screenCenter, v, index);
             float rotation = -TRANSITION_MAX_ROTATION * scrollProgress;
             v.setRotationY(rotation);
+        } else {
+            if (mOverscrollTransformsSet) {
+                mOverscrollTransformsSet = false;
+                View v0 = getPageAt(0);
+                View v1 = getPageAt(getChildCount() - 1);
+                v0.setRotationY(0);
+                v1.setRotationY(0);
+                v0.setCameraDistance(mDensity * mCameraDistance);
+                v1.setCameraDistance(mDensity * mCameraDistance);
+                v0.setPivotX(v0.getMeasuredWidth() / 2);
+                v1.setPivotX(v1.getMeasuredWidth() / 2);
+                v0.setPivotY(v0.getMeasuredHeight() / 2);
+                v1.setPivotY(v1.getMeasuredHeight() / 2);
+            }
         }
     }
 
