@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Écran d\'accueil</string>
   <string name="preferences_interface_homescreen_search_title">Barre de recherche</string>
   <string name="preferences_interface_homescreen_search_summary">Afficher la barre de recherche persistante en haut de l\'écran</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Masquer le nom des icônes</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Masquer le nom des icônes sur l\'écran d\'accueil</string>
   <string name="preferences_interface_drawer_title">Liste d\'applications</string>
+  <string name="preferences_interface_drawer_summary">Applications et widgets de la liste des applications</string>
+  <string name="preferences_interface_drawer_apps_category">Applications</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Applications masquées</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Masquer les applications de la liste des applications</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Supprimer les raccourcis</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Supprimer les raccourcis sur l\'écran d\'accueil des applications masquées</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Supprimer les widgets</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Supprimer les widgets sur l\'écran d\'accueil des applications masquées</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Masquer le nom des icônes</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Masquer le nom des icônes dans la liste des applications</string>
   <string name="preferences_interface_dock_title">Dock</string>
   <string name="preferences_interface_general_title">Général</string>
   <string name="preferences_interface_general_icons_category">Icônes</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Icônes par défaut</string>
   <string name="icon_packs_title">Packs d\'icônes</string>
   <string name="no_iconpacks_summary">Aucun pack d\'icônes installé</string>
+  <string name="clear_keyguard_wallpaper">Supprimer</string>
   <string name="all_apps_cling_cm">Personnaliser votre affichage</string>
   <string name="all_apps_cling_summary">Appuyez sur l\'indicateur de page pour afficher les paramètres de configuration supplémentaires</string>
+  <string name="menu_hidden_apps_delete">Réinitialiser</string>
+  <string name="hidden_apps_title">Applications masquées</string>
 </resources>

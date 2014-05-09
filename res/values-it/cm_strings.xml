@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Schermata Home</string>
   <string name="preferences_interface_homescreen_search_title">Barra di ricerca</string>
   <string name="preferences_interface_homescreen_search_summary">Mostra la barra di ricerca persistente nella parte superiore dello schermo</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Nascondi etichette icone</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Nascondi le etichette delle icone sulla schermata Home</string>
   <string name="preferences_interface_drawer_title">Drawer</string>
+  <string name="preferences_interface_drawer_summary">Drawer app e widget</string>
+  <string name="preferences_interface_drawer_apps_category">App</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">App nascoste</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Nascondi le app dal drawer</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Rimuovi scorciatoie</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Rimuovi le scorciatoie delle app nascoste dalla schermata Home</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Rimuovi widget</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Rimuovi i widget delle app nascoste dalla schermata Home</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Nascondi etichette icone</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Nascondi le etichette delle icone nel drawer</string>
   <string name="preferences_interface_dock_title">Dock</string>
   <string name="preferences_interface_general_title">Generale</string>
   <string name="preferences_interface_general_icons_category">Icone</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Icone predefinite</string>
   <string name="icon_packs_title">Pacchetti icone</string>
   <string name="no_iconpacks_summary">Nessun pacchetto di icone installato</string>
+  <string name="clear_keyguard_wallpaper">Svuota</string>
   <string name="all_apps_cling_cm">Personalizza il drawer</string>
   <string name="all_apps_cling_summary">Tocca l\'indicatore della pagina per visualizzare le impostazioni di configurazione aggiuntive</string>
+  <string name="menu_hidden_apps_delete">Ripristina</string>
+  <string name="hidden_apps_title">App nascoste</string>
 </resources>

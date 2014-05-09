@@ -17,12 +17,12 @@
 -->
 <resources>
   <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
-  <string name="sort_button_text">Врста</string>
+  <string name="sort_button_text">Приказ</string>
   <string name="filter_button_text">Филтер</string>
   <string name="default_screen_button_text">Подразумевани екран</string>
   <string name="transition_effect_button_text">Ефекат скроловања</string>
   <string name="sort_mode_title">Наслов</string>
-  <string name="sort_mode_launch_count">Тачка покретања</string>
+  <string name="sort_mode_launch_count">Број покретања</string>
   <string name="sort_mode_install_time">Време инсталирања</string>
   <string name="scrolling_page_outlines">Контура странице</string>
   <string name="scrolling_fade_adjacent">Замагљени крајеви страница</string>
@@ -30,20 +30,35 @@
   <string name="preferences_title">Подешавања</string>
   <string name="preferences_application_title">Апликације</string>
   <string name="preferences_interface_homescreen_title">Почетни екран</string>
-  <string name="preferences_interface_homescreen_search_title">Табла за претраживање</string>
-  <string name="preferences_interface_homescreen_search_summary">Покажите упорну таблу за претраживање на врху екрана</string>
+  <string name="preferences_interface_homescreen_search_title">Табла за претрагу</string>
+  <string name="preferences_interface_homescreen_search_summary">Прикажи упорну таблу за претрагу на врху екрана</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Сакриј етикете икона</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Сакријте етикете икона на почетном екрану</string>
   <string name="preferences_interface_drawer_title">Фиока</string>
+  <string name="preferences_interface_drawer_summary">Фиока за апликације и виџете</string>
+  <string name="preferences_interface_drawer_apps_category">Апликације</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Скривене апликације</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Сакријте апликације из фиоке</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Уклони пречице</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Уклоните пречице скривених апликација са почетног екрана</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Уклони виџете</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Уклоните виџете скривених апликација са почетног екрана</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Сакриј етикете икона</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Сакријте етикете икона у фиоци</string>
   <string name="preferences_interface_dock_title">Доцк</string>
   <string name="preferences_interface_general_title">Oпште</string>
   <string name="preferences_interface_general_icons_category">Иконе</string>
   <string name="preferences_interface_general_icons_large_title">Веће иконе</string>
-  <string name="preferences_interface_general_icons_large_summary">Користите екстра велике апликационе иконе на почетном екрану и у фиоци</string>
+  <string name="preferences_interface_general_icons_large_summary">Користите екстра велике апликационе иконе на почетном екрану и фиоци</string>
   <string name="preferences_interface_general_icons_text_style_title">Стил фонта текста</string>
   <string name="preferences_interface_general_icons_text_style_summary">Варијанту и стил фонта користити за текст на иконама</string>
   <string name="dialog_pick_iconpack_title">Одаберите пакет икона</string>
   <string name="default_iconpack_title">Подразумеване иконе</string>
   <string name="icon_packs_title">Пакети икона</string>
   <string name="no_iconpacks_summary">Нема инсталираних пакета са иконама</string>
+  <string name="clear_keyguard_wallpaper">Чисто</string>
   <string name="all_apps_cling_cm">Прилагодите фиоку</string>
-  <string name="all_apps_cling_summary">Додирните индикатор странице да видите додатна подешавања конфигурације</string>
+  <string name="all_apps_cling_summary">Додирните индикатор странице да би сте видели додатна подешавања</string>
+  <string name="menu_hidden_apps_delete">Ресетовање</string>
+  <string name="hidden_apps_title">Скривене апликације</string>
 </resources>

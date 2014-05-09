@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Startskærm</string>
   <string name="preferences_interface_homescreen_search_title">Søgelinje</string>
   <string name="preferences_interface_homescreen_search_summary">Vis permanent søgelinje i toppen af skærmen</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skjul ikontekster</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skjul ikontekster på startskærmen</string>
   <string name="preferences_interface_drawer_title">Oversigt</string>
+  <string name="preferences_interface_drawer_summary">Oversigt over apps og widgets</string>
+  <string name="preferences_interface_drawer_apps_category">Apps</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Skjulte apps</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Skjul apps fra oversigten</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Fjern genveje</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Fjern genveje til skjulte apps fra startskærmen</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Fjern widgets</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Fjern widgets fra skjulte apps fra startskærmen</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Skjul ikontekster</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Skjul ikontekster i oversigten</string>
   <string name="preferences_interface_dock_title">Docklinje</string>
   <string name="preferences_interface_general_title">Generelt</string>
   <string name="preferences_interface_general_icons_category">Ikoner</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Standardikoner</string>
   <string name="icon_packs_title">Ikonpakker</string>
   <string name="no_iconpacks_summary">Ingen ikonpakker installeret</string>
+  <string name="clear_keyguard_wallpaper">Ryd</string>
   <string name="all_apps_cling_cm">Tilpas din oversigt</string>
   <string name="all_apps_cling_summary">Tryk på sideindikatoren for at vise yderligere konfigurationsindstillinger</string>
+  <string name="menu_hidden_apps_delete">Nulstil</string>
+  <string name="hidden_apps_title">Skjulte apps</string>
 </resources>

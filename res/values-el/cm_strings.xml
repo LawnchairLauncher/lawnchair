@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Αρχική οθόνη</string>
   <string name="preferences_interface_homescreen_search_title">Μπάρα αναζήτησης</string>
   <string name="preferences_interface_homescreen_search_summary">Εμφάνιση της μπάρας αναζήτησης στο πάνω μέρος της οθόνης</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Απόκρυψη ετικετών εικονιδίων</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="preferences_interface_drawer_title">Συρτάρι</string>
+  <string name="preferences_interface_drawer_summary">Συρτάρι εφαρμογών και widget</string>
+  <string name="preferences_interface_drawer_apps_category">Εφαρμογές</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Κρυμμένες εφαρμογές</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Απόκρυψη εφαρμογών από το συρτάρι</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Αφαίρεση συντομεύσεων</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Αφαίρεση συντομεύσεων των κρυμμένων εφαρμογών από την αρχική οθόνη</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Αφαίρεση widget</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Αφαίρεση widget των κρυμμένων εφαρμογών από την αρχική οθόνη</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Απόκρυψη ετικετών εικονιδίων</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Απόκρυψη ετικετών εικονιδίων στο συρτάρι</string>
   <string name="preferences_interface_dock_title">Μπάρα εφαρμογών</string>
   <string name="preferences_interface_general_title">Γενικά</string>
   <string name="preferences_interface_general_icons_category">Εικονίδια</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Προεπιλεγμένα εικονίδια</string>
   <string name="icon_packs_title">Πακέτα εικονιδίων</string>
   <string name="no_iconpacks_summary">Δεν υπάρχουν εγκατεστημένα πακέτα εικονιδίων</string>
+  <string name="clear_keyguard_wallpaper">Εκκαθάριση</string>
   <string name="all_apps_cling_cm">Προσαρμόστε το συρτάρι σας</string>
   <string name="all_apps_cling_summary">Αγγίξτε την ένδειξη σελίδας για προβολή πρόσθετων ρυθμίσεων</string>
+  <string name="menu_hidden_apps_delete">Επαναφορά</string>
+  <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
 </resources>

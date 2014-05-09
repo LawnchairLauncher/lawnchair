@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Pantalla d\'aniciu</string>
   <string name="preferences_interface_homescreen_search_title">Barra de gueta</string>
   <string name="preferences_interface_homescreen_search_summary">Habilitar permantentemente la barra de gueta</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Anubrir etiquetes de los iconos</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Anubrir les etiquetes de los iconos na pantalla d\'aniciu</string>
   <string name="preferences_interface_drawer_title">Aplicaciones</string>
+  <string name="preferences_interface_drawer_summary">Aplicaciones y widgets</string>
+  <string name="preferences_interface_drawer_apps_category">Aplicaciones</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Aplicaciones anubríes</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Anubrir aplicaciones pa que nun s\'amuesen</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Desaniciar atayos</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Desaniciar atayos d\'aplicaciones anubríes de la pantalla d\'aniciu</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Desaniciar widgets</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Desaniciar widgets d\'aplicaciones anubríes de la pantalla d\'aniciu</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Anubrir etiquetes de los iconos</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Anubrir les etiquetes de los iconos de la pantalla d\'aniciu</string>
   <string name="preferences_interface_dock_title">Barra d\'aplicaciones</string>
   <string name="preferences_interface_general_title">Xeneral</string>
   <string name="preferences_interface_general_icons_category">Iconos</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Iconos por defeutu</string>
   <string name="icon_packs_title">Paquetes d\'iconos</string>
   <string name="no_iconpacks_summary">Nun hai paquetes d\'iconos instalaos</string>
+  <string name="clear_keyguard_wallpaper">Llimpiar</string>
   <string name="all_apps_cling_cm">Personaliza les tos aplicaciones</string>
   <string name="all_apps_cling_summary">Primi l\'indicador de páxina p\'amosar axustes adicionales</string>
+  <string name="menu_hidden_apps_delete">Restablecer</string>
+  <string name="hidden_apps_title">Aplicaciones anubríes</string>
 </resources>

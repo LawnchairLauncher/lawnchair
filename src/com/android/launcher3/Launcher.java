@@ -391,7 +391,7 @@ public class Launcher extends Activity
 
         mHideIconLabels = SettingsProvider.getBoolean(this,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels);
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default);
 
         // Determine the dynamic grid properties
         Point smallestSize = new Point();

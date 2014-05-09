@@ -5,7 +5,7 @@
     <bool name="preferences_interface_homescreen_scrolling_wallpaper_scroll_default">true</bool>
     <bool name="preferences_interface_homescreen_scrolling_page_outlines_default">@bool/config_workspaceDefaultShowOutlines</bool>
     <bool name="preferences_interface_homescreen_scrolling_fade_adjacent_default">@bool/config_workspaceFadeAdjacentScreens</bool>
-    <bool name="preferences_interface_homescreen_hide_icon_labels">false</bool>
+    <bool name="preferences_interface_homescreen_hide_icon_labels_default">false</bool>
     <string name="preferences_interface_drawer_scrolling_transition_effect">stack</string>
     <bool name="preferences_interface_drawer_scrolling_fade_adjacent_default">false</bool>
     <bool name="preferences_interface_drawer_remove_hidden_apps_shortcuts_default">false</bool>

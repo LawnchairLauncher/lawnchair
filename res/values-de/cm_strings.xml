@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Startbildschirm</string>
   <string name="preferences_interface_homescreen_search_title">Suchleiste</string>
   <string name="preferences_interface_homescreen_search_summary">Dauerhafte Anzeige der Suchleiste am oberen Bildschirmrand</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Beschriftung nicht anzeigen</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Symbolbeschriftungen auf den Startseiten ausblenden</string>
   <string name="preferences_interface_drawer_title">App-Übersicht</string>
+  <string name="preferences_interface_drawer_summary">App- und Widget-Übersicht</string>
+  <string name="preferences_interface_drawer_apps_category">Apps</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Versteckte Apps</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Apps in der App-Übersicht verstecken</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Verknüpfungen entfernen</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Verknüpfungen für versteckte Apps vom Startbildschirm entfernen</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Widgets entfernen</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Widgets von versteckten Apps vom Startbildschirm entfernen</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Beschriftung nicht anzeigen</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Symbolbeschriftungen in der App-Übersicht ausblenden</string>
   <string name="preferences_interface_dock_title">Dock</string>
   <string name="preferences_interface_general_title">Allgemein</string>
   <string name="preferences_interface_general_icons_category">Symbole</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Standardsymbole</string>
   <string name="icon_packs_title">Symbolpakete</string>
   <string name="no_iconpacks_summary">Es sind keine Symbolpakete installiert</string>
+  <string name="clear_keyguard_wallpaper">Zurücksetzen</string>
   <string name="all_apps_cling_cm">App-Übersicht konfigurieren</string>
   <string name="all_apps_cling_summary">Berühren Sie den Seitenindikator, um die erweiterten Einstellungen zu öffnen.</string>
+  <string name="menu_hidden_apps_delete">Zurücksetzen</string>
+  <string name="hidden_apps_title">Versteckte Apps</string>
 </resources>

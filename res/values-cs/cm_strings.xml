@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Domovská plocha</string>
   <string name="preferences_interface_homescreen_search_title">Vyhledávací lišta</string>
   <string name="preferences_interface_homescreen_search_summary">Trvale zobrazit lištu vyhledávání vždy u horní hrany plochy</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Skrýt popisky ikon</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Skrýt popisky ikon na domovské ploše</string>
   <string name="preferences_interface_drawer_title">Aplikační složka</string>
+  <string name="preferences_interface_drawer_summary">Složka aplikací a widgetů</string>
+  <string name="preferences_interface_drawer_apps_category">Aplikace</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Skryté aplikace</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Skrýt aplikace ve složce</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Odebrat zástupce</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Odebrat zástupce skrytých aplikací z domovské plochy</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Odebrat widgety</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Odebrat widgety skrytých aplikací z domovské plochy</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Skrýt popisky ikon</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Skrýt popisky ikon ve složce</string>
   <string name="preferences_interface_dock_title">Dok</string>
   <string name="preferences_interface_general_title">Obecné</string>
   <string name="preferences_interface_general_icons_category">Ikony</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Výchozí ikony</string>
   <string name="icon_packs_title">Balíčky ikon</string>
   <string name="no_iconpacks_summary">Není nainstalován žádný balíček ikon</string>
+  <string name="clear_keyguard_wallpaper">Odstranit</string>
   <string name="all_apps_cling_cm">Upravit vlastní složku</string>
   <string name="all_apps_cling_summary">Dotykem na indikátor stránky zobrazit další možnosti nastavení</string>
+  <string name="menu_hidden_apps_delete">Obnovit</string>
+  <string name="hidden_apps_title">Skryté aplikace</string>
 </resources>

@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Kotinäyttö</string>
   <string name="preferences_interface_homescreen_search_title">Hakupalkki</string>
   <string name="preferences_interface_homescreen_search_summary">Näytä pysyvä hakupalkki näytön yläreunassa</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Piilota kuvakkeiden tekstit</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Piilota kuvakkeiden tekstit kotinäytöllä</string>
   <string name="preferences_interface_drawer_title">Sovellusvalikko</string>
+  <string name="preferences_interface_drawer_summary">Sovellus- ja widgetvalikko</string>
+  <string name="preferences_interface_drawer_apps_category">Sovellukset</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Piilotetut sovellukset</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Piilota sovellukset valikosta</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Poista kuvakkeet</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Poista piilotettujen sovellusten kuvakkeet kotinäytöltä</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Poista widgetit</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Poista piilotettujen sovellusten widgetit kotinäytöltä</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Piilota kuvakkeiden tekstit</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Piilota kuvakkeiden tekstit valikossa</string>
   <string name="preferences_interface_dock_title">Alapalkki</string>
   <string name="preferences_interface_general_title">Yleiset</string>
   <string name="preferences_interface_general_icons_category">Kuvakkeet</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Oletuskuvakkeet</string>
   <string name="icon_packs_title">Kuvakepaketit</string>
   <string name="no_iconpacks_summary">Kuvakepaketteja ei asennettu</string>
+  <string name="clear_keyguard_wallpaper">Tyhjennä</string>
   <string name="all_apps_cling_cm">Muokkaa sovellusvalikkoa</string>
   <string name="all_apps_cling_summary">Napauta sivun ilmaisinta nähdäksesi lisää asetuksia</string>
+  <string name="menu_hidden_apps_delete">Nollaa</string>
+  <string name="hidden_apps_title">Piilotetut sovellukset</string>
 </resources>

@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Pagrindinis ekranas</string>
   <string name="preferences_interface_homescreen_search_title">Paieškos juosta</string>
   <string name="preferences_interface_homescreen_search_summary">Rodyti nuolatinę paieškos juostą ekrano viršuje</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Paslėpti piktogramų pavadinimus</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Paslėpti piktogramų pavadinimus pagrindiniame ekrane</string>
   <string name="preferences_interface_drawer_title">Stalčius</string>
+  <string name="preferences_interface_drawer_summary">Programų ir valdiklių stalčius</string>
+  <string name="preferences_interface_drawer_apps_category">Programos</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Paslėptos programos</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Paslėpti programas iš stalčiaus</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Pašalinti nuorodas</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Pašalinti paslėptų programų nuorodas iš pagrindinio ekrano</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Pašalinti valdiklius</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Pašalinti paslėptų programų valdiklius iš pagrindinio ekrano</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Paslėpti piktogramų pavadinimus</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Paslėpti piktogramų pavadinimus iš stalčiaus</string>
   <string name="preferences_interface_dock_title">Dokas</string>
   <string name="preferences_interface_general_title">Bendra</string>
   <string name="preferences_interface_general_icons_category">Piktogramos</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Numatytosios piktogramos</string>
   <string name="icon_packs_title">Piktogramų paketai</string>
   <string name="no_iconpacks_summary">Piktogramų paketai neįdiegti</string>
+  <string name="clear_keyguard_wallpaper">Išvalyti</string>
   <string name="all_apps_cling_cm">Tinkinti savo stalčių</string>
   <string name="all_apps_cling_summary">Bakstelėkite puslapio indikatorių norėdami peržiūrėti papildomus konfigūracijos nustatymus</string>
+  <string name="menu_hidden_apps_delete">Atkurti</string>
+  <string name="hidden_apps_title">Paslėptos programos</string>
 </resources>

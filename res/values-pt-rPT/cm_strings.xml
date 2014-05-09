@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Ecrã inicial</string>
   <string name="preferences_interface_homescreen_search_title">Barra de pesquisa</string>
   <string name="preferences_interface_homescreen_search_summary">Mostrar barra de pesquisa persistente no topo do ecrã</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ocultar as legendas dos ícones</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Oculta as legendas dos ícones no ambiente de trabalho</string>
   <string name="preferences_interface_drawer_title">Gaveta de aplicações</string>
+  <string name="preferences_interface_drawer_summary">Gaveta de aplicações e widgets</string>
+  <string name="preferences_interface_drawer_apps_category">Aplicações</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Aplicações ocultas</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Ocultar aplicações da gaveta</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Remover atalhos</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remover os atalhos de aplicações ocultas do ambiente de trabalho</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Remover widgets</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remover os widgets das aplicações ocultas do ambiente de trabalho</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Ocultar as legendas dos ícones</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Ocultar as legendas dos ícones na gaveta de aplicações</string>
   <string name="preferences_interface_dock_title">Dock</string>
   <string name="preferences_interface_general_title">Geral</string>
   <string name="preferences_interface_general_icons_category">Ícones</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Ícones padrão</string>
   <string name="icon_packs_title">Pacotes de Ícones</string>
   <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
+  <string name="clear_keyguard_wallpaper">Limpar</string>
   <string name="all_apps_cling_cm">Personalize a sua gaveta de aplicações</string>
   <string name="all_apps_cling_summary">Toque no indicador de página para ver definições adicionais</string>
+  <string name="menu_hidden_apps_delete">Restaurar</string>
+  <string name="hidden_apps_title">Aplicações ocultas</string>
 </resources>

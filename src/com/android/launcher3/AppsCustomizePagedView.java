@@ -1514,16 +1514,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         } else {
             if (mOverscrollTransformsSet) {
                 mOverscrollTransformsSet = false;
-                View v0 = getPageAt(0);
-                View v1 = getPageAt(getChildCount() - 1);
+                View v0 = getPageAt(mCurrentPage);
                 v0.setRotationY(0);
-                v1.setRotationY(0);
                 v0.setCameraDistance(mDensity * mCameraDistance);
-                v1.setCameraDistance(mDensity * mCameraDistance);
                 v0.setPivotX(v0.getMeasuredWidth() / 2);
-                v1.setPivotX(v1.getMeasuredWidth() / 2);
                 v0.setPivotY(v0.getMeasuredHeight() / 2);
-                v1.setPivotY(v1.getMeasuredHeight() / 2);
             }
         }
     }

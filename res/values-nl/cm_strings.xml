@@ -20,7 +20,7 @@
   <string name="sort_button_text">Sorteren</string>
   <string name="filter_button_text">Filteren</string>
   <string name="default_screen_button_text">Standaard\nscherm</string>
-  <string name="transition_effect_button_text">Overgangseffect</string>
+  <string name="transition_effect_button_text">Overgangs\neffect</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Aantal starts</string>
   <string name="sort_mode_install_time">Tijd van installatie</string>
@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Startscherm</string>
   <string name="preferences_interface_homescreen_search_title">Zoekbalk</string>
   <string name="preferences_interface_homescreen_search_summary">Zoekbalk permanent tonen bovenaan het scherm</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Labels verbergen</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Labels verbergen onder pictogrammen op het startscherm</string>
   <string name="preferences_interface_drawer_title">Overzicht</string>
+  <string name="preferences_interface_drawer_summary">App- en widgetoverzicht</string>
+  <string name="preferences_interface_drawer_apps_category">Apps</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Verborgen apps</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Apps verbergen in het app-overzicht</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Snelkoppelingen verbergen</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Snelkoppelingen van verborgen apps niet weergeven op startscherm</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Widgets verbergen</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Widgets van verborgen apps niet weergeven op startscherm</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Labels verbergen</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Labels verbergen onder pictogrammen in het appoverzicht</string>
   <string name="preferences_interface_dock_title">Dock</string>
   <string name="preferences_interface_general_title">Algemeen</string>
   <string name="preferences_interface_general_icons_category">Pictogrammen</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Standaard</string>
   <string name="icon_packs_title">Pictogram\npakket</string>
   <string name="no_iconpacks_summary">Geen pictogrampakketten geïnstalleerd</string>
+  <string name="clear_keyguard_wallpaper">Verwijderen</string>
   <string name="all_apps_cling_cm">App-overzicht aanpassen</string>
   <string name="all_apps_cling_summary">Tik op de pagina-indicator voor extra instellingen</string>
+  <string name="menu_hidden_apps_delete">Opnieuw instellen</string>
+  <string name="hidden_apps_title">Verborgen apps</string>
 </resources>

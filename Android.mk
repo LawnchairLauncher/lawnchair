@@ -32,7 +32,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src) \
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 
-LOCAL_SDK_VERSION := 19
+#LOCAL_SDK_VERSION := 19
 
 LOCAL_PACKAGE_NAME := Trebuchet
 LOCAL_PRIVILEGED_MODULE := true
