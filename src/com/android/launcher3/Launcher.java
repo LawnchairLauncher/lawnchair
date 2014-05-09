@@ -215,7 +215,6 @@ public class Launcher extends Activity
 
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
-    public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT_FOLDER_CLOSE = 400;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
     private static final int ACTIVITY_START_DELAY = 1000;
 
@@ -779,7 +778,7 @@ public class Launcher extends Activity
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
-                mWorkspace.removeExtraEmptyScreen(true, exitSpringLoaded,
+                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else if (resultCode == RESULT_OK) {
                 addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
@@ -833,7 +832,7 @@ public class Launcher extends Activity
                     }
                 };
             }
-            mWorkspace.removeExtraEmptyScreen(true, onComplete, ON_ACTIVITY_RESULT_ANIMATION_DELAY,
+            mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, ON_ACTIVITY_RESULT_ANIMATION_DELAY,
                     false);
             return;
         }
@@ -856,10 +855,10 @@ public class Launcher extends Activity
             } else {
                 completeAdd(args);
             }
-            mWorkspace.removeExtraEmptyScreen(true, exitSpringLoaded,
+            mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                     ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         } else if (resultCode == RESULT_CANCELED) {
-            mWorkspace.removeExtraEmptyScreen(true, exitSpringLoaded,
+            mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                     ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         }
         mDragLayer.clearAnimatedView();
@@ -2119,7 +2118,7 @@ public class Launcher extends Activity
             };
             completeAddAppWidget(appWidgetId, info.container, info.screenId, boundWidget,
                     appWidgetInfo);
-            mWorkspace.removeExtraEmptyScreen(true, onComplete, delay, false);
+            mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
         }
     }
 
@@ -3924,7 +3923,7 @@ public class Launcher extends Activity
         }
 
         // Remove the extra empty screen
-        mWorkspace.removeExtraEmptyScreen(false, null);
+        mWorkspace.removeExtraEmptyScreen(false, false);
 
         if (!LauncherAppState.isDisableAllApps() &&
                 addedApps != null && mAppsCustomizeContent != null) {

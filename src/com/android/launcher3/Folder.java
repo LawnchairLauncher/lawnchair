@@ -797,12 +797,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         }
 
-        // This is kind of hacky, but in general, dropping on the workspace handles removing
-        // the extra screen, but dropping elsewhere (back to self, or onto delete) doesn't.
-        if (target != mLauncher.getWorkspace()) {
-            mLauncher.getWorkspace().removeExtraEmptyScreen(true, null);
-        }
-
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
         mItemAddedBackToSelfViaIcon = false;
@@ -1176,20 +1170,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onDrop(DragObject d) {
         Runnable cleanUpRunnable = null;
 
-        // If we are coming from All Apps space, we need to remove the extra empty screen (which is
-        // normally done in Workspace#onDropExternal, as well zoom back in.
+        // If we are coming from All Apps space, we defer removing the extra empty screen
+        // until the folder closes
         if (d.dragSource != mLauncher.getWorkspace() && !(d.dragSource instanceof Folder)) {
             cleanUpRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    mLauncher.getWorkspace().removeExtraEmptyScreen(false, new Runnable() {
-                        @Override
-                        public void run() {
-                            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT_FOLDER_CLOSE,
-                                    null);
-                        }
-                    }, CLOSE_FOLDER_DELAY_MS, false);
+                    mLauncher.exitSpringLoadedDragModeDelayed(true,
+                            Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
+                            null);
                 }
             };
         }
