@@ -135,6 +135,7 @@ public class Workspace extends SmoothPagedView
     private ArrayList<Long> mScreenOrder = new ArrayList<Long>();
 
     private Runnable mRemoveEmptyScreenRunnable;
+    private boolean mDeferRemoveExtraEmptyScreen = false;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -397,13 +398,25 @@ public class Workspace extends SmoothPagedView
             @Override
             public void run() {
                 if (mIsDragOccuring) {
+                    mDeferRemoveExtraEmptyScreen = false;
                     addExtraEmptyScreenOnDrag();
                 }
             }
         });
     }
 
+
+    public void deferRemoveExtraEmptyScreen() {
+        mDeferRemoveExtraEmptyScreen = true;
+    }
+
     public void onDragEnd() {
+        System.out.println("onDrag end workspace");
+
+        if (!mDeferRemoveExtraEmptyScreen) {
+            removeExtraEmptyScreen(true, mDragSourceInternal != null);
+        }
+
         mIsDragOccuring = false;
         updateChildrenLayersEnabled(false);
         mLauncher.unlockScreenOrientation(false);
@@ -726,11 +739,11 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void removeExtraEmptyScreen(final boolean animate, final Runnable onComplete) {
-        removeExtraEmptyScreen(animate, onComplete, 0, false);
+    public void removeExtraEmptyScreen(final boolean animate, boolean stripEmptyScreens) {
+        removeExtraEmptyScreenDelayed(animate, null, 0, stripEmptyScreens);
     }
 
-    public void removeExtraEmptyScreen(final boolean animate, final Runnable onComplete,
+    public void removeExtraEmptyScreenDelayed(final boolean animate, final Runnable onComplete,
             final int delay, final boolean stripEmptyScreens) {
         // Log to disk
         Launcher.addDumpLog(TAG, "11683562 - removeExtraEmptyScreen()", true);
@@ -744,9 +757,8 @@ public class Workspace extends SmoothPagedView
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    removeExtraEmptyScreen(animate, onComplete, 0, stripEmptyScreens);
+                    removeExtraEmptyScreenDelayed(animate, onComplete, 0, stripEmptyScreens);
                 }
-
             }, delay);
             return;
         }
@@ -3056,13 +3068,11 @@ public class Workspace extends SmoothPagedView
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
-                    removeExtraEmptyScreen(true, null, 0, true);
                     return;
                 }
 
                 if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                         distance, d, false)) {
-                    removeExtraEmptyScreen(true, null, 0, true);
                     return;
                 }
 
@@ -3168,7 +3178,6 @@ public class Workspace extends SmoothPagedView
                     if (finalResizeRunnable != null) {
                         finalResizeRunnable.run();
                     }
-                    removeExtraEmptyScreen(true, null, 0, true);
                 }
             };
             mAnimatingViewIntoPlace = true;
@@ -3822,13 +3831,8 @@ public class Workspace extends SmoothPagedView
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
             public void run() {
-                removeExtraEmptyScreen(false, new Runnable() {
-                    @Override
-                    public void run() {
-                        mLauncher.exitSpringLoadedDragModeDelayed(true,
-                                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-                    }
-                });
+                mLauncher.exitSpringLoadedDragModeDelayed(true,
+                        Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
             }
         };
 
@@ -3890,6 +3894,11 @@ public class Workspace extends SmoothPagedView
             Runnable onAnimationCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    // Normally removeExtraEmptyScreen is called in Workspace#onDragEnd, but when
+                    // adding an item that may not be dropped right away (due to a config activity)
+                    // we defer the removal until the activity returns.
+                    deferRemoveExtraEmptyScreen();
+
                     // When dragging and dropping from customization tray, we deal with creating
                     // widgets/shortcuts/folders in a slightly different way
                     switch (pendingInfo.itemType) {
@@ -4190,10 +4199,6 @@ public class Workspace extends SmoothPagedView
                 if (mDragInfo.cell instanceof DropTarget) {
                     mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
                 }
-                // If we move the item to anything not on the Workspace, check if any empty
-                // screens need to be removed. If we dropped back on the workspace, this will
-                // be done post drop animation.
-                removeExtraEmptyScreen(true, null, 0, true);
             }
         } else if (mDragInfo != null) {
             CellLayout cellLayout;

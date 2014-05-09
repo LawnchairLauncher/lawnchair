@@ -808,13 +808,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
             // drop in Workspace
-            mLauncher.getWorkspace().removeExtraEmptyScreen(true, new Runnable() {
-                @Override
-                public void run() {
-                    mLauncher.exitSpringLoadedDragMode();
-                    mLauncher.unlockScreenOrientation(false);
-                }
-            });
+            mLauncher.exitSpringLoadedDragMode();
+            mLauncher.unlockScreenOrientation(false);
         } else {
             mLauncher.unlockScreenOrientation(false);
         }
