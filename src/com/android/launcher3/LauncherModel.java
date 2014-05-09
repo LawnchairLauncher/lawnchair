@@ -902,7 +902,7 @@ public class LauncherModel extends BroadcastReceiver
                 item.container = c.getInt(containerIndex);
                 item.itemType = c.getInt(itemTypeIndex);
                 item.screenId = c.getInt(screenIndex);
-                int serialNumber = c.getInt(profileIdIndex);
+                long serialNumber = c.getInt(profileIdIndex);
                 item.user = userManager.getUserForSerialNumber(serialNumber);
                 // Skip if user has been deleted.
                 if (item.user != null) {
@@ -1894,7 +1894,7 @@ public class LauncherModel extends BroadcastReceiver
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                                 id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
-                                int serialNumber = c.getInt(profileIdIndex);
+                                long serialNumber = c.getInt(profileIdIndex);
                                 user = mUserManager.getUserForSerialNumber(serialNumber);
                                 if (user == null) {
                                     // User has been deleted remove the item.
