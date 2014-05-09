@@ -411,8 +411,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragEnd() {
-        System.out.println("onDrag end workspace");
-
         if (!mDeferRemoveExtraEmptyScreen) {
             removeExtraEmptyScreen(true, mDragSourceInternal != null);
         }
