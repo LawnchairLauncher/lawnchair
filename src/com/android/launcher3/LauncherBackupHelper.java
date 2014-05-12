@@ -110,6 +110,7 @@ public class LauncherBackupHelper implements BackupHelper {
             Favorites.SPANX,                   // 14
             Favorites.SPANY,                   // 15
             Favorites.TITLE,                   // 16
+            Favorites.PROFILE_ID,              // 17
     };
 
     private static final int ID_INDEX = 0;
@@ -129,6 +130,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final int SPANX_INDEX = 14;
     private static final int SPANY_INDEX = 15;
     private static final int TITLE_INDEX = 16;
+    private static final int PROFILE_ID_INDEX = 17;
 
     private static final String[] SCREEN_PROJECTION = {
             WorkspaceScreens._ID,              // 0
@@ -297,6 +299,11 @@ public class LauncherBackupHelper implements BackupHelper {
         Set<String> savedIds = getSavedIdsByType(Key.FAVORITE, in);
         if (DEBUG) Log.d(TAG, "favorite savedIds.size()=" + savedIds.size());
 
+        // Don't backup apps in other profiles for now.
+        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+        long userSerialNumber =
+                UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
+
         // persist things that have changed since the last backup
         ContentResolver cr = mContext.getContentResolver();
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
@@ -306,16 +313,22 @@ public class LauncherBackupHelper implements BackupHelper {
             cursor.moveToPosition(-1);
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
-                final long updateTime = cursor.getLong(ID_MODIFIED);
-                Key key = getKey(Key.FAVORITE, id);
-                keys.add(key);
-                final String backupKey = keyToBackupKey(key);
-                currentIds.add(backupKey);
-                if (!savedIds.contains(backupKey) || updateTime >= in.t) {
-                    byte[] blob = packFavorite(cursor);
-                    writeRowToBackup(key, blob, out, data);
+                final long profileId = cursor.getLong(PROFILE_ID_INDEX);
+                if (userSerialNumber == profileId) {
+                    final long updateTime = cursor.getLong(ID_MODIFIED);
+                    Key key = getKey(Key.FAVORITE, id);
+                    keys.add(key);
+                    final String backupKey = keyToBackupKey(key);
+                    currentIds.add(backupKey);
+                    if (!savedIds.contains(backupKey) || updateTime >= in.t) {
+                        byte[] blob = packFavorite(cursor);
+                        writeRowToBackup(key, blob, out, data);
+                    } else {
+                        if (VERBOSE) Log.v(TAG, "favorite " + id + " was too old: " + updateTime);
+                    }
                 } else {
-                    if (VERBOSE) Log.v(TAG, "favorite " + id + " was too old: " + updateTime);
+                    if (VERBOSE) Log.v(TAG, "favorite " + id + " is for other profile: "
+                            + profileId);
                 }
             }
         } finally {
@@ -468,7 +481,7 @@ public class LauncherBackupHelper implements BackupHelper {
         int startRows = out.rows;
         if (DEBUG) Log.d(TAG, "starting here: " + startRows);
         String where = "(" + Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION + " OR " +
-                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT + ") AND" +
+                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT + ") AND " +
                 Favorites.PROFILE_ID + "=" + userSerialNumber;
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
