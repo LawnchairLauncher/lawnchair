@@ -515,9 +515,10 @@ public class WidgetPreviewLoader {
 
         Drawable drawable = null;
         if (previewImage != 0) {
-            drawable = mutateOnMainThread(
-                    mPackageManager.getDrawable(packageName, previewImage, null));
-            if (drawable == null) {
+            drawable = mPackageManager.getDrawable(packageName, previewImage, null);
+            if (drawable != null) {
+                drawable = mutateOnMainThread(drawable);
+            } else {
                 Log.w(TAG, "Can't load widget preview drawable 0x" +
                         Integer.toHexString(previewImage) + " for provider: " + provider);
             }
@@ -572,9 +573,11 @@ public class WidgetPreviewLoader {
                         (int) ((previewDrawableWidth - mAppIconSize * iconScale) / 2);
                 int yoffset =
                         (int) ((previewDrawableHeight - mAppIconSize * iconScale) / 2);
-                if (iconId > 0)
-                    icon = mutateOnMainThread(mIconCache.getFullResIcon(packageName, iconId));
+                if (iconId > 0) {
+                    icon = mIconCache.getFullResIcon(packageName, iconId);
+                }
                 if (icon != null) {
+                    icon = mutateOnMainThread(icon);
                     renderDrawableToBitmap(icon, defaultPreview, hoffset,
                             yoffset, (int) (mAppIconSize * iconScale),
                             (int) (mAppIconSize * iconScale));
