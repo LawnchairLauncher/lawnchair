@@ -76,9 +76,6 @@ public class CellLayout extends ViewGroup {
     private boolean mScrollingTransformsDirty = false;
     private boolean mDropPending = false;
 
-    private final Rect mRect = new Rect();
-    private final CellInfo mCellInfo = new CellInfo();
-
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpXY = new int[2];
@@ -699,101 +696,18 @@ public class CellLayout extends ViewGroup {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (getParent() instanceof Workspace) {
-            Workspace workspace = (Workspace) getParent();
-            mCellInfo.screenId = workspace.getIdForScreen(this);
-        }
-    }
-
-    public void setTagToCellInfoForPoint(int touchX, int touchY) {
-        final CellInfo cellInfo = mCellInfo;
-        Rect frame = mRect;
-        final int x = touchX + getScrollX();
-        final int y = touchY + getScrollY();
-        final int count = mShortcutsAndWidgets.getChildCount();
-
-        boolean found = false;
-        for (int i = count - 1; i >= 0; i--) {
-            final View child = mShortcutsAndWidgets.getChildAt(i);
-            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-            if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) &&
-                    lp.isLockedToGrid) {
-                child.getHitRect(frame);
-
-                float scale = child.getScaleX();
-                frame = new Rect(child.getLeft(), child.getTop(), child.getRight(),
-                        child.getBottom());
-                // The child hit rect is relative to the CellLayoutChildren parent, so we need to
-                // offset that by this CellLayout's padding to test an (x,y) point that is relative
-                // to this view.
-                frame.offset(getPaddingLeft(), getPaddingTop());
-                frame.inset((int) (frame.width() * (1f - scale) / 2),
-                        (int) (frame.height() * (1f - scale) / 2));
-
-                if (frame.contains(x, y)) {
-                    cellInfo.cell = child;
-                    cellInfo.cellX = lp.cellX;
-                    cellInfo.cellY = lp.cellY;
-                    cellInfo.spanX = lp.cellHSpan;
-                    cellInfo.spanY = lp.cellVSpan;
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        mLastDownOnOccupiedCell = found;
-
-        if (!found) {
-            final int cellXY[] = mTmpXY;
-            pointToCellExact(x, y, cellXY);
-
-            cellInfo.cell = null;
-            cellInfo.cellX = cellXY[0];
-            cellInfo.cellY = cellXY[1];
-            cellInfo.spanX = 1;
-            cellInfo.spanY = 1;
-        }
-        setTag(cellInfo);
-    }
-
-    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // First we clear the tag to ensure that on every touch down we start with a fresh slate,
         // even in the case where we return early. Not clearing here was causing bugs whereby on
         // long-press we'd end up picking up an item from a previous drag operation.
         final int action = ev.getAction();
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            clearTagCellInfo();
-        }
 
         if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
             return true;
         }
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            setTagToCellInfoForPoint((int) ev.getX(), (int) ev.getY());
-        }
-
         return false;
-    }
-
-    private void clearTagCellInfo() {
-        final CellInfo cellInfo = mCellInfo;
-        cellInfo.cell = null;
-        cellInfo.cellX = -1;
-        cellInfo.cellY = -1;
-        cellInfo.spanX = 0;
-        cellInfo.spanY = 0;
-        setTag(cellInfo);
-    }
-
-    public CellInfo getTag() {
-        return (CellInfo) super.getTag();
     }
 
     /**
@@ -3359,6 +3273,16 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int spanY;
         long screenId;
         long container;
+
+        CellInfo(View v, ItemInfo info) {
+            cell = v;
+            cellX = info.cellX;
+            cellY = info.cellY;
+            spanX = info.spanX;
+            spanY = info.spanY;
+            screenId = info.screenId;
+            container = info.container;
+        }
 
         @Override
         public String toString() {

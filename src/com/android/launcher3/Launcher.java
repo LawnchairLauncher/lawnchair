@@ -2859,20 +2859,17 @@ public class Launcher extends Activity
             }
         }
 
-        if (!(v instanceof CellLayout)) {
-            v = (View) v.getParent().getParent();
-        }
-
-        resetAddInfo();
-        CellLayout.CellInfo longClickCellInfo = (CellLayout.CellInfo) v.getTag();
-        // This happens when long clicking an item with the dpad/trackball
-        if (longClickCellInfo == null) {
-            return true;
+        CellLayout.CellInfo longClickCellInfo = null;
+        View itemUnderLongClick = null;
+        if (v.getTag() instanceof ItemInfo) {
+            ItemInfo info = (ItemInfo) v.getTag();
+            longClickCellInfo = new CellLayout.CellInfo(v, info);;
+            itemUnderLongClick = longClickCellInfo.cell;
+            resetAddInfo();
         }
 
         // The hotseat touch handling does not go through Workspace, and we always allow long press
         // on hotseat items.
-        final View itemUnderLongClick = longClickCellInfo.cell;
         final boolean inHotseat = isHotseatLayout(v);
         boolean allowLongPress = inHotseat || mWorkspace.allowLongPress();
         if (allowLongPress && !mDragController.isDragging()) {
