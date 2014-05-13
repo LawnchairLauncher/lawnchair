@@ -2629,7 +2629,7 @@ public class Launcher extends Activity
     }
 
     boolean startActivity(View v, Intent intent, Object tag) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             // Only launch using the new animation if the shortcut has not opted out (this is a
             // private contract between launcher and may be ignored in the future).
