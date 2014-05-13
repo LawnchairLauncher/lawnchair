@@ -87,6 +87,7 @@ public class AppInfo extends ItemInfo {
         intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setComponent(info.getComponentName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         intent.putExtra(EXTRA_PROFILE, serialNumber);
         this.user = user;
