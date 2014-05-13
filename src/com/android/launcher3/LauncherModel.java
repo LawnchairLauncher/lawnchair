@@ -853,10 +853,12 @@ public class LauncherModel extends BroadcastReceiver
             return false;
         }
         String componentName = component.flattenToString();
+        String shortName = component.flattenToShortString();
         long serialNumber = UserManagerCompat.getInstance(context)
                 .getSerialNumberForUser(user);
-        final String where = "intent glob \"*component=" + componentName + "*\" and restored = 1"
-                + " and profileId = " + serialNumber;
+        final String where = "(intent glob \"*component=" + componentName + "*\" or " +
+                "intent glob \"*component=" + shortName + "*\")" +
+                "and restored = 1 and profileId = " + serialNumber;
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{"intent", "restored", "profileId"}, where, null, null);
         boolean result = false;
