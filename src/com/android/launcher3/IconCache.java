@@ -253,13 +253,6 @@ public class IconCache {
                     mLauncherApps.resolveActivity(intent, user);
             ComponentName component = intent.getComponent();
 
-            try {
-                launcherActInfo.getComponentName();
-            } catch (NullPointerException e) {
-                // launcherActInfo is invalid: b/14891460
-                launcherActInfo = null;
-            }
-
             // null info means not installed, but if we have a component from the intent then
             // we should still look in the cache for restored app icons.
             if (launcherActInfo == null && component == null) {
