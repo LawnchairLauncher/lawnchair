@@ -55,6 +55,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -62,6 +64,7 @@ import android.widget.TextView;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.backup.BackupProtos;
 import com.android.launcher3.settings.SettingsProvider;
 
 import java.util.ArrayList;
@@ -864,6 +867,8 @@ public class Workspace extends SmoothPagedView
      */
     void addInScreen(View child, long container, long screenId, int x, int y, int spanX, int spanY,
             boolean insert, boolean computeXYFromRank) {
+        //Reload settings
+        reloadSettings();
         if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             if (getScreenWithId(screenId) == null) {
                 Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
@@ -1900,7 +1905,7 @@ public class Workspace extends SmoothPagedView
 
         mDefaultScreenId = getScreenIdForPageIndex(getPageNearestToCenterOfScreen());
 
-        exitOverviewMode(getPageNearestToCenterOfScreen(), true);
+        updateDefaultScreenButton();
 
         SettingsProvider.get(mLauncher).edit()
                 .putLong(SettingsProvider.SETTINGS_UI_HOMESCREEN_DEFAULT_SCREEN_ID, mDefaultScreenId)
@@ -1972,6 +1977,9 @@ public class Workspace extends SmoothPagedView
     }
 
     private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
+        //Check to see if Settings need to taken
+        reloadSettings();
+
         State finalState = Workspace.State.OVERVIEW;
         if (!enable) {
             finalState = Workspace.State.NORMAL;
@@ -1995,12 +2003,27 @@ public class Workspace extends SmoothPagedView
     int getOverviewModeTranslationY() {
         int childHeight = getNormalChildHeight();
         int viewPortHeight = getViewportHeight();
-        int scaledChildHeight = (int) (mOverviewModeShrinkFactor * childHeight);
+        int scaledChildHeight = (int) (getOverviewModeScaleY() * childHeight);
 
         int offset = (viewPortHeight - scaledChildHeight) / 2;
         int offsetDelta = mOverviewModePageOffset - offset + mInsets.top;
 
         return offsetDelta;
+    }
+
+    float getOverviewModeScaleY() {
+        float childHeight = getNormalChildHeight();
+        int viewPortHeight = getViewportHeight();
+
+        Resources res = getResources();
+        int top = res.getDimensionPixelSize(R.dimen.overview_panel_top_padding);
+        top += res.getDimensionPixelSize(R.dimen.sliding_panel_padding);
+        top += res.getDimensionPixelSize(R.dimen.overview_scaling_padding);
+
+        float scaledChildHeight = viewPortHeight - top;
+
+        float scale = scaledChildHeight / childHeight;
+        return scale;
     }
 
     boolean shouldVoiceButtonProxyBeVisible() {
@@ -2070,15 +2093,13 @@ public class Workspace extends SmoothPagedView
 
         if (oldStateIsOverview) {
             disableFreeScroll(snapPage);
-        } else if (stateIsOverview) {
-            enableFreeScroll();
         }
 
         if (state != State.NORMAL) {
             if (stateIsSpringLoaded) {
                 mNewScale = mSpringLoadedShrinkFactor;
             } else if (stateIsOverview) {
-                mNewScale = mOverviewModeShrinkFactor;
+                mNewScale = getOverviewModeScaleY();
             } else if (stateIsSmall){
                 mNewScale = mOverviewModeShrinkFactor - 0.3f;
             }
@@ -2217,7 +2238,10 @@ public class Workspace extends SmoothPagedView
                 pageIndicatorAlpha.addListener(new AlphaUpdateListener(getPageIndicator()));
             }
 
-            anim.play(overviewPanelAlpha);
+            overviewPanel.setAlpha(finalOverviewPanelAlpha);
+            AlphaUpdateListener.updateVisibility(overviewPanel);
+            Animation animation = AnimationUtils.loadAnimation(mLauncher, R.anim.drop_down);
+            overviewPanel.startAnimation(animation);
             anim.play(hotseatAlpha);
             if (mShowSearchBar) anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
@@ -4591,5 +4615,30 @@ public class Workspace extends SmoothPagedView
 
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
+    }
+
+    private void reloadSettings() {
+        mShowSearchBar = SettingsProvider.getBoolean(mLauncher, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
+                R.bool.preferences_interface_homescreen_search_default);
+        mShowOutlines = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES,
+                R.bool.preferences_interface_homescreen_scrolling_page_outlines_default);
+        mHideIconLabels = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default);
+        mWorkspaceFadeInAdjacentScreens = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT,
+                R.bool.preferences_interface_homescreen_scrolling_fade_adjacent_default);
+        TransitionEffect.setFromString(this, SettingsProvider.getString(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT,
+                R.string.preferences_interface_homescreen_scrolling_transition_effect));
+    }
+
+    public boolean getShowSearchBar() {
+        return mShowSearchBar;
+    }
+
+    public boolean getHideIconLables() {
+        return mHideIconLabels;
     }
 }

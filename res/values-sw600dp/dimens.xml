@@ -17,6 +17,9 @@
 <resources>
     <dimen name="app_icon_size">64dp</dimen>
 
+<!-- Workspace -->
+    <dimen name="overview_panel_button_spacing">22dp</dimen>
+
 <!-- AppsCustomize -->
     <dimen name="apps_customize_tab_bar_height">60dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>

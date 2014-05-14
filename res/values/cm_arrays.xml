@@ -58,4 +58,20 @@
         <item>carousel</item>
         <item>overview</item>
     </string-array>
+    <string-array name="transition_effect_drawables" translatable="false">
+        <item>@drawable/transition_none</item>
+        <item>@drawable/transition_zoomin</item>
+        <item>@drawable/transition_zoomout</item>
+        <item>@drawable/transition_rotateup</item>
+        <item>@drawable/transition_rotatedown</item>
+        <item>@drawable/transition_cubein</item>
+        <item>@drawable/transition_cubeout</item>
+        <item>@drawable/transition_stack</item>
+        <item>@drawable/transition_accordion</item>
+        <item>@drawable/transition_flip</item>
+        <item>@drawable/transition_cylinderin</item>
+        <item>@drawable/transition_cylinderout</item>
+        <item>@drawable/transition_carousel</item>
+        <item>@drawable/transition_overview</item>
+    </string-array>
 </resources>

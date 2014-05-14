@@ -67,12 +67,12 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
         mContent = (FrameLayout) findViewById(R.id.apps_customize_content);
         if (mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
-        findViewById(R.id.page_indicator).setOnClickListener(new OnClickListener() {
+        /*findViewById(R.id.page_indicator).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAppsCustomizePane.enterOverviewMode();
             }
-        });
+        });*/
     }
 
      public boolean onInterceptTouchEvent(MotionEvent ev) {

@@ -29,8 +29,10 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -41,7 +43,6 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -83,7 +84,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -102,6 +102,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.PagedView.TransitionEffect;
 import com.android.launcher3.settings.SettingsActivity;
 import com.android.launcher3.settings.SettingsProvider;
 
@@ -129,6 +130,8 @@ public class Launcher extends Activity
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
+    DeviceProfile mGrid;
+
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
@@ -143,6 +146,8 @@ public class Launcher extends Activity
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
+    public static final int REQUEST_TRANSITION_EFFECTS = 14;
+
     static final int REQUEST_PICK_ICON = 13;
 
     /**
@@ -233,6 +238,7 @@ public class Launcher extends Activity
     private DragLayer mDragLayer;
     private DragController mDragController;
     private View mWeightWatcher;
+    private TransitionEffectsFragment mTransitionEffectsFragment;
 
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -246,6 +252,8 @@ public class Launcher extends Activity
 
     private Hotseat mHotseat;
     private View mOverviewPanel;
+    private View mDarkPanel;
+    OverviewSettingsPanel mOverviewSettingsPanel;
 
     private View mAllAppsButton;
 
@@ -368,6 +376,19 @@ public class Launcher extends Activity
 
     private Stats mStats;
 
+    public Animator.AnimatorListener mAnimatorListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator arg0) {}
+        @Override
+        public void onAnimationRepeat(Animator arg0) {}
+        @Override
+        public void onAnimationEnd(Animator arg0) {
+            mDarkPanel.setVisibility(View.GONE);
+        }
+        @Override
+        public void onAnimationCancel(Animator arg0) {}
+    };
+
     private static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
@@ -391,35 +412,12 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        LauncherAppState.setApplicationContext(getApplicationContext());
-        LauncherAppState app = LauncherAppState.getInstance();
-
-        mHideIconLabels = SettingsProvider.getBoolean(this,
-                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels_default);
-
-        // Determine the dynamic grid properties
-        Point smallestSize = new Point();
-        Point largestSize = new Point();
-        Point realSize = new Point();
-        Display display = getWindowManager().getDefaultDisplay();
-        display.getCurrentSizeRange(smallestSize, largestSize);
-        display.getRealSize(realSize);
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-        // Lazy-initialize the dynamic grid
-        DeviceProfile grid = app.initDynamicGrid(this,
-                Math.min(smallestSize.x, smallestSize.y),
-                Math.min(largestSize.x, largestSize.y),
-                realSize.x, realSize.y,
-                dm.widthPixels, dm.heightPixels);
+        initializeDynamicGrid();
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
-        mModel = app.setLauncher(this);
-        mIconCache = app.getIconCache();
-        mIconCache.flushInvalidIcons(grid);
+
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
@@ -445,7 +443,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
-        grid.layout(this);
+        mGrid.layout(this);
 
         registerContentObservers();
 
@@ -489,6 +487,35 @@ public class Launcher extends Activity
         unlockScreenOrientation(true);
 
         showFirstRunCling();
+    }
+
+    private void initializeDynamicGrid() {
+        LauncherAppState.setApplicationContext(getApplicationContext());
+        LauncherAppState app = LauncherAppState.getInstance();
+
+        mHideIconLabels = SettingsProvider.getBoolean(this,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default);
+
+        // Determine the dynamic grid properties
+        Point smallestSize = new Point();
+        Point largestSize = new Point();
+        Point realSize = new Point();
+        Display display = getWindowManager().getDefaultDisplay();
+        display.getCurrentSizeRange(smallestSize, largestSize);
+        display.getRealSize(realSize);
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        // Lazy-initialize the dynamic grid
+        mGrid = app.initDynamicGrid(this,
+                Math.min(smallestSize.x, smallestSize.y),
+                Math.min(largestSize.x, largestSize.y),
+                realSize.x, realSize.y,
+                dm.widthPixels, dm.heightPixels);
+
+        mModel = app.setLauncher(this);
+        mIconCache = app.getIconCache();
+        mIconCache.flushInvalidIcons(mGrid);
     }
 
     protected void onUserLeaveHint() {
@@ -937,6 +964,13 @@ public class Launcher extends Activity
         mWorkspace.updateInteractionForState();
         mWorkspace.onResume();
         mAppsCustomizeContent.onResume();
+
+        //Close out TransitionEffects Fragment
+        Fragment f = getFragmentManager().findFragmentByTag(
+                TransitionEffectsFragment.TRANSITION_EFFECTS_FRAGMENT);
+        if (f != null) {
+            mTransitionEffectsFragment.setEffect();
+        }
     }
 
     @Override
@@ -954,6 +988,9 @@ public class Launcher extends Activity
         if (mWorkspace.getCustomContentCallbacks() != null) {
             mWorkspace.getCustomContentCallbacks().onHide();
         }
+
+        //Reset the OverviewPanel position
+        ((SlidingUpPanelLayout) mOverviewPanel).collapsePane();
     }
 
     protected void onFinishBindingItems() {
@@ -992,17 +1029,11 @@ public class Launcher extends Activity
         public void onScrollProgressChanged(float progress);
     }
 
-    protected void startSettings() {
-        Intent settings;
-        // If we are on CyanogenMod the launcher settings are accessed from system settings.
-        if (!getPackageManager().hasSystemFeature("com.cyanogenmod.android")) {
-            settings = new Intent().setClass(this, SettingsActivity.class);
-            settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        } else {
-            settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
-        }
+    protected void startThemeSettings() {
+        Intent settings = new Intent().setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
+                OverviewSettingsPanel.THEME_SETTINGS);
         startActivity(settings);
+
         if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(false);
         } else if (mAppsCustomizeContent.isInOverviewMode()) {
@@ -1038,89 +1069,60 @@ public class Launcher extends Activity
                         mAppsCustomizeContent.setSortMode(AppsCustomizePagedView.SortMode.LaunchCount);
                         break;
                 }
+                mOverviewSettingsPanel.notifyDataSetInvalidated();
                 return true;
             }
         });
         popupMenu.show();
     }
 
-    public void onClickTransitionEffectButton(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    public void onClickTransitionEffectButton(View v, final boolean pageOrDrawer) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(TransitionEffectsFragment.PAGE_OR_DRAWER_SCROLL_SELECT,
+                pageOrDrawer);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        // Load values
-        final PagedView pagedView = isAllAppsVisible() ? mAppsCustomizeContent : mWorkspace;
-        final PagedView.TransitionEffect oldEffect = pagedView.getTransitionEffect();
-        final String oldEffectName = oldEffect != null ? oldEffect.getName() :
-                PagedView.TransitionEffect.TRANSITION_EFFECT_NONE;
 
-        final String[] titles = getResources().getStringArray(R.array.transition_effect_entries);
-        final String[] values = getResources().getStringArray(R.array.transition_effect_values);
+        mTransitionEffectsFragment = new TransitionEffectsFragment();
+        mTransitionEffectsFragment.setArguments(bundle);
+        fragmentTransaction.setCustomAnimations(0, 0);
+        fragmentTransaction.replace(R.id.launcher, mTransitionEffectsFragment,
+                TransitionEffectsFragment.TRANSITION_EFFECTS_FRAGMENT);
+        fragmentTransaction.commit();
+    }
 
-        int selected = -1;
-        for (int i = values.length - 1; i >= 0; i--) {
-            if (values[i].equals(oldEffectName)) {
-                selected = i;
-                break;
-            }
-        }
+    public void setTransitionEffect(boolean pageOrDrawer, String newTransitionEffect) {
+        String mSettingsProviderValue = pageOrDrawer ?
+                SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT
+                : SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT;
+        PagedView pagedView = pageOrDrawer ? mAppsCustomizeContent : mWorkspace;
 
-        // Create title view with overflow menu
-        View customTitle = getLayoutInflater().inflate(R.layout.dialog_title_overflow_menu, null);
-        TextView title = (TextView) customTitle.findViewById(android.R.id.title);
-        title.setText(R.string.transition_effect_button_text);
+        SettingsProvider
+                .get(getApplicationContext())
+                .edit()
+                .putString(mSettingsProviderValue,
+                        newTransitionEffect).commit();
+        TransitionEffect.setFromString(pagedView, newTransitionEffect);
 
-        View overflowMenu = customTitle.findViewById(R.id.overflow_menu_button);
-        overflowMenu.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickTransitionEffectOverflowMenuButton(v);
-            }
-        });
+        // Reset Settings Changed
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putBoolean(SettingsProvider.SETTINGS_CHANGED, false);
+        editor.commit();
 
-        builder.setCustomTitle(customTitle);
+        mOverviewSettingsPanel.notifyDataSetInvalidated();
 
-        builder.setSingleChoiceItems(titles, selected, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String effect = values[which];
-                PagedView.TransitionEffect.setFromString(pagedView, effect);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction
+                .setCustomAnimations(0, R.anim.exit_out_right);
+        fragmentTransaction
+                .remove(mTransitionEffectsFragment).commit();
 
-                // Show the changes immediately
-                final int currentPage = pagedView.getNextPage();
-                final int nextPage = currentPage + (currentPage != pagedView.getPageCount() - 1 ? 1 : -1);
-                pagedView.snapToPageImmediately(currentPage);
-                pagedView.snapToPage(nextPage, new Runnable() {
-                    @Override
-                    public void run() {
-                        pagedView.snapToPage(currentPage);
-                    }
-                });
-
-                SettingsProvider.get(Launcher.this).edit()
-                        .putString(!isAllAppsVisible() ?
-                                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT :
-                                SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT, effect)
-                        .commit();
-            }
-        });
-
-        if (isAllAppsVisible()) {
-            mAppsCustomizeContent.exitOverviewMode(true);
-        } else {
-            mWorkspace.exitOverviewMode(true);
-        }
-
-        builder.setPositiveButton(android.R.string.ok, null)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mTransitionEffectDialog = null;
-                    }
-                });
-        mTransitionEffectDialog = builder.create();
-        mTransitionEffectDialog.show();
-        mTransitionEffectDialog.setCanceledOnTouchOutside(true);
-        mTransitionEffectDialog.getWindow().getDecorView().setAlpha(0.6f);
+        mDarkPanel.setVisibility(View.VISIBLE);
+        ObjectAnimator anim = ObjectAnimator.ofFloat(
+                mDarkPanel, "alpha", 0.3f, 0.0f);
+        anim.start();
+        anim.addListener(mAnimatorListener);
     }
 
     public void onClickTransitionEffectOverflowMenuButton(View v) {
@@ -1348,78 +1350,11 @@ public class Launcher extends Activity
         }
 
         mOverviewPanel = findViewById(R.id.overview_panel);
-        mOverviewPanel.setAlpha(0f);
-        View widgetButton = findViewById(R.id.widget_button);
-        widgetButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
-            }
-        });
-        widgetButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View wallpaperButton = findViewById(R.id.wallpaper_button);
-        wallpaperButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                startWallpaper();
-            }
-        });
-        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                startSettings();
-            }
-        });
-        settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View defaultScreenButton = findViewById(R.id.default_screen_button);
-        defaultScreenButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                mWorkspace.onClickDefaultScreenButton();
-            }
-        });
-        defaultScreenButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View transitionEffectButton = findViewById(R.id.transition_effect_button);
-        transitionEffectButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                onClickTransitionEffectButton(arg0);
-            }
-        });
-        transitionEffectButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View iconPackButton = findViewById(R.id.icon_pack_button);
-        iconPackButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                IconPackHelper.pickIconPack(Launcher.this, false);
-            }
-        });
-        iconPackButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View sortButton = findViewById(R.id.sort_button);
-        sortButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                onClickSortModeButton(arg0);
-            }
-        });
-        sortButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View filterButton = findViewById(R.id.filter_button);
-        filterButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        filterButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        mOverviewSettingsPanel = new OverviewSettingsPanel(
+                this, mOverviewPanel);
+        mOverviewSettingsPanel.initializeAdapter();
+        mOverviewSettingsPanel.initializeViews();
+        mDarkPanel = ((SlidingUpPanelLayout) mOverviewPanel).findViewById(R.id.dark_panel);
 
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
@@ -2128,12 +2063,6 @@ public class Launcher extends Activity
             } else {
                 mWorkspace.exitOverviewMode(true);
             }
-        } else {
-            if (!mAppsCustomizeContent.isInOverviewMode()) {
-                mAppsCustomizeContent.enterOverviewMode();
-            } else {
-                mAppsCustomizeContent.exitOverviewMode(true);
-            }
         }
         return false;
     }
@@ -2380,7 +2309,13 @@ public class Launcher extends Activity
                 }
             }
         } else if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.exitOverviewMode(true);
+            Fragment f = getFragmentManager().findFragmentByTag(
+                    TransitionEffectsFragment.TRANSITION_EFFECTS_FRAGMENT);
+            if (f != null) {
+                mTransitionEffectsFragment.setEffect();
+            } else {
+                mWorkspace.exitOverviewMode(true);
+            }
         } else if (mWorkspace.getOpenFolder() != null) {
             Folder openFolder = mWorkspace.getOpenFolder();
             if (openFolder.isEditingName()) {
@@ -2592,7 +2527,7 @@ public class Launcher extends Activity
 
     void startApplicationDetailsActivity(ComponentName componentName) {
         String packageName = componentName.getPackageName();
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivitySafely(null, intent, "startApplicationDetailsActivity");
@@ -2915,6 +2850,9 @@ public class Launcher extends Activity
     View getOverviewPanel() {
         return mOverviewPanel;
     }
+    View getDarkPanel() {
+        return mDarkPanel;
+    }
     SearchDropTargetBar getSearchBar() {
         return mSearchDropTargetBar;
     }
@@ -2938,35 +2876,12 @@ public class Launcher extends Activity
         return mWorkspace;
     }
 
+    protected AppsCustomizePagedView getAppsCustomizeContent() {
+        return mAppsCustomizeContent;
+    }
+
     public void updateOverviewPanel() {
-        View defaultScreenButton = mOverviewPanel.findViewById(R.id.default_screen_button);
-        View transitionEffectButton = mOverviewPanel.findViewById(R.id.transition_effect_button);
-        View widgetButton = mOverviewPanel.findViewById(R.id.widget_button);
-        View wallpaperButton = mOverviewPanel.findViewById(R.id.wallpaper_button);
-        View sortButton = mOverviewPanel.findViewById(R.id.sort_button);
-        View filterButton = mOverviewPanel.findViewById(R.id.filter_button);
-        View iconPackButton = findViewById(R.id.icon_pack_button);
-
-        PagedView pagedView = !isAllAppsVisible() ? mWorkspace : mAppsCustomizeContent;
-
-        defaultScreenButton.setVisibility((!isAllAppsVisible() && pagedView.getPageCount() > 1) ? View.VISIBLE : View.GONE);
-        transitionEffectButton.setVisibility(pagedView.getPageCount() > 1 ? View.VISIBLE : View.GONE);
-        widgetButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
-        wallpaperButton.setVisibility(!isAllAppsVisible() ? View.VISIBLE : View.GONE);
-        sortButton.setVisibility(isAllAppsVisible() ? View.VISIBLE : View.GONE);
-        // TODO: implement filtering
-        // filterButton.setVisibility(isAllAppsVisible() ? View.VISIBLE : View.GONE);
-        filterButton.setVisibility(View.GONE);
-
-        boolean isVisible = !isAllAppsVisible();
-        if (isVisible) {
-            int numIconPacks = IconPackHelper.getSupportedPackages(this).size();
-            isVisible = numIconPacks > 0;
-        }
-        iconPackButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-
-        // Make sure overview panel is drawn above apps customize
-        mOverviewPanel.bringToFront();
+        mOverviewSettingsPanel.update();
     }
 
     public boolean isAllAppsVisible() {
@@ -4781,6 +4696,41 @@ public class Launcher extends Activity
                 }
             }.start();
         }
+    }
+
+    public AppsCustomizePagedView.SortMode getAppsCustomizeContentSortMode () {
+        return mAppsCustomizeContent.getSortMode();
+    }
+
+    public boolean shouldShowSearchBar() {
+        return mWorkspace.getShowSearchBar();
+    }
+
+    public boolean shouldHideWorkspaceIconLables() {
+        return mWorkspace.getHideIconLables();
+    }
+
+    public String getWorkspaceTransitionEffect() {
+        TransitionEffect effect = mWorkspace.getTransitionEffect();
+        return effect == null ? TransitionEffect.TRANSITION_EFFECT_NONE : effect.getName();
+    }
+
+    public String getAppsCustomizeTransitionEffect() {
+        TransitionEffect effect = mAppsCustomizeContent.getTransitionEffect();
+        return effect == null ? TransitionEffect.TRANSITION_EFFECT_NONE : effect.getName();
+    }
+
+    public void updateDynamicGrid() {
+        mSearchDropTargetBar.setupQSB(this);
+        mSearchDropTargetBar.hideSearchBar(false);
+
+        initializeDynamicGrid();
+
+        mGrid.layout(this);
+        mWorkspace.showOutlines();
+
+        // Synchronized reload
+        mModel.startLoader(true, mWorkspace.getCurrentPage());
     }
 }
 

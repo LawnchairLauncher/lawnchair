@@ -44,7 +44,9 @@
     <dimen name="overview_panel_top_padding">20dp</dimen>
     <dimen name="overview_panel_bottom_padding">50dp</dimen>
     <dimen name="overview_panel_button_spacing">30dp</dimen>
-    <dimen name="overview_mode_page_offset">130dp</dimen>
+    <dimen name="overview_mode_page_offset">60dp</dimen>
+    <dimen name="sliding_panel_padding">175dp</dimen>
+    <dimen name="overview_scaling_padding">50dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">4dip</dimen>
@@ -98,4 +100,7 @@
     <!-- The amount that the preview contents are inset from the preview background -->
     <dimen name="folder_preview_padding">4dp</dimen>
     <dimen name="folder_name_padding">10dp</dimen>
+
+    <!-- Settings Pane dimen -->
+    <dimen name="settings_pane_handle">48dp</dimen>
 </resources>
