@@ -110,8 +110,13 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandleCompat user) {
-        return new LauncherActivityInfoCompatVL(ReflectUtils.invokeMethod(mLauncherApps,
-                        mResolveActivity, intent, user.getUser()));
+        Object activity = ReflectUtils.invokeMethod(mLauncherApps, mResolveActivity,
+                        intent, user.getUser());
+        if (activity != null) {
+            return new LauncherActivityInfoCompatVL(activity);
+        } else {
+            return null;
+        }
     }
 
     public void startActivityForProfile(ComponentName component, Rect sourceBounds,
