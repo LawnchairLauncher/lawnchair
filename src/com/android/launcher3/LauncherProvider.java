@@ -68,6 +68,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -157,7 +158,7 @@ public class LauncherProvider extends ContentProvider {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
         }
-        if (!values.containsKey(LauncherSettings.BaseLauncherColumns._ID)) {
+        if (!values.containsKey(LauncherSettings.ChangeLogColumns._ID)) {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
         helper.checkId(table, values);
@@ -325,7 +326,6 @@ public class LauncherProvider extends ContentProvider {
             }
 
             mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), workspaceResId);
-            mOpenHelper.setFlagJustLoadedOldDb();
             editor.commit();
         }
     }
@@ -1231,18 +1231,47 @@ public class LauncherProvider extends ContentProvider {
             return intent;
         }
 
+        private int loadFavorites(SQLiteDatabase db, int workspaceResourceId) {
+            ArrayList<Long> screenIds = new ArrayList<Long>();
+            int count = loadFavoritesRecursive(db, workspaceResourceId, screenIds);
+
+            // Add the screens specified by the items above
+            Collections.sort(screenIds);
+            int rank = 0;
+            ContentValues values = new ContentValues();
+            for (Long id : screenIds) {
+                values.clear();
+                values.put(LauncherSettings.WorkspaceScreens._ID, id);
+                values.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, rank);
+                if (dbInsertAndCheck(this, db, TABLE_WORKSPACE_SCREENS, null, values) < 0) {
+                    throw new RuntimeException("Failed initialize screen table"
+                            + "from default layout");
+                }
+                rank++;
+            }
+
+            // Ensure that the max ids are initialized
+            mMaxItemId = initializeMaxItemId(db);
+            mMaxScreenId = initializeMaxScreenId(db);
+            return count;
+        }
+
         /**
          * Loads the default set of favorite packages from an xml file.
          *
          * @param db The database to write the values into
          * @param filterContainerId The specific container id of items to load
+         * @param the set of screenIds which are used by the favorites
          */
-        private int loadFavorites(SQLiteDatabase db, int workspaceResourceId) {
-            ContentValues values = new ContentValues();
+        private int loadFavoritesRecursive(SQLiteDatabase db, int workspaceResourceId,
+                ArrayList<Long> screenIds) {
 
+
+
+            ContentValues values = new ContentValues();
             if (LOGD) Log.v(TAG, String.format("Loading favorites from resid=0x%08x", workspaceResourceId));
 
-            int i = 0;
+            int count = 0;
             try {
                 XmlResourceParser parser = mContext.getResources().getXml(workspaceResourceId);
                 AttributeSet attrs = Xml.asAttributeSet(parser);
@@ -1271,7 +1300,7 @@ public class LauncherProvider extends ContentProvider {
 
                         if (resId != 0 && resId != workspaceResourceId) {
                             // recursively load some more favorites, why not?
-                            i += loadFavorites(db, resId);
+                            count += loadFavoritesRecursive(db, resId, screenIds);
                             added = false;
                         } else {
                             Log.w(TAG, String.format("Skipping <include workspace=0x%08x>", resId));
@@ -1367,7 +1396,15 @@ public class LauncherProvider extends ContentProvider {
                             }
                         }
                     }
-                    if (added) i++;
+                    if (added) {
+                        long screenId = Long.parseLong(screen);
+                        // Keep track of the set of screens which need to be added to the db.
+                        if (!screenIds.contains(screenId) &&
+                                container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                            screenIds.add(screenId);
+                        }
+                        count++;
+                    }
                     a.recycle();
                 }
             } catch (XmlPullParserException e) {
@@ -1377,13 +1414,7 @@ public class LauncherProvider extends ContentProvider {
             } catch (RuntimeException e) {
                 Log.w(TAG, "Got exception parsing favorites.", e);
             }
-
-            // Update the max item id after we have loaded the database
-            if (mMaxItemId == -1) {
-                mMaxItemId = initializeMaxItemId(db);
-            }
-
-            return i;
+            return count;
         }
 
         /**
