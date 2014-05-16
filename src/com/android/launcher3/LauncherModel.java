@@ -25,6 +25,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -103,6 +104,7 @@ public class LauncherModel extends BroadcastReceiver
     private static final int MAIN_THREAD_NORMAL_RUNNABLE = 0;
     private static final int MAIN_THREAD_BINDING_RUNNABLE = 1;
 
+    private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
     private static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     static {
@@ -197,15 +199,19 @@ public class LauncherModel extends BroadcastReceiver
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         Context context = app.getContext();
-        ContentResolver contentResolver = context.getContentResolver();
 
         mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
         String oldProvider = context.getString(R.string.old_launcher_provider_uri);
-        ContentProviderClient client = contentResolver.acquireContentProviderClient(
-                Uri.parse(context.getString(R.string.old_launcher_provider_uri)));
+        // This may be the same as MIGRATE_AUTHORITY, or it may be replaced by a different
+        // resource string.
+        String redirectAuthority = Uri.parse(oldProvider).getAuthority();
+        ProviderInfo providerInfo =
+                context.getPackageManager().resolveContentProvider(MIGRATE_AUTHORITY, 0);
+        ProviderInfo redirectProvider =
+                context.getPackageManager().resolveContentProvider(redirectAuthority, 0);
 
         Log.d(TAG, "Old launcher provider: " + oldProvider);
-        mOldContentProviderExists = (client != null);
+        mOldContentProviderExists = (providerInfo != null) && (redirectProvider != null);
 
         if (mOldContentProviderExists) {
             Log.d(TAG, "Old launcher provider exists.");
@@ -213,9 +219,6 @@ public class LauncherModel extends BroadcastReceiver
             Log.d(TAG, "Old launcher provider does not exist.");
         }
 
-        if (client != null) {
-            client.release();
-        }
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mIconCache = iconCache;
