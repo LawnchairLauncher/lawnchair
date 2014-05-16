@@ -86,9 +86,6 @@
     <!-- Folder titles -->
     <string name="google_title" translatable="false">Google</string>
 
-    <!-- Clear keyguard wallpaper tile text -->
-    <string name="clear_keyguard_wallpaper">Clear</string>
-
     <!-- The title text for the all apps cling [CHAR_LIMIT=60] -->
     <string name="all_apps_cling_cm">Customize your drawer</string>
     <!-- The description of how to access Trebuchet settings [CHAR_LIMIT=160] -->

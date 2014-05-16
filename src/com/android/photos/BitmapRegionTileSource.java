@@ -18,7 +18,6 @@ package com.android.photos;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -37,7 +36,6 @@ import com.android.gallery3d.glrenderer.BitmapTexture;
 import com.android.photos.views.TiledImageRenderer;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -71,38 +69,25 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
     private Canvas mCanvas;
 
     public BitmapRegionTileSource(Context context, String path, int previewSize, int rotation) {
-        this(null, context, path, null, 0, previewSize, rotation, false);
-    }
-
-    public BitmapRegionTileSource(Resources res, Context context, String path, int previewSize, int rotation, boolean assetPath) {
-        this(res, context, path, null, 0, previewSize, rotation, assetPath);
+        this(null, context, path, null, 0, previewSize, rotation);
     }
 
     public BitmapRegionTileSource(Context context, Uri uri, int previewSize, int rotation) {
-        this(null, context, null, uri, 0, previewSize, rotation, false);
+        this(null, context, null, uri, 0, previewSize, rotation);
     }
 
     public BitmapRegionTileSource(Resources res,
             Context context, int resId, int previewSize, int rotation) {
-        this(res, context, null, null, resId, previewSize, rotation, false);
+        this(res, context, null, null, resId, previewSize, rotation);
     }
 
     private BitmapRegionTileSource(Resources res,
-            Context context, String path, Uri uri, int resId, int previewSize, int rotation, boolean assetPath) {
+            Context context, String path, Uri uri, int resId, int previewSize, int rotation) {
         mTileSize = TiledImageRenderer.suggestedTileSize(context);
         mRotation = rotation;
         try {
-            if (path != null && !assetPath) {
+            if (path != null) {
                 mDecoder = BitmapRegionDecoder.newInstance(path, true);
-            } else if (path != null  && res != null && assetPath) {
-                AssetManager am = res.getAssets();
-                String[] pathImages = am.list(path);
-                if (pathImages == null || pathImages.length == 0) {
-                    throw new IOException("did not find any images in path: " + path);
-                }
-                InputStream is = am.open(path + File.separator + pathImages[0]);
-                BufferedInputStream bis = new BufferedInputStream(is);
-                mDecoder = BitmapRegionDecoder.newInstance(bis, true);
             } else if (uri != null) {
                 InputStream is = context.getContentResolver().openInputStream(uri);
                 BufferedInputStream bis = new BufferedInputStream(is);
@@ -126,7 +111,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
             // Although this is the same size as the Bitmap that is likely already
             // loaded, the lifecycle is different and interactions are on a different
             // thread. Thus to simplify, this source will decode its own bitmap.
-            Bitmap preview = decodePreview(res, context, path, uri, resId, previewSize, assetPath);
+            Bitmap preview = decodePreview(res, context, path, uri, resId, previewSize);
             if (preview.getWidth() <= GL_SIZE_LIMIT && preview.getHeight() <= GL_SIZE_LIMIT) {
                 mPreview = new BitmapTexture(preview);
             } else {
@@ -231,26 +216,13 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
      * than the targetSize, but it will always be less than 2x the targetSize
      */
     private Bitmap decodePreview(
-            Resources res, Context context, String file, Uri uri, int resId, int targetSize, boolean assetPath) {
+            Resources res, Context context, String file, Uri uri, int resId, int targetSize) {
         float scale = (float) targetSize / Math.max(mWidth, mHeight);
         mOptions.inSampleSize = BitmapUtils.computeSampleSizeLarger(scale);
         mOptions.inJustDecodeBounds = false;
 
         Bitmap result = null;
-        if (file != null  && res != null && assetPath) {
-            try {
-                AssetManager am = res.getAssets();
-                String[] pathImages = am.list(file);
-                if (pathImages == null || pathImages.length == 0) {
-                    throw new IOException("did not find any images in path: " + file);
-                }
-                InputStream is = am.open(file + File.separator + pathImages[0]);
-                BufferedInputStream bis = new BufferedInputStream(is);
-                result = BitmapFactory.decodeStream(bis, null, mOptions);
-            } catch (IOException e) {
-                Log.w("BitmapRegionTileSource", "getting preview failed", e);
-            }
-        } else if (file != null) {
+        if (file != null) {
             result = BitmapFactory.decodeFile(file, mOptions);
         } else if (uri != null) {
             try {

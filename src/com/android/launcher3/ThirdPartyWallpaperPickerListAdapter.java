@@ -51,7 +51,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
             mResolveInfo = resolveInfo;
         }
         @Override
-        public void onClick(WallpaperCropActivity a) {
+        public void onClick(WallpaperPickerActivity a) {
             final ComponentName itemComponentName = new ComponentName(
                     mResolveInfo.activityInfo.packageName, mResolveInfo.activityInfo.name);
             Intent launchIntent = new Intent(Intent.ACTION_SET_WALLPAPER);

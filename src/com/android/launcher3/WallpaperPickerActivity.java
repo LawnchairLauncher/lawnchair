@@ -102,12 +102,29 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private SavedWallpaperImages mSavedImages;
     private WallpaperInfo mLiveWallpaperInfoOnPickerLaunch;
 
+    public static abstract class WallpaperTileInfo {
+        protected View mView;
+        public void setView(View v) {
+            mView = v;
+        }
+        public void onClick(WallpaperPickerActivity a) {}
+        public void onSave(WallpaperPickerActivity a) {}
+        public void onDelete(WallpaperPickerActivity a) {}
+        public boolean isSelectable() { return false; }
+        public boolean isNamelessWallpaper() { return false; }
+        public void onIndexUpdated(CharSequence label) {
+            if (isNamelessWallpaper()) {
+                mView.setContentDescription(label);
+            }
+        }
+    }
+
     public static class PickImageInfo extends WallpaperTileInfo {
         @Override
-        public void onClick(WallpaperCropActivity a) {
+        public void onClick(WallpaperPickerActivity a) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            Utilities.startActivityForResultSafely(((WallpaperPickerActivity)a), intent, IMAGE_PICK);
+            Utilities.startActivityForResultSafely(a, intent, IMAGE_PICK);
         }
     }
 
@@ -117,14 +134,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             mUri = uri;
         }
         @Override
-        public void onClick(WallpaperCropActivity a) {
+        public void onClick(WallpaperPickerActivity a) {
             CropView v = a.getCropView();
             int rotation = WallpaperCropActivity.getRotationFromExif(a, mUri);
             v.setTileSource(new BitmapRegionTileSource(a, mUri, 1024, rotation), null);
             v.setTouchEnabled(true);
         }
         @Override
-        public void onSave(final WallpaperCropActivity a) {
+        public void onSave(final WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
             OnBitmapCroppedHandler h = new OnBitmapCroppedHandler() {
                 public void onBitmapCropped(byte[] imageBytes) {
@@ -132,10 +149,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     // rotation is set to 0 since imageBytes has already been correctly rotated
                     Bitmap thumb = createThumbnail(
                             thumbSize, null, null, imageBytes, null, 0, 0, true);
-                    ((WallpaperPickerActivity)a).getSavedImages().writeImage(thumb, imageBytes);
+                    a.getSavedImages().writeImage(thumb, imageBytes);
                 }
             };
-            ((WallpaperPickerActivity)a).cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone);
+            a.cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone);
         }
         @Override
         public boolean isSelectable() {
@@ -158,7 +175,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             mThumb = thumb;
         }
         @Override
-        public void onClick(WallpaperCropActivity a) {
+        public void onClick(WallpaperPickerActivity a) {
             int rotation = WallpaperCropActivity.getRotationFromExif(mResources, mResId);
             BitmapRegionTileSource source = new BitmapRegionTileSource(
                     mResources, a, mResId, 1024, rotation);
@@ -173,9 +190,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             v.setTouchEnabled(false);
         }
         @Override
-        public void onSave(WallpaperCropActivity a) {
+        public void onSave(WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
-            ((WallpaperPickerActivity)a).cropImageAndSetWallpaper(mResources, mResId, finishActivityWhenDone);
+            a.cropImageAndSetWallpaper(mResources, mResId, finishActivityWhenDone);
         }
         @Override
         public boolean isSelectable() {
@@ -187,9 +204,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    @Override
-    protected void setWallpaperStripYOffset(int offset) {
-        mWallpaperStrip.setPadding(0, 0, 0, offset);
+    public void setWallpaperStripYOffset(float offset) {
+        mWallpaperStrip.setPadding(0, 0, 0, (int) offset);
     }
 
     // called by onCreate; this is subclassed to overwrite WallpaperCropActivity
