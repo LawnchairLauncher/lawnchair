@@ -200,9 +200,19 @@ public class LauncherModel extends BroadcastReceiver
         ContentResolver contentResolver = context.getContentResolver();
 
         mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
+        String oldProvider = context.getString(R.string.old_launcher_provider_uri);
         ContentProviderClient client = contentResolver.acquireContentProviderClient(
                 Uri.parse(context.getString(R.string.old_launcher_provider_uri)));
+
+        Log.d(TAG, "Old launcher provider: " + oldProvider);
         mOldContentProviderExists = (client != null);
+
+        if (mOldContentProviderExists) {
+            Log.d(TAG, "Old launcher provider exists.");
+        } else {
+            Log.d(TAG, "Old launcher provider does not exist.");
+        }
+
         if (client != null) {
             client.release();
         }
@@ -1817,9 +1827,8 @@ public class LauncherModel extends BroadcastReceiver
                 LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
             }
 
-            // Check if we need to do any upgrade-path logic
-            // (Includes having just imported default favorites)
-            boolean loadedOldDb = LauncherAppState.getLauncherProvider().justLoadedOldDb();
+            // This code path is for our old migration code and should no longer be exercised
+            boolean loadedOldDb = false;
 
             // Log to disk
             Launcher.addDumpLog(TAG, "11683562 -   loadedOldDb: " + loadedOldDb, true);
