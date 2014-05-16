@@ -43,16 +43,18 @@ import java.util.Comparator;
 
 
 class DeviceProfileQuery {
+    DeviceProfile profile;
     float widthDps;
     float heightDps;
     float value;
     PointF dimens;
 
-    DeviceProfileQuery(float w, float h, float v) {
-        widthDps = w;
-        heightDps = h;
+    DeviceProfileQuery(DeviceProfile p, float v) {
+        widthDps = p.minWidthDps;
+        heightDps = p.minHeightDps;
         value = v;
-        dimens = new PointF(w, h);
+        dimens = new PointF(widthDps, heightDps);
+        profile = p;
     }
 }
 
@@ -71,6 +73,9 @@ public class DeviceProfile {
     private float iconTextSize;
     private int iconDrawablePaddingOriginalPx;
     private float hotseatIconSize;
+
+    int defaultLayoutId;
+    int defaultNoAllAppsLayoutId;
 
     boolean isLandscape;
     boolean isTablet;
@@ -127,7 +132,7 @@ public class DeviceProfile {
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
     DeviceProfile(String n, float w, float h, float r, float c,
-                  float is, float its, float hs, float his) {
+                  float is, float its, float hs, float his, int dlId, int dnalId) {
         // Ensure that we have an odd number of hotseat items (since we need to place all apps)
         if (!LauncherAppState.isDisableAllApps() && hs % 2 == 0) {
             throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
@@ -142,6 +147,8 @@ public class DeviceProfile {
         iconTextSize = its;
         numHotseatIcons = hs;
         hotseatIconSize = his;
+        defaultLayoutId = dlId;
+        defaultNoAllAppsLayoutId = dnalId;
     }
 
     DeviceProfile(Context context,
@@ -182,29 +189,32 @@ public class DeviceProfile {
         overviewModeScaleFactor =
                 res.getInteger(R.integer.config_dynamic_grid_overview_scale_percentage) / 100f;
 
-        // Interpolate the rows
+        // Find the closes profile given the width/height
         for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.numRows));
+            points.add(new DeviceProfileQuery(p, 0f));
         }
-        numRows = Math.round(invDistWeightedInterpolate(minWidth, minHeight, points));
-        // Interpolate the columns
-        points.clear();
-        for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.numColumns));
-        }
-        numColumns = Math.round(invDistWeightedInterpolate(minWidth, minHeight, points));
-        // Interpolate the hotseat length
-        points.clear();
-        for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.numHotseatIcons));
-        }
-        numHotseatIcons = Math.round(invDistWeightedInterpolate(minWidth, minHeight, points));
+        DeviceProfile closestProfile = findClosestDeviceProfile(minWidth, minHeight, points);
+
+        // Snap to the closest row count
+        numRows = closestProfile.numRows;
+
+        // Snap to the closest column count
+        numColumns = closestProfile.numColumns;
+
+        // Snap to the closest hotseat size
+        numHotseatIcons = closestProfile.numHotseatIcons;
         hotseatAllAppsRank = (int) (numHotseatIcons / 2);
+
+        // Snap to the closest default layout id
+        defaultLayoutId = closestProfile.defaultLayoutId;
+
+        // Snap to the closest default no all-apps layout id
+        defaultNoAllAppsLayoutId = closestProfile.defaultNoAllAppsLayoutId;
 
         // Interpolate the icon size
         points.clear();
         for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.iconSize));
+            points.add(new DeviceProfileQuery(p, p.iconSize));
         }
         iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
         // AllApps uses the original non-scaled icon size
@@ -213,7 +223,7 @@ public class DeviceProfile {
         // Interpolate the icon text size
         points.clear();
         for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.iconTextSize));
+            points.add(new DeviceProfileQuery(p, p.iconTextSize));
         }
         iconTextSize = invDistWeightedInterpolate(minWidth, minHeight, points);
         iconDrawablePaddingOriginalPx =
@@ -224,7 +234,7 @@ public class DeviceProfile {
         // Interpolate the hotseat icon size
         points.clear();
         for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.hotseatIconSize));
+            points.add(new DeviceProfileQuery(p, p.hotseatIconSize));
         }
         // Hotseat
         hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
@@ -398,6 +408,28 @@ public class DeviceProfile {
         return (float) (1f / Math.pow(d, pow));
     }
 
+    /** Returns the closest device profile given the width and height and a list of profiles */
+    private DeviceProfile findClosestDeviceProfile(float width, float height,
+                                                   ArrayList<DeviceProfileQuery> points) {
+        return findClosestDeviceProfiles(width, height, points).get(0).profile;
+    }
+
+    /** Returns the closest device profiles ordered by closeness to the specified width and height */
+    private ArrayList<DeviceProfileQuery> findClosestDeviceProfiles(float width, float height,
+                                                   ArrayList<DeviceProfileQuery> points) {
+        final PointF xy = new PointF(width, height);
+
+        // Sort the profiles by their closeness to the dimensions
+        ArrayList<DeviceProfileQuery> pointsByNearness = points;
+        Collections.sort(pointsByNearness, new Comparator<DeviceProfileQuery>() {
+            public int compare(DeviceProfileQuery a, DeviceProfileQuery b) {
+                return (int) (dist(xy, a.dimens) - dist(xy, b.dimens));
+            }
+        });
+
+        return pointsByNearness;
+    }
+
     private float invDistWeightedInterpolate(float width, float height,
                 ArrayList<DeviceProfileQuery> points) {
         float sum = 0;
@@ -406,12 +438,8 @@ public class DeviceProfile {
         float kNearestNeighbors = 3;
         final PointF xy = new PointF(width, height);
 
-        ArrayList<DeviceProfileQuery> pointsByNearness = points;
-        Collections.sort(pointsByNearness, new Comparator<DeviceProfileQuery>() {
-            public int compare(DeviceProfileQuery a, DeviceProfileQuery b) {
-                return (int) (dist(xy, a.dimens) - dist(xy, b.dimens));
-            }
-        });
+        ArrayList<DeviceProfileQuery> pointsByNearness = findClosestDeviceProfiles(width, height,
+                points);
 
         for (int i = 0; i < pointsByNearness.size(); ++i) {
             DeviceProfileQuery p = pointsByNearness.get(i);
