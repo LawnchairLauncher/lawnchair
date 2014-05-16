@@ -336,12 +336,10 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private static int getDefaultWorkspaceResourceId() {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         if (LauncherAppState.isDisableAllApps()) {
-            return grid.defaultNoAllAppsLayoutId;
+            return R.xml.default_workspace_no_all_apps;
         } else {
-            return grid.defaultLayoutId;
+            return R.xml.default_workspace;
         }
     }
 
