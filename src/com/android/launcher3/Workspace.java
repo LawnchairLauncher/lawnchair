@@ -2719,8 +2719,9 @@ public class Workspace extends SmoothPagedView
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedOrFocusedBackground();
         } else if (child instanceof FolderIcon) {
-            // Dismiss the folder cling if we haven't already
-            mLauncher.getLauncherClings().markFolderClingDismissed();
+            // The folder cling isn't flexible enough to be shown in non-default workspace positions
+            // Also if they are dragging it a folder, we assume they don't need to see the cling.
+            mLauncher.markFolderClingDismissedIfNecessary();
         }
 
         if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
@@ -3066,6 +3067,10 @@ public class Workspace extends SmoothPagedView
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
+                    // The folder cling isn't flexible enough to be shown in non-default workspace
+                    // positions. Also if they are creating a folder, we assume they don't need to
+                    // see the cling.
+                    mLauncher.markFolderClingDismissedIfNecessary();
                     return;
                 }
 
@@ -3965,6 +3970,10 @@ public class Workspace extends SmoothPagedView
                 d.postAnimationRunnable = exitSpringLoadedRunnable;
                 if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,
                         true, d.dragView, d.postAnimationRunnable)) {
+                    // The folder cling isn't flexible enough to be shown in non-default workspace
+                    // positions. Also if they are creating a folder, we assume they don't need to
+                    // see the cling.
+                    mLauncher.markFolderClingDismissedIfNecessary();
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,

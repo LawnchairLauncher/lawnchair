@@ -315,12 +315,6 @@ class LauncherClings {
         editor.commit();
     }
 
-    public void markFolderClingDismissed() {
-        SharedPreferences.Editor editor = mLauncher.getSharedPrefs().edit();
-        editor.putBoolean(LauncherClings.FOLDER_CLING_DISMISSED_KEY, true);
-        editor.apply();
-    }
-
     /** Removes the cling outright from the DragLayer */
     private void removeCling(int id) {
         final View cling = mLauncher.findViewById(id);
@@ -413,6 +407,15 @@ class LauncherClings {
 
         // Fade in the search bar
         mLauncher.getSearchBar().showSearchBar(true);
+    }
+
+    public void markFolderClingDismissedIfNecessary() {
+        SharedPreferences prefs = mLauncher.getSharedPrefs();
+        if (!prefs.getBoolean(FOLDER_CLING_DISMISSED_KEY, false)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(FOLDER_CLING_DISMISSED_KEY, true);
+            editor.apply();
+        }
     }
 
     public void dismissMigrationClingCopyApps(View v) {
