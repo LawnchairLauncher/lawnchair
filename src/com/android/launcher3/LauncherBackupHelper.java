@@ -819,9 +819,15 @@ public class LauncherBackupHelper implements BackupHelper {
         if (!TextUtils.isEmpty(title)) {
             favorite.title = title;
         }
-        String intent = c.getString(INTENT_INDEX);
-        if (!TextUtils.isEmpty(intent)) {
-            favorite.intent = intent;
+        String intentDescription = c.getString(INTENT_INDEX);
+        if (!TextUtils.isEmpty(intentDescription)) {
+            try {
+                Intent intent = Intent.parseUri(intentDescription, 0);
+                intent.removeExtra(ItemInfo.EXTRA_PROFILE);
+                favorite.intent = intent.toUri(0);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Invalid intent", e);
+           }
         }
         favorite.itemType = c.getInt(ITEM_TYPE_INDEX);
         if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
@@ -873,6 +879,11 @@ public class LauncherBackupHelper implements BackupHelper {
             }
             values.put(Favorites.APPWIDGET_ID, favorite.appWidgetId);
         }
+
+        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+        long userSerialNumber =
+                UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
+        values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
         // Let LauncherModel know we've been here.
         values.put(LauncherSettings.Favorites.RESTORED, 1);
