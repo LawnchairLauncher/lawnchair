@@ -33,6 +33,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -96,6 +97,14 @@ public final class Utilities {
         boolean enableRotation = sForceEnableRotation ||
                 c.getResources().getBoolean(R.bool.allow_rotation);
         return enableRotation;
+    }
+
+    /**
+     * Indicates if the device is running LMP or not.
+     * TODO(sansid): Change the check to a VERSION_CODES code check once we have a version for L.
+     */
+    public static boolean isLmp() {
+        return "L".equals(Build.VERSION.CODENAME);
     }
 
     /**
