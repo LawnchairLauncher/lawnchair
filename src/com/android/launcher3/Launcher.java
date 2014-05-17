@@ -4479,7 +4479,9 @@ public class Launcher extends Activity
     public void dismissFolderCling(View v) {
         mLauncherClings.dismissFolderCling(v);
     }
-
+    public void markFolderClingDismissedIfNecessary() {
+        mLauncherClings.markFolderClingDismissedIfNecessary();
+    }
 
     /**
      * To be overridden by subclasses to indicate that there is an activity to launch
