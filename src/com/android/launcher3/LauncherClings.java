@@ -438,11 +438,8 @@ class LauncherClings {
     }
 
     public void dismissMigrationClingUseDefault(View v) {
-        // Clear the workspace
-        LauncherModel model = mLauncher.getModel();
-        model.resetLoadedState(false, true);
-        model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
-                LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE);
+        // Don't need to do anything special here. We've already loaded the default workspace,
+        // (which is the default loader behavior triggered from Launcher#onCreate.).
 
         // Disable the migration cling
         dismissMigrationCling();
