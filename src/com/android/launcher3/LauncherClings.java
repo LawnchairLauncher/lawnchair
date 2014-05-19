@@ -264,21 +264,13 @@ class LauncherClings {
                 WORKSPACE_CLING_DISMISSED_KEY, false)) {
             Cling c = initCling(R.id.workspace_cling, 0, false, true);
             c.updateWorkspaceBubblePosition();
-
-            try {
-                // We only enable the focused hotseat app if we are preinstalled
-                PackageManager pm = mLauncher.getPackageManager();
-                ApplicationInfo ai = pm.getApplicationInfo(mLauncher.getPackageName(), 0);
-                if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                    // Set the focused hotseat app
-                    c.setFocusedHotseatApp(mLauncher.getFirstRunFocusedHotseatAppDrawableId(),
-                        mLauncher.getFirstRunFocusedHotseatAppRank(),
-                        mLauncher.getFirstRunFocusedHotseatAppComponentName(),
-                        mLauncher.getFirstRunFocusedHotseatAppBubbleTitle(),
-                        mLauncher.getFirstRunFocusedHotseatAppBubbleDescription());
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+            if (mLauncher.shouldClingFocusHotseatApp()) {
+                // Set the focused hotseat app
+                c.setFocusedHotseatApp(mLauncher.getFirstRunFocusedHotseatAppDrawableId(),
+                    mLauncher.getFirstRunFocusedHotseatAppRank(),
+                    mLauncher.getFirstRunFocusedHotseatAppComponentName(),
+                    mLauncher.getFirstRunFocusedHotseatAppBubbleTitle(),
+                    mLauncher.getFirstRunFocusedHotseatAppBubbleDescription());
             }
         } else {
             removeCling(R.id.workspace_cling);

@@ -4434,6 +4434,9 @@ public class Launcher extends Activity
         }
     }
 
+    protected boolean shouldClingFocusHotseatApp() {
+        return false;
+    }
     protected String getFirstRunClingSearchBarHint() {
         return "";
     }
