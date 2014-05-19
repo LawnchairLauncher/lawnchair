@@ -344,7 +344,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mFolderRingAnimator.animateToAcceptState();
         layout.showFolderAccept(mFolderRingAnimator);
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
-        if (SPRING_LOADING_ENABLED) {
+        if (SPRING_LOADING_ENABLED &&
+                ((dragInfo instanceof AppInfo) || (dragInfo instanceof ShortcutInfo))) {
+            // TODO: we currently don't support spring-loading for PendingAddShortcutInfos even
+            // though widget-style shortcuts can be added to folders. The issue is that we need
+            // to deal with configuration activities which are currently handled in
+            // Workspace#onDropExternal.
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
         mDragInfo = (ItemInfo) dragInfo;
@@ -362,6 +367,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 item.spanX = 1;
                 item.spanY = 1;
             } else {
+                // ShortcutInfo
                 item = (ShortcutInfo) mDragInfo;
             }
             mFolder.beginExternalDrag(item);
