@@ -24,6 +24,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -44,7 +45,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -96,14 +96,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -1605,6 +1603,7 @@ public class Launcher extends Activity
      * Sets up transparent navigation and status bars in LMP.
      * This method is a no-op for other platform versions.
      */
+    @TargetApi(19)
     private void setupTransparentSystemBarsForLmp() {
         // TODO(sansid): use the APIs directly when compiling against L sdk.
         // Currently we use reflection to access the flags and the API to set the transparency
@@ -1615,12 +1614,8 @@ public class Launcher extends Activity
                         (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-                Field translucentStatusField =
-                        WindowManager.LayoutParams.class.getField("FLAG_TRANSLUCENT_STATUS");
-                Field translucentNavigationField =
-                        WindowManager.LayoutParams.class.getField("FLAG_TRANSLUCENT_NAVIGATION");
-                getWindow().clearFlags(translucentStatusField.getInt(null)
-                        | translucentNavigationField.getInt(null));
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                 Field drawsSysBackgroundsField = WindowManager.LayoutParams.class.getField(
                         "FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS");
                 getWindow().addFlags(drawsSysBackgroundsField.getInt(null));
