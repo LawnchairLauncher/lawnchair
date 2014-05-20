@@ -40,6 +40,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.provider.Settings;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -197,8 +198,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     private ArrayList<AppInfo> mFilteredApps;
     private ArrayList<Object> mFilteredWidgets;
-    private ArrayList<ComponentName> mHiddenApps;
-    private ArrayList<String> mHiddenPackages;
+    private ArrayList<ComponentName> mProtectedApps;
+    private ArrayList<String> mProtectedPackages;
 
     // Cling
     private boolean mHasShownAllAppsCling;
@@ -322,17 +323,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
 
-        String[] flattened = SettingsProvider.getStringCustomDefault(context,
-                SettingsProvider.SETTINGS_UI_DRAWER_HIDDEN_APPS, "").split("\\|");
-        mHiddenApps = new ArrayList<ComponentName>(flattened.length);
-        mHiddenPackages = new ArrayList<String>(flattened.length);
-        for (String flat : flattened) {
-            ComponentName cmp = ComponentName.unflattenFromString(flat);
-            if (cmp != null) {
-                mHiddenApps.add(cmp);
-                mHiddenPackages.add(cmp.getPackageName());
-            }
-        }
+        updateProtectedAppsList(context);
     }
 
     @Override
@@ -2063,13 +2054,31 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    private void updateProtectedAppsList(Context context) {
+        String protectedComponents = Settings.Secure.getString(context.getContentResolver(),
+                LauncherModel.SETTINGS_PROTECTED_COMPONENTS);
+        protectedComponents = protectedComponents == null ? "" : protectedComponents;
+        String [] flattened = protectedComponents.split("\\|");
+        mProtectedApps = new ArrayList<ComponentName>(flattened.length);
+        mProtectedPackages = new ArrayList<String>(flattened.length);
+        for (String flat : flattened) {
+            ComponentName cmp = ComponentName.unflattenFromString(flat);
+            if (cmp != null) {
+                mProtectedApps.add(cmp);
+                mProtectedPackages.add(cmp.getPackageName());
+            }
+        }
+    }
+
     public void filterAppsWithoutInvalidate() {
+        updateProtectedAppsList(mLauncher);
+
         mFilteredApps = new ArrayList<AppInfo>(mApps);
         Iterator<AppInfo> iterator = mFilteredApps.iterator();
         while (iterator.hasNext()) {
             AppInfo appInfo = iterator.next();
             boolean system = (appInfo.flags & AppInfo.DOWNLOADED_FLAG) == 0;
-            if (mHiddenApps.contains(appInfo.componentName) ||
+            if (mProtectedApps.contains(appInfo.componentName) ||
                 (system && !getShowSystemApps()) ||
                 (!system && !getShowDownloadedApps())) {
                 iterator.remove();
@@ -2084,6 +2093,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void filterWidgetsWithoutInvalidate() {
+        updateProtectedAppsList(mLauncher);
+
         mFilteredWidgets = new ArrayList<Object>(mWidgets);
 
         Iterator<Object> iterator = mFilteredWidgets.iterator();
@@ -2112,7 +2123,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 flags = 0;
             }
             boolean system = (flags & AppInfo.DOWNLOADED_FLAG) == 0;
-            if (mHiddenPackages.contains(packageName) ||
+            if (mProtectedPackages.contains(packageName) ||
                     (system && !getShowSystemApps()) ||
                     (!system && !getShowDownloadedApps())) {
                 iterator.remove();

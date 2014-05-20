@@ -75,7 +75,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -435,7 +435,8 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
-                    "restored INTEGER NOT NULL DEFAULT 0" +
+                    "restored INTEGER NOT NULL DEFAULT 0," +
+                    "hidden INTEGER DEFAULT 0" +
                     ");");
             addWorkspacesTable(db);
 
@@ -854,6 +855,11 @@ public class LauncherProvider extends ContentProvider {
                 // until clear data. We do so by marking that the clings have been shown.
                 LauncherClings.synchonouslyMarkFirstRunClingDismissed(mContext);
                 version = 19;
+            }
+
+            if (oldVersion < 20) {
+                db.execSQL("ALTER TABLE favorites ADD hidden INTEGER DEFAULT 0");
+                version = 20;
             }
 
             if (version != DATABASE_VERSION) {

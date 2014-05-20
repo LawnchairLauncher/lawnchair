@@ -61,6 +61,7 @@
     <uses-permission android:name="com.android.launcher3.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher3.permission.WRITE_SETTINGS" />
     <uses-permission android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS" />
+    <uses-permission android:name="cyanogenmod.permission.PROTECTED_APP" />
 
     <application
         android:name="com.android.launcher3.LauncherApplication"
@@ -91,15 +92,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.cyanogenmod.category.LAUNCHER_PREFERENCES" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".settings.HiddenAppsActivity"
-            android:label="@string/hidden_apps_title"
-            android:exported="false">
-            <intent-filter>
-                <action android:name=".settings.HiddenAppsActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
