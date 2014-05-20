@@ -22,6 +22,7 @@
   <string name="default_screen_button_text">Varsayılan ekran</string>
   <string name="transition_effect_button_text">Kaydırma efekti</string>
   <string name="sort_mode_title">Başlık</string>
+  <string name="sort_mode_launch_count">Çalıştırma sayısı</string>
   <string name="sort_mode_install_time">Kurulum zamanı</string>
   <string name="scrolling_page_outlines">Sayfa anahatları</string>
   <string name="scrolling_fade_adjacent">Yan sayfaları soldur</string>
@@ -29,7 +30,7 @@
   <string name="preferences_title">Ayarlar</string>
   <string name="preferences_application_title">Uygulama</string>
   <string name="preferences_interface_homescreen_title">Ana Ekran</string>
-  <string name="preferences_interface_homescreen_search_title">Arama kutusu</string>
+  <string name="preferences_interface_homescreen_search_title">Arama çubuğu</string>
   <string name="preferences_interface_homescreen_search_summary">Ekranın üstünde kalıcı arama çubuğu göster</string>
   <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Simge etiketlerini gizle</string>
   <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ana ekranda simge etiketlerini gizle</string>
@@ -40,16 +41,16 @@
   <string name="preferences_interface_drawer_hidden_apps_summary">Uygulamaları menüden gizle</string>
   <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Kısayolları kaldır</string>
   <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Ana ekrandan gizli uygulamaların kısayollarını kaldır</string>
-  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Ekran araçlarını kaldır</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Widgetları kaldır</string>
   <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Ana ekrandan gizli uygulamaların widgetlarını kaldır</string>
   <string name="preferences_interface_drawer_hide_icon_labels_title">Simge etiketlerini gizle</string>
   <string name="preferences_interface_drawer_hide_icon_labels_summary">Çekmecedeki simge etiketlerini gizle</string>
-  <string name="preferences_interface_dock_title">Kilit</string>
+  <string name="preferences_interface_dock_title">Ünite</string>
   <string name="preferences_interface_general_title">Genel</string>
   <string name="preferences_interface_general_icons_category">Simgeler</string>
   <string name="preferences_interface_general_icons_large_title">Büyük simgeler</string>
   <string name="preferences_interface_general_icons_large_summary">Ana ekranda ve uygulama çekmecesinde çok büyük uyg. simgeleri kullan</string>
-  <string name="preferences_interface_general_icons_text_style_title">Yazı fontu stili</string>
+  <string name="preferences_interface_general_icons_text_style_title">Yazı tipi stili</string>
   <string name="preferences_interface_general_icons_text_style_summary">Simge yazısı için yazı tipi</string>
   <string name="dialog_pick_iconpack_title">Simge paketi seç</string>
   <string name="default_iconpack_title">Varsayılan simgeler</string>

@@ -56,6 +56,7 @@
   <string name="default_iconpack_title">Standaard ikone</string>
   <string name="icon_packs_title">Ikoon stelle</string>
   <string name="no_iconpacks_summary">Geen ikoon stelle geïnstalleer</string>
+  <string name="clear_keyguard_wallpaper">Verwyder</string>
   <string name="all_apps_cling_cm">Verpersoonlik jou laai</string>
   <string name="all_apps_cling_summary">Tik die bladsy aanwyser vir bykomende konfigurasie-instellings</string>
   <string name="menu_hidden_apps_delete">Herstel</string>

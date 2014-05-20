@@ -56,6 +56,7 @@
   <string name="default_iconpack_title">デフォルトのアイコン</string>
   <string name="icon_packs_title">アイコンパック</string>
   <string name="no_iconpacks_summary">アイコンパックがインストールされていません</string>
+  <string name="clear_keyguard_wallpaper">クリア</string>
   <string name="all_apps_cling_cm">ドロワーをカスタマイズ</string>
   <string name="all_apps_cling_summary">追加の構成設定を表示するには、ページインジケータをタップします。</string>
   <string name="menu_hidden_apps_delete">リセット</string>

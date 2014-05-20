@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">主屏</string>
   <string name="preferences_interface_homescreen_search_title">搜索栏</string>
   <string name="preferences_interface_homescreen_search_summary">在屏幕上方始终显示搜索栏</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">隐藏图标标签</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">在主屏幕上隐藏图标标签</string>
   <string name="preferences_interface_drawer_title">抽屉</string>
+  <string name="preferences_interface_drawer_summary">应用和小部件抽屉</string>
+  <string name="preferences_interface_drawer_apps_category">应用</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">隐藏的应用</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">从抽屉隐藏应用</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">移除快捷方式</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">从主屏幕移除已隐藏应用的快捷方式</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">移除小部件</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">从主屏幕移除已隐藏应用的小部件</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">隐藏图标标签</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">在抽屉里隐藏图标标签</string>
   <string name="preferences_interface_dock_title">基座</string>
   <string name="preferences_interface_general_title">通用</string>
   <string name="preferences_interface_general_icons_category">图标</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">默认图标</string>
   <string name="icon_packs_title">图标包</string>
   <string name="no_iconpacks_summary">没有安装的图标包</string>
+  <string name="clear_keyguard_wallpaper">清除</string>
   <string name="all_apps_cling_cm">自定义抽屉</string>
   <string name="all_apps_cling_summary">点击页面指示器以查看其他设置</string>
+  <string name="menu_hidden_apps_delete">重置</string>
+  <string name="hidden_apps_title">隐藏的应用</string>
 </resources>

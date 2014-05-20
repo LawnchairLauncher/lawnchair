@@ -32,7 +32,19 @@
   <string name="preferences_interface_homescreen_title">Ekran głowny</string>
   <string name="preferences_interface_homescreen_search_title">Pasek wyszukiwania</string>
   <string name="preferences_interface_homescreen_search_summary">Pokazuj pasek wyszukiwania na stałe</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Ukryj etykiety ikon</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Ukrywa etykiety ikon na ekranie głównym</string>
   <string name="preferences_interface_drawer_title">Szuflada</string>
+  <string name="preferences_interface_drawer_summary">Szuflada aplikacji i widżetów</string>
+  <string name="preferences_interface_drawer_apps_category">Aplikacje</string>
+  <string name="preferences_interface_drawer_hidden_apps_title">Ukryte aplikacje</string>
+  <string name="preferences_interface_drawer_hidden_apps_summary">Ukrywanie aplikacji z szuflady</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Usuń skróty</string>
+  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Usuwa skróty ukrytych aplikacji z ekranu głównego</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_title">Usuń widżety</string>
+  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Usuwa widżety ukrytych aplikacji z ekranu głównego</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">Ukryj etykiety ikon</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">Ukryj etykiety ikon w szufladzie</string>
   <string name="preferences_interface_dock_title">Dok</string>
   <string name="preferences_interface_general_title">Ogólne</string>
   <string name="preferences_interface_general_icons_category">Ikony</string>
@@ -44,6 +56,9 @@
   <string name="default_iconpack_title">Domyślne ikony</string>
   <string name="icon_packs_title">Paczki ikon</string>
   <string name="no_iconpacks_summary">Brak zainstalowanych paczek ikon</string>
+  <string name="clear_keyguard_wallpaper">Wyczyść</string>
   <string name="all_apps_cling_cm">Dostosuj szufladę</string>
   <string name="all_apps_cling_summary">Naciśnij na wskaźnik strony by zobaczyć dodatkowe opcje konfiguracji</string>
+  <string name="menu_hidden_apps_delete">Przywróć domyślne</string>
+  <string name="hidden_apps_title">Ukryte aplikacje</string>
 </resources>
