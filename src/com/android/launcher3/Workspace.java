@@ -1294,6 +1294,10 @@ public class Workspace extends SmoothPagedView
         snapToPage(whichPage, duration);
     }
 
+    public void snapToScreenId(long screenId) {
+        snapToScreenId(screenId, null);
+    }
+
     protected void snapToScreenId(long screenId, Runnable r) {
         snapToPage(getPageIndexForScreenId(screenId), r);
     }

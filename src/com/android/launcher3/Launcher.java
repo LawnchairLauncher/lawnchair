@@ -360,8 +360,7 @@ public class Launcher extends Activity
         }
     };
 
-    private static ArrayList<PendingAddArguments> sPendingAddList
-            = new ArrayList<PendingAddArguments>();
+    private static PendingAddArguments sPendingAddItem;
 
     public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
@@ -372,6 +371,7 @@ public class Launcher extends Activity
         long screenId;
         int cellX;
         int cellY;
+        int appWidgetId;
     }
 
     private Stats mStats;
@@ -736,28 +736,23 @@ public class Launcher extends Activity
      * Returns whether we should delay spring loaded mode -- for shortcuts and widgets that have
      * a configuration step, this allows the proper animations to run after other transitions.
      */
-    private boolean completeAdd(PendingAddArguments args) {
-        boolean result = false;
+    private long completeAdd(PendingAddArguments args) {
+
+        long screenId = ensurePendingDropLayoutExists(args.screenId);
         switch (args.requestCode) {
-            case REQUEST_PICK_SHORTCUT:
-                processShortcut(args.intent);
-                break;
             case REQUEST_CREATE_SHORTCUT:
-                completeAddShortcut(args.intent, args.container, args.screenId, args.cellX,
+                completeAddShortcut(args.intent, args.container, screenId, args.cellX,
                         args.cellY);
-                result = true;
                 break;
             case REQUEST_CREATE_APPWIDGET:
-                int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                completeAddAppWidget(appWidgetId, args.container, args.screenId, null, null);
-                result = true;
+                completeAddAppWidget(args.appWidgetId, args.container, screenId, null, null);
                 break;
         }
         // Before adding this resetAddInfo(), after a shortcut was added to a workspace screen,
         // if you turned the screen off and then back while in All Apps, Launcher would not
         // return to the workspace. Clearing mAddInfo.container here fixes this issue
         resetAddInfo();
-        return result;
+        return screenId;
     }
 
     @Override
@@ -765,7 +760,7 @@ public class Launcher extends Activity
             final int requestCode, final int resultCode, final Intent data) {
         // Reset the startActivity waiting flag
         setWaitingForResult(false);
-        int pendingAddWidgetId = mPendingAddWidgetId;
+        final int pendingAddWidgetId = mPendingAddWidgetId;
         mPendingAddWidgetId = -1;
 
         Runnable exitSpringLoaded = new Runnable() {
@@ -798,6 +793,7 @@ public class Launcher extends Activity
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET);
 
+        final boolean workspaceLocked = isWorkspaceLocked();
         // We have special handling for widgets
         if (isWidgetDrop) {
             final int appWidgetId;
@@ -810,33 +806,46 @@ public class Launcher extends Activity
             }
 
             final int result;
-            final Runnable onComplete;
             if (appWidgetId < 0 || resultCode == RESULT_CANCELED) {
-                Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not returned from the \\" +
-                        "widget configuration activity.");
+                Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not " +
+                        "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
                 completeTwoStageWidgetDrop(result, appWidgetId);
-                onComplete = new Runnable() {
+                final Runnable onComplete = new Runnable() {
                     @Override
                     public void run() {
                         exitSpringLoadedDragModeDelayed(false, 0, null);
                     }
                 };
+                if (workspaceLocked) {
+                    // No need to remove the empty screen if we're mid-binding, as the
+                    // the bind will not add the empty screen.
+                    mWorkspace.postDelayed(onComplete, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
+                } else {
+                    mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                }
             } else {
-                result = resultCode;
-                final CellLayout dropLayout =
-                        (CellLayout) mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
-                dropLayout.setDropPending(true);
-                onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        completeTwoStageWidgetDrop(result, appWidgetId);
-                        dropLayout.setDropPending(false);
-                    }
-                };
+                if (!workspaceLocked) {
+                    mPendingAddInfo.screenId = ensurePendingDropLayoutExists(mPendingAddInfo.screenId);
+                    final CellLayout dropLayout = mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
+
+                    dropLayout.setDropPending(true);
+                    final Runnable onComplete = new Runnable() {
+                        @Override
+                        public void run() {
+                            completeTwoStageWidgetDrop(resultCode, appWidgetId);
+                            dropLayout.setDropPending(false);
+                        }
+                    };
+                    mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                } else {
+                    PendingAddArguments args = preparePendingAddArgs(requestCode, data, appWidgetId,
+                            mPendingAddInfo);
+                    sPendingAddItem = args;
+                }
             }
-            mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, ON_ACTIVITY_RESULT_ANIMATION_DELAY,
-                    false);
             return;
         }
 
@@ -846,25 +855,52 @@ public class Launcher extends Activity
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
         if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
-            final PendingAddArguments args = new PendingAddArguments();
-            args.requestCode = requestCode;
-            args.intent = data;
-            args.container = mPendingAddInfo.container;
-            args.screenId = mPendingAddInfo.screenId;
-            args.cellX = mPendingAddInfo.cellX;
-            args.cellY = mPendingAddInfo.cellY;
+            final PendingAddArguments args = preparePendingAddArgs(requestCode, data, -1,
+                    mPendingAddInfo);
             if (isWorkspaceLocked()) {
-                sPendingAddList.add(args);
+                sPendingAddItem = args;
             } else {
                 completeAdd(args);
+                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             }
-            mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                    ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         } else if (resultCode == RESULT_CANCELED) {
             mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                     ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         }
         mDragLayer.clearAnimatedView();
+    }
+
+    private PendingAddArguments preparePendingAddArgs(int requestCode, Intent data, int
+            appWidgetId, ItemInfo info) {
+        PendingAddArguments args = new PendingAddArguments();
+        args.requestCode = requestCode;
+        args.intent = data;
+        args.container = info.container;
+        args.screenId = info.screenId;
+        args.cellX = info.cellX;
+        args.cellY = info.cellY;
+        args.appWidgetId = appWidgetId;
+        return args;
+    }
+
+    /**
+     * Check to see if a given screen id exists. If not, create it at the end, return the new id.
+     *
+     * @param screenId the screen id to check
+     * @return the new screen, or screenId if it exists
+     */
+    private long ensurePendingDropLayoutExists(long screenId) {
+        CellLayout dropLayout =
+                (CellLayout) mWorkspace.getScreenWithId(screenId);
+        if (dropLayout == null) {
+            // it's possible that the add screen was removed because it was
+            // empty and a re-bind occurred
+            mWorkspace.addExtraEmptyScreen();
+            return mWorkspace.commitExtraEmptyScreen();
+        } else {
+            return screenId;
+        }
     }
 
     private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
@@ -4169,13 +4205,6 @@ public class Launcher extends Activity
 
         mWorkspace.restoreInstanceStateForRemainingPages();
 
-        // If we received the result of any pending adds while the loader was running (e.g. the
-        // widget configuration forced an orientation change), process them now.
-        for (int i = 0; i < sPendingAddList.size(); i++) {
-            completeAdd(sPendingAddList.get(i));
-        }
-        sPendingAddList.clear();
-
         // Update the market app icon as necessary (the other icons will be managed in response to
         // package changes in bindSearchablesChanged()
         if (!DISABLE_MARKET_BUTTON) {
@@ -4183,6 +4212,24 @@ public class Launcher extends Activity
         }
 
         setWorkspaceLoading(false);
+
+        // If we received the result of any pending adds while the loader was running (e.g. the
+        // widget configuration forced an orientation change), process them now.
+        if (sPendingAddItem != null) {
+            final long screenId = completeAdd(sPendingAddItem);
+
+            // TODO: this moves the user to the page where the pending item was added. Ideally,
+            // the screen would be guaranteed to exist after bind, and the page would be set through
+            // the workspace restore process.
+            mWorkspace.post(new Runnable() {
+                @Override
+                public void run() {
+                    mWorkspace.snapToScreenId(screenId);
+                }
+            });
+            sPendingAddItem = null;
+        }
+
         if (upgradePath) {
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
