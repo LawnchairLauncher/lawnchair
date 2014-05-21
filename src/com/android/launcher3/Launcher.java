@@ -4434,6 +4434,14 @@ public class Launcher extends Activity
         }
     }
 
+    /**
+     * This method indicates whether or not we should suggest default wallpaper dimensions
+     * when our wallpaper cropper was not yet used to set a wallpaper.
+     */
+    protected boolean overrideWallpaperDimensions() {
+        return true;
+    }
+
     protected boolean shouldClingFocusHotseatApp() {
         return false;
     }

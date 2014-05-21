@@ -1276,7 +1276,8 @@ public class Workspace extends SmoothPagedView
                 SharedPreferences sp =
                         mLauncher.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
                 LauncherWallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
-                        sp, mLauncher.getWindowManager(), mWallpaperManager);
+                        sp, mLauncher.getWindowManager(), mWallpaperManager,
+                        mLauncher.overrideWallpaperDimensions());
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
