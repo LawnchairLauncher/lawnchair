@@ -2934,6 +2934,15 @@ public class LauncherModel extends BroadcastReceiver
         return launcherApps.isActivityEnabledForProfile(cn, user);
     }
 
+    public static boolean isValidPackage(Context context, String packageName,
+            UserHandleCompat user) {
+        if (packageName == null) {
+            return false;
+        }
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        return launcherApps.isPackageEnabledForProfile(packageName, user);
+    }
+
     /**
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
