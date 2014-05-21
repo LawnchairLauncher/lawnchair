@@ -24,7 +24,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -80,7 +79,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
@@ -110,9 +108,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1630,50 +1625,8 @@ public class Launcher extends Activity
         }
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
-        setupTransparentSystemBarsForLmp();
         mAttached = true;
         mVisible = true;
-    }
-
-    /**
-     * Sets up transparent navigation and status bars in LMP.
-     * This method is a no-op for other platform versions.
-     */
-    @TargetApi(19)
-    private void setupTransparentSystemBarsForLmp() {
-        // TODO(sansid): use the APIs directly when compiling against L sdk.
-        // Currently we use reflection to access the flags and the API to set the transparency
-        // on the System bars.
-        if (Utilities.isLmp()) {
-            try {
-                getWindow().getAttributes().systemUiVisibility |=
-                        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                Field drawsSysBackgroundsField = WindowManager.LayoutParams.class.getField(
-                        "FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS");
-                getWindow().addFlags(drawsSysBackgroundsField.getInt(null));
-
-                Method setStatusBarColorMethod =
-                        Window.class.getDeclaredMethod("setStatusBarColor", int.class);
-                Method setNavigationBarColorMethod =
-                        Window.class.getDeclaredMethod("setNavigationBarColor", int.class);
-                setStatusBarColorMethod.invoke(getWindow(), Color.TRANSPARENT);
-                setNavigationBarColorMethod.invoke(getWindow(), Color.TRANSPARENT);
-            } catch (NoSuchFieldException e) {
-                Log.w(TAG, "NoSuchFieldException while setting up transparent bars");
-            } catch (NoSuchMethodException ex) {
-                Log.w(TAG, "NoSuchMethodException while setting up transparent bars");
-            } catch (IllegalAccessException e) {
-                Log.w(TAG, "IllegalAccessException while setting up transparent bars");
-            } catch (IllegalArgumentException e) {
-                Log.w(TAG, "IllegalArgumentException while setting up transparent bars");
-            } catch (InvocationTargetException e) {
-                Log.w(TAG, "InvocationTargetException while setting up transparent bars");
-            } finally {}
-        }
     }
 
     @Override
