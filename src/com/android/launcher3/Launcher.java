@@ -2490,11 +2490,15 @@ public class Launcher extends Activity
      */
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
+
+        mWorkspace.setWallpaperDimension();
+        /*
         if (isAllAppsVisible()) {
             showWorkspace(true);
         } else {
             showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
         }
+        */
     }
 
     /**

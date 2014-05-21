@@ -460,7 +460,7 @@ public class Workspace extends SmoothPagedView
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
 
         // Set the wallpaper dimensions when Launcher starts up
-        setWallpaperDimension();
+        //setWallpaperDimension();
     }
 
     private void setupLayoutTransition() {
@@ -1269,7 +1269,7 @@ public class Workspace extends SmoothPagedView
         return mCustomContentCallbacks;
     }
 
-    protected void setWallpaperDimension() {
+    public void setWallpaperDimension() {
         new AsyncTask<Void, Void, Void>() {
             public Void doInBackground(Void ... args) {
                 String spKey = WallpaperCropActivity.getSharedPreferencesKey();
@@ -1764,7 +1764,7 @@ public class Workspace extends SmoothPagedView
         // Update wallpaper dimensions if they were changed since last onResume
         // (we also always set the wallpaper dimensions in the constructor)
         if (LauncherAppState.getInstance().hasWallpaperChangedSinceLastCheck()) {
-            setWallpaperDimension();
+            //setWallpaperDimension();
         }
         mWallpaperIsLiveWallpaper = mWallpaperManager.getWallpaperInfo() != null;
         // Force the wallpaper offset steps to be set again, because another app might have changed
