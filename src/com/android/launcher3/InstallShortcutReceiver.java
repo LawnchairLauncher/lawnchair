@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +29,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.android.launcher3.compat.UserHandleCompat;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -280,19 +283,27 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 final boolean exists = LauncherModel.shortcutExists(context, name, intent);
                 //final boolean allowDuplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
 
-                // TODO-XXX: Disable duplicates for now
-                if (!exists /* && allowDuplicate */) {
+                // If the intent specifies a package, make sure the package exists
+                String packageName = intent.getPackage();
+                if (packageName == null) {
+                    packageName = intent.getComponent() == null ? null :
+                        intent.getComponent().getPackageName();
+                }
+                if (packageName != null && !packageName.isEmpty()) {
+                    UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+                    if (!LauncherModel.isValidPackage(context, packageName, myUserHandle)) {
+                        if (DBG) Log.d(TAG, "Ignoring shortcut for absent package:" + intent);
+                        continue;
+                    }
+                }
+
+                if (!exists) {
                     // Generate a shortcut info to add into the model
                     ShortcutInfo info = getShortcutInfo(context, pendingInfo.data,
                             pendingInfo.launchIntent);
                     addShortcuts.add(info);
                 }
-                /*
-                else if (exists && !allowDuplicate) {
-                    result = INSTALL_SHORTCUT_IS_DUPLICATE;
-                    duplicateName = name;
-                }
-                */
+
             }
 
             // Notify the user once if we weren't able to place any duplicates
