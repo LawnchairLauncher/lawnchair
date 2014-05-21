@@ -34,13 +34,13 @@
     <permission
         android:name="com.android.launcher3.permission.READ_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal"
+        android:protectionLevel="dangerous"
         android:label="@string/permlab_read_settings"
         android:description="@string/permdesc_read_settings"/>
     <permission
         android:name="com.android.launcher3.permission.WRITE_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal"
+        android:protectionLevel="dangerous"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
 
@@ -114,46 +114,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.launcher3.LockWallpaperPickerActivity"
-            android:theme="@style/Theme.WallpaperCropper"
-            android:label="@string/pick_wallpaper"
-            android:icon="@mipmap/ic_launcher_wallpaper"
-            android:finishOnCloseSystemDialogs="true"
-            android:process=":wallpaper_chooser">
-            <intent-filter>
-                <action android:name="android.intent.action.SET_KEYGUARD_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.launcher3.WallpaperPickerActivity"
-            android:theme="@style/Theme.WallpaperCropper"
-            android:label="@string/pick_wallpaper"
-            android:icon="@mipmap/ic_launcher_wallpaper"
-            android:finishOnCloseSystemDialogs="true"
-            android:process=":wallpaper_chooser">
-            <intent-filter>
-                <action android:name="android.intent.action.SET_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.launcher3.WallpaperCropActivity"
-            android:theme="@style/Theme.WallpaperCropper"
-            android:label="@string/crop_wallpaper"
-            android:icon="@mipmap/ic_launcher_wallpaper"
-            android:finishOnCloseSystemDialogs="true"
-            android:process=":wallpaper_chooser">
-            <intent-filter>
-                <action android:name="android.service.wallpaper.CROP_AND_SET_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
 

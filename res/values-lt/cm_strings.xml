@@ -26,7 +26,7 @@
   <string name="sort_mode_install_time">Įdiegimo laikas</string>
   <string name="scrolling_page_outlines">Puslapio kontūrai</string>
   <string name="scrolling_fade_adjacent">Išblukinti šoninius ekranus</string>
-  <string name="wallpaper_scroll">Slinkti foną</string>
+  <string name="wallpaper_scroll">Slinkti ekrano foną</string>
   <string name="preferences_title">Nustatymai</string>
   <string name="preferences_application_title">Programa</string>
   <string name="preferences_interface_homescreen_title">Pagrindinis ekranas</string>

@@ -27,14 +27,14 @@
     <item>Uzaklaştır</item>
     <item>Yukarı Döndür</item>
     <item>Aşağı Döndür</item>
-    <item>İçeri Küp</item>
-    <item>Dışarı Küp</item>
+    <item>Kübün İçi</item>
+    <item>Kübün dışı</item>
     <item>Yığın</item>
     <item>Akordiyon</item>
     <item>Çevir</item>
-    <item>İçine Silindir</item>
-    <item>Dışına Silindir</item>
+    <item>Silindirin İçi</item>
+    <item>Silindirin Dışı</item>
     <item>Karusel</item>
-    <item>GenelGörünüm</item>
+    <item>Genel Görünüm</item>
   </string-array>
 </resources>

@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Обично</item>
-    <item>Светло</item>
-    <item>Кондензовано</item>
+    <item>Regulaarne</item>
+    <item>Kerge</item>
+    <item>Lühendatud</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Без ефекта</item>
-    <item>Увећај</item>
-    <item>Умањи</item>
-    <item>Ротирај нагоре</item>
-    <item>Ротирај надоле</item>
-    <item>Коцка унутра</item>
-    <item>Коцка споља</item>
-    <item>Листање карата</item>
-    <item>Хармонијски</item>
-    <item>Флип</item>
-    <item>Цилиндар унутра</item>
-    <item>Цилиндар споља</item>
-    <item>Рингишпил</item>
-    <item>Преглед</item>
+    <item>Puudub</item>
+    <item>Suumi Sisse</item>
+    <item>Suumi Välja</item>
+    <item>Pööra Üles</item>
+    <item>Pööra Alla</item>
+    <item>Kuubik Sisse</item>
+    <item>Kuubik Välja</item>
+    <item>Kihid</item>
+    <item>Akordion</item>
+    <item>Pööra ümber</item>
+    <item>Silinder Sisse</item>
+    <item>Silinder Välja</item>
+    <item>Karussell</item>
+    <item>Ülevaade</item>
   </string-array>
 </resources>

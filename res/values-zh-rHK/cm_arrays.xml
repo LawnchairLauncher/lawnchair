@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Обично</item>
-    <item>Светло</item>
-    <item>Кондензовано</item>
+    <item>正常</item>
+    <item>明亮</item>
+    <item>簡明</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Без ефекта</item>
-    <item>Увећај</item>
-    <item>Умањи</item>
-    <item>Ротирај нагоре</item>
-    <item>Ротирај надоле</item>
-    <item>Коцка унутра</item>
-    <item>Коцка споља</item>
-    <item>Листање карата</item>
-    <item>Хармонијски</item>
-    <item>Флип</item>
-    <item>Цилиндар унутра</item>
-    <item>Цилиндар споља</item>
-    <item>Рингишпил</item>
-    <item>Преглед</item>
+    <item>無</item>
+    <item>放大</item>
+    <item>縮小</item>
+    <item>向上旋轉</item>
+    <item>向下旋轉</item>
+    <item>Cube In</item>
+    <item>Cube Out</item>
+    <item>堆疊</item>
+    <item>手風琴</item>
+    <item>翻轉</item>
+    <item>膛入</item>
+    <item>膛出</item>
+    <item>幻燈片 </item>
+    <item>概述</item>
   </string-array>
 </resources>

@@ -50,8 +50,8 @@
   <string name="preferences_interface_general_icons_category">Icone</string>
   <string name="preferences_interface_general_icons_large_title">Icone grandi</string>
   <string name="preferences_interface_general_icons_large_summary">Usa le icone grandi delle app nella schermata Home e nel drawer</string>
-  <string name="preferences_interface_general_icons_text_style_title">Stile font testo</string>
-  <string name="preferences_interface_general_icons_text_style_summary">Varianti e stile del font per il testo dell\'icona</string>
+  <string name="preferences_interface_general_icons_text_style_title">Stile caratteri testo</string>
+  <string name="preferences_interface_general_icons_text_style_summary">Varianti e stile dei caratteri per il testo dell\'icona</string>
   <string name="dialog_pick_iconpack_title">Scegli pacchetto icone</string>
   <string name="default_iconpack_title">Icone predefinite</string>
   <string name="icon_packs_title">Pacchetti icone</string>

@@ -56,6 +56,7 @@
   <string name="default_iconpack_title">סמלי ברירת מחדל</string>
   <string name="icon_packs_title">אוסף סמלים</string>
   <string name="no_iconpacks_summary">לא מותקנות ערכות סמל</string>
+  <string name="clear_keyguard_wallpaper">נקה</string>
   <string name="all_apps_cling_cm">התאמה אישית של מגירת היישומים</string>
   <string name="all_apps_cling_summary">הקש על מחוון הדף כדי להציג הגדרות נוספות</string>
   <string name="menu_hidden_apps_delete">אפס</string>

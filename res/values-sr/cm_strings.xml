@@ -45,7 +45,7 @@
   <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Уклоните виџете скривених апликација са почетног екрана</string>
   <string name="preferences_interface_drawer_hide_icon_labels_title">Сакриј етикете икона</string>
   <string name="preferences_interface_drawer_hide_icon_labels_summary">Сакријте етикете икона у фиоци</string>
-  <string name="preferences_interface_dock_title">Доцк</string>
+  <string name="preferences_interface_dock_title">Док</string>
   <string name="preferences_interface_general_title">Oпште</string>
   <string name="preferences_interface_general_icons_category">Иконе</string>
   <string name="preferences_interface_general_icons_large_title">Веће иконе</string>

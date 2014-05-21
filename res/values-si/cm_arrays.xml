@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Обично</item>
-    <item>Светло</item>
-    <item>Кондензовано</item>
+    <item>විධිමත්</item>
+    <item>සැහැල්ලු</item>
+    <item>ඝනීභූත</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Без ефекта</item>
-    <item>Увећај</item>
-    <item>Умањи</item>
-    <item>Ротирај нагоре</item>
-    <item>Ротирај надоле</item>
-    <item>Коцка унутра</item>
-    <item>Коцка споља</item>
-    <item>Листање карата</item>
-    <item>Хармонијски</item>
-    <item>Флип</item>
-    <item>Цилиндар унутра</item>
-    <item>Цилиндар споља</item>
-    <item>Рингишпил</item>
-    <item>Преглед</item>
+    <item>කිසිවක් නැත</item>
+    <item>ඇතුලට විශාලනය</item>
+    <item>පිටතට විශාලනය</item>
+    <item>ඉහළට භ්‍රමණය</item>
+    <item>පහළට භ්‍රමණය</item>
+    <item>ඇතුලට ඝනකය</item>
+    <item>පිටතට ඝනකය</item>
+    <item>අට්ටි ගැසීම</item>
+    <item>එකෝඩින්</item>
+    <item>පෙරළීම</item>
+    <item>ඇතුලට සිලින්ඩරය</item>
+    <item>පිටතට සිලින්ඩරය</item>
+    <item>බීමත්වූ</item>
+    <item>දළ විශ්ලේෂණය</item>
   </string-array>
 </resources>
