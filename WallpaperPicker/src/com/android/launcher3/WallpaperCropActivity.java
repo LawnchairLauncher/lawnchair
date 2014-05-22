@@ -824,17 +824,28 @@ public class WallpaperCropActivity extends Activity {
         editor.commit();
 
         suggestWallpaperDimension(getResources(),
-                sp, getWindowManager(), WallpaperManager.getInstance(this));
+                sp, getWindowManager(), WallpaperManager.getInstance(this), true);
     }
 
     static public void suggestWallpaperDimension(Resources res,
             final SharedPreferences sharedPrefs,
             WindowManager windowManager,
-            final WallpaperManager wallpaperManager) {
+            final WallpaperManager wallpaperManager, boolean fallBackToDefaults) {
         final Point defaultWallpaperSize = getDefaultWallpaperSize(res, windowManager);
         // If we have saved a wallpaper width/height, use that instead
-        int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, defaultWallpaperSize.x);
-        int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, defaultWallpaperSize.y);
+
+        int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, -1);
+        int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, -1);
+
+        if (savedWidth == -1 || savedHeight == -1) {
+            if (!fallBackToDefaults) {
+                return;
+            } else {
+                savedWidth = defaultWallpaperSize.x;
+                savedHeight = defaultWallpaperSize.y;
+            }
+        }
+
         if (savedWidth != wallpaperManager.getDesiredMinimumWidth() ||
                 savedHeight != wallpaperManager.getDesiredMinimumHeight()) {
             wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
