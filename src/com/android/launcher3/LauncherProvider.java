@@ -873,6 +873,17 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            // This shouldn't happen -- throw our hands up in the air and start over.
+            Log.w(TAG, "Database version downgrade from: " + oldVersion + " to " + newVersion +
+                    ". Wiping databse.");
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
+            onCreate(db);
+        }
+
         private boolean addProfileColumn(SQLiteDatabase db) {
             db.beginTransaction();
             try {
