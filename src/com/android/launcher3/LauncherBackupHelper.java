@@ -577,6 +577,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 }
                 return;
             } else {
+                if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
                 IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(key.name),
                         icon, res.dpi);
             }
