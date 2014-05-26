@@ -35,6 +35,12 @@
     <color name="wallpaper_picker_translucent_gray">#66000000</color>
     <color name="folder_items_text_color">#FF333333</color>
     <color name="outline_color">#FFFFFFFF</color>
-    
+
     <color name="first_run_cling_circle_background_color">#64b1ea</color>
+
+    <color name="settings_header_text">#FF6cd2ea</color>
+    <color name="settings_bg_color">#FF485459</color>
+    <color name="settings_bg_header_color">#FFb2b0ab</color>
+    <color name="settings_bg_selected_color">#26000000</color>
+    <color name="settings_transition_selected_color">#50000000</color>
 </resources>

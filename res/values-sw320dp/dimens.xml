@@ -16,6 +16,8 @@
 
 <resources>
     <!-- Workspace -->
-    <dimen name="overview_panel_bottom_padding">35dp</dimen>
-    <dimen name="overview_panel_button_spacing">15dp</dimen>
+    <dimen name="overview_panel_bottom_padding">50dp</dimen>
+    <dimen name="overview_panel_button_spacing">32dp</dimen>
+    <dimen name="overview_panel_side_padding">28dp</dimen>
+    <dimen name="overview_panel_list_padding">16dp</dimen>
 </resources>

@@ -20,7 +20,7 @@
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
     <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
-    <integer name="config_workspaceOverviewShrinkPercentage">58</integer>
+    <integer name="config_workspaceOverviewShrinkPercentage">90</integer>
 
     <!-- Fade/zoom in/out duration & scale in the AllApps transition.
          Note: This should be less than the workspaceShrinkTime as they happen together. -->

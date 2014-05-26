@@ -107,6 +107,9 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);
             final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
+            if (child.getId() == R.id.overview_panel) {
+                continue;
+            }
             if (child instanceof Insettable) {
                 ((Insettable)child).setInsets(insets);
             } else {
