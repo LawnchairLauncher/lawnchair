@@ -61,7 +61,11 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
                 resources = null;
             }
             if (resources != null) {
-                d = resources.getDrawableForDensity(mActivityInfo.getIconResource(), density);
+                try {
+                    d = resources.getDrawableForDensity(mActivityInfo.getIconResource(), density);
+                } catch (Resources.NotFoundException e) {
+                    // Return default icon below.
+                }
             }
         }
         if (d == null) {
