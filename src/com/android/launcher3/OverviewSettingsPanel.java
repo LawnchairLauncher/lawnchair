@@ -40,11 +40,11 @@ public class OverviewSettingsPanel {
                 res.getString(R.string.drawer_settings)};
         String[] values = new String[] {
                 res.getString(R.string.home_screen_search_text),
-                res.getString(R.string.page_scroll_effect_text),
+                res.getString(R.string.scroll_effect_text),
                 res.getString(R.string.larger_icons_text),
                 res.getString(R.string.hide_icon_labels)};
         String[] valuesDrawer = new String[] {
-                res.getString(R.string.drawer_scroll_effect_text),
+                res.getString(R.string.scroll_effect_text),
                 res.getString(R.string.drawer_sorting_text),
                 res.getString(R.string.hide_icon_labels)};
 
@@ -153,7 +153,7 @@ public class OverviewSettingsPanel {
         } else {
             String[] values = new String[] {
                     res.getString(R.string.home_screen_search_text),
-                    res.getString(R.string.page_scroll_effect_text),
+                    res.getString(R.string.scroll_effect_text),
                     res.getString(R.string.larger_icons_text),
                     res.getString(R.string.hide_icon_labels)};
             mSettingsAdapter.changeCursor(0, createCursor(res

@@ -101,10 +101,8 @@
     <string name="launcher_settings">LAUNCHER SETTINGS</string>
     <string name="home_screen_settings">HOME SCREEN SETTINGS</string>
     <string name="drawer_settings">DRAWER SETTINGS</string>
-    <!-- Text for page scroll -->
-    <string name="page_scroll_effect_text">Scroll effect</string>
-    <!-- Text for drawer scroll -->
-    <string name="drawer_scroll_effect_text">Scroll effect</string>
+    <!-- Text for scroll effect -->
+    <string name="scroll_effect_text">Scroll effect</string>
     <!-- Text for drawer sorting -->
     <string name="drawer_sorting_text">Sorting mode</string>
     <!-- Text for home screen search -->

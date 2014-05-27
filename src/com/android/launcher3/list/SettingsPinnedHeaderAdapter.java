@@ -75,13 +75,13 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 .getString(R.string.drawer_sorting_text))) {
             updateDrawerSortSettingsItem(v);
         } else if (title.equals(res
-                .getString(R.string.drawer_scroll_effect_text)) &&
+                .getString(R.string.scroll_effect_text)) &&
                 partition == OverviewSettingsPanel.DRAWER_SETTINGS_POSITION) {
             String state = mLauncher.getAppsCustomizeTransitionEffect();
             state = mapEffectToValue(state);
             ((TextView) v.findViewById(R.id.item_state)).setText(state);
         } else if (title.equals(res
-                .getString(R.string.page_scroll_effect_text)) &&
+                .getString(R.string.scroll_effect_text)) &&
                 partition == OverviewSettingsPanel.HOME_SETTINGS_POSITION) {
             String state = mLauncher.getWorkspaceTransitionEffect();
             state = mapEffectToValue(state);
@@ -191,11 +191,11 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                     .getString(R.string.drawer_sorting_text))) {
                 mLauncher.onClickSortModeButton(v);
             } else if (value.equals(res
-                    .getString(R.string.drawer_scroll_effect_text)) &&
+                    .getString(R.string.scroll_effect_text)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.DRAWER_SETTINGS_POSITION)) {
                 mLauncher.onClickTransitionEffectButton(v, true);
             } else if (value.equals(res
-                    .getString(R.string.page_scroll_effect_text)) &&
+                    .getString(R.string.scroll_effect_text)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.HOME_SETTINGS_POSITION)) {
                 mLauncher.onClickTransitionEffectButton(v, false);
             } else if (value.equals(res

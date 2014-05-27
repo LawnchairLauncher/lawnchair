@@ -89,9 +89,7 @@ public class TransitionEffectsFragment extends Fragment {
         mListView = (ListView) v.findViewById(R.id.settings_transitions_list);
         mScrollView = (ScrollView) v.findViewById(R.id.scroll_view);
         TextView title = (TextView) v.findViewById(R.id.transition_effect_title);
-        title.setText(mPageOrDrawer ? getResources().getString(
-                R.string.drawer_scroll_effect_text) : getResources().getString(
-                R.string.page_scroll_effect_text));
+        title.setText(getResources().getString(R.string.scroll_effect_text));
         LinearLayout titleLayout = (LinearLayout) v.findViewById(R.id.transition_title);
         titleLayout.setOnClickListener(new OnClickListener() {
             @Override
