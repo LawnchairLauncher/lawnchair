@@ -26,7 +26,7 @@
         launcher:spanY="2" />
     <folder launcher:screen="1" launcher:x="0" launcher:y="3" launcher:title="@string/google_title">
         <favorite
-            launcher:className="com.google.android.gm.GmailActivity"
+            launcher:className="com.google.android.gm.ConversationListActivityGmail"
             launcher:packageName="com.google.android.gm" />
         <favorite
             launcher:className="com.google.android.apps.plus.phone.HomeActivity"

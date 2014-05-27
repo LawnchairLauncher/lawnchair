@@ -41,7 +41,7 @@
             launcher:className="com.google.android.maps.MapsActivity"
             launcher:packageName="com.google.android.apps.maps" />
         <favorite
-            launcher:className="com.google.android.gm.GmailActivity"
+            launcher:className="com.google.android.gm.ConversationListActivityGmail"
             launcher:packageName="com.google.android.gm" />
         <favorite
             launcher:className="com.google.android.apps.plus.phone.HomeActivity"
