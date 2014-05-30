@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Numatytosios piktogramos</string>
   <string name="icon_packs_title">Piktogramų paketai</string>
   <string name="no_iconpacks_summary">Piktogramų paketai neįdiegti</string>
-  <string name="clear_keyguard_wallpaper">Išvalyti</string>
   <string name="all_apps_cling_cm">Tinkinti savo stalčių</string>
   <string name="all_apps_cling_summary">Bakstelėkite puslapio indikatorių norėdami peržiūrėti papildomus konfigūracijos nustatymus</string>
   <string name="menu_hidden_apps_delete">Atkurti</string>
   <string name="hidden_apps_title">Paslėptos programos</string>
+  <string name="launcher_settings">PALEIDĖJO NUSTATYMAI</string>
+  <string name="home_screen_settings">PAGRINDINIO EKRANO NUSTATYMAI</string>
+  <string name="drawer_settings">STALČIAUS NUSTATYMAI</string>
+  <string name="scroll_effect_text">Slinkimo efektas</string>
+  <string name="drawer_sorting_text">Rūšiavimo režimas</string>
+  <string name="home_screen_search_text">Paieškos juosta</string>
+  <string name="larger_icons_text">Didesnės piktogramos</string>
+  <string name="hide_icon_labels">Paslėpti piktogramų pavadinimus</string>
+  <string name="setting_state_on">ĮJUNGTA</string>
+  <string name="setting_state_off">IŠJUNGTA</string>
+  <string name="themes_button_text">Temos</string>
 </resources>

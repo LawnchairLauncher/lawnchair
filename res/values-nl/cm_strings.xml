@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Standaard</string>
   <string name="icon_packs_title">Pictogram\npakket</string>
   <string name="no_iconpacks_summary">Geen pictogrampakketten geïnstalleerd</string>
-  <string name="clear_keyguard_wallpaper">Verwijderen</string>
   <string name="all_apps_cling_cm">App-overzicht aanpassen</string>
   <string name="all_apps_cling_summary">Tik op de pagina-indicator voor extra instellingen</string>
   <string name="menu_hidden_apps_delete">Opnieuw instellen</string>
   <string name="hidden_apps_title">Verborgen apps</string>
+  <string name="launcher_settings">INSTELLINGEN STARTPAGINA</string>
+  <string name="home_screen_settings">INSTELLINGEN THUISSCHERM</string>
+  <string name="drawer_settings">INSTELLINGEN OVERZICHT</string>
+  <string name="scroll_effect_text">Overgangseffect</string>
+  <string name="drawer_sorting_text">Sorteren op</string>
+  <string name="home_screen_search_text">Zoekbalk</string>
+  <string name="larger_icons_text">Grote pictogrammen</string>
+  <string name="hide_icon_labels">Pictogramlabels verbergen</string>
+  <string name="setting_state_on">AAN</string>
+  <string name="setting_state_off">UIT</string>
+  <string name="themes_button_text">Thema\'s</string>
 </resources>

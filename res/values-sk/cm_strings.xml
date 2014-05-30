@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Predvolené ikony</string>
   <string name="icon_packs_title">Balíky ikon</string>
   <string name="no_iconpacks_summary">Žiadne balíky ikon nie sú nainštalované</string>
-  <string name="clear_keyguard_wallpaper">Vymazať</string>
   <string name="all_apps_cling_cm">Prispôsobte si vašu ponuku</string>
   <string name="all_apps_cling_summary">Kliknite na ukazovateľ stránky pre zobrazenie ďalších nastavení</string>
   <string name="menu_hidden_apps_delete">Obnoviť</string>
   <string name="hidden_apps_title">Skryté aplikácie</string>
+  <string name="launcher_settings">NASTAVENIA SPÚŠŤAČA</string>
+  <string name="home_screen_settings">NASTAVENIA DOMOVSKEJ OBRAZOVKY</string>
+  <string name="drawer_settings">NASTAVENIA PONUKY</string>
+  <string name="scroll_effect_text">Efekt posunu</string>
+  <string name="drawer_sorting_text">Režim triedenia</string>
+  <string name="home_screen_search_text">Vyhľadávací panel</string>
+  <string name="larger_icons_text">Väčšie ikony</string>
+  <string name="hide_icon_labels">Skryť menovky ikon</string>
+  <string name="setting_state_on">Zapnuté</string>
+  <string name="setting_state_off">VYPNUTÉ</string>
+  <string name="themes_button_text">Témy</string>
 </resources>

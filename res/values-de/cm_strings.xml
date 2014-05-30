@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Standardsymbole</string>
   <string name="icon_packs_title">Symbolpakete</string>
   <string name="no_iconpacks_summary">Es sind keine Symbolpakete installiert</string>
-  <string name="clear_keyguard_wallpaper">Zurücksetzen</string>
   <string name="all_apps_cling_cm">App-Übersicht konfigurieren</string>
   <string name="all_apps_cling_summary">Berühren Sie den Seitenindikator, um die erweiterten Einstellungen zu öffnen.</string>
   <string name="menu_hidden_apps_delete">Zurücksetzen</string>
   <string name="hidden_apps_title">Versteckte Apps</string>
+  <string name="launcher_settings">LAUNCHER-EINSTELLUNGEN</string>
+  <string name="home_screen_settings">STARTBILDSCHIRM-EINSTELLUNGEN</string>
+  <string name="drawer_settings">APP-ÜBERSICHT-EINSTELLUNGEN</string>
+  <string name="scroll_effect_text">Scroll-Effekt</string>
+  <string name="drawer_sorting_text">Sortiermodus</string>
+  <string name="home_screen_search_text">Suchleiste</string>
+  <string name="larger_icons_text">Große Symbole</string>
+  <string name="hide_icon_labels">Symbolbeschriftungen ausblenden</string>
+  <string name="setting_state_on">AN</string>
+  <string name="setting_state_off">AUS</string>
+  <string name="themes_button_text">Designs</string>
 </resources>

@@ -22,9 +22,9 @@
     <item>Кондензовано</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>Без ефекта</item>
-    <item>Увећај</item>
-    <item>Умањи</item>
+    <item>Ниједан</item>
+    <item>Увећавање</item>
+    <item>Умањивање</item>
     <item>Ротирај нагоре</item>
     <item>Ротирај надоле</item>
     <item>Коцка унутра</item>

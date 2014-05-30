@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 <resources>
-  <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
+  <string name="application_copyright">Ауторско право \u00A9 2014 CyanogenMod Пројекат</string>
   <string name="sort_button_text">Приказ</string>
   <string name="filter_button_text">Филтер</string>
   <string name="default_screen_button_text">Подразумевани екран</string>
@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Подразумеване иконе</string>
   <string name="icon_packs_title">Пакети икона</string>
   <string name="no_iconpacks_summary">Нема инсталираних пакета са иконама</string>
-  <string name="clear_keyguard_wallpaper">Чисто</string>
   <string name="all_apps_cling_cm">Прилагодите фиоку</string>
   <string name="all_apps_cling_summary">Додирните индикатор странице да би сте видели додатна подешавања</string>
   <string name="menu_hidden_apps_delete">Ресетовање</string>
   <string name="hidden_apps_title">Скривене апликације</string>
+  <string name="launcher_settings">ПОДЕШАВАЊА ПОКРЕТАЧА</string>
+  <string name="home_screen_settings">ПОДЕШАВАЊА ПОЧЕТНОГ ЕКРАНА</string>
+  <string name="drawer_settings">ПОДЕШАВАЊА ФИОКЕ</string>
+  <string name="scroll_effect_text">Ефекат скроловања</string>
+  <string name="drawer_sorting_text">Режим сортирања</string>
+  <string name="home_screen_search_text">Табла за претрагу</string>
+  <string name="larger_icons_text">Веће иконе</string>
+  <string name="hide_icon_labels">Сакриј етикете икона</string>
+  <string name="setting_state_on">УКЉУЧЕНО</string>
+  <string name="setting_state_off">ИСКЉУЧЕНО</string>
+  <string name="themes_button_text">Теме</string>
 </resources>

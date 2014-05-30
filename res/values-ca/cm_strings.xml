@@ -27,7 +27,7 @@
   <string name="scrolling_page_outlines">Vores de la pàgina</string>
   <string name="scrolling_fade_adjacent">Esvaeix els costats de les pàgines</string>
   <string name="wallpaper_scroll">Desplaça el fons de pantalla</string>
-  <string name="preferences_title">Ajustaments</string>
+  <string name="preferences_title">Configuració</string>
   <string name="preferences_application_title">App</string>
   <string name="preferences_interface_homescreen_title">Pantalla d\'inici</string>
   <string name="preferences_interface_homescreen_search_title">Barra de cerca</string>
@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Icones per defecte</string>
   <string name="icon_packs_title">Paquets d\'icones</string>
   <string name="no_iconpacks_summary">No hi ha paquets d\'icones instal·lats</string>
-  <string name="clear_keyguard_wallpaper">Neteja</string>
   <string name="all_apps_cling_cm">Personalitza el teu calaix</string>
   <string name="all_apps_cling_summary">Pica l\'indicador de pàgina per veure les opcions de configuració addicionals</string>
   <string name="menu_hidden_apps_delete">Reinicia</string>
   <string name="hidden_apps_title">Apps amagades</string>
+  <string name="launcher_settings">CONFIGURACIÓ DEL LLANÇADOR</string>
+  <string name="home_screen_settings">CONFIGURACIÓ DE LA PANTALLA D\'INICI</string>
+  <string name="drawer_settings">CONFIGURACIÓ DEL CALAIX</string>
+  <string name="scroll_effect_text">Efecte desplaçament</string>
+  <string name="drawer_sorting_text">Mode d\'ordenació</string>
+  <string name="home_screen_search_text">Barra de cerca</string>
+  <string name="larger_icons_text">Icones grans</string>
+  <string name="hide_icon_labels">Amaga les etiquetes de les icones</string>
+  <string name="setting_state_on">SÍ</string>
+  <string name="setting_state_off">NO</string>
+  <string name="themes_button_text">Temes</string>
 </resources>

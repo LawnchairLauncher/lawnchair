@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Icônes par défaut</string>
   <string name="icon_packs_title">Packs d\'icônes</string>
   <string name="no_iconpacks_summary">Aucun pack d\'icônes installé</string>
-  <string name="clear_keyguard_wallpaper">Supprimer</string>
   <string name="all_apps_cling_cm">Personnaliser votre affichage</string>
   <string name="all_apps_cling_summary">Appuyez sur l\'indicateur de page pour afficher les paramètres de configuration supplémentaires</string>
   <string name="menu_hidden_apps_delete">Réinitialiser</string>
   <string name="hidden_apps_title">Applications masquées</string>
+  <string name="launcher_settings">PARAMÈTRES DU LANCEUR</string>
+  <string name="home_screen_settings">PARAMÈTRES DE L\'ÉCRAN D\'ACCUEIL</string>
+  <string name="drawer_settings">PARAMÈTRES DE L\'ÉCRAN DES APPLICATIONS</string>
+  <string name="scroll_effect_text">Effet de défilement</string>
+  <string name="drawer_sorting_text">Mode de tri</string>
+  <string name="home_screen_search_text">Barre de recherche</string>
+  <string name="larger_icons_text">Grandes icônes</string>
+  <string name="hide_icon_labels">Masquer le nom des icônes</string>
+  <string name="setting_state_on">OUI</string>
+  <string name="setting_state_off">NON</string>
+  <string name="themes_button_text">Thèmes</string>
 </resources>

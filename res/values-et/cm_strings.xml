@@ -56,7 +56,6 @@
   <string name="default_iconpack_title">Vaikimisi ikoonid</string>
   <string name="icon_packs_title">Ikoonipakid</string>
   <string name="no_iconpacks_summary">Ühtegi ikoonipakki pole installitud</string>
-  <string name="clear_keyguard_wallpaper">Selge</string>
   <string name="all_apps_cling_cm">Kohandage oma sahtlit</string>
   <string name="all_apps_cling_summary">Puudutage lehe indikaatoril et näha täiendavaid sätteid</string>
   <string name="menu_hidden_apps_delete">Lähtesta</string>

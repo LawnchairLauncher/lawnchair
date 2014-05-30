@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Alapértelmezett ikonok</string>
   <string name="icon_packs_title">Ikon csomagok</string>
   <string name="no_iconpacks_summary">Nincsenek telepítve ikoncsomagok</string>
-  <string name="clear_keyguard_wallpaper">Törlés</string>
   <string name="all_apps_cling_cm">Alkalmazásképernyők testreszabása</string>
   <string name="all_apps_cling_summary">Érintse meg az oldaljelölőt a további konfigurációs beállítások megtekintéséhez</string>
   <string name="menu_hidden_apps_delete">Visszaállítás</string>
   <string name="hidden_apps_title">Rejtett alkalmazások</string>
+  <string name="launcher_settings">PROGRAMINDÍTÓ BEÁLLÍTÁSOK</string>
+  <string name="home_screen_settings">KEZDŐKÉPERNYŐ BEÁLLÍTÁSOK</string>
+  <string name="drawer_settings">ALKALMAZÁSKÉPERNYŐ BEÁLLÍTÁSOK</string>
+  <string name="scroll_effect_text">Görgetés effekt</string>
+  <string name="drawer_sorting_text">Rendezési mód</string>
+  <string name="home_screen_search_text">Keresési sáv</string>
+  <string name="larger_icons_text">Nagyobb ikonok</string>
+  <string name="hide_icon_labels">Ikon feliratok elrejtése</string>
+  <string name="setting_state_on">BE</string>
+  <string name="setting_state_off">KI</string>
+  <string name="themes_button_text">Témák</string>
 </resources>

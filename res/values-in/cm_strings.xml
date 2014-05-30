@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Ikon semula</string>
   <string name="icon_packs_title">Paket ikon</string>
   <string name="no_iconpacks_summary">Tidak ada ikon paket yang diinstal</string>
-  <string name="clear_keyguard_wallpaper">Bersihkan</string>
   <string name="all_apps_cling_cm">Sesuaikan drawer anda</string>
   <string name="all_apps_cling_summary">Tap indikator halaman untuk melihat pengaturan konfigurasi tambahan</string>
   <string name="menu_hidden_apps_delete">Kembalikan</string>
   <string name="hidden_apps_title">Aplikasi tersembunyi</string>
+  <string name="launcher_settings">PENGATURAN PELUNCUR</string>
+  <string name="home_screen_settings">PENGATURAN LAYAR HOME</string>
+  <string name="drawer_settings">PENGATURAN DRAWER</string>
+  <string name="scroll_effect_text">Efek scroll</string>
+  <string name="drawer_sorting_text">Mode penyortiran</string>
+  <string name="home_screen_search_text">Bar pencarian</string>
+  <string name="larger_icons_text">Ikon lebih besar</string>
+  <string name="hide_icon_labels">Sembunyikan label ikon</string>
+  <string name="setting_state_on">ON</string>
+  <string name="setting_state_off">OFF</string>
+  <string name="themes_button_text">Tema</string>
 </resources>

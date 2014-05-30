@@ -32,8 +32,8 @@
   <string name="preferences_interface_homescreen_title">ホーム画面</string>
   <string name="preferences_interface_homescreen_search_title">検索バー</string>
   <string name="preferences_interface_homescreen_search_summary">画面の上部に検索バーを常に表示する</string>
-  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">アイコンラベルを非表示にする</string>
-  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">ホーム画面でアイコンラベルを非表示にする</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">アイコンラベルを表示しない</string>
+  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">ホーム画面でアイコンラベルを表示しない</string>
   <string name="preferences_interface_drawer_title">ドロワー</string>
   <string name="preferences_interface_drawer_summary">アプリとウィジェットのドロワー</string>
   <string name="preferences_interface_drawer_apps_category">アプリ</string>
@@ -43,8 +43,8 @@
   <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">ホーム画面から非表示にしたアプリのショートカットを削除する</string>
   <string name="preferences_interface_drawer_hidden_apps_widgets_title">ウィジェットを削除</string>
   <string name="preferences_interface_drawer_hidden_apps_widgets_summary">ホーム画面から非表示にしたアプリのウィジェットを削除する</string>
-  <string name="preferences_interface_drawer_hide_icon_labels_title">アイコンラベルを非表示にする</string>
-  <string name="preferences_interface_drawer_hide_icon_labels_summary">ドロワーでアイコンラベルを非表示にする</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_title">アイコンラベルを表示しない</string>
+  <string name="preferences_interface_drawer_hide_icon_labels_summary">ドロワーでアイコンラベルを表示しない</string>
   <string name="preferences_interface_dock_title">ドック</string>
   <string name="preferences_interface_general_title">全般</string>
   <string name="preferences_interface_general_icons_category">アイコン</string>
@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">デフォルトのアイコン</string>
   <string name="icon_packs_title">アイコンパック</string>
   <string name="no_iconpacks_summary">アイコンパックがインストールされていません</string>
-  <string name="clear_keyguard_wallpaper">クリア</string>
   <string name="all_apps_cling_cm">ドロワーをカスタマイズ</string>
   <string name="all_apps_cling_summary">追加の構成設定を表示するには、ページインジケータをタップします。</string>
   <string name="menu_hidden_apps_delete">リセット</string>
   <string name="hidden_apps_title">非表示にするアプリ</string>
+  <string name="launcher_settings">ランチャーの設定</string>
+  <string name="home_screen_settings">ホーム画面の設定</string>
+  <string name="drawer_settings">ドロワーの設定</string>
+  <string name="scroll_effect_text">スクロール効果</string>
+  <string name="drawer_sorting_text">並べ替えモード</string>
+  <string name="home_screen_search_text">検索バー</string>
+  <string name="larger_icons_text">大きいアイコン</string>
+  <string name="hide_icon_labels">アイコンラベルを表示しない</string>
+  <string name="setting_state_on">ON</string>
+  <string name="setting_state_off">OFF</string>
+  <string name="themes_button_text">テーマ</string>
 </resources>

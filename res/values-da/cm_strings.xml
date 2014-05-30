@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Standardikoner</string>
   <string name="icon_packs_title">Ikonpakker</string>
   <string name="no_iconpacks_summary">Ingen ikonpakker installeret</string>
-  <string name="clear_keyguard_wallpaper">Ryd</string>
   <string name="all_apps_cling_cm">Tilpas din oversigt</string>
   <string name="all_apps_cling_summary">Tryk på sideindikatoren for at vise yderligere konfigurationsindstillinger</string>
   <string name="menu_hidden_apps_delete">Nulstil</string>
   <string name="hidden_apps_title">Skjulte apps</string>
+  <string name="launcher_settings">INDSTILLINGER FOR LAUNCHER</string>
+  <string name="home_screen_settings">INDSTILLINGER FOR STARTSKÆRM</string>
+  <string name="drawer_settings">INDSTILLINGER FOR OVERSIGT</string>
+  <string name="scroll_effect_text">Rulleeffekt</string>
+  <string name="drawer_sorting_text">Sorteringstilstand</string>
+  <string name="home_screen_search_text">Søgelinje</string>
+  <string name="larger_icons_text">Større ikoner</string>
+  <string name="hide_icon_labels">Skjul ikontekster</string>
+  <string name="setting_state_on">TIL</string>
+  <string name="setting_state_off">FRA</string>
+  <string name="themes_button_text">Temaer</string>
 </resources>

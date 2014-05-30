@@ -56,7 +56,6 @@
   <string name="default_iconpack_title">ไอคอนเริ่มต้น</string>
   <string name="icon_packs_title">ชุดไอคอน</string>
   <string name="no_iconpacks_summary">ไม่มีชุดไอคอนที่ติดตั้งอยู่</string>
-  <string name="clear_keyguard_wallpaper">ล้าง</string>
   <string name="all_apps_cling_cm">กำหนดที่วางแอปของคุณ</string>
   <string name="all_apps_cling_summary">แตะตัวแบ่งหน้าเพื่อดูการตั้งค่าเพิ่มเติม</string>
   <string name="menu_hidden_apps_delete">ล้างค่า</string>

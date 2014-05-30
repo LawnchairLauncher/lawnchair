@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">默认图标</string>
   <string name="icon_packs_title">图标包</string>
   <string name="no_iconpacks_summary">没有安装的图标包</string>
-  <string name="clear_keyguard_wallpaper">清除</string>
   <string name="all_apps_cling_cm">自定义抽屉</string>
   <string name="all_apps_cling_summary">点击页面指示器以查看其他设置</string>
   <string name="menu_hidden_apps_delete">重置</string>
   <string name="hidden_apps_title">隐藏的应用</string>
+  <string name="launcher_settings">启动器设置</string>
+  <string name="home_screen_settings">主屏幕设置</string>
+  <string name="drawer_settings">抽屉设置</string>
+  <string name="scroll_effect_text">滚动特效</string>
+  <string name="drawer_sorting_text">排序模式</string>
+  <string name="home_screen_search_text">搜索栏</string>
+  <string name="larger_icons_text">大图标</string>
+  <string name="hide_icon_labels">隐藏图标标签</string>
+  <string name="setting_state_on">打开</string>
+  <string name="setting_state_off">关闭</string>
+  <string name="themes_button_text">主题</string>
 </resources>

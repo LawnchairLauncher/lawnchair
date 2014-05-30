@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Standaard ikone</string>
   <string name="icon_packs_title">Ikoon stelle</string>
   <string name="no_iconpacks_summary">Geen ikoon stelle geïnstalleer</string>
-  <string name="clear_keyguard_wallpaper">Verwyder</string>
   <string name="all_apps_cling_cm">Verpersoonlik jou laai</string>
   <string name="all_apps_cling_summary">Tik die bladsy aanwyser vir bykomende konfigurasie-instellings</string>
   <string name="menu_hidden_apps_delete">Herstel</string>
   <string name="hidden_apps_title">Versteekte programme</string>
+  <string name="launcher_settings">LANSEERDER INSTELLINGS</string>
+  <string name="home_screen_settings">TUIS SKERM INSTELLINGS</string>
+  <string name="drawer_settings">LAAI INSTELLINGS</string>
+  <string name="scroll_effect_text">Rol effek</string>
+  <string name="drawer_sorting_text">Sorteer metode</string>
+  <string name="home_screen_search_text">Soekbalk</string>
+  <string name="larger_icons_text">Groter ikone</string>
+  <string name="hide_icon_labels">Steek ikoon etikette weg</string>
+  <string name="setting_state_on">AAN</string>
+  <string name="setting_state_off">AF</string>
+  <string name="themes_button_text">Temas</string>
 </resources>

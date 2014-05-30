@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Значки по умолчанию</string>
   <string name="icon_packs_title">Наборы значков</string>
   <string name="no_iconpacks_summary">Наборы значков не установлены</string>
-  <string name="clear_keyguard_wallpaper">Очистить</string>
   <string name="all_apps_cling_cm">Настройте меню приложений по своему вкусу</string>
   <string name="all_apps_cling_summary">Коснитесь индикатора страницы внизу для перехода к настройкам.</string>
   <string name="menu_hidden_apps_delete">Сброс</string>
   <string name="hidden_apps_title">Скрытые приложения</string>
+  <string name="launcher_settings">НАСТРОЙКИ ЛАУНЧЕРА</string>
+  <string name="home_screen_settings">ДОМАШНИЙ ЭКРАН</string>
+  <string name="drawer_settings">МЕНЮ ПРИЛОЖЕНИЙ</string>
+  <string name="scroll_effect_text">Эффект прокрутки</string>
+  <string name="drawer_sorting_text">Режим сортировки</string>
+  <string name="home_screen_search_text">Строка поиска</string>
+  <string name="larger_icons_text">Крупные значки</string>
+  <string name="hide_icon_labels">Скрывать подписи значков</string>
+  <string name="setting_state_on">\u2759</string>
+  <string name="setting_state_off">\u3007</string>
+  <string name="themes_button_text">Темы</string>
 </resources>

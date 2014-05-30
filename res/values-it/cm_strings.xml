@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Icone predefinite</string>
   <string name="icon_packs_title">Pacchetti icone</string>
   <string name="no_iconpacks_summary">Nessun pacchetto di icone installato</string>
-  <string name="clear_keyguard_wallpaper">Svuota</string>
   <string name="all_apps_cling_cm">Personalizza il drawer</string>
   <string name="all_apps_cling_summary">Tocca l\'indicatore della pagina per visualizzare le impostazioni di configurazione aggiuntive</string>
   <string name="menu_hidden_apps_delete">Ripristina</string>
   <string name="hidden_apps_title">App nascoste</string>
+  <string name="launcher_settings">Impostazioni launcher</string>
+  <string name="home_screen_settings">Impostazioni schermata Home</string>
+  <string name="drawer_settings">Impostazioni drawer</string>
+  <string name="scroll_effect_text">Effetto scorrimento</string>
+  <string name="drawer_sorting_text">Modalità ordinamento</string>
+  <string name="home_screen_search_text">Barra di ricerca</string>
+  <string name="larger_icons_text">Icone grandi</string>
+  <string name="hide_icon_labels">Nascondi etichette icone</string>
+  <string name="setting_state_on">ON</string>
+  <string name="setting_state_off">OFF</string>
+  <string name="themes_button_text">Temi</string>
 </resources>

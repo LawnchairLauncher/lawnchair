@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Ícones padrão</string>
   <string name="icon_packs_title">Pacote de ícones</string>
   <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
-  <string name="clear_keyguard_wallpaper">Limpar</string>
   <string name="all_apps_cling_cm">Personalizar sua gaveta de aplicativos</string>
   <string name="all_apps_cling_summary">Toque o indicador desta página para visualizar configurações adicionais</string>
   <string name="menu_hidden_apps_delete">Redefinir</string>
   <string name="hidden_apps_title">Aplicativos ocultos</string>
+  <string name="launcher_settings">CONFIGURAÇÕES DO LAUNCHER</string>
+  <string name="home_screen_settings">CONFIGURAÇÕES DA TELA DE INÍCIO</string>
+  <string name="drawer_settings">CONFIGURAÇÕES DA GAVETA APLICAÇÕES</string>
+  <string name="scroll_effect_text">Efeito de rolagem</string>
+  <string name="drawer_sorting_text">Modo de ordenação</string>
+  <string name="home_screen_search_text">Barra de pesquisa</string>
+  <string name="larger_icons_text">Ícones grandes</string>
+  <string name="hide_icon_labels">Ocultar as legendas dos ícones</string>
+  <string name="setting_state_on">LIG</string>
+  <string name="setting_state_off">DESL</string>
+  <string name="themes_button_text">Temas</string>
 </resources>

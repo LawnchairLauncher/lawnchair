@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Oletuskuvakkeet</string>
   <string name="icon_packs_title">Kuvakepaketit</string>
   <string name="no_iconpacks_summary">Kuvakepaketteja ei asennettu</string>
-  <string name="clear_keyguard_wallpaper">Tyhjennä</string>
   <string name="all_apps_cling_cm">Muokkaa sovellusvalikkoa</string>
   <string name="all_apps_cling_summary">Napauta sivun ilmaisinta nähdäksesi lisää asetuksia</string>
   <string name="menu_hidden_apps_delete">Nollaa</string>
   <string name="hidden_apps_title">Piilotetut sovellukset</string>
+  <string name="launcher_settings">LAUNCHERIN ASETUKSET</string>
+  <string name="home_screen_settings">KOTINÄYTÖN ASETUKSET</string>
+  <string name="drawer_settings">SOVELLUSVALIKON ASETUKSET</string>
+  <string name="scroll_effect_text">Vieritysefekti</string>
+  <string name="drawer_sorting_text">Lajittelu</string>
+  <string name="home_screen_search_text">Hakupalkki</string>
+  <string name="larger_icons_text">Suuremmat kuvakkeet</string>
+  <string name="hide_icon_labels">Piilota kuvakkeiden tekstit</string>
+  <string name="setting_state_on">PÄÄLLÄ</string>
+  <string name="setting_state_off">POIS</string>
+  <string name="themes_button_text">Teemat</string>
 </resources>

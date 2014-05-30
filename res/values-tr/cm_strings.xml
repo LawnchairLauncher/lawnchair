@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Varsayılan simgeler</string>
   <string name="icon_packs_title">Simge paketleri</string>
   <string name="no_iconpacks_summary">Yüklü simge paketi yok</string>
-  <string name="clear_keyguard_wallpaper">Temizle</string>
   <string name="all_apps_cling_cm">Uygulama çekmecesini özelleştir</string>
   <string name="all_apps_cling_summary">Ek ayarlara bakmak için sayfa göstergesine dokun</string>
   <string name="menu_hidden_apps_delete">Sıfırla</string>
   <string name="hidden_apps_title">Gizli uygulamalar</string>
+  <string name="launcher_settings">BAŞLATICI AYARLARI</string>
+  <string name="home_screen_settings">ANA EKRAN AYARLARI</string>
+  <string name="drawer_settings">ÇEKMECE AYARLARI</string>
+  <string name="scroll_effect_text">Kaydırma efekti</string>
+  <string name="drawer_sorting_text">Sıralama modu</string>
+  <string name="home_screen_search_text">Arama çubuğu</string>
+  <string name="larger_icons_text">Daha büyük simgeler</string>
+  <string name="hide_icon_labels">Simge etiketlerini gizle</string>
+  <string name="setting_state_on">AÇIK</string>
+  <string name="setting_state_off">KAPALI</string>
+  <string name="themes_button_text">Temalar</string>
 </resources>

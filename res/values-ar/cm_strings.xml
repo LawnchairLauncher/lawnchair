@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">الإيقونات الافتراضية</string>
   <string name="icon_packs_title">حزم الإيقونات</string>
   <string name="no_iconpacks_summary">لا توجد حزم أيقونات لتثبيت</string>
-  <string name="clear_keyguard_wallpaper">تصفية</string>
   <string name="all_apps_cling_cm">تخصيص  الفراغ</string>
   <string name="all_apps_cling_summary">انقر فوق مؤشر الصفحة لعرض إعدادات التكوين الإضافي</string>
   <string name="menu_hidden_apps_delete">إعادة تعيين</string>
   <string name="hidden_apps_title">تطبيقات المخفية</string>
+  <string name="launcher_settings">إعدادات اللنشر</string>
+  <string name="home_screen_settings">إعدادات الشاشة الرئيسية</string>
+  <string name="drawer_settings">إعدادات الفراغ</string>
+  <string name="scroll_effect_text">تأثير التمرير</string>
+  <string name="drawer_sorting_text">وضع الفرز</string>
+  <string name="home_screen_search_text">شريط البحث</string>
+  <string name="larger_icons_text">أيقونات كبيرة</string>
+  <string name="hide_icon_labels">إخفاء تسميات الرمز</string>
+  <string name="setting_state_on">يعمل</string>
+  <string name="setting_state_off">لايعمل</string>
+  <string name="themes_button_text">المواضيع</string>
 </resources>

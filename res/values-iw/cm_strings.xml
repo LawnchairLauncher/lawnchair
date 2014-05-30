@@ -56,9 +56,18 @@
   <string name="default_iconpack_title">סמלי ברירת מחדל</string>
   <string name="icon_packs_title">אוסף סמלים</string>
   <string name="no_iconpacks_summary">לא מותקנות ערכות סמל</string>
-  <string name="clear_keyguard_wallpaper">נקה</string>
   <string name="all_apps_cling_cm">התאמה אישית של מגירת היישומים</string>
   <string name="all_apps_cling_summary">הקש על מחוון הדף כדי להציג הגדרות נוספות</string>
   <string name="menu_hidden_apps_delete">אפס</string>
   <string name="hidden_apps_title">יישומים מוסתרים</string>
+  <string name="home_screen_settings">הגדרות מסך הבית</string>
+  <string name="drawer_settings">הגדרות מגירת יישומים</string>
+  <string name="scroll_effect_text">אפקט גלילה</string>
+  <string name="drawer_sorting_text">מצב המיון</string>
+  <string name="home_screen_search_text">סרגל החיפוש</string>
+  <string name="larger_icons_text">סמלים גדולים יותר</string>
+  <string name="hide_icon_labels">הסתר תוויות הסמלים</string>
+  <string name="setting_state_on">מופעל</string>
+  <string name="setting_state_off">מושבת</string>
+  <string name="themes_button_text">ערכות עיצוב</string>
 </resources>

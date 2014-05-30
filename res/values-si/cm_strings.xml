@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">පෙරනිමි අයිකන</string>
   <string name="icon_packs_title">අයිකන පොදි</string>
   <string name="no_iconpacks_summary">අයිකන පොදි කිසිවක් පිහිටුවා නැත</string>
-  <string name="clear_keyguard_wallpaper">හිස් කරන්න</string>
   <string name="all_apps_cling_cm">ඔබගේ ලාච්චුව රිසිකරණය කරන්න</string>
   <string name="all_apps_cling_summary">අතිරේක වින්‍යාසන සැකසීම් බැලීමට පිටු දර්ශකය මත තට්ටු කරන්න</string>
   <string name="menu_hidden_apps_delete">ප්‍රත්‍යාරම්භනය</string>
   <string name="hidden_apps_title">සැඟවුණු යෙදුම්</string>
+  <string name="launcher_settings">දියත් කරකයේ සැකසීම්</string>
+  <string name="home_screen_settings">මුල් තිරයේ සැකසීම්</string>
+  <string name="drawer_settings">ලාච්චුවේ සැකසීම්</string>
+  <string name="scroll_effect_text">අනුචලන ආටෝපය</string>
+  <string name="drawer_sorting_text">සුබෙදීමේ ප්‍රකාරය</string>
+  <string name="home_screen_search_text">සෙවුම් තීරුව</string>
+  <string name="larger_icons_text">විශාල අයිකන</string>
+  <string name="hide_icon_labels">අයිකන ලේබල සඟවන්න</string>
+  <string name="setting_state_on">සක්‍රීයයි</string>
+  <string name="setting_state_off">අක්‍රීයයි</string>
+  <string name="themes_button_text">තේමා</string>
 </resources>

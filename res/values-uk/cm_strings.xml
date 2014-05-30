@@ -56,7 +56,6 @@
   <string name="default_iconpack_title">Типові значки</string>
   <string name="icon_packs_title">Набори значків</string>
   <string name="no_iconpacks_summary">Жодного набору значків не встановлено</string>
-  <string name="clear_keyguard_wallpaper">Очистити</string>
   <string name="all_apps_cling_cm">Налаштуйте меню програм</string>
   <string name="all_apps_cling_summary">Торкніться індикатора сторінки знизу, щоб перейти до налаштувань</string>
   <string name="menu_hidden_apps_delete">Скидання</string>

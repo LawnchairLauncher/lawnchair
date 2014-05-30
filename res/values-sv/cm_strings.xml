@@ -56,7 +56,6 @@
   <string name="default_iconpack_title">Standardikoner</string>
   <string name="icon_packs_title">Ikonpaket</string>
   <string name="no_iconpacks_summary">Inga ikonpaket installerade</string>
-  <string name="clear_keyguard_wallpaper">Ta bort</string>
   <string name="all_apps_cling_cm">Anpassa din appmeny</string>
   <string name="all_apps_cling_summary">Tryck på sidindikatorn för att se ytterligare inställningar</string>
   <string name="menu_hidden_apps_delete">Återställ</string>

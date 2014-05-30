@@ -26,7 +26,7 @@
   <string name="sort_mode_install_time">Data de instalação</string>
   <string name="scrolling_page_outlines">Contorno das páginas</string>
   <string name="scrolling_fade_adjacent">Desvanecer as páginas laterais</string>
-  <string name="wallpaper_scroll">Deslizar papel de parede</string>
+  <string name="wallpaper_scroll">Deslizar imagem de fundo</string>
   <string name="preferences_title">Definições</string>
   <string name="preferences_application_title">Aplicação</string>
   <string name="preferences_interface_homescreen_title">Ecrã inicial</string>
@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Ícones padrão</string>
   <string name="icon_packs_title">Pacotes de Ícones</string>
   <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
-  <string name="clear_keyguard_wallpaper">Limpar</string>
   <string name="all_apps_cling_cm">Personalize a sua gaveta de aplicações</string>
   <string name="all_apps_cling_summary">Toque no indicador de página para ver definições adicionais</string>
   <string name="menu_hidden_apps_delete">Restaurar</string>
   <string name="hidden_apps_title">Aplicações ocultas</string>
+  <string name="launcher_settings">DEFINIÇÕES DO LANÇADOR</string>
+  <string name="home_screen_settings">DEFINIÇÕES DO ECRÃ INICIAL</string>
+  <string name="drawer_settings">DEFINIÇÕES DA GAVETA APLICAÇÕES</string>
+  <string name="scroll_effect_text">Efeito de transição</string>
+  <string name="drawer_sorting_text">Ordenar por</string>
+  <string name="home_screen_search_text">Barra de pesquisa</string>
+  <string name="larger_icons_text">Ícones grandes</string>
+  <string name="hide_icon_labels">Ocultar as legendas dos ícones</string>
+  <string name="setting_state_on">LIG.</string>
+  <string name="setting_state_off">DESL.</string>
+  <string name="themes_button_text">Temas</string>
 </resources>

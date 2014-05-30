@@ -17,24 +17,24 @@
 -->
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>標準</item>
+    <item>正常</item>
     <item>Light</item>
     <item>Condensed</item>
   </string-array>
   <string-array name="transition_effect_entries">
-    <item>なし</item>
+    <item>無</item>
     <item>Zoom In</item>
     <item>Zoom Out</item>
     <item>Rotate Up</item>
     <item>Rotate Down</item>
     <item>Cube In</item>
     <item>Cube Out</item>
-    <item>スタック</item>
-    <item>Accordion</item>
+    <item>Stack</item>
+    <item>手風琴</item>
     <item>Flip</item>
-    <item>シリンダーイン</item>
+    <item>Cylinder In</item>
     <item>Cylinder Out</item>
     <item>Carousel</item>
-    <item>Overview</item>
+    <item>概述</item>
   </string-array>
 </resources>

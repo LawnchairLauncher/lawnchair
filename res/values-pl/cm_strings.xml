@@ -56,9 +56,19 @@
   <string name="default_iconpack_title">Domyślne ikony</string>
   <string name="icon_packs_title">Paczki ikon</string>
   <string name="no_iconpacks_summary">Brak zainstalowanych paczek ikon</string>
-  <string name="clear_keyguard_wallpaper">Wyczyść</string>
   <string name="all_apps_cling_cm">Dostosuj szufladę</string>
   <string name="all_apps_cling_summary">Naciśnij na wskaźnik strony by zobaczyć dodatkowe opcje konfiguracji</string>
   <string name="menu_hidden_apps_delete">Przywróć domyślne</string>
   <string name="hidden_apps_title">Ukryte aplikacje</string>
+  <string name="launcher_settings">USTAWIENIA LAUNCHERA</string>
+  <string name="home_screen_settings">USTAWIENIA EKRANU GŁÓWNEGO</string>
+  <string name="drawer_settings">USTAWIENIA SZUFLADY APLIKACJI</string>
+  <string name="scroll_effect_text">Efekt przewijania</string>
+  <string name="drawer_sorting_text">Tryb sortowania</string>
+  <string name="home_screen_search_text">Pasek wyszukiwania</string>
+  <string name="larger_icons_text">Większe ikony</string>
+  <string name="hide_icon_labels">Ukryj etykiety ikon</string>
+  <string name="setting_state_on">WŁĄCZONE</string>
+  <string name="setting_state_off">WYŁĄCZONE</string>
+  <string name="themes_button_text">Motywy</string>
 </resources>
