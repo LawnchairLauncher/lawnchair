@@ -38,6 +38,7 @@ public class Partner {
 
     public static final String RESOURCE_FOLDER = "partner_folder";
     public static final String RESOURCE_WALLPAPERS = "partner_wallpapers";
+    public static final String RESOURCE_DEFAULT_LAYOUT = "partner_default_layout";
 
     private static boolean sSearched = false;
     private static Partner sPartner;
@@ -80,5 +81,11 @@ public class Partner {
 
     public Resources getResources() {
         return mResources;
+    }
+
+    public boolean hasDefaultLayout() {
+        int defaultLayout = getResources().getIdentifier(Partner.RESOURCE_DEFAULT_LAYOUT,
+                "xml", getPackageName());
+        return defaultLayout != 0;
     }
 }

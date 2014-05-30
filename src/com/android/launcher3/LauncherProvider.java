@@ -310,9 +310,20 @@ public class LauncherProvider extends ContentProvider {
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
+            // By default we use our resources
+            Resources res = getContext().getResources();
             int workspaceResId = origWorkspaceResId;
 
             // Use default workspace resource if none provided
+            if (workspaceResId == 0) {
+                final Partner partner = Partner.get(getContext().getPackageManager());
+                if (partner != null && partner.hasDefaultLayout()) {
+                    final Resources partnerRes = partner.getResources();
+                    workspaceResId = partnerRes.getIdentifier(Partner.RESOURCE_DEFAULT_LAYOUT,
+                            "xml", partner.getPackageName());
+                    res = partnerRes;
+                }
+            }
             if (workspaceResId == 0) {
                 workspaceResId =
                         sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, getDefaultWorkspaceResourceId());
@@ -325,7 +336,7 @@ public class LauncherProvider extends ContentProvider {
                 editor.putInt(DEFAULT_WORKSPACE_RESOURCE_ID, origWorkspaceResId);
             }
 
-            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), workspaceResId);
+            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), res, workspaceResId);
             editor.commit();
         }
     }
@@ -380,11 +391,25 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_EXTRA = "extra";
         private static final String TAG_INCLUDE = "include";
 
-        private static final String ATTR_TITLE = "title";
-        private static final String ATTR_ICON = "icon";
-        private static final String ATTR_URI = "uri";
-        private static final String ATTR_PACKAGE_NAME = "packageName";
+        // Style attrs -- "Favorite"
         private static final String ATTR_CLASS_NAME = "className";
+        private static final String ATTR_PACKAGE_NAME = "packageName";
+        private static final String ATTR_CONTAINER = "container";
+        private static final String ATTR_SCREEN = "screen";
+        private static final String ATTR_X = "x";
+        private static final String ATTR_Y = "y";
+        private static final String ATTR_SPAN_X = "spanX";
+        private static final String ATTR_SPAN_Y = "spanY";
+        private static final String ATTR_ICON = "icon";
+        private static final String ATTR_TITLE = "title";
+        private static final String ATTR_URI = "uri";
+
+        // Style attrs -- "Include"
+        private static final String ATTR_WORKSPACE = "workspace";
+
+        // Style attrs -- "Extra"
+        private static final String ATTR_KEY = "key";
+        private static final String ATTR_VALUE = "value";
 
         private final Context mContext;
         private final PackageManager mPackageManager;
@@ -753,7 +778,7 @@ public class LauncherProvider extends ContentProvider {
                 }
 
                 // Add default hotseat icons
-                loadFavorites(db, R.xml.update_workspace);
+                loadFavorites(db, mContext.getResources(), R.xml.update_workspace);
                 version = 9;
             }
 
@@ -1244,9 +1269,9 @@ public class LauncherProvider extends ContentProvider {
             return intent;
         }
 
-        private int loadFavorites(SQLiteDatabase db, int workspaceResourceId) {
+        private int loadFavorites(SQLiteDatabase db, Resources res, int workspaceResourceId) {
             ArrayList<Long> screenIds = new ArrayList<Long>();
-            int count = loadFavoritesRecursive(db, workspaceResourceId, screenIds);
+            int count = loadFavoritesRecursive(db, res, workspaceResourceId, screenIds);
 
             // Add the screens specified by the items above
             Collections.sort(screenIds);
@@ -1276,18 +1301,15 @@ public class LauncherProvider extends ContentProvider {
          * @param filterContainerId The specific container id of items to load
          * @param the set of screenIds which are used by the favorites
          */
-        private int loadFavoritesRecursive(SQLiteDatabase db, int workspaceResourceId,
+        private int loadFavoritesRecursive(SQLiteDatabase db, Resources res, int workspaceResourceId,
                 ArrayList<Long> screenIds) {
-
-
 
             ContentValues values = new ContentValues();
             if (LOGD) Log.v(TAG, String.format("Loading favorites from resid=0x%08x", workspaceResourceId));
 
             int count = 0;
             try {
-                XmlResourceParser parser = mContext.getResources().getXml(workspaceResourceId);
-                AttributeSet attrs = Xml.asAttributeSet(parser);
+                XmlResourceParser parser = res.getXml(workspaceResourceId);
                 beginDocument(parser, TAG_FAVORITES);
 
                 final int depth = parser.getDepth();
@@ -1304,38 +1326,34 @@ public class LauncherProvider extends ContentProvider {
                     final String name = parser.getName();
 
                     if (TAG_INCLUDE.equals(name)) {
-                        final TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Include);
 
-                        final int resId = a.getResourceId(R.styleable.Include_workspace, 0);
+                        final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
 
                         if (LOGD) Log.v(TAG, String.format(("%" + (2*(depth+1)) + "s<include workspace=%08x>"),
                                 "", resId));
 
                         if (resId != 0 && resId != workspaceResourceId) {
                             // recursively load some more favorites, why not?
-                            count += loadFavoritesRecursive(db, resId, screenIds);
+                            count += loadFavoritesRecursive(db, res, resId, screenIds);
                             added = false;
                         } else {
                             Log.w(TAG, String.format("Skipping <include workspace=0x%08x>", resId));
                         }
-
-                        a.recycle();
 
                         if (LOGD) Log.v(TAG, String.format(("%" + (2*(depth+1)) + "s</include>"), ""));
                         continue;
                     }
 
                     // Assuming it's a <favorite> at this point
-                    TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Favorite);
-
                     long container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-                    if (a.hasValue(R.styleable.Favorite_container)) {
-                        container = Long.valueOf(a.getString(R.styleable.Favorite_container));
+                    String strContainer = getAttributeValue(parser, ATTR_CONTAINER);
+                    if (strContainer != null) {
+                        container = Long.valueOf(strContainer);
                     }
 
-                    String screen = a.getString(R.styleable.Favorite_screen);
-                    String x = a.getString(R.styleable.Favorite_x);
-                    String y = a.getString(R.styleable.Favorite_y);
+                    String screen = getAttributeValue(parser, ATTR_SCREEN);
+                    String x = getAttributeValue(parser, ATTR_X);
+                    String y = getAttributeValue(parser, ATTR_Y);
 
                     values.clear();
                     values.put(LauncherSettings.Favorites.CONTAINER, container);
@@ -1344,8 +1362,8 @@ public class LauncherProvider extends ContentProvider {
                     values.put(LauncherSettings.Favorites.CELLY, y);
 
                     if (LOGD) {
-                        final String title = a.getString(R.styleable.Favorite_title);
-                        final String pkg = a.getString(R.styleable.Favorite_packageName);
+                        final String title = getAttributeValue(parser, ATTR_TITLE);
+                        final String pkg = getAttributeValue(parser, ATTR_PACKAGE_NAME);
                         final String something = title != null ? title : pkg;
                         Log.v(TAG, String.format(
                                 ("%" + (2*(depth+1)) + "s<%s%s c=%d s=%s x=%s y=%s>"),
@@ -1357,14 +1375,10 @@ public class LauncherProvider extends ContentProvider {
                     if (TAG_FAVORITE.equals(name)) {
                         long id = addAppShortcut(db, values, parser);
                         added = id >= 0;
-                    } else if (TAG_SEARCH.equals(name)) {
-                        added = addSearchWidget(db, values);
-                    } else if (TAG_CLOCK.equals(name)) {
-                        added = addClockWidget(db, values);
                     } else if (TAG_APPWIDGET.equals(name)) {
-                        added = addAppWidget(parser, attrs, type, db, values, a);
+                        added = addAppWidget(parser, type, db, values);
                     } else if (TAG_SHORTCUT.equals(name)) {
-                        long id = addUriShortcut(db, values, mContext.getResources(), parser);
+                        long id = addUriShortcut(db, values, res, parser);
                         added = id >= 0;
                     } else if (TAG_RESOLVE.equals(name)) {
                         // This looks through the contained favorites (or meta-favorites) and
@@ -1378,18 +1392,15 @@ public class LauncherProvider extends ContentProvider {
                                 continue;
                             }
                             final String fallback_item_name = parser.getName();
-                            final TypedArray ar = mContext.obtainStyledAttributes(attrs,
-                                    R.styleable.Favorite);
                             if (!added) {
                                 if (TAG_FAVORITE.equals(fallback_item_name)) {
                                     final long id = addAppShortcut(db, values, parser);
                                     added = id >= 0;
                                 } else {
-                                    Log.e(TAG, "Fallback groups can contain only favorites "
-                                            + ar.toString());
+                                    Log.e(TAG, "Fallback groups can contain only favorites, found "
+                                            + fallback_item_name);
                                 }
                             }
-                            ar.recycle();
                         }
                     } else if (TAG_FOLDER.equals(name)) {
                         // Folder contents are nested in this XML file
@@ -1418,7 +1429,6 @@ public class LauncherProvider extends ContentProvider {
                         }
                         count++;
                     }
-                    a.recycle();
                 }
             } catch (XmlPullParserException e) {
                 Log.w(TAG, "Got exception parsing favorites.", e);
@@ -1681,23 +1691,12 @@ public class LauncherProvider extends ContentProvider {
             return null;
         }
 
-        private boolean addSearchWidget(SQLiteDatabase db, ContentValues values) {
-            ComponentName cn = getSearchWidgetProvider();
-            return addAppWidget(db, values, cn, 4, 1, null);
-        }
-
-        private boolean addClockWidget(SQLiteDatabase db, ContentValues values) {
-            ComponentName cn = new ComponentName("com.android.alarmclock",
-                    "com.android.alarmclock.AnalogAppWidgetProvider");
-            return addAppWidget(db, values, cn, 2, 2, null);
-        }
-
-        private boolean addAppWidget(XmlResourceParser parser, AttributeSet attrs, int type,
-                SQLiteDatabase db, ContentValues values, TypedArray a)
+        private boolean addAppWidget(XmlResourceParser parser, int type,
+                SQLiteDatabase db, ContentValues values)
                 throws XmlPullParserException, IOException {
 
-            String packageName = a.getString(R.styleable.Favorite_packageName);
-            String className = a.getString(R.styleable.Favorite_className);
+            String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
+            String className = getAttributeValue(parser, ATTR_CLASS_NAME);
 
             if (packageName == null || className == null) {
                 return false;
@@ -1714,13 +1713,17 @@ public class LauncherProvider extends ContentProvider {
                 try {
                     mPackageManager.getReceiverInfo(cn, 0);
                 } catch (Exception e1) {
+                    System.out.println("Can't find widget provider: " + className);
                     hasPackage = false;
                 }
             }
 
             if (hasPackage) {
-                int spanX = a.getInt(R.styleable.Favorite_spanX, 0);
-                int spanY = a.getInt(R.styleable.Favorite_spanY, 0);
+                String spanX = getAttributeValue(parser, ATTR_SPAN_X);
+                String spanY = getAttributeValue(parser, ATTR_SPAN_Y);
+
+                values.put(Favorites.SPANX, spanX);
+                values.put(Favorites.SPANY, spanY);
 
                 // Read the extras
                 Bundle extras = new Bundle();
@@ -1731,10 +1734,9 @@ public class LauncherProvider extends ContentProvider {
                         continue;
                     }
 
-                    TypedArray ar = mContext.obtainStyledAttributes(attrs, R.styleable.Extra);
                     if (TAG_EXTRA.equals(parser.getName())) {
-                        String key = ar.getString(R.styleable.Extra_key);
-                        String value = ar.getString(R.styleable.Extra_value);
+                        String key = getAttributeValue(parser, ATTR_KEY);
+                        String value = getAttributeValue(parser, ATTR_VALUE);
                         if (key != null && value != null) {
                             extras.putString(key, value);
                         } else {
@@ -1743,16 +1745,15 @@ public class LauncherProvider extends ContentProvider {
                     } else {
                         throw new RuntimeException("Widgets can contain only extras");
                     }
-                    ar.recycle();
                 }
 
-                return addAppWidget(db, values, cn, spanX, spanY, extras);
+                return addAppWidget(db, values, cn, extras);
             }
 
             return false;
         }
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, ComponentName cn,
-                int spanX, int spanY, Bundle extras) {
+               Bundle extras) {
             boolean allocatedAppWidgets = false;
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
 
@@ -1760,8 +1761,6 @@ public class LauncherProvider extends ContentProvider {
                 int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
 
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
-                values.put(Favorites.SPANX, spanX);
-                values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.APPWIDGET_ID, appWidgetId);
                 values.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
                 values.put(Favorites._ID, generateNewItemId());
