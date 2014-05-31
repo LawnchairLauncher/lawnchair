@@ -12,9 +12,9 @@ import com.android.launcher3.list.PinnedHeaderListView;
 import com.android.launcher3.list.SettingsPinnedHeaderAdapter;
 
 public class OverviewSettingsPanel {
-    public static final String ANDROID_SETTINGS = "org.cyanogenmod.theme.chooser";
+    public static final String ANDROID_SETTINGS = "com.android.settings";
     public static final String THEME_SETTINGS =
-            "org.cyanogenmod.theme.chooser.ChooserActivity";
+            "com.android.settings.Settings$ThemeSettingsActivity";
     public static final int HOME_SETTINGS_POSITION = 0;
     public static final int DRAWER_SETTINGS_POSITION = 1;
 
