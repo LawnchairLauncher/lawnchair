@@ -3104,10 +3104,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     v.setAlpha(alpha);
                 }
 
-                // If the view has 0 alpha, we set it to be invisible so as to prevent
+                // If the view has 0 alpha, we move it off screen so as to prevent
                 // it from accepting touches
                 if (alpha == 0) {
-                    v.setVisibility(INVISIBLE);
+                    v.setTranslationX(v.getMeasuredWidth() * -10f);
                 } else if (v.getVisibility() != VISIBLE) {
                     v.setVisibility(VISIBLE);
                 }
@@ -3149,8 +3149,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         v.setVisibility(VISIBLE);
                     }
                 } else {
-                    v.setTranslationX(0f);
-                    v.setVisibility(INVISIBLE);
+                    v.setTranslationX(v.getMeasuredWidth() * -10f);
                 }
             }
         }
