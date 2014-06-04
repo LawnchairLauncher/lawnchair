@@ -75,7 +75,6 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
                 return drawables[i];
             }
         }
-        System.out.println("No drawable, returning null " + this);
         return null;
     }
 
