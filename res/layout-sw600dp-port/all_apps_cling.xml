@@ -33,7 +33,7 @@
             <TextView
                 style="@style/ClingText"
                 android:id="@+id/all_apps_cling_add_item"
-                android:layout_width="285dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/all_apps_cling_add_item" />
         </LinearLayout>
@@ -41,8 +41,10 @@
     <Button
         style="@style/ClingButton"
         android:id="@+id/cling_dismiss"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="10dp"
-        android:layout_gravity="bottom|end"
+        android:minWidth="168dp"
+        android:textSize="24sp"
+        android:layout_marginTop="235dp"
+        android:layout_marginEnd="36dp"
+        android:layout_gravity="top|end"
         android:onClick="dismissAllAppsCling" />
 </com.android.launcher3.Cling>

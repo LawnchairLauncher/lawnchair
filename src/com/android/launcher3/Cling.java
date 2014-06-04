@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -40,7 +41,6 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
     static final String FIRST_RUN_CLING_DISMISSED_KEY = "cling_gel.first_run.dismissed";
     static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
     static final String FOLDER_CLING_DISMISSED_KEY = "cling_gel.folder.dismissed";
-    static final String ALL_APPS_CLING_DISMISSED_KEY = "cling_gel.all_apps.dismissed";
 
     private static String FIRST_RUN_PORTRAIT = "first_run_portrait";
     private static String FIRST_RUN_LANDSCAPE = "first_run_landscape";
@@ -53,8 +53,6 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
     private static String FOLDER_PORTRAIT = "folder_portrait";
     private static String FOLDER_LANDSCAPE = "folder_landscape";
     private static String FOLDER_LARGE = "folder_large";
-
-    private static String ALL_APPS = "all_apps";
 
     private static float FIRST_RUN_CIRCLE_BUFFER_DPS = 60;
     private static float WORKSPACE_INNER_CIRCLE_RADIUS_DPS = 50;
@@ -80,7 +78,6 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
     private int mBackgroundColor;
 
     private final Rect mInsets = new Rect();
-    private int[] mPosition;
 
     public Cling(Context context) {
         this(context, null, 0);
@@ -130,13 +127,6 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         }
     }
 
-    void setPunchThroughForView(View view) {
-        mPosition = new int[2];
-        view.getLocationOnScreen(mPosition);
-        mPosition[0] += view.getWidth() / 2;
-        mPosition[1] += view.getHeight() / 2;
-    }
-
     void setFocusedHotseatApp(int drawableId, int appRank, ComponentName cn, String title,
                               String description) {
         // Get the app to draw
@@ -183,8 +173,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                 mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
                 mDrawIdentifier.equals(WORKSPACE_LARGE) ||
-                mDrawIdentifier.equals(WORKSPACE_CUSTOM) ||
-                mDrawIdentifier.equals(ALL_APPS)) {
+                mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
             View content = getContent();
             content.setAlpha(0f);
             content.animate()
@@ -311,8 +300,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
         return (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)
                 || mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)
                 || mDrawIdentifier.equals(WORKSPACE_LARGE)
-                || mDrawIdentifier.equals(WORKSPACE_CUSTOM)
-                || mDrawIdentifier.equals(ALL_APPS));
+                || mDrawIdentifier.equals(WORKSPACE_CUSTOM));
     }
 
     @Override
@@ -365,9 +353,6 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                 mDrawIdentifier.equals(WORKSPACE_LARGE)) {
             mLauncher.dismissWorkspaceCling(null);
             return true;
-        } else if (mDrawIdentifier.equals(ALL_APPS)) {
-            mLauncher.dismissAllAppsCling(null);
-            return true;
         }
         return false;
     }
@@ -394,8 +379,7 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                 mBackground.draw(canvas);
             } else if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                     mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
-                    mDrawIdentifier.equals(WORKSPACE_LARGE) ||
-                    mDrawIdentifier.equals(ALL_APPS)) {
+                    mDrawIdentifier.equals(WORKSPACE_LARGE)) {
                 // Initialize the draw buffer (to allow punching through)
                 eraseBg = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
                         Bitmap.Config.ARGB_8888);
@@ -427,23 +411,16 @@ public class Cling extends FrameLayout implements Insettable, View.OnClickListen
                         mBubblePaint);
             } else if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                     mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
-                    mDrawIdentifier.equals(WORKSPACE_LARGE) ||
-                    mDrawIdentifier.equals(ALL_APPS)) {
+                    mDrawIdentifier.equals(WORKSPACE_LARGE)) {
                 int offset = DynamicGrid.pxFromDp(WORKSPACE_CIRCLE_Y_OFFSET_DPS, metrics);
                 mErasePaint.setAlpha((int) (128));
-                int punchX = metrics.widthPixels / 2;
-                int punchY = metrics.heightPixels / 2 - offset;
-                if (mPosition != null) {
-                    punchX = mPosition[0];
-                    punchY = mPosition[1];
-                }
-                eraseCanvas.drawCircle(punchX,
-                        punchY,
+                eraseCanvas.drawCircle(metrics.widthPixels / 2,
+                        metrics.heightPixels / 2 - offset,
                         DynamicGrid.pxFromDp(WORKSPACE_OUTER_CIRCLE_RADIUS_DPS, metrics),
                         mErasePaint);
                 mErasePaint.setAlpha(0);
-                eraseCanvas.drawCircle(punchX,
-                        punchY,
+                eraseCanvas.drawCircle(metrics.widthPixels / 2,
+                        metrics.heightPixels / 2 - offset,
                         DynamicGrid.pxFromDp(WORKSPACE_INNER_CIRCLE_RADIUS_DPS, metrics),
                         mErasePaint);
                 canvas.drawBitmap(eraseBg, 0, 0, null);
