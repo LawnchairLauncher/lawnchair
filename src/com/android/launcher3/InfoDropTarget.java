@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -50,19 +49,6 @@ public class InfoDropTarget extends ButtonDropTarget {
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
         mDrawable = (TransitionDrawable) getCurrentDrawable();
-
-        if (mDrawable == null) {
-            System.out.println("onFinishInflate -- drawable null");
-        }
-
-        // DEBUG CODE:
-        Drawable normal = r.getDrawable(R.drawable.ic_launcher_info_normal_holo);
-        Drawable active = r.getDrawable(R.drawable.ic_launcher_info_active_holo);
-        Drawable selector = r.getDrawable(R.drawable.info_target_selector);
-        System.out.println("Normal: " + normal);
-        System.out.println("Active: " + active);
-        System.out.println("Selector: " + selector);
-
         if (null != mDrawable) {
             mDrawable.setCrossFadeEnabled(true);
         }
@@ -107,14 +93,8 @@ public class InfoDropTarget extends ButtonDropTarget {
             isVisible = false;
         }
 
-        if (mDrawable == null) {
-            System.out.println("onDragStart -- drawable null");
-        }
-
         mActive = isVisible;
-        if (mDrawable != null) {
-            mDrawable.resetTransition();
-        }
+        mDrawable.resetTransition();
         setTextColor(mOriginalTextColor);
         ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
@@ -128,9 +108,7 @@ public class InfoDropTarget extends ButtonDropTarget {
     public void onDragEnter(DragObject d) {
         super.onDragEnter(d);
 
-        if (mDrawable != null) {
-            mDrawable.startTransition(mTransitionDuration);
-        }
+        mDrawable.startTransition(mTransitionDuration);
         setTextColor(mHoverColor);
     }
 
