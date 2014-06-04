@@ -49,6 +49,13 @@ public class InfoDropTarget extends ButtonDropTarget {
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
         mDrawable = (TransitionDrawable) getCurrentDrawable();
+
+        if (mDrawable == null) {
+            // TODO: investigate why this is ever happening. Presently only on one known device.
+            mDrawable = r.getDrawable(R.drawable.info_target_selector);
+            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+        }
+
         if (null != mDrawable) {
             mDrawable.setCrossFadeEnabled(true);
         }
