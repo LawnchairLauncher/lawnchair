@@ -16,14 +16,13 @@
         android:paddingEnd="8dip"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="19sp"/>
-    <RadioButton
-        android:id="@+id/radio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <ImageView
+        android:src="@*android:drawable/ic_cab_done_holo_dark"
+        android:id="@+id/check"
         android:layout_gravity="center_vertical"
-        android:focusable="false"
-        android:clickable="false"
-        android:duplicateParentState="true" />
+        android:layout_width="@dimen/app_icon_size"
+        android:layout_height="@dimen/app_icon_size"
+        android:layout_margin="8dp"/>
+
 </LinearLayout>

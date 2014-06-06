@@ -31,11 +31,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.settings.SettingsProvider;
 
 public class IconPackHelper {
@@ -299,7 +297,6 @@ public class IconPackHelper {
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int position) {
                     if (adapter.isOriginalIconPack(position)) {
-                        ((Launcher) context).getWorkspace().exitOverviewMode(true);
                         return;
                     }
                     String selectedPackage = adapter.getItem(position);
@@ -307,7 +304,6 @@ public class IconPackHelper {
                             SettingsProvider.SETTINGS_UI_GENERAL_ICONS_ICON_PACK, selectedPackage);
                     LauncherAppState.getInstance().getIconCache().flush();
                     LauncherAppState.getInstance().getModel().forceReload();
-                    ((Launcher) context).getWorkspace().exitOverviewMode(true);
                 }
             });
         } else {
@@ -431,9 +427,9 @@ public class IconPackHelper {
             txtView.setText(info.label);
             ImageView imgView = (ImageView) convertView.findViewById(R.id.icon);
             imgView.setImageDrawable(info.icon);
-            RadioButton radioButton = (RadioButton) convertView.findViewById(R.id.radio);
+            ImageView chk = (ImageView) convertView.findViewById(R.id.check);
             boolean isCurrentIconPack = info.packageName.equals(mCurrentIconPack);
-            radioButton.setChecked(isCurrentIconPack);
+            chk.setVisibility(isCurrentIconPack ? View.VISIBLE : View.GONE);
             if (isCurrentIconPack) {
                 mCurrentIconPackPosition = position;
             }
