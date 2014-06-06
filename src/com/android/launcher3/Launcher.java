@@ -2937,6 +2937,8 @@ public class Launcher extends Activity
                 } else {
                     return false;
                 }
+            } else {
+                return false;
             }
         }
 
@@ -2958,7 +2960,6 @@ public class Launcher extends Activity
                 // User long pressed on empty space
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                // Disabling reordering until we sort out some issues.
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.startReordering(v);
                 } else {
