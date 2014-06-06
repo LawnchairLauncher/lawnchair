@@ -2482,7 +2482,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public boolean startReordering(View v) {
         int dragViewIndex = indexOfChild(v);
 
-        if (mTouchState != TOUCH_STATE_REST) return false;
+        if (mTouchState != TOUCH_STATE_REST || dragViewIndex == -1) return false;
 
         mTempVisiblePagesRange[0] = 0;
         mTempVisiblePagesRange[1] = getPageCount() - 1;
