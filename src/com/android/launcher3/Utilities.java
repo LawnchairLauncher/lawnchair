@@ -170,16 +170,16 @@ final class Utilities {
             sOldBounds.set(icon.getBounds());
             icon.setBounds(left, top, left+width, top+height);
             canvas.save();
-            canvas.scale(scale, scale, width / 2, height/2);
+            if (iconMask != null && iconBack != null) {
+                canvas.scale(scale, scale, width / 2, height/2);
+            }
             icon.draw(canvas);
             canvas.restore();
-            if (iconMask != null) {
+            if (iconBack != null && iconMask != null) {
                 iconMask.setBounds(icon.getBounds());
                 ((BitmapDrawable) iconMask).getPaint().setXfermode(
                         new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
                 iconMask.draw(canvas);
-            }
-            if (iconBack != null) {
                 canvas.setBitmap(null);
                 Bitmap finalBitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                         Bitmap.Config.ARGB_8888);
