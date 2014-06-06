@@ -252,16 +252,8 @@ public class IconCache {
                 entry.title = info.activityInfo.name;
             }
 
-            Drawable icon = getFullResIcon(info);
-            if (mIconPackHelper.isIconPackLoaded() && (mIconPackHelper
-                    .getResourceIdForActivityIcon(info.activityInfo) == 0)) {
-                entry.icon = Utilities.createIconBitmap(
-                        icon, mContext, mIconPackHelper.getIconBack(),
-                        mIconPackHelper.getIconMask(), mIconPackHelper.getIconUpon(), mIconPackHelper.getIconScale());
-            } else {
-                entry.icon = Utilities.createIconBitmap(
-                        icon, mContext);
-            }
+            entry.icon = Utilities.createIconBitmap(
+                    getFullResIcon(info), mContext);
         }
         return entry;
     }
