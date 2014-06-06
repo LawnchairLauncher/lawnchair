@@ -123,7 +123,7 @@ public class IconPackHelper {
                 name = ComponentName.unflattenFromString(component);
                 if (name != null) {
                     iconPackResources.put(name.getPackageName(), drawable);
-                    iconPackResources.put(name.getPackageName() + "." + name.getClassName(), drawable);
+                    iconPackResources.put(name.getClassName(), drawable);
                 }
             }
         } while ((eventType = parser.next()) != XmlPullParser.END_DOCUMENT);
@@ -345,8 +345,7 @@ public class IconPackHelper {
     }
 
     public int getResourceIdForActivityIcon(ActivityInfo info) {
-        String drawable = mIconPackResources.get(info.packageName.toLowerCase()
-                + "." + info.name.toLowerCase());
+        String drawable = mIconPackResources.get(info.name.toLowerCase());
         if (drawable == null) {
             // Icon pack doesn't have an icon for the activity, fallback to package icon
             drawable = mIconPackResources.get(info.packageName.toLowerCase());
