@@ -2240,6 +2240,10 @@ public class Launcher extends Activity
         return mWorkspaceLoading || mWaitingForResult;
     }
 
+    public boolean isWorkspaceLoading() {
+        return mWorkspaceLoading;
+    }
+
     private void resetAddInfo() {
         mPendingAddInfo.container = ItemInfo.NO_ID;
         mPendingAddInfo.screenId = -1;
@@ -4004,7 +4008,7 @@ public class Launcher extends Activity
         }
 
         // Remove the extra empty screen
-        mWorkspace.removeExtraEmptyScreens();
+        mWorkspace.removeExtraEmptyScreen(false, null);
 
         if (!LauncherAppState.isDisableAllApps() &&
                 addedApps != null && mAppsCustomizeContent != null) {
