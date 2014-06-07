@@ -2261,8 +2261,8 @@ public class Workspace extends SmoothPagedView
 
         if (oldStateIsOverview) {
             disableFreeScroll();
-        } else if (stateIsOverview) {
-            enableFreeScroll();
+        } else if (stateIsOverview){
+            updateFreescrollBounds();
         }
 
         if (state != State.NORMAL) {
@@ -4894,5 +4894,11 @@ public class Workspace extends SmoothPagedView
 
     public boolean getHideIconLables() {
         return mHideIconLabels;
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        mEnforceRealBounds = isInOverviewMode();
+        super.scrollTo(x, y);
     }
 }

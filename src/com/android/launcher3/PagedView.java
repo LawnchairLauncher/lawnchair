@@ -261,6 +261,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private int DELETE_SLIDE_IN_SIDE_PAGE_DURATION = 250;
     private int DRAG_TO_DELETE_FADE_OUT_DURATION = 350;
 
+    protected boolean mEnforceRealBounds = false;
     // Drop to delete
     private View mDeleteDropTarget;
 
@@ -663,7 +664,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Override
     public void scrollTo(int x, int y) {
         // In free scroll mode, we clamp the scrollX
-        if (mFreeScroll) {
+        if (mFreeScroll || mEnforceRealBounds) {
             x = Math.min(x, mFreeScrollMaxScrollX);
             x = Math.max(x, mFreeScrollMinScrollX);
         }
