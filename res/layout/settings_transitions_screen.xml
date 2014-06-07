@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/transition_effect_button_text"
             android:textAllCaps="true"
+            android:fontFamily="sans-serif-condensed"
             android:textColor="@android:color/white"
             android:layout_gravity="center_vertical"
             android:textSize="16sp" />
