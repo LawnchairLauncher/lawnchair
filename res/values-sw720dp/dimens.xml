@@ -25,4 +25,6 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">0dp</dimen>
+
+    <dimen name="overview_panel_button_spacing">35dp</dimen>
 </resources>

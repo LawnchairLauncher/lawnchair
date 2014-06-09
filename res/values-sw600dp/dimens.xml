@@ -17,13 +17,13 @@
 <resources>
     <dimen name="app_icon_size">64dp</dimen>
 
-<!-- Workspace -->
-    <dimen name="overview_panel_button_spacing">22dp</dimen>
-
 <!-- AppsCustomize -->
     <dimen name="apps_customize_tab_bar_height">60dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
     <dimen name="app_widget_preview_label_margin_top">8dp</dimen>
     <dimen name="app_widget_preview_label_margin_left">@dimen/app_widget_preview_padding_left</dimen>
     <dimen name="app_widget_preview_label_margin_right">@dimen/app_widget_preview_padding_right</dimen>
+
+    <dimen name="sliding_panel_padding">180dp</dimen>
+    <dimen name="overview_panel_button_spacing">32dp</dimen>
 </resources>

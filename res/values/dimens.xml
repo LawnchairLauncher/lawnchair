@@ -51,6 +51,7 @@
     <dimen name="overview_panel_top_padding">20dp</dimen>
     <dimen name="overview_panel_bottom_padding">50dp</dimen>
     <dimen name="overview_panel_button_spacing">30dp</dimen>
+    <dimen name="overview_panel_handle_size">30dp</dimen>
     <dimen name="overview_mode_page_offset">60dp</dimen>
     <dimen name="sliding_panel_padding">175dp</dimen>
     <dimen name="overview_scaling_padding">50dp</dimen>
