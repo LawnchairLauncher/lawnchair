@@ -684,6 +684,22 @@ public class DeviceProfile {
         }
         searchBar.setLayoutParams(lp);
 
+        // Layout the drop target icons
+        LinearLayout dropTargetBar = (LinearLayout) launcher.getSearchBar().getDropTargetBar();
+        if (hasVerticalBarLayout) {
+            dropTargetBar.setOrientation(LinearLayout.VERTICAL);
+        } else {
+            dropTargetBar.setOrientation(LinearLayout.HORIZONTAL);
+        }
+
+        // Layout the search bar
+        View qsbBar = launcher.getQsbBar();
+        qsbBar.setVisibility(searchBarVisible ? View.VISIBLE : View.GONE);
+        LayoutParams vglp = qsbBar.getLayoutParams();
+        vglp.width = LayoutParams.MATCH_PARENT;
+        vglp.height = LayoutParams.MATCH_PARENT;
+        qsbBar.setLayoutParams(vglp);
+
         // Layout the voice proxy
         View voiceButtonProxy = launcher.findViewById(R.id.voice_button_proxy);
         if (voiceButtonProxy != null) {
