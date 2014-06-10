@@ -514,7 +514,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void initializeDynamicGrid() {
+    void initializeDynamicGrid() {
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
