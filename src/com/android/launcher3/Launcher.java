@@ -1292,6 +1292,10 @@ public class Launcher extends Activity
             }
         });
         widgetButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        if (Utilities.isLmp()) {
+            ((TextView) widgetButton).setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.drawable.widget_button_l, 0, 0);
+        }
 
         View wallpaperButton = findViewById(R.id.wallpaper_button);
         wallpaperButton.setOnClickListener(new OnClickListener() {
@@ -1304,6 +1308,11 @@ public class Launcher extends Activity
         });
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
+        if (Utilities.isLmp()) {
+            ((TextView) wallpaperButton).setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.drawable.wallpaper_button_l, 0, 0);
+        }
+
         View settingsButton = findViewById(R.id.settings_button);
         if (hasSettings()) {
             settingsButton.setOnClickListener(new OnClickListener() {
@@ -1315,6 +1324,10 @@ public class Launcher extends Activity
                 }
             });
             settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+            if (Utilities.isLmp()) {
+                ((TextView) settingsButton).setCompoundDrawablesWithIntrinsicBounds(0,
+                        R.drawable.setting_button_l, 0, 0);
+            }
         } else {
             settingsButton.setVisibility(View.GONE);
             FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) widgetButton.getLayoutParams();
