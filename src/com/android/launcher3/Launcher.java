@@ -2744,6 +2744,10 @@ public class Launcher extends Activity
                         v.getMeasuredWidth(), v.getMeasuredHeight());
                 optsBundle = opts.toBundle();
             }
+            if (useLaunchAnimation && Utilities.isLmp()) {
+                ActivityOptions opts = ActivityOptions.makeCustomAnimation(this, R.anim.task_open_enter, R.anim.no_anim);
+                optsBundle = opts.toBundle();
+            }
 
             if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
                 // Could be launching some bookkeeping activity
