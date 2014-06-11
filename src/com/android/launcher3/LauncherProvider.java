@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -64,10 +65,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
@@ -304,7 +303,13 @@ public class LauncherProvider extends ContentProvider {
             if (workspaceResId == 0) {
                 TelephonyManager tm = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
-                    workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, R.xml.default_workspace_no_telephony);
+                    if (areGAppsInstalled()) {
+                        workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID,
+                                R.xml.default_workspace_no_telephony_gapps);
+                    } else {
+                        workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID,
+                                R.xml.default_workspace_no_telephony);
+                    }
                 } else {
                     workspaceResId = sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, getDefaultWorkspaceResourceId());
                 }
@@ -323,16 +328,34 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
+    private boolean areGAppsInstalled() {
+        PackageManager pm = getContext().getPackageManager();
+        try {
+            PackageInfo info = pm.getPackageInfo("com.google.android.gsf",PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
     public void migrateLauncher2Shortcuts() {
         mOpenHelper.migrateLauncher2Shortcuts(mOpenHelper.getWritableDatabase(),
                 LauncherSettings.Favorites.OLD_CONTENT_URI);
     }
 
-    private static int getDefaultWorkspaceResourceId() {
+    private int getDefaultWorkspaceResourceId() {
         if (LauncherAppState.isDisableAllApps()) {
-            return R.xml.default_workspace_no_all_apps;
+            if (areGAppsInstalled()){
+                return R.xml.default_workspace_no_all_apps_gapps;
+            } else {
+                return R.xml.default_workspace_no_all_apps;
+            }
         } else {
-            return R.xml.default_workspace;
+            if (areGAppsInstalled()){
+                return R.xml.default_workspace_gapps;
+            } else {
+                return R.xml.default_workspace;
+            }
         }
     }
 
@@ -1224,10 +1247,6 @@ public class LauncherProvider extends ContentProvider {
 
                 final int depth = parser.getDepth();
 
-                final HashMap<Long, ItemInfo[][]> occupied = new HashMap<Long, ItemInfo[][]>();
-                LauncherModel model = LauncherAppState.getInstance().getModel();
-                AtomicBoolean deleteItem = new AtomicBoolean();
-
                 int type;
                 while (((type = parser.next()) != XmlPullParser.END_TAG ||
                         parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
@@ -1278,18 +1297,6 @@ public class LauncherProvider extends ContentProvider {
                     values.put(LauncherSettings.Favorites.SCREEN, screen);
                     values.put(LauncherSettings.Favorites.CELLX, x);
                     values.put(LauncherSettings.Favorites.CELLY, y);
-
-                    ItemInfo info = new ItemInfo();
-                    info.container = container;
-                    info.spanX = a.getInt(R.styleable.Favorite_spanX, 1);
-                    info.spanY = a.getInt(R.styleable.Favorite_spanY, 1);
-                    info.cellX = a.getInt(R.styleable.Favorite_x, 0);
-                    info.cellY = a.getInt(R.styleable.Favorite_y, 0);
-                    info.screenId = a.getInt(R.styleable.Favorite_screen, 0);
-
-                    if (!model.checkItemPlacement(occupied, info, deleteItem)) {
-                        continue;
-                    }
 
                     if (LOGD) {
                         final String title = a.getString(R.styleable.Favorite_title);
@@ -1377,22 +1384,7 @@ public class LauncherProvider extends ContentProvider {
                             added = false;
                         }
                     }
-                    if (added) {
-                        i++;
-                    } else {
-                        long containerIndex = info.screenId;
-                        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                            occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                            [(int) info.screenId][0] = null;
-                        } else {
-                            ItemInfo[][] screens = occupied.get(info.screenId);
-                            for (int gridX = info.cellX; gridX < (info.cellX+info.spanX); gridX++) {
-                                for (int gridY = info.cellY; gridY < (info.cellY+info.spanY); gridY++) {
-                                    screens[gridX][gridY] = null;
-                                }
-                            }
-                        }
-                    }
+                    if (added) i++;
                     a.recycle();
                 }
             } catch (XmlPullParserException e) {

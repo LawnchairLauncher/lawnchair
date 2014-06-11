@@ -17,40 +17,5 @@
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <!-- Dialer Hangouts Maps Chrome Camera -->
-    <favorite
-        launcher:packageName="com.google.android.dialer"
-        launcher:className="com.google.android.dialer.extensions.GoogleDialtactsActivity"
-        launcher:container="-101"
-        launcher:screen="0"
-        launcher:x="0"
-        launcher:y="0" />
-    <favorite
-        launcher:packageName="com.google.android.talk"
-        launcher:className="com.google.android.talk.SigningInActivity"
-        launcher:container="-101"
-        launcher:screen="1"
-        launcher:x="1"
-        launcher:y="0" />
-    <favorite
-        launcher:packageName="com.google.android.apps.maps"
-        launcher:className="com.google.android.maps.MapsActivity"
-        launcher:container="-101"
-        launcher:screen="2"
-        launcher:x="2"
-        launcher:y="0"/>
-    <favorite
-        launcher:packageName="com.android.chrome"
-        launcher:className="com.google.android.apps.chrome.Main"
-        launcher:container="-101"
-        launcher:screen="3"
-        launcher:x="3"
-        launcher:y="0" />
-    <favorite
-        launcher:packageName="com.google.android.GoogleCamera"
-        launcher:className="com.android.camera.CameraLauncher"
-        launcher:container="-101"
-        launcher:screen="4"
-        launcher:x="4"
-        launcher:y="0" />
 </favorites>
 
