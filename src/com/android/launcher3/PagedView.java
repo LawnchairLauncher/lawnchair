@@ -547,6 +547,19 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mNextPage = INVALID_PAGE;
     }
 
+    private int validateNewPage(int newPage) {
+        int validatedPage = newPage;
+        // When in free scroll mode, we need to clamp to the free scroll page range.
+        if (mFreeScroll) {
+            getFreeScrollPageRange(mTempVisiblePagesRange);
+            validatedPage = Math.max(mTempVisiblePagesRange[0],
+                    Math.min(newPage, mTempVisiblePagesRange[1]));
+        }
+        // Ensure that it is clamped by the actual set of children in all cases
+        validatedPage = Math.max(0, Math.min(validatedPage, getPageCount() - 1));
+        return validatedPage;
+    }
+
     /**
      * Sets the current page.
      */
@@ -560,7 +573,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             return;
         }
         mForceScreenScrolled = true;
-        mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
+        mCurrentPage = validateNewPage(currentPage);
         updateCurrentPageScroll();
         notifyPageSwitchListener();
         invalidate();
@@ -727,7 +740,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         } else if (mNextPage != INVALID_PAGE) {
             sendScrollAccessibilityEvent();
 
-            mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
+            mCurrentPage = validateNewPage(mNextPage);
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
 
@@ -1105,7 +1118,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return offset;
     }
 
-    protected void getOverviewModePages(int[] range) {
+    protected void getFreeScrollPageRange(int[] range) {
         range[0] = 0;
         range[1] = Math.max(0, getChildCount() - 1);
     }
@@ -1650,7 +1663,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     void updateFreescrollBounds() {
-        getOverviewModePages(mTempVisiblePagesRange);
+        getFreeScrollPageRange(mTempVisiblePagesRange);
         if (isLayoutRtl()) {
             mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
             mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
@@ -1665,7 +1678,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (mFreeScroll) {
             updateFreescrollBounds();
-            getOverviewModePages(mTempVisiblePagesRange);
+            getFreeScrollPageRange(mTempVisiblePagesRange);
             if (getCurrentPage() < mTempVisiblePagesRange[0]) {
                 setCurrentPage(mTempVisiblePagesRange[0]);
             } else if (getCurrentPage() > mTempVisiblePagesRange[1]) {
@@ -1684,7 +1697,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mDragView != null) {
             int dragX = (int) (mDragView.getLeft() + (mDragView.getMeasuredWidth() / 2)
                     + mDragView.getTranslationX());
-            getOverviewModePages(mTempVisiblePagesRange);
+            getFreeScrollPageRange(mTempVisiblePagesRange);
             int minDistance = Integer.MAX_VALUE;
             int minIndex = indexOfChild(mDragView);
             for (int i = mTempVisiblePagesRange[0]; i <= mTempVisiblePagesRange[1]; i++) {
@@ -1801,7 +1814,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         !isHoveringOverDelete) {
                     mTempVisiblePagesRange[0] = 0;
                     mTempVisiblePagesRange[1] = getPageCount() - 1;
-                    getOverviewModePages(mTempVisiblePagesRange);
+                    getFreeScrollPageRange(mTempVisiblePagesRange);
                     if (mTempVisiblePagesRange[0] <= pageUnderPointIndex &&
                             pageUnderPointIndex <= mTempVisiblePagesRange[1] &&
                             pageUnderPointIndex != mSidePageHoverIndex && mScroller.isFinished()) {
@@ -2149,7 +2162,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void snapToPageWithVelocity(int whichPage, int velocity) {
-        whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
+        whichPage = validateNewPage(whichPage);
         int halfScreenSize = getViewportWidth() / 2;
 
         final int newX = getScrollForPage(whichPage);
@@ -2200,7 +2213,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected void snapToPage(int whichPage, int duration, boolean immediate,
             TimeInterpolator interpolator) {
-        whichPage = Math.max(0, Math.min(whichPage, getPageCount() - 1));
+        whichPage = validateNewPage(whichPage);
 
         int newX = getScrollForPage(whichPage);
         final int sX = mUnboundedScrollX;
@@ -2214,6 +2227,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected void snapToPage(int whichPage, int delta, int duration, boolean immediate,
             TimeInterpolator interpolator) {
+        whichPage = validateNewPage(whichPage);
+
         mNextPage = whichPage;
         View focusedChild = getFocusedChild();
         if (focusedChild != null && whichPage != mCurrentPage &&
@@ -2486,7 +2501,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         mTempVisiblePagesRange[0] = 0;
         mTempVisiblePagesRange[1] = getPageCount() - 1;
-        getOverviewModePages(mTempVisiblePagesRange);
+        getFreeScrollPageRange(mTempVisiblePagesRange);
         mReorderingStarted = true;
 
         // Check if we are within the reordering range
@@ -2619,7 +2634,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 // in the layout)
                 // NOTE: We can make an assumption here because we have side-bound pages that we
                 //       will always have pages to animate in from the left
-                getOverviewModePages(mTempVisiblePagesRange);
+                getFreeScrollPageRange(mTempVisiblePagesRange);
                 boolean isLastWidgetPage = (mTempVisiblePagesRange[0] == mTempVisiblePagesRange[1]);
                 boolean slideFromLeft = (isLastWidgetPage ||
                         dragViewIndex > mTempVisiblePagesRange[0]);
