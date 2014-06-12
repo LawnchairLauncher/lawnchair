@@ -1255,7 +1255,8 @@ public class Workspace extends SmoothPagedView
         super.notifyPageSwitchListener();
         Launcher.setScreen(getNextPage());
 
-        if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
+        int ccIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
+        if (hasCustomContent() && getNextPage() == ccIndex && !mCustomContentShowing) {
             mCustomContentShowing = true;
 
             if (mCustomContentCallbacks != null) {
@@ -1263,7 +1264,7 @@ public class Workspace extends SmoothPagedView
                 mCustomContentShowTime = System.currentTimeMillis();
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
-        } else if (hasCustomContent() && mCustomContentShowing) {
+        } else if (hasCustomContent() &&  getNextPage() != ccIndex && mCustomContentShowing) {
             mCustomContentShowing = false;
             if (mCustomContentCallbacks != null) {
                 mCustomContentCallbacks.onHide();
@@ -1826,12 +1827,17 @@ public class Workspace extends SmoothPagedView
         // them
         mLastSetWallpaperOffsetSteps = 0f;
 
+        moveAwayFromCustomContentIfRequired();
+    }
+
+    public void moveAwayFromCustomContentIfRequired() {
         // Never resume to the custom page if GEL integration is enabled.
         int customPageIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
         // mCustomContentShowing can be lost if the Activity is recreated,
         // So make sure it is set to the right value.
         mCustomContentShowing = mCustomContentShowing
-                                || (customPageIndex == getCurrentPage() && hasCustomContent());
+                                || (customPageIndex == getCurrentPage()
+                                    && hasCustomContent());
         if (mCustomContentShowing && mLauncher.isGelIntegrationEnabled()) {
             moveToScreen((customPageIndex + 1), true);
         }
@@ -1844,6 +1850,8 @@ public class Workspace extends SmoothPagedView
             mWallpaperOffset.jumpToFinal();
         }
         super.onLayout(changed, left, top, right, bottom);
+
+        moveAwayFromCustomContentIfRequired();
     }
 
     @Override
@@ -4187,7 +4195,12 @@ public class Workspace extends SmoothPagedView
     }
 
     public int getCurrentPageOffsetFromCustomContent() {
-        return getNextPage() - numCustomPages();
+        int numCustomPages = numCustomPages();
+        // Special case where the Gel Integration page must be counted below
+        if(mLauncher.isGelIntegrationEnabled() && mLauncher.isGelIntegrationSupported()) {
+            numCustomPages += 1;
+        }
+        return getNextPage() - numCustomPages;
     }
 
     /**

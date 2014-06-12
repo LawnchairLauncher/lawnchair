@@ -63,10 +63,10 @@ public class GelIntegrationHelper {
                     if(GEL_ACTIVITY.equals(topActivityClassName)
                        && GEL_PACKAGE_NAME.equals(topActivityPackageName)) {
                         Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         homeIntent.addCategory(Intent.CATEGORY_HOME);
                         launcherActivity.startActivity(homeIntent);
-                        launcherActivity.overridePendingTransition(0, R.anim.exit_out_left);
+                        launcherActivity.overridePendingTransition(0, 0);
                         dropEventsUntilLift();
                     }
                 }

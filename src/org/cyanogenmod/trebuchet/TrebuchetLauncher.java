@@ -38,11 +38,16 @@ import com.android.launcher3.R;
 import org.cyanogenmod.trebuchet.home.HomeUtils;
 import org.cyanogenmod.trebuchet.home.HomeWrapper;
 
+import java.lang.Override;
+
 public class TrebuchetLauncher extends Launcher {
 
     private static final String TAG = "TrebuchetLauncher";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
+    private static final float MIN_PROGRESS = 0;
+    private static final float MAX_PROGRESS = 1;
+
 
     private static class HomeAppStub {
         private final int mUid;
@@ -112,7 +117,6 @@ public class TrebuchetLauncher extends Launcher {
     private CustomContentCallbacks mCustomContentCallbacks = new CustomContentCallbacks() {
         @Override
         public void onShow() {
-            updateQsbBarColorState(0);
             if (mCurrentHomeApp != null) {
                 mCurrentHomeApp.mInstance.onShow();
             }
@@ -128,7 +132,6 @@ public class TrebuchetLauncher extends Launcher {
 
         @Override
         public void onHide() {
-            updateQsbBarColorState(255);
             if (mCurrentHomeApp != null) {
                 mCurrentHomeApp.mInstance.onHide();
             }
@@ -153,7 +156,7 @@ public class TrebuchetLauncher extends Launcher {
         mQsbInitialAlphaState = res.getInteger(R.integer.qsb_initial_alpha_state);
         mQsbEndAlphaState = res.getInteger(R.integer.qsb_end_alpha_state);
         mQsbButtonsEndColorFilter = res.getInteger(R.integer.qsb_buttons_end_colorfilter);
-        updateQsbBarColorState(0);
+        updateQsbBarColorState(MIN_PROGRESS);
 
         // Obtain the user-defined Home app or a valid one
         obtainCurrentHomeAppStubLocked(true);
@@ -195,7 +198,7 @@ public class TrebuchetLauncher extends Launcher {
 
     @Override
     protected boolean hasCustomContentToLeft() {
-        return mCurrentHomeApp != null;
+        return mCurrentHomeApp != null && super.hasCustomContentToLeft();
     }
 
     @Override
@@ -205,7 +208,7 @@ public class TrebuchetLauncher extends Launcher {
     }
 
     @Override
-    protected void addCustomContentToLeft() {
+    protected void populateCustomContentContainer() {
         if (mCurrentHomeApp != null) {
             mQsbScroller = addToCustomContentPage(mCurrentHomeApp.mInstance.createCustomView(),
                     mCustomContentCallbacks, mCurrentHomeApp.mInstance.getName());
@@ -316,16 +319,12 @@ public class TrebuchetLauncher extends Launcher {
             if (voiceButton != null) {
                 if (progress > 0) {
                     voiceButton.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-                } else {
-                    voiceButton.clearColorFilter();
                 }
             }
             ImageView searchButton = getQsbBarSearchButton();
             if (searchButton != null) {
                 if (progress > 0) {
                     searchButton.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-                } else {
-                    searchButton.clearColorFilter();
                 }
             }
         }
