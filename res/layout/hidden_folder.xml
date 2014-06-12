@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/settings_bg_color"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/overview_panel_button_spacing"
+    android:paddingRight="@dimen/overview_panel_button_spacing"
+    android:paddingTop="@dimen/overview_panel_bottom_padding"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true" >
+
+    <RelativeLayout
+        android:id="@+id/folder_title_lock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <ImageView
+            android:id="@+id/folder_lock_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/folder_unlock"
+            android:background="@drawable/listitem_bg" />
+
+        <EditText
+            android:id="@+id/folder_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingBottom="@dimen/folder_name_padding"
+            android:paddingTop="@dimen/folder_name_padding"
+            android:hint="@string/folder_hint_text"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textColorHighlight="#ffCCCCCC"
+            android:textCursorDrawable="@null"
+            android:singleLine="true"
+            android:background="#00000000" />
+    </RelativeLayout>
+
+    <ListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/hidden_apps_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp" />
+
+</LinearLayout>

@@ -107,6 +107,7 @@
     <!-- The amount that the preview contents are inset from the preview background -->
     <dimen name="folder_preview_padding">4dp</dimen>
     <dimen name="folder_name_padding">10dp</dimen>
+    <dimen name="folder_lock_icon">50dp</dimen>
 
     <!-- Settings Pane dimen -->
     <dimen name="settings_pane_handle">48dp</dimen>

@@ -1,6 +1,7 @@
 package com.android.launcher3.list;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.OverviewSettingsPanel;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.settings.SettingsProvider;
 import android.view.View.OnClickListener;
@@ -221,6 +223,11 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                         SettingsProvider.SETTINGS_UI_DRAWER_HIDE_ICON_LABELS,
                         R.bool.preferences_interface_drawer_hide_icon_labels_default);
                 mLauncher.updateDynamicGrid();
+            } else if (value.equals(res.getString(R.string.protected_app_settings))) {
+                Intent intent = new Intent();
+                intent.setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
+                        OverviewSettingsPanel.ANDROID_PROTECTED_APPS);
+                mLauncher.startActivity(intent);
             }
 
             View defaultHome = mLauncher.findViewById(R.id.default_home_screen_panel);
