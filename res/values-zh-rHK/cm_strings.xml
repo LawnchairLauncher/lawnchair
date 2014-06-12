@@ -26,7 +26,7 @@
   <string name="sort_mode_install_time">安裝時間</string>
   <string name="scrolling_page_outlines">頁面輪廓</string>
   <string name="scrolling_fade_adjacent">邊頁淡出</string>
-  <string name="wallpaper_scroll">滾動牆紙</string>
+  <string name="wallpaper_scroll">滾動桌布</string>
   <string name="preferences_title">設定</string>
   <string name="preferences_application_title">應用程式</string>
   <string name="preferences_interface_homescreen_title">主螢幕</string>
@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">預設圖示</string>
   <string name="icon_packs_title">圖示包</string>
   <string name="no_iconpacks_summary">沒有安裝圖示包</string>
-  <string name="all_apps_cling_cm">自訂您的抽屜</string>
-  <string name="all_apps_cling_summary">點擊頁面指標來查看其他配置設定</string>
   <string name="menu_hidden_apps_delete">重設</string>
   <string name="hidden_apps_title">隱藏的應用程式</string>
   <string name="launcher_settings">啟動器設定</string>

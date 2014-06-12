@@ -18,7 +18,7 @@
 <resources>
   <string-array name="preferences_interface_general_icons_text_font_family_entries">
     <item>正常</item>
-    <item>Light</item>
+    <item>明亮</item>
     <item>Condensed</item>
   </string-array>
   <string-array name="transition_effect_entries">

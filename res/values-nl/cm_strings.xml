@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Standaard</string>
   <string name="icon_packs_title">Pictogram\npakket</string>
   <string name="no_iconpacks_summary">Geen pictogrampakketten geïnstalleerd</string>
-  <string name="all_apps_cling_cm">App-overzicht aanpassen</string>
-  <string name="all_apps_cling_summary">Tik op de pagina-indicator voor extra instellingen</string>
   <string name="menu_hidden_apps_delete">Opnieuw instellen</string>
   <string name="hidden_apps_title">Verborgen apps</string>
   <string name="launcher_settings">INSTELLINGEN STARTPAGINA</string>

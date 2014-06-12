@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Standardsymbole</string>
   <string name="icon_packs_title">Symbolpakete</string>
   <string name="no_iconpacks_summary">Es sind keine Symbolpakete installiert</string>
-  <string name="all_apps_cling_cm">App-Übersicht konfigurieren</string>
-  <string name="all_apps_cling_summary">Berühren Sie den Seitenindikator, um die erweiterten Einstellungen zu öffnen.</string>
   <string name="menu_hidden_apps_delete">Zurücksetzen</string>
   <string name="hidden_apps_title">Versteckte Apps</string>
   <string name="launcher_settings">LAUNCHER-EINSTELLUNGEN</string>

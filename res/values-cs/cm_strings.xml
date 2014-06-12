@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Výchozí ikony</string>
   <string name="icon_packs_title">Balíčky ikon</string>
   <string name="no_iconpacks_summary">Není nainstalován žádný balíček ikon</string>
-  <string name="all_apps_cling_cm">Upravit vlastní složku</string>
-  <string name="all_apps_cling_summary">Dotykem na indikátor stránky zobrazit další možnosti nastavení</string>
   <string name="menu_hidden_apps_delete">Obnovit</string>
   <string name="hidden_apps_title">Skryté aplikace</string>
   <string name="launcher_settings">NASTAVENÍ SPOUŠTĚČE</string>

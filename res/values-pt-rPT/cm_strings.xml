@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Ícones padrão</string>
   <string name="icon_packs_title">Pacotes de Ícones</string>
   <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
-  <string name="all_apps_cling_cm">Personalize a sua gaveta de aplicações</string>
-  <string name="all_apps_cling_summary">Toque no indicador de página para ver definições adicionais</string>
   <string name="menu_hidden_apps_delete">Restaurar</string>
   <string name="hidden_apps_title">Aplicações ocultas</string>
   <string name="launcher_settings">DEFINIÇÕES DO LANÇADOR</string>

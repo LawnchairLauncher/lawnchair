@@ -47,7 +47,5 @@
   <string name="default_iconpack_title">Standardsymboler</string>
   <string name="icon_packs_title">Symbolpäck</string>
   <string name="no_iconpacks_summary">Keng Symbolpäck installéiert</string>
-  <string name="all_apps_cling_cm">App-Iwwersiicht konfiguréieren</string>
-  <string name="all_apps_cling_summary">Dréck de Säitenindikator fir zousätzlech Astellungen ze gesinn</string>
   <string name="menu_hidden_apps_delete">Zrécksetzen</string>
 </resources>

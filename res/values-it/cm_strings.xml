@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Icone predefinite</string>
   <string name="icon_packs_title">Pacchetti icone</string>
   <string name="no_iconpacks_summary">Nessun pacchetto di icone installato</string>
-  <string name="all_apps_cling_cm">Personalizza il drawer</string>
-  <string name="all_apps_cling_summary">Tocca l\'indicatore della pagina per visualizzare le impostazioni di configurazione aggiuntive</string>
   <string name="menu_hidden_apps_delete">Ripristina</string>
   <string name="hidden_apps_title">App nascoste</string>
   <string name="launcher_settings">Impostazioni launcher</string>

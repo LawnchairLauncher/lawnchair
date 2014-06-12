@@ -56,8 +56,17 @@
   <string name="default_iconpack_title">Standardikoner</string>
   <string name="icon_packs_title">Ikonpaket</string>
   <string name="no_iconpacks_summary">Inga ikonpaket installerade</string>
-  <string name="all_apps_cling_cm">Anpassa din appmeny</string>
-  <string name="all_apps_cling_summary">Tryck på sidindikatorn för att se ytterligare inställningar</string>
   <string name="menu_hidden_apps_delete">Återställ</string>
   <string name="hidden_apps_title">Gömda appar</string>
+  <string name="launcher_settings">LAUNCHERINSTÄLLNINGAR</string>
+  <string name="home_screen_settings">HEMSKÄRMSINSTÄLLNINGAR</string>
+  <string name="drawer_settings">APPMENYINSTÄLLNINGAR</string>
+  <string name="scroll_effect_text">Rullningseffekt</string>
+  <string name="drawer_sorting_text">Sorteringsläge</string>
+  <string name="home_screen_search_text">Sökfält</string>
+  <string name="larger_icons_text">Större ikoner</string>
+  <string name="hide_icon_labels">Dölj ikonetiketter</string>
+  <string name="setting_state_on">PÅ</string>
+  <string name="setting_state_off">AV</string>
+  <string name="themes_button_text">Teman</string>
 </resources>

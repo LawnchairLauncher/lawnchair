@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Domyślne ikony</string>
   <string name="icon_packs_title">Paczki ikon</string>
   <string name="no_iconpacks_summary">Brak zainstalowanych paczek ikon</string>
-  <string name="all_apps_cling_cm">Dostosuj szufladę</string>
-  <string name="all_apps_cling_summary">Naciśnij na wskaźnik strony by zobaczyć dodatkowe opcje konfiguracji</string>
   <string name="menu_hidden_apps_delete">Przywróć domyślne</string>
   <string name="hidden_apps_title">Ukryte aplikacje</string>
   <string name="launcher_settings">USTAWIENIA LAUNCHERA</string>

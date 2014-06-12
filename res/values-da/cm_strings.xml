@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Standardikoner</string>
   <string name="icon_packs_title">Ikonpakker</string>
   <string name="no_iconpacks_summary">Ingen ikonpakker installeret</string>
-  <string name="all_apps_cling_cm">Tilpas din oversigt</string>
-  <string name="all_apps_cling_summary">Tryk på sideindikatoren for at vise yderligere konfigurationsindstillinger</string>
   <string name="menu_hidden_apps_delete">Nulstil</string>
   <string name="hidden_apps_title">Skjulte apps</string>
   <string name="launcher_settings">INDSTILLINGER FOR LAUNCHER</string>

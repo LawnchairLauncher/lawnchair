@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Oletuskuvakkeet</string>
   <string name="icon_packs_title">Kuvakepaketit</string>
   <string name="no_iconpacks_summary">Kuvakepaketteja ei asennettu</string>
-  <string name="all_apps_cling_cm">Muokkaa sovellusvalikkoa</string>
-  <string name="all_apps_cling_summary">Napauta sivun ilmaisinta nähdäksesi lisää asetuksia</string>
   <string name="menu_hidden_apps_delete">Nollaa</string>
   <string name="hidden_apps_title">Piilotetut sovellukset</string>
   <string name="launcher_settings">LAUNCHERIN ASETUKSET</string>

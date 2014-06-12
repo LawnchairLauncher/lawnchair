@@ -56,8 +56,17 @@
   <string name="default_iconpack_title">Vaikimisi ikoonid</string>
   <string name="icon_packs_title">Ikoonipakid</string>
   <string name="no_iconpacks_summary">Ühtegi ikoonipakki pole installitud</string>
-  <string name="all_apps_cling_cm">Kohandage oma sahtlit</string>
-  <string name="all_apps_cling_summary">Puudutage lehe indikaatoril et näha täiendavaid sätteid</string>
   <string name="menu_hidden_apps_delete">Lähtesta</string>
   <string name="hidden_apps_title">Peidetud rakendused</string>
+  <string name="launcher_settings">KÄIVITAJA SEADED</string>
+  <string name="home_screen_settings">KODUEKRAANI SEADED</string>
+  <string name="drawer_settings">SAHTLI SEADED</string>
+  <string name="scroll_effect_text">Kerimisefekt</string>
+  <string name="drawer_sorting_text">Sortimisrežiim</string>
+  <string name="home_screen_search_text">Otsinguriba</string>
+  <string name="larger_icons_text">Suuremad ikoonid</string>
+  <string name="hide_icon_labels">Peida ikoonide sildid</string>
+  <string name="setting_state_on">SEES</string>
+  <string name="setting_state_off">VÄLJAS</string>
+  <string name="themes_button_text">Teemad</string>
 </resources>

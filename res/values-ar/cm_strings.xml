@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">الإيقونات الافتراضية</string>
   <string name="icon_packs_title">حزم الإيقونات</string>
   <string name="no_iconpacks_summary">لا توجد حزم أيقونات لتثبيت</string>
-  <string name="all_apps_cling_cm">تخصيص  الفراغ</string>
-  <string name="all_apps_cling_summary">انقر فوق مؤشر الصفحة لعرض إعدادات التكوين الإضافي</string>
   <string name="menu_hidden_apps_delete">إعادة تعيين</string>
   <string name="hidden_apps_title">تطبيقات المخفية</string>
   <string name="launcher_settings">إعدادات اللنشر</string>

@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Icônes par défaut</string>
   <string name="icon_packs_title">Packs d\'icônes</string>
   <string name="no_iconpacks_summary">Aucun pack d\'icônes installé</string>
-  <string name="all_apps_cling_cm">Personnaliser votre affichage</string>
-  <string name="all_apps_cling_summary">Appuyez sur l\'indicateur de page pour afficher les paramètres de configuration supplémentaires</string>
   <string name="menu_hidden_apps_delete">Réinitialiser</string>
   <string name="hidden_apps_title">Applications masquées</string>
   <string name="launcher_settings">PARAMÈTRES DU LANCEUR</string>

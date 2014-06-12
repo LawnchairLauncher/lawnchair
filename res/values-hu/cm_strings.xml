@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Alapértelmezett ikonok</string>
   <string name="icon_packs_title">Ikon csomagok</string>
   <string name="no_iconpacks_summary">Nincsenek telepítve ikoncsomagok</string>
-  <string name="all_apps_cling_cm">Alkalmazásképernyők testreszabása</string>
-  <string name="all_apps_cling_summary">Érintse meg az oldaljelölőt a további konfigurációs beállítások megtekintéséhez</string>
   <string name="menu_hidden_apps_delete">Visszaállítás</string>
   <string name="hidden_apps_title">Rejtett alkalmazások</string>
   <string name="launcher_settings">PROGRAMINDÍTÓ BEÁLLÍTÁSOK</string>

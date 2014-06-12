@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Numatytosios piktogramos</string>
   <string name="icon_packs_title">Piktogramų paketai</string>
   <string name="no_iconpacks_summary">Piktogramų paketai neįdiegti</string>
-  <string name="all_apps_cling_cm">Tinkinti savo stalčių</string>
-  <string name="all_apps_cling_summary">Bakstelėkite puslapio indikatorių norėdami peržiūrėti papildomus konfigūracijos nustatymus</string>
   <string name="menu_hidden_apps_delete">Atkurti</string>
   <string name="hidden_apps_title">Paslėptos programos</string>
   <string name="launcher_settings">PALEIDĖJO NUSTATYMAI</string>

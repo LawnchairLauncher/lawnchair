@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Standardikoner</string>
   <string name="icon_packs_title">Symbol-pakker</string>
   <string name="no_iconpacks_summary">Ingen ikon pakker installert</string>
-  <string name="all_apps_cling_cm">Tilpasse din skuff</string>
-  <string name="all_apps_cling_summary">Trykk på sideindikatoren for å vise flere konfigurasjonsinnstillinger</string>
   <string name="menu_hidden_apps_delete">Tilbakestille</string>
   <string name="hidden_apps_title">Skjulte programmer</string>
   <string name="launcher_settings">LAUNCHER INNSTILLINGER</string>

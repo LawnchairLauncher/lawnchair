@@ -56,8 +56,6 @@
   <string name="default_iconpack_title">Varsayılan simgeler</string>
   <string name="icon_packs_title">Simge paketleri</string>
   <string name="no_iconpacks_summary">Yüklü simge paketi yok</string>
-  <string name="all_apps_cling_cm">Uygulama çekmecesini özelleştir</string>
-  <string name="all_apps_cling_summary">Ek ayarlara bakmak için sayfa göstergesine dokun</string>
   <string name="menu_hidden_apps_delete">Sıfırla</string>
   <string name="hidden_apps_title">Gizli uygulamalar</string>
   <string name="launcher_settings">BAŞLATICI AYARLARI</string>

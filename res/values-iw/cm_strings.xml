@@ -56,10 +56,9 @@
   <string name="default_iconpack_title">סמלי ברירת מחדל</string>
   <string name="icon_packs_title">אוסף סמלים</string>
   <string name="no_iconpacks_summary">לא מותקנות ערכות סמל</string>
-  <string name="all_apps_cling_cm">התאמה אישית של מגירת היישומים</string>
-  <string name="all_apps_cling_summary">הקש על מחוון הדף כדי להציג הגדרות נוספות</string>
   <string name="menu_hidden_apps_delete">אפס</string>
   <string name="hidden_apps_title">יישומים מוסתרים</string>
+  <string name="launcher_settings">הגדרות מפעיל</string>
   <string name="home_screen_settings">הגדרות מסך הבית</string>
   <string name="drawer_settings">הגדרות מגירת יישומים</string>
   <string name="scroll_effect_text">אפקט גלילה</string>

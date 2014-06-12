@@ -56,8 +56,17 @@
   <string name="default_iconpack_title">ไอคอนเริ่มต้น</string>
   <string name="icon_packs_title">ชุดไอคอน</string>
   <string name="no_iconpacks_summary">ไม่มีชุดไอคอนที่ติดตั้งอยู่</string>
-  <string name="all_apps_cling_cm">กำหนดที่วางแอปของคุณ</string>
-  <string name="all_apps_cling_summary">แตะตัวแบ่งหน้าเพื่อดูการตั้งค่าเพิ่มเติม</string>
   <string name="menu_hidden_apps_delete">ล้างค่า</string>
   <string name="hidden_apps_title">ซ่อนแอป</string>
+  <string name="launcher_settings">ตั้งค่าหน้าตัวเรียกใช้งาน</string>
+  <string name="home_screen_settings">ตั้งค่าหน้าจอหลัก</string>
+  <string name="drawer_settings">ตั้งค่าแผงแสดงแอป</string>
+  <string name="scroll_effect_text">เอฟเฟกต์เลื่อน</string>
+  <string name="drawer_sorting_text">วิธีการเรียง</string>
+  <string name="home_screen_search_text">แถบค้นหา</string>
+  <string name="larger_icons_text">ไอคอนขนาดใหญ่</string>
+  <string name="hide_icon_labels">ซ่อนป้ายชื่อไอคอน</string>
+  <string name="setting_state_on">เปิด</string>
+  <string name="setting_state_off">ปิด</string>
+  <string name="themes_button_text">ชุดรูปแบบ</string>
 </resources>
