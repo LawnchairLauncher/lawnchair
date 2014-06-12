@@ -241,7 +241,7 @@ public class DeviceProfile {
         searchBarVisible = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
                 R.bool.preferences_interface_homescreen_search_default);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
-        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx  : 0);
+        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx  : 2 * edgeMarginPx);
     }
 
     void addCallback(DeviceProfileCallbacks cb) {
@@ -651,7 +651,7 @@ public class DeviceProfile {
         // Update search bar for live settings
         searchBarVisible = SettingsProvider.getBoolean(launcher, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
                 R.bool.preferences_interface_homescreen_search_default);
-        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx : 0);
+        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx : 2 * edgeMarginPx);
         FrameLayout.LayoutParams lp;
         Resources res = launcher.getResources();
         boolean hasVerticalBarLayout = isVerticalBarLayout();
