@@ -131,6 +131,8 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                     R.string.setting_state_on) : res.getString(
                     R.string.setting_state_off);
             ((TextView) v.findViewById(R.id.item_state)).setText(state);
+        } else {
+            ((TextView) v.findViewById(R.id.item_state)).setText("");
         }
 
         v.setTag(partition);
