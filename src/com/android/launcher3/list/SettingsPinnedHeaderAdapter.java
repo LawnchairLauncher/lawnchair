@@ -270,7 +270,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 // If GEL integration is not supported, do not allow the user to turn it on.
                 if(!current && !mLauncher.isGelIntegrationSupported()) {
                     Toast.makeText(mLauncher.getApplicationContext(),
-                            res.getString(R.string.preferences_search_screen_left_unsupported_toast),
+                            res.getString(R.string.search_screen_left_unsupported_toast),
                             Toast.LENGTH_SHORT).show();
                 } else {
                     onSettingsBooleanChanged(

@@ -693,25 +693,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_WALLPAPER_SCROLL, 0,
-                R.string.wallpaper_scroll).setCheckable(true);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem wallpaperScroll = menu.findItem(MENU_WALLPAPER_SCROLL);
-
-        wallpaperScroll.setChecked(SettingsProvider.getBoolean(this,
-                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
-                R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default));
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {

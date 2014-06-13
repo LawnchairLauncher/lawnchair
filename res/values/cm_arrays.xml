@@ -15,30 +15,19 @@
      limitations under the License.
 -->
 <resources>
-    <string-array name="preferences_interface_general_icons_text_font_family_entries">
-        <item>Regular</item>
-        <item>Light</item>
-        <item>Condensed</item>
-    </string-array>
-    <string-array name="preferences_interface_general_icons_text_font_family_values" translatable="false">
-        <item>sans-serif</item>
-        <item>sans-serif-light</item>
-        <item>sans-serif-condensed</item>
-    </string-array>
-
     <string-array name="transition_effect_entries">
         <item>None</item>
-        <item>Zoom In</item>
-        <item>Zoom Out</item>
-        <item>Rotate Up</item>
-        <item>Rotate Down</item>
-        <item>Cube In</item>
-        <item>Cube Out</item>
+        <item>Zoom in</item>
+        <item>Zoom out</item>
+        <item>Rotate up</item>
+        <item>Rotate down</item>
+        <item>Cube in</item>
+        <item>Cube out</item>
         <item>Stack</item>
         <item>Accordion</item>
         <item>Flip</item>
-        <item>Cylinder In</item>
-        <item>Cylinder Out</item>
+        <item>Cylinder in</item>
+        <item>Cylinder out</item>
         <item>Carousel</item>
         <item>Overview</item>
     </string-array>
