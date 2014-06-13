@@ -4933,6 +4933,16 @@ public class Workspace extends SmoothPagedView
         TransitionEffect.setFromString(this, SettingsProvider.getString(mLauncher,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT,
                 R.string.preferences_interface_homescreen_scrolling_transition_effect));
+
+        mScrollWallpaper = SettingsProvider.getBoolean(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
+                R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default);
+
+        if (!mScrollWallpaper) {
+            if (mWindowToken != null) mWallpaperManager.setWallpaperOffsets(mWindowToken, 0f, 0.5f);
+        } else {
+            mWallpaperOffset.syncWithScroll();
+        }
     }
 
     public boolean getShowSearchBar() {

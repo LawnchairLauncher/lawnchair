@@ -114,7 +114,10 @@
     <!-- Settings states -->
     <string name="setting_state_on">ON</string>
     <string name="setting_state_off">OFF</string>
+    <!-- Themes button -->
     <string name="themes_button_text">Themes</string>
+    <!-- Wallpaper scroll effect -->
+    <string name="scrolling_wallpaper">Scroll wallpaper</string>
 
     <!-- Hidden states -->
     <string name="hidden_folder">locked</string>
