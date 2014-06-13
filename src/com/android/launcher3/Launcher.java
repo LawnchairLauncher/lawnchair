@@ -541,7 +541,7 @@ public class Launcher extends Activity
                 R.bool.preferences_interface_homescreen_search_screen_left_default);
     }
 
-    private void initializeDynamicGrid() {
+    void initializeDynamicGrid() {
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
