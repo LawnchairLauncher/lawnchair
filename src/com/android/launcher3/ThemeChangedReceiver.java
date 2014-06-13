@@ -19,34 +19,30 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.io.File;
+
+import static com.android.launcher3.WidgetPreviewLoader.CacheDb.DB_NAME;
+
 public class ThemeChangedReceiver extends BroadcastReceiver {
-    private static final String EXTRA_COMPONENTS = "components";
-
-    public static final String MODIFIES_ICONS = "mods_icons";
-    public static final String MODIFIES_FONTS = "mods_fonts";
-    public static final String MODIFIES_OVERLAYS = "mods_overlays";
-
     public void onReceive(Context context, Intent intent) {
-        // components is a '|' delimited string of the components that changed
-        // due to a theme change.
-        String components = intent.getStringExtra(EXTRA_COMPONENTS);
-        if (components != null) {
-            LauncherAppState.setApplicationContext(context.getApplicationContext());
-            LauncherAppState app = LauncherAppState.getInstance();
-            if (isInterestingThemeChange(components)) {
-                app.getIconCache().flush();
-                app.getModel().forceReload();
-            }
-        }
+        LauncherAppState app = LauncherAppState.getInstance();
+        clearWidgetPreviewCache(context);
+        app.recreateWidgetPreviewDb();
+        app.getIconCache().flush();
+        app.getModel().forceReload();
     }
 
     /**
-     * We consider this an "interesting" theme change if it modifies icons, overlays, or fonts.
-     * @param components
-     * @return
+     * Normally we could use context.deleteDatabase() but this db is in cache/ so we'll
+     * manually delete it and the journal ourselves.
+     * @param context
      */
-    private boolean isInterestingThemeChange(String components) {
-        return components.contains(MODIFIES_ICONS) || components.contains(MODIFIES_FONTS) ||
-                components.contains(MODIFIES_OVERLAYS);
+    private void clearWidgetPreviewCache(Context context) {
+        File[] files = context.getCacheDir().listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (!f.isDirectory() && f.getName().startsWith(DB_NAME)) f.delete();
+            }
+        }
     }
 }
