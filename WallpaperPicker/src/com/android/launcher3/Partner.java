@@ -88,4 +88,10 @@ public class Partner {
                 "xml", getPackageName());
         return defaultLayout != 0;
     }
+
+    public boolean hasFolder() {
+        int folder = getResources().getIdentifier(Partner.RESOURCE_FOLDER,
+                "xml", getPackageName());
+        return folder != 0;
+    }
 }
