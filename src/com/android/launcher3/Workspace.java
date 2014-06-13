@@ -2086,13 +2086,17 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    protected void getOverviewModePages(int[] range) {
+    protected void getFreeScrollPageRange(int[] range) {
+        getOverviewModePages(range);
+    }
+
+    private void getOverviewModePages(int[] range) {
         int start = numCustomPages();
         int end = getChildCount() - 1;
 
         range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
         range[1] = Math.max(0,  end);
-     }
+    }
 
     protected void onStartReordering() {
         super.onStartReordering();
