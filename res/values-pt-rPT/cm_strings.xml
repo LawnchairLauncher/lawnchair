@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Usar ícones de aplicação extra grandes no ecrã inicial e na gaveta de aplicações</string>
   <string name="preferences_interface_general_icons_text_style_title">Estilo de tipo de letra</string>
   <string name="preferences_interface_general_icons_text_style_summary">Variante e estilo do tipo de letra a usar para o texto dos ícones</string>
-  <string name="dialog_pick_iconpack_title">Escolher pacote de ícones</string>
-  <string name="default_iconpack_title">Ícones padrão</string>
-  <string name="icon_packs_title">Pacotes de Ícones</string>
-  <string name="no_iconpacks_summary">Nenhum pacote de ícones instalado</string>
   <string name="menu_hidden_apps_delete">Restaurar</string>
   <string name="hidden_apps_title">Aplicações ocultas</string>
   <string name="launcher_settings">DEFINIÇÕES DO LANÇADOR</string>

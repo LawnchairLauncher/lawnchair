@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Використовувати великі значки на домашньому екрані та меню програм</string>
   <string name="preferences_interface_general_icons_text_style_title">Стиль шрифту</string>
   <string name="preferences_interface_general_icons_text_style_summary">Стиль та варіант шрифту для тексту під значками</string>
-  <string name="dialog_pick_iconpack_title">Вибрати набір значків</string>
-  <string name="default_iconpack_title">Типові значки</string>
-  <string name="icon_packs_title">Набори значків</string>
-  <string name="no_iconpacks_summary">Жодного набору значків не встановлено</string>
   <string name="menu_hidden_apps_delete">Скидання</string>
   <string name="hidden_apps_title">Приховані програми</string>
 </resources>

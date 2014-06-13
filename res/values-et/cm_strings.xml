@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Kasuta ülisuuri rakenduste ikoone koduekraanil ja sahtlis</string>
   <string name="preferences_interface_general_icons_text_style_title">Kirja fondistiil</string>
   <string name="preferences_interface_general_icons_text_style_summary">Fondi tüüp ja stiil mida kasutatakse ikoonidel</string>
-  <string name="dialog_pick_iconpack_title">Vali ikoonipakk</string>
-  <string name="default_iconpack_title">Vaikimisi ikoonid</string>
-  <string name="icon_packs_title">Ikoonipakid</string>
-  <string name="no_iconpacks_summary">Ühtegi ikoonipakki pole installitud</string>
   <string name="menu_hidden_apps_delete">Lähtesta</string>
   <string name="hidden_apps_title">Peidetud rakendused</string>
   <string name="launcher_settings">KÄIVITAJA SEADED</string>

@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Použiť extra veľké ikony aplikácií na domovskej obrazovke a v ponuke aplikácií</string>
   <string name="preferences_interface_general_icons_text_style_title">Štýl písma textu</string>
   <string name="preferences_interface_general_icons_text_style_summary">Variant a štýl písma na použitie pre text ikony</string>
-  <string name="dialog_pick_iconpack_title">Vyberte balík ikon</string>
-  <string name="default_iconpack_title">Predvolené ikony</string>
-  <string name="icon_packs_title">Balíky ikon</string>
-  <string name="no_iconpacks_summary">Žiadne balíky ikon nie sú nainštalované</string>
   <string name="menu_hidden_apps_delete">Obnoviť</string>
   <string name="hidden_apps_title">Skryté aplikácie</string>
   <string name="launcher_settings">NASTAVENIA SPÚŠŤAČA</string>

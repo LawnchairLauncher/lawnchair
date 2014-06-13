@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Użyj ekstra dużych ikon na ekranie głównym i szufladzie</string>
   <string name="preferences_interface_general_icons_text_style_title">Styl czcionki tekstu</string>
   <string name="preferences_interface_general_icons_text_style_summary">Wariant i styl czcionki używanej do tekstu przy ikonach</string>
-  <string name="dialog_pick_iconpack_title">Wybierz paczkę ikon</string>
-  <string name="default_iconpack_title">Domyślne ikony</string>
-  <string name="icon_packs_title">Paczki ikon</string>
-  <string name="no_iconpacks_summary">Brak zainstalowanych paczek ikon</string>
   <string name="menu_hidden_apps_delete">Przywróć domyślne</string>
   <string name="hidden_apps_title">Ukryte aplikacje</string>
   <string name="launcher_settings">USTAWIENIA LAUNCHERA</string>

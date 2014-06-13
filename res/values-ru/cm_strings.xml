@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Использовать увеличенные значки на домашнем экране и в меню приложений</string>
   <string name="preferences_interface_general_icons_text_style_title">Тип шрифта</string>
   <string name="preferences_interface_general_icons_text_style_summary">Выбор стиля шрифта для подписей значков</string>
-  <string name="dialog_pick_iconpack_title">Выберите набор значков</string>
-  <string name="default_iconpack_title">Значки по умолчанию</string>
-  <string name="icon_packs_title">Наборы значков</string>
-  <string name="no_iconpacks_summary">Наборы значков не установлены</string>
   <string name="menu_hidden_apps_delete">Сброс</string>
   <string name="hidden_apps_title">Скрытые приложения</string>
   <string name="launcher_settings">НАСТРОЙКИ ЛАУНЧЕРА</string>

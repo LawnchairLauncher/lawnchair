@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Користи екстра велике апликационе иконе на почетном екрану и фиоци</string>
   <string name="preferences_interface_general_icons_text_style_title">Стил фонта текста</string>
   <string name="preferences_interface_general_icons_text_style_summary">Варијанту и стил фонта користи за текст на иконама</string>
-  <string name="dialog_pick_iconpack_title">Одабери пакет икона</string>
-  <string name="default_iconpack_title">Подразумеване иконе</string>
-  <string name="icon_packs_title">Пакети икона</string>
-  <string name="no_iconpacks_summary">Нема инсталираних пакета са иконама</string>
   <string name="menu_hidden_apps_delete">Ресетуј</string>
   <string name="hidden_apps_title">Сакривене апликације</string>
   <string name="launcher_settings">ПОДЕШАВАЊА ПОКРЕТАЧА</string>

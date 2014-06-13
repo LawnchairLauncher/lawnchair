@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Použít větší ikony aplikací na plochách a aplikační složce</string>
   <string name="preferences_interface_general_icons_text_style_title">Vzhled písma</string>
   <string name="preferences_interface_general_icons_text_style_summary">Vzhled a varianta pro popis ikon</string>
-  <string name="dialog_pick_iconpack_title">Vyberte balíček ikon</string>
-  <string name="default_iconpack_title">Výchozí ikony</string>
-  <string name="icon_packs_title">Balíčky ikon</string>
-  <string name="no_iconpacks_summary">Není nainstalován žádný balíček ikon</string>
   <string name="menu_hidden_apps_delete">Obnovit</string>
   <string name="hidden_apps_title">Skryté aplikace</string>
   <string name="launcher_settings">NASTAVENÍ SPOUŠTĚČE</string>

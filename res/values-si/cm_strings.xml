@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">මුල් තිරයේ හා ලාච්චුවේ අති විශාල යෙදුම් අයිකන භාවිතා කරන්න</string>
   <string name="preferences_interface_general_icons_text_style_title">පෙළ ෆොන්ට විලාසය</string>
   <string name="preferences_interface_general_icons_text_style_summary">අයිකන පෙළ සඳහා භාවිතයට ෆොන්ටයේ ප්‍රභේදය සහ විලාසය</string>
-  <string name="dialog_pick_iconpack_title">අයිකන පොදිය තෝරන්න</string>
-  <string name="default_iconpack_title">පෙරනිමි අයිකන</string>
-  <string name="icon_packs_title">අයිකන පොදි</string>
-  <string name="no_iconpacks_summary">අයිකන පොදි කිසිවක් පිහිටුවා නැත</string>
   <string name="menu_hidden_apps_delete">ප්‍රත්‍යාරම්භනය</string>
   <string name="hidden_apps_title">සැඟවුණු යෙදුම්</string>
   <string name="launcher_settings">දියත් කරකයේ සැකසීම්</string>

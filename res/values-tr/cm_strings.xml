@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Ana ekranda ve uygulama çekmecesinde çok büyük uyg. simgeleri kullan</string>
   <string name="preferences_interface_general_icons_text_style_title">Yazı tipi stili</string>
   <string name="preferences_interface_general_icons_text_style_summary">Simge yazısı için yazı tipi</string>
-  <string name="dialog_pick_iconpack_title">Simge paketi seç</string>
-  <string name="default_iconpack_title">Varsayılan simgeler</string>
-  <string name="icon_packs_title">Simge paketleri</string>
-  <string name="no_iconpacks_summary">Yüklü simge paketi yok</string>
   <string name="menu_hidden_apps_delete">Sıfırla</string>
   <string name="hidden_apps_title">Gizli uygulamalar</string>
   <string name="launcher_settings">BAŞLATICI AYARLARI</string>

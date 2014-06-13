@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">显示大图标</string>
   <string name="preferences_interface_general_icons_text_style_title">字体样式</string>
   <string name="preferences_interface_general_icons_text_style_summary">图标字体样式</string>
-  <string name="dialog_pick_iconpack_title">选择图标包</string>
-  <string name="default_iconpack_title">默认图标</string>
-  <string name="icon_packs_title">图标包</string>
-  <string name="no_iconpacks_summary">没有安装的图标包</string>
   <string name="menu_hidden_apps_delete">重置</string>
   <string name="hidden_apps_title">隐藏的应用</string>
   <string name="launcher_settings">启动器设置</string>

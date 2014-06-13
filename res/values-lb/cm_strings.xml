@@ -43,9 +43,5 @@
   <string name="preferences_interface_general_icons_large_summary">Grouss Symboler fir d\'Apps um Startschierm a bei der App-Iwwersiicht benotzen</string>
   <string name="preferences_interface_general_icons_text_style_title">Schrëftstil</string>
   <string name="preferences_interface_general_icons_text_style_summary">Schrëftaart a -stil vum Text ënner de Symboler</string>
-  <string name="dialog_pick_iconpack_title">Symbolpak auswielen</string>
-  <string name="default_iconpack_title">Standardsymboler</string>
-  <string name="icon_packs_title">Symbolpäck</string>
-  <string name="no_iconpacks_summary">Keng Symbolpäck installéiert</string>
   <string name="menu_hidden_apps_delete">Zrécksetzen</string>
 </resources>

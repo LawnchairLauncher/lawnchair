@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Utilitza icones d\'aplicació extra grans a la pantalla d\'inici i al calaix</string>
   <string name="preferences_interface_general_icons_text_style_title">Estil del tipus de lletra del text</string>
   <string name="preferences_interface_general_icons_text_style_summary">Variant i estil del tipus de lletra pel text de les icones</string>
-  <string name="dialog_pick_iconpack_title">Escull un paquet d\'icones</string>
-  <string name="default_iconpack_title">Icones per defecte</string>
-  <string name="icon_packs_title">Paquets d\'icones</string>
-  <string name="no_iconpacks_summary">No hi ha paquets d\'icones instal·lats</string>
   <string name="menu_hidden_apps_delete">Reinicia</string>
   <string name="hidden_apps_title">Apps amagades</string>
   <string name="launcher_settings">CONFIGURACIÓ DEL LLANÇADOR</string>

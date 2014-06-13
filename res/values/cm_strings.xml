@@ -37,11 +37,6 @@
     <!-- Wallpaper scroll effect -->
     <string name="scrolling_wallpaper">Scroll wallpaper</string>
 
-    <!-- General -->
-    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
-    <string name="default_iconpack_title">Default icons</string>
-    <string name="no_iconpacks_summary">No icon packs installed</string>
-
     <!-- Folder titles -->
     <string name="google_title" translatable="false">Google</string>
 

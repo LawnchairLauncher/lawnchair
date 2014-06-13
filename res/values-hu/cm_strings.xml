@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Extra méretű ikonok a kezdő ill. alkalmazás képernyőkön</string>
   <string name="preferences_interface_general_icons_text_style_title">Szöveg betűtípusa</string>
   <string name="preferences_interface_general_icons_text_style_summary">Ikon szövegének típusa</string>
-  <string name="dialog_pick_iconpack_title">Ikoncsomag választása</string>
-  <string name="default_iconpack_title">Alapértelmezett ikonok</string>
-  <string name="icon_packs_title">Ikon csomagok</string>
-  <string name="no_iconpacks_summary">Nincsenek telepítve ikoncsomagok</string>
   <string name="menu_hidden_apps_delete">Visszaállítás</string>
   <string name="hidden_apps_title">Rejtett alkalmazások</string>
   <string name="launcher_settings">PROGRAMINDÍTÓ BEÁLLÍTÁSOK</string>

@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Gebruik ekstra groot toepassing ikone in tuis skerm en laai</string>
   <string name="preferences_interface_general_icons_text_style_title">Teksfont styl</string>
   <string name="preferences_interface_general_icons_text_style_summary">Variant en styl van font om te gebruik vir ikoon teks</string>
-  <string name="dialog_pick_iconpack_title">Kies ikoon stel</string>
-  <string name="default_iconpack_title">Standaard ikone</string>
-  <string name="icon_packs_title">Ikoon stelle</string>
-  <string name="no_iconpacks_summary">Geen ikoon stelle geïnstalleer</string>
   <string name="menu_hidden_apps_delete">Herstel</string>
   <string name="hidden_apps_title">Versteekte programme</string>
   <string name="launcher_settings">LANSEERDER INSTELLINGS</string>

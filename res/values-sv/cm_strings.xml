@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Använda extra stora appikoner på hemskärmen och appmenyn</string>
   <string name="preferences_interface_general_icons_text_style_title">Typsnitt</string>
   <string name="preferences_interface_general_icons_text_style_summary">Variant och stil på typsnitt som används för ikontext</string>
-  <string name="dialog_pick_iconpack_title">Välj ikonpaket</string>
-  <string name="default_iconpack_title">Standardikoner</string>
-  <string name="icon_packs_title">Ikonpaket</string>
-  <string name="no_iconpacks_summary">Inga ikonpaket installerade</string>
   <string name="menu_hidden_apps_delete">Återställ</string>
   <string name="hidden_apps_title">Gömda appar</string>
   <string name="launcher_settings">LAUNCHERINSTÄLLNINGAR</string>

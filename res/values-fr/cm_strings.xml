@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Utiliser des icônes extra-larges dans l\'écran d\'accueil et la liste d\'applications</string>
   <string name="preferences_interface_general_icons_text_style_title">Style de police de texte</string>
   <string name="preferences_interface_general_icons_text_style_summary">Variante et style de police à utiliser pour le texte des l\'icônes</string>
-  <string name="dialog_pick_iconpack_title">Choisissez le pack d\'icônes</string>
-  <string name="default_iconpack_title">Icônes par défaut</string>
-  <string name="icon_packs_title">Packs d\'icônes</string>
-  <string name="no_iconpacks_summary">Aucun pack d\'icônes installé</string>
   <string name="menu_hidden_apps_delete">Réinitialiser</string>
   <string name="hidden_apps_title">Applications masquées</string>
   <string name="launcher_settings">PARAMÈTRES DU LANCEUR</string>

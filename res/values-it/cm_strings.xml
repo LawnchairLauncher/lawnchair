@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Usa le icone grandi delle app nella schermata Home e nel drawer</string>
   <string name="preferences_interface_general_icons_text_style_title">Stile caratteri testo</string>
   <string name="preferences_interface_general_icons_text_style_summary">Varianti e stile dei caratteri per il testo dell\'icona</string>
-  <string name="dialog_pick_iconpack_title">Scegli pacchetto icone</string>
-  <string name="default_iconpack_title">Icone predefinite</string>
-  <string name="icon_packs_title">Pacchetti icone</string>
-  <string name="no_iconpacks_summary">Nessun pacchetto di icone installato</string>
   <string name="menu_hidden_apps_delete">Ripristina</string>
   <string name="hidden_apps_title">App nascoste</string>
   <string name="launcher_settings">Impostazioni launcher</string>

@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Χρήση μεγάλων εικονιδίων εφαρμογών στην αρχική οθόνη και το συρτάρι</string>
   <string name="preferences_interface_general_icons_text_style_title">Στυλ γραμματοσειράς κειμένου</string>
   <string name="preferences_interface_general_icons_text_style_summary">Τύπος και στυλ της γραμματοσειράς που χρησιμοποιείται για το κείμενο των εικονιδίων</string>
-  <string name="dialog_pick_iconpack_title">Επιλογή πακέτου εικονιδίων</string>
-  <string name="default_iconpack_title">Προεπιλεγμένα εικονίδια</string>
-  <string name="icon_packs_title">Πακέτα εικονιδίων</string>
-  <string name="no_iconpacks_summary">Δεν υπάρχουν εγκατεστημένα πακέτα εικονιδίων</string>
   <string name="menu_hidden_apps_delete">Επαναφορά</string>
   <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
   <string name="launcher_settings">ΓΕΝΙΚΕΣ ΡΥΘΜΙΣΕΙΣ</string>

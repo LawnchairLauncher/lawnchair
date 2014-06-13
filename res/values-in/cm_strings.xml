@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Gunakan ikon aplikasi lebih besar di homescreen dan drawer</string>
   <string name="preferences_interface_general_icons_text_style_title">Gaya teks font</string>
   <string name="preferences_interface_general_icons_text_style_summary">Varian dan gaya font untuk menggunakan teks icon</string>
-  <string name="dialog_pick_iconpack_title">Pilih paket ikon</string>
-  <string name="default_iconpack_title">Ikon semula</string>
-  <string name="icon_packs_title">Paket ikon</string>
-  <string name="no_iconpacks_summary">Tidak ada ikon paket yang diinstal</string>
   <string name="menu_hidden_apps_delete">Kembalikan</string>
   <string name="hidden_apps_title">Aplikasi tersembunyi</string>
   <string name="launcher_settings">PENGATURAN PELUNCUR</string>

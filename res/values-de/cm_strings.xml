@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Große Symbole für Apps im Startbildschirm und der App-Übersicht verwenden</string>
   <string name="preferences_interface_general_icons_text_style_title">Schriftstil</string>
   <string name="preferences_interface_general_icons_text_style_summary">Schriftart und Schriftstil der Symbolbeschriftung</string>
-  <string name="dialog_pick_iconpack_title">Symbolpaket auswählen</string>
-  <string name="default_iconpack_title">Standardsymbole</string>
-  <string name="icon_packs_title">Symbolpakete</string>
-  <string name="no_iconpacks_summary">Es sind keine Symbolpakete installiert</string>
   <string name="menu_hidden_apps_delete">Zurücksetzen</string>
   <string name="hidden_apps_title">Versteckte Apps</string>
   <string name="launcher_settings">LAUNCHER-EINSTELLUNGEN</string>

@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">ホーム画面とドロワーで大きいアイコンを使用する</string>
   <string name="preferences_interface_general_icons_text_style_title">テキストのフォントスタイル</string>
   <string name="preferences_interface_general_icons_text_style_summary">アイコンテキストに使用するフォントスタイルと種類</string>
-  <string name="dialog_pick_iconpack_title">アイコンパックを選択</string>
-  <string name="default_iconpack_title">デフォルトのアイコン</string>
-  <string name="icon_packs_title">アイコンパック</string>
-  <string name="no_iconpacks_summary">アイコンパックがインストールされていません</string>
   <string name="menu_hidden_apps_delete">リセット</string>
   <string name="hidden_apps_title">非表示にするアプリ</string>
   <string name="launcher_settings">ランチャーの設定</string>

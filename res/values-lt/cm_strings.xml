@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">Naudoti didesnes programų piktogramas pagrindiniame ekrane ir stalčiuje</string>
   <string name="preferences_interface_general_icons_text_style_title">Teksto šrifto stilius</string>
   <string name="preferences_interface_general_icons_text_style_summary">Piktogramos teksto šrifto variantas ir stilius</string>
-  <string name="dialog_pick_iconpack_title">Pasirinkti piktogramų paketą</string>
-  <string name="default_iconpack_title">Numatytosios piktogramos</string>
-  <string name="icon_packs_title">Piktogramų paketai</string>
-  <string name="no_iconpacks_summary">Piktogramų paketai neįdiegti</string>
   <string name="menu_hidden_apps_delete">Atkurti</string>
   <string name="hidden_apps_title">Paslėptos programos</string>
   <string name="launcher_settings">PALEIDĖJO NUSTATYMAI</string>

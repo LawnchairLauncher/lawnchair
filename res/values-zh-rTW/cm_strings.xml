@@ -44,10 +44,6 @@
   <string name="preferences_interface_general_title">一般</string>
   <string name="preferences_interface_general_icons_category">圖示</string>
   <string name="preferences_interface_general_icons_large_title">大圖示</string>
-  <string name="dialog_pick_iconpack_title">選擇圖示包</string>
-  <string name="default_iconpack_title">預設圖示</string>
-  <string name="icon_packs_title">圖示包</string>
-  <string name="menu_hidden_apps_delete">重設</string>
   <string name="hidden_apps_title">隱藏的應用程式</string>
   <string name="home_screen_search_text">搜尋列</string>
   <string name="larger_icons_text">大圖示</string>

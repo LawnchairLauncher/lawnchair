@@ -52,10 +52,6 @@
   <string name="preferences_interface_general_icons_large_summary">استخدام الرموز إضافية كبيرة لي التطبيق في الشاشة الرئيسية و الفراغ</string>
   <string name="preferences_interface_general_icons_text_style_title">نمط خط النص</string>
   <string name="preferences_interface_general_icons_text_style_summary">شكل ونمط الخط لاستخدامه لرمز النص</string>
-  <string name="dialog_pick_iconpack_title">اختر حزمة الأيقونة</string>
-  <string name="default_iconpack_title">الإيقونات الافتراضية</string>
-  <string name="icon_packs_title">حزم الإيقونات</string>
-  <string name="no_iconpacks_summary">لا توجد حزم أيقونات لتثبيت</string>
   <string name="menu_hidden_apps_delete">إعادة تعيين</string>
   <string name="hidden_apps_title">تطبيقات المخفية</string>
   <string name="launcher_settings">إعدادات اللنشر</string>
