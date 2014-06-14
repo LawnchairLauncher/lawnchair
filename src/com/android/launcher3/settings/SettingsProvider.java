@@ -38,8 +38,6 @@ public final class SettingsProvider {
     public static final String SETTINGS_UI_DRAWER_REMOVE_HIDDEN_APPS_WIDGETS = "ui_drawer_remove_hidden_apps_widgets";
     public static final String SETTINGS_UI_DRAWER_HIDE_ICON_LABELS = "ui_drawer_hide_icon_labels";
     public static final String SETTINGS_UI_GENERAL_ICONS_LARGE = "ui_general_icons_large";
-    public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_FAMILY = "ui_general_icons_text_font";
-    public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_STYLE = "ui_general_icons_text_font_style";
     public static final String SETTINGS_UI_DRAWER_SORT_MODE = "ui_drawer_sort_mode";
 
     public static SharedPreferences get(Context context) {

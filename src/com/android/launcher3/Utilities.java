@@ -21,14 +21,21 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -50,8 +57,6 @@ public final class Utilities {
     private static final Paint sDisabledPaint = new Paint();
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
-
-    private static Typeface sTypeface;
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -209,27 +214,6 @@ public final class Utilities {
                 final Resources resources = context.getResources();
                 return createIconBitmap(new BitmapDrawable(resources, bitmap), context);
             }
-        }
-    }
-
-    /**
-     * Generates the default icon typeface for use in icons.
-     *
-     * @param familyName May be null. The name of the font family.
-     * @param style The style (normal, bold, italic) of the typeface. e.g. NORMAL, BOLD, ITALIC, BOLD_ITALIC
-     */
-    static void generateTypeface(String familyName, int style) {
-        sTypeface = Typeface.create(familyName, style);
-    }
-
-    /**
-     * Applies the default icon typeface to a textview.
-     *
-     * @param textView View to apply typeface to.
-     */
-    static void applyTypeface(TextView textView) {
-        if (sTypeface != null) {
-            textView.setTypeface(sTypeface);
         }
     }
 
