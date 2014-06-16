@@ -4789,6 +4789,10 @@ public class Workspace extends SmoothPagedView
 
     private void updateShortcut(HashMap<ComponentName, AppInfo> appsMap, ItemInfo info,
                                 View child) {
+        if (info.getIntent() == null) {
+            // it's the all-apps shortcut, don't crash!
+            return;
+        }
         ComponentName cn = info.getIntent().getComponent();
         if (info.getRestoredIntent() != null) {
             cn = info.getRestoredIntent().getComponent();
