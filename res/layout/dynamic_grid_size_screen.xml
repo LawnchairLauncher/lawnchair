@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal|bottom"
+    android:background="@color/settings_bg_color"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/overview_panel_bottom_padding"
+    android:paddingTop="@dimen/overview_panel_bottom_padding"
+    android:clickable="true" >
+
+    <LinearLayout
+        android:id="@+id/dynamic_grid_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/listitem_bg"
+        android:clickable="true" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:src="@drawable/handle_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grid_size_text"
+            android:textAllCaps="true"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/dynamic_grid_size_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/grid_padding"/>
+
+    <ListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dynamic_grid_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:listSelector="@android:color/transparent"
+        android:splitMotionEvents="false"/>
+</LinearLayout>

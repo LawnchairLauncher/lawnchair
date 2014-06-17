@@ -23,6 +23,7 @@
     <string name="launcher_settings">LAUNCHER SETTINGS</string>
     <string name="home_screen_settings">HOME SCREEN SETTINGS</string>
     <string name="drawer_settings">DRAWER SETTINGS</string>
+    <string name="app_settings">APP SETTINGS</string>
 
     <!-- Settings states -->
     <string name="setting_state_on">ON</string>
@@ -36,6 +37,16 @@
 
     <!-- Wallpaper scroll effect -->
     <string name="scrolling_wallpaper">Scroll wallpaper</string>
+
+    <!-- Dynamic Grid -->
+    <string name="grid_size_text">Grid size</string>
+    <string name="grid_size_comfortable">Comfortable</string>
+    <string name="grid_size_cozy">Cozy</string>
+    <string name="grid_size_condensed">Condensed</string>
+    <string name="grid_size_custom">Custom</string>
+    <string name="preferences_interface_homescreen_custom">Select custom size</string>
+    <string name="preferences_interface_homescreen_rows_title">Number of rows</string>
+    <string name="preferences_interface_homescreen_columns_title">Number of columns</string>
 
     <!-- Folder titles -->
     <string name="google_title" translatable="false">Google</string>
@@ -72,4 +83,8 @@
 
     <!-- Toast message when search screen on left is not supported -->
     <string name="search_screen_left_unsupported_toast">You must have a supported search app and CyanogenMod to use this feature.</string>
+
+    <!-- Dialog -->
+    <string name="dialog_confirm">Confirm</string>
+
 </resources>

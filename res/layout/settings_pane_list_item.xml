@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal|bottom"
@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/item_name"
-        android:layout_width="0dip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:fontFamily="sans-serif-condensed"
@@ -18,11 +18,14 @@
         android:paddingTop="@dimen/overview_panel_list_padding"
         android:textSize="20sp"
         android:textColor="@color/listitem_text"
-        android:layout_weight="3" />
+        android:layout_alignParentLeft="true"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/item_state"
-        android:layout_width="0dip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:fontFamily="sans-serif-condensed"
@@ -32,6 +35,10 @@
         android:textSize="20sp"
         android:textAllCaps="true"
         android:textColor="@color/listitem_text"
-        android:layout_weight="1" />
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/item_name"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
-</LinearLayout>
+</RelativeLayout>

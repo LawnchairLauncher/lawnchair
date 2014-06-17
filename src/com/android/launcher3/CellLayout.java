@@ -3162,7 +3162,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         if (x < mCountX && y < mCountY) {
             return mOccupied[x][y];
         } else {
-            throw new RuntimeException("Position exceeds the bound of this CellLayout");
+            Log.w(TAG, "Position exceeds the bound of this CellLayout");
+            return false;
         }
     }
 
