@@ -3176,7 +3176,7 @@ public class Launcher extends Activity
         }
     }
 
-    protected AppsCustomizePagedView getAppsCustomizeContent() {
+    public AppsCustomizePagedView getAppsCustomizeContent() {
         return mAppsCustomizeContent;
     }
 

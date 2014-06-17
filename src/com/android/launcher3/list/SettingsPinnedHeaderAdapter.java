@@ -13,8 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.OverviewSettingsPanel;
-import com.android.launcher3.PagedView;
+import com.android.launcher3.AppsCustomizePagedView;
 import com.android.launcher3.R;
+
 import com.android.launcher3.settings.SettingsProvider;
 import android.view.View.OnClickListener;
 import android.content.SharedPreferences;
@@ -215,7 +216,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 mLauncher.updateDynamicGrid();
             } else if (value.equals(res
                     .getString(R.string.drawer_sorting_text))) {
-                mLauncher.onClickSortModeButton(v);
+                onClickTransitionEffectButton();
             } else if (value.equals(res
                     .getString(R.string.scroll_effect_text)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.DRAWER_SETTINGS_POSITION)) {
@@ -302,5 +303,18 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 R.string.setting_state_off) : mLauncher.getResources().getString(
                 R.string.setting_state_on);
         ((TextView) v.findViewById(R.id.item_state)).setText(state);
+    }
+
+    private void onClickTransitionEffectButton() {
+        int sort = SettingsProvider.getIntCustomDefault(mLauncher,
+                SettingsProvider.SETTINGS_UI_DRAWER_SORT_MODE, 0);
+
+        sort = (sort + 1) % AppsCustomizePagedView.SortMode.values().length;
+        mLauncher.getAppsCustomizeContent().setSortMode(
+                AppsCustomizePagedView.SortMode.getModeForValue(sort));
+
+        SettingsProvider.putInt(mLauncher, SettingsProvider.SETTINGS_UI_DRAWER_SORT_MODE, sort);
+
+        notifyDataSetChanged();
     }
 }
