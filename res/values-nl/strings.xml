@@ -119,6 +119,6 @@
     <string name="custom_workspace_cling_title_2" msgid="662588444436552198"></string>
     <string name="custom_workspace_cling_description_2" msgid="8097921091798539310"></string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Achtergronden"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Achtergrond"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Instellingen"</string>
 </resources>
