@@ -927,6 +927,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         final int childCount = getChildCount();
 
+        int screenWidth = getViewportWidth();
+
         int offsetX = getViewportOffsetX();
         int offsetY = getViewportOffsetY();
 
@@ -941,10 +943,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         int verticalPadding = getPaddingTop() + getPaddingBottom();
 
-        LayoutParams lp = (LayoutParams) getChildAt(startIndex).getLayoutParams();
-        LayoutParams nextLp;
-
-        int childLeft = offsetX + (lp.isFullScreenPage ? 0 : getPaddingLeft());
+        int childLeft = offsetX + (screenWidth - getChildWidth(startIndex)) / 2;
         if (mPageScrolls == null || getChildCount() != mChildCountOnLastLayout) {
             mPageScrolls = new int[getChildCount()];
         }
@@ -952,7 +951,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         for (int i = startIndex; i != endIndex; i += delta) {
             final View child = getPageAt(i);
             if (child.getVisibility() != View.GONE) {
-                lp = (LayoutParams) child.getLayoutParams();
+                LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 int childTop;
                 if (lp.isFullScreenPage) {
                     childTop = offsetY;
@@ -970,26 +969,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 child.layout(childLeft, childTop,
                         childLeft + child.getMeasuredWidth(), childTop + childHeight);
 
-                int scrollOffsetLeft = lp.isFullScreenPage ? 0 : getPaddingLeft();
-                mPageScrolls[i] = childLeft - scrollOffsetLeft - offsetX;
+                int scrollOffset = (getViewportWidth() - childWidth) / 2;
+                mPageScrolls[i] = childLeft - scrollOffset - offsetX;
 
-                int pageGap = mPageSpacing;
-                int next = i + delta;
-                if (next != endIndex) {
-                    nextLp = (LayoutParams) getPageAt(next).getLayoutParams();
-                } else {
-                    nextLp = null;
+                if (i != endIndex - delta) {
+                    childLeft += childWidth + scrollOffset;
+                    int nextScrollOffset = (getViewportWidth() - getChildWidth(i + delta)) /2;
+                    childLeft += nextScrollOffset;
                 }
-
-                // Prevent full screen pages from showing in the viewport
-                // when they are not the current page.
-                if (lp.isFullScreenPage) {
-                    pageGap = getPaddingLeft();
-                } else if (nextLp != null && nextLp.isFullScreenPage) {
-                    pageGap = getPaddingRight();
-                }
-
-                childLeft += childWidth + pageGap;
             }
         }
 
