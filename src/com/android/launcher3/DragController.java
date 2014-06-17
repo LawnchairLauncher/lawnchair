@@ -329,8 +329,8 @@ public class DragController {
                     if (dragInfo != null &&
                             dragInfo.intent != null && info != null) {
                         ComponentName cn = dragInfo.intent.getComponent();
-                        boolean isSameComponent = cn.equals(info.componentName) ||
-                                packageNames.contains(cn.getPackageName());
+                        boolean isSameComponent = cn != null && (cn.equals(info.componentName) ||
+                                packageNames.contains(cn.getPackageName()));
                         if (isSameComponent) {
                             cancelDrag();
                             return;
