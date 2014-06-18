@@ -3380,10 +3380,7 @@ public class Launcher extends Activity
     }
 
     void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
-        if (mWorkspace.isInOverviewMode()) {
-            mWorkspace.exitOverviewMode(animated);
-        }
-        if (mState != State.WORKSPACE) {
+        if (mState != State.WORKSPACE || mWorkspace.getState() != Workspace.State.NORMAL) {
             boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
             hideAppsCustomizeHelper(Workspace.State.NORMAL, animated, false, onCompleteRunnable);
@@ -3472,7 +3469,6 @@ public class Launcher extends Activity
                 }
             }
         }, delay);
-
     }
 
     void exitSpringLoadedDragMode() {

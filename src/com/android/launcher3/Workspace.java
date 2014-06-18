@@ -2204,6 +2204,10 @@ public class Workspace extends SmoothPagedView
         updateAccessibilityFlags();
     }
 
+    State getState() {
+        return mState;
+    }
+
     private void updateAccessibilityFlags() {
         int accessible = mState == State.NORMAL ?
                 ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES :
