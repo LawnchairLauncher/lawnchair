@@ -286,9 +286,6 @@ public class Launcher extends Activity
     private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
     private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
 
-    // Keep track of whether the user has left launcher
-    private static boolean sPausedFromUserAction = false;
-
     private Bundle mSavedInstanceState;
 
     private LauncherModel mModel;
@@ -465,7 +462,7 @@ public class Launcher extends Activity
         }
 
         if (!mRestoring) {
-            if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE || sPausedFromUserAction) {
+            if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE) {
                 // If the user leaves launcher, then we should just load items asynchronously when
                 // they return.
                 mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
@@ -510,11 +507,6 @@ public class Launcher extends Activity
 
     @Override
     public void onLauncherProviderChange() { }
-
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sPausedFromUserAction = true;
-    }
 
     /** To be overriden by subclasses to hint to Launcher that we have custom content */
     protected boolean hasCustomContentToLeft() {
@@ -971,7 +963,6 @@ public class Launcher extends Activity
         setWorkspaceBackground(mState == State.WORKSPACE);
 
         mPaused = false;
-        sPausedFromUserAction = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
             mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
