@@ -49,14 +49,14 @@ public class OverviewSettingsPanel {
                     res.getString(R.string.search_screen_left_text),
                     res.getString(R.string.scroll_effect_text),
                     res.getString(R.string.larger_icons_text),
-                    res.getString(R.string.hide_icon_labels),
+                    res.getString(R.string.icon_labels),
                     res.getString(R.string.scrolling_wallpaper)};
         } else {
             values = new String[]{
                     res.getString(R.string.home_screen_search_text),
                     res.getString(R.string.scroll_effect_text),
                     res.getString(R.string.larger_icons_text),
-                    res.getString(R.string.hide_icon_labels),
+                    res.getString(R.string.icon_labels),
                     res.getString(R.string.scrolling_wallpaper)};
         }
 
@@ -65,7 +65,7 @@ public class OverviewSettingsPanel {
         String[] valuesDrawer = new String[] {
                 res.getString(R.string.scroll_effect_text),
                 res.getString(R.string.drawer_sorting_text),
-                res.getString(R.string.hide_icon_labels),
+                res.getString(R.string.icon_labels),
                 res.getString(R.string.protected_app_settings)};
 
         mSettingsAdapter = new SettingsPinnedHeaderAdapter(mLauncher);
