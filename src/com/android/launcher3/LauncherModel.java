@@ -2820,6 +2820,7 @@ public class LauncherModel extends BroadcastReceiver
                         if (isShortcutInfoUpdateable(i)) {
                             ShortcutInfo info = (ShortcutInfo) i;
                             info.title = a.title.toString();
+                            info.contentDescription = a.contentDescription;
                             updateItemInDatabase(context, info);
                         }
                     }
@@ -2955,6 +2956,8 @@ public class LauncherModel extends BroadcastReceiver
             info.title = "";
         }
         info.user = UserHandleCompat.myUserHandle();
+        info.contentDescription = mUserManager.getBadgedLabelForUser(
+                info.title.toString(), info.user);
         info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.restoredIntent = intent;
@@ -3061,6 +3064,8 @@ public class LauncherModel extends BroadcastReceiver
         }
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
+        info.contentDescription = mUserManager.getBadgedLabelForUser(
+                info.title.toString(), info.user);
         return info;
     }
 
@@ -3336,6 +3341,8 @@ public class LauncherModel extends BroadcastReceiver
         info.setIcon(icon);
 
         info.title = name;
+        info.contentDescription = mUserManager.getBadgedLabelForUser(
+                info.title.toString(), info.user);
         info.intent = intent;
         info.customIcon = customIcon;
         info.iconResource = iconResource;

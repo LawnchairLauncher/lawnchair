@@ -113,10 +113,12 @@ public class ShortcutInfo extends ItemInfo {
         }
     }
 
-    ShortcutInfo(Intent intent, CharSequence title, Bitmap icon, UserHandleCompat user) {
+    ShortcutInfo(Intent intent, CharSequence title, String contentDescrition,
+            Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
         this.title = title;
+        this.contentDescription = contentDescription;
         mIcon = icon;
         this.user = user;
     }
