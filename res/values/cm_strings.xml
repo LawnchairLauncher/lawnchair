@@ -59,8 +59,10 @@
     <!-- Larger icons -->
     <string name="larger_icons_text">Larger icons</string>
 
-    <!-- Hide icon labels -->
-    <string name="hide_icon_labels">Hide icon labels</string>
+    <!-- Icon labels -->
+    <string name="icon_labels">Icon labels</string>
+    <string name="icon_labels_show">Show</string>
+    <string name="icon_labels_hide">Hide</string>
 
     <!-- Protected apps -->
     <string name="protected_app_settings">Protected apps</string>
