@@ -43,25 +43,13 @@ public class OverviewSettingsPanel {
                 res.getString(R.string.drawer_settings),
                 res.getString(R.string.app_settings)};
 
-        String[] values;
-        if(mLauncher.isGelIntegrationSupported()) {
-            values = new String[]{
-                    res.getString(R.string.home_screen_search_text),
-                    res.getString(R.string.search_screen_left_text),
-                    res.getString(R.string.scroll_effect_text),
-                    res.getString(R.string.icon_labels),
-                    res.getString(R.string.scrolling_wallpaper),
-                    res.getString(R.string.grid_size_text)};
-        } else {
-            values = new String[]{
-                    res.getString(R.string.home_screen_search_text),
-                    res.getString(R.string.scroll_effect_text),
-                    res.getString(R.string.icon_labels),
-                    res.getString(R.string.scrolling_wallpaper),
-                    res.getString(R.string.grid_size_text)};
-        }
-
-        mValues = values;
+        mValues = new String[]{
+                res.getString(R.string.home_screen_search_text),
+                res.getString(R.string.search_screen_left_text),
+                res.getString(R.string.scroll_effect_text),
+                res.getString(R.string.icon_labels),
+                res.getString(R.string.scrolling_wallpaper),
+                res.getString(R.string.grid_size_text)};
 
         String[] valuesDrawer = new String[] {
                 res.getString(R.string.scroll_effect_text),
@@ -80,7 +68,7 @@ public class OverviewSettingsPanel {
         mSettingsAdapter.addPartition(false, true);
         mSettingsAdapter.mPinnedHeaderCount = headers.length;
 
-        mSettingsAdapter.changeCursor(0, createCursor(headers[0], values));
+        mSettingsAdapter.changeCursor(0, createCursor(headers[0], mValues));
         mSettingsAdapter.changeCursor(1, createCursor(headers[1], valuesDrawer));
         mSettingsAdapter.changeCursor(2, createCursor(headers[2], valuesApp));
         mListView.setAdapter(mSettingsAdapter);

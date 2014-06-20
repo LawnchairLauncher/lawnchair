@@ -124,15 +124,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
             ((TextView) v.findViewById(R.id.item_state)).setText(state);
         } else if (title.equals(res
                 .getString(R.string.search_screen_left_text))) {
-            boolean current = SettingsProvider
-                    .getBoolean(
-                            mContext,
-                            SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_SCREEN_LEFT,
-                            R.bool.preferences_interface_homescreen_search_screen_left_default);
-            String state = current ? res.getString(
-                    R.string.setting_state_on) : res.getString(
-                    R.string.setting_state_off);
-            ((TextView) v.findViewById(R.id.item_state)).setText(state);
+            updateSearchPanelItem(v);
         } else if (title.equals(res.getString(R.string.scrolling_wallpaper))) {
             boolean current = SettingsProvider
                     .getBoolean(
@@ -181,6 +173,24 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
             case InstallTime:
                 state = mLauncher.getResources().getString(
                         R.string.sort_mode_install_time);
+                break;
+        }
+        ((TextView) v.findViewById(R.id.item_state)).setText(state);
+    }
+
+    public void updateSearchPanelItem(View v) {
+        String state = "";
+        switch (mLauncher.getCustomContentMode()) {
+            case DISABLED:
+                state = mLauncher.getResources().getString(
+                        R.string.setting_state_off);
+                break;
+            case GEL:
+                state = mLauncher.getResources().getString(R.string.search_panel_gel);
+                break;
+            default:
+                state = mLauncher.getResources().getString(
+                        R.string.search_panel_custom_home);
                 break;
         }
         ((TextView) v.findViewById(R.id.item_state)).setText(state);
@@ -293,25 +303,11 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
             } else if (value.equals(res
                     .getString(R.string.search_screen_left_text)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.HOME_SETTINGS_POSITION)) {
-
-                boolean current = SettingsProvider.getBoolean(mContext,
-                        SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_SCREEN_LEFT,
-                        R.bool.preferences_interface_homescreen_search_screen_left_default);
-
-                // If GEL integration is not supported, do not allow the user to turn it on.
-                if(!current && !mLauncher.isGelIntegrationSupported()) {
-                    Toast.makeText(mLauncher.getApplicationContext(),
-                            res.getString(R.string.search_screen_left_unsupported_toast),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    onSettingsBooleanChanged(
-                            v,
-                            SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_SCREEN_LEFT,
-                            R.bool.preferences_interface_homescreen_search_screen_left_default);
-                    mLauncher.restoreGelSetting();
-                    mLauncher.getWorkspace().updatePageScrollForCustomPage(!current);
-                    mLauncher.setUpdateDynamicGrid();
-                }
+                onClickSearchPanelButton();
+                boolean customContentEnabled =
+                        mLauncher.getCustomContentMode() != Launcher.CustomContentMode.DISABLED;
+                mLauncher.getWorkspace().updatePageScrollForCustomPage(customContentEnabled);
+                mLauncher.setUpdateDynamicGrid();
             } else if (value.equals(res
                     .getString(R.string.grid_size_text))) {
                 mLauncher.onClickDynamicGridSizeButton();
@@ -367,6 +363,28 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 AppsCustomizePagedView.SortMode.getModeForValue(sort));
 
         SettingsProvider.putInt(mLauncher, SettingsProvider.SETTINGS_UI_DRAWER_SORT_MODE, sort);
+
+        notifyDataSetChanged();
+    }
+
+    private void onClickSearchPanelButton() {
+        int searchPanelVal = SettingsProvider.getIntCustomDefault(mLauncher,
+                SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_PANEL_LEFT,
+                Launcher.CustomContentMode.DISABLED.getValue());
+
+        Launcher.CustomContentMode nextCCMode =
+            Launcher.CustomContentMode.getModeForValue(searchPanelVal + 1);
+        if(nextCCMode == Launcher.CustomContentMode.GEL && !mLauncher.isGelIntegrationSupported()) {
+            // GEL is not supported, skip that option
+            searchPanelVal++;
+        }
+
+        searchPanelVal = (searchPanelVal + 1) % Launcher.CustomContentMode.values().length;
+        mLauncher.setCustomContentMode(Launcher.CustomContentMode.getModeForValue(searchPanelVal));
+
+        SettingsProvider.putInt(mLauncher,
+                                SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_PANEL_LEFT,
+                                searchPanelVal);
 
         notifyDataSetChanged();
     }
