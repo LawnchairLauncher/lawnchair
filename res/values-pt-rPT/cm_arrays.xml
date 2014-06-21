@@ -16,23 +16,18 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Fino</item>
-    <item>Condensado</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Nenhum</item>
-    <item>Zoom In</item>
-    <item>Zoom Out</item>
-    <item>Rodar para Cima</item>
-    <item>Rodar para Baixo</item>
-    <item>Cubo para Dentro</item>
-    <item>Cubo para Fora</item>
+    <item>Zoom para dentro</item>
+    <item>Zoom para fora</item>
+    <item>Rodar para cima</item>
+    <item>Rodar para baixo</item>
+    <item>Cubo para dentro</item>
+    <item>Cubo para fora</item>
     <item>Pilha</item>
     <item>Acordeão</item>
     <item>Virar</item>
-    <item>Cilindro para Dentro</item>
+    <item>Cilindro para dentro</item>
     <item>Cilindro para Fora</item>
     <item>Carrossel</item>
     <item>Vista geral</item>

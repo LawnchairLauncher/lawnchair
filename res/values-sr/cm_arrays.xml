@@ -16,17 +16,12 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Обично</item>
-    <item>Светло</item>
-    <item>Кондензовано</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Ниједан</item>
     <item>Увећавање</item>
     <item>Умањивање</item>
-    <item>Ротирај нагоре</item>
-    <item>Ротирај надоле</item>
+    <item>Ротирање нагоре</item>
+    <item>Ротирање надоле</item>
     <item>Коцка унутра</item>
     <item>Коцка споља</item>
     <item>Листање карата</item>

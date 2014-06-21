@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Regulaarne</item>
-    <item>Kerge</item>
-    <item>Lühendatud</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Puudub</item>
-    <item>Suumi Sisse</item>
-    <item>Suumi Välja</item>
-    <item>Pööra Üles</item>
-    <item>Pööra Alla</item>
-    <item>Kuubik Sisse</item>
-    <item>Kuubik Välja</item>
+    <item>Zoom in</item>
+    <item>Zoom out</item>
+    <item>Rotate up</item>
+    <item>Rotate down</item>
+    <item>Cube in</item>
+    <item>Cube out</item>
     <item>Kihid</item>
     <item>Akordion</item>
     <item>Pööra ümber</item>
-    <item>Silinder Sisse</item>
-    <item>Silinder Välja</item>
+    <item>Cylinder in</item>
+    <item>Cylinder out</item>
     <item>Karussell</item>
     <item>Ülevaade</item>
   </string-array>

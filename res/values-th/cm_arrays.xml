@@ -16,15 +16,10 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>ปกติ</item>
-    <item>บาง</item>
-    <item>บีบ</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>ไม่มี</item>
-    <item>ขยาย</item>
-    <item>ย่อ</item>
+    <item>ซูมเข้า</item>
+    <item>ซูมออก</item>
     <item>หมุนขึ้น</item>
     <item>หมุนลง</item>
     <item>เข้าลูกบาศก์</item>

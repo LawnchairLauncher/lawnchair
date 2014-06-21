@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Dënn</item>
-    <item>Schmuel</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Keen</item>
-    <item>Erazoomen</item>
-    <item>Erauszoomen</item>
-    <item>Eroprotéieren</item>
-    <item>Erofrotéieren</item>
-    <item>Wierfel bannen</item>
-    <item>Wierfel baussen</item>
+    <item>Zoom in</item>
+    <item>Zoom out</item>
+    <item>Rotate up</item>
+    <item>Rotate down</item>
+    <item>Cube in</item>
+    <item>Cube out</item>
     <item>Koup</item>
     <item>Akkordeon</item>
     <item>Ëmdréinen</item>
-    <item>Zylinder bannen</item>
-    <item>Zylinder baussen</item>
+    <item>Cylinder in</item>
+    <item>Cylinder out</item>
     <item>Karussell</item>
     <item>Iwwersiicht</item>
   </string-array>

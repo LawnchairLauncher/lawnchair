@@ -16,38 +16,14 @@
      limitations under the License.
 -->
 <resources>
-  <string name="application_copyright">版權所有 \u00A9 2014 年 CyanogenMod 計畫</string>
-  <string name="sort_button_text">排序</string>
-  <string name="filter_button_text">篩選過濾</string>
-  <string name="default_screen_button_text">預設螢幕</string>
-  <string name="transition_effect_button_text">滾動效果</string>
-  <string name="sort_mode_title">標題</string>
-  <string name="sort_mode_launch_count">啟動次數</string>
-  <string name="sort_mode_install_time">安裝時間</string>
-  <string name="scrolling_fade_adjacent">邊頁淡出</string>
-  <string name="preferences_title">設定</string>
-  <string name="preferences_application_title">應用程式</string>
-  <string name="preferences_interface_homescreen_title">主螢幕</string>
-  <string name="preferences_interface_homescreen_search_title">搜尋列</string>
-  <string name="preferences_interface_homescreen_search_summary">在螢幕上方顯示常駐搜尋列</string>
-  <string name="preferences_interface_homescreen_general_hide_icon_labels_title">隱藏圖示標籤</string>
-  <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">隱藏主螢幕的圖示標籤</string>
-  <string name="preferences_interface_drawer_title">抽屜</string>
-  <string name="preferences_interface_drawer_summary">應用程式和小工具的抽屜</string>
-  <string name="preferences_interface_drawer_apps_category">應用程式</string>
-  <string name="preferences_interface_drawer_hidden_apps_title">隱藏的應用程式</string>
-  <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">刪除捷徑</string>
-  <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">從主螢幕刪除已隱藏的應用程式捷徑</string>
-  <string name="preferences_interface_drawer_hidden_apps_widgets_title">移除小工具</string>
-  <string name="preferences_interface_drawer_hidden_apps_widgets_summary">從主螢幕移除已隱藏的應用程式小工具</string>
-  <string name="preferences_interface_drawer_hide_icon_labels_title">隱藏圖示標籤</string>
-  <string name="preferences_interface_general_title">一般</string>
-  <string name="preferences_interface_general_icons_category">圖示</string>
-  <string name="preferences_interface_general_icons_large_title">大圖示</string>
-  <string name="hidden_apps_title">隱藏的應用程式</string>
-  <string name="home_screen_search_text">搜尋列</string>
-  <string name="larger_icons_text">大圖示</string>
   <string name="setting_state_on">開啟</string>
   <string name="setting_state_off">關閉</string>
   <string name="themes_button_text">主題</string>
+  <string name="scrolling_fade_adjacent">邊頁淡出</string>
+  <string name="hidden_apps_title">隱藏的應用程式</string>
+  <string name="sort_mode_title">標題</string>
+  <string name="sort_mode_launch_count">啟動次數</string>
+  <string name="sort_mode_install_time">安裝時間</string>
+  <string name="home_screen_search_text">搜尋列</string>
+  <string name="larger_icons_text">大圖示</string>
 </resources>

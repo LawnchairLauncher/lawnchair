@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>רגיל</item>
-    <item>לבן</item>
-    <item>מרוכז</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>ללא</item>
     <item>התקרבות</item>
     <item>התרחקות</item>
-    <item>סובב שמאלה</item>
-    <item>סובב ימינה</item>
-    <item>קוביית פנים</item>
-    <item>קוביית חוץ</item>
+    <item>סובב למעלה</item>
+    <item>סובב למטע</item>
+    <item>קובייה פנימה</item>
+    <item>קוביה החוצה</item>
     <item>מחסנית</item>
     <item>אקורדיון</item>
     <item>היפוך</item>
-    <item>גליל פנימי</item>
-    <item>גליל חיצוני</item>
+    <item>גליל פנימה</item>
+    <item>גליל החוצה</item>
     <item>קרוסלה</item>
     <item>תקציר</item>
   </string-array>

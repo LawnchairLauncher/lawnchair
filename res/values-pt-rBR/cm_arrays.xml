@@ -16,19 +16,14 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Leve</item>
-    <item>Condensado</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Nenhum</item>
-    <item>Dar Zoom</item>
-    <item>Tirar Zoom</item>
-    <item>Rotacionar p/ Cima</item>
-    <item>Rotacionar p/ Baixo</item>
-    <item>Cubo Interno</item>
-    <item>Cubo Externo</item>
+    <item>Aumentar zoom</item>
+    <item>Diminuir o zoom</item>
+    <item>Girar para cima</item>
+    <item>Girar para baixo</item>
+    <item>Cubo interno</item>
+    <item>Cubo externo</item>
     <item>Pilha</item>
     <item>Acordeão</item>
     <item>Girar</item>

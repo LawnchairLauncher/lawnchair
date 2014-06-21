@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Obyčejné</item>
-    <item>Slabé</item>
-    <item>Zůžené</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Žádný</item>
-    <item>Přiblížení</item>
-    <item>Oddálení</item>
-    <item>Rotace nahoru</item>
-    <item>Rotace dolu</item>
-    <item>Uvnitř krychle</item>
-    <item>Vně krychle</item>
+    <item>Zoom in</item>
+    <item>Zoom out</item>
+    <item>Rotate up</item>
+    <item>Rotate down</item>
+    <item>Cube in</item>
+    <item>Cube out</item>
     <item>Vrstvy</item>
     <item>Harmonika</item>
     <item>Překlopení</item>
-    <item>Uvnitř válce</item>
-    <item>Vně válce</item>
+    <item>Cylinder in</item>
+    <item>Cylinder out</item>
     <item>Kolotoč</item>
     <item>Přehled</item>
   </string-array>

@@ -16,15 +16,10 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Pravidelný</item>
-    <item>Svetlý</item>
-    <item>Zhustený</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Žiadny</item>
-    <item>Priblíženie</item>
-    <item>Oddialenie</item>
+    <item>Priblížiť</item>
+    <item>Oddialiť</item>
     <item>Otočenie hore</item>
     <item>Otočenie dolu</item>
     <item>Kocka zvnútra</item>

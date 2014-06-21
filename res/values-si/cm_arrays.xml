@@ -16,11 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>විධිමත්</item>
-    <item>සැහැල්ලු</item>
-    <item>ඝනීභූත</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>කිසිවක් නැත</item>
     <item>ඇතුලට විශාලනය</item>

@@ -17,19 +17,19 @@
 -->
 <resources>
   <string-array name="transition_effect_entries">
-    <item>Ingen</item>
-    <item>Zoom ind</item>
-    <item>Zoom ud</item>
-    <item>Rotere op</item>
-    <item>Rotere ned</item>
-    <item>Indvendig terning</item>
-    <item>Udvendig terning</item>
-    <item>Stak</item>
-    <item>Harmonika</item>
+    <item>Nimic</item>
+    <item>Zoom in</item>
+    <item>Zoom out</item>
+    <item>Rotire în sus</item>
+    <item>Rotire în jos</item>
+    <item>Cub interior</item>
+    <item>Cub exterior</item>
+    <item>Stivă</item>
+    <item>Acordeon</item>
     <item>Flip</item>
-    <item>Indvendig cylinder</item>
-    <item>Udvendig cylinder</item>
-    <item>Karrusel</item>
-    <item>Overblik</item>
+    <item>Cilindru interor</item>
+    <item>Cilindru exterior</item>
+    <item>Carusel</item>
+    <item>Privire de ansamblu</item>
   </string-array>
 </resources>

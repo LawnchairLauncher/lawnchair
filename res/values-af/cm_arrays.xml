@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Gereelde</item>
-    <item>Lig</item>
-    <item>Verkorte</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Geen</item>
     <item>Zoom in</item>
-    <item>Zoom uit</item>
-    <item>Roteer op</item>
-    <item>Roteer af</item>
-    <item>Kubus in</item>
-    <item>Kubus uit</item>
+    <item>Zoom out</item>
+    <item>Rotate up</item>
+    <item>Rotate down</item>
+    <item>Cube in</item>
+    <item>Cube out</item>
     <item>Stapel</item>
     <item>Trek klavier</item>
     <item>Spieël</item>
-    <item>Silinder in</item>
-    <item>Silinder uit</item>
+    <item>Cylinder in</item>
+    <item>Cylinder out</item>
     <item>Rondomtalie</item>
     <item>Oorsig</item>
   </string-array>
