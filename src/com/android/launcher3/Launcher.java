@@ -4894,6 +4894,7 @@ public class Launcher extends Activity
 
         // Synchronized reload
         mModel.startLoader(true, mWorkspace.getCurrentPage());
+        mWorkspace.updateCustomContentVisibility();
     }
 }
 

@@ -1638,13 +1638,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public int numCustomPages() {
-        // GEL integration is a special case (not a *real* screen) and should
-        // not be counted as custom content.
-        if(mLauncher.isGelIntegrationEnabled()) {
-            return 0;
-        } else {
-            return hasCustomContent() ? 1 : 0;
-        }
+        return hasCustomContent() ? 1 : 0;
     }
 
     public boolean isOnOrMovingToCustomContent() {
@@ -2123,11 +2117,6 @@ public class Workspace extends SmoothPagedView
     protected void getOverviewModePages(int[] range) {
         int start = numCustomPages();
         int end = getChildCount() - 1;
-
-        // For GEL integration, do not include the first page (GEL)
-        if(mLauncher.isGelIntegrationEnabled()) {
-            start += 1;
-        }
 
         range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
         range[1] = Math.max(0,  end);
@@ -4195,12 +4184,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public int getCurrentPageOffsetFromCustomContent() {
-        int numCustomPages = numCustomPages();
-        // Special case where the Gel Integration page must be counted below
-        if(mLauncher.isGelIntegrationEnabled() && mLauncher.isGelIntegrationSupported()) {
-            numCustomPages += 1;
-        }
-        return getNextPage() - numCustomPages;
+        return getNextPage() - numCustomPages();
     }
 
     /**
