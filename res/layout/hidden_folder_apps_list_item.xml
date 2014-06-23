@@ -5,8 +5,7 @@
     android:minHeight="48dp"
     android:gravity="center_vertical"
     android:paddingRight="?android:attr/scrollbarSize"
-    android:background="?android:attr/selectableItemBackground"
-    android:descendantFocusability="blocksDescendants">
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView android:id="@+id/icon"
         android:layout_width="40dp"
@@ -25,4 +24,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:ellipsize="marquee"
         android:fadingEdge="horizontal" />
+
+    <ImageView android:id="@+id/remove"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_remove"/>
 </LinearLayout>
