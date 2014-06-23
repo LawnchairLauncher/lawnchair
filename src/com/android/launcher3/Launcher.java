@@ -2744,8 +2744,8 @@ public class Launcher extends Activity
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
             } else {
-                launcherApps.startActivityForProfile(intent.getComponent(),
-                        intent.getSourceBounds(), optsBundle, user);
+                launcherApps.startActivityForProfile(intent.getComponent(), user,
+                        intent.getSourceBounds(), optsBundle);
             }
             return true;
         } catch (SecurityException e) {

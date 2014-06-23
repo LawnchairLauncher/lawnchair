@@ -36,7 +36,8 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 
-LOCAL_SDK_VERSION := 19
+# STOPSHIP(kennyguy): change to 21 once the L SDK is baked.
+LOCAL_SDK_VERSION := current
 
 LOCAL_PACKAGE_NAME := Launcher3
 #LOCAL_CERTIFICATE := shared

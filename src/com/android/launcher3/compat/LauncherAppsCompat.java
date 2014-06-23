@@ -39,40 +39,42 @@ public abstract class LauncherAppsCompat {
     public static final String ACTION_MANAGED_PROFILE_REMOVED =
             "android.intent.action.MANAGED_PROFILE_REMOVED";
 
-    public interface OnAppsChangedListenerCompat {
-        void onPackageRemoved(UserHandleCompat user, String packageName);
-        void onPackageAdded(UserHandleCompat user, String packageName);
-        void onPackageChanged(UserHandleCompat user, String packageName);
-        void onPackagesAvailable(UserHandleCompat user, String[] packageNames, boolean replacing);
-        void onPackagesUnavailable(UserHandleCompat user, String[] packageNames, boolean replacing);
+    public interface OnAppsChangedCallbackCompat {
+        void onPackageRemoved(String packageName, UserHandleCompat user);
+        void onPackageAdded(String packageName, UserHandleCompat user);
+        void onPackageChanged(String packageName, UserHandleCompat user);
+        void onPackagesAvailable(String[] packageNames, UserHandleCompat user, boolean replacing);
+        void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
     }
 
     protected LauncherAppsCompat() {
     }
 
+    private static LauncherAppsCompat sInstance;
+    private static Object sInstanceLock = new Object();
+
     public static LauncherAppsCompat getInstance(Context context) {
-        // TODO change this to use api version once L gets an API number.
-        if ("L".equals(Build.VERSION.CODENAME)) {
-            Object launcherApps = context.getSystemService("launcherapps");
-            if (launcherApps != null) {
-                LauncherAppsCompatVL compat = LauncherAppsCompatVL.build(context, launcherApps);
-                if (compat != null) {
-                    return compat;
+        synchronized (sInstanceLock) {
+            // TODO change this to use api version once L gets an API number.
+            if (sInstance == null) {
+                if ("L".equals(Build.VERSION.CODENAME)) {
+                    sInstance = new LauncherAppsCompatVL(context);
+                } else {
+                    sInstance = new LauncherAppsCompatV16(context);
                 }
             }
+            return sInstance;
         }
-        // Pre L or lunacher apps service not running, or reflection failed to find something.
-        return new LauncherAppsCompatV16(context);
     }
 
     public abstract List<LauncherActivityInfoCompat> getActivityList(String packageName,
             UserHandleCompat user);
     public abstract LauncherActivityInfoCompat resolveActivity(Intent intent,
             UserHandleCompat user);
-    public abstract void startActivityForProfile(ComponentName component, Rect sourceBounds,
-            Bundle opts, UserHandleCompat user);
-    public abstract void addOnAppsChangedListener(OnAppsChangedListenerCompat listener);
-    public abstract void removeOnAppsChangedListener(OnAppsChangedListenerCompat listener);
+    public abstract void startActivityForProfile(ComponentName component, UserHandleCompat user,
+            Rect sourceBounds, Bundle opts);
+    public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
+    public abstract void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user);
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandleCompat user);
