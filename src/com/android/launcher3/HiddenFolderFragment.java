@@ -140,6 +140,16 @@ public class HiddenFolderFragment extends Fragment {
         return apps;
     }
 
+    private void removeComponentFromFolder(AppEntry app) {
+        mLauncher.mHiddenFolderIcon.getFolderInfo().remove(
+                mLauncher.mHiddenFolderIcon.getFolder()
+                        .getShortcutForComponent(app.componentName));
+
+        mAppEntries.remove(app);
+        mAppsAdapter.remove(app);
+        mAppsAdapter.notifyDataSetInvalidated();
+    }
+
     public void saveHiddenFolderStatus(int position) {
         String newTitle = mFolderName.getText().toString();
         if (mLauncher.mHiddenFolderIcon != null) {
@@ -221,12 +231,18 @@ public class HiddenFolderFragment extends Fragment {
                 viewHolder = (AppViewHolder) convertView.getTag();
             }
 
-            AppEntry app = getItem(position);
+            final AppEntry app = getItem(position);
 
             viewHolder.title.setText(app.title);
 
             Drawable icon = mIcons.get(app.componentName.getPackageName());
             viewHolder.icon.setImageDrawable(icon != null ? icon : mDefaultImg);
+            viewHolder.remove.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeComponentFromFolder(app);
+                }
+            });
 
             convertView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -314,10 +330,12 @@ public class HiddenFolderFragment extends Fragment {
     private static class AppViewHolder {
         public final TextView title;
         public final ImageView icon;
+        public final ImageView remove;
         public final int position;
 
         public AppViewHolder(View parentView, int position) {
             icon = (ImageView) parentView.findViewById(R.id.icon);
+            remove = (ImageView) parentView.findViewById(R.id.remove);
             title = (TextView) parentView.findViewById(R.id.title);
             this.position = position;
         }
