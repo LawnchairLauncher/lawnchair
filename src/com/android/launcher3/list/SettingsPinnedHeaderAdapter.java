@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.OverviewSettingsPanel;
 import com.android.launcher3.AppsCustomizePagedView;
@@ -142,6 +143,8 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                     R.string.setting_state_on) : res.getString(
                     R.string.setting_state_off);
             ((TextView) v.findViewById(R.id.item_state)).setText(state);
+        } else if (title.equals(res.getString(R.string.grid_size_text))) {
+            updateDynamicGridSizeSettingsItem(v);
         } else {
             ((TextView) v.findViewById(R.id.item_state)).setText("");
         }
@@ -178,6 +181,34 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
             case InstallTime:
                 state = mLauncher.getResources().getString(
                         R.string.sort_mode_install_time);
+                break;
+        }
+        ((TextView) v.findViewById(R.id.item_state)).setText(state);
+    }
+
+    public void updateDynamicGridSizeSettingsItem(View v) {
+        DeviceProfile.GridSize gridSize = DeviceProfile.GridSize.getModeForValue(
+                SettingsProvider.getIntCustomDefault(mLauncher,
+                SettingsProvider.SETTINGS_UI_DYNAMIC_GRID_SIZE, 0));
+        String state = "";
+
+        switch (gridSize) {
+            case Comfortable:
+                state = mLauncher.getResources().getString(R.string.grid_size_comfortable);
+                break;
+            case Cozy:
+                state = mLauncher.getResources().getString(R.string.grid_size_cozy);
+                break;
+            case Condensed:
+                state = mLauncher.getResources().getString(R.string.grid_size_condensed);
+                break;
+            case Custom:
+                state = mLauncher.getResources().getString(R.string.grid_size_custom);
+                int rows = SettingsProvider.getIntCustomDefault(mLauncher,
+                        SettingsProvider.SETTINGS_UI_HOMESCREEN_ROWS, 0);
+                int columns = SettingsProvider.getIntCustomDefault(mLauncher,
+                        SettingsProvider.SETTINGS_UI_HOMESCREEN_COLUMNS, 0);
+                state += "(" + rows + "x" + columns + ")";
                 break;
         }
         ((TextView) v.findViewById(R.id.item_state)).setText(state);
@@ -253,6 +284,8 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 intent.setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
                         OverviewSettingsPanel.ANDROID_PROTECTED_APPS);
                 mLauncher.startActivity(intent);
+            } else if (value.equals(res.getString(R.string.protected_app_settings))) {
+
             } else if (value.equals(res
                     .getString(R.string.scrolling_wallpaper))) {
                 onSettingsBooleanChanged(
@@ -280,6 +313,9 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                             R.bool.preferences_interface_homescreen_search_screen_left_default);
                     mLauncher.updateDynamicGrid();
                 }
+            } else if (value.equals(res
+                    .getString(R.string.grid_size_text))) {
+                mLauncher.onClickDynamicGridSizeButton();
             }
 
             View defaultHome = mLauncher.findViewById(R.id.default_home_screen_panel);

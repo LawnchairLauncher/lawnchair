@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/grid_number_pickers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <NumberPicker
+            android:id="@+id/custom_rows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dialog_padding"/>
+
+        <NumberPicker
+            android:id="@+id/custom_columns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_padding"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/dialog_confirm_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_confirm"
+        android:layout_below="@id/grid_number_pickers"
+        android:layout_marginTop="@dimen/dialog_padding"/>
+</RelativeLayout>

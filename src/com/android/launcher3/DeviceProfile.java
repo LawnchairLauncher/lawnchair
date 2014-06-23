@@ -62,11 +62,45 @@ public class DeviceProfile {
         public void onAvailableSizeChanged(DeviceProfile grid);
     }
 
+    public final static int GRID_SIZE_MAX = 3;
+    public final static int GRID_SIZE_MIN = 2;
+
+    public enum GridSize {
+        Comfortable(0),
+        Cozy(1),
+        Condensed(2),
+        Custom(3);
+
+        private final int mValue;
+        private GridSize(int value) {
+            mValue = value;
+        }
+
+        public int getValue() {
+            return mValue;
+        }
+
+        public static GridSize getModeForValue(int value) {
+            switch (value) {
+                case 1:
+                    return Cozy;
+                case 2:
+                    return Condensed;
+                case 3:
+                    return Custom;
+                default :
+                    return Comfortable;
+            }
+        }
+    }
+
     String name;
     float minWidthDps;
     float minHeightDps;
     float numRows;
     float numColumns;
+    int numRowsBase;
+    int numColumnsBase;
     float numHotseatIcons;
     private float iconSize;
     private float iconTextSize;
@@ -191,12 +225,34 @@ public class DeviceProfile {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.numRows));
         }
         numRows = Math.round(invDistWeightedInterpolate(minWidth, minHeight, points));
+        numRowsBase = (int) numRows;
+        int gridResize = SettingsProvider.getIntCustomDefault(context,
+                SettingsProvider.SETTINGS_UI_DYNAMIC_GRID_SIZE, 0);
+        if (GridSize.getModeForValue(gridResize) != GridSize.Custom) {
+            numRows += gridResize;
+        } else {
+            int iTempNumberOfRows = SettingsProvider.getIntCustomDefault(context,
+                    SettingsProvider.SETTINGS_UI_HOMESCREEN_ROWS, (int)numRows);
+            if (iTempNumberOfRows > 0) {
+                numRows = iTempNumberOfRows;
+            }
+        }
         // Interpolate the columns
         points.clear();
         for (DeviceProfile p : profiles) {
             points.add(new DeviceProfileQuery(p.minWidthDps, p.minHeightDps, p.numColumns));
         }
         numColumns = Math.round(invDistWeightedInterpolate(minWidth, minHeight, points));
+        numColumnsBase = (int) numColumns;
+        if (GridSize.getModeForValue(gridResize) != GridSize.Custom) {
+            numColumns += gridResize;
+        } else {
+            int iTempNumberOfColumns = SettingsProvider.getIntCustomDefault(context,
+                    SettingsProvider.SETTINGS_UI_HOMESCREEN_COLUMNS, (int)numColumns);
+            if (iTempNumberOfColumns > 0) {
+                numColumns = iTempNumberOfColumns;
+            }
+        }
         // Interpolate the hotseat length
         points.clear();
         for (DeviceProfile p : profiles) {

@@ -112,4 +112,10 @@
 
     <!-- Settings Pane dimen -->
     <dimen name="settings_pane_handle">48dp</dimen>
+
+    <!-- Dynamic Grid settings -->
+    <dimen name="dialog_padding">10dp</dimen>
+
+    <dimen name="grid_padding">15dp</dimen>
+    <dimen name="grid_custom_text">50dp</dimen>
 </resources>
