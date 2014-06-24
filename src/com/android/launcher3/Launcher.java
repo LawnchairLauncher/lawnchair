@@ -3420,7 +3420,13 @@ public class Launcher extends Activity
             mAppsCustomizeTabHost.reset();
         }
         showAppsCustomizeHelper(animated, false, contentType);
-        mAppsCustomizeTabHost.requestFocus();
+        mAppsCustomizeTabHost.post(new Runnable() {
+            @Override
+            public void run() {
+                // We post this in-case the all apps view isn't yet constructed.
+                mAppsCustomizeTabHost.requestFocus();
+            }
+        });
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
