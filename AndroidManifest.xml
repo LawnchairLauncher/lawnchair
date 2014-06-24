@@ -189,9 +189,6 @@
         <receiver android:name="com.android.launcher3.ThemeChangedReceiver" >
             <intent-filter>
                 <action android:name="org.cyanogenmod.intent.action.THEME_CHANGED"/>
-                <category android:name="org.cyanogenmod.intent.category.MODS_ICONS"/>
-                <category android:name="org.cyanogenmod.intent.category.MODS_OVERLAYS"/>
-                <category android:name="org.cyanogenmod.intent.category.MODS_FONTS"/>
             </intent-filter>
         </receiver>
 

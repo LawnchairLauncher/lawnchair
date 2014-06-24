@@ -19,22 +19,53 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.io.File;
-
 import static com.android.launcher3.WidgetPreviewLoader.CacheDb.DB_NAME;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class ThemeChangedReceiver extends BroadcastReceiver {
+    private static final String EXTRA_COMPONENTS = "components";
+
+    public static final String MODIFIES_ICONS = "mods_icons";
+    public static final String MODIFIES_FONTS = "mods_fonts";
+    public static final String MODIFIES_OVERLAYS = "mods_overlays";
+
     public void onReceive(Context context, Intent intent) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        clearWidgetPreviewCache(context);
-        app.recreateWidgetPreviewDb();
-        app.getIconCache().flush();
-        app.getModel().forceReload();
+        // components is a string array of the components that changed
+        ArrayList<String> components = intent.getStringArrayListExtra(EXTRA_COMPONENTS);
+        if (isInterestingThemeChange(components)) {
+            LauncherAppState app = LauncherAppState.getInstance();
+            clearWidgetPreviewCache(context);
+            app.recreateWidgetPreviewDb();
+            app.getIconCache().flush();
+            app.getModel().forceReload();
+        }
     }
+
+    /**
+     * We consider this an "interesting" theme change if it modifies icons, overlays, or fonts.
+     * @param components
+     * @return
+     */
+    private boolean isInterestingThemeChange(ArrayList<String> components) {
+        if (components != null) {
+            for (String component : components) {
+                if (component.equals(MODIFIES_ICONS) ||
+                        component.equals(MODIFIES_FONTS) ||
+                        component.equals(MODIFIES_OVERLAYS)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Normally we could use context.deleteDatabase() but this db is in cache/ so we'll
      * manually delete it and the journal ourselves.
+     *
      * @param context
      */
     private void clearWidgetPreviewCache(Context context) {
