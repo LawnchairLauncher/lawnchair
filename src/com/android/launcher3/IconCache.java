@@ -65,7 +65,6 @@ public class IconCache {
     private static class CacheEntry {
         public Bitmap icon;
         public String title;
-        public String contentDescription;
     }
 
     private static class CacheKey {
@@ -241,7 +240,6 @@ public class IconCache {
 
             application.title = entry.title;
             application.iconBitmap = entry.icon;
-            application.contentDescription = entry.contentDescription;
         }
     }
 
@@ -264,7 +262,6 @@ public class IconCache {
             CacheEntry entry = cacheLocked(component, launcherActInfo, null, user);
             if (title != null) {
                 entry.title = title;
-                entry.contentDescription = mUserManager.getBadgedLabelForUser(title, user);
             }
             return entry.icon;
         }
@@ -313,7 +310,6 @@ public class IconCache {
                     }
                 }
 
-                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
                 entry.icon = Utilities.createIconBitmap(
                         info.getBadgedIcon(mIconDpi), mContext);
             } else {

@@ -44,8 +44,4 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     public long getSerialNumberForUser(UserHandleCompat user) {
         return 0;
     }
-
-    public String getBadgedLabelForUser(String label, UserHandleCompat user) {
-        return label;
-    }
 }

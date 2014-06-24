@@ -22,8 +22,9 @@ import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.os.UserManager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class UserManagerCompatVL extends UserManagerCompatV17 {
@@ -33,27 +34,35 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
     }
 
     public List<UserHandleCompat> getUserProfiles() {
-        List<UserHandle> users = mUserManager.getUserProfiles();
-        if (users == null) {
-            return Collections.EMPTY_LIST;
+        Method method = ReflectUtils.getMethod(mUserManager.getClass(), "getUserProfiles");
+        if (method != null) {
+            List<UserHandle> users = (List<UserHandle>) ReflectUtils.invokeMethod(
+                    mUserManager, method);
+            if (users != null) {
+                ArrayList<UserHandleCompat> compatUsers = new ArrayList<UserHandleCompat>(
+                        users.size());
+                for (UserHandle user : users) {
+                    compatUsers.add(UserHandleCompat.fromUser(user));
+                }
+                return compatUsers;
+            }
         }
-        ArrayList<UserHandleCompat> compatUsers = new ArrayList<UserHandleCompat>(
-                users.size());
-        for (UserHandle user : users) {
-            compatUsers.add(UserHandleCompat.fromUser(user));
-        }
-        return compatUsers;
+        // Fall back to non L version.
+        return super.getUserProfiles();
     }
 
     public Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user) {
-        return mUserManager.getBadgedDrawableForUser(unbadged, user.getUser());
-    }
-
-    public String getBadgedLabelForUser(String label, UserHandleCompat user) {
-        if (user == null) {
-            return label;
+        Method method = ReflectUtils.getMethod(mUserManager.getClass(), "getBadgedDrawableForUser",
+                Drawable.class, UserHandle.class);
+        if (method != null) {
+            Drawable d = (Drawable) ReflectUtils.invokeMethod(mUserManager, method, unbadged,
+                    user.getUser());
+            if (d != null) {
+                return d;
+            }
         }
-        return mUserManager.getBadgedLabelForUser(label, user.getUser());
+        // Fall back to non L version.
+        return super.getBadgedDrawableForUser(unbadged, user);
     }
 }
 

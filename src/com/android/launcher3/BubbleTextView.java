@@ -125,9 +125,6 @@ public class BubbleTextView extends TextView {
         setCompoundDrawables(null, iconDrawable, null, null);
         setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         setText(info.title);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
         setTag(info);
         if (info.isPromise()) {
             setState(ShortcutInfo.PACKAGE_STATE_UNKNOWN); // TODO: persist this state somewhere

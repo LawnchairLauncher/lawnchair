@@ -19,48 +19,99 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
 
+import java.lang.reflect.InvocationHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
-    private LauncherApps mLauncherApps;
+    private Object mLauncherApps;
+    private Class mLauncherAppsClass;
+    private Class mListenerClass;
+    private Method mGetActivityList;
+    private Method mResolveActivity;
+    private Method mStartActivityForProfile;
+    private Method mAddOnAppsChangedListener;
+    private Method mRemoveOnAppsChangedListener;
+    private Method mIsPackageEnabledForProfile;
+    private Method mIsActivityEnabledForProfile;
 
-    private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
-            = new HashMap<OnAppsChangedCallbackCompat, WrappedCallback>();
+    private Map<OnAppsChangedListenerCompat, Object> mListeners
+            = new HashMap<OnAppsChangedListenerCompat, Object>();
 
-    LauncherAppsCompatVL(Context context) {
+    static LauncherAppsCompatVL build(Context context, Object launcherApps) {
+        LauncherAppsCompatVL compat = new LauncherAppsCompatVL(context, launcherApps);
+
+        compat.mListenerClass = ReflectUtils.getClassForName(
+                "android.content.pm.LauncherApps$OnAppsChangedListener");
+        compat.mLauncherAppsClass = ReflectUtils.getClassForName("android.content.pm.LauncherApps");
+
+        compat.mGetActivityList = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "getActivityList",
+                String.class, UserHandle.class);
+        compat.mResolveActivity = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "resolveActivity",
+                Intent.class, UserHandle.class);
+        compat.mStartActivityForProfile = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "startActivityForProfile",
+                ComponentName.class, Rect.class, Bundle.class, UserHandle.class);
+        compat.mAddOnAppsChangedListener = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "addOnAppsChangedListener", compat.mListenerClass);
+        compat.mRemoveOnAppsChangedListener = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "removeOnAppsChangedListener", compat.mListenerClass);
+        compat.mIsPackageEnabledForProfile = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "isPackageEnabledForProfile", String.class, UserHandle.class);
+        compat.mIsActivityEnabledForProfile = ReflectUtils.getMethod(compat.mLauncherAppsClass,
+                "isActivityEnabledForProfile", ComponentName.class, UserHandle.class);
+
+        if (compat.mListenerClass != null
+                && compat.mLauncherAppsClass != null
+                && compat.mGetActivityList != null
+                && compat.mResolveActivity != null
+                && compat.mStartActivityForProfile != null
+                && compat.mAddOnAppsChangedListener != null
+                && compat.mRemoveOnAppsChangedListener != null
+                && compat.mIsPackageEnabledForProfile != null
+                && compat.mIsActivityEnabledForProfile != null) {
+            return compat;
+        }
+        return null;
+    }
+
+    private LauncherAppsCompatVL(Context context, Object launcherApps) {
         super();
-        mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
+        mLauncherApps = launcherApps;
     }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
             UserHandleCompat user) {
-        List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
-                user.getUser());
+        List<Object> list = (List<Object>) ReflectUtils.invokeMethod(mLauncherApps,
+                mGetActivityList, packageName, user.getUser());
         if (list.size() == 0) {
             return Collections.EMPTY_LIST;
         }
         ArrayList<LauncherActivityInfoCompat> compatList =
                 new ArrayList<LauncherActivityInfoCompat>(list.size());
-        for (LauncherActivityInfo info : list) {
+        for (Object info : list) {
             compatList.add(new LauncherActivityInfoCompatVL(info));
         }
         return compatList;
     }
 
     public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandleCompat user) {
-        LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user.getUser());
+        Object activity = ReflectUtils.invokeMethod(mLauncherApps, mResolveActivity,
+                        intent, user.getUser());
         if (activity != null) {
             return new LauncherActivityInfoCompatVL(activity);
         } else {
@@ -68,64 +119,89 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
     }
 
-    public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
-        mLauncherApps.startActivityForProfile(component, user.getUser(), sourceBounds, opts);
+    public void startActivityForProfile(ComponentName component, Rect sourceBounds,
+            Bundle opts, UserHandleCompat user) {
+        ReflectUtils.invokeMethod(mLauncherApps, mStartActivityForProfile,
+                component, sourceBounds, opts, user.getUser());
     }
 
-    public void addOnAppsChangedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-        WrappedCallback wrappedCallback = new WrappedCallback(callback);
-        synchronized (mCallbacks) {
-            mCallbacks.put(callback, wrappedCallback);
+    public void addOnAppsChangedListener(LauncherAppsCompat.OnAppsChangedListenerCompat listener) {
+        Object wrappedListener = Proxy.newProxyInstance(mListenerClass.getClassLoader(),
+                new Class[]{mListenerClass}, new WrappedListener(listener));
+        synchronized (mListeners) {
+            mListeners.put(listener, wrappedListener);
         }
-        mLauncherApps.addOnAppsChangedCallback(wrappedCallback);
+        ReflectUtils.invokeMethod(mLauncherApps, mAddOnAppsChangedListener, wrappedListener);
     }
 
-    public void removeOnAppsChangedCallback(
-            LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-        WrappedCallback wrappedCallback = null;
-        synchronized (mCallbacks) {
-            wrappedCallback = mCallbacks.remove(callback);
+    public void removeOnAppsChangedListener(
+            LauncherAppsCompat.OnAppsChangedListenerCompat listener) {
+        Object wrappedListener = null;
+        synchronized (mListeners) {
+            wrappedListener = mListeners.remove(listener);
         }
-        if (wrappedCallback != null) {
-            mLauncherApps.removeOnAppsChangedCallback(wrappedCallback);
+        if (wrappedListener != null) {
+            ReflectUtils.invokeMethod(mLauncherApps, mRemoveOnAppsChangedListener, wrappedListener);
         }
     }
 
     public boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user) {
-        return mLauncherApps.isPackageEnabledForProfile(packageName, user.getUser());
+        return (Boolean) ReflectUtils.invokeMethod(mLauncherApps, mIsPackageEnabledForProfile,
+                packageName, user.getUser());
     }
 
     public boolean isActivityEnabledForProfile(ComponentName component, UserHandleCompat user) {
-        return mLauncherApps.isActivityEnabledForProfile(component, user.getUser());
+        return (Boolean) ReflectUtils.invokeMethod(mLauncherApps, mIsActivityEnabledForProfile,
+                component, user.getUser());
     }
 
-    private static class WrappedCallback extends LauncherApps.OnAppsChangedCallback {
-        private LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
+    private static class WrappedListener implements InvocationHandler {
+        private LauncherAppsCompat.OnAppsChangedListenerCompat mListener;
 
-        public WrappedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-            mCallback = callback;
+        public WrappedListener(LauncherAppsCompat.OnAppsChangedListenerCompat listener) {
+            mListener = listener;
         }
 
-        public void onPackageRemoved(String packageName, UserHandle user) {
-            mCallback.onPackageRemoved(packageName, UserHandleCompat.fromUser(user));
+        public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
+            try {
+                String methodName = m.getName();
+                if ("onPackageRemoved".equals(methodName)) {
+                    onPackageRemoved((UserHandle) args[0], (String) args[1]);
+                } else if ("onPackageAdded".equals(methodName)) {
+                    onPackageAdded((UserHandle) args[0], (String) args[1]);
+                } else if ("onPackageChanged".equals(methodName)) {
+                    onPackageChanged((UserHandle) args[0], (String) args[1]);
+                } else if ("onPackagesAvailable".equals(methodName)) {
+                    onPackagesAvailable((UserHandle) args[0], (String []) args[1],
+                            (Boolean) args[2]);
+                } else if ("onPackagesUnavailable".equals(methodName)) {
+                    onPackagesUnavailable((UserHandle) args[0], (String []) args[1],
+                            (Boolean) args[2]);
+                }
+            } finally {
+                return null;
+            }
         }
 
-        public void onPackageAdded(String packageName, UserHandle user) {
-            mCallback.onPackageAdded(packageName, UserHandleCompat.fromUser(user));
+        public void onPackageRemoved(UserHandle user, String packageName) {
+            mListener.onPackageRemoved(UserHandleCompat.fromUser(user), packageName);
         }
 
-        public void onPackageChanged(String packageName, UserHandle user) {
-            mCallback.onPackageChanged(packageName, UserHandleCompat.fromUser(user));
+        public void onPackageAdded(UserHandle user, String packageName) {
+            mListener.onPackageAdded(UserHandleCompat.fromUser(user), packageName);
         }
 
-        public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
-            mCallback.onPackagesAvailable(packageNames, UserHandleCompat.fromUser(user), replacing);
+        public void onPackageChanged(UserHandle user, String packageName) {
+            mListener.onPackageChanged(UserHandleCompat.fromUser(user), packageName);
         }
 
-        public void onPackagesUnavailable(String[] packageNames, UserHandle user,
+        public void onPackagesAvailable(UserHandle user, String[] packageNames, boolean replacing) {
+            mListener.onPackagesAvailable(UserHandleCompat.fromUser(user), packageNames, replacing);
+        }
+
+        public void onPackagesUnavailable(UserHandle user, String[] packageNames,
                 boolean replacing) {
-            mCallback.onPackagesUnavailable(packageNames, UserHandleCompat.fromUser(user),
+            mListener.onPackagesUnavailable(UserHandleCompat.fromUser(user), packageNames,
                     replacing);
         }
     }

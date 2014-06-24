@@ -4781,7 +4781,6 @@ public class Workspace extends SmoothPagedView
                 shortcutInfo.restore();
                 shortcutInfo.updateIcon(mIconCache);
                 shortcutInfo.title = appInfo.title.toString();
-                shortcutInfo.contentDescription = appInfo.contentDescription;
                 shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache);
             }
         }

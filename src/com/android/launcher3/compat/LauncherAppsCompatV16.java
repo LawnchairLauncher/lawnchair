@@ -39,8 +39,8 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
 
     private PackageManager mPm;
     private Context mContext;
-    private List<OnAppsChangedCallbackCompat> mCallbacks
-            = new ArrayList<OnAppsChangedCallbackCompat>();
+    private List<OnAppsChangedListenerCompat> mListeners
+            = new ArrayList<OnAppsChangedListenerCompat>();
     private PackageMonitor mPackageMonitor;
 
     LauncherAppsCompatV16(Context context) {
@@ -71,8 +71,8 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         return null;
     }
 
-    public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
+    public void startActivityForProfile(ComponentName component, Rect sourceBounds,
+            Bundle opts, UserHandleCompat user) {
         Intent launchIntent = new Intent(Intent.ACTION_MAIN);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         launchIntent.setComponent(component);
@@ -81,18 +81,18 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mContext.startActivity(launchIntent, opts);
     }
 
-    public synchronized void addOnAppsChangedCallback(OnAppsChangedCallbackCompat callback) {
-        if (callback != null && !mCallbacks.contains(callback)) {
-            mCallbacks.add(callback);
-            if (mCallbacks.size() == 1) {
+    public synchronized void addOnAppsChangedListener(OnAppsChangedListenerCompat listener) {
+        if (listener != null && !mListeners.contains(listener)) {
+            mListeners.add(listener);
+            if (mListeners.size() == 1) {
                 registerForPackageIntents();
             }
         }
     }
 
-    public synchronized void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat callback) {
-        mCallbacks.remove(callback);
-        if (mCallbacks.size() == 0) {
+    public synchronized void removeOnAppsChangedListener(OnAppsChangedListenerCompat listener) {
+        mListeners.remove(listener);
+        if (mListeners.size() == 0) {
             unregisterForPackageIntents();
         }
     }
@@ -131,8 +131,8 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mContext.registerReceiver(mPackageMonitor, filter);
     }
 
-    private synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
-        return new ArrayList<OnAppsChangedCallbackCompat>(mCallbacks);
+    private synchronized List<OnAppsChangedListenerCompat> getListeners() {
+        return new ArrayList<OnAppsChangedListenerCompat>(mListeners);
     }
 
     private class PackageMonitor extends BroadcastReceiver {
@@ -151,39 +151,39 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
                     return;
                 }
                 if (Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
-                    for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
-                        callback.onPackageChanged(packageName, user);
+                    for (OnAppsChangedListenerCompat listener : getListeners()) {
+                        listener.onPackageChanged(user, packageName);
                     }
                 } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
                     if (!replacing) {
-                        for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
-                            callback.onPackageRemoved(packageName, user);
+                        for (OnAppsChangedListenerCompat listener : getListeners()) {
+                            listener.onPackageRemoved(user, packageName);
                         }
                     }
                     // else, we are replacing the package, so a PACKAGE_ADDED will be sent
                     // later, we will update the package at this time
                 } else if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
                     if (!replacing) {
-                        for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
-                            callback.onPackageAdded(packageName, user);
+                        for (OnAppsChangedListenerCompat listener : getListeners()) {
+                            listener.onPackageAdded(user, packageName);
                         }
                     } else {
-                        for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
-                            callback.onPackageChanged(packageName, user);
+                        for (OnAppsChangedListenerCompat listener : getListeners()) {
+                            listener.onPackageChanged(user, packageName);
                         }
                     }
                 }
             } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
                 final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
-                for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
-                    callback.onPackagesAvailable(packages, user, replacing);
+                for (OnAppsChangedListenerCompat listener : getListeners()) {
+                    listener.onPackagesAvailable(user, packages, replacing);
                 }
             } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
                 final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
-                for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
-                    callback.onPackagesUnavailable(packages, user, replacing);
+                for (OnAppsChangedListenerCompat listener : getListeners()) {
+                    listener.onPackagesUnavailable(user, packages, replacing);
                 }
             }
         }

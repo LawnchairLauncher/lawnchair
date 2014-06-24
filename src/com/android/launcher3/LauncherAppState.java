@@ -95,7 +95,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
-        launcherApps.addOnAppsChangedCallback(mModel);
+        launcherApps.addOnAppsChangedListener(mModel);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter();
@@ -128,7 +128,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     public void onTerminate() {
         sContext.unregisterReceiver(mModel);
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
-        launcherApps.removeOnAppsChangedCallback(mModel);
+        launcherApps.removeOnAppsChangedListener(mModel);
 
         ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
