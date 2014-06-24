@@ -2975,6 +2975,7 @@ public class LauncherModel extends BroadcastReceiver
         info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.restoredIntent = intent;
+        info.setState(ShortcutInfo.PACKAGE_STATE_UNKNOWN);
         return info;
     }
 
@@ -3088,6 +3089,9 @@ public class LauncherModel extends BroadcastReceiver
             if (i instanceof ShortcutInfo) {
                 ShortcutInfo info = (ShortcutInfo) i;
                 ComponentName cn = info.intent.getComponent();
+                if (info.restoredIntent != null) {
+                    cn = info.restoredIntent.getComponent();
+                }
                 if (cn != null && f.filterItem(null, info, cn)) {
                     filtered.add(info);
                 }
@@ -3095,6 +3099,9 @@ public class LauncherModel extends BroadcastReceiver
                 FolderInfo info = (FolderInfo) i;
                 for (ShortcutInfo s : info.contents) {
                     ComponentName cn = s.intent.getComponent();
+                    if (s.restoredIntent != null) {
+                        cn = s.restoredIntent.getComponent();
+                    }
                     if (cn != null && f.filterItem(info, s, cn)) {
                         filtered.add(s);
                     }

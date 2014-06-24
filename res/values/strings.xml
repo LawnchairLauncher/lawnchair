@@ -277,4 +277,21 @@ s -->
     <string name="package_state_unknown">Unknown</string>
     <!-- Label on an icon that references an uninstalled package, for which restore from market has failed. [CHAR_LIMIT=15] -->
     <string name="package_state_error">Not restored</string>
+
+    <!-- Button for abandoned promises dialog, that removes all abandoned promise icons. -->
+    <string name="abandoned_clean_all">Remove All</string>
+    <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
+    <string name="abandoned_clean_this">Remove</string>
+    <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
+    <string name="abandoned_search">Search</string>
+    <!-- Title for abandoned promise dialog. -->
+    <string name="abandoned_promises_title">This Package is not Installed</string>
+    <!-- Explanation for abandoned promise dialog. -->
+    <plurals name="abandoned_promises_explanation">
+        <item quantity="one">The package for this icon is not installed.  You many remove it, or
+            attempt to search for the package and install it manually.</item>
+        <item quantity="other">The package for this icon is not installed.  You many remove all
+            similarly broken icons, remove only this icon, or attempt to search for the package and
+            install it manually.</item>
+    </plurals>
 </resources>

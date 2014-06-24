@@ -74,8 +74,6 @@ public class BubbleTextView extends TextView {
     private CheckLongPressHelper mLongPressHelper;
     private int mInstallState;
 
-    private int mState;
-
     private CharSequence mDefaultText = "";
 
     public BubbleTextView(Context context) {
@@ -124,10 +122,9 @@ public class BubbleTextView extends TextView {
         Drawable iconDrawable = Utilities.createIconDrawable(b);
         setCompoundDrawables(null, iconDrawable, null, null);
         setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
-        setText(info.title);
         setTag(info);
         if (info.isPromise()) {
-            setState(ShortcutInfo.PACKAGE_STATE_UNKNOWN); // TODO: persist this state somewhere
+            applyState();
         }
     }
 
@@ -150,6 +147,11 @@ public class BubbleTextView extends TextView {
             LauncherModel.checkItemInfo((ItemInfo) tag);
         }
         super.setTag(tag);
+        if (tag instanceof ShortcutInfo) {
+            final ShortcutInfo info = (ShortcutInfo) tag;
+            mDefaultText = info.title;
+            setText(mDefaultText);
+        }
     }
 
     @Override
@@ -415,19 +417,12 @@ public class BubbleTextView extends TextView {
         mLongPressHelper.cancelLongPress();
     }
 
-    public void setState(int state) {
-        if (mState == ShortcutInfo.PACKAGE_STATE_DEFAULT && mState != state) {
-            mDefaultText = getText();
-        }
-        mState = state;
-        applyState();
-    }
-
-    private void applyState() {
+    public void applyState() {
         int alpha = getResources().getInteger(R.integer.promise_icon_alpha);
-        if (DEBUG) Log.d(TAG, "applying icon state: " + mState);
+        final int state = getState();
+        if (DEBUG) Log.d(TAG, "applying icon state: " + state);
 
-        switch(mState) {
+        switch(state) {
             case ShortcutInfo.PACKAGE_STATE_DEFAULT:
                 super.setText(mDefaultText);
                 alpha = 255;
@@ -460,6 +455,15 @@ public class BubbleTextView extends TextView {
             if (drawables[i] != null) {
                 drawables[i].setAlpha(alpha);
             }
+        }
+    }
+
+    private int getState() {
+        if (! (getTag() instanceof ShortcutInfo)) {
+            return ShortcutInfo.PACKAGE_STATE_DEFAULT;
+        } else {
+            ShortcutInfo info = (ShortcutInfo) getTag();
+            return info.getState();
         }
     }
 }

@@ -28,6 +28,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -38,6 +39,7 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -2517,7 +2519,7 @@ public class Launcher extends Activity
      *
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
      */
-    protected void onClickAppShortcut(View v) {
+    protected void onClickAppShortcut(final View v) {
         if (LOGD) Log.d(TAG, "onClickAppShortcut");
         Object tag = v.getTag();
         if (!(tag instanceof ShortcutInfo)) {
@@ -2541,7 +2543,55 @@ public class Launcher extends Activity
             }
         }
 
+        // Check for abandoned promise
+        if (shortcut.isAbandoned() && v instanceof BubbleTextView) {
+            final ArrayList<BubbleTextView> abandoned =
+                    mWorkspace.getAbandonedPromises(new ArrayList<BubbleTextView>());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.abandoned_promises_title);
+            builder.setMessage(getResources().getQuantityString(
+                    R.plurals.abandoned_promises_explanation, abandoned.size()));
+            builder.setPositiveButton(R.string.abandoned_search,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startAppShortcutActivity(v);
+                        }
+                    }
+            );
+            if (abandoned.size() > 1) {
+                builder.setNegativeButton(R.string.abandoned_clean_all,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                final UserHandleCompat user = UserHandleCompat.myUserHandle();
+                                mWorkspace.removeAbandonedPromises(abandoned, user);
+                            }
+                        }
+                );
+            }
+            builder.setNeutralButton(R.string.abandoned_clean_this,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            final BubbleTextView bubble = (BubbleTextView) v;
+                            final UserHandleCompat user = UserHandleCompat.myUserHandle();
+                            mWorkspace.removeAbandonedPromise(bubble, user);
+                        }
+                    });
+            builder.create().show();
+            return;
+        }
+
         // Start activities
+        startAppShortcutActivity(v);
+    }
+
+    private void startAppShortcutActivity(View v) {
+        Object tag = v.getTag();
+        if (!(tag instanceof ShortcutInfo)) {
+            throw new IllegalArgumentException("Input must be a Shortcut");
+        }
+        final ShortcutInfo shortcut = (ShortcutInfo) tag;
+        final Intent intent = shortcut.intent;
+
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         intent.setSourceBounds(new Rect(pos[0], pos[1],

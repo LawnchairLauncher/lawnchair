@@ -36,22 +36,22 @@ import java.util.Arrays;
  */
 public class ShortcutInfo extends ItemInfo {
 
-    /** This package is not installed, and there is no other information available. */
+    /** {@link #mState} meaning this package is not installed, and there is no other information. */
     public static final int PACKAGE_STATE_UNKNOWN = -2;
 
-    /** This package is not installed, because installation failed. */
+    /** {@link #mState} meaning this package is not installed, because installation failed. */
     public static final int PACKAGE_STATE_ERROR = -1;
 
-    /** This package is installed.  This is the typical case */
+    /** {@link #mState} meaning this package is installed.  This is the typical case. */
     public static final int PACKAGE_STATE_DEFAULT = 0;
 
-    /** This package is not installed, but some external entity has promised to install it. */
+    /** {@link #mState} meaning some external entity has promised to install this package. */
     public static final int PACKAGE_STATE_ENQUEUED = 1;
 
-    /** This package is not installed, but some external entity is downloading it. */
+    /** {@link #mState} meaning but some external entity is downloading this package. */
     public static final int PACKAGE_STATE_DOWNLOADING = 2;
 
-    /** This package is not installed, but some external entity is installing it. */
+    /** {@link #mState} meaning some external entity is installing this package. */
     public static final int PACKAGE_STATE_INSTALLING = 3;
 
     /**
@@ -82,6 +82,11 @@ public class ShortcutInfo extends ItemInfo {
      */
     private Bitmap mIcon;
 
+    /**
+     * The installation state of the package that this shortcut represents.
+     */
+    protected int mState;
+
     long firstInstallTime;
     int flags = 0;
 
@@ -110,6 +115,7 @@ public class ShortcutInfo extends ItemInfo {
         if (restoredIntent != null) {
             intent = restoredIntent;
             restoredIntent = null;
+            mState = PACKAGE_STATE_DEFAULT;
         }
     }
 
@@ -217,6 +223,20 @@ public class ShortcutInfo extends ItemInfo {
         return restoredIntent != null
                 && pkgName != null
                 && pkgName.equals(restoredIntent.getComponent().getPackageName());
+    }
+
+    public boolean isAbandoned() {
+        return isPromise()
+                && (mState == ShortcutInfo.PACKAGE_STATE_ERROR
+                        || mState == ShortcutInfo.PACKAGE_STATE_UNKNOWN);
+    }
+
+    public int getState() {
+        return mState;
+    }
+
+    public void setState(int state) {
+        mState = state;
     }
 }
 
