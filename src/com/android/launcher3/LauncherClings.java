@@ -29,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,9 @@ class LauncherClings {
 
     private static final int SHOW_CLING_DURATION = 250;
     private static final int DISMISS_CLING_DURATION = 200;
+
+    // New Secure Setting in L
+    private static final String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
 
     private Launcher mLauncher;
     private LayoutInflater mInflater;
@@ -106,6 +110,10 @@ class LauncherClings {
             if (restrictions.getBoolean(UserManager.DISALLOW_MODIFY_ACCOUNTS, false)) {
                 return false;
             }
+        }
+        if (Settings.Secure.getInt(mLauncher.getContentResolver(), SKIP_FIRST_USE_HINTS, 0)
+                == 1) {
+            return false;
         }
         return true;
     }
