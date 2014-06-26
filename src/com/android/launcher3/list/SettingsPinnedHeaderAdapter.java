@@ -203,12 +203,11 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                 state = mLauncher.getResources().getString(R.string.grid_size_condensed);
                 break;
             case Custom:
-                state = mLauncher.getResources().getString(R.string.grid_size_custom);
                 int rows = SettingsProvider.getIntCustomDefault(mLauncher,
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_ROWS, 0);
                 int columns = SettingsProvider.getIntCustomDefault(mLauncher,
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_COLUMNS, 0);
-                state += "(" + rows + "x" + columns + ")";
+                state = rows + " " + "\u00d7" + " " + columns;
                 break;
         }
         ((TextView) v.findViewById(R.id.item_state)).setText(state);
