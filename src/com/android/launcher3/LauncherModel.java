@@ -842,9 +842,26 @@ public class LauncherModel extends BroadcastReceiver
      */
     static boolean shortcutExists(Context context, String title, Intent intent) {
         final ContentResolver cr = context.getContentResolver();
+        final Intent intentWithPkg, intentWithoutPkg;
+
+        if (intent.getComponent() != null) {
+            // If component is not null, an intent with null package will produce
+            // the same result and should also be a match.
+            if (intent.getPackage() != null) {
+                intentWithPkg = intent;
+                intentWithoutPkg = new Intent(intent).setPackage(null);
+            } else {
+                intentWithPkg = new Intent(intent).setPackage(
+                        intent.getComponent().getPackageName());
+                intentWithoutPkg = intent;
+            }
+        } else {
+            intentWithPkg = intent;
+            intentWithoutPkg = intent;
+        }
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            new String[] { "title", "intent" }, "title=? and intent=?",
-            new String[] { title, intent.toUri(0) }, null);
+            new String[] { "title", "intent" }, "title=? and (intent=? or intent=?)",
+            new String[] { title, intentWithPkg.toUri(0), intentWithoutPkg.toUri(0) }, null);
         boolean result = false;
         try {
             result = c.moveToFirst();
