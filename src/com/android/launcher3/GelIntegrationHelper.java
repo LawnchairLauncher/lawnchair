@@ -22,6 +22,7 @@ public class GelIntegrationHelper {
     private static final String GEL_PACKAGE_NAME = "com.google.android.googlequicksearchbox";
 
     private static final int EDGE_GESTURE_SERVICE_RIGHT_EDGE = 4;
+    private static final int EDGE_GESTURE_SERVICE_LEFT_EDGE = 1;
     private static final int EDGE_GESTURE_SERVICE_NO_EDGE = -1;
 
     private EdgeGestureManager.EdgeGestureActivationListener mEdgeGestureActivationListener = null;
@@ -42,7 +43,7 @@ public class GelIntegrationHelper {
      * 2. Starts the Google Now Activity with an exit_out_right transition animation so that
      *    the new Activity appears to slide in as another screen (similar to GEL).
      */
-    public void registerSwipeBackGestureListenerAndStartGel(final Activity launcherActivity) {
+    public void registerSwipeBackGestureListenerAndStartGel(final Activity launcherActivity, boolean isLayoutRtl) {
         EdgeGestureManager edgeGestureManager = EdgeGestureManager.getInstance();
         if(mEdgeGestureActivationListener == null) {
             mEdgeGestureActivationListener = new EdgeGestureManager.EdgeGestureActivationListener() {
@@ -74,8 +75,9 @@ public class GelIntegrationHelper {
             edgeGestureManager.setEdgeGestureActivationListener(mEdgeGestureActivationListener);
         }
         mEdgeGestureActivationListener.restoreListenerState();
+        int edge = isLayoutRtl ? EDGE_GESTURE_SERVICE_LEFT_EDGE : EDGE_GESTURE_SERVICE_RIGHT_EDGE;
         edgeGestureManager.updateEdgeGestureActivationListener(mEdgeGestureActivationListener,
-                                                               EDGE_GESTURE_SERVICE_RIGHT_EDGE);
+                                                               edge);
 
         // Start the Google Now Activity
         Intent i = new Intent(INTENT_ACTION_ASSIST);
