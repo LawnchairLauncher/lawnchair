@@ -1664,7 +1664,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             int baselineX = mPageScrolls[index] + scrollOffset + getViewportOffsetX();
-            return (int) (child.getX() - baselineX);
+            return (int) (child.getLeft() - baselineX);
         }
     }
 
