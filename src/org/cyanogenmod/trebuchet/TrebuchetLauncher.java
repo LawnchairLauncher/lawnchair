@@ -212,7 +212,6 @@ public class TrebuchetLauncher extends Launcher {
         if (mCurrentHomeApp != null) {
             mQsbScroller = addToCustomContentPage(mCurrentHomeApp.mInstance.createCustomView(),
                     mCustomContentCallbacks, mCurrentHomeApp.mInstance.getName());
-            mQsbScroller.setScrollY(200);
         }
     }
 
