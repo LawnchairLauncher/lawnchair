@@ -19,12 +19,21 @@
   <string name="launcher_settings">NASTAVENIA SPÚŠŤAČA</string>
   <string name="home_screen_settings">NASTAVENIA DOMOVSKEJ OBRAZOVKY</string>
   <string name="drawer_settings">NASTAVENIA PONUKY</string>
+  <string name="app_settings">NASTAVENIA APLIKÁCIÍ</string>
   <string name="setting_state_on">Zapnuté</string>
   <string name="setting_state_off">VYPNUTÉ</string>
   <string name="themes_button_text">Témy</string>
   <string name="scrolling_page_outlines">Obrysy stránky</string>
   <string name="scrolling_fade_adjacent">Stmavnuté bočné strany</string>
   <string name="scrolling_wallpaper">Posun tapety</string>
+  <string name="grid_size_text">Veľkosť mriežky</string>
+  <string name="grid_size_comfortable">Pohodlná</string>
+  <string name="grid_size_cozy">Útulná</string>
+  <string name="grid_size_condensed">Zhustená</string>
+  <string name="grid_size_custom">Vlastná</string>
+  <string name="preferences_interface_homescreen_custom">Vyberte vlastnú veľkosť</string>
+  <string name="preferences_interface_homescreen_rows_title">Počet riadkov</string>
+  <string name="preferences_interface_homescreen_columns_title">Počet stĺpcov</string>
   <string name="hidden_apps_title">Skryté aplikácie</string>
   <string name="scroll_effect_text">Efekt posunu</string>
   <string name="drawer_sorting_text">Režim triedenia</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">Chránené aplikácie</string>
   <string name="search_screen_left_text">Panel vyhľadávania</string>
   <string name="search_screen_left_unsupported_toast">Musíte mať podporovaný vyhľadávač a CyanogenMod pre použitie tejto funkcie.</string>
+  <string name="dialog_confirm">Potvrdiť</string>
 </resources>

@@ -19,12 +19,21 @@
   <string name="launcher_settings">הגדרות מפעיל</string>
   <string name="home_screen_settings">הגדרות מסך הבית</string>
   <string name="drawer_settings">הגדרות מגירת יישומים</string>
+  <string name="app_settings">הגדרות יישום</string>
   <string name="setting_state_on">מופעל</string>
   <string name="setting_state_off">מושבת</string>
   <string name="themes_button_text">ערכות עיצוב</string>
   <string name="scrolling_page_outlines">תיאור דף</string>
   <string name="scrolling_fade_adjacent">עימום דפים צדדיים</string>
   <string name="scrolling_wallpaper">גלילת טפט</string>
+  <string name="grid_size_text">גודל רשת</string>
+  <string name="grid_size_comfortable">נוח</string>
+  <string name="grid_size_cozy">נעים</string>
+  <string name="grid_size_condensed">מרוכז</string>
+  <string name="grid_size_custom">מותאם אישית</string>
+  <string name="preferences_interface_homescreen_custom">בחר גודל מותאם אישית</string>
+  <string name="preferences_interface_homescreen_rows_title">מספר שורות</string>
+  <string name="preferences_interface_homescreen_columns_title">מספר עמודות</string>
   <string name="hidden_apps_title">יישומים מוסתרים</string>
   <string name="scroll_effect_text">אפקט גלילה</string>
   <string name="drawer_sorting_text">מצב המיון</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">יישומים מוגנים</string>
   <string name="search_screen_left_text">לוח חיפוש</string>
   <string name="search_screen_left_unsupported_toast">אתה חייב יישום חיפוש נתמך ו-CyanogenMod כדי להשתמש בתכונה זו.</string>
+  <string name="dialog_confirm">אשר</string>
 </resources>

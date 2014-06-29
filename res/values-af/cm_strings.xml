@@ -24,6 +24,7 @@
   <string name="themes_button_text">Temas</string>
   <string name="scrolling_page_outlines">Bladsy buitelyne</string>
   <string name="scrolling_fade_adjacent">Vervaag kant bladsye</string>
+  <string name="scrolling_wallpaper">Rol agtergrond</string>
   <string name="hidden_apps_title">Versteekte programme</string>
   <string name="scroll_effect_text">Rol effek</string>
   <string name="drawer_sorting_text">Sorteer metode</string>
@@ -32,4 +33,10 @@
   <string name="sort_mode_install_time">Iinstalleer tyd</string>
   <string name="home_screen_search_text">Soekbalk</string>
   <string name="larger_icons_text">Groter ikone</string>
+  <string name="icon_labels">Ikoon etikette</string>
+  <string name="icon_labels_show">Vertoon</string>
+  <string name="icon_labels_hide">Wegsteek</string>
+  <string name="protected_app_settings">Beskermde programme</string>
+  <string name="search_screen_left_text">Soek paneel</string>
+  <string name="search_screen_left_unsupported_toast">Jy moet \'n ondersteunde soek program hê en CyanogenMod om hierdie funksie te gebruik.</string>
 </resources>

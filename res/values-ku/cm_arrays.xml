@@ -17,19 +17,19 @@
 -->
 <resources>
   <string-array name="transition_effect_entries">
-    <item>Puudub</item>
-    <item>Suumi sisse</item>
-    <item>Suumi välja</item>
-    <item>Pööra üles</item>
-    <item>Pööra alla</item>
-    <item>Kuubik sisse</item>
-    <item>Kuubik välja</item>
-    <item>Kihid</item>
-    <item>Akordion</item>
-    <item>Pööra ümber</item>
-    <item>Silinder sisse</item>
-    <item>Silinder välja</item>
-    <item>Karussell</item>
-    <item>Ülevaade</item>
+    <item>هیچ</item>
+    <item>زومکردن بۆ ناو</item>
+    <item>زومکردن بۆ دەرەوە</item>
+    <item>سوڕانەوە بۆ سەرەوە</item>
+    <item>سوڕانەوە بۆ خوارەوە</item>
+    <item>شەشپاڵو بۆ ناو</item>
+    <item>شەشپاڵو دەرەوە</item>
+    <item>كەتەكە</item>
+    <item>ئۆكۆردێون</item>
+    <item>قاتکردن</item>
+    <item>لولەک لەناو</item>
+    <item>لولەک بۆ دەرەوە</item>
+    <item>غارغارێن</item>
+    <item>پیشاندانی گشتی</item>
   </string-array>
 </resources>

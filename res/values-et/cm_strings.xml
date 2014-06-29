@@ -19,11 +19,21 @@
   <string name="launcher_settings">KÄIVITAJA SEADED</string>
   <string name="home_screen_settings">KODUEKRAANI SEADED</string>
   <string name="drawer_settings">SAHTLI SEADED</string>
+  <string name="app_settings">RAKENDUSE SEADED</string>
   <string name="setting_state_on">SEES</string>
   <string name="setting_state_off">VÄLJAS</string>
   <string name="themes_button_text">Teemad</string>
   <string name="scrolling_page_outlines">Lehe äärisjooned</string>
   <string name="scrolling_fade_adjacent">Sulanda äärislehed</string>
+  <string name="scrolling_wallpaper">Keri taustapilti</string>
+  <string name="grid_size_text">Ruudustiku suurus</string>
+  <string name="grid_size_comfortable">Mugav</string>
+  <string name="grid_size_cozy">Kodune</string>
+  <string name="grid_size_condensed">Kärbitud</string>
+  <string name="grid_size_custom">Isiklik</string>
+  <string name="preferences_interface_homescreen_custom">Vali sobiv suurus</string>
+  <string name="preferences_interface_homescreen_rows_title">Ridade arv</string>
+  <string name="preferences_interface_homescreen_columns_title">Veergude arv</string>
   <string name="hidden_apps_title">Peidetud rakendused</string>
   <string name="scroll_effect_text">Kerimisefekt</string>
   <string name="drawer_sorting_text">Sortimisrežiim</string>
@@ -32,4 +42,11 @@
   <string name="sort_mode_install_time">Installeerimise aeg</string>
   <string name="home_screen_search_text">Otsinguriba</string>
   <string name="larger_icons_text">Suuremad ikoonid</string>
+  <string name="icon_labels">Ikooni sildid</string>
+  <string name="icon_labels_show">Näita</string>
+  <string name="icon_labels_hide">Peida</string>
+  <string name="protected_app_settings">Kaitstud rakendused</string>
+  <string name="search_screen_left_text">Otsingupaneel</string>
+  <string name="search_screen_left_unsupported_toast">Teil peab olema toetatud otsingurakendus ja CyanogenMod et kasutada seda võimalust.</string>
+  <string name="dialog_confirm">Kinnita</string>
 </resources>

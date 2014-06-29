@@ -19,12 +19,21 @@
   <string name="launcher_settings">PROGRAMINDÍTÓ BEÁLLÍTÁSOK</string>
   <string name="home_screen_settings">KEZDŐKÉPERNYŐ BEÁLLÍTÁSOK</string>
   <string name="drawer_settings">ALKALMAZÁSKÉPERNYŐ BEÁLLÍTÁSOK</string>
+  <string name="app_settings">ALKALMAZÁS BEÁLLÍTÁSAI</string>
   <string name="setting_state_on">BE</string>
   <string name="setting_state_off">KI</string>
   <string name="themes_button_text">Témák</string>
   <string name="scrolling_page_outlines">Oldal körvonalak</string>
   <string name="scrolling_fade_adjacent">Elhalványuló váltás az oldalak közt</string>
   <string name="scrolling_wallpaper">Háttérkép görgetése</string>
+  <string name="grid_size_text">Rácsméret</string>
+  <string name="grid_size_comfortable">Kényelmes</string>
+  <string name="grid_size_cozy">Hangulatos</string>
+  <string name="grid_size_condensed">Tömörített</string>
+  <string name="grid_size_custom">Egyéni</string>
+  <string name="preferences_interface_homescreen_custom">Válassza ki az egyéni méretet</string>
+  <string name="preferences_interface_homescreen_rows_title">Sorok száma</string>
+  <string name="preferences_interface_homescreen_columns_title">Oszlopok száma</string>
   <string name="hidden_apps_title">Rejtett alkalmazások</string>
   <string name="scroll_effect_text">Görgetés effekt</string>
   <string name="drawer_sorting_text">Rendezési mód</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Telepítés ideje</string>
   <string name="home_screen_search_text">Keresési sáv</string>
   <string name="larger_icons_text">Nagyobb ikonok</string>
+  <string name="icon_labels">Ikon feliratok</string>
+  <string name="icon_labels_show">Megjelenítés</string>
+  <string name="icon_labels_hide">Elrejtés</string>
   <string name="protected_app_settings">Védett alkalmazások</string>
   <string name="search_screen_left_text">Keresés panel</string>
   <string name="search_screen_left_unsupported_toast">Rendelkeznie kell egy támogatott kereső alkalmazással és CyanogenMod-dal, hogy használhassa ezt a funkciót.</string>
+  <string name="dialog_confirm">Megerősítés</string>
 </resources>

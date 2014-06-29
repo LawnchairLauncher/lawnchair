@@ -19,12 +19,21 @@
   <string name="launcher_settings">AJUSTES DEL LANZADOR</string>
   <string name="home_screen_settings">AJUSTES DEL INICIO</string>
   <string name="drawer_settings">AJUSTES DE LAS APLICACIONES</string>
+  <string name="app_settings">AJUSTES DE LA APLICACIÓN</string>
   <string name="setting_state_on">SÍ</string>
   <string name="setting_state_off">NO</string>
   <string name="themes_button_text">Temas</string>
   <string name="scrolling_page_outlines">Bordes de pantalla</string>
   <string name="scrolling_fade_adjacent">Efecto de fundido</string>
   <string name="scrolling_wallpaper">Desplazar fondo de pantalla</string>
+  <string name="grid_size_text">Tamaño de la cuadrícula</string>
+  <string name="grid_size_comfortable">Normal</string>
+  <string name="grid_size_cozy">Cómoda</string>
+  <string name="grid_size_condensed">Comprimida</string>
+  <string name="grid_size_custom">Personalizada</string>
+  <string name="preferences_interface_homescreen_custom">Selecciona el tamaño personalizado</string>
+  <string name="preferences_interface_homescreen_rows_title">Número de filas</string>
+  <string name="preferences_interface_homescreen_columns_title">Número de columnas</string>
   <string name="hidden_apps_title">Ocultar aplicaciones</string>
   <string name="scroll_effect_text">Efecto de desplazamiento</string>
   <string name="drawer_sorting_text">Modo de ordenación</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Fecha de instalación</string>
   <string name="home_screen_search_text">Barra de búsqueda</string>
   <string name="larger_icons_text">Iconos grandes</string>
+  <string name="icon_labels">Etiquetas de iconos</string>
+  <string name="icon_labels_show">Mostrar</string>
+  <string name="icon_labels_hide">Ocultar</string>
   <string name="protected_app_settings">Aplicaciones protegidas</string>
   <string name="search_screen_left_text">Panel de búsqueda</string>
   <string name="search_screen_left_unsupported_toast">Debes tener una aplicación de búsqueda y CyanogenMod para poder utilizar esta característica.</string>
+  <string name="dialog_confirm">Confirmar</string>
 </resources>

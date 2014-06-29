@@ -19,12 +19,21 @@
   <string name="launcher_settings">INDSTILLINGER FOR LAUNCHER</string>
   <string name="home_screen_settings">INDSTILLINGER FOR STARTSKÆRM</string>
   <string name="drawer_settings">INDSTILLINGER FOR OVERSIGT</string>
+  <string name="app_settings">APP-INDSTILLINGER</string>
   <string name="setting_state_on">TIL</string>
   <string name="setting_state_off">FRA</string>
   <string name="themes_button_text">Temaer</string>
   <string name="scrolling_page_outlines">Sideomrids</string>
   <string name="scrolling_fade_adjacent">Sideovergange</string>
   <string name="scrolling_wallpaper">Rul baggrund</string>
+  <string name="grid_size_text">Gitterstørrelse</string>
+  <string name="grid_size_comfortable">Behageligt</string>
+  <string name="grid_size_cozy">Hyggeligt</string>
+  <string name="grid_size_condensed">Sammentrængt</string>
+  <string name="grid_size_custom">Brugerdefineret</string>
+  <string name="preferences_interface_homescreen_custom">Vælg brugerdefineret størrelse</string>
+  <string name="preferences_interface_homescreen_rows_title">Antal rækker</string>
+  <string name="preferences_interface_homescreen_columns_title">Antal kolonner</string>
   <string name="hidden_apps_title">Skjulte apps</string>
   <string name="scroll_effect_text">Rulleeffekt</string>
   <string name="drawer_sorting_text">Sorteringstilstand</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Installationstidspunkt</string>
   <string name="home_screen_search_text">Søgelinje</string>
   <string name="larger_icons_text">Større ikoner</string>
+  <string name="icon_labels">Ikontekster</string>
+  <string name="icon_labels_show">Vis</string>
+  <string name="icon_labels_hide">Skjul</string>
   <string name="protected_app_settings">Beskyttede apps</string>
   <string name="search_screen_left_text">Søgepanel</string>
   <string name="search_screen_left_unsupported_toast">Du skal have en understøttet søge-app og CyanogenMod for at anvende denne funktion.</string>
+  <string name="dialog_confirm">Bekræft</string>
 </resources>

@@ -19,12 +19,21 @@
   <string name="launcher_settings">ПОДЕШАВАЊА ПОКРЕТАЧА</string>
   <string name="home_screen_settings">ПОДЕШАВАЊА ПОЧЕТНОГ ЕКРАНА</string>
   <string name="drawer_settings">ПОДЕШАВАЊА ФИОКЕ</string>
+  <string name="app_settings">ПОДЕШАВАЊА АПЛИКАЦИЈА</string>
   <string name="setting_state_on">ДА</string>
   <string name="setting_state_off">НЕ</string>
   <string name="themes_button_text">Теме</string>
   <string name="scrolling_page_outlines">Контура странице</string>
   <string name="scrolling_fade_adjacent">Замагљени крајеви страница</string>
   <string name="scrolling_wallpaper">Скроловање позадине</string>
+  <string name="grid_size_text">Величина мреже</string>
+  <string name="grid_size_comfortable">Комфорно</string>
+  <string name="grid_size_cozy">Удобно</string>
+  <string name="grid_size_condensed">Кондензовано</string>
+  <string name="grid_size_custom">Прилагођено</string>
+  <string name="preferences_interface_homescreen_custom">Изабери прилагођену величину</string>
+  <string name="preferences_interface_homescreen_rows_title">Број редова</string>
+  <string name="preferences_interface_homescreen_columns_title">Број колона</string>
   <string name="hidden_apps_title">Сакривене апликације</string>
   <string name="scroll_effect_text">Ефекат</string>
   <string name="drawer_sorting_text">Сортирање</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">Заштићене апликације</string>
   <string name="search_screen_left_text">Панел за претрагу</string>
   <string name="search_screen_left_unsupported_toast">Мораш да имаш подржану апликацију за претрагу и CyanogenMod да би користио ову функцију.</string>
+  <string name="dialog_confirm">Потврди</string>
 </resources>

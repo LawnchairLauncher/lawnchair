@@ -19,12 +19,21 @@
   <string name="launcher_settings">SETĂRI LAUNCHER</string>
   <string name="home_screen_settings">SETĂRI ECRAN PRINCIPAL</string>
   <string name="drawer_settings">SETĂRI ECRAN APLICAȚII</string>
+  <string name="app_settings">SETĂRI APLICAȚIE</string>
   <string name="setting_state_on">ACTIV</string>
   <string name="setting_state_off">INACTIV</string>
   <string name="themes_button_text">Teme</string>
   <string name="scrolling_page_outlines">Contururi pagină</string>
   <string name="scrolling_fade_adjacent">Estompează paginile secundare</string>
   <string name="scrolling_wallpaper">Scroll-ează fundal</string>
+  <string name="grid_size_text">Dimensiune grilă</string>
+  <string name="grid_size_comfortable">Confortabil</string>
+  <string name="grid_size_cozy">Comod</string>
+  <string name="grid_size_condensed">Condensat</string>
+  <string name="grid_size_custom">Particularizat</string>
+  <string name="preferences_interface_homescreen_custom">Selectare dimensiune particularizată</string>
+  <string name="preferences_interface_homescreen_rows_title">Numărul de rânduri</string>
+  <string name="preferences_interface_homescreen_columns_title">Numărul de coloane</string>
   <string name="hidden_apps_title">Aplicații ascunse</string>
   <string name="scroll_effect_text">Efect scroll</string>
   <string name="drawer_sorting_text">Mod sortare</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">Aplicații protejate</string>
   <string name="search_screen_left_text">Panou de căutare</string>
   <string name="search_screen_left_unsupported_toast">Trebuie să ai o aplicație de căutare suportată și CyanogenMod să folosească această caracteristică.</string>
+  <string name="dialog_confirm">Confirmă</string>
 </resources>

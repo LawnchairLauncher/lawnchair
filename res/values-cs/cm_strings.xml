@@ -19,11 +19,21 @@
   <string name="launcher_settings">NASTAVENÍ SPOUŠTĚČE</string>
   <string name="home_screen_settings">NASTAVENÍ DOMOVSKÉ OBRAZOVKY</string>
   <string name="drawer_settings">NASTAVENÍ SLOŽKY</string>
+  <string name="app_settings">NASTAVENÍ APL</string>
   <string name="setting_state_on">Zap.</string>
   <string name="setting_state_off">Vyp.</string>
-  <string name="themes_button_text">Témata</string>
+  <string name="themes_button_text">Motivy</string>
   <string name="scrolling_page_outlines">Ohraničení stránek</string>
   <string name="scrolling_fade_adjacent">Prolínat hrany ploch</string>
+  <string name="scrolling_wallpaper">Posouvání tapety</string>
+  <string name="grid_size_text">Velikost mřížky</string>
+  <string name="grid_size_comfortable">Komfortní</string>
+  <string name="grid_size_cozy">Pohodlná</string>
+  <string name="grid_size_condensed">Zůžená</string>
+  <string name="grid_size_custom">Vlastní</string>
+  <string name="preferences_interface_homescreen_custom">Zvolte vlastní velikost</string>
+  <string name="preferences_interface_homescreen_rows_title">Počet řádek</string>
+  <string name="preferences_interface_homescreen_columns_title">Počet sloupců</string>
   <string name="hidden_apps_title">Skryté aplikace</string>
   <string name="scroll_effect_text">Efekt přechodu</string>
   <string name="drawer_sorting_text">Režim třídění</string>
@@ -32,4 +42,11 @@
   <string name="sort_mode_install_time">Čas instalace</string>
   <string name="home_screen_search_text">Vyhledávací lišta</string>
   <string name="larger_icons_text">Větší ikony</string>
+  <string name="icon_labels">Popisky ikon</string>
+  <string name="icon_labels_show">Zobrazit</string>
+  <string name="icon_labels_hide">Skrýt</string>
+  <string name="protected_app_settings">Chráněné aplikace</string>
+  <string name="search_screen_left_text">Panel vyhledávání</string>
+  <string name="search_screen_left_unsupported_toast">Pro použití této funkce musíte mít nainstalovanou podporovanou aplikaci vyhledávání a CyanogenMod.</string>
+  <string name="dialog_confirm">Potvrdit</string>
 </resources>

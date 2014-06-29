@@ -19,12 +19,21 @@
   <string name="launcher_settings">LAUNCHER-EINSTELLUNGEN</string>
   <string name="home_screen_settings">STARTBILDSCHIRM-EINSTELLUNGEN</string>
   <string name="drawer_settings">APP-ÜBERSICHT-EINSTELLUNGEN</string>
+  <string name="app_settings">APP-EINSTELLUNGEN</string>
   <string name="setting_state_on">AN</string>
   <string name="setting_state_off">AUS</string>
   <string name="themes_button_text">Designs</string>
   <string name="scrolling_page_outlines">Seitenumriss anzeigen</string>
   <string name="scrolling_fade_adjacent">Seiten einblenden</string>
   <string name="scrolling_wallpaper">Hintergrundbild scrollen</string>
+  <string name="grid_size_text">Rastergröße</string>
+  <string name="grid_size_comfortable">Normal</string>
+  <string name="grid_size_cozy">Mittel</string>
+  <string name="grid_size_condensed">Klein</string>
+  <string name="grid_size_custom">Benutzerdefiniert</string>
+  <string name="preferences_interface_homescreen_custom">Benutzerdefinierte Größe auswählen</string>
+  <string name="preferences_interface_homescreen_rows_title">Anzahl der Zeilen</string>
+  <string name="preferences_interface_homescreen_columns_title">Anzahl der Spalten</string>
   <string name="hidden_apps_title">Versteckte Apps</string>
   <string name="scroll_effect_text">Scroll-Effekt</string>
   <string name="drawer_sorting_text">Sortiermodus</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Installationsdatum</string>
   <string name="home_screen_search_text">Suchleiste</string>
   <string name="larger_icons_text">Große Symbole</string>
+  <string name="icon_labels">Symbol-Beschriftungen</string>
+  <string name="icon_labels_show">Anzeigen</string>
+  <string name="icon_labels_hide">Verbergen</string>
   <string name="protected_app_settings">Geschützte Apps</string>
   <string name="search_screen_left_text">Google Now</string>
   <string name="search_screen_left_unsupported_toast">Um diese Funktion nutzen zu können, müssen Sie CyanogenMod und eine unterstützte Such-App installiert haben.</string>
+  <string name="dialog_confirm">Bestätigen</string>
 </resources>

@@ -19,12 +19,21 @@
   <string name="launcher_settings">LAUNCHERIN ASETUKSET</string>
   <string name="home_screen_settings">KOTINÄYTÖN ASETUKSET</string>
   <string name="drawer_settings">SOVELLUSVALIKON ASETUKSET</string>
+  <string name="app_settings">SOVELLUKSEN ASETUKSET</string>
   <string name="setting_state_on">PÄÄLLÄ</string>
   <string name="setting_state_off">POIS</string>
   <string name="themes_button_text">Teemat</string>
   <string name="scrolling_page_outlines">Sivun ulkoreunat</string>
   <string name="scrolling_fade_adjacent">Häivytä sivun reunat</string>
   <string name="scrolling_wallpaper">Vieritä taustakuvaa</string>
+  <string name="grid_size_text">Ruudukon koko</string>
+  <string name="grid_size_comfortable">Mukava</string>
+  <string name="grid_size_cozy">Kodikas</string>
+  <string name="grid_size_condensed">Tiivistetty</string>
+  <string name="grid_size_custom">Muokattu</string>
+  <string name="preferences_interface_homescreen_custom">Valitse mukautettu koko</string>
+  <string name="preferences_interface_homescreen_rows_title">Rivien määrä</string>
+  <string name="preferences_interface_homescreen_columns_title">Sarakkeiden määrä</string>
   <string name="hidden_apps_title">Piilotetut sovellukset</string>
   <string name="scroll_effect_text">Vieritysefekti</string>
   <string name="drawer_sorting_text">Lajittelu</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Asennuspäivä</string>
   <string name="home_screen_search_text">Hakupalkki</string>
   <string name="larger_icons_text">Suuremmat kuvakkeet</string>
+  <string name="icon_labels">Kuvakkeiden otsikot</string>
+  <string name="icon_labels_show">Näytä</string>
+  <string name="icon_labels_hide">Piilota</string>
   <string name="protected_app_settings">Suojatut sovellukset</string>
   <string name="search_screen_left_text">Hakupaneeli</string>
   <string name="search_screen_left_unsupported_toast">Sinulla tulee olla tuettu hakusovellus ja CyanogenMod käyttääksesi tätä toimintoa.</string>
+  <string name="dialog_confirm">Vahvista</string>
 </resources>

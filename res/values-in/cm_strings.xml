@@ -19,12 +19,21 @@
   <string name="launcher_settings">PENGATURAN PELUNCUR</string>
   <string name="home_screen_settings">PENGATURAN LAYAR HOME</string>
   <string name="drawer_settings">PENGATURAN DRAWER</string>
+  <string name="app_settings">PENGATURAN APL</string>
   <string name="setting_state_on">ON</string>
   <string name="setting_state_off">OFF</string>
   <string name="themes_button_text">Tema</string>
   <string name="scrolling_page_outlines">Garis luar halaman</string>
   <string name="scrolling_fade_adjacent">Fade side pages</string>
   <string name="scrolling_wallpaper">Gulir wallpaper</string>
+  <string name="grid_size_text">Ukuran grid</string>
+  <string name="grid_size_comfortable">Comfortable</string>
+  <string name="grid_size_cozy">Cozy</string>
+  <string name="grid_size_condensed">Condensed</string>
+  <string name="grid_size_custom">Kustom</string>
+  <string name="preferences_interface_homescreen_custom">Pilih ukuran kustom</string>
+  <string name="preferences_interface_homescreen_rows_title">Jumlah baris</string>
+  <string name="preferences_interface_homescreen_columns_title">Jumlah kolom</string>
   <string name="hidden_apps_title">Aplikasi tersembunyi</string>
   <string name="scroll_effect_text">Efek gulir</string>
   <string name="drawer_sorting_text">Mode penyortiran</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Waktu pemasangan</string>
   <string name="home_screen_search_text">Bar pencarian</string>
   <string name="larger_icons_text">Ikon lebih besar</string>
+  <string name="icon_labels">Label ikon</string>
+  <string name="icon_labels_show">Tampilkan</string>
+  <string name="icon_labels_hide">Sembunyikan</string>
   <string name="protected_app_settings">Aplikasi yang di lindungi</string>
   <string name="search_screen_left_text">Panel pencarian</string>
   <string name="search_screen_left_unsupported_toast">Anda harus memiliki apl pencarain yang didukung dan CyanogenMod untuk menggunakan fitur ini.</string>
+  <string name="dialog_confirm">Konfirmasi</string>
 </resources>

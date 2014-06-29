@@ -19,12 +19,21 @@
   <string name="launcher_settings">ΓΕΝΙΚΕΣ ΡΥΘΜΙΣΕΙΣ</string>
   <string name="home_screen_settings">ΡΥΘΜΙΣΕΙΣ ΑΡΧΙΚΗΣ ΟΘΟΝΗΣ</string>
   <string name="drawer_settings">ΡΥΘΜΙΣΕΙΣ ΣΥΡΤΑΡΙΟΥ</string>
+  <string name="app_settings">ΡΥΘΜΙΣΕΙΣ ΕΦΑΡΜΟΓΩΝ</string>
   <string name="setting_state_on">ΕΝΕΡΓΟ</string>
   <string name="setting_state_off">ΑΝΕΝΕΡΓΟ</string>
   <string name="themes_button_text">Θέματα</string>
   <string name="scrolling_page_outlines">Περίγραμμα σελιδών</string>
   <string name="scrolling_fade_adjacent">Ξεθώριασμα πλευρικών σελίδων</string>
   <string name="scrolling_wallpaper">Κύλιση ταπετσαρίας</string>
+  <string name="grid_size_text">Μέγεθος πλέγματος</string>
+  <string name="grid_size_comfortable">Άνετο</string>
+  <string name="grid_size_cozy">Κανονικό</string>
+  <string name="grid_size_condensed">Συμπυκνωμένο</string>
+  <string name="grid_size_custom">Προσαρμοσμένο</string>
+  <string name="preferences_interface_homescreen_custom">Επιλέξτε προσαρμοσμένο μέγεθος</string>
+  <string name="preferences_interface_homescreen_rows_title">Αριθμός γραμμών</string>
+  <string name="preferences_interface_homescreen_columns_title">Αριθμός στηλών</string>
   <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
   <string name="scroll_effect_text">Εφέ κύλισης</string>
   <string name="drawer_sorting_text">Ταξινόμηση</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">Προστατευμένες εφαρμογές</string>
   <string name="search_screen_left_text">Σελίδα αναζήτησης</string>
   <string name="search_screen_left_unsupported_toast">Πρέπει να έχετε μια υποστηριζόμενη εφαρμογή αναζήτησης και CyanogenMod για να χρησιμοποιήσετε αυτήν τη δυνατότητα.</string>
+  <string name="dialog_confirm">Επιβεβαίωση</string>
 </resources>

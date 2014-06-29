@@ -18,17 +18,17 @@
 <resources>
   <string-array name="transition_effect_entries">
     <item>Geen</item>
-    <item>Zoom in</item>
-    <item>Zoom out</item>
-    <item>Rotate up</item>
-    <item>Rotate down</item>
-    <item>Cube in</item>
-    <item>Cube out</item>
+    <item>Vergroot</item>
+    <item>Verklein</item>
+    <item>Roteer op</item>
+    <item>Roteer af</item>
+    <item>Blokkie in</item>
+    <item>Blokkie uit</item>
     <item>Stapel</item>
     <item>Trek klavier</item>
     <item>Spieël</item>
-    <item>Cylinder in</item>
-    <item>Cylinder out</item>
+    <item>Silinder in</item>
+    <item>Silinder uit</item>
     <item>Rondomtalie</item>
     <item>Oorsig</item>
   </string-array>

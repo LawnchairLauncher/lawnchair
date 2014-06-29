@@ -19,12 +19,21 @@
   <string name="launcher_settings">LAUNCHER INNSTILLINGER</string>
   <string name="home_screen_settings">HJEMMESKJERM INNSTILLINGER</string>
   <string name="drawer_settings">SKUFF INNSTILLINGER</string>
+  <string name="app_settings">APP-INNSTILLINGER</string>
   <string name="setting_state_on">PÅ</string>
   <string name="setting_state_off">AV</string>
   <string name="themes_button_text">Temaer</string>
   <string name="scrolling_page_outlines">Skjermkontur</string>
   <string name="scrolling_fade_adjacent">Fade skjermsider</string>
   <string name="scrolling_wallpaper">Scroll bakgrunn</string>
+  <string name="grid_size_text">Rutenettstørrelse</string>
+  <string name="grid_size_comfortable">Komfortabel</string>
+  <string name="grid_size_cozy">Koselig</string>
+  <string name="grid_size_condensed">Kondensert</string>
+  <string name="grid_size_custom">Egendefinert</string>
+  <string name="preferences_interface_homescreen_custom">Velg egendefinert størrelse</string>
+  <string name="preferences_interface_homescreen_rows_title">Antall rader</string>
+  <string name="preferences_interface_homescreen_columns_title">Antall kolonner</string>
   <string name="hidden_apps_title">Skjulte programmer</string>
   <string name="scroll_effect_text">Bla effekt</string>
   <string name="drawer_sorting_text">Sorteringsmodus</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Installeringstid</string>
   <string name="home_screen_search_text">Søkefelt</string>
   <string name="larger_icons_text">Større ikoner</string>
+  <string name="icon_labels">Ikonetiketter</string>
+  <string name="icon_labels_show">Vis</string>
+  <string name="icon_labels_hide">Skjul</string>
   <string name="protected_app_settings">Beskyttede apps</string>
   <string name="search_screen_left_text">Søke-panelet</string>
   <string name="search_screen_left_unsupported_toast">Du må ha en støttet søke app og CyanogenMod for å bruke denne funksjonen.</string>
+  <string name="dialog_confirm">Bekreft</string>
 </resources>

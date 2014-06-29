@@ -19,12 +19,21 @@
   <string name="launcher_settings">BAŞLATICI AYARLARI</string>
   <string name="home_screen_settings">ANA EKRAN AYARLARI</string>
   <string name="drawer_settings">ÇEKMECE AYARLARI</string>
+  <string name="app_settings">UYGULAMA AYARLARI</string>
   <string name="setting_state_on">AÇIK</string>
   <string name="setting_state_off">KAPALI</string>
   <string name="themes_button_text">Temalar</string>
   <string name="scrolling_page_outlines">Sayfa anahatları</string>
   <string name="scrolling_fade_adjacent">Yan sayfaları soldur</string>
   <string name="scrolling_wallpaper">Duvarkağıdını kaydır</string>
+  <string name="grid_size_text">Izgara boyutu</string>
+  <string name="grid_size_comfortable">Rahat</string>
+  <string name="grid_size_cozy">Rahat</string>
+  <string name="grid_size_condensed">Kalın</string>
+  <string name="grid_size_custom">Özel</string>
+  <string name="preferences_interface_homescreen_custom">Özel boyut seçin</string>
+  <string name="preferences_interface_homescreen_rows_title">Satır sayısı</string>
+  <string name="preferences_interface_homescreen_columns_title">Sütun sayısı</string>
   <string name="hidden_apps_title">Gizli uygulamalar</string>
   <string name="scroll_effect_text">Kaydırma efekti</string>
   <string name="drawer_sorting_text">Sıralama modu</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Kurulum zamanı</string>
   <string name="home_screen_search_text">Arama çubuğu</string>
   <string name="larger_icons_text">Daha büyük simgeler</string>
+  <string name="icon_labels">Simge etiketleri</string>
+  <string name="icon_labels_show">Göster</string>
+  <string name="icon_labels_hide">Gizle</string>
   <string name="protected_app_settings">Korunan uygulamalar</string>
   <string name="search_screen_left_text">Arama paneli</string>
   <string name="search_screen_left_unsupported_toast">Bu özelliği kullanabilmeniz için desteklenen bir arama uygulaması ve CyanogenMod\'a sahip olmanız gerekiyor.</string>
+  <string name="dialog_confirm">Onayla</string>
 </resources>

@@ -19,12 +19,21 @@
   <string name="launcher_settings">දියත් කරකයේ සැකසීම්</string>
   <string name="home_screen_settings">මුල් තිරයේ සැකසීම්</string>
   <string name="drawer_settings">ලාච්චුවේ සැකසීම්</string>
+  <string name="app_settings">යෙදුම් සැකසීම්</string>
   <string name="setting_state_on">සක්‍රීයයි</string>
   <string name="setting_state_off">අක්‍රීයයි</string>
   <string name="themes_button_text">තේමා</string>
   <string name="scrolling_page_outlines">පිටුවේ පිට මායිම්</string>
   <string name="scrolling_fade_adjacent">පැති පිටු අවපැහැ කරන්න</string>
   <string name="scrolling_wallpaper">වෝල්පේපරය අනුචලනය කරන්න</string>
+  <string name="grid_size_text">කොටු සැලැස්මේ ප්‍රමාණය</string>
+  <string name="grid_size_comfortable">සැපපහසු</string>
+  <string name="grid_size_cozy">ප්‍රියජනක</string>
+  <string name="grid_size_condensed">ඝනීභූත</string>
+  <string name="grid_size_custom">රිසිවූ</string>
+  <string name="preferences_interface_homescreen_custom">රිසිකළ ප්‍රමාණය තෝරන්න</string>
+  <string name="preferences_interface_homescreen_rows_title">පේළි ගණන</string>
+  <string name="preferences_interface_homescreen_columns_title">තීරු ගණන</string>
   <string name="hidden_apps_title">සැඟවුණු යෙදුම්</string>
   <string name="scroll_effect_text">අනුචලන ආටෝපය</string>
   <string name="drawer_sorting_text">සුබෙදීමේ ප්‍රකාරය</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">ආරක්ෂිත යෙදුම්</string>
   <string name="search_screen_left_text">සෙවීම් පුවරුව</string>
   <string name="search_screen_left_unsupported_toast">මෙම විශේෂාංගය භාවිතාකිරීම සඳහා, ඔබ සතුව, සහාය දක්වන සෙවීම් යෙදුමක් සහ CyanogenMod තිබිය යුතුමය.</string>
+  <string name="dialog_confirm">තහවුරු කරන්න</string>
 </resources>

@@ -18,17 +18,17 @@
 <resources>
   <string-array name="transition_effect_entries">
     <item>Nengún</item>
-    <item>Zoom in</item>
-    <item>Zoom out</item>
-    <item>Rotate up</item>
-    <item>Rotate down</item>
-    <item>Cube in</item>
-    <item>Cube out</item>
+    <item>Acercar</item>
+    <item>Allonxar</item>
+    <item>Xirar arriba</item>
+    <item>Xirar abaxo</item>
+    <item>Cúbicu entrante</item>
+    <item>Cúbicu saliente</item>
     <item>Empilar</item>
     <item>Acordión</item>
     <item>Voltiar</item>
-    <item>Cylinder in</item>
-    <item>Cylinder out</item>
+    <item>Cilíndricu entrante</item>
+    <item>Cilíndricu saliente</item>
     <item>Carrusel</item>
     <item>Perspeutiva</item>
   </string-array>

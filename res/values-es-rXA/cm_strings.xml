@@ -19,11 +19,21 @@
   <string name="launcher_settings">AXUSTES DEL LLANZADOR</string>
   <string name="home_screen_settings">AXUSTES DE PANTALLA D\'ANICIU</string>
   <string name="drawer_settings">AXUSTES DE LES APLICACIONES</string>
+  <string name="app_settings">AXUSTES D\'APLICACIÓN</string>
   <string name="setting_state_on">SÍ</string>
   <string name="setting_state_off">NON</string>
   <string name="themes_button_text">Temes</string>
   <string name="scrolling_page_outlines">Berbesos de pantalla</string>
   <string name="scrolling_fade_adjacent">Efeutu de dilíu</string>
+  <string name="scrolling_wallpaper">Desplazar fondu</string>
+  <string name="grid_size_text">Tamañu del rexáu</string>
+  <string name="grid_size_comfortable">Confortable</string>
+  <string name="grid_size_cozy">Acoyedor</string>
+  <string name="grid_size_condensed">Condensáu</string>
+  <string name="grid_size_custom">Personalizáu</string>
+  <string name="preferences_interface_homescreen_custom">Esbilla\'l tamañu personalizáu</string>
+  <string name="preferences_interface_homescreen_rows_title">Númberu de fileres</string>
+  <string name="preferences_interface_homescreen_columns_title">Númberu de columnes</string>
   <string name="hidden_apps_title">Aplicaciones anubríes</string>
   <string name="scroll_effect_text">Efeutu de desplazamientu</string>
   <string name="drawer_sorting_text">Mou d\'ordenación</string>
@@ -32,4 +42,11 @@
   <string name="sort_mode_install_time">Data d\'instalación</string>
   <string name="home_screen_search_text">Barra de gueta</string>
   <string name="larger_icons_text">Iconos grandes</string>
+  <string name="icon_labels">Etiquetes de los iconos</string>
+  <string name="icon_labels_show">Amosar</string>
+  <string name="icon_labels_hide">Anubrir</string>
+  <string name="protected_app_settings">Apps protexíes</string>
+  <string name="search_screen_left_text">Panel de gueta</string>
+  <string name="search_screen_left_unsupported_toast">Ye necesario tener una aplicación de gueta y CyanogenMod pa poder usar esta carauterística.</string>
+  <string name="dialog_confirm">Confirmar</string>
 </resources>

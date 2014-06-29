@@ -16,6 +16,7 @@
      limitations under the License.
 -->
 <resources>
+  <string name="setting_state_on">UN</string>
   <string name="scrolling_page_outlines">Säiterummen</string>
   <string name="scrolling_fade_adjacent">Säiten um Rand ausblenden</string>
   <string name="sort_mode_title">Titel</string>

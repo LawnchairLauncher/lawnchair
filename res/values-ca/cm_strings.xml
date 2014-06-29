@@ -19,12 +19,21 @@
   <string name="launcher_settings">CONFIGURACIÓ DEL LLANÇADOR</string>
   <string name="home_screen_settings">CONFIGURACIÓ DE LA PANTALLA D\'INICI</string>
   <string name="drawer_settings">CONFIGURACIÓ DEL CALAIX</string>
+  <string name="app_settings">CONFIGURACIÓ DE L\'APP</string>
   <string name="setting_state_on">SÍ</string>
   <string name="setting_state_off">NO</string>
   <string name="themes_button_text">Temes</string>
   <string name="scrolling_page_outlines">Vores de la pàgina</string>
   <string name="scrolling_fade_adjacent">Esvaeix els costats de les pàgines</string>
   <string name="scrolling_wallpaper">Desplaça el fons de pantalla</string>
+  <string name="grid_size_text">Mida de la graella</string>
+  <string name="grid_size_comfortable">Còmoda</string>
+  <string name="grid_size_cozy">Acollidora</string>
+  <string name="grid_size_condensed">Condensada</string>
+  <string name="grid_size_custom">Personalitzada</string>
+  <string name="preferences_interface_homescreen_custom">Selecciona la mida personalitzada</string>
+  <string name="preferences_interface_homescreen_rows_title">Nombre de files</string>
+  <string name="preferences_interface_homescreen_columns_title">Nombre de columnes</string>
   <string name="hidden_apps_title">Apps amagades</string>
   <string name="scroll_effect_text">Efecte desplaçament</string>
   <string name="drawer_sorting_text">Mode d\'ordenació</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Hora d\'instal·lació</string>
   <string name="home_screen_search_text">Barra de cerca</string>
   <string name="larger_icons_text">Icones grans</string>
+  <string name="icon_labels">Etiquetes de les icones</string>
+  <string name="icon_labels_show">Mostra</string>
+  <string name="icon_labels_hide">Amaga</string>
   <string name="protected_app_settings">Apps protegides</string>
   <string name="search_screen_left_text">Quadre de cerca</string>
   <string name="search_screen_left_unsupported_toast">Has de tenir una app de cerca suportada i perquè CyanogenMod utilitzi aquesta característica.</string>
+  <string name="dialog_confirm">Confirma</string>
 </resources>

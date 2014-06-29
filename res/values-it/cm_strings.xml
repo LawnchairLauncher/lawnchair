@@ -16,15 +16,24 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">Impostazioni launcher</string>
-  <string name="home_screen_settings">Impostazioni schermata Home</string>
-  <string name="drawer_settings">Impostazioni drawer</string>
+  <string name="launcher_settings">IMPOSTAZIONI LAUNCHER</string>
+  <string name="home_screen_settings">IMPOSTAZIONI SCHERMATA HOME</string>
+  <string name="drawer_settings">IMPOSTAZIONI DRAWER</string>
+  <string name="app_settings">IMPOSTAZIONI APP</string>
   <string name="setting_state_on">ON</string>
   <string name="setting_state_off">OFF</string>
   <string name="themes_button_text">Temi</string>
   <string name="scrolling_page_outlines">Contorni pagina</string>
   <string name="scrolling_fade_adjacent">Dissolvenza pagine laterali</string>
   <string name="scrolling_wallpaper">Sfondo scorrevole</string>
+  <string name="grid_size_text">Dimensione griglia</string>
+  <string name="grid_size_comfortable">Confortevole</string>
+  <string name="grid_size_cozy">Accogliente</string>
+  <string name="grid_size_condensed">Condensato</string>
+  <string name="grid_size_custom">Personalizzata</string>
+  <string name="preferences_interface_homescreen_custom">Personalizza dimensione</string>
+  <string name="preferences_interface_homescreen_rows_title">Numero di righe</string>
+  <string name="preferences_interface_homescreen_columns_title">Numero di colonne</string>
   <string name="hidden_apps_title">App nascoste</string>
   <string name="scroll_effect_text">Effetto scorrimento</string>
   <string name="drawer_sorting_text">Modalità ordinamento</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Tempo installazione</string>
   <string name="home_screen_search_text">Barra di ricerca</string>
   <string name="larger_icons_text">Icone grandi</string>
+  <string name="icon_labels">Etichette icone</string>
+  <string name="icon_labels_show">Visualizza</string>
+  <string name="icon_labels_hide">Nascondi</string>
   <string name="protected_app_settings">App protette</string>
   <string name="search_screen_left_text">Pannello ricerca</string>
   <string name="search_screen_left_unsupported_toast">È necessario disporre di un app per la ricerca supportata e CyanogenMod per utilizzare questa funzionalità.</string>
+  <string name="dialog_confirm">Conferma</string>
 </resources>

@@ -19,12 +19,21 @@
   <string name="launcher_settings">PARAMÈTRES DU LANCEUR</string>
   <string name="home_screen_settings">PARAMÈTRES DE L\'ÉCRAN D\'ACCUEIL</string>
   <string name="drawer_settings">PARAMÈTRES DE L\'ÉCRAN DES APPLICATIONS</string>
+  <string name="app_settings">PARAMÈTRES DE L\'APPLICATION</string>
   <string name="setting_state_on">OUI</string>
   <string name="setting_state_off">NON</string>
   <string name="themes_button_text">Thèmes</string>
   <string name="scrolling_page_outlines">Espacement des pages</string>
   <string name="scrolling_fade_adjacent">Estomper les pages adjacentes</string>
   <string name="scrolling_wallpaper">Défilement du fond d\'écran</string>
+  <string name="grid_size_text">Taille de la grille</string>
+  <string name="grid_size_comfortable">Confortable</string>
+  <string name="grid_size_cozy">Cosy</string>
+  <string name="grid_size_condensed">Condensé</string>
+  <string name="grid_size_custom">Personnalisée</string>
+  <string name="preferences_interface_homescreen_custom">Sélectionner la taille personnalisée</string>
+  <string name="preferences_interface_homescreen_rows_title">Nombre de lignes</string>
+  <string name="preferences_interface_homescreen_columns_title">Nombre de colonnes</string>
   <string name="hidden_apps_title">Applications masquées</string>
   <string name="scroll_effect_text">Effet de défilement</string>
   <string name="drawer_sorting_text">Mode de tri</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Durée d\'installation</string>
   <string name="home_screen_search_text">Barre de recherche</string>
   <string name="larger_icons_text">Grandes icônes</string>
+  <string name="icon_labels">Nom des icônes</string>
+  <string name="icon_labels_show">Afficher</string>
+  <string name="icon_labels_hide">Masquer</string>
   <string name="protected_app_settings">Applications protégées</string>
   <string name="search_screen_left_text">Panneau de recherche</string>
   <string name="search_screen_left_unsupported_toast">Vous devez avoir une application de recherche compatible et CyanogenMod pour utiliser cette fonctionnalité.</string>
+  <string name="dialog_confirm">Confirmer</string>
 </resources>

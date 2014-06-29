@@ -19,12 +19,21 @@
   <string name="launcher_settings">ランチャーの設定</string>
   <string name="home_screen_settings">ホーム画面の設定</string>
   <string name="drawer_settings">ドロワーの設定</string>
+  <string name="app_settings">アプリの設定</string>
   <string name="setting_state_on">ON</string>
   <string name="setting_state_off">OFF</string>
   <string name="themes_button_text">テーマ</string>
   <string name="scrolling_page_outlines">ページの外枠を表示</string>
   <string name="scrolling_fade_adjacent">側面のページをフェード</string>
-  <string name="scrolling_wallpaper">壁紙をスクロール</string>
+  <string name="scrolling_wallpaper">壁紙のスクロール</string>
+  <string name="grid_size_text">グリッドサイズ</string>
+  <string name="grid_size_comfortable">Comfortable</string>
+  <string name="grid_size_cozy">Cozy</string>
+  <string name="grid_size_condensed">Condensed</string>
+  <string name="grid_size_custom">カスタム</string>
+  <string name="preferences_interface_homescreen_custom">カスタムのサイズを選択</string>
+  <string name="preferences_interface_homescreen_rows_title">行数</string>
+  <string name="preferences_interface_homescreen_columns_title">列数</string>
   <string name="hidden_apps_title">非表示にするアプリ</string>
   <string name="scroll_effect_text">スクロール効果</string>
   <string name="drawer_sorting_text">並べ替えモード</string>
@@ -39,4 +48,5 @@
   <string name="protected_app_settings">アプリの保護</string>
   <string name="search_screen_left_text">検索パネル</string>
   <string name="search_screen_left_unsupported_toast">この機能を利用するには、サポートされている検索アプリとCyanogenModが必要です。</string>
+  <string name="dialog_confirm">確認</string>
 </resources>

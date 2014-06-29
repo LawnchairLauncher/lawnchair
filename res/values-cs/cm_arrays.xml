@@ -18,17 +18,17 @@
 <resources>
   <string-array name="transition_effect_entries">
     <item>Žádný</item>
-    <item>Zoom in</item>
-    <item>Zoom out</item>
-    <item>Rotate up</item>
-    <item>Rotate down</item>
-    <item>Cube in</item>
-    <item>Cube out</item>
+    <item>Příblížení</item>
+    <item>Oddálení</item>
+    <item>Otočení nahoru</item>
+    <item>Otočení dolu</item>
+    <item>Uvnitř krychle</item>
+    <item>Vně krychle</item>
     <item>Vrstvy</item>
     <item>Harmonika</item>
     <item>Překlopení</item>
-    <item>Cylinder in</item>
-    <item>Cylinder out</item>
+    <item>Uvnitř válce</item>
+    <item>Mimo válec</item>
     <item>Kolotoč</item>
     <item>Přehled</item>
   </string-array>

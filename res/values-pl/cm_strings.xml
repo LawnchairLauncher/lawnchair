@@ -19,11 +19,21 @@
   <string name="launcher_settings">USTAWIENIA LAUNCHERA</string>
   <string name="home_screen_settings">USTAWIENIA EKRANU GŁÓWNEGO</string>
   <string name="drawer_settings">USTAWIENIA SZUFLADY APLIKACJI</string>
+  <string name="app_settings">USTAWIENIA APLIKACJI</string>
   <string name="setting_state_on">WŁĄCZONE</string>
   <string name="setting_state_off">WYŁĄCZONE</string>
   <string name="themes_button_text">Motywy</string>
   <string name="scrolling_page_outlines">Kontury strony</string>
   <string name="scrolling_fade_adjacent">Przenikaj strony boczne</string>
+  <string name="scrolling_wallpaper">Przewijanie tapety</string>
+  <string name="grid_size_text">Rozmiar siatki</string>
+  <string name="grid_size_comfortable">Wygodny</string>
+  <string name="grid_size_cozy">Luźny</string>
+  <string name="grid_size_condensed">Zagęszczony</string>
+  <string name="grid_size_custom">Własny</string>
+  <string name="preferences_interface_homescreen_custom">Wybierz własny rozmiar</string>
+  <string name="preferences_interface_homescreen_rows_title">Liczba wierszy</string>
+  <string name="preferences_interface_homescreen_columns_title">Liczba kolumn</string>
   <string name="hidden_apps_title">Ukryte aplikacje</string>
   <string name="scroll_effect_text">Efekt przewijania</string>
   <string name="drawer_sorting_text">Tryb sortowania</string>
@@ -32,4 +42,11 @@
   <string name="sort_mode_install_time">Data instalacji</string>
   <string name="home_screen_search_text">Pasek wyszukiwania</string>
   <string name="larger_icons_text">Większe ikony</string>
+  <string name="icon_labels">Etykiety ikon</string>
+  <string name="icon_labels_show">Pokaż</string>
+  <string name="icon_labels_hide">Ukryj</string>
+  <string name="protected_app_settings">Chronione aplikacje</string>
+  <string name="search_screen_left_text">Pasek wyszukiwania</string>
+  <string name="search_screen_left_unsupported_toast">Musisz posiadać aplikację wyszukiwania wspieraną przez CyanogenMod by używać tej funkcji.</string>
+  <string name="dialog_confirm">Potwierdź</string>
 </resources>

@@ -19,12 +19,21 @@
   <string name="launcher_settings">PALEIDĖJO NUSTATYMAI</string>
   <string name="home_screen_settings">PAGRINDINIO EKRANO NUSTATYMAI</string>
   <string name="drawer_settings">STALČIAUS NUSTATYMAI</string>
+  <string name="app_settings">PROGRAMOS NUSTATYMAI</string>
   <string name="setting_state_on">ĮJUNGTA</string>
   <string name="setting_state_off">IŠJUNGTA</string>
   <string name="themes_button_text">Temos</string>
   <string name="scrolling_page_outlines">Puslapio kontūrai</string>
-  <string name="scrolling_fade_adjacent">Išblukinti šoninius ekranus</string>
-  <string name="scrolling_wallpaper">Slinkti ekrano foną</string>
+  <string name="scrolling_fade_adjacent">Išblukinti šoninius puslapius</string>
+  <string name="scrolling_wallpaper">Slinkti darbalaukio foną</string>
+  <string name="grid_size_text">Tinklelio dydis</string>
+  <string name="grid_size_comfortable">Patogus</string>
+  <string name="grid_size_cozy">Jaukus</string>
+  <string name="grid_size_condensed">Suglaustas</string>
+  <string name="grid_size_custom">Individualus</string>
+  <string name="preferences_interface_homescreen_custom">Pasirinkite individualų dydį</string>
+  <string name="preferences_interface_homescreen_rows_title">Eilučių skaičius</string>
+  <string name="preferences_interface_homescreen_columns_title">Stulpelių skaičius</string>
   <string name="hidden_apps_title">Paslėptos programos</string>
   <string name="scroll_effect_text">Slinkimo efektas</string>
   <string name="drawer_sorting_text">Rūšiavimo režimas</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">Įdiegimo laikas</string>
   <string name="home_screen_search_text">Paieškos juosta</string>
   <string name="larger_icons_text">Didesnės piktogramos</string>
+  <string name="icon_labels">Piktogramų pavadinimai</string>
+  <string name="icon_labels_show">Rodyti</string>
+  <string name="icon_labels_hide">Paslėpti</string>
   <string name="protected_app_settings">Apsaugotos programos</string>
   <string name="search_screen_left_text">Paieškos panėlė</string>
   <string name="search_screen_left_unsupported_toast">Jūs privalote turėti palaikomą paieškos programą ir „CyanogenMod“ norėdami naudotis šia funkcija.</string>
+  <string name="dialog_confirm">Patvirtinti</string>
 </resources>

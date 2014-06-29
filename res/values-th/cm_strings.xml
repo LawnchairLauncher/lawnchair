@@ -19,12 +19,21 @@
   <string name="launcher_settings">ตั้งค่าหน้าตัวเรียกใช้งาน</string>
   <string name="home_screen_settings">ตั้งค่าหน้าจอหลัก</string>
   <string name="drawer_settings">ตั้งค่าแผงแสดงแอป</string>
+  <string name="app_settings">ตั้งค่าแอป</string>
   <string name="setting_state_on">เปิด</string>
   <string name="setting_state_off">ปิด</string>
   <string name="themes_button_text">ชุดรูปแบบ</string>
   <string name="scrolling_page_outlines">โครงร่างหน้า</string>
   <string name="scrolling_fade_adjacent">จากหน้าด้านข้าง</string>
   <string name="scrolling_wallpaper">เลื่อนภาพพื้นหลัง</string>
+  <string name="grid_size_text">ขนาดกริด</string>
+  <string name="grid_size_comfortable">สะดวกสบาย</string>
+  <string name="grid_size_cozy">โคซี่</string>
+  <string name="grid_size_condensed">บีบ</string>
+  <string name="grid_size_custom">กำหนดเอง</string>
+  <string name="preferences_interface_homescreen_custom">เลือกขนาดกำหนดเอง</string>
+  <string name="preferences_interface_homescreen_rows_title">จำนวนแถว</string>
+  <string name="preferences_interface_homescreen_columns_title">จำนวนคอลัมน์</string>
   <string name="hidden_apps_title">ซ่อนแอป</string>
   <string name="scroll_effect_text">เอฟเฟกต์เลื่อน</string>
   <string name="drawer_sorting_text">วิธีการเรียง</string>
@@ -33,7 +42,11 @@
   <string name="sort_mode_install_time">เวลาติดตั้ง</string>
   <string name="home_screen_search_text">แถบค้นหา</string>
   <string name="larger_icons_text">ไอคอนขนาดใหญ่</string>
+  <string name="icon_labels">ป้ายชื่อไอคอน</string>
+  <string name="icon_labels_show">แสดง</string>
+  <string name="icon_labels_hide">ซ่อน</string>
   <string name="protected_app_settings">แอปที่ป้องกัน</string>
   <string name="search_screen_left_text">แผงค้นหา</string>
   <string name="search_screen_left_unsupported_toast">คุณต้องมีแอปที่รองรับการค้นหากับ CyanogenMod เพื่อใช้ความสามารถนี้</string>
+  <string name="dialog_confirm">Google</string>
 </resources>

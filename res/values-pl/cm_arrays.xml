@@ -18,17 +18,17 @@
 <resources>
   <string-array name="transition_effect_entries">
     <item>Brak</item>
-    <item>Zoom in</item>
-    <item>Zoom out</item>
-    <item>Rotate up</item>
-    <item>Rotate down</item>
-    <item>Cube in</item>
-    <item>Cube out</item>
+    <item>Zbliżanie</item>
+    <item>Oddalanie</item>
+    <item>Obrót do góry</item>
+    <item>Obrót w dół</item>
+    <item>Kostka (w środku)</item>
+    <item>Kostka (na zewnątrz)</item>
     <item>Stos</item>
     <item>Akordeon</item>
     <item>Obrót</item>
-    <item>Cylinder in</item>
-    <item>Cylinder out</item>
+    <item>Cylinder (w środku)</item>
+    <item>Cylinder (na zewnątrz)</item>
     <item>Karuzela</item>
     <item>Przegląd</item>
   </string-array>
