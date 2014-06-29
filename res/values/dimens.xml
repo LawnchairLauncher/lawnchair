@@ -118,4 +118,7 @@
 
     <dimen name="grid_padding">15dp</dimen>
     <dimen name="grid_custom_text">50dp</dimen>
+
+    <dimen name="dynamic_grid_size_image_width">150dp</dimen>
+    <dimen name="dynamic_grid_size_image_height">150dp</dimen>
 </resources>

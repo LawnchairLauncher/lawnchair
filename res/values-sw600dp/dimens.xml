@@ -26,4 +26,8 @@
 
     <dimen name="sliding_panel_padding">180dp</dimen>
     <dimen name="overview_panel_button_spacing">32dp</dimen>
+
+    <!-- Dynamic Grid settings -->
+    <dimen name="dynamic_grid_size_image_width">300dp</dimen>
+    <dimen name="dynamic_grid_size_image_height">300dp</dimen>
 </resources>
