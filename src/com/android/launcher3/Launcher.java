@@ -89,6 +89,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -102,6 +103,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
@@ -4387,13 +4390,20 @@ public class Launcher extends Activity
         }
         final Workspace workspace = mWorkspace;
 
-        final int appWidgetId = item.appWidgetId;
-        final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        if (DEBUG_WIDGETS) {
-            Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component " + appWidgetInfo.provider);
-        }
+        final AppWidgetProviderInfo appWidgetInfo;
+        if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+            final int appWidgetId = item.appWidgetId;
+            appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            if (DEBUG_WIDGETS) {
+                Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component " + appWidgetInfo.provider);
+            }
 
-        item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+            item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+        } else {
+            appWidgetInfo = null;
+            item.hostView = new LauncherAppWidgetHostView(this, false);
+            item.hostView.updateAppWidget(null);
+        }
 
         item.hostView.setTag(item);
         item.onBindAppWidget(this);
@@ -4553,7 +4563,7 @@ public class Launcher extends Activity
         }
 
         if (mWorkspace != null) {
-            mWorkspace.updateShortcuts(apps);
+            mWorkspace.updateShortcutsAndWidgets(apps);
         }
 
         if (!LauncherAppState.isDisableAllApps() &&

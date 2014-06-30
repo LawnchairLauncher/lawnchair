@@ -28,6 +28,18 @@ import com.android.launcher3.compat.UserHandleCompat;
  */
 public class LauncherAppWidgetInfo extends ItemInfo {
 
+    public static final int RESTORE_COMPLETED = 0;
+
+    /**
+     * This is set during the package backup creation.
+     */
+    public static final int RESTORE_REMAP_PENDING = 1;
+
+    /**
+     * Widget provider is not yet installed.
+     */
+    public static final int RESTORE_PROVIDER_PENDING = 2;
+
     /**
      * Indicates that the widget hasn't been instantiated yet.
      */
@@ -44,6 +56,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     // TODO: Are these necessary here?
     int minWidth = -1;
     int minHeight = -1;
+
+    /**
+     * Indicates the restore status of the widget.
+     */
+    int restoreStatus;
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
@@ -64,6 +81,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         spanY = -1;
         // We only support app widgets on current user.
         user = UserHandleCompat.myUserHandle();
+        restoreStatus = RESTORE_COMPLETED;
     }
 
     @Override
@@ -100,5 +118,9 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     void unbind() {
         super.unbind();
         hostView = null;
+    }
+
+    public final boolean isWidgetIdValid() {
+        return restoreStatus != RESTORE_REMAP_PENDING;
     }
 }

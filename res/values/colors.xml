@@ -26,6 +26,7 @@
     <color name="bubble_dark_background">#20000000</color>
 
     <color name="appwidget_error_color">#FCCC</color>
+    <color name="appwidget_not_ready_color">#F48F</color>
 
     <color name="workspace_all_apps_and_delete_zone_text_color">#CCFFFFFF</color>
     <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
