@@ -2794,8 +2794,8 @@ public class Launcher extends Activity
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
             } else {
-                launcherApps.startActivityForProfile(intent.getComponent(),
-                        intent.getSourceBounds(), optsBundle, user);
+                launcherApps.startActivityForProfile(intent.getComponent(), user,
+                        intent.getSourceBounds(), optsBundle);
             }
             return true;
         } catch (SecurityException e) {
@@ -4730,7 +4730,9 @@ public class Launcher extends Activity
 
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
             Bitmap icon, UserHandleCompat user) {
-        return new ShortcutInfo(shortcutIntent, caption, icon, user);
+        UserManagerCompat userManager = UserManagerCompat.getInstance(this);
+        String contentDescription = userManager.getBadgedLabelForUser(caption.toString(), user);
+        return new ShortcutInfo(shortcutIntent, caption, contentDescription, icon, user);
     }
 
     protected void moveWorkspaceToDefaultScreen() {

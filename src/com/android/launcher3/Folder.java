@@ -571,6 +571,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         textView.setCompoundDrawables(null,
                 Utilities.createIconDrawable(item.getIcon(mIconCache)), null, null);
         textView.setText(item.title);
+        if (item.contentDescription != null) {
+            textView.setContentDescription(item.contentDescription);
+        }
         textView.setTag(item);
         textView.setTextColor(getResources().getColor(R.color.folder_items_text_color));
         textView.setShadowsEnabled(false);

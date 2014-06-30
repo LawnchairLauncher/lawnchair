@@ -94,7 +94,7 @@ public class AppInfo extends ItemInfo {
     }
 
     private static int initFlags(LauncherActivityInfoCompat info) {
-        int appFlags = info.getApplicationFlags();
+        int appFlags = info.getApplicationInfo().flags;
         int flags = 0;
         if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
             flags |= DOWNLOADED_FLAG;
