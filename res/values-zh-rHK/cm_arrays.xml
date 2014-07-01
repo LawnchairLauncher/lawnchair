@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>正常</item>
-    <item>明亮</item>
-    <item>簡明</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>無</item>
     <item>放大</item>
     <item>縮小</item>
     <item>向上旋轉</item>
-    <item>向下旋轉</item>
-    <item>Cube In</item>
-    <item>Cube Out</item>
+    <item>Rotate down</item>
+    <item>Cube in</item>
+    <item>Cube out</item>
     <item>堆疊</item>
     <item>手風琴</item>
     <item>翻轉</item>
-    <item>膛入</item>
-    <item>膛出</item>
+    <item>Cylinder in</item>
+    <item>Cylinder out</item>
     <item>幻燈片 </item>
     <item>概述</item>
   </string-array>

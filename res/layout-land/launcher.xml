@@ -36,9 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            launcher:defaultScreen="@integer/config_workspaceDefaultScreen"
-            launcher:pageSpacing="@dimen/workspace_page_spacing"
-            launcher:pageIndicator="@id/page_indicator" />
+            launcher:defaultScreen="@integer/config_workspaceDefaultScreen" />
 
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
@@ -47,8 +45,8 @@
             android:layout_gravity="end" />
 
         <include
-            android:id="@+id/qsb_bar"
-            layout="@layout/qsb_bar" />
+            android:id="@+id/search_drop_target_bar"
+            layout="@layout/search_drop_target_bar" />
 
         <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
              that it is still visible during the transition to AllApps and doesn't overlay on
@@ -63,42 +61,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
+        <include layout="@layout/migration_cling"
+            android:id="@+id/migration_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+        <include layout="@layout/migration_workspace_cling"
+            android:id="@+id/migration_workspace_cling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
         <include layout="@layout/workspace_cling"
             android:id="@+id/workspace_cling"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
-
         <include layout="@layout/folder_cling"
             android:id="@+id/folder_cling"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-        <!-- TODO: Fix
-        <com.android.launcher3.DrawableStateProxyView
-            android:id="@+id/voice_button_proxy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="top|start"
-            android:layout_marginTop="64dp"
-            android:clickable="true"
-            android:onClick="onClickVoiceButton"
-            android:importantForAccessibility="no"
-            launcher:sourceViewId="@+id/voice_button" />
-            -->
-
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-
-        <include layout="@layout/all_apps_cling"
-            android:id="@+id/all_apps_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
 
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"

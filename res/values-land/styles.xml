@@ -19,15 +19,11 @@
 
 <resources>
 <!-- Search Bar -->
-    <style name="QSBBar">
-    </style>
-    <style name="SearchDropTargetBar">
-    </style>
     <style name="SearchButton">
     </style>
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="DropTargetButton">
         <item name="android:layout_width">wrap_content</item>
@@ -36,8 +32,8 @@
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
-        <item name="android:paddingStart">@dimen/toolbar_button_horizontal_padding</item>
-        <item name="android:paddingEnd">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
         <item name="android:shadowColor">#DD000000</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>

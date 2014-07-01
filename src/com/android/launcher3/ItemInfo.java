@@ -27,7 +27,7 @@ import java.io.IOException;
 /**
  * Represents an item in the launcher.
  */
-class ItemInfo {
+public class ItemInfo {
     
     static final int NO_ID = -1;
     
@@ -119,6 +119,10 @@ class ItemInfo {
     }
 
     protected Intent getIntent() {
+        throw new RuntimeException("Unexpected Intent");
+    }
+
+    protected Intent getRestoredIntent() {
         throw new RuntimeException("Unexpected Intent");
     }
 

@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -25,15 +26,8 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.HapticFeedbackConstants;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.VelocityTracker;
-import android.view.View;
-import android.view.ViewConfiguration;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-
-import com.android.launcher3.R;
 
 import java.util.ArrayList;
 
@@ -203,7 +197,7 @@ public class DragController {
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
+    public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
             float initialDragViewScale) {
         if (PROFILE_DRAWING_DURING_DRAG) {
@@ -250,6 +244,7 @@ public class DragController {
         mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mMotionDownX, mMotionDownY);
         handleMoveEvent(mMotionDownX, mMotionDownY);
+        return dragView;
     }
 
     /**
@@ -323,7 +318,7 @@ public class DragController {
         }
         endDrag();
     }
-    public void onAppsRemoved(ArrayList<AppInfo> appInfos, Context context) {
+    public void onAppsRemoved(final ArrayList<String> packageNames, ArrayList<AppInfo> appInfos) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             Object rawDragInfo = mDragObject.dragInfo;
@@ -332,9 +327,10 @@ public class DragController {
                 for (AppInfo info : appInfos) {
                     // Added null checks to prevent NPE we've seen in the wild
                     if (dragInfo != null &&
-                        dragInfo.intent != null) {
-                        boolean isSameComponent =
-                                dragInfo.intent.getComponent().equals(info.componentName);
+                            dragInfo.intent != null && info != null) {
+                        ComponentName cn = dragInfo.intent.getComponent();
+                        boolean isSameComponent = cn.equals(info.componentName) ||
+                                packageNames.contains(cn.getPackageName());
                         if (isSameComponent) {
                             cancelDrag();
                             return;

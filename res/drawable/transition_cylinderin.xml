@@ -1,0 +1,55 @@
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/transition_cylinderin" android:oneshot="false">
+    <item android:drawable="@drawable/cylinderin_00000" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00001" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00002" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00003" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00004" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00005" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00006" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00007" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00008" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00009" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00010" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00011" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00012" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00013" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00014" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00015" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00016" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00017" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00018" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00019" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00020" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00021" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00022" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00023" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00024" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00025" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00026" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00027" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00028" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00029" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00030" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00031" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00032" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00033" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00034" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00035" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00036" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00037" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00038" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00039" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00040" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00041" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00042" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00043" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00044" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00045" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00046" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00047" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00048" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00049" android:duration="30" />
+    <item android:drawable="@drawable/cylinderin_00049" android:duration="30" />
+</animation-list>

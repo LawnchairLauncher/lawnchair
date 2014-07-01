@@ -40,6 +40,11 @@ class LauncherSettings {
         static final String TITLE = "title";
 
         /**
+         * Folder Hidden status
+         */
+        static final String HIDDEN = "hidden";
+
+        /**
          * The Intent URL of the gesture, describing what it points to. This
          * value is given to {@link android.content.Intent#parseUri(String, int)} to create
          * an Intent that can be launched.
@@ -171,6 +176,14 @@ class LauncherSettings {
         static final int CONTAINER_DESKTOP = -100;
         static final int CONTAINER_HOTSEAT = -101;
 
+        static final String containerToString(int container) {
+            switch (container) {
+                case CONTAINER_DESKTOP: return "desktop";
+                case CONTAINER_HOTSEAT: return "hotseat";
+                default: return String.valueOf(container);
+            }
+        }
+
         /**
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
@@ -280,5 +293,11 @@ class LauncherSettings {
          * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
          */
         static final String DISPLAY_MODE = "displayMode";
+
+        /**
+         * Boolean indicating that his item was restored and not yet successfully bound.
+         * <P>Type: INTEGER</P>
+         */
+        static final String RESTORED = "restored";
     }
 }

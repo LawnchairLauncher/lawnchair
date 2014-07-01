@@ -21,14 +21,21 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,7 +43,7 @@ import java.util.ArrayList;
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
-final class Utilities {
+public final class Utilities {
     private static final String TAG = "Launcher.Utilities";
 
     private static int sIconWidth = -1;
@@ -51,14 +58,18 @@ final class Utilities {
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
 
-    private static Typeface sTypeface;
-
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
     }
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
+
+
+    // To turn on these properties, type
+    // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
+    public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
     /**
      * Returns a FastBitmapDrawable with the icon, accurately sized.
@@ -75,6 +86,16 @@ final class Utilities {
      */
     static void resizeIconDrawable(Drawable icon) {
         icon.setBounds(0, 0, sIconTextureWidth, sIconTextureHeight);
+    }
+
+    private static boolean isPropertyEnabled(String propertyName) {
+        return Log.isLoggable(propertyName, Log.VERBOSE);
+    }
+
+    public static boolean isRotationEnabled(Context c) {
+        boolean enableRotation = sForceEnableRotation ||
+                c.getResources().getBoolean(R.bool.allow_rotation);
+        return enableRotation;
     }
 
     /**
@@ -103,15 +124,10 @@ final class Utilities {
         }
     }
 
-    static Bitmap createIconBitmap(Drawable icon, Context context) {
-        return createIconBitmap(icon, context, null, null, null, 1f);
-    }
-
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    static Bitmap createIconBitmap(Drawable icon, Context context, Drawable iconBack,
-            Drawable iconMask, Drawable iconUpon, float scale) {
+    public static Bitmap createIconBitmap(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
@@ -148,7 +164,7 @@ final class Utilities {
             int textureWidth = sIconTextureWidth;
             int textureHeight = sIconTextureHeight;
 
-            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
@@ -169,29 +185,7 @@ final class Utilities {
 
             sOldBounds.set(icon.getBounds());
             icon.setBounds(left, top, left+width, top+height);
-            canvas.save();
-            canvas.scale(scale, scale, width / 2, height/2);
             icon.draw(canvas);
-            canvas.restore();
-            if (iconMask != null) {
-                iconMask.setBounds(icon.getBounds());
-                ((BitmapDrawable) iconMask).getPaint().setXfermode(
-                        new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-                iconMask.draw(canvas);
-            }
-            if (iconBack != null) {
-                canvas.setBitmap(null);
-                Bitmap finalBitmap = Bitmap.createBitmap(textureWidth, textureHeight,
-                        Bitmap.Config.ARGB_8888);
-                canvas.setBitmap(finalBitmap);
-                iconBack.setBounds(icon.getBounds());
-                iconBack.draw(canvas);
-                canvas.drawBitmap(bitmap, null, icon.getBounds(), null);
-                bitmap = finalBitmap;
-            }
-            if (iconUpon != null) {
-                iconUpon.draw(canvas);
-            }
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
@@ -220,27 +214,6 @@ final class Utilities {
                 final Resources resources = context.getResources();
                 return createIconBitmap(new BitmapDrawable(resources, bitmap), context);
             }
-        }
-    }
-
-    /**
-     * Generates the default icon typeface for use in icons.
-     *
-     * @param familyName May be null. The name of the font family.
-     * @param style The style (normal, bold, italic) of the typeface. e.g. NORMAL, BOLD, ITALIC, BOLD_ITALIC
-     */
-    static void generateTypeface(String familyName, int style) {
-        sTypeface = Typeface.create(familyName, style);
-    }
-
-    /**
-     * Applies the default icon typeface to a textview.
-     *
-     * @param textView View to apply typeface to.
-     */
-    static void applyTypeface(TextView textView) {
-        if (sTypeface != null) {
-            textView.setTypeface(sTypeface);
         }
     }
 

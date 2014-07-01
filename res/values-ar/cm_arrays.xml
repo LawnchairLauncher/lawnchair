@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>العادية</item>
-    <item>فاتح</item>
-    <item>مكثف</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>لا شيء</item>
     <item>تكبير</item>
     <item>تصغير</item>
     <item>تدوير للأعلى</item>
-    <item>تدوير لأسفل</item>
+    <item>تدوير للأسفل</item>
     <item>مكعب لداخل</item>
     <item>مكعب للخارج</item>
     <item>جميع</item>
     <item>Accordion</item>
     <item>لف</item>
-    <item>اسطوانة الداخل</item>
-    <item>اسطوانة الخارج</item>
+    <item>اسطوانة لداخل</item>
+    <item>اسطوانة للخارج</item>
     <item>دائري</item>
     <item>نظرة عامّة</item>
   </string-array>

@@ -1,0 +1,19 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|bottom"
+    android:background="@color/settings_bg_color"
+    android:paddingLeft="@dimen/overview_panel_list_padding"
+    android:paddingRight="@dimen/overview_panel_list_padding"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="4dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="left"
+        android:textSize="16sp"
+        android:textColor="@color/settings_header_text"/>
+</RelativeLayout>

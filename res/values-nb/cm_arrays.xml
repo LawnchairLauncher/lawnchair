@@ -16,11 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Vanlig</item>
-    <item>Lys</item>
-    <item>Kondensert</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Ingen</item>
     <item>Zoome inn</item>

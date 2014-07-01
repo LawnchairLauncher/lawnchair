@@ -18,9 +18,9 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -62,6 +62,10 @@ class AppInfo extends ItemInfo {
 
     protected Intent getIntent() {
         return intent;
+    }
+
+    protected Intent getRestoredIntent() {
+        return null;
     }
 
     /**

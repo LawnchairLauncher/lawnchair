@@ -16,11 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Standaard</item>
-    <item>Licht</item>
-    <item>Smal</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Geen</item>
     <item>Inzoomen</item>

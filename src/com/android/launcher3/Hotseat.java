@@ -149,7 +149,7 @@ public class Hotseat extends FrameLayout {
     void addAllAppsFolder(IconCache iconCache,
             ArrayList<AppInfo> allApps, ArrayList<ComponentName> onWorkspace,
             Launcher launcher, Workspace workspace) {
-        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+        if (LauncherAppState.isDisableAllApps()) {
             FolderInfo fi = new FolderInfo();
 
             fi.cellX = getCellXFromOrder(mAllAppsButtonRank);
@@ -179,7 +179,7 @@ public class Hotseat extends FrameLayout {
     }
 
     void addAppsToAllAppsFolder(ArrayList<AppInfo> apps) {
-        if (AppsCustomizePagedView.DISABLE_ALL_APPS) {
+        if (LauncherAppState.isDisableAllApps()) {
             View v = mContent.getChildAt(getCellXFromOrder(mAllAppsButtonRank), getCellYFromOrder(mAllAppsButtonRank));
             FolderIcon fi = null;
 

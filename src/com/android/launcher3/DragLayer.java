@@ -24,11 +24,13 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
@@ -63,8 +65,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
-    private int mWorkspaceIndex = -1;
-    private int mQsbIndex = -1;
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_FADE_OUT = 1;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
@@ -72,6 +72,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     private TouchCompleteListener mTouchCompleteListener;
 
     private final Rect mInsets = new Rect();
+
+    private int mDragViewIndex;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -106,19 +108,32 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         final int n = getChildCount();
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);
-            final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
-            if (child instanceof Insettable) {
-                ((Insettable)child).setInsets(insets);
-            } else {
-                flp.topMargin += (insets.top - mInsets.top);
-                flp.leftMargin += (insets.left - mInsets.left);
-                flp.rightMargin += (insets.right - mInsets.right);
-                flp.bottomMargin += (insets.bottom - mInsets.bottom);
+            if (child.getId() == R.id.overview_panel) {
+                continue;
             }
-            child.setLayoutParams(flp);
+            setInsets(child, insets, mInsets);
         }
         mInsets.set(insets);
         return true; // I'll take it from here
+    }
+
+    @Override
+    public void addView(View child, int index, android.view.ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        setInsets(child, mInsets, new Rect());
+    }
+
+    private void setInsets(View child, Rect newInsets, Rect oldInsets) {
+        final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
+        if (child instanceof Insettable) {
+            ((Insettable) child).setInsets(newInsets);
+        } else {
+            flp.topMargin += (newInsets.top - oldInsets.top);
+            flp.leftMargin += (newInsets.left - oldInsets.left);
+            flp.rightMargin += (newInsets.right - oldInsets.right);
+            flp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
+        }
+        child.setLayoutParams(flp);
     }
 
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
@@ -156,7 +171,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
 
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null && !mLauncher.isFolderClingVisible() && intercept) {
+        if (currentFolder != null && !mLauncher.getLauncherClings().isFolderClingVisible() &&
+                intercept) {
             if (currentFolder.isEditingName()) {
                 if (!isEventOverFolderTextRegion(currentFolder, ev)) {
                     currentFolder.dismissEditingName();
@@ -212,22 +228,19 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
-                        } else {
-                            return true;
                         }
+                        mHoverPointClosesFolder = false;
+                        break;
                     case MotionEvent.ACTION_HOVER_MOVE:
                         isOverFolder = isEventOverFolder(currentFolder, ev);
                         if (!isOverFolder && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (isOverFolder) {
-                            mHoverPointClosesFolder = false;
-                        } else {
+                        } else if (!isOverFolder) {
                             return true;
                         }
+                        mHoverPointClosesFolder = false;
                 }
             }
         }
@@ -480,7 +493,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child) {
-        animateViewIntoPosition(dragView, child, null);
+        animateViewIntoPosition(dragView, child, null, null);
     }
 
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
@@ -496,8 +509,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child,
-            final Runnable onFinishAnimationRunnable) {
-        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, null);
+            final Runnable onFinishAnimationRunnable, View anchorView) {
+        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, anchorView);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
@@ -522,14 +535,18 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         scale *= childScale;
         int toX = coord[0];
         int toY = coord[1];
+        float toScale = scale;
         if (child instanceof TextView) {
             TextView tv = (TextView) child;
+            // Account for the source scale of the icon (ie. from AllApps to Workspace, in which
+            // the workspace may have smaller icon bounds).
+            toScale = scale / dragView.getIntrinsicIconScaleFactor();
 
             // The child may be scaled (always about the center of the view) so to account for it,
             // we have to offset the position by the scaled size.  Once we do that, we can center
             // the drag view about the scaled child view.
-            toY += Math.round(scale * tv.getPaddingTop());
-            toY -= dragView.getMeasuredHeight() * (1 - scale) / 2;
+            toY += Math.round(toScale * tv.getPaddingTop());
+            toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
@@ -555,7 +572,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 }
             }
         };
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, scale, scale,
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
                 onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
     }
 
@@ -645,8 +662,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 int x = (int) (fromLeft + Math.round(((to.left - fromLeft) * motionPercent)));
                 int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
 
-                int xPos = x - mDropView.getScrollX() + (mAnchorView != null
-                        ? (mAnchorViewInitialScrollX - mAnchorView.getScrollX()) : 0);
+                int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
+                    (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
+
+                int xPos = x - mDropView.getScrollX() + anchorAdjust;
                 int yPos = y - mDropView.getScrollY();
 
                 mDropView.setTranslationX(xPos);
@@ -755,31 +774,26 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     private void updateChildIndices() {
-        if (mLauncher != null) {
-            mWorkspaceIndex = indexOfChild(mLauncher.getWorkspace());
-            mQsbIndex = indexOfChild(mLauncher.getSearchBar());
+        mDragViewIndex = -1;
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            if (getChildAt(i) instanceof DragView) {
+                mDragViewIndex = i;
+            }
         }
     }
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        // TODO: We have turned off this custom drawing order because it now effects touch
-        // dispatch order. We need to sort that issue out and then decide how to go about this.
-        if (true || LauncherAppState.isScreenLandscape(getContext()) ||
-                mWorkspaceIndex == -1 || mQsbIndex == -1 ||
-                mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
+        if (mDragViewIndex == -1) {
             return i;
-        }
-
-        // This ensures that the workspace is drawn above the hotseat and qsb,
-        // except when the workspace is drawing a background gradient, in which
-        // case we want the workspace to stay behind these elements.
-        if (i == mQsbIndex) {
-            return mWorkspaceIndex;
-        } else if (i == mWorkspaceIndex) {
-            return mQsbIndex;
+        } else if (i == mDragViewIndex) {
+            return getChildCount()-1;
+        } else if (i < mDragViewIndex) {
+            return i;
         } else {
-            return i;
+            // i > mDragViewIndex
+            return i-1;
         }
     }
 
@@ -800,7 +814,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     /**
      * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
      */
-    @Override
     public boolean isLayoutRtl() {
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }

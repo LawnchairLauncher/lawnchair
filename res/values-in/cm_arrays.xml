@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Reguler</item>
-    <item>Terang</item>
-    <item>Condensed</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Tidak Ada</item>
-    <item>Perkecil</item>
-    <item>Perbesar</item>
-    <item>Putar ke Atas</item>
-    <item>Putar ke Bawah</item>
-    <item>Kubus Masuk</item>
-    <item>Kubus Keluar</item>
+    <item>Memperbesar</item>
+    <item>Memperkecil</item>
+    <item>Memutar keatas</item>
+    <item>Memutar kebawah</item>
+    <item>Kubus masuk</item>
+    <item>Kubus keluar</item>
     <item>Tumpukan</item>
-    <item>Accordion</item>
+    <item>Akordion</item>
     <item>Membalik</item>
-    <item>Silinder Masuk</item>
-    <item>Silinder Keluar</item>
+    <item>Silinder masuk</item>
+    <item>Silinder keluar</item>
     <item>Komedi putar</item>
     <item>Overview</item>
   </string-array>

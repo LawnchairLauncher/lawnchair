@@ -1,0 +1,55 @@
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/transition_stack" android:oneshot="false">
+    <item android:drawable="@drawable/stack_00000" android:duration="30" />
+    <item android:drawable="@drawable/stack_00001" android:duration="30" />
+    <item android:drawable="@drawable/stack_00002" android:duration="30" />
+    <item android:drawable="@drawable/stack_00003" android:duration="30" />
+    <item android:drawable="@drawable/stack_00004" android:duration="30" />
+    <item android:drawable="@drawable/stack_00005" android:duration="30" />
+    <item android:drawable="@drawable/stack_00006" android:duration="30" />
+    <item android:drawable="@drawable/stack_00007" android:duration="30" />
+    <item android:drawable="@drawable/stack_00008" android:duration="30" />
+    <item android:drawable="@drawable/stack_00009" android:duration="30" />
+    <item android:drawable="@drawable/stack_00010" android:duration="30" />
+    <item android:drawable="@drawable/stack_00011" android:duration="30" />
+    <item android:drawable="@drawable/stack_00012" android:duration="30" />
+    <item android:drawable="@drawable/stack_00013" android:duration="30" />
+    <item android:drawable="@drawable/stack_00014" android:duration="30" />
+    <item android:drawable="@drawable/stack_00015" android:duration="30" />
+    <item android:drawable="@drawable/stack_00016" android:duration="30" />
+    <item android:drawable="@drawable/stack_00017" android:duration="30" />
+    <item android:drawable="@drawable/stack_00018" android:duration="30" />
+    <item android:drawable="@drawable/stack_00019" android:duration="30" />
+    <item android:drawable="@drawable/stack_00020" android:duration="30" />
+    <item android:drawable="@drawable/stack_00021" android:duration="30" />
+    <item android:drawable="@drawable/stack_00022" android:duration="30" />
+    <item android:drawable="@drawable/stack_00023" android:duration="30" />
+    <item android:drawable="@drawable/stack_00024" android:duration="30" />
+    <item android:drawable="@drawable/stack_00025" android:duration="30" />
+    <item android:drawable="@drawable/stack_00026" android:duration="30" />
+    <item android:drawable="@drawable/stack_00027" android:duration="30" />
+    <item android:drawable="@drawable/stack_00028" android:duration="30" />
+    <item android:drawable="@drawable/stack_00029" android:duration="30" />
+    <item android:drawable="@drawable/stack_00030" android:duration="30" />
+    <item android:drawable="@drawable/stack_00031" android:duration="30" />
+    <item android:drawable="@drawable/stack_00032" android:duration="30" />
+    <item android:drawable="@drawable/stack_00033" android:duration="30" />
+    <item android:drawable="@drawable/stack_00034" android:duration="30" />
+    <item android:drawable="@drawable/stack_00035" android:duration="30" />
+    <item android:drawable="@drawable/stack_00036" android:duration="30" />
+    <item android:drawable="@drawable/stack_00037" android:duration="30" />
+    <item android:drawable="@drawable/stack_00038" android:duration="30" />
+    <item android:drawable="@drawable/stack_00039" android:duration="30" />
+    <item android:drawable="@drawable/stack_00040" android:duration="30" />
+    <item android:drawable="@drawable/stack_00041" android:duration="30" />
+    <item android:drawable="@drawable/stack_00042" android:duration="30" />
+    <item android:drawable="@drawable/stack_00043" android:duration="30" />
+    <item android:drawable="@drawable/stack_00044" android:duration="30" />
+    <item android:drawable="@drawable/stack_00045" android:duration="30" />
+    <item android:drawable="@drawable/stack_00046" android:duration="30" />
+    <item android:drawable="@drawable/stack_00047" android:duration="30" />
+    <item android:drawable="@drawable/stack_00048" android:duration="30" />
+    <item android:drawable="@drawable/stack_00049" android:duration="30" />
+    <item android:drawable="@drawable/stack_00049" android:duration="30" />
+</animation-list>

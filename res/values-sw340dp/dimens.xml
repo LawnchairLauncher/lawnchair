@@ -17,4 +17,6 @@
 <resources>
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">20dp</dimen>
+
+    <dimen name="overview_panel_button_spacing">22dp</dimen>
 </resources>

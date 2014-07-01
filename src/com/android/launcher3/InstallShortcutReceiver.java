@@ -24,16 +24,19 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.json.*;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final String TAG = "InstallShortcutReceiver";
@@ -108,6 +111,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     public static void removeFromInstallQueue(SharedPreferences sharedPrefs,
                                               ArrayList<String> packageNames) {
+        if (packageNames.isEmpty()) {
+            return;
+        }
         synchronized(sLock) {
             Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
             if (DBG) {
@@ -218,18 +224,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (intent == null) {
             return;
         }
+
         // This name is only used for comparisons and notifications, so fall back to activity name
         // if not supplied
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        if (name == null) {
-            try {
-                PackageManager pm = context.getPackageManager();
-                ActivityInfo info = pm.getActivityInfo(intent.getComponent(), 0);
-                name = info.loadLabel(pm).toString();
-            } catch (PackageManager.NameNotFoundException nnfe) {
-                return;
-            }
-        }
+        String name = ensureValidName(context, intent,
+                data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME)).toString();
         Bitmap icon = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
         Intent.ShortcutIconResource iconResource =
             data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
@@ -272,6 +271,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 //final Intent data = pendingInfo.data;
                 final Intent intent = pendingInfo.launchIntent;
                 final String name = pendingInfo.name;
+
+                if (LauncherAppState.isDisableAllApps() && !isValidShortcutLaunchIntent(intent)) {
+                    if (DBG) Log.d(TAG, "Ignoring shortcut with launchIntent:" + intent);
+                    continue;
+                }
+
                 final boolean exists = LauncherModel.shortcutExists(context, name, intent);
                 //final boolean allowDuplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
 
@@ -299,9 +304,33 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Add the new apps to the model and bind them
             if (!addShortcuts.isEmpty()) {
                 LauncherAppState app = LauncherAppState.getInstance();
-                app.getModel().addAndBindAddedApps(context, addShortcuts, null);
+                app.getModel().addAndBindAddedWorkspaceApps(context, addShortcuts);
             }
         }
+    }
+
+    /**
+     * Returns true if the intent is a valid launch intent for a shortcut.
+     * This is used to identify shortcuts which are different from the ones exposed by the
+     * applications' manifest file.
+     *
+     * When DISABLE_ALL_APPS is true, shortcuts exposed via the app's manifest should never be
+     * duplicated or removed(unless the app is un-installed).
+     *
+     * @param launchIntent The intent that will be launched when the shortcut is clicked.
+     */
+    static boolean isValidShortcutLaunchIntent(Intent launchIntent) {
+        if (launchIntent != null
+                && Intent.ACTION_MAIN.equals(launchIntent.getAction())
+                && launchIntent.getComponent() != null
+                && launchIntent.getCategories() != null
+                && launchIntent.getCategories().size() == 1
+                && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                && launchIntent.getExtras() == null
+                && TextUtils.isEmpty(launchIntent.getDataString())) {
+            return false;
+        }
+        return true;
     }
 
     private static ShortcutInfo getShortcutInfo(Context context, Intent data,
@@ -315,6 +344,25 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         }
         LauncherAppState app = LauncherAppState.getInstance();
-        return app.getModel().infoFromShortcutIntent(context, data, null);
+        ShortcutInfo info = app.getModel().infoFromShortcutIntent(context, data, null);
+        info.title = ensureValidName(context, launchIntent, info.title);
+        return info;
+    }
+
+    /**
+     * Ensures that we have a valid, non-null name.  If the provided name is null, we will return
+     * the application name instead.
+     */
+    private static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
+        if (name == null) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                ActivityInfo info = pm.getActivityInfo(intent.getComponent(), 0);
+                name = info.loadLabel(pm).toString();
+            } catch (PackageManager.NameNotFoundException nnfe) {
+                return "";
+            }
+        }
+        return name;
     }
 }

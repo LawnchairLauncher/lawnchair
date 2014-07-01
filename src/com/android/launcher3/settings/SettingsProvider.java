@@ -26,21 +26,24 @@ public final class SettingsProvider {
 
     public static final String SETTINGS_UI_HOMESCREEN_DEFAULT_SCREEN_ID = "ui_homescreen_default_screen_id";
     public static final String SETTINGS_UI_HOMESCREEN_SEARCH = "ui_homescreen_search";
+    public static final String SETTINGS_UI_HOMESCREEN_SEARCH_SCREEN_LEFT = "ui_homescreen_search_screen_left";
     public static final String SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS = "ui_homescreen_general_hide_icon_labels";
     public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_TRANSITION_EFFECT = "ui_homescreen_scrolling_transition_effect";
     public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL = "ui_homescreen_scrolling_wallpaper_scroll";
     public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES = "ui_homescreen_scrolling_page_outlines";
     public static final String SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT = "ui_homescreen_scrolling_fade_adjacent";
+    public static final String SETTINGS_UI_DYNAMIC_GRID_SIZE = "ui_dynamic_grid_size";
+    public static final String SETTINGS_UI_HOMESCREEN_ROWS = "ui_homescreen_rows";
+    public static final String SETTINGS_UI_HOMESCREEN_COLUMNS = "ui_homescreen_columns";
     public static final String SETTINGS_UI_DRAWER_SCROLLING_TRANSITION_EFFECT = "ui_drawer_scrolling_transition_effect";
     public static final String SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT = "ui_drawer_scrolling_fade_adjacent";
-    public static final String SETTINGS_UI_DRAWER_HIDDEN_APPS = "ui_drawer_hidden_apps";
     public static final String SETTINGS_UI_DRAWER_REMOVE_HIDDEN_APPS_SHORTCUTS = "ui_drawer_remove_hidden_apps_shortcuts";
     public static final String SETTINGS_UI_DRAWER_REMOVE_HIDDEN_APPS_WIDGETS = "ui_drawer_remove_hidden_apps_widgets";
     public static final String SETTINGS_UI_DRAWER_HIDE_ICON_LABELS = "ui_drawer_hide_icon_labels";
     public static final String SETTINGS_UI_GENERAL_ICONS_LARGE = "ui_general_icons_large";
-    public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_FAMILY = "ui_general_icons_text_font";
-    public static final String SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_STYLE = "ui_general_icons_text_font_style";
-    public static final String SETTINGS_UI_GENERAL_ICONS_ICON_PACK = "ui_general_iconpack";
+    public static final String SETTINGS_UI_DRAWER_SORT_MODE = "ui_drawer_sort_mode";
+
+    public static final String SETTINGS_HOME_LAST_APP = "home_last_app";
 
     public static SharedPreferences get(Context context) {
         return context.getSharedPreferences(SETTINGS_KEY, Context.MODE_MULTI_PROCESS);
@@ -80,5 +83,9 @@ public final class SettingsProvider {
 
     public static void putString(Context context, String key, String value) {
         get(context).edit().putString(key, value).commit();
+    }
+
+    public static void putInt(Context context, String key, int value) {
+        get(context).edit().putInt(key, value).commit();
     }
 }

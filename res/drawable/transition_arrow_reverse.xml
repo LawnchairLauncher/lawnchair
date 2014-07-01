@@ -1,0 +1,21 @@
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/transition_arrow_reverse" android:oneshot="true">
+    <item android:drawable="@drawable/launcheranimatedarrow_00016" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00015" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00014" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00013" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00012" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00011" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00010" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00009" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00008" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00007" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00006" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00005" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00004" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00003" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00002" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00001" android:duration="30" />
+    <item android:drawable="@drawable/launcheranimatedarrow_00000" android:duration="30" />
+</animation-list>

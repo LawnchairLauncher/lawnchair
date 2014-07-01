@@ -17,86 +17,74 @@
 <resources>
     <!-- Application name -->
     <string name="cm_application_name" translatable="false">Trebuchet</string>
-    <!-- App copyright -->
-    <string name="application_copyright">Copyright \u00A9 2014 The CyanogenMod Project</string>
     <!-- App version -->
     <string name="application_version" translatable="false">1.0</string>
 
-    <!-- Strings for the customization mode -->
-    <!-- Text for sorting mode button -->
-    <string name="sort_button_text">Sort</string>
-    <!-- Text for filter button -->
-    <string name="filter_button_text">Filter</string>
-    <!-- Text for default screen button -->
-    <string name="default_screen_button_text">Default screen</string>
-    <!-- Text for transition effect button -->
-    <string name="transition_effect_button_text">Scroll effect</string>
+    <string name="launcher_settings">LAUNCHER SETTINGS</string>
+    <string name="home_screen_settings">HOME SCREEN SETTINGS</string>
+    <string name="drawer_settings">DRAWER SETTINGS</string>
+    <string name="app_settings">APP SETTINGS</string>
+
+    <!-- Settings states -->
+    <string name="setting_state_on">ON</string>
+    <string name="setting_state_off">OFF</string>
+
+    <!-- Themes button -->
+    <string name="themes_button_text">Themes</string>
+
+    <string name="scrolling_page_outlines">Page outlines</string>
+    <string name="scrolling_fade_adjacent">Fade side pages</string>
+
+    <!-- Wallpaper scroll effect -->
+    <string name="scrolling_wallpaper">Scroll wallpaper</string>
+
+    <!-- Dynamic Grid -->
+    <string name="grid_size_text">Grid size</string>
+    <string name="grid_size_comfortable">Comfortable</string>
+    <string name="grid_size_cozy">Cozy</string>
+    <string name="grid_size_condensed">Condensed</string>
+    <string name="grid_size_custom">Custom</string>
+    <string name="preferences_interface_homescreen_custom">Select custom size</string>
+    <string name="preferences_interface_homescreen_rows_title">Number of rows</string>
+    <string name="preferences_interface_homescreen_columns_title">Number of columns</string>
+
+    <!-- Folder titles -->
+    <string name="google_title" translatable="false">Google</string>
+
+    <!-- Hidden apps -->
+    <string name="hidden_apps_title">Hidden apps</string>
+
+    <!-- Scroll effect -->
+    <string name="scroll_effect_text">Scroll effect</string>
+
+    <!-- Drawer sorting mode -->
+    <string name="drawer_sorting_text">Sorting mode</string>
 
     <string name="sort_mode_title">Title</string>
     <string name="sort_mode_launch_count">Launch count</string>
     <string name="sort_mode_install_time">Install time</string>
 
-    <string name="scrolling_page_outlines">Page outlines</string>
-    <string name="scrolling_fade_adjacent">Fade side pages</string>
+    <!-- Home screen search bar -->
+    <string name="home_screen_search_text">Search bar</string>
 
+    <!-- Larger icons -->
+    <string name="larger_icons_text">Larger icons</string>
 
-    <string name="wallpaper_scroll">Scroll wallpaper</string>
+    <!-- Icon labels -->
+    <string name="icon_labels">Icon labels</string>
+    <string name="icon_labels_show">Show</string>
+    <string name="icon_labels_hide">Hide</string>
 
-    <!-- Settings -->
-    <string name="preferences_title">Settings</string>
-    <!-- Application -->
-    <string name="preferences_application_title">App</string>
+    <!-- Protected apps -->
+    <string name="protected_app_settings">Protected apps</string>
 
-    <!-- UI -->
-    <!-- Homescreen -->
-    <string name="preferences_interface_homescreen_title">Homescreen</string>
-    <string name="preferences_interface_homescreen_search_title">Search bar</string>
-    <string name="preferences_interface_homescreen_search_summary">Show persistent search bar at top of screen</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
-    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide icon labels on homescreen</string>
+    <!-- Text for hiding/showing search screen on left (if installed) -->
+    <string name="search_screen_left_text">Search panel</string>
 
-    <!-- Drawer -->
-    <string name="preferences_interface_drawer_title">Drawer</string>
-    <string name="preferences_interface_drawer_summary">Apps and widgets drawer</string>
-    <string name="preferences_interface_drawer_apps_category">Apps</string>
-    <string name="preferences_interface_drawer_hidden_apps_title">Hidden apps</string>
-    <string name="preferences_interface_drawer_hidden_apps_summary">Hide apps from the drawer</string>
-    <string name="preferences_interface_drawer_hidden_apps_shortcuts_title">Remove shortcuts</string>
-    <string name="preferences_interface_drawer_hidden_apps_shortcuts_summary">Remove the shortcuts of hidden apps from the homescreen</string>
-    <string name="preferences_interface_drawer_hidden_apps_widgets_title">Remove widgets</string>
-    <string name="preferences_interface_drawer_hidden_apps_widgets_summary">Remove the widgets of hidden apps from the homescreen</string>
-    <string name="preferences_interface_drawer_hide_icon_labels_title">Hide icon labels</string>
-    <string name="preferences_interface_drawer_hide_icon_labels_summary">Hide icon labels in drawer</string>
+    <!-- Toast message when search screen on left is not supported -->
+    <string name="search_screen_left_unsupported_toast">You must have a supported search app and CyanogenMod to use this feature.</string>
 
-    <!-- Dock -->
-    <string name="preferences_interface_dock_title">Dock</string>
+    <!-- Dialog -->
+    <string name="dialog_confirm">Confirm</string>
 
-    <!-- General -->
-    <string name="preferences_interface_general_title">General</string>
-    <string name="preferences_interface_general_icons_category">Icons</string>
-    <string name="preferences_interface_general_icons_large_title">Larger icons</string>
-    <string name="preferences_interface_general_icons_large_summary">Use extra large application icons in homescreen and drawer</string>
-    <string name="preferences_interface_general_icons_text_style_title">Text font style</string>
-    <string name="preferences_interface_general_icons_text_style_summary">Variant and style of font to use for icon text</string>
-    <string name="dialog_pick_iconpack_title">Pick icon pack</string>
-    <string name="default_iconpack_title">Default icons</string>
-    <string name="icon_packs_title">Icon packs</string>
-    <string name="no_iconpacks_summary">No icon packs installed</string>
-
-    <!-- Folder titles -->
-    <string name="google_title" translatable="false">Google</string>
-
-    <!-- Clear keyguard wallpaper tile text -->
-    <string name="clear_keyguard_wallpaper">Clear</string>
-
-    <!-- The title text for the all apps cling [CHAR_LIMIT=60] -->
-    <string name="all_apps_cling_cm">Customize your drawer</string>
-    <!-- The description of how to access Trebuchet settings [CHAR_LIMIT=160] -->
-    <string name="all_apps_cling_summary">Tap the page indicator to view additional configuration settings</string>
-
-    <!-- Noun, menu item used to reset hidden apps list -->
-    <string name="menu_hidden_apps_delete">Reset</string>
-
-    <!-- Hidden apps -->
-    <string name="hidden_apps_title">Hidden apps</string>
 </resources>

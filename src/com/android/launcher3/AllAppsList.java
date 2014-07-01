@@ -16,9 +16,6 @@
 
 package com.android.launcher3;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -26,13 +23,16 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Stores the list of all applications for the all apps view.
  */
 class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
-    
+
     /** The list off all apps. */
     public ArrayList<AppInfo> data =
             new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
@@ -115,8 +115,7 @@ class AllAppsList {
                 data.remove(i);
             }
         }
-        // This is more aggressive than it needs to be.
-        mIconCache.flush();
+        mIconCache.remove(packageName);
     }
 
     /**

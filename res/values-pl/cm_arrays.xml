@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Regularny</item>
-    <item>Lekki</item>
-    <item>Skondensowany</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Brak</item>
-    <item>Przybliżenie</item>
-    <item>Oddalenie</item>
-    <item>Obrót w górę</item>
+    <item>Zbliżanie</item>
+    <item>Oddalanie</item>
+    <item>Obrót do góry</item>
     <item>Obrót w dół</item>
-    <item>Kostka do wewnątrz</item>
-    <item>Kostka do zewnątrz</item>
+    <item>Kostka (w środku)</item>
+    <item>Kostka (na zewnątrz)</item>
     <item>Stos</item>
     <item>Akordeon</item>
     <item>Obrót</item>
-    <item>Cylinder do wewnątrz</item>
-    <item>Cylinder do zewnątrz</item>
+    <item>Cylinder (w środku)</item>
+    <item>Cylinder (na zewnątrz)</item>
     <item>Karuzela</item>
     <item>Przegląd</item>
   </string-array>

@@ -18,30 +18,13 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperCropper" parent="@android:style/Theme.Holo">
-        <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
-    <style name="WallpaperCropperActionBar" parent="android:style/Widget.Holo.ActionBar">
-        <item name="android:displayOptions">showCustom</item>
-        <item name="android:background">#88000000</item>
-    </style>
-
-    <style name="Theme" parent="@android:style/Theme.Holo.Wallpaper.NoTitleBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
     <style name="ClingButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">15dp</item>
         <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingStart">50dp</item>
-        <item name="android:paddingEnd">50dp</item>
+        <item name="android:paddingLeft">50dp</item>
+        <item name="android:paddingRight">50dp</item>
         <item name="android:text">@string/cling_dismiss</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:textStyle">bold</item>
@@ -52,27 +35,33 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">@dimen/cling_title_text_size</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
-    </style>
-    <style name="ClingAltTitleText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textColor">#49C0EC</item>
     </style>
     <style name="ClingText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/cling_text_size</item>
         <item name="android:textColor">#80000000</item>
         <item name="android:lineSpacingMultiplier">1.1</item>
+    </style>
+    <style name="ClingAltTitleText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/cling_alt_title_text_size</item>
+        <item name="android:textColor">#49C0EC</item>
+    </style>
+    <style name="ClingAltText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/cling_alt_text_size</item>
+        <item name="android:textColor">#49C0EC</item>
     </style>
     <style name="ClingHintText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/cling_hint_text_size</item>
         <item name="android:textColor">#80ffffff</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
@@ -98,13 +87,9 @@
     <style name="WorkspaceIcon.AppsCustomize">
         <item name="android:background">@null</item>
         <item name="android:textColor">@color/apps_customize_icon_text_color</item>
-        <item name="android:drawablePadding">4dp</item>
+        <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
         <item name="android:shadowRadius">4.0</item>
         <item name="android:shadowColor">#FF000000</item>
-    </style>
-
-    <style name="QSBBar">
-        <item name="android:orientation">horizontal</item>
     </style>
     <style name="SearchDropTargetBar">
     </style>
@@ -120,8 +105,8 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingStart">25dp</item>
-        <item name="android:paddingEnd">25dp</item>
+        <item name="android:paddingLeft">25dp</item>
+        <item name="android:paddingRight">25dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
         <item name="android:singleLine">true</item>
@@ -136,8 +121,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingStart">20dp</item>
-        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
         <item name="android:background">@drawable/tab_widget_indicator_selector</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">12sp</item>
@@ -151,8 +136,8 @@
     </style>
 
     <style name="MarketButton">
-        <item name="android:paddingStart">5dp</item>
-        <item name="android:paddingEnd">5dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
         <item name="android:textColor">@color/workspace_all_apps_and_delete_zone_text_color</item>
         <item name="android:textSize">18sp</item>
         <item name="android:shadowColor">@color/workspace_all_apps_and_delete_zone_text_shadow_color</item>
@@ -165,5 +150,11 @@
     <style name="CustomClingTitleText">
     </style>
     <style name="CustomClingText">
+    </style>
+    <style name="PagedViewWidgetImageView">
+        <item name="android:paddingLeft">@dimen/app_widget_preview_padding_left</item>
+    </style>
+    <style name="SearchButton.WithPaddingStart">
+        <item name="android:paddingLeft">8dp</item>
     </style>
 </resources>

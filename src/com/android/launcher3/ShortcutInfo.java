@@ -20,9 +20,9 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -64,6 +64,12 @@ class ShortcutInfo extends ItemInfo {
     long firstInstallTime;
     int flags = 0;
 
+    /**
+     * If this shortcut is a placeholder, then intent will be a market intent for the package, and
+     * this will hold the original intent from the database.  Otherwise, null.
+     */
+    Intent restoredIntent;
+
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -71,7 +77,29 @@ class ShortcutInfo extends ItemInfo {
     protected Intent getIntent() {
         return intent;
     }
-    
+
+    protected Intent getRestoredIntent() {
+        return restoredIntent;
+    }
+
+    /**
+     * Overwrite placeholder data with restored data, or do nothing if this is not a placeholder.
+     */
+    public void restore() {
+        if (restoredIntent != null) {
+            intent = restoredIntent;
+            restoredIntent = null;
+        }
+    }
+
+
+    ShortcutInfo(Intent intent, CharSequence title, Bitmap icon) {
+        this();
+        this.intent = intent;
+        this.title = title;
+        mIcon = icon;
+    }
+
     public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
         title = info.title.toString();

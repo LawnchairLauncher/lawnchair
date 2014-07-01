@@ -16,15 +16,10 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Szokásos</item>
-    <item>Világos</item>
-    <item>Tömörített</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Nincs</item>
-    <item>Nagyítás befelé</item>
-    <item>Nagyítás kifelé</item>
+    <item>Nagyítás</item>
+    <item>Kicsinyítés</item>
     <item>Forgatás felfelé</item>
     <item>Forgatás lefelé</item>
     <item>Kocka belül</item>

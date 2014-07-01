@@ -16,9 +16,9 @@
 
 package com.android.launcher3;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
+
+import java.util.ArrayList;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -31,9 +31,10 @@ class FolderInfo extends ItemInfo {
     boolean opened;
 
     /**
-     * The apps and shortcuts
+     * The apps and shortcuts and hidden status
      */
     ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+    Boolean hidden = false;
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
@@ -78,6 +79,7 @@ class FolderInfo extends ItemInfo {
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
         values.put(LauncherSettings.Favorites.TITLE, title.toString());
+        values.put(LauncherSettings.Favorites.HIDDEN, hidden ? 1 : 0);
     }
 
     void addListener(FolderListener listener) {

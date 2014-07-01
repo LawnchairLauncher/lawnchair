@@ -16,24 +16,19 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Vanlig</item>
-    <item>Ljus</item>
-    <item>Kondenserad</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Ingen</item>
-    <item>Zooma In</item>
+    <item>Zooma in</item>
     <item>Zooma ut</item>
-    <item>Rotera upp</item>
-    <item>Rotera ner</item>
-    <item>Kub in</item>
-    <item>Kub ut</item>
+    <item>Rotera uppåt</item>
+    <item>Rotera nedåt</item>
+    <item>Kub inåt</item>
+    <item>Kub utåt</item>
     <item>Stack</item>
     <item>Dragspel</item>
     <item>Vänd</item>
-    <item>Cylinder in</item>
-    <item>Cylinder ut</item>
+    <item>Cylinder inåt</item>
+    <item>Cylinder utåt</item>
     <item>Karusell</item>
     <item>Översikt</item>
   </string-array>

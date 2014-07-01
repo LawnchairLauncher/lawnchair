@@ -16,17 +16,12 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="preferences_interface_general_icons_text_font_family_entries">
-    <item>Normal</item>
-    <item>Fina</item>
-    <item>Comprimida</item>
-  </string-array>
   <string-array name="transition_effect_entries">
     <item>Nengún</item>
-    <item>Zoom entrante</item>
-    <item>Zoom saliente</item>
-    <item>Rotar arriba</item>
-    <item>Rotar abaxo</item>
+    <item>Acercar</item>
+    <item>Allonxar</item>
+    <item>Xirar arriba</item>
+    <item>Xirar abaxo</item>
     <item>Cúbicu entrante</item>
     <item>Cúbicu saliente</item>
     <item>Empilar</item>

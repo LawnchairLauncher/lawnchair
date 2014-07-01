@@ -21,12 +21,10 @@
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">8dip</dimen>
 
-    <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
-    <dimen name="wallpaper_chooser_grid_width">196dp</dimen>
-    <dimen name="wallpaper_chooser_grid_height">140dp</dimen>
-
     <!-- When dragging items on the workspace, the number of dps by which the position of
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">0dp</dimen>
+
+    <dimen name="overview_panel_button_spacing">35dp</dimen>
 </resources>

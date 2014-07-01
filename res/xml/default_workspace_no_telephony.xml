@@ -24,46 +24,11 @@
         launcher:y="0"
         launcher:spanX="4"
         launcher:spanY="2" />
-    <folder launcher:screen="1" launcher:x="0" launcher:y="3" launcher:title="@string/google_title">
-        <favorite
-            launcher:className="com.google.android.maps.MapsActivity"
-            launcher:packageName="com.google.android.apps.maps" />
-        <favorite
-            launcher:className="com.google.android.gm.GmailActivity"
-            launcher:packageName="com.google.android.gm" />
-        <favorite
-            launcher:className="com.google.android.apps.plus.phone.HomeActivity"
-            launcher:packageName="com.google.android.apps.plus" />
-        <favorite
-            launcher:className="com.android.music.activitymanagement.TopLevelActivity"
-            launcher:packageName="com.google.android.music" />
-        <favorite
-            launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity"
-            launcher:packageName="com.google.android.youtube" />
-        <favorite
-            launcher:className="com.google.android.talk.SigningInActivity"
-            launcher:packageName="com.google.android.talk" />
-        <favorite
-            launcher:className="com.android.calendar.AllInOneActivity"
-            launcher:packageName="com.google.android.calendar" />
-        <favorite
-            launcher:className="com.google.android.maps.driveabout.app.DestinationActivity"
-            launcher:packageName="com.google.android.apps.maps" />
-        <favorite
-            launcher:className="com.google.android.apps.plus.phone.ConversationListActivity"
-            launcher:packageName="com.google.android.apps.plus" />
-    </folder>
     <favorite
         launcher:packageName="com.andrew.apollo"
         launcher:className="com.andrew.apollo.ui.activities.HomeActivity"
         launcher:screen="1"
         launcher:x="0"
-        launcher:y="3" />
-    <favorite
-        launcher:packageName="com.android.vending"
-        launcher:className="com.android.vending.AssetBrowserActivity"
-        launcher:screen="1"
-        launcher:x="3"
         launcher:y="3" />
     <favorite
         launcher:packageName="com.bel.android.dspmanager"
@@ -74,14 +39,6 @@
 
     <!-- Screen [2] -->
     <appwidget
-        launcher:packageName="com.android.vending"
-        launcher:className="com.google.android.finsky.widget.consumption.NowPlayingWidgetProvider"
-        launcher:screen="2"
-        launcher:x="0"
-        launcher:y="0"
-        launcher:spanX="4"
-        launcher:spanY="2" />
-    <appwidget
         launcher:packageName="com.android.settings"
         launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
         launcher:screen="2"
@@ -89,12 +46,6 @@
         launcher:y="0"
         launcher:spanX="4"
         launcher:spanY="1" />
-    <favorite
-        launcher:packageName="com.cyanogenmod.gallerynext"
-        launcher:className="com.cyanogenmod.gallerynext.app.GalleryActivity"
-        launcher:screen="2"
-        launcher:x="0"
-        launcher:y="3" />
     <favorite
         launcher:packageName="com.android.gallery3d"
         launcher:className="com.android.gallery3d.app.Gallery"
@@ -117,25 +68,11 @@
         launcher:x="0"
         launcher:y="0" />
     <favorite
-        launcher:packageName="com.google.android.gm"
-        launcher:className="com.google.android.gm.ConversationListActivityGmail"
-        launcher:container="-101"
-        launcher:screen="1"
-        launcher:x="1"
-        launcher:y="0" />
-    <favorite
         launcher:packageName="com.android.email"
         launcher:className="com.android.email.activity.Welcome"
         launcher:container="-101"
         launcher:screen="1"
         launcher:x="1"
-        launcher:y="0" />
-    <favorite
-        launcher:packageName="com.android.chrome"
-        launcher:className="com.google.android.apps.chrome.Main"
-        launcher:container="-101"
-        launcher:screen="3"
-        launcher:x="3"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.browser"

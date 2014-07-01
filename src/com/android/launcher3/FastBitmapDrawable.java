@@ -35,8 +35,7 @@ class FastBitmapDrawable extends Drawable {
     	mAlpha = 255;
         mBitmap = b;
         if (b != null) {
-            mWidth = mBitmap.getWidth();
-            mHeight = mBitmap.getHeight();
+        setBounds(0, 0, b.getWidth(), b.getHeight());
         } else {
             mWidth = mHeight = 0;
         }
@@ -67,6 +66,7 @@ class FastBitmapDrawable extends Drawable {
 
     public void setFilterBitmap(boolean filterBitmap) {
         mPaint.setFilterBitmap(filterBitmap);
+        mPaint.setAntiAlias(filterBitmap);
     }
 
     public int getAlpha() {
@@ -75,32 +75,30 @@ class FastBitmapDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-        return mWidth;
+        int width = getBounds().width();
+        if (width == 0) {
+            width = mBitmap.getWidth();
+        }
+        return width;
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return mHeight;
+        int height = getBounds().height();
+        if (height == 0) {
+            height = mBitmap.getHeight();
+        }
+        return height;
     }
 
     @Override
     public int getMinimumWidth() {
-        return mWidth;
+        return getBounds().width();
     }
 
     @Override
     public int getMinimumHeight() {
-        return mHeight;
-    }
-
-    public void setBitmap(Bitmap b) {
-        mBitmap = b;
-        if (b != null) {
-            mWidth = mBitmap.getWidth();
-            mHeight = mBitmap.getHeight();
-        } else {
-            mWidth = mHeight = 0;
-        }
+        return getBounds().height();
     }
 
     public Bitmap getBitmap() {

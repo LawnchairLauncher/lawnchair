@@ -22,23 +22,23 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
-import com.android.launcher3.settings.SettingsProvider;
 
 import java.lang.ref.WeakReference;
 
-public class LauncherAppState {
+public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
     private static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
 
+    private final AppFilter mAppFilter;
+    private final BuildInfo mBuildInfo;
     private LauncherModel mModel;
     private IconCache mIconCache;
-    private AppFilter mAppFilter;
     private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
     private boolean mIsScreenLarge;
     private float mScreenDensity;
     private int mLongPressTimeout = 300;
+    private boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
@@ -84,10 +84,11 @@ public class LauncherAppState {
         mIsScreenLarge = isScreenLarge(sContext.getResources());
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
 
-        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
+        recreateWidgetPreviewDb();
         mIconCache = new IconCache(sContext);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
+        mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
 
         // Register intent receivers
@@ -113,18 +114,13 @@ public class LauncherAppState {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
-
-        // Generate default typeface
-        String fontFamily = SettingsProvider.getString(sContext,
-                SettingsProvider.SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_FAMILY,
-                R.string.preferences_interface_general_icons_text_font_family_default);
-
-        // TODO: Implement font styles
-        int fontStyle = SettingsProvider.getInt(sContext,
-                SettingsProvider.SETTINGS_UI_GENERAL_ICONS_TEXT_FONT_STYLE,
-                R.integer.preferences_interface_general_icons_text_font_style_default);
-
-        Utilities.generateTypeface(fontFamily, fontStyle);
+    }
+    
+    public void recreateWidgetPreviewDb() {
+        if (mWidgetPreviewCacheDb != null) {
+            mWidgetPreviewCacheDb.close();
+        }
+        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
     }
 
     /**
@@ -189,21 +185,20 @@ public class LauncherAppState {
     DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
                                   int width, int height,
                                   int availableWidth, int availableHeight) {
-        if (mDynamicGrid == null) {
-            mDynamicGrid = new DynamicGrid(context,
-                    context.getResources(),
-                    minWidth, minHeight, width, height,
-                    availableWidth, availableHeight);
-        }
+
+        mDynamicGrid = new DynamicGrid(context,
+                context.getResources(),
+                minWidth, minHeight, width, height,
+                availableWidth, availableHeight);
+        mDynamicGrid.getDeviceProfile().addCallback(this);
 
         // Update the icon size
         DeviceProfile grid = mDynamicGrid.getDeviceProfile();
-        Utilities.setIconSize(grid.iconSizePx);
-        grid.updateFromConfiguration(context.getResources(), width, height,
+        grid.updateFromConfiguration(context, context.getResources(), width, height,
                 availableWidth, availableHeight);
         return grid;
     }
-    DynamicGrid getDynamicGrid() {
+    public DynamicGrid getDynamicGrid() {
         return mDynamicGrid;
     }
 
@@ -227,5 +222,30 @@ public class LauncherAppState {
 
     public int getLongPressTimeout() {
         return mLongPressTimeout;
+    }
+
+    public void onWallpaperChanged() {
+        mWallpaperChangedSinceLastCheck = true;
+    }
+
+    public boolean hasWallpaperChangedSinceLastCheck() {
+        boolean result = mWallpaperChangedSinceLastCheck;
+        mWallpaperChangedSinceLastCheck = false;
+        return result;
+    }
+
+    @Override
+    public void onAvailableSizeChanged(DeviceProfile grid) {
+        Utilities.setIconSize(grid.iconSizePx);
+    }
+
+    public static boolean isDisableAllApps() {
+        // Returns false on non-dogfood builds.
+        return getInstance().mBuildInfo.isDogfoodBuild() &&
+                Launcher.isPropertyEnabled(Launcher.DISABLE_ALL_APPS_PROPERTY);
+    }
+
+    public static boolean isDogfoodBuild() {
+        return getInstance().mBuildInfo.isDogfoodBuild();
     }
 }

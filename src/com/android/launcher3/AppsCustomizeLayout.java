@@ -67,12 +67,12 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
         mContent = (FrameLayout) findViewById(R.id.apps_customize_content);
         if (mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
-        findViewById(R.id.page_indicator).setOnClickListener(new OnClickListener() {
+        /*findViewById(R.id.page_indicator).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAppsCustomizePane.enterOverviewMode();
             }
-        });
+        });*/
     }
 
      public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -136,6 +136,10 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
 
     @Override
     public View getContent() {
+        View appsCustomizeContent = mAppsCustomizePane.getContent();
+        if (appsCustomizeContent != null) {
+            return appsCustomizeContent;
+        }
         return mContent;
     }
 
@@ -171,12 +175,12 @@ public class AppsCustomizeLayout extends FrameLayout implements LauncherTransiti
         }
 
         // Dismiss the workspace cling
-        l.dismissWorkspaceCling(null);
+        l.getLauncherClings().dismissWorkspaceCling(null);
     }
 
     @Override
     public void onLauncherTransitionStep(Launcher l, float t) {
-        // Do nothing
+        mAppsCustomizePane.onLauncherTransitionStep(l, t);
     }
 
     @Override

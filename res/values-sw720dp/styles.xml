@@ -18,57 +18,14 @@
 -->
 
 <resources>
-<!-- Clings -->
-    <style name="ClingButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingStart">35dp</item>
-        <item name="android:paddingEnd">35dp</item>
-        <item name="android:text">@string/cling_dismiss</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:background">@drawable/cling_button_bg</item>
-    </style>
-    <style name="ClingTitleText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:textSize">32sp</item>
-        <item name="android:textColor">#49C0EC</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowDy">2</item>
-        <item name="android:shadowRadius">2.0</item>
-    </style>
-    <style name="ClingText">
-        <item name="android:textSize">22sp</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowDy">2</item>
-        <item name="android:shadowRadius">2.0</item>
-        <item name="android:lineSpacingMultiplier">1.1</item>
-    </style>
-
 <!-- Workspace -->
-    <style name="Theme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
     <style name="TabIndicator.AppsCustomize">
-        <item name="android:paddingStart">32dp</item>
-        <item name="android:paddingEnd">32dp</item>
+        <item name="android:paddingLeft">32dp</item>
+        <item name="android:paddingRight">32dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:maxWidth">240dp</item>
     </style>
 
-    <!-- QSB Search / Drop Target bar -->
-    <style name="QSBBar">
-    </style>
-    <style name="SearchDropTargetBar">
-    </style>
     <style name="SearchButton">
     </style>
     <style name="DropTargetButtonContainer">
@@ -81,8 +38,8 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingStart">60dp</item>
-        <item name="android:paddingEnd">60dp</item>
+        <item name="android:paddingLeft">60dp</item>
+        <item name="android:paddingRight">60dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
         <item name="android:shadowColor">#393939</item>
