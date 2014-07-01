@@ -4857,38 +4857,16 @@ public class Workspace extends SmoothPagedView
         });
     }
 
-    ArrayList<BubbleTextView> getAbandonedPromises(final ArrayList<BubbleTextView> abandoned) {
-        mapOverShortcuts(Workspace.MAP_RECURSE, new Workspace.ShortcutOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view, View parent) {
-                if (info instanceof ShortcutInfo
-                        && ((ShortcutInfo) info).isAbandoned()
-                        && view instanceof BubbleTextView) {
-                    abandoned.add((BubbleTextView) view);
-                }
-                return false;
-            }
-        });
-        return abandoned;
-    }
-    public void removeAbandonedPromise(BubbleTextView view, UserHandleCompat user) {
-        ArrayList<BubbleTextView> views = new ArrayList<BubbleTextView>(1);
-        views.add(view);
-        removeAbandonedPromises(views, user);
-    }
-
-    public void removeAbandonedPromises(ArrayList<BubbleTextView> views, UserHandleCompat user) {
-        HashSet<ComponentName> cns = new HashSet<ComponentName>(views.size());
-        for (final BubbleTextView bubble : views) {
-            if (bubble.getTag() != null && bubble.getTag() instanceof ShortcutInfo) {
-                final ShortcutInfo shortcut = (ShortcutInfo) bubble.getTag();
-                if (shortcut.isAbandoned()) {
-                    cns.add(shortcut.getRestoredIntent().getComponent());
-                    LauncherModel.deleteItemFromDatabase(mLauncher, shortcut);
-                }
+    public void removeAbandonedPromise(BubbleTextView abandonedIcon, UserHandleCompat user) {
+        if (abandonedIcon.getTag() != null && abandonedIcon.getTag() instanceof ShortcutInfo) {
+            final ShortcutInfo shortcut = (ShortcutInfo) abandonedIcon.getTag();
+            if (shortcut.isAbandoned()) {
+                HashSet<ComponentName> cns = new HashSet<ComponentName>(1);
+                cns.add(shortcut.getRestoredIntent().getComponent());
+                LauncherModel.deleteItemFromDatabase(mLauncher, shortcut);
+                removeItemsByComponentName(cns, user);
             }
         }
-        removeItemsByComponentName(cns, user);
     }
 
     public void updatePackageState(final String pkgName, final int state) {

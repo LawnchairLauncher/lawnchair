@@ -2545,12 +2545,9 @@ public class Launcher extends Activity
 
         // Check for abandoned promise
         if (shortcut.isAbandoned() && v instanceof BubbleTextView) {
-            final ArrayList<BubbleTextView> abandoned =
-                    mWorkspace.getAbandonedPromises(new ArrayList<BubbleTextView>());
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.abandoned_promises_title);
-            builder.setMessage(getResources().getQuantityString(
-                    R.plurals.abandoned_promises_explanation, abandoned.size()));
+            builder.setMessage(R.string.abandoned_promise_explanation);
             builder.setPositiveButton(R.string.abandoned_search,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -2558,16 +2555,6 @@ public class Launcher extends Activity
                         }
                     }
             );
-            if (abandoned.size() > 1) {
-                builder.setNegativeButton(R.string.abandoned_clean_all,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                final UserHandleCompat user = UserHandleCompat.myUserHandle();
-                                mWorkspace.removeAbandonedPromises(abandoned, user);
-                            }
-                        }
-                );
-            }
             builder.setNeutralButton(R.string.abandoned_clean_this,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

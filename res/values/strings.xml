@@ -288,13 +288,7 @@ s -->
     <string name="abandoned_promises_title">This app is not installed</string>
     <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-    <plurals name="abandoned_promises_explanation">
-        <item quantity="one">The app for this icon isn\'t installed.
-            You can remove it, or search for the app and install it manually.
-        </item>
-        <item quantity="other">The app for this icon isn\'t installed.
-            You can remove all such broken icons, remove only this one,
-            or search for the app and install it manually.
-        </item>
-    </plurals>
+    <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
+        You can remove it, or search for the app and install it manually.
+    </string>
 </resources>
