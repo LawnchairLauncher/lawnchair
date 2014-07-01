@@ -285,13 +285,16 @@ s -->
     <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
     <string name="abandoned_search">Search</string>
     <!-- Title for abandoned promise dialog. -->
-    <string name="abandoned_promises_title">This Package is not Installed</string>
-    <!-- Explanation for abandoned promise dialog. -->
+    <string name="abandoned_promises_title">This app is not installed</string>
+    <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
+    The second "it" refers to the app. -->
     <plurals name="abandoned_promises_explanation">
-        <item quantity="one">The package for this icon is not installed.  You many remove it, or
-            attempt to search for the package and install it manually.</item>
-        <item quantity="other">The package for this icon is not installed.  You many remove all
-            similarly broken icons, remove only this icon, or attempt to search for the package and
-            install it manually.</item>
+        <item quantity="one">The app for this icon isn\'t installed.
+            You can remove it, or search for the app and install it manually.
+        </item>
+        <item quantity="other">The app for this icon isn\'t installed.
+            You can remove all such broken icons, remove only this one,
+            or search for the app and install it manually.
+        </item>
     </plurals>
 </resources>
