@@ -310,6 +310,8 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                             v,
                             SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH_SCREEN_LEFT,
                             R.bool.preferences_interface_homescreen_search_screen_left_default);
+                    mLauncher.restoreGelSetting();
+                    mLauncher.getWorkspace().updatePageScrollForCustomPage(!current);
                     mLauncher.updateDynamicGrid();
                 }
             } else if (value.equals(res
