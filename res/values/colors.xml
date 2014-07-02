@@ -43,4 +43,7 @@
     <color name="settings_bg_header_color">#FFb2b0ab</color>
     <color name="settings_bg_selected_color">#26000000</color>
     <color name="settings_transition_selected_color">#50000000</color>
+
+    <color name="dynamic_grid_preview_background">#FFFFFFFF</color>
+    <color name="dynamic_grid_preview_foreground">#FF000000</color>
 </resources>

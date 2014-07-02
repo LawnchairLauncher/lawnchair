@@ -34,12 +34,12 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <ImageView
+    <view
+        class="com.android.launcher3.DynamicGridSizeFragment$GridSizeView"
         android:id="@+id/dynamic_grid_size_image"
         android:layout_width="@dimen/dynamic_grid_size_image_width"
         android:layout_height="@dimen/dynamic_grid_size_image_height"
         android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
         android:layout_marginBottom="@dimen/grid_padding"/>
 
     <ListView
