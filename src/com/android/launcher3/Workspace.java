@@ -2261,6 +2261,38 @@ public class Workspace extends SmoothPagedView
         setImportantForAccessibility(accessible);
     }
 
+    public void updatePageScrollForCustomPage(boolean enabled) {
+        int diff;
+        // If multiple PageScrolls have been computed already,
+        // find the distance between the first and second scroll.
+        if(mPageScrolls.length > 1) {
+            diff = mPageScrolls[1] - mPageScrolls[0];
+        } else {
+            // The scroll distance will just be the width of the viewport
+            diff = getViewportWidth();
+        }
+
+        // Create an ArrayList to hold PageScrolls while we work with them
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for(int i : mPageScrolls) {
+            list.add(i);
+        }
+
+        // If custom page is enabled, add another page scroll entry
+        if(enabled){
+            list.add(list.get(list.size() - 1) + diff);
+        } else {
+            // disabling custom page, remove the last element
+            list.remove(list.size() - 1);
+        }
+
+        // Replace mPageScrolls with the list content
+        mPageScrolls = new int[list.size()];
+        for(int i  = 0; i < list.size();i++) {
+            mPageScrolls[i] = list.get(i);
+        }
+    }
+
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
         if (mState == state) {
             return null;
