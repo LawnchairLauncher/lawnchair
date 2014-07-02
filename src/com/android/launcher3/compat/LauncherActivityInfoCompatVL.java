@@ -17,66 +17,44 @@
 package com.android.launcher3.compat;
 
 import android.content.ComponentName;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 public class LauncherActivityInfoCompatVL extends LauncherActivityInfoCompat {
-    private Object mLauncherActivityInfo;
-    private Class mLauncherActivityInfoClass;
-    private Method mGetComponentName;
-    private Method mGetUser;
-    private Method mGetLabel;
-    private Method mGetIcon;
-    private Method mGetApplicationFlags;
-    private Method mGetFirstInstallTime;
-    private Method mGetBadgedIcon;
+    private LauncherActivityInfo mLauncherActivityInfo;
 
-    LauncherActivityInfoCompatVL(Object launcherActivityInfo) {
+    LauncherActivityInfoCompatVL(LauncherActivityInfo launcherActivityInfo) {
         super();
         mLauncherActivityInfo = launcherActivityInfo;
-        mLauncherActivityInfoClass = ReflectUtils.getClassForName(
-                "android.content.pm.LauncherActivityInfo");
-        mGetComponentName = ReflectUtils.getMethod(mLauncherActivityInfoClass, "getComponentName");
-        mGetUser = ReflectUtils.getMethod(mLauncherActivityInfoClass, "getUser");
-        mGetLabel = ReflectUtils.getMethod(mLauncherActivityInfoClass, "getLabel");
-        mGetIcon = ReflectUtils.getMethod(mLauncherActivityInfoClass, "getIcon", int.class);
-        mGetApplicationFlags = ReflectUtils.getMethod(mLauncherActivityInfoClass,
-                "getApplicationFlags");
-        mGetFirstInstallTime = ReflectUtils.getMethod(mLauncherActivityInfoClass,
-                "getFirstInstallTime");
-        mGetBadgedIcon = ReflectUtils.getMethod(mLauncherActivityInfoClass, "getBadgedIcon",
-                int.class);
     }
 
     public ComponentName getComponentName() {
-        return (ComponentName) ReflectUtils.invokeMethod(mLauncherActivityInfo, mGetComponentName);
+        return mLauncherActivityInfo.getComponentName();
     }
 
     public UserHandleCompat getUser() {
-        return UserHandleCompat.fromUser((UserHandle) ReflectUtils.invokeMethod(
-                        mLauncherActivityInfo, mGetUser));
+        return UserHandleCompat.fromUser(mLauncherActivityInfo.getUser());
     }
 
     public CharSequence getLabel() {
-        return (CharSequence) ReflectUtils.invokeMethod(mLauncherActivityInfo, mGetLabel);
+        return mLauncherActivityInfo.getLabel();
     }
 
     public Drawable getIcon(int density) {
-        return (Drawable) ReflectUtils.invokeMethod(mLauncherActivityInfo, mGetIcon, density);
+        return mLauncherActivityInfo.getIcon(density);
     }
 
-    public int getApplicationFlags() {
-        return (Integer) ReflectUtils.invokeMethod(mLauncherActivityInfo, mGetApplicationFlags);
+    public ApplicationInfo getApplicationInfo() {
+        return mLauncherActivityInfo.getApplicationInfo();
     }
 
     public long getFirstInstallTime() {
-        return (Long) ReflectUtils.invokeMethod(mLauncherActivityInfo, mGetFirstInstallTime);
+        return mLauncherActivityInfo.getFirstInstallTime();
     }
 
     public Drawable getBadgedIcon(int density) {
-        return (Drawable) ReflectUtils.invokeMethod(mLauncherActivityInfo, mGetBadgedIcon, density);
+        return mLauncherActivityInfo.getBadgedIcon(density);
     }
 }

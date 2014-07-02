@@ -18,6 +18,7 @@ package com.android.launcher3.compat;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -75,8 +76,8 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
         return d;
     }
 
-    public int getApplicationFlags() {
-        return mActivityInfo.applicationInfo.flags;
+    public ApplicationInfo getApplicationInfo() {
+        return mActivityInfo.applicationInfo;
     }
 
     public long getFirstInstallTime() {

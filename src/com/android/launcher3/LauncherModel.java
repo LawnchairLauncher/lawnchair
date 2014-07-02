@@ -73,7 +73,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * for the Launcher.
  */
 public class LauncherModel extends BroadcastReceiver
-        implements LauncherAppsCompat.OnAppsChangedListenerCompat {
+        implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
     static final boolean DEBUG_LOADERS = false;
     private static final boolean DEBUG_RECEIVER = true;  // STOPSHIP(cwren) temporary for debugging
 
@@ -1203,28 +1203,28 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     @Override
-    public void onPackageChanged(UserHandleCompat user, String packageName) {
+    public void onPackageChanged(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_UPDATE;
         enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
     }
 
     @Override
-    public void onPackageRemoved(UserHandleCompat user, String packageName) {
+    public void onPackageRemoved(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_REMOVE;
         enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
     }
 
     @Override
-    public void onPackageAdded(UserHandleCompat user, String packageName) {
+    public void onPackageAdded(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_ADD;
         enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
     }
 
     @Override
-    public void onPackagesAvailable(UserHandleCompat user, String[] packageNames,
+    public void onPackagesAvailable(String[] packageNames, UserHandleCompat user,
             boolean replacing) {
         if (!replacing) {
             enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packageNames,
@@ -1243,7 +1243,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     @Override
-    public void onPackagesUnavailable(UserHandleCompat user, String[] packageNames,
+    public void onPackagesUnavailable(String[] packageNames, UserHandleCompat user,
             boolean replacing) {
         if (!replacing) {
             enqueuePackageUpdated(new PackageUpdatedTask(
@@ -2837,6 +2837,7 @@ public class LauncherModel extends BroadcastReceiver
                         if (isShortcutInfoUpdateable(i)) {
                             ShortcutInfo info = (ShortcutInfo) i;
                             info.title = a.title.toString();
+                            info.contentDescription = a.contentDescription;
                             updateItemInDatabase(context, info);
                         }
                     }
@@ -2972,6 +2973,8 @@ public class LauncherModel extends BroadcastReceiver
             info.title = "";
         }
         info.user = UserHandleCompat.myUserHandle();
+        info.contentDescription = mUserManager.getBadgedLabelForUser(
+                info.title.toString(), info.user);
         info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.restoredIntent = intent;
@@ -3079,6 +3082,8 @@ public class LauncherModel extends BroadcastReceiver
         }
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
+        info.contentDescription = mUserManager.getBadgedLabelForUser(
+                info.title.toString(), info.user);
         return info;
     }
 
@@ -3360,6 +3365,8 @@ public class LauncherModel extends BroadcastReceiver
         info.setIcon(icon);
 
         info.title = name;
+        info.contentDescription = mUserManager.getBadgedLabelForUser(
+                info.title.toString(), info.user);
         info.intent = intent;
         info.customIcon = customIcon;
         info.iconResource = iconResource;

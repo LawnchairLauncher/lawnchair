@@ -108,6 +108,11 @@ public class ItemInfo {
     CharSequence title;
 
     /**
+     * Content description of the item.
+     */
+    String contentDescription;
+
+    /**
      * The position of the item in a drag-and-drop operation.
      */
     int[] dropPos = null;
@@ -115,6 +120,7 @@ public class ItemInfo {
     UserHandleCompat user;
 
     ItemInfo() {
+        user = UserHandleCompat.myUserHandle();
     }
 
     ItemInfo(ItemInfo info) {
@@ -127,6 +133,7 @@ public class ItemInfo {
         itemType = info.itemType;
         container = info.container;
         user = info.user;
+        contentDescription = info.contentDescription;
         // tempdebug:
         LauncherModel.checkItemInfo(this);
     }

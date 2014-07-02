@@ -77,6 +77,9 @@ public class PagedViewIcon extends TextView {
         setCompoundDrawables(null, icon, null, null);
         setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         setText(info.title);
+        if (info.contentDescription != null) {
+            setContentDescription(info.contentDescription);
+        }
         setTag(info);
     }
 

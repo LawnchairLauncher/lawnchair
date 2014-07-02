@@ -122,6 +122,9 @@ public class BubbleTextView extends TextView {
         Drawable iconDrawable = Utilities.createIconDrawable(b);
         setCompoundDrawables(null, iconDrawable, null, null);
         setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+        if (info.contentDescription != null) {
+            setContentDescription(info.contentDescription);
+        }
         setTag(info);
         if (info.isPromise()) {
             applyState();
