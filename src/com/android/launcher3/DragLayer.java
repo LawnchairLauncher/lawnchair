@@ -826,7 +826,13 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             Workspace workspace = mLauncher.getWorkspace();
             int width = getMeasuredWidth();
             Rect childRect = new Rect();
-            getDescendantRectRelativeToSelf(workspace.getChildAt(0), childRect);
+            int firstWorkspaceIndex = 0;
+            if (mLauncher.hasCustomContentToLeft() && workspace.getChildCount() > 1) {
+                firstWorkspaceIndex = 1;
+            }
+
+            getDescendantRectRelativeToSelf(workspace.getChildAt(firstWorkspaceIndex),
+                                            childRect);
 
             int page = workspace.getNextPage();
             final boolean isRtl = isLayoutRtl();
