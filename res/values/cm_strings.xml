@@ -44,6 +44,7 @@
     <string name="grid_size_cozy">Cozy</string>
     <string name="grid_size_condensed">Condensed</string>
     <string name="grid_size_custom">Custom</string>
+    <string name="grid_size_custom_and_size">Custom (%1$s)</string>
     <string name="preferences_interface_homescreen_custom">Select custom size</string>
     <string name="preferences_interface_homescreen_rows_title">Number of rows</string>
     <string name="preferences_interface_homescreen_columns_title">Number of columns</string>
