@@ -1,33 +1,32 @@
 package com.android.launcher3;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.media.Image;
-import android.text.InputType;
-import android.view.KeyEvent;
-import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import com.android.launcher3.settings.SettingsProvider;
-
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.InputType;
+import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HiddenFolderFragment extends Fragment {
     public static final String HIDDEN_FOLDER_FRAGMENT = "hiddenFolderFragment";
@@ -39,8 +38,6 @@ public class HiddenFolderFragment extends Fragment {
 
     private static final int REQ_LOCK_PATTERN = 1;
 
-    private String[] mComponentInfo;
-    private String[] mComponentTitles;
     private boolean mHidden;
     private PackageManager mPackageManager;
     private AppsAdapter mAppsAdapter;
@@ -76,8 +73,6 @@ public class HiddenFolderFragment extends Fragment {
 
         mHidden = getArguments().getBoolean(HIDDEN_FOLDER_STATUS);
         Folder folder = mLauncher.mHiddenFolderIcon.getFolder();
-        mComponentInfo = folder.getComponents();
-        mComponentTitles = folder.getComponentTitles();
         String title = mLauncher.mHiddenFolderIcon.getFolderInfo().title.toString();
 
         mFolderName = (EditText) v.findViewById(R.id.folder_name);
@@ -113,7 +108,7 @@ public class HiddenFolderFragment extends Fragment {
 
         mAppsAdapter = new AppsAdapter(mLauncher, R.layout.hidden_apps_list_item);
         mAppsAdapter.setNotifyOnChange(true);
-        mAppEntries = loadApps();
+        mAppEntries = loadApps(folder.getComponents());
         mAppsAdapter.clear();
         mAppsAdapter.addAll(mAppEntries);
 
@@ -131,11 +126,10 @@ public class HiddenFolderFragment extends Fragment {
         mListView.requestFocus();
     }
 
-    private ArrayList<AppEntry> loadApps() {
+    private ArrayList<AppEntry> loadApps(List<Pair<ComponentName, CharSequence>> items) {
         ArrayList<AppEntry> apps = new ArrayList<AppEntry>();
-        int size = mComponentInfo.length;
-        for (int i = 0; i < size; i++) {
-            apps.add(new AppEntry(mComponentInfo[i], mComponentTitles[i]));
+        for (Pair<ComponentName, CharSequence> item : items) {
+            apps.add(new AppEntry(item.first, item.second));
         }
         return apps;
     }
@@ -158,10 +152,8 @@ public class HiddenFolderFragment extends Fragment {
                 View v = folder.getViewFromPosition(position);
                 Object tag = v.getTag();
                 if (tag instanceof ShortcutInfo) {
-                    mLauncher.startActivitySafely(v,
-                            ((ShortcutInfo) tag).getIntent(),
-                            v.getTag());
-
+                    ShortcutInfo shortcut = (ShortcutInfo) tag;
+                    mLauncher.startActivitySafely(v, shortcut.getIntent(), v.getTag());
                     return;
                 }
             }
@@ -317,12 +309,11 @@ public class HiddenFolderFragment extends Fragment {
     }
 
     private final class AppEntry {
-
         public final ComponentName componentName;
-        public final String title;
+        public final CharSequence title;
 
-        public AppEntry(String component, String title) {
-            componentName = ComponentName.unflattenFromString(component);
+        public AppEntry(ComponentName component, CharSequence title) {
+            this.componentName = component;
             this.title = title;
         }
     }
