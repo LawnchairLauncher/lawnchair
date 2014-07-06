@@ -72,9 +72,9 @@
     <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"Verknüpfungen deinstallieren"</string>
     <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Ermöglicht einer App das Entfernen von Verknüpfungen ohne Eingreifen des Nutzers"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Einstellungen und Verknüpfungen auf dem Startbildschirm lesen"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Ermöglicht einer App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"Einstellungen und Verknüpfungen für den Startbildschirm schreiben"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Ermöglicht einer App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem beim Laden des Widgets"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
@@ -84,7 +84,7 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startbildschirm %1$d von %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Apps-Seite %1$d von %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Widgets-Seite %1$d von %2$d"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Willkommen"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Hallo!"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"Gerät personalisieren"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
