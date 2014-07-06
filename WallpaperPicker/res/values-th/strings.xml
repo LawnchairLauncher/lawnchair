@@ -29,7 +29,7 @@
   </plurals>
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"วอลเปเปอร์ %1$d จาก %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"เลือก <xliff:g id="LABEL">%1$s</xliff:g> แล้ว"</string>
-    <string name="wallpaper_delete" msgid="1459353972739215344">"ลบ"</string>
+    <string name="wallpaper_delete" msgid="1459353972739215344">"นำออก"</string>
     <string name="pick_image" msgid="6704438906027442697">"เลือกรูปภาพ"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"วอลเปเปอร์"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"ครอบตัดวอลเปเปอร์"</string>
