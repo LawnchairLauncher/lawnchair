@@ -112,4 +112,9 @@
     <string name="package_state_installing" msgid="7588193972189849870">"Se instalează"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Necunoscut"</string>
     <string name="package_state_error" msgid="7672093962724223588">"Nerestabilit"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"Eliminați-le pe toate"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminați"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Căutați"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Aplicația nu este instalată"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplicația pentru această pictogramă nu este instalată. Puteți să ștergeți pictograma sau să căutați aplicația și s-o instalați manual."</string>
 </resources>

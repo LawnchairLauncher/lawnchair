@@ -112,4 +112,9 @@
     <string name="package_state_installing" msgid="7588193972189849870">"Memasang"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Tidak diketahui"</string>
     <string name="package_state_error" msgid="7672093962724223588">"Tak dipulihkan"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"Buang Semua"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Alih keluar"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Carian"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Apl ini tidak dipasang"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Apl untuk ikon ini tidak dipasang. Anda boleh mengalih keluar atau mencari apl dan pasang secara manual."</string>
 </resources>
