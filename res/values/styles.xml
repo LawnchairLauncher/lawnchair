@@ -86,11 +86,26 @@
 
     <style name="WorkspaceIcon.AppsCustomize">
         <item name="android:background">@null</item>
-        <item name="android:textColor">@color/apps_customize_icon_text_color</item>
+        <item name="android:textColor">@color/quantum_panel_text_color</item>
         <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
-        <item name="android:shadowRadius">4.0</item>
-        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowColor">#FFC4C4C4</item>
     </style>
+
+    <style name="WorkspaceIcon.Folder">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/quantum_panel_text_color</item>
+        <item name="android:shadowColor">@color/quantum_panel_text_shadow_color</item>
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+
+        <item name="customShadows">false</item>
+        <item name="glowColor">@color/folder_items_glow_color</item>
+    </style>
+
     <style name="SearchDropTargetBar">
     </style>
     <style name="SearchButton">

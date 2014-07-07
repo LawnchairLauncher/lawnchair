@@ -767,11 +767,10 @@ public class DeviceProfile {
                     (allAppsIconSizePx / DynamicGrid.DEFAULT_ICON_SIZE_PX)));
             pageIndicator = host.findViewById(R.id.apps_customize_page_indicator);
             if (pageIndicator != null) {
-                lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
-                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                lp.width = LayoutParams.WRAP_CONTENT;
-                lp.height = pageIndicatorHeight;
-                pageIndicator.setLayoutParams(lp);
+                LinearLayout.LayoutParams lllp = (LinearLayout.LayoutParams) pageIndicator.getLayoutParams();
+                lllp.width = LayoutParams.WRAP_CONTENT;
+                lllp.height = pageIndicatorHeight;
+                pageIndicator.setLayoutParams(lllp);
             }
 
             AppsCustomizePagedView pagedView = (AppsCustomizePagedView)
@@ -796,6 +795,11 @@ public class DeviceProfile {
                 padding.bottom = Math.max(0, pageIndicatorHeight - paddingTB);
                 pagedView.setAllAppsPadding(padding);
                 pagedView.setWidgetsPageIndicatorPadding(pageIndicatorHeight);
+
+                // Horizontal padding for the whole paged view
+                int pagedViewPadding =
+                        res.getDimensionPixelSize(R.dimen.apps_customize_horizontal_padding);
+                pagedView.setPadding(pagedViewPadding, 0, pagedViewPadding, 0);
             }
         }
 

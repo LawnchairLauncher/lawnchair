@@ -71,9 +71,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private static final float OUTER_RING_GROWTH_FACTOR = 0.3f;
 
     // The amount of vertical spread between items in the stack [0...1]
-    private static final float PERSPECTIVE_SHIFT_FACTOR = 0.24f;
-
-    private static final float PERSPECTIVE_SHIFT_FACTOR_L = 0.18f;
+    private static final float PERSPECTIVE_SHIFT_FACTOR = 0.18f;
 
     // Flag as to whether or not to draw an outer ring. Currently none is designed.
     public static final boolean HAS_OUTER_RING = true;
@@ -503,16 +501,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             int adjustedAvailableSpace = (int) ((mAvailableSpaceInPreview / 2) * (1 + 0.8f));
 
             int unscaledHeight = (int) (mIntrinsicIconSize * (1 + PERSPECTIVE_SHIFT_FACTOR));
-            if (Utilities.isLmp()) {
-                unscaledHeight = (int) (mIntrinsicIconSize * (1 + PERSPECTIVE_SHIFT_FACTOR_L));
-            }
+
             mBaselineIconScale = (1.0f * adjustedAvailableSpace / unscaledHeight);
 
             mBaselineIconSize = (int) (mIntrinsicIconSize * mBaselineIconScale);
             mMaxPerspectiveShift = mBaselineIconSize * PERSPECTIVE_SHIFT_FACTOR;
-            if (Utilities.isLmp()) {
-                mMaxPerspectiveShift = mBaselineIconSize * PERSPECTIVE_SHIFT_FACTOR_L;
-            }
 
             mPreviewOffsetX = (mTotalWidth - mAvailableSpaceInPreview) / 2;
             mPreviewOffsetY = previewPadding + grid.folderBackgroundOffset;
@@ -563,13 +556,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         // We want to imagine our coordinates from the bottom left, growing up and to the
         // right. This is natural for the x-axis, but for the y-axis, we have to invert things.
         float transY = mAvailableSpaceInPreview - (offset + scaledSize + scaleOffsetCorrection) + getPaddingTop();
-        float transX = offset + scaleOffsetCorrection;
+        float transX = (mAvailableSpaceInPreview - scaledSize) / 2;
         float totalScale = mBaselineIconScale * scale;
         final int overlayAlpha = (int) (80 * (1 - r));
-
-        if (Utilities.isLmp()) {
-            transX = (mAvailableSpaceInPreview - scaledSize) / 2;
-        }
 
         if (params == null) {
             params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);

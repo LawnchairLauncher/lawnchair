@@ -108,6 +108,12 @@
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="BubbleTextView">
+        <!-- A spacing override for the icons within a page -->
+        <attr name="customShadows" format="boolean" />
+        <attr name="glowColor" format="color" />
+    </declare-styleable>
+
     <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
          customize an AppsCustomizePagedView in xml files. -->
     <declare-styleable name="AppsCustomizePagedView">

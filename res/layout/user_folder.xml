@@ -20,7 +20,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/portal_container_holo">
+    android:background="@drawable/quantum_panel">
 
     <ScrollView
         android:id="@+id/scroll_view"

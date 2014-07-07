@@ -19,10 +19,6 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
 
     style="@style/WorkspaceIcon.AppsCustomize"
-
     android:id="@+id/application_icon"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    
     android:focusable="true"
     android:background="@drawable/focusable_view_bg" />

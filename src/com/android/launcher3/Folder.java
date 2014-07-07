@@ -566,8 +566,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     protected View createAndAddShortcut(ShortcutInfo item) {
-        final BubbleTextView textView =
-            (BubbleTextView) mInflater.inflate(R.layout.application, this, false);
+        final TextView textView =
+            (TextView) mInflater.inflate(R.layout.folder_application, this, false);
         textView.setCompoundDrawables(null,
                 Utilities.createIconDrawable(item.getIcon(mIconCache)), null, null);
         textView.setText(item.title);
@@ -575,11 +575,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             textView.setContentDescription(item.contentDescription);
         }
         textView.setTag(item);
-        textView.setTextColor(getResources().getColor(R.color.folder_items_text_color));
-        textView.setShadowsEnabled(false);
-        textView.setGlowColor(getResources().getColor(R.color.folder_items_glow_color));
-        textView.applyState();
-
         textView.setOnClickListener(this);
         textView.setOnLongClickListener(this);
 

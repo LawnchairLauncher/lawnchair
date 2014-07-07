@@ -31,8 +31,8 @@
     <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
     <color name="workspace_icon_text_color">#FFF</color>
 
-    <color name="apps_customize_icon_text_color">#FFF</color>
-    <color name="folder_items_text_color">#FF333333</color>
+    <color name="quantum_panel_text_color">#FF666666</color>
+    <color name="quantum_panel_text_shadow_color">#FFC4C4C4</color>
     <color name="folder_items_glow_color">#FFCCCCCC</color>
     <color name="outline_color">#FFFFFFFF</color>
     

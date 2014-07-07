@@ -217,11 +217,6 @@ public class CellLayout extends ViewGroup {
         mNormalBackground = res.getDrawable(R.drawable.screenpanel);
         mActiveGlowBackground = res.getDrawable(R.drawable.screenpanel_hover);
 
-        if (Utilities.isLmp()) {
-            mNormalBackground = res.getDrawable(R.drawable.screenpanel_l);
-            mActiveGlowBackground = res.getDrawable(R.drawable.screenpanel_hover_l);
-        }
-
         mOverScrollLeft = res.getDrawable(R.drawable.overscroll_glow_left);
         mOverScrollRight = res.getDrawable(R.drawable.overscroll_glow_right);
         mForegroundPadding =

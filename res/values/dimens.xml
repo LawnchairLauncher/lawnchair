@@ -62,6 +62,7 @@
     <dimen name="apps_customize_tab_bar_height">52dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">0dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
+    <dimen name="apps_customize_horizontal_padding">4dp</dimen>
 
     <!-- The AppsCustomize page indicator -->
     <dimen name="apps_customize_page_indicator_height">12dp</dimen>

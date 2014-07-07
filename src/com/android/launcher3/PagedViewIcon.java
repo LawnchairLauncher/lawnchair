@@ -111,27 +111,4 @@ public class PagedViewIcon extends TextView {
             setAlpha(1f);
         }
     }
-
-    @Override
-    public void draw(Canvas canvas) {
-        // If text is transparent, don't draw any shadow
-        if (getCurrentTextColor() == getResources().getColor(android.R.color.transparent)) {
-            getPaint().clearShadowLayer();
-            super.draw(canvas);
-            return;
-        }
-
-        // We enhance the shadow by drawing the shadow twice
-        getPaint().setShadowLayer(BubbleTextView.SHADOW_LARGE_RADIUS, 0.0f,
-                BubbleTextView.SHADOW_Y_OFFSET, BubbleTextView.SHADOW_LARGE_COLOUR);
-        super.draw(canvas);
-        canvas.save(Canvas.CLIP_SAVE_FLAG);
-        canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
-                getScrollX() + getWidth(),
-                getScrollY() + getHeight(), Region.Op.INTERSECT);
-        getPaint().setShadowLayer(BubbleTextView.SHADOW_SMALL_RADIUS, 0.0f, 0.0f,
-                BubbleTextView.SHADOW_SMALL_COLOUR);
-        super.draw(canvas);
-        canvas.restore();
-    }
 }

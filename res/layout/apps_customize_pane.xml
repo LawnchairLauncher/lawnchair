@@ -52,28 +52,38 @@
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <com.android.launcher3.AppsCustomizePagedView
-                android:id="@+id/apps_customize_pane_content"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                launcher:widgetCountX="@integer/apps_customize_widget_cell_count_x"
-                launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y"
-                launcher:clingFocusedX="@integer/apps_customize_cling_focused_x"
-                launcher:clingFocusedY="@integer/apps_customize_cling_focused_y"
-                launcher:maxGap="@dimen/workspace_max_gap"
-                launcher:pageIndicator="@+id/apps_customize_page_indicator" />
+                android:orientation="vertical">
+
+                <com.android.launcher3.AppsCustomizePagedView
+                    android:id="@+id/apps_customize_pane_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    launcher:widgetCountX="@integer/apps_customize_widget_cell_count_x"
+                    launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y"
+                    launcher:clingFocusedX="@integer/apps_customize_cling_focused_x"
+                    launcher:clingFocusedY="@integer/apps_customize_cling_focused_y"
+                    launcher:maxGap="@dimen/workspace_max_gap"
+                    launcher:pageIndicator="@+id/apps_customize_page_indicator" />
+
+                <include
+                    android:id="@+id/apps_customize_page_indicator"
+                    layout="@layout/page_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+
             <FrameLayout
                 android:id="@+id/animation_buffer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FF000000"
                 android:visibility="gone" />
-            <include
-                android:id="@+id/apps_customize_page_indicator"
-                layout="@layout/page_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom" />
         </FrameLayout>
     </LinearLayout>
 </com.android.launcher3.AppsCustomizeTabHost>

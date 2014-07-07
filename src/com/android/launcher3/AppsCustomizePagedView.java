@@ -1007,6 +1007,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.setPadding(mAllAppsPadding.left, mAllAppsPadding.top, mAllAppsPadding.right,
                 mAllAppsPadding.bottom);
         setVisibilityOnChildren(layout, View.VISIBLE);
+
+        Resources res = getContext().getResources();
+        layout.setBackground(res.getDrawable(R.drawable.quantum_panel));
     }
 
     public void syncAppsPageItems(int page, boolean immediate) {
@@ -1436,6 +1439,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         v.setRotationY(0f);
                     }
                 }
+
+                // TODO: clean this up
+                alpha = 1;
+                translationX = 0;
+                scale = 1;
 
                 v.setTranslationX(translationX);
                 v.setScaleX(scale);

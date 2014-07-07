@@ -17,7 +17,9 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -64,7 +66,7 @@ public class BubbleTextView extends TextView {
     private float mSlop;
 
     private int mTextColor;
-    private boolean mShadowsEnabled = true;
+    private boolean mCustomShadowsEnabled = true;
     private boolean mIsTextVisible;
 
     private boolean mBackgroundSizeChanged;
@@ -72,22 +74,28 @@ public class BubbleTextView extends TextView {
 
     private boolean mStayPressed;
     private CheckLongPressHelper mLongPressHelper;
-    private int mInstallState;
 
     private CharSequence mDefaultText = "";
 
     public BubbleTextView(Context context) {
-        super(context);
-        init();
+        this(context, null, 0);
     }
 
     public BubbleTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        Resources res = context.getResources();
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.BubbleTextView, defStyle, 0);
+        setGlowColor(a.getColor(R.styleable.BubbleTextView_glowColor,
+                res.getColor(R.color.outline_color)));
+        mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
+        a.recycle();
+
         init();
     }
 
@@ -98,7 +106,6 @@ public class BubbleTextView extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-        setTextColor(getResources().getColor(R.color.workspace_icon_text_color));
     }
 
     private void init() {
@@ -106,12 +113,9 @@ public class BubbleTextView extends TextView {
         mBackground = getBackground();
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
-
-        final Resources res = getContext().getResources();
-        mFocusedOutlineColor = mFocusedGlowColor = mPressedOutlineColor = mPressedGlowColor =
-            res.getColor(R.color.outline_color);
-
-        setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        if (mCustomShadowsEnabled) {
+            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        }
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
@@ -322,7 +326,7 @@ public class BubbleTextView extends TextView {
 
     @Override
     public void draw(Canvas canvas) {
-        if (!mShadowsEnabled) {
+        if (!mCustomShadowsEnabled) {
             super.draw(canvas);
             return;
         }
@@ -384,10 +388,10 @@ public class BubbleTextView extends TextView {
         super.setTextColor(color);
     }
 
-    public void setShadowsEnabled(boolean enabled) {
-        mShadowsEnabled = enabled;
-        getPaint().clearShadowLayer();
-        invalidate();
+    @Override
+    public void setTextColor(ColorStateList colors) {
+        mTextColor = colors.getDefaultColor();
+        super.setTextColor(colors);
     }
 
     public void setTextVisibility(boolean visible) {

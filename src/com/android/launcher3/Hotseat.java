@@ -151,10 +151,6 @@ public class Hotseat extends FrameLayout {
                     inflater.inflate(R.layout.all_apps_button, mContent, false);
             Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
 
-            if (Utilities.isLmp()) {
-                d = context.getResources().getDrawable(R.drawable.all_apps_button_icon_l);
-            }
-
             Utilities.resizeIconDrawable(d);
             allAppsButton.setCompoundDrawables(null, d, null, null);
 
