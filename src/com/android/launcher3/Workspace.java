@@ -2174,12 +2174,15 @@ public class Workspace extends SmoothPagedView
     }
 
     public void exitOverviewMode(int snapPage, boolean animated) {
+        ((SlidingUpPanelLayout) mLauncher.getOverviewPanel()).collapsePane();
+
         enableOverviewMode(false, snapPage, animated);
     }
 
     private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
-        //Check to see if Settings need to taken
+        // Check to see if new Settings need to taken
         reloadSettings();
+        mLauncher.updateGridIfNeeded();
 
         State finalState = Workspace.State.OVERVIEW;
         if (!enable) {
@@ -2357,6 +2360,9 @@ public class Workspace extends SmoothPagedView
 
         if (snapPage == -1) {
             snapPage = getPageNearestToCenterOfScreen();
+        }
+        if (hasCustomContent()) {
+            snapPage = Math.max(1, snapPage);
         }
         snapToPage(snapPage, duration, mZoomInInterpolator);
 

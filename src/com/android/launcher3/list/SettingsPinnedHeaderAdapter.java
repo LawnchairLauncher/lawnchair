@@ -71,7 +71,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
 
         if (title.equals(res
                 .getString(R.string.home_screen_search_text))) {
-            boolean current = mLauncher.shouldShowSearchBar();
+            boolean current = mLauncher.isSearchBarEnabled();
             String state = current ? res.getString(
                     R.string.setting_state_on) : res.getString(
                     R.string.setting_state_off);
@@ -243,7 +243,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                         v,
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
                         R.bool.preferences_interface_homescreen_search_default);
-                mLauncher.updateDynamicGrid();
+                mLauncher.setUpdateDynamicGrid();
             } else if (value.equals(res
                     .getString(R.string.drawer_sorting_text))) {
                 onClickTransitionEffectButton();
@@ -261,7 +261,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                         v,
                         SettingsProvider.SETTINGS_UI_GENERAL_ICONS_LARGE,
                         R.bool.preferences_interface_general_icons_large_default);
-                mLauncher.updateDynamicGrid();
+                mLauncher.setUpdateDynamicGrid();
             } else if (value.equals(res
                     .getString(R.string.icon_labels)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.HOME_SETTINGS_POSITION)) {
@@ -269,7 +269,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                         v,
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
                         R.bool.preferences_interface_homescreen_hide_icon_labels_default);
-                mLauncher.updateDynamicGrid();
+                mLauncher.setUpdateDynamicGrid();
             } else if (value.equals(res
                     .getString(R.string.icon_labels)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.DRAWER_SETTINGS_POSITION)) {
@@ -277,21 +277,19 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                         v,
                         SettingsProvider.SETTINGS_UI_DRAWER_HIDE_ICON_LABELS,
                         R.bool.preferences_interface_drawer_hide_icon_labels_default);
-                mLauncher.updateDynamicGrid();
+                mLauncher.setUpdateDynamicGrid();
             } else if (value.equals(res.getString(R.string.protected_app_settings))) {
                 Intent intent = new Intent();
                 intent.setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
                         OverviewSettingsPanel.ANDROID_PROTECTED_APPS);
                 mLauncher.startActivity(intent);
-            } else if (value.equals(res.getString(R.string.protected_app_settings))) {
-
             } else if (value.equals(res
                     .getString(R.string.scrolling_wallpaper))) {
                 onSettingsBooleanChanged(
                         v,
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_WALLPAPER_SCROLL,
                         R.bool.preferences_interface_homescreen_scrolling_wallpaper_scroll_default);
-                mLauncher.updateDynamicGrid();
+                mLauncher.setUpdateDynamicGrid();
             } else if (value.equals(res
                     .getString(R.string.search_screen_left_text)) &&
                     ((Integer)v.getTag() == OverviewSettingsPanel.HOME_SETTINGS_POSITION)) {
@@ -312,7 +310,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                             R.bool.preferences_interface_homescreen_search_screen_left_default);
                     mLauncher.restoreGelSetting();
                     mLauncher.getWorkspace().updatePageScrollForCustomPage(!current);
-                    mLauncher.updateDynamicGrid();
+                    mLauncher.setUpdateDynamicGrid();
                 }
             } else if (value.equals(res
                     .getString(R.string.grid_size_text))) {
