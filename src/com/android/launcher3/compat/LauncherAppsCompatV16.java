@@ -174,13 +174,18 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
                     }
                 }
             } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
-                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+                // EXTRA_REPLACING is available Kitkat onwards. For lower devices, it is broadcasted
+                // when moving a package or mounting/un-mounting external storage. Assume that
+                // it is a replacing operation.
+                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING,
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT);
                 String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
                 for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
                     callback.onPackagesAvailable(packages, user, replacing);
                 }
             } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
-                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING,
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT);
                 String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
                 for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
                     callback.onPackagesUnavailable(packages, user, replacing);
