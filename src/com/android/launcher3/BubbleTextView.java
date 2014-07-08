@@ -66,11 +66,11 @@ public class BubbleTextView extends TextView {
     private float mSlop;
 
     private int mTextColor;
-    private boolean mCustomShadowsEnabled = true;
+    private final boolean mCustomShadowsEnabled;
     private boolean mIsTextVisible;
 
     private boolean mBackgroundSizeChanged;
-    private Drawable mBackground;
+    private final Drawable mBackground;
 
     private boolean mStayPressed;
     private CheckLongPressHelper mLongPressHelper;
@@ -96,6 +96,13 @@ public class BubbleTextView extends TextView {
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
         a.recycle();
 
+        if (mCustomShadowsEnabled) {
+            // Draw the background itself as the parent is drawn twice.
+            mBackground = getBackground();
+            setBackground(null);
+        } else {
+            mBackground = null;
+        }
         init();
     }
 
@@ -110,7 +117,6 @@ public class BubbleTextView extends TextView {
 
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
-        mBackground = getBackground();
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
         if (mCustomShadowsEnabled) {
