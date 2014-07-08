@@ -19,12 +19,19 @@ package com.android.launcher3;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentProviderClient;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -45,11 +52,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -63,6 +70,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -156,6 +164,9 @@ public class LauncherModel extends BroadcastReceiver
 
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
+
+    // sPendingPackages is a set of packages which could be on sdcard and are not available yet
+    static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages = new HashMap<>();
 
     // </ only access in worker thread >
 
@@ -1826,6 +1837,9 @@ public class LauncherModel extends BroadcastReceiver
             final PackageManager manager = context.getPackageManager();
             final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
             final boolean isSafeMode = manager.isSafeMode();
+            final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+            final boolean isSdCardReady = context.registerReceiver(null,
+                    new IntentFilter(StartupReceiver.SYESTEM_READY)) != null;
 
             LauncherAppState app = LauncherAppState.getInstance();
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -1919,6 +1933,7 @@ public class LauncherModel extends BroadcastReceiver
                         try {
                             int itemType = c.getInt(itemTypeIndex);
                             boolean restored = 0 != c.getInt(restoredIndex);
+                            boolean allowMissingTarget = false;
 
                             switch (itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -1935,30 +1950,51 @@ public class LauncherModel extends BroadcastReceiver
                                 try {
                                     intent = Intent.parseUri(intentDescription, 0);
                                     ComponentName cn = intent.getComponent();
-                                    if (cn != null && !isValidPackageActivity(context, cn, user)) {
-                                        if (restored) {
-                                            // might be installed later
+                                    if (cn != null && cn.getPackageName() != null) {
+                                        boolean validPkg = launcherApps.isPackageEnabledForProfile(
+                                                cn.getPackageName(), user);
+                                        boolean validComponent = validPkg &&
+                                                launcherApps.isActivityEnabledForProfile(cn, user);
+
+                                        if (validComponent) {
+                                            if (restored) {
+                                                // no special handling necessary for this item
+                                                restoredRows.add(id);
+                                                restored = false;
+                                            }
+                                        } else if (validPkg) {
+                                            // The app is installed but the component is no
+                                            // longer available.
+                                            Launcher.addDumpLog(TAG,
+                                                    "Invalid component removed: " + cn, true);
+                                            itemsToRemove.add(id);
+                                            continue;
+                                        } else if (restored) {
+                                            // Package is not yet available but might be
+                                            // installed later.
                                             Launcher.addDumpLog(TAG,
                                                     "package not yet restored: " + cn, true);
-                                        } else {
-                                            if (!mAppsCanBeOnRemoveableStorage) {
-                                                // Log the invalid package, and remove it
-                                                Launcher.addDumpLog(TAG,
-                                                        "Invalid package removed: " + cn, true);
-                                                itemsToRemove.add(id);
-                                            } else {
-                                                // If apps can be on external storage, then we just
-                                                // leave them for the user to remove (maybe add
-                                                // visual treatment to it)
-                                                Launcher.addDumpLog(TAG,
-                                                        "Invalid package found: " + cn, true);
-                                            }
+                                        } else if (isSdCardReady) {
+                                            // Do not wait for external media load anymore.
+                                            // Log the invalid package, and remove it
+                                            Launcher.addDumpLog(TAG,
+                                                    "Invalid package removed: " + cn, true);
+                                            itemsToRemove.add(id);
                                             continue;
+                                        } else {
+                                            // SdCard is not ready yet. Package might get available,
+                                            // once it is ready.
+                                            Launcher.addDumpLog(TAG, "Invalid package: " + cn
+                                                    + " (check again later)", true);
+                                            HashSet<String> pkgs = sPendingPackages.get(user);
+                                            if (pkgs == null) {
+                                                pkgs = new HashSet<>();
+                                                sPendingPackages.put(user, pkgs);
+                                            }
+                                            pkgs.add(cn.getPackageName());
+                                            allowMissingTarget = true;
+                                            // Add the icon on the workspace anyway.
                                         }
-                                    } else if (restored) {
-                                        // no special handling necessary for this restored item
-                                        restoredRows.add(id);
-                                        restored = false;
                                     }
                                 } catch (URISyntaxException e) {
                                     Launcher.addDumpLog(TAG,
@@ -1980,8 +2016,8 @@ public class LauncherModel extends BroadcastReceiver
                                     }
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getShortcutInfo(manager, intent, user, context, c, iconIndex,
-                                            titleIndex, mLabelCache);
+                                    info = getShortcutInfo(manager, intent, user, context, c,
+                                            iconIndex, titleIndex, mLabelCache, allowMissingTarget);
                                 } else {
                                     info = getShortcutInfo(c, context, iconTypeIndex,
                                             iconPackageIndex, iconResourceIndex, iconIndex,
@@ -2196,6 +2232,12 @@ public class LauncherModel extends BroadcastReceiver
                     } catch (RemoteException e) {
                         Log.w(TAG, "Could not update restored rows");
                     }
+                }
+
+                if (!isSdCardReady && !sPendingPackages.isEmpty()) {
+                    context.registerReceiver(new AppsAvailabilityCheck(),
+                            new IntentFilter(StartupReceiver.SYESTEM_READY),
+                            null, sWorker);
                 }
 
                 if (loadedOldDb) {
@@ -2743,6 +2785,33 @@ public class LauncherModel extends BroadcastReceiver
         sWorker.post(task);
     }
 
+    private class AppsAvailabilityCheck extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            synchronized (sBgLock) {
+                final LauncherAppsCompat launcherApps = LauncherAppsCompat
+                        .getInstance(mApp.getContext());
+                ArrayList<String> packagesRemoved;
+                for (Entry<UserHandleCompat, HashSet<String>> entry : sPendingPackages.entrySet()) {
+                    UserHandleCompat user = entry.getKey();
+                    packagesRemoved = new ArrayList<>();
+                    for (String pkg : entry.getValue()) {
+                        if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
+                            Launcher.addDumpLog(TAG, "Package not found: " + pkg, true);
+                            packagesRemoved.add(pkg);
+                        }
+                    }
+                    if (!packagesRemoved.isEmpty()) {
+                        enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_REMOVE,
+                                packagesRemoved.toArray(new String[packagesRemoved.size()]), user));
+                    }
+                }
+            sPendingPackages.clear();
+            }
+        }
+    }
+
     private class PackageUpdatedTask implements Runnable {
         int mOp;
         String[] mPackages;
@@ -3006,7 +3075,7 @@ public class LauncherModel extends BroadcastReceiver
      */
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent,
             UserHandleCompat user, Context context) {
-        return getShortcutInfo(manager, intent, user, context, null, -1, -1, null);
+        return getShortcutInfo(manager, intent, user, context, null, -1, -1, null, false);
     }
 
     /**
@@ -3016,7 +3085,7 @@ public class LauncherModel extends BroadcastReceiver
      */
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent,
             UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
-            HashMap<Object, CharSequence> labelCache) {
+            HashMap<Object, CharSequence> labelCache, boolean allowMissingTarget) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
             return null;
@@ -3032,7 +3101,7 @@ public class LauncherModel extends BroadcastReceiver
         newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         newIntent.setComponent(componentName);
         LauncherActivityInfoCompat lai = mLauncherApps.resolveActivity(newIntent, user);
-        if (lai == null) {
+        if ((lai == null) && !allowMissingTarget) {
             Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
             return null;
         }
