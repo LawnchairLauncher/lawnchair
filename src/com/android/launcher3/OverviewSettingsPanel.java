@@ -221,7 +221,7 @@ public class OverviewSettingsPanel {
 
             if (mLauncher.updateGridIfNeeded()) {
                 mLauncher.getWorkspace().showOutlines();
-                mLauncher.mSearchDropTargetBar.showSearchBar(false);
+                mLauncher.mSearchDropTargetBar.hideSearchBar(false);
             }
         }
 
