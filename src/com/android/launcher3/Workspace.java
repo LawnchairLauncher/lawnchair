@@ -2495,6 +2495,7 @@ public class Workspace extends SmoothPagedView
                 hotseatAlpha.setInterpolator(null);
             }
             searchBarAlpha.setInterpolator(null);
+            anim.play(hotseatAlpha);
 
             float mOverviewPanelSlideScale = 1.0f;
 
@@ -2505,7 +2506,7 @@ public class Workspace extends SmoothPagedView
                 overviewPanel.setScaleY(2.0f);
                 mOverviewPanelSlideScale = 1.0f;
             }
-            LauncherViewPropertyAnimator overviewPanelScale = new LauncherViewPropertyAnimator(overviewPanel);
+            final LauncherViewPropertyAnimator overviewPanelScale = new LauncherViewPropertyAnimator(overviewPanel);
             overviewPanelScale.scaleY(mOverviewPanelSlideScale)
                     .alpha(finalOverviewPanelAlpha)
                     .setInterpolator(new AccelerateDecelerateInterpolator());
@@ -2525,12 +2526,14 @@ public class Workspace extends SmoothPagedView
                         overviewPanel.setAlpha(finalOverviewPanelAlpha);
                         AlphaUpdateListener.updateVisibility(overviewPanel);
                     }
+                    overviewPanelScale.removeAllListeners();
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     overviewPanel.setAlpha(finalOverviewPanelAlpha);
                     AlphaUpdateListener.updateVisibility(overviewPanel);
+                    overviewPanelScale.removeAllListeners();
                 }
                 @Override
                 public void onAnimationRepeat(Animator animation) {}
