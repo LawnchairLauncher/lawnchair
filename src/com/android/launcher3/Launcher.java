@@ -2607,7 +2607,7 @@ public class Launcher extends Activity
     }
 
     protected ComponentName getWallpaperPickerComponent() {
-        return new ComponentName(getPackageName(), LauncherWallpaperPickerActivity.class.getName());
+        return new ComponentName(WALLPAPER_PICKER_PACKAGE, WALLPAPER_PICKER_ACTIVITY);
     }
 
     /**
