@@ -56,6 +56,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
@@ -2321,14 +2322,14 @@ public class Workspace extends SmoothPagedView
         float finalBackgroundAlpha = (stateIsSpringLoaded || stateIsOverview) ? 1.0f : 0f;
         float finalBackgroundAlphaMultiplier = (stateIsSpringLoaded || stateIsOverview || mShowOutlines) ? 1.0f : 0f;
         float finalHotseatAndPageIndicatorAlpha = (stateIsOverview || stateIsSmall) ? 0f : 1f;
-        float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
+        final float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
         float finalSearchBarAlpha = !stateIsNormal ? 0f : 1f;
         float finalWorkspaceTranslationY = stateIsOverview ? getOverviewModeTranslationY() : 0;
 
         boolean workspaceToAllApps = (oldStateIsNormal && stateIsSmall);
         boolean allAppsToWorkspace = (oldStateIsSmall && stateIsNormal);
-        boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
-        boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
+        final boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
+        final boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
 
         mNewScale = 1.0f;
 
@@ -2486,26 +2487,56 @@ public class Workspace extends SmoothPagedView
                 .alpha(finalSearchBarAlpha).withLayer();
             if (mShowSearchBar) searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
 
-            Animator overviewPanelAlpha = new LauncherViewPropertyAnimator(overviewPanel)
-                .alpha(finalOverviewPanelAlpha).withLayer();
-            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
-
             if (workspaceToOverview) {
                 pageIndicatorAlpha.setInterpolator(new DecelerateInterpolator(2));
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
-                overviewPanelAlpha.setInterpolator(null);
             } else if (overviewToWorkspace) {
                 pageIndicatorAlpha.setInterpolator(null);
                 hotseatAlpha.setInterpolator(null);
-                overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
             }
             searchBarAlpha.setInterpolator(null);
 
-            overviewPanel.setAlpha(finalOverviewPanelAlpha);
-            AlphaUpdateListener.updateVisibility(overviewPanel);
-            Animation animation = AnimationUtils.loadAnimation(mLauncher, R.anim.drop_down);
-            overviewPanel.startAnimation(animation);
-            anim.play(hotseatAlpha);
+            float mOverviewPanelSlideScale = 1.0f;
+
+            if (overviewToWorkspace) {
+                overviewPanel.setScaleY(1.0f);
+                mOverviewPanelSlideScale = 2.0f;
+            } else if (workspaceToOverview) {
+                overviewPanel.setScaleY(2.0f);
+                mOverviewPanelSlideScale = 1.0f;
+            }
+            LauncherViewPropertyAnimator overviewPanelScale = new LauncherViewPropertyAnimator(overviewPanel);
+            overviewPanelScale.scaleY(mOverviewPanelSlideScale)
+                    .alpha(finalOverviewPanelAlpha)
+                    .setInterpolator(new AccelerateDecelerateInterpolator());
+            overviewPanelScale.addListener(new AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    if (workspaceToOverview) {
+                        overviewPanel.setAlpha(finalOverviewPanelAlpha);
+                        AlphaUpdateListener.updateVisibility(overviewPanel);
+                    }
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (overviewToWorkspace) {
+                        overviewPanel.setAlpha(finalOverviewPanelAlpha);
+                        AlphaUpdateListener.updateVisibility(overviewPanel);
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    overviewPanel.setAlpha(finalOverviewPanelAlpha);
+                    AlphaUpdateListener.updateVisibility(overviewPanel);
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {}
+            });
+            anim.play(overviewPanelScale);
+
             if (mShowSearchBar) anim.play(searchBarAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
