@@ -4135,6 +4135,8 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
+        mWorkspaceLoading = true;
+
         // If we're starting binding all over again, clear any bind calls we'd postponed in
         // the past (see waitUntilResume) -- we don't need them since we're starting binding
         // from scratch again
