@@ -154,7 +154,7 @@ class AllAppsList {
                 final LauncherActivityInfoCompat info = matches.get(i);
                 AppInfo applicationInfo = findApplicationInfoLocked(
                         info.getComponentName().getPackageName(), user,
-                        info.getComponentName().getShortClassName());
+                        info.getComponentName().getClassName());
                 if (applicationInfo == null) {
                     add(new AppInfo(context, info, user, mIconCache, null));
                 } else {
