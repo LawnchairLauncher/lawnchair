@@ -16,13 +16,9 @@
 
 package com.android.launcher3;
 
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -96,6 +92,11 @@ public class ShortcutInfo extends ItemInfo {
      */
     Intent restoredIntent;
 
+    /**
+     * This is set once to indicate that it was a promise info at some point of its life.
+     */
+    boolean wasPromise = false;
+
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -119,7 +120,7 @@ public class ShortcutInfo extends ItemInfo {
         }
     }
 
-    ShortcutInfo(Intent intent, CharSequence title, String contentDescrition,
+    ShortcutInfo(Intent intent, CharSequence title, String contentDescription,
             Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;

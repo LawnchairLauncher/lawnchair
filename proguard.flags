@@ -52,3 +52,8 @@
 -keep class com.android.launcher3.MemoryDumpActivity {
   *;
 }
+
+-keep class com.android.launcher3.PreloadIconDrawable {
+  public float getAnimationProgress();
+  public void setAnimationProgress(float);
+}

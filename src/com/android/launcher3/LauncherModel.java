@@ -3047,6 +3047,7 @@ public class LauncherModel extends BroadcastReceiver
         info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.restoredIntent = intent;
+        info.wasPromise = true;
         info.setState(ShortcutInfo.PACKAGE_STATE_UNKNOWN);
         return info;
     }

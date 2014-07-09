@@ -605,7 +605,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             computePreviewDrawingParams(mAnimParams.drawable);
         } else {
             v = (TextView) items.get(0);
-            d = v.getCompoundDrawables()[1];
+            d = getTopDrawable(v);
             computePreviewDrawingParams(d);
         }
 
@@ -614,7 +614,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             for (int i = nItemsInPreview - 1; i >= 0; i--) {
                 v = (TextView) items.get(i);
                 if (!mHiddenItems.contains(v.getTag())) {
-                    d = v.getCompoundDrawables()[1];
+                    d = getTopDrawable(v);
                     mParams = computePreviewItemDrawingParams(i, mParams);
                     mParams.drawable = d;
                     drawPreviewItem(canvas, mParams);
@@ -623,6 +623,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         } else {
             drawPreviewItem(canvas, mAnimParams);
         }
+    }
+
+    private Drawable getTopDrawable(TextView v) {
+        Drawable d = v.getCompoundDrawables()[1];
+        return (d instanceof PreloadIconDrawable) ? ((PreloadIconDrawable) d).mIcon : d;
     }
 
     private void animateFirstItem(final Drawable d, int duration, final boolean reverse,

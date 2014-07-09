@@ -136,7 +136,8 @@ public class BubbleTextView extends TextView {
             setContentDescription(info.contentDescription);
         }
         setTag(info);
-        if (info.isPromise()) {
+
+        if (info.wasPromise) {
             applyState();
         }
     }
@@ -431,42 +432,55 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyState() {
-        int alpha = getResources().getInteger(R.integer.promise_icon_alpha);
+        final int progressLevel;
         final int state = getState();
         if (DEBUG) Log.d(TAG, "applying icon state: " + state);
 
         switch(state) {
             case ShortcutInfo.PACKAGE_STATE_DEFAULT:
                 super.setText(mDefaultText);
-                alpha = 255;
+                progressLevel = 100;
                 break;
 
             case ShortcutInfo.PACKAGE_STATE_ENQUEUED:
                 setText(R.string.package_state_enqueued);
+                progressLevel = 0;
                 break;
 
             case ShortcutInfo.PACKAGE_STATE_DOWNLOADING:
                 setText(R.string.package_state_downloading);
+                // TODO(sunnygoyal): fix progress
+                progressLevel = 30;
                 break;
 
             case ShortcutInfo.PACKAGE_STATE_INSTALLING:
                 setText(R.string.package_state_installing);
+                progressLevel = 100;
                 break;
 
             case ShortcutInfo.PACKAGE_STATE_ERROR:
                 setText(R.string.package_state_error);
+                progressLevel = 0;
                 break;
 
             case ShortcutInfo.PACKAGE_STATE_UNKNOWN:
             default:
+                progressLevel = 0;
                 setText(R.string.package_state_unknown);
                 break;
         }
-        if (DEBUG) Log.d(TAG, "setting icon alpha to: " + alpha);
+
         Drawable[] drawables = getCompoundDrawables();
-        for (int i = 0; i < drawables.length; i++) {
-            if (drawables[i] != null) {
-                drawables[i].setAlpha(alpha);
+        Drawable top = drawables[1];
+        if ((top != null) && !(top instanceof PreloadIconDrawable)) {
+            top = new PreloadIconDrawable(top, getResources());
+            setCompoundDrawables(drawables[0], top, drawables[2], drawables[3]);
+        }
+        if (top != null) {
+            top.setLevel(progressLevel);
+            if ((top instanceof PreloadIconDrawable)
+                    && (state == ShortcutInfo.PACKAGE_STATE_DEFAULT)) {
+                ((PreloadIconDrawable) top).maybePerformFinishedAnimation();
             }
         }
     }
