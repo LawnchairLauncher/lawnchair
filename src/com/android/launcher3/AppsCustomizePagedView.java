@@ -377,8 +377,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
 
-        AppsCustomizeTabHost host = (AppsCustomizeTabHost) getTabHost();
-        final boolean hostIsTransitioning = host.isTransitioning();
+        final boolean hostIsTransitioning = getTabHost().isInTransition();
 
         // Restore the page
         int page = getPageForComponent(mSaveInstanceStateItemIndex);
@@ -1617,12 +1616,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // If we have reset, then we should not continue to restore the previous state
         mSaveInstanceStateItemIndex = -1;
 
-        AppsCustomizeTabHost tabHost = getTabHost();
-        String tag = tabHost.getCurrentTabTag();
-        if (tag != null) {
-            if (!tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
-                tabHost.setCurrentTabFromContent(ContentType.Applications);
-            }
+        if (mContentType != ContentType.Applications) {
+            setContentType(ContentType.Applications);
         }
 
         if (mCurrentPage != 0) {

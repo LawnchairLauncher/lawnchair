@@ -77,6 +77,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
 
+    // Darkening scrim
+    private Drawable mBackground;
+    private float mBackgroundAlpha = 0;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -91,8 +95,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         setChildrenDrawingOrderEnabled(true);
         setOnHierarchyChangeListener(this);
 
-        mLeftHoverDrawable = getResources().getDrawable(R.drawable.page_hover_left_holo);
-        mRightHoverDrawable = getResources().getDrawable(R.drawable.page_hover_right_holo);
+        final Resources res = getResources();
+        mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left_holo);
+        mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right_holo);
+        mBackground = res.getDrawable(R.drawable.apps_customize_bg);
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -862,8 +868,17 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        // Draw the background gradient below children.
+        if (mBackground != null && mBackgroundAlpha > 0.0f) {
+            int alpha = (int) (mBackgroundAlpha * 255);
+            mBackground.setAlpha(alpha);
+            mBackground.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
+            mBackground.draw(canvas);
+        }
+
         super.dispatchDraw(canvas);
 
+        // Draw screen hover indicators above children.
         if (mInScrollArea && !LauncherAppState.getInstance().isScreenLarge()) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = getMeasuredWidth();
@@ -885,6 +900,17 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
                 mRightHoverDrawable.draw(canvas);
             }
         }
+    }
+
+    public void setBackgroundAlpha(float alpha) {
+        if (alpha != mBackgroundAlpha) {
+            mBackgroundAlpha = alpha;
+            invalidate();
+        }
+    }
+
+    public float getBackgroundAlpha() {
+        return mBackgroundAlpha;
     }
 
     public void setTouchCompleteListener(TouchCompleteListener listener) {
