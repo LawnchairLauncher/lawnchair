@@ -74,6 +74,7 @@
         android:icon="@mipmap/ic_launcher_home"
         android:hardwareAccelerated="true"
         android:largeHeap="@bool/config_largeHeap"
+        android:requiredForAllUsers="true"
         android:supportsRtl="true">
         <activity
             android:name="org.cyanogenmod.trebuchet.TrebuchetLauncher"
