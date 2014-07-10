@@ -1961,6 +1961,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     info = getShortcutInfo(manager, intent, context, c, iconIndex,
                                             titleIndex, mLabelCache);
                                 } else if (itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                                    intent = null;
                                     info = getShortcutInfo(c, context,
                                             titleIndex);
                                 } else {
