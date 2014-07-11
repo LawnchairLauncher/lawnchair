@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Koselig</string>
   <string name="grid_size_condensed">Kondensert</string>
   <string name="grid_size_custom">Egendefinert</string>
+  <string name="grid_size_custom_and_size">Egendefinert (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Velg egendefinert størrelse</string>
   <string name="preferences_interface_homescreen_rows_title">Antall rader</string>
   <string name="preferences_interface_homescreen_columns_title">Antall kolonner</string>

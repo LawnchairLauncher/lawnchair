@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Pohodlná</string>
   <string name="grid_size_condensed">Zůžená</string>
   <string name="grid_size_custom">Vlastní</string>
+  <string name="grid_size_custom_and_size">Vlastní (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Zvolte vlastní velikost</string>
   <string name="preferences_interface_homescreen_rows_title">Počet řádek</string>
   <string name="preferences_interface_homescreen_columns_title">Počet sloupců</string>

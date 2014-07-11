@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">נעים</string>
   <string name="grid_size_condensed">מרוכז</string>
   <string name="grid_size_custom">מותאם אישית</string>
+  <string name="grid_size_custom_and_size">מותאם אישית (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">בחר גודל מותאם אישית</string>
   <string name="preferences_interface_homescreen_rows_title">מספר שורות</string>
   <string name="preferences_interface_homescreen_columns_title">מספר עמודות</string>

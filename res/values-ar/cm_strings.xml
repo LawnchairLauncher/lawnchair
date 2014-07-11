@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">مريح</string>
   <string name="grid_size_condensed">مكثف</string>
   <string name="grid_size_custom">مخصص</string>
+  <string name="grid_size_custom_and_size">مخصص (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">حدد حجم مخصص</string>
   <string name="preferences_interface_homescreen_rows_title">عدد الصفوف</string>
   <string name="preferences_interface_homescreen_columns_title">عدد الأعمدة</string>

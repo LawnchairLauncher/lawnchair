@@ -16,10 +16,38 @@
      limitations under the License.
 -->
 <resources>
+  <string name="launcher_settings">НАЛАШТУВАННЯ ЛАУНЧЕРА</string>
+  <string name="home_screen_settings">НАЛАШТУВАННЯ ДОМІВКИ</string>
+  <string name="drawer_settings">МЕНЮ ПРОГРАМ</string>
+  <string name="app_settings">НАЛАШТУВАННЯ ПРОГРАМ</string>
+  <string name="setting_state_on">УВІМК</string>
+  <string name="setting_state_off">ВИМК</string>
+  <string name="themes_button_text">Теми</string>
   <string name="scrolling_page_outlines">Межі сторінок</string>
   <string name="scrolling_fade_adjacent">Затемняти краї при гортанні</string>
+  <string name="scrolling_wallpaper">Прокручувати шпалери</string>
+  <string name="grid_size_text">Розмір сітки</string>
+  <string name="grid_size_comfortable">Комфортна</string>
+  <string name="grid_size_cozy">Зручна</string>
+  <string name="grid_size_condensed">Стиснута</string>
+  <string name="grid_size_custom">Користувацька</string>
+  <string name="grid_size_custom_and_size">Власна (%1$s)</string>
+  <string name="preferences_interface_homescreen_custom">Виберіть розмір сітки</string>
+  <string name="preferences_interface_homescreen_rows_title">Кількість рядків</string>
+  <string name="preferences_interface_homescreen_columns_title">Кількість стовпчиків</string>
   <string name="hidden_apps_title">Приховані програми</string>
+  <string name="scroll_effect_text">Ефект гортання</string>
+  <string name="drawer_sorting_text">Режим сортування</string>
   <string name="sort_mode_title">По назві</string>
   <string name="sort_mode_launch_count">По частоті використання</string>
   <string name="sort_mode_install_time">По часу встановлення</string>
+  <string name="home_screen_search_text">Рядок пошуку</string>
+  <string name="larger_icons_text">Великі піктограми</string>
+  <string name="icon_labels">Мітки піктограм</string>
+  <string name="icon_labels_show">Показати</string>
+  <string name="icon_labels_hide">Приховати</string>
+  <string name="protected_app_settings">Заблоковані програми</string>
+  <string name="search_screen_left_text">Панель пошуку</string>
+  <string name="search_screen_left_unsupported_toast">Ви повинні мати програму пошуку яка підтримується CyanogenMod для використання цієї функції.</string>
+  <string name="dialog_confirm">Підтвердити</string>
 </resources>

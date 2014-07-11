@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Acollidora</string>
   <string name="grid_size_condensed">Condensada</string>
   <string name="grid_size_custom">Personalitzada</string>
+  <string name="grid_size_custom_and_size">Personalitzada (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Selecciona la mida personalitzada</string>
   <string name="preferences_interface_homescreen_rows_title">Nombre de files</string>
   <string name="preferences_interface_homescreen_columns_title">Nombre de columnes</string>

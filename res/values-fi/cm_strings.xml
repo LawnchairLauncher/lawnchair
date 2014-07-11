@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Kodikas</string>
   <string name="grid_size_condensed">Tiivistetty</string>
   <string name="grid_size_custom">Muokattu</string>
+  <string name="grid_size_custom_and_size">Mukautettu (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Valitse mukautettu koko</string>
   <string name="preferences_interface_homescreen_rows_title">Rivien määrä</string>
   <string name="preferences_interface_homescreen_columns_title">Sarakkeiden määrä</string>

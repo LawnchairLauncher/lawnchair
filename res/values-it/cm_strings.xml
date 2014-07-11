@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Accogliente</string>
   <string name="grid_size_condensed">Condensato</string>
   <string name="grid_size_custom">Personalizzata</string>
+  <string name="grid_size_custom_and_size">Personalizzato (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Personalizza dimensione</string>
   <string name="preferences_interface_homescreen_rows_title">Numero di righe</string>
   <string name="preferences_interface_homescreen_columns_title">Numero di colonne</string>

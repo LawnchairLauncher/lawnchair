@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Mittel</string>
   <string name="grid_size_condensed">Klein</string>
   <string name="grid_size_custom">Benutzerdefiniert</string>
+  <string name="grid_size_custom_and_size">Benutzerdefiniert (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Benutzerdefinierte Größe auswählen</string>
   <string name="preferences_interface_homescreen_rows_title">Anzahl der Zeilen</string>
   <string name="preferences_interface_homescreen_columns_title">Anzahl der Spalten</string>
@@ -47,6 +48,6 @@
   <string name="icon_labels_hide">Verbergen</string>
   <string name="protected_app_settings">Geschützte Apps</string>
   <string name="search_screen_left_text">Google Now</string>
-  <string name="search_screen_left_unsupported_toast">Um diese Funktion nutzen zu können, müssen Sie CyanogenMod und eine unterstützte Such-App installiert haben.</string>
+  <string name="search_screen_left_unsupported_toast">Um diese Funktion nutzen zu können, muss CyanogenMod und eine unterstützte Such-App installiert sein.</string>
   <string name="dialog_confirm">Bestätigen</string>
 </resources>

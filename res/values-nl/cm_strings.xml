@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Knus</string>
   <string name="grid_size_condensed">Smal</string>
   <string name="grid_size_custom">Aangepast</string>
+  <string name="grid_size_custom_and_size">Aangepast (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Aangepaste grootte</string>
   <string name="preferences_interface_homescreen_rows_title">Aantal rijen</string>
   <string name="preferences_interface_homescreen_columns_title">Aantal kolommen</string>

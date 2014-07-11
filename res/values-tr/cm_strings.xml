@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Rahat</string>
   <string name="grid_size_condensed">Kalın</string>
   <string name="grid_size_custom">Özel</string>
+  <string name="grid_size_custom_and_size">Özel (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Özel boyut seçin</string>
   <string name="preferences_interface_homescreen_rows_title">Satır sayısı</string>
   <string name="preferences_interface_homescreen_columns_title">Sütun sayısı</string>

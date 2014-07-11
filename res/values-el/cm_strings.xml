@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Κανονικό</string>
   <string name="grid_size_condensed">Συμπυκνωμένο</string>
   <string name="grid_size_custom">Προσαρμοσμένο</string>
+  <string name="grid_size_custom_and_size">Προσαρμοσμένο (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Επιλέξτε προσαρμοσμένο μέγεθος</string>
   <string name="preferences_interface_homescreen_rows_title">Αριθμός γραμμών</string>
   <string name="preferences_interface_homescreen_columns_title">Αριθμός στηλών</string>
