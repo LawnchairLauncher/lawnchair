@@ -2047,6 +2047,8 @@ public class LauncherModel extends BroadcastReceiver
                                     info.spanX = 1;
                                     info.spanY = 1;
                                     info.intent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                    info.isDisabled = isSafeMode
+                                            && !Utilities.isSystemApp(context, intent);
 
                                     // check & update map of what's occupied
                                     deleteOnInvalidPlacement.set(false);

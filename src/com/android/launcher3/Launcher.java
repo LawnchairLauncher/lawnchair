@@ -218,6 +218,8 @@ public class Launcher extends Activity
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
 
+    private boolean mIsSafeModeEnabled;
+
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
@@ -421,6 +423,7 @@ public class Launcher extends Activity
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
+        mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
         mIconCache.flushInvalidIcons(grid);
@@ -1395,7 +1398,7 @@ public class Launcher extends Activity
      */
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
-        favorite.applyFromShortcutInfo(info, mIconCache);
+        favorite.applyFromShortcutInfo(info, mIconCache, true);
         favorite.setOnClickListener(this);
         return favorite;
     }
@@ -2775,6 +2778,7 @@ public class Launcher extends Activity
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
             } else {
+                // TODO Component can be null when shortcuts are supported for secondary user
                 launcherApps.startActivityForProfile(intent.getComponent(), user,
                         intent.getSourceBounds(), optsBundle);
             }
@@ -2791,6 +2795,10 @@ public class Launcher extends Activity
 
     boolean startActivitySafely(View v, Intent intent, Object tag) {
         boolean success = false;
+        if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
+            Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         try {
             success = startActivity(v, intent, tag);
         } catch (ActivityNotFoundException e) {

@@ -51,8 +51,6 @@ public class BubbleTextView extends TextView {
 
     private static final boolean DEBUG = false;
 
-    private int mPrevAlpha = -1;
-
     private HolographicOutlineHelper mOutlineHelper;
     private final Canvas mTempCanvas = new Canvas();
     private final Rect mTempRect = new Rect();
@@ -124,14 +122,22 @@ public class BubbleTextView extends TextView {
         }
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
+    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
+            boolean setDefaultPadding) {
         Bitmap b = info.getIcon(iconCache);
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-        Drawable iconDrawable = Utilities.createIconDrawable(b);
+        FastBitmapDrawable iconDrawable = Utilities.createIconDrawable(b);
+        if (info.isDisabled) {
+            iconDrawable.setSaturation(0);
+            iconDrawable.setBrightness(20);
+        }
+
         setCompoundDrawables(null, iconDrawable, null, null);
-        setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+        if (setDefaultPadding) {
+            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+        }
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
         }
@@ -417,10 +423,6 @@ public class BubbleTextView extends TextView {
 
     @Override
     protected boolean onSetAlpha(int alpha) {
-        if (mPrevAlpha != alpha) {
-            mPrevAlpha = alpha;
-            super.onSetAlpha(alpha);
-        }
         return true;
     }
 

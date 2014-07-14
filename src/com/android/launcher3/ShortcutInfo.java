@@ -79,6 +79,12 @@ public class ShortcutInfo extends ItemInfo {
     private Bitmap mIcon;
 
     /**
+     * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
+     * sd-card is not available).
+     */
+    boolean isDisabled = false;
+
+    /**
      * The installation state of the package that this shortcut represents.
      */
     protected int mState;
