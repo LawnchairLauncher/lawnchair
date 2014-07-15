@@ -30,6 +30,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -186,6 +187,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Hide the delete target if it is a widget from AppsCustomize.
         if (!willAcceptDrop(info) || isAllAppsWidget(source, info)) {
             isVisible = false;
+        }
+        if (useUninstallLabel) {
+            UserManager userManager = (UserManager)
+                getContext().getSystemService(Context.USER_SERVICE);
+            if (userManager.hasUserRestriction(UserManager.DISALLOW_APPS_CONTROL)
+                    || userManager.hasUserRestriction(UserManager.DISALLOW_UNINSTALL_APPS)) {
+                isVisible = false;
+            }
         }
 
         if (useUninstallLabel) {
