@@ -1159,9 +1159,17 @@ public class Workspace extends SmoothPagedView
                 (mTouchDownTime - mCustomContentShowTime) > CUSTOM_CONTENT_GESTURE_DELAY;
 
         boolean swipeInIgnoreDirection = isLayoutRtl() ? deltaX < 0 : deltaX > 0;
-        if (swipeInIgnoreDirection && getScreenIdForPageIndex(getCurrentPage()) ==
-                CUSTOM_CONTENT_SCREEN_ID && passRightSwipesToCustomContent) {
+        boolean onCustomContentScreen =
+                getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID;
+        if (swipeInIgnoreDirection && onCustomContentScreen && passRightSwipesToCustomContent) {
             // Pass swipes to the right to the custom content page.
+            return;
+        }
+
+        if (onCustomContentScreen && (mCustomContentCallbacks != null)
+                && !mCustomContentCallbacks.isScrollingAllowed()) {
+            // Don't allow workspace scrolling if the current custom content screen doesn't allow
+            // scrolling.
             return;
         }
 

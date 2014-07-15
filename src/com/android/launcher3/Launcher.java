@@ -1089,6 +1089,9 @@ public class Launcher extends Activity
 
         // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
         public void onScrollProgressChanged(float progress);
+
+        // Indicates whether the user is allowed to scroll away from the custom content.
+        boolean isScrollingAllowed();
     }
 
     protected boolean hasSettings() {
