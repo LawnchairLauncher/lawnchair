@@ -34,8 +34,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 
-import com.android.photos.BitmapRegionTileSource;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,38 +47,16 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
     Context mContext;
     LayoutInflater mLayoutInflater;
 
-    public static class SavedWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
+    public static class SavedWallpaperTile extends WallpaperPickerActivity.FileWallpaperInfo {
         private int mDbId;
-        private Drawable mThumb;
-        public SavedWallpaperTile(int dbId, Drawable thumb) {
+        public SavedWallpaperTile(int dbId, File target, Drawable thumb) {
+            super(target, thumb);
             mDbId = dbId;
-            mThumb = thumb;
         }
-        @Override
-        public void onClick(WallpaperPickerActivity a) {
-            String imageFilename = a.getSavedImages().getImageFilename(mDbId);
-            File file = new File(a.getFilesDir(), imageFilename);
-            BitmapRegionTileSource.FilePathBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.FilePathBitmapSource(file.getAbsolutePath(), 1024);
-            a.setCropViewTileSource(bitmapSource, false, true, null);
-        }
-        @Override
-        public void onSave(WallpaperPickerActivity a) {
-            boolean finishActivityWhenDone = true;
-            String imageFilename = a.getSavedImages().getImageFilename(mDbId);
-            a.setWallpaper(imageFilename, finishActivityWhenDone);
-        }
+
         @Override
         public void onDelete(WallpaperPickerActivity a) {
             a.getSavedImages().deleteImage(mDbId);
-        }
-        @Override
-        public boolean isSelectable() {
-            return true;
-        }
-        @Override
-        public boolean isNamelessWallpaper() {
-            return true;
         }
     }
 
@@ -98,7 +74,8 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         SQLiteDatabase db = mDb.getReadableDatabase();
         Cursor result = db.query(ImageDb.TABLE_NAME,
                 new String[] { ImageDb.COLUMN_ID,
-                    ImageDb.COLUMN_IMAGE_THUMBNAIL_FILENAME }, // cols to return
+                    ImageDb.COLUMN_IMAGE_THUMBNAIL_FILENAME,
+                    ImageDb.COLUMN_IMAGE_FILENAME}, // cols to return
                 null, // select query
                 null, // args to select query
                 null,
@@ -112,7 +89,9 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
 
             Bitmap thumb = BitmapFactory.decodeFile(file.getAbsolutePath());
             if (thumb != null) {
-                mImages.add(new SavedWallpaperTile(result.getInt(0), new BitmapDrawable(thumb)));
+                mImages.add(new SavedWallpaperTile(result.getInt(0),
+                        new File(mContext.getFilesDir(), result.getString(2)),
+                        new BitmapDrawable(thumb)));
             }
         }
         result.close();
@@ -136,15 +115,7 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
             Log.e(TAG, "Error decoding thumbnail for wallpaper #" + position);
         }
         return WallpaperPickerActivity.createImageTileView(
-                mLayoutInflater, position, convertView, parent, thumbDrawable);
-    }
-
-    public String getImageFilename(int id) {
-        Pair<String, String> filenames = getImageFilenames(id);
-        if (filenames != null) {
-            return filenames.second;
-        }
-        return null;
+                mLayoutInflater, convertView, parent, thumbDrawable);
     }
 
     private Pair<String, String> getImageFilenames(int id) {
