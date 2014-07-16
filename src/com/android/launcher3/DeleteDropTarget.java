@@ -187,11 +187,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (!willAcceptDrop(info) || isAllAppsWidget(source, info)) {
             isVisible = false;
         }
-        if (useUninstallLabel &&
-                !(((ItemInfo) info).user.equals(UserHandleCompat.myUserHandle()))) {
-            // Don't support uninstall for apps from other profiles.
-            isVisible = false;
-        }
 
         if (useUninstallLabel) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mUninstallDrawable, null, null, null);
@@ -287,19 +282,16 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (isAllAppsApplication(d.dragSource, item)) {
             // Uninstall the application if it is being dragged from AppsCustomize
             AppInfo appInfo = (AppInfo) item;
-            // We don't support uninstalling apps from other profiles.
-            if (item.user.equals(UserHandleCompat.myUserHandle())) {
-                mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags);
-            }
+            mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags,
+                    appInfo.user);
         } else if (isUninstallFromWorkspace(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) item;
-            // We don't support uninstalling apps from other profiles.
-            if (shortcut.intent != null && shortcut.intent.getComponent() != null &&
-                    shortcut.user.equals(UserHandleCompat.myUserHandle())) {
+            if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
                 final ComponentName componentName = shortcut.intent.getComponent();
                 final DragSource dragSource = d.dragSource;
-                mWaitingForUninstall =
-                        mLauncher.startApplicationUninstallActivity(componentName, shortcut.flags);
+                final UserHandleCompat user = shortcut.user;
+                mWaitingForUninstall = mLauncher.startApplicationUninstallActivity(
+                        componentName, shortcut.flags, user);
                 if (mWaitingForUninstall) {
                     final Runnable checkIfUninstallWasSuccess = new Runnable() {
                         @Override
@@ -307,7 +299,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                             mWaitingForUninstall = false;
                             String packageName = componentName.getPackageName();
                             boolean uninstallSuccessful = !AllAppsList.packageHasActivities(
-                                    getContext(), packageName, UserHandleCompat.myUserHandle());
+                                    getContext(), packageName, user);
                             if (dragSource instanceof Folder) {
                                 ((Folder) dragSource).
                                     onUninstallActivityReturned(uninstallSuccessful);

@@ -16,6 +16,7 @@
 
 package com.android.launcher3.compat;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.UserHandle;
 
@@ -76,6 +77,18 @@ public class UserHandleCompat {
             return mUser.hashCode();
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * Adds {@link UserHandle} to the intent in for L or above.
+     * Pre-L the launcher doesn't support showing apps for multiple
+     * profiles so this is a no-op.
+     */
+    public void addToIntent(Intent intent, String name) {
+        // TODO change this to use api version once L gets an API number.
+        if ("L".equals(Build.VERSION.CODENAME) && mUser != null) {
+            intent.putExtra(name, mUser);
         }
     }
 }

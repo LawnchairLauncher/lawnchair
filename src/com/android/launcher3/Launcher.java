@@ -2721,7 +2721,8 @@ public class Launcher extends Activity
     }
 
     // returns true if the activity was started
-    boolean startApplicationUninstallActivity(ComponentName componentName, int flags) {
+    boolean startApplicationUninstallActivity(ComponentName componentName, int flags,
+            UserHandleCompat user) {
         if ((flags & AppInfo.DOWNLOADED_FLAG) == 0) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
@@ -2735,6 +2736,9 @@ public class Launcher extends Activity
                     Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            if (user != null) {
+                user.addToIntent(intent, Intent.EXTRA_USER);
+            }
             startActivity(intent);
             return true;
         }
