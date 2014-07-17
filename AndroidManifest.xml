@@ -71,8 +71,6 @@
     <uses-permission android:name="com.android.launcher3.permission.WRITE_SETTINGS" />
     <uses-permission android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS" />
 
-    <uses-feature android:name="android.software.managed_profiles" android:required="false"/>
-
     <application
         android:name="com.android.launcher3.LauncherApplication"
         android:label="@string/application_name"
