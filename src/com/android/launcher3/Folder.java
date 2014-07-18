@@ -566,15 +566,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     protected View createAndAddShortcut(ShortcutInfo item) {
-        final TextView textView =
-            (TextView) mInflater.inflate(R.layout.folder_application, this, false);
-        textView.setCompoundDrawables(null,
-                Utilities.createIconDrawable(item.getIcon(mIconCache)), null, null);
-        textView.setText(item.title);
-        if (item.contentDescription != null) {
-            textView.setContentDescription(item.contentDescription);
-        }
-        textView.setTag(item);
+        final BubbleTextView textView =
+            (BubbleTextView) mInflater.inflate(R.layout.folder_application, this, false);
+        textView.applyFromShortcutInfo(item, mIconCache, false);
+
         textView.setOnClickListener(this);
         textView.setOnLongClickListener(this);
 

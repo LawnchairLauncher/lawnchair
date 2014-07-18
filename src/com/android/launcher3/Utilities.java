@@ -18,14 +18,17 @@ package com.android.launcher3;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
@@ -52,10 +55,6 @@ public final class Utilities {
     public static int sIconTextureWidth = -1;
     public static int sIconTextureHeight = -1;
 
-    private static final Paint sBlurPaint = new Paint();
-    private static final Paint sGlowColorPressedPaint = new Paint();
-    private static final Paint sGlowColorFocusedPaint = new Paint();
-    private static final Paint sDisabledPaint = new Paint();
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
 
@@ -75,7 +74,7 @@ public final class Utilities {
     /**
      * Returns a FastBitmapDrawable with the icon, accurately sized.
      */
-    static Drawable createIconDrawable(Bitmap icon) {
+    static FastBitmapDrawable createIconDrawable(Bitmap icon) {
         FastBitmapDrawable d = new FastBitmapDrawable(icon);
         d.setFilterBitmap(true);
         resizeIconDrawable(d);
@@ -332,15 +331,6 @@ public final class Utilities {
 
         sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
         sIconTextureWidth = sIconTextureHeight = sIconWidth;
-
-        sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));
-        sGlowColorPressedPaint.setColor(0xffffc300);
-        sGlowColorFocusedPaint.setColor(0xffff8e00);
-
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0.2f);
-        sDisabledPaint.setColorFilter(new ColorMatrixColorFilter(cm));
-        sDisabledPaint.setAlpha(0x88);
     }
 
     public static void setIconSize(int widthPx) {
@@ -376,6 +366,31 @@ public final class Utilities {
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
                     "or use the exported attribute for this activity.", e);
+        }
+    }
+
+    static boolean isSystemApp(Context context, Intent intent) {
+        PackageManager pm = context.getPackageManager();
+        ComponentName cn = intent.getComponent();
+        String packageName = null;
+        if (cn == null) {
+            ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            if ((info != null) && (info.activityInfo != null)) {
+                packageName = info.activityInfo.packageName;
+            }
+        } else {
+            packageName = cn.getPackageName();
+        }
+        if (packageName != null) {
+            try {
+                PackageInfo info = pm.getPackageInfo(packageName, 0);
+                return (info != null) && (info.applicationInfo != null) &&
+                        ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+            } catch (NameNotFoundException e) {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }
