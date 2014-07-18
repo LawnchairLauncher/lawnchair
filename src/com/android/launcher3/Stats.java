@@ -32,7 +32,6 @@ public class Stats {
     private static final boolean LOCAL_LAUNCH_LOG = true;
 
     public static final String ACTION_LAUNCH = "com.android.launcher3.action.LAUNCH";
-    public static final String PERM_LAUNCH = "com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS";
     public static final String EXTRA_INTENT = "intent";
     public static final String EXTRA_CONTAINER = "container";
     public static final String EXTRA_SCREEN = "screen";
@@ -53,6 +52,8 @@ public class Stats {
 
     private final Launcher mLauncher;
 
+    private final String mLaunchBroadcastPermission;
+
     DataOutputStream mLog;
 
     ArrayList<String> mIntents;
@@ -60,6 +61,9 @@ public class Stats {
 
     public Stats(Launcher launcher) {
         mLauncher = launcher;
+
+        mLaunchBroadcastPermission =
+                launcher.getResources().getString(R.string.receive_launch_broadcasts_permission);
 
         loadStats();
 
@@ -87,7 +91,7 @@ public class Stats {
                         }
                     },
                     new IntentFilter(ACTION_LAUNCH),
-                    PERM_LAUNCH,
+                    mLaunchBroadcastPermission,
                     null
             );
         }
@@ -120,7 +124,7 @@ public class Stats {
                     .putExtra(EXTRA_CELLX, shortcut.cellX)
                     .putExtra(EXTRA_CELLY, shortcut.cellY);
         }
-        mLauncher.sendBroadcast(broadcastIntent, PERM_LAUNCH);
+        mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
 
         incrementLaunch(flat);
 

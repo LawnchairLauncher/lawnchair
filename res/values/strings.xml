@@ -24,6 +24,9 @@
     <!-- URI used to import old favorites. [DO NOT TRANSLATE] -->
     <string name="old_launcher_provider_uri" translatable="false">content://com.android.launcher2.settings/favorites?notify=true</string>
 
+    <!-- Permission to receive the com.android.launcher3.action.LAUNCH intent -->
+    <string name="receive_launch_broadcasts_permission" translatable="false">com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS</string>
+
     <!-- Application name -->
     <string name="application_name">Launcher3</string>
     <!-- Accessibility-facing application name -->
