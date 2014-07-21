@@ -133,7 +133,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         final ViewGroup cellLayoutChildren = (ViewGroup) getParent();
         final ViewGroup cellLayout = (ViewGroup) cellLayoutChildren.getParent();
         final Workspace workspace = (Workspace) cellLayout.getParent();
-        return !workspace.isSmall();
+        return !workspace.workspaceInModalState();
     }
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,

@@ -22,7 +22,7 @@
 
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
-    <integer name="config_appsCustomizeSpringLoadedBgAlpha">65</integer>
+    <integer name="config_workspaceScrimAlpha">55</integer>
     <integer name="config_workspaceUnshrinkTime">300</integer>
     <integer name="config_overviewTransitionTime">250</integer>
 
@@ -31,6 +31,7 @@
 
     <!-- Fade/zoom in/out duration & scale in the AllApps transition.
          Note: This should be less than the workspaceShrinkTime as they happen together. -->
+    <integer name="config_appsCustomizeRevealTime">350</integer>
     <integer name="config_appsCustomizeZoomInTime">350</integer>
     <integer name="config_appsCustomizeZoomOutTime">600</integer>
     <integer name="config_appsCustomizeZoomScaleFactor">7</integer>

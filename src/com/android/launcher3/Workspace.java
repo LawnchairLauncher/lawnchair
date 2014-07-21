@@ -109,9 +109,6 @@ public class Workspace extends SmoothPagedView
     // These properties refer to the background protection gradient used for AllApps and Customize
     private ValueAnimator mBackgroundFadeInAnimation;
     private ValueAnimator mBackgroundFadeOutAnimation;
-    private Drawable mBackground;
-    boolean mDrawBackground = true;
-    private float mBackgroundAlpha = 0;
 
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     private long mTouchDownTime = -1;
@@ -191,7 +188,7 @@ public class Workspace extends SmoothPagedView
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
-    enum State { NORMAL, SPRING_LOADED, SMALL, OVERVIEW};
+    enum State { NORMAL, NORMAL_HIDDEN, SPRING_LOADED, OVERVIEW, OVERVIEW_HIDDEN};
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
 
@@ -444,13 +441,6 @@ public class Workspace extends SmoothPagedView
 
         setMinScale(mOverviewModeShrinkFactor);
         setupLayoutTransition();
-
-        final Resources res = getResources();
-        try {
-            mBackground = res.getDrawable(R.drawable.apps_customize_bg);
-        } catch (Resources.NotFoundException e) {
-            // In this case, we will skip drawing background protection
-        }
 
         mWallpaperOffset = new WallpaperOffsetInterpolator();
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
@@ -1068,8 +1058,8 @@ public class Workspace extends SmoothPagedView
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return (isSmall() || !isFinishedSwitchingState())
-                || (!isSmall() && indexOfChild(v) != mCurrentPage);
+        return (workspaceInModalState() || !isFinishedSwitchingState())
+                || (!workspaceInModalState() && indexOfChild(v) != mCurrentPage);
     }
 
     public boolean isSwitchingState() {
@@ -1088,7 +1078,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        if (isSmall() || !isFinishedSwitchingState()) {
+        if (workspaceInModalState() || !isFinishedSwitchingState()) {
             // when the home screens are shrunken, shouldn't allow side-scrolling
             return false;
         }
@@ -1226,7 +1216,7 @@ public class Workspace extends SmoothPagedView
         }
 
         if (mDragController.isDragging()) {
-            if (isSmall()) {
+            if (workspaceInModalState()) {
                 // If we are in springloaded mode, then force an event to check if the current touch
                 // is under a new page (to scroll to)
                 mDragController.forceTouchMove();
@@ -1500,7 +1490,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void showOutlines() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!workspaceInModalState() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             mChildrenOutlineFadeInAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 1.0f);
@@ -1510,7 +1500,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void hideOutlines() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!workspaceInModalState() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             mChildrenOutlineFadeOutAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 0.0f);
@@ -1538,15 +1528,9 @@ public class Workspace extends SmoothPagedView
         return mChildrenOutlineAlpha;
     }
 
-    void disableBackground() {
-        mDrawBackground = false;
-    }
-    void enableBackground() {
-        mDrawBackground = true;
-    }
-
     private void animateBackgroundGradient(float finalAlpha, boolean animated) {
-        if (mBackground == null) return;
+        final DragLayer dragLayer = mLauncher.getDragLayer();
+
         if (mBackgroundFadeInAnimation != null) {
             mBackgroundFadeInAnimation.cancel();
             mBackgroundFadeInAnimation = null;
@@ -1555,34 +1539,24 @@ public class Workspace extends SmoothPagedView
             mBackgroundFadeOutAnimation.cancel();
             mBackgroundFadeOutAnimation = null;
         }
-        float startAlpha = getBackgroundAlpha();
+        float startAlpha = dragLayer.getBackgroundAlpha();
         if (finalAlpha != startAlpha) {
             if (animated) {
                 mBackgroundFadeOutAnimation =
                         LauncherAnimUtils.ofFloat(this, startAlpha, finalAlpha);
                 mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
+                        dragLayer.setBackgroundAlpha(
+                                ((Float)animation.getAnimatedValue()).floatValue());
                     }
                 });
                 mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
                 mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
                 mBackgroundFadeOutAnimation.start();
             } else {
-                setBackgroundAlpha(finalAlpha);
+                dragLayer.setBackgroundAlpha(finalAlpha);
             }
         }
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        if (alpha != mBackgroundAlpha) {
-            mBackgroundAlpha = alpha;
-            invalidate();
-        }
-    }
-
-    public float getBackgroundAlpha() {
-        return mBackgroundAlpha;
     }
 
     float backgroundAlphaInterpolator(float r) {
@@ -1656,13 +1630,13 @@ public class Workspace extends SmoothPagedView
         if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
 
         CellLayout cc = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
-        if (progress > 0 && cc.getVisibility() != VISIBLE && !isSmall()) {
+        if (progress > 0 && cc.getVisibility() != VISIBLE && !workspaceInModalState()) {
             cc.setVisibility(VISIBLE);
         }
 
         mLastCustomContentScrollProgress = progress;
 
-        setBackgroundAlpha(progress * 0.8f);
+        mLauncher.getDragLayer().setBackgroundAlpha(progress * 0.8f);
 
         if (mLauncher.getHotseat() != null) {
             mLauncher.getHotseat().setTranslationX(translationX);
@@ -1792,23 +1766,10 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Draw the background gradient if necessary
-        if (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground) {
-            int alpha = (int) (mBackgroundAlpha * 255);
-            mBackground.setAlpha(alpha);
-            mBackground.setBounds(getScrollX(), 0, getScrollX() + getMeasuredWidth(),
-                    getMeasuredHeight());
-            mBackground.draw(canvas);
-        }
-
         super.onDraw(canvas);
 
         // Call back to LauncherModel to finish binding after the first draw
         post(mBindPages);
-    }
-
-    boolean isDrawingBackgroundGradient() {
-        return (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground);
     }
 
     @Override
@@ -1826,7 +1787,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public int getDescendantFocusability() {
-        if (isSmall()) {
+        if (workspaceInModalState()) {
             return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
         }
         return super.getDescendantFocusability();
@@ -1844,8 +1805,8 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public boolean isSmall() {
-        return mState == State.SMALL || mState == State.SPRING_LOADED || mState == State.OVERVIEW;
+    public boolean workspaceInModalState() {
+        return mState != State.NORMAL;
     }
 
     void enableChildrenCache(int fromPage, int toPage) {
@@ -1880,7 +1841,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateChildrenLayersEnabled(boolean force) {
-        boolean small = mState == State.SMALL || mState == State.OVERVIEW || mIsSwitchingState;
+        boolean small = mState == State.OVERVIEW || mIsSwitchingState;
         boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageMoving();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
@@ -2223,6 +2184,8 @@ public class Workspace extends SmoothPagedView
         setImportantForAccessibility(accessible);
     }
 
+    private static final int HIDE_WORKSPACE_DURATION = 100;
+
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
         if (mState == state) {
             return null;
@@ -2236,21 +2199,25 @@ public class Workspace extends SmoothPagedView
         final State oldState = mState;
         final boolean oldStateIsNormal = (oldState == State.NORMAL);
         final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
-        final boolean oldStateIsSmall = (oldState == State.SMALL);
+        final boolean oldStateIsNormalHidden = (oldState == State.NORMAL_HIDDEN);
+        final boolean oldStateIsOverviewHidden = (oldState == State.OVERVIEW_HIDDEN);
         final boolean oldStateIsOverview = (oldState == State.OVERVIEW);
         setState(state);
         final boolean stateIsNormal = (state == State.NORMAL);
         final boolean stateIsSpringLoaded = (state == State.SPRING_LOADED);
-        final boolean stateIsSmall = (state == State.SMALL);
+        final boolean stateIsNormalHidden = (state == State.NORMAL_HIDDEN);
+        final boolean stateIsOverviewHidden = (state == State.OVERVIEW_HIDDEN);
         final boolean stateIsOverview = (state == State.OVERVIEW);
         float finalBackgroundAlpha = (stateIsSpringLoaded || stateIsOverview) ? 1.0f : 0f;
-        float finalHotseatAndPageIndicatorAlpha = (stateIsOverview || stateIsSmall) ? 0f : 1f;
+        float finalHotseatAndPageIndicatorAlpha = (stateIsNormal || stateIsSpringLoaded) ? 1f : 0f;
         float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
         float finalSearchBarAlpha = !stateIsNormal ? 0f : 1f;
-        float finalWorkspaceTranslationY = stateIsOverview ? getOverviewModeTranslationY() : 0;
+        float finalWorkspaceTranslationY = stateIsOverview || stateIsOverviewHidden ?
+                getOverviewModeTranslationY() : 0;
 
-        boolean workspaceToAllApps = (oldStateIsNormal && stateIsSmall);
-        boolean allAppsToWorkspace = (oldStateIsSmall && stateIsNormal);
+        boolean workspaceToAllApps = (oldStateIsNormal && stateIsNormalHidden);
+        boolean overviewToAllApps = (oldStateIsOverview && stateIsOverviewHidden);
+        boolean allAppsToWorkspace = (stateIsNormalHidden && stateIsNormal);
         boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
         boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
 
@@ -2265,10 +2232,8 @@ public class Workspace extends SmoothPagedView
         if (state != State.NORMAL) {
             if (stateIsSpringLoaded) {
                 mNewScale = mSpringLoadedShrinkFactor;
-            } else if (stateIsOverview) {
+            } else if (stateIsOverview || stateIsOverviewHidden) {
                 mNewScale = mOverviewModeShrinkFactor;
-            } else if (stateIsSmall){
-                mNewScale = mOverviewModeShrinkFactor - 0.3f;
             }
             if (workspaceToAllApps) {
                 updateChildrenLayersEnabled(false);
@@ -2276,8 +2241,8 @@ public class Workspace extends SmoothPagedView
         }
 
         final int duration;
-        if (workspaceToAllApps) {
-            duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
+        if (workspaceToAllApps || overviewToAllApps) {
+            duration = HIDE_WORKSPACE_DURATION; //getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
         } else if (workspaceToOverview || overviewToWorkspace) {
             duration = getResources().getInteger(R.integer.config_overviewTransitionTime);
         } else {
@@ -2294,7 +2259,7 @@ public class Workspace extends SmoothPagedView
             boolean isCurrentPage = (i == snapPage);
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
             float finalAlpha;
-            if (stateIsSmall) {
+            if (stateIsNormalHidden || stateIsOverviewHidden) {
                 finalAlpha = 0f;
             } else if (stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == snapPage || i < numCustomPages()) ? 1f : 0f;
@@ -2331,11 +2296,11 @@ public class Workspace extends SmoothPagedView
         final View hotseat = mLauncher.getHotseat();
         final View pageIndicator = getPageIndicator();
         if (animated) {
-            anim.setDuration(duration);
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
             scale.scaleX(mNewScale)
                 .scaleY(mNewScale)
                 .translationY(finalWorkspaceTranslationY)
+                .setDuration(duration)
                 .setInterpolator(mZoomInInterpolator);
             anim.play(scale);
             for (int index = 0; index < getChildCount(); index++) {
@@ -2350,6 +2315,7 @@ public class Workspace extends SmoothPagedView
                         LauncherViewPropertyAnimator alphaAnim =
                             new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
                         alphaAnim.alpha(mNewAlphas[i])
+                            .setDuration(duration)
                             .setInterpolator(mZoomInInterpolator);
                         anim.play(alphaAnim);
                     }
@@ -2358,6 +2324,7 @@ public class Workspace extends SmoothPagedView
                         ValueAnimator bgAnim =
                                 LauncherAnimUtils.ofFloat(cl, 0f, 1f);
                         bgAnim.setInterpolator(mZoomInInterpolator);
+                        bgAnim.setDuration(duration);
                         bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                                 public void onAnimationUpdate(float a, float b) {
                                     cl.setBackgroundAlpha(
@@ -2400,7 +2367,11 @@ public class Workspace extends SmoothPagedView
                 hotseatAlpha.setInterpolator(null);
                 overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
             }
-            searchBarAlpha.setInterpolator(null);
+
+            overviewPanelAlpha.setDuration(duration);
+            pageIndicatorAlpha.setDuration(duration);
+            hotseatAlpha.setDuration(duration);
+            searchBarAlpha.setDuration(duration);
 
             anim.play(overviewPanelAlpha);
             anim.play(hotseatAlpha);
@@ -2425,18 +2396,11 @@ public class Workspace extends SmoothPagedView
         }
         mLauncher.updateVoiceButtonProxyVisible(false);
 
-        if (stateIsSpringLoaded) {
-            // Right now we're covered by Apps Customize
-            // Show the background gradient immediately, so the gradient will
-            // be showing once AppsCustomize disappears
-            animateBackgroundGradient(getResources().getInteger(
-                    R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f, false);
-        } else if (stateIsOverview) {
-            animateBackgroundGradient(getResources().getInteger(
-                    R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f, true);
-        } else {
-            // Fade the background gradient away
+        if (stateIsNormal) {
             animateBackgroundGradient(0f, animated);
+        } else {
+            animateBackgroundGradient(getResources().getInteger(
+                    R.integer.config_workspaceScrimAlpha) / 100f, animated);
         }
         return anim;
     }
@@ -2822,7 +2786,8 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean transitionStateShouldAllowDrop() {
-        return ((!isSwitchingState() || mTransitionProgress > 0.5f) && mState != State.SMALL);
+        return ((!isSwitchingState() || mTransitionProgress > 0.5f) &&
+                (mState == State.NORMAL || mState == State.SPRING_LOADED));
     }
 
     /**
@@ -3591,7 +3556,7 @@ public class Workspace extends SmoothPagedView
 
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
-        if (mInScrollArea || mIsSwitchingState || mState == State.SMALL) return;
+        if (mInScrollArea || !transitionStateShouldAllowDrop()) return;
 
         Rect r = new Rect();
         CellLayout layout = null;
@@ -3604,7 +3569,7 @@ public class Workspace extends SmoothPagedView
 
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         // Identify whether we have dragged over a side page
-        if (isSmall()) {
+        if (workspaceInModalState()) {
             if (mLauncher.getHotseat() != null && !isExternalDragWidget(d)) {
                 if (isPointInSelfOverHotseat(d.x, d.y, r)) {
                     layout = mLauncher.getHotseat().getLayout();
@@ -4482,7 +4447,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void scrollLeft() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!workspaceInModalState() && !mIsSwitchingState) {
             super.scrollLeft();
         }
         Folder openFolder = getOpenFolder();
@@ -4493,7 +4458,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void scrollRight() {
-        if (!isSmall() && !mIsSwitchingState) {
+        if (!workspaceInModalState() && !mIsSwitchingState) {
             super.scrollRight();
         }
         Folder openFolder = getOpenFolder();
@@ -4515,7 +4480,7 @@ public class Workspace extends SmoothPagedView
         }
 
         boolean result = false;
-        if (!isSmall() && !mIsSwitchingState && getOpenFolder() == null) {
+        if (!workspaceInModalState() && !mIsSwitchingState && getOpenFolder() == null) {
             mInScrollArea = true;
 
             final int page = getNextPage() +
@@ -4895,7 +4860,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void moveToScreen(int page, boolean animate) {
-        if (!isSmall()) {
+        if (!workspaceInModalState()) {
             if (animate) {
                 snapToPage(page);
             } else {
