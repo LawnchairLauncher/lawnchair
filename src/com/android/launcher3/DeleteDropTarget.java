@@ -326,7 +326,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
             final LauncherAppWidgetInfo launcherAppWidgetInfo = (LauncherAppWidgetInfo) item;
             final LauncherAppWidgetHost appWidgetHost = mLauncher.getAppWidgetHost();
-            if (appWidgetHost != null) {
+            if ((appWidgetHost != null) && launcherAppWidgetInfo.isWidgetIdValid()) {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
                 new AsyncTask<Void, Void, Void>() {

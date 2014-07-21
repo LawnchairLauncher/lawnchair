@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,17 +40,42 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
     private float mSlop;
 
+    private boolean mWidgetReady;
+
     public LauncherAppWidgetHostView(Context context) {
+        this(context, true);
+    }
+
+    public LauncherAppWidgetHostView(Context context, boolean widgetReady) {
         super(context);
         mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDragLayer = ((Launcher) context).getDragLayer();
+        mWidgetReady = widgetReady;
+    }
+
+    @Override
+    public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
+            int maxHeight) {
+        // If the widget is not yet ready, the app widget size cannot be updated.
+        if (mWidgetReady) {
+            super.updateAppWidgetSize(newOptions, minWidth, minHeight, maxWidth, maxHeight);
+        }
     }
 
     @Override
     protected View getErrorView() {
         return mInflater.inflate(R.layout.appwidget_error, this, false);
+    }
+
+    @Override
+    protected View getDefaultView() {
+        if (mWidgetReady) {
+            return super.getDefaultView();
+        } else {
+            return mInflater.inflate(R.layout.appwidget_not_ready, this, false);
+        }
     }
 
     @Override

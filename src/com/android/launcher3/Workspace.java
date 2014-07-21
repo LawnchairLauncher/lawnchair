@@ -30,6 +30,8 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -47,6 +49,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -61,15 +64,16 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -4574,7 +4578,7 @@ public class Workspace extends SmoothPagedView
 
     public Folder getFolderForTag(final Object tag) {
         final Folder[] value = new Folder[1];
-        mapOverShortcuts(MAP_NO_RECURSE, new ShortcutOperator() {
+        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (v instanceof Folder) {
@@ -4592,7 +4596,7 @@ public class Workspace extends SmoothPagedView
 
     public View getViewForTag(final Object tag) {
         final View[] value = new View[1];
-        mapOverShortcuts(MAP_NO_RECURSE, new ShortcutOperator() {
+        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (v.getTag() == tag) {
@@ -4606,7 +4610,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void clearDropTargets() {
-        mapOverShortcuts(MAP_NO_RECURSE, new ShortcutOperator() {
+        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (v instanceof DropTarget) {
@@ -4760,9 +4764,9 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    interface ShortcutOperator {
+    interface ItemOperator {
         /**
-         * Process the next shortcut, possibly with side-effect on {@link ShortcutOperator#value}.
+         * Process the next itemInfo, possibly with side-effect on {@link ItemOperator#value}.
          *
          * @param info info for the shortcut
          * @param view view for the shortcut
@@ -4773,12 +4777,12 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
-     * Map the operator over the shortcuts, return the first-non-null value.
+     * Map the operator over the shortcuts and widgets, return the first-non-null value.
      *
      * @param recurse true: iterate over folder children. false: op get the folders themselves.
      * @param op the operator to map over the shortcuts
      */
-    void mapOverShortcuts(boolean recurse, ShortcutOperator op) {
+    void mapOverItems(boolean recurse, ItemOperator op) {
         ArrayList<ShortcutAndWidgetContainer> containers = getAllShortcutAndWidgetContainers();
         final int containerCount = containers.size();
         for (int containerIdx = 0; containerIdx < containerCount; containerIdx++) {
@@ -4809,14 +4813,16 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    void updateShortcuts(ArrayList<AppInfo> apps) {
+    void updateShortcutsAndWidgets(ArrayList<AppInfo> apps) {
         // Create a map of the apps to test against
         final HashMap<ComponentName, AppInfo> appsMap = new HashMap<ComponentName, AppInfo>();
+        final HashSet<String> pkgNames = new HashSet<>();
         for (AppInfo ai : apps) {
             appsMap.put(ai.componentName, ai);
+            pkgNames.add(ai.componentName.getPackageName());
         }
 
-        mapOverShortcuts(MAP_RECURSE, new ShortcutOperator() {
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (info instanceof ShortcutInfo) {
@@ -4829,6 +4835,8 @@ public class Workspace extends SmoothPagedView
                 return false;
             }
         });
+
+        restorePendingWidgets(pkgNames);
     }
 
     public void removeAbandonedPromise(BubbleTextView abandonedIcon, UserHandleCompat user) {
@@ -4844,7 +4852,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void updatePackageState(final String pkgName, final int state) {
-        mapOverShortcuts(MAP_RECURSE, new ShortcutOperator() {
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (info instanceof ShortcutInfo
@@ -4854,6 +4862,40 @@ public class Workspace extends SmoothPagedView
                     ((BubbleTextView)v).applyState();
                 }
                 // process all the shortcuts
+                return false;
+            }
+        });
+
+        if (state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
+            // Update any pending widget
+            HashSet<String> packages = new HashSet<>();
+            packages.add(pkgName);
+            restorePendingWidgets(packages);
+        }
+    }
+
+    private void restorePendingWidgets(final Set<String> installedPackaged) {
+        final ContentResolver contentResolver = getContext().getContentResolver();
+        // Iterate non recursively as widgets can't be inside a folder.
+        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (info instanceof LauncherAppWidgetInfo) {
+                    LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
+                    if (widgetInfo.restoreStatus == LauncherAppWidgetInfo.RESTORE_PROVIDER_PENDING
+                            && installedPackaged.contains(widgetInfo.providerName.getPackageName())) {
+                        // Package installed. Update pending widgets.
+                        ContentValues values = new ContentValues();
+                        values.put(LauncherSettings.Favorites.RESTORED,
+                                LauncherAppWidgetInfo.RESTORE_COMPLETED);
+                        String where = BaseColumns._ID + "= ?";
+                        String[] args = {Long.toString(widgetInfo.id)};
+                        contentResolver.update(LauncherSettings.Favorites.CONTENT_URI,
+                                values, where, args);
+                    }
+                }
+                // process all the widget
                 return false;
             }
         });

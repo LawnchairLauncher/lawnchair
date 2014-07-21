@@ -2125,31 +2125,54 @@ public class LauncherModel extends BroadcastReceiver
                                 // Read all Launcher-specific widget details
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
                                 String savedProvider = c.getString(appWidgetProviderIndex);
-
                                 id = c.getLong(idIndex);
 
-                                final AppWidgetProviderInfo provider =
-                                        widgets.getAppWidgetInfo(appWidgetId);
+                                final int restoreStatus = c.getInt(restoredIndex);
+                                final boolean restorePending = Utilities.isLmp()
+                                        && (restoreStatus ==
+                                            LauncherAppWidgetInfo.RESTORE_REMAP_PENDING);
+                                final boolean providerPending = Utilities.isLmp()
+                                        && (restoreStatus ==
+                                            LauncherAppWidgetInfo.RESTORE_PROVIDER_PENDING);
 
-                                if (!isSafeMode && (provider == null || provider.provider == null ||
-                                        provider.provider.getPackageName() == null)) {
-                                    String log = "Deleting widget that isn't installed anymore: id="
-                                        + id + " appWidgetId=" + appWidgetId;
+                                // Do not try to get the provider if restore is pending, as the
+                                // widget id is invalid, and it might point to some other provider.
+                                final AppWidgetProviderInfo provider = restorePending ? null
+                                        : widgets.getAppWidgetInfo(appWidgetId);
+                                boolean providerValid = isValidProvider(provider);
+
+                                // Skip provider check,
+                                //    1. when the widget id re-map is pending
+                                //    2. provider is pending install for a restored widget
+                                if (!isSafeMode && !providerPending && !restorePending
+                                        && !providerValid) {
+                                    String log = "Deleting widget that isn't installed anymore: "
+                                        + "id=" + id + " appWidgetId=" + appWidgetId;
                                     Log.e(TAG, log);
                                     Launcher.addDumpLog(TAG, log, false);
                                     itemsToRemove.add(id);
                                 } else {
-                                    appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
-                                            provider.provider);
+                                    if (providerValid) {
+                                        appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
+                                                provider.provider);
+                                        int[] minSpan =
+                                                Launcher.getMinSpanForWidget(context, provider);
+                                        appWidgetInfo.minSpanX = minSpan[0];
+                                        appWidgetInfo.minSpanY = minSpan[1];
+                                    } else {
+                                        Log.v(TAG, "Widget restore pending id=" + id
+                                                + " appWidgetId=" + appWidgetId
+                                                + " status =" + restoreStatus);
+                                        appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
+                                                ComponentName.unflattenFromString(savedProvider));
+                                        appWidgetInfo.restoreStatus = restoreStatus;
+                                    }
                                     appWidgetInfo.id = id;
                                     appWidgetInfo.screenId = c.getInt(screenIndex);
                                     appWidgetInfo.cellX = c.getInt(cellXIndex);
                                     appWidgetInfo.cellY = c.getInt(cellYIndex);
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
                                     appWidgetInfo.spanY = c.getInt(spanYIndex);
-                                    int[] minSpan = Launcher.getMinSpanForWidget(context, provider);
-                                    appWidgetInfo.minSpanX = minSpan[0];
-                                    appWidgetInfo.minSpanY = minSpan[1];
 
                                     container = c.getInt(containerIndex);
                                     if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
@@ -2169,14 +2192,20 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                         break;
                                     }
-                                    String providerName = provider.provider.flattenToString();
-                                    if (!providerName.equals(savedProvider)) {
-                                        ContentValues values = new ContentValues();
-                                        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
-                                                providerName);
-                                        String where = BaseColumns._ID + "= ?";
-                                        String[] args = {Integer.toString(c.getInt(idIndex))};
-                                        contentResolver.update(contentUri, values, where, args);
+
+                                    if (providerValid) {
+                                        String providerName = provider.provider.flattenToString();
+
+                                        if (!providerName.equals(savedProvider) || providerPending) {
+                                            ContentValues values = new ContentValues();
+                                            values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                                                    providerName);
+                                            values.put(LauncherSettings.Favorites.RESTORED,
+                                                    LauncherAppWidgetInfo.RESTORE_COMPLETED);
+                                            String where = BaseColumns._ID + "= ?";
+                                            String[] args = {Long.toString(id)};
+                                            contentResolver.update(contentUri, values, where, args);
+                                        }
                                     }
                                     sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
                                     sBgAppWidgets.add(appWidgetInfo);
@@ -3604,6 +3633,11 @@ public class LauncherModel extends BroadcastReceiver
             return mCollator.compare(labelA, labelB);
         }
     };
+
+    static boolean isValidProvider(AppWidgetProviderInfo provider) {
+        return (provider != null) && (provider.provider != null)
+                && (provider.provider.getPackageName() != null);
+    }
 
     public void dumpState() {
         Log.d(TAG, "mCallbacks=" + mCallbacks);
