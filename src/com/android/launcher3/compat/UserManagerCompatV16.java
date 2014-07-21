@@ -45,7 +45,7 @@ public class UserManagerCompatV16 extends UserManagerCompat {
         return 0;
     }
 
-    public String getBadgedLabelForUser(String label, UserHandleCompat user) {
+    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
         return label;
     }
 }

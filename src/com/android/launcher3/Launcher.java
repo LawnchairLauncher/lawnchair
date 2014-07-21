@@ -4720,7 +4720,7 @@ public class Launcher extends Activity
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
             Bitmap icon, UserHandleCompat user) {
         UserManagerCompat userManager = UserManagerCompat.getInstance(this);
-        String contentDescription = userManager.getBadgedLabelForUser(caption.toString(), user);
+        CharSequence contentDescription = userManager.getBadgedLabelForUser(caption, user);
         return new ShortcutInfo(shortcutIntent, caption, contentDescription, icon, user);
     }
 
