@@ -3106,7 +3106,12 @@ public class Workspace extends SmoothPagedView
                     final ItemInfo info = (ItemInfo) cell.getTag();
                     if (hasMovedLayouts) {
                         // Reparent the view
-                        getParentCellLayoutForView(cell).removeView(cell);
+                        CellLayout parentCell = getParentCellLayoutForView(cell);
+                        if (parentCell != null) {
+                            parentCell.removeView(cell);
+                        } else if (LauncherAppState.isDogfoodBuild()) {
+                            throw new NullPointerException("mDragInfo.cell has null parent");
+                        }
                         addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
                                 info.spanX, info.spanY);
                     }
@@ -3565,6 +3570,12 @@ public class Workspace extends SmoothPagedView
         Rect r = new Rect();
         CellLayout layout = null;
         ItemInfo item = (ItemInfo) d.dragInfo;
+        if (item == null) {
+            if (LauncherAppState.isDogfoodBuild()) {
+                throw new NullPointerException("DragObject has null info");
+            }
+            return;
+        }
 
         // Ensure that we have proper spans for the item that we are dropping
         if (item.spanX < 0 || item.spanY < 0) throw new RuntimeException("Improper spans found");
@@ -4192,6 +4203,8 @@ public class Workspace extends SmoothPagedView
                 CellLayout parentCell = getParentCellLayoutForView(mDragInfo.cell);
                 if (parentCell != null) {
                     parentCell.removeView(mDragInfo.cell);
+                } else if (LauncherAppState.isDogfoodBuild()) {
+                    throw new NullPointerException("mDragInfo.cell has null parent");
                 }
                 if (mDragInfo.cell instanceof DropTarget) {
                     mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
