@@ -3583,18 +3583,18 @@ public class LauncherModel extends BroadcastReceiver
             mCollator = Collator.getInstance();
         }
         public final int compare(LauncherActivityInfoCompat a, LauncherActivityInfoCompat b) {
-            CharSequence labelA, labelB;
+            String labelA, labelB;
             ComponentName keyA = a.getComponentName();
             ComponentName keyB = b.getComponentName();
             if (mLabelCache.containsKey(keyA)) {
-                labelA = mLabelCache.get(keyA);
+                labelA = mLabelCache.get(keyA).toString();
             } else {
                 labelA = a.getLabel().toString().trim();
 
                 mLabelCache.put(keyA, labelA);
             }
             if (mLabelCache.containsKey(keyB)) {
-                labelB = mLabelCache.get(keyB);
+                labelB = mLabelCache.get(keyB).toString();
             } else {
                 labelB = b.getLabel().toString().trim();
 
