@@ -775,6 +775,11 @@ public class DeviceProfile {
 
             AppsCustomizePagedView pagedView = (AppsCustomizePagedView)
                     host.findViewById(R.id.apps_customize_pane_content);
+
+            FrameLayout fakePageContainer = (FrameLayout)
+                    host.findViewById(R.id.fake_page_container);
+            FrameLayout fakePage = (FrameLayout) host.findViewById(R.id.fake_page);
+
             padding = new Rect();
             if (pagedView != null) {
                 // Constrain the dimensions of all apps so that it does not span the full width
@@ -790,16 +795,24 @@ public class DeviceProfile {
                 if ((isTablet() || isLandscape) && gridPaddingLR > (allAppsCellWidthPx / 4)) {
                     padding.left = padding.right = gridPaddingLR;
                 }
+
                 // The icons are centered, so we can't just offset by the page indicator height
                 // because the empty space will actually be pageIndicatorHeight + paddingTB
                 padding.bottom = Math.max(0, pageIndicatorHeight - paddingTB);
-                pagedView.setAllAppsPadding(padding);
+
                 pagedView.setWidgetsPageIndicatorPadding(pageIndicatorHeight);
+                fakePage.setBackground(res.getDrawable(R.drawable.quantum_panel));
 
                 // Horizontal padding for the whole paged view
-                int pagedViewPadding =
+                int pagedFixedViewPadding =
                         res.getDimensionPixelSize(R.dimen.apps_customize_horizontal_padding);
-                pagedView.setPadding(pagedViewPadding, 0, pagedViewPadding, 0);
+
+                padding.left += pagedFixedViewPadding;
+                padding.right += pagedFixedViewPadding;
+
+                pagedView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+                fakePageContainer.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+
             }
         }
 

@@ -339,8 +339,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         // Hook up the page indicator
         ViewGroup parent = (ViewGroup) getParent();
+        ViewGroup grandParent = (ViewGroup) parent.getParent();
         if (mPageIndicator == null && mPageIndicatorViewId > -1) {
-            mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
+            mPageIndicator = (PageIndicator) grandParent.findViewById(mPageIndicatorViewId);
             mPageIndicator.removeAllMarkers(mAllowPagedViewAnimations);
 
             ArrayList<PageIndicator.PageMarkerResources> markers =
