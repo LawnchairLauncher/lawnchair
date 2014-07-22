@@ -55,6 +55,7 @@ import android.util.Pair;
 import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
@@ -195,7 +196,7 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
-        public void updatePackageState(String pkgName, int state);
+        public void updatePackageState(ArrayList<PackageInstallInfo> installInfo);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
@@ -332,13 +333,13 @@ public class LauncherModel extends BroadcastReceiver
         return null;
     }
 
-    public void setPackageState(final String pkgName, final int state) {
+    public void setPackageState(final ArrayList<PackageInstallInfo> installInfo) {
         // Process the updated package state
         Runnable r = new Runnable() {
             public void run() {
                 Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
                 if (callbacks != null) {
-                    callbacks.updatePackageState(pkgName, state);
+                    callbacks.updatePackageState(installInfo);
                 }
             }
         };

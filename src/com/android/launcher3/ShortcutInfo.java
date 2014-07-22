@@ -42,13 +42,7 @@ public class ShortcutInfo extends ItemInfo {
     public static final int PACKAGE_STATE_DEFAULT = 0;
 
     /** {@link #mState} meaning some external entity has promised to install this package. */
-    public static final int PACKAGE_STATE_ENQUEUED = 1;
-
-    /** {@link #mState} meaning but some external entity is downloading this package. */
-    public static final int PACKAGE_STATE_DOWNLOADING = 2;
-
-    /** {@link #mState} meaning some external entity is installing this package. */
-    public static final int PACKAGE_STATE_INSTALLING = 3;
+    public static final int PACKAGE_STATE_INSTALLING = 1;
 
     /**
      * The intent used to start the application.
@@ -88,6 +82,11 @@ public class ShortcutInfo extends ItemInfo {
      * The installation state of the package that this shortcut represents.
      */
     protected int mState;
+
+    /**
+     * The installation progress [0-100] of the package that this shortcut represents.
+     */
+    protected int mProgress;
 
     long firstInstallTime;
     int flags = 0;
@@ -237,16 +236,24 @@ public class ShortcutInfo extends ItemInfo {
 
     public boolean isAbandoned() {
         return isPromise()
-                && (mState == ShortcutInfo.PACKAGE_STATE_ERROR
-                        || mState == ShortcutInfo.PACKAGE_STATE_UNKNOWN);
+                && (mState == PACKAGE_STATE_ERROR
+                        || mState == PACKAGE_STATE_UNKNOWN);
     }
 
-    public int getState() {
-        return mState;
+    public int getProgress() {
+        return mProgress;
+    }
+
+    public void setProgress(int progress) {
+        mProgress = progress;
     }
 
     public void setState(int state) {
         mState = state;
+    }
+
+    public int getState() {
+        return mState;
     }
 }
 
