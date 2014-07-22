@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher၃"</string>
+    <string name="home" msgid="7658288663002113681">"ပင်မစာမျက်နှာ"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Androidပင်မ အပ်ပလီကေးရှင်းများ"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="activity_not_found" msgid="8071924732094499514">"အပ်ပလီကေးရှင်း မထည့်သွင်းထားပါ"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"ဒေါင်းလုဒ် appကို လုံခြုံရေး မုဒ်ထဲမှာ ပိတ်ထား"</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"ဝဒ်ဂျက်များ"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"ဝဒ်ဂျက်များ"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem ကိုပြရန်"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
+    <string name="market" msgid="2619650989819296998">"စျေးဝယ်ရန်"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"ပင်မမျက်နှာစာတွင် အရာများ ချ လို့ မရတော့ပါ"</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"ဝဒ်ဂျက်တစ်ခုအား ပြုဖန်တီးရန် ရွေးပါ"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"အကန့်အမည်"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"အကန့်အမည်ပြောင်းရန်"</string>
+    <string name="rename_action" msgid="5559600076028658757">"ကောင်းပြီ"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"ပယ်ဖျက်သည်"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"ပင်မမျက်နှာစာသို့ ထည့်ပါ"</string>
+    <string name="group_applications" msgid="3797214114206693605">"အပ်ပလီကေးရှင်းများ"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"အတိုကောက်မှတ်သားမှုများ"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"ဝဒ်ဂျက်များ"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"ပင်မမျက်နှာစာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"ဤပင်မမျက်နှာစာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"ဤဝဒ်ဂျက်မှာ အနှစ်သက်ဆုံးအရာများထားရာနေရာ အတွက် ကြီးလွန်းနေပါသည်"</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"အတိုကောက်မှတ်သားမှု \"<xliff:g id="NAME">%s</xliff:g>\" ကို ပြုလုပ်ပြီးပါပြီ"</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"အတိုကောက်မှတ်သားမှု \"<xliff:g id="NAME">%s</xliff:g>\" ကို ဖယ်ရှားပြီးပါပြီ"</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"အတိုကောက်မှတ်သားမှု \"<xliff:g id="NAME">%s</xliff:g>\" ရှိပြီးသား ဖြစ်နေပါသည်"</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"အတိုကောက်မှတ်သားမှုကို ရွေးရန်"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"အပလီကေးရှင်း တစ်ခုခုကို ရွေးချယ်ပါ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"အပ်ပလီကေးရှင်းများ"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"ပင်မစာမျက်နှာ"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"ဖယ်ရှာခြင်း"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ဖယ်ရှားခြင်း"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"ဖယ်ရှာခြင်း"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ဖယ်ရှားခြင်း"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"အပ်ပလီကေးရှင်း အချက်အလက်များ"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"ရှာဖွေခြင်း"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"အသံဖြင့် ရှာဖွေခြင်း"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"အပ်ပလီကေးရှင်းများ"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"ဖယ်ရှာခြင်း"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"အဆင့်မြှင့်ခြင်းကို ဖယ်ရှားပါ"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"အပ်ပလီကေးရှင်းကို ဖယ်ရှားပါ"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"အပ်ပလီကေးရှင်း အသေးစိတ် အချက်အလက်"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"အပ်ပလီကေးရှင်းတစ်ခု ရွေးချယ်ထားပြီး"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"ဝဒ်ဂျက်တစ်ခု ရွေးချယ်ထားပြီး"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"အကန့် တစ်ခု ရွေးချယ်ထားပြီး"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"အတိုကောက်မှတ်သားမှုတစ်ခု ရွေးချယ်ထားပြီး"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"အတိုကောက်မှတ်သားမှုများအား ထည့်သွင်းခြင်း"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"အသုံးပြုသူ လုပ်ဆောင်မှုမရှိပဲ အပ်ပလီကေးရှင်းကို အတိုကောက်မှတ်သားမှုများ ပြုလုပ်ခွင့် ပေးခြင်း"</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"အတိုကောက်မှတ်သားမှုများ ဖယ်ထုတ်ခြင်း"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"အပ်ပလီကေးရှင်းအား အသုံးပြုသူ မပါဝင်ပဲ အတိုကောက်မှတ်သားမှုများ ဖယ်ရှားခွင့် ပြုခြင်း"</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ဖတ်ခြင်း"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"ပင်မမျက်နှာစာတွင်ရှိသော အပြင်အဆင်နှင့် အတိုကောက်မှတ်သားမှုများကို အပ်ပလီကေးရှင်းအား ဖတ်ခွင့်ပြုခြင်း"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ရေးသားခြင်း"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"ပင်မမျက်နှာစာတွင် ရှိသော အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများ ကို အပ်ပလီကေးရှင်းအား ပြောင်းခွင့်ပြုခြင်း"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"ဝဒ်ဂျက် တင်ရာတွင် ပြသနာ ရှိပါသည်"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"ဤအပ်ပလီကေးရှင်းမှာ စစ်စတန်ပိုင်းဆိုင်ရာ အပ်ပလီကေးရှင်းဖြစ်ပါသည်။ ထုတ်ပစ်၍ မရပါ"</string>
+    <string name="dream_name" msgid="1530253749244328964">"ဒုံပျံ ပစ်လွှတ်သောအရာ"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"အမည်မရှိအကန့်"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"ပင်မစာမျက်နှာ %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"စာမျက်နှာ %1$d မှ %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"ပင်မစာမျက်နှာ %1$d မှ %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"အပ်ပလီကေးရှင်းပြ စာမျက်နှာ %1$d မှ %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ဝဒ်ဂျက်ပြ စာမျက်နှာ %1$d မှ %2$d"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"ကြိုဆိုပါသည်"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"ကိုယ့်အိမ်ကိုယ့်ယာလို သဘောထားပါ"</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"အပ်ပလီကေးရှင်း နှင့် အကန့်များအတွက် ဖန်သားပြင်မှာ ထပ်ထည့်ပါ"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"အပ်ပလီကေးရှင်းပုံညွှန်းများကို ကူးယူပါ"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"ပင်မစာမျက်နှာအဟောင်းမှ ပုံညွှန်းများ နှင့် အကန့်များကို ယူလာပါမလား"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPY ICONS"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"START FRESH"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"စနစ်တကျဖြစ်အောင် ပြုလုပ်ပါ"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"နောက်ခံကို ဖိကိုင်၍ နောက်ခံပုံ၊ဝဒ်ဂျက်များ၊အပြင်အဆင်များကို ထိန်းချုပ်ပါ"</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"ဒီမှာ အကန့်တစ်ခုဖြစ်ပါသည်"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"ဤကဲ့သို့လုပ်ရန်အတွက်၊ အပ်ပလီကေးရှင်းတစ်ခုကို ဖိကိုင်ပြီး နောက်တစ်ခုပေါ်သို့ ရွှေ့လိုက်ပါ"</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"ကောင်းပြီ"</string>
+    <string name="folder_opened" msgid="94695026776264709">"ဖွင့်ထားသောအကန့်, <xliff:g id="WIDTH">%1$d</xliff:g> နှင့် <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"အကန့်ကို ပိတ်ရန် ဖိကိုင်ပါ"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"အမည်ပြောင်းခြင်း အတည်ပြုရန် ဖိကိုင်ပါ"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"ပိတ်ထားသောအကန့်"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"ပြောင်းလဲလိုက်သော အကန့်အမည် <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"အကန့်အမည်: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"ဝဒ်ဂျက်များ"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"နောက်ခံများ"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"အပြင်အဆင်များ"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"စောင့်နေ"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"ဒေါင်းလုဒ် လုပ်နေ"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"တပ်ဆင်နေ"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"မသိရ"</string>
+    <string name="package_state_error" msgid="7672093962724223588">"ပြန်မဖေါ်ခဲ့"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"အားလုံး ဖယ်ရှားရန်"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"ဖယ်ရှားရန်"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"ရှာဖွေရန်"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"App မတပ်ဆင်ရသေးပါ"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ဤအိုင်ကွန်အတွက် app အားမထည့်သွင်းထားပါ။ You can remove it, or search for the app and install it manually."</string>
+</resources>

@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Android pamatlietotnes"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Lietotne nav instalēta."</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Lejupielādētā lietotne ir atspējota drošajā režīmā."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Logrīki"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Logrīki"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Rādīt atmiņu"</string>
@@ -115,8 +116,6 @@
     <string name="abandoned_clean_all" msgid="5256770727689657618">"Noņemt visas"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Noņemt"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Meklēt"</string>
-    <!-- no translation found for abandoned_promises_title (7096178467971716750) -->
-    <skip />
-    <!-- no translation found for abandoned_promise_explanation (3990027586878167529) -->
-    <skip />
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Šī lietotne nav instalēta"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Šai ikonai paredzētā lietotne nav instalēta. Varat noņemt ikonu vai meklēt lietotni un instalēt to manuāli."</string>
 </resources>

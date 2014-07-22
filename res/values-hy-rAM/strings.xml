@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Core Apps"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Ծրագիրը տեղադրված չէ:"</string>
+    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
+    <skip />
     <string name="widgets_tab_label" msgid="2921133187116603919">"Վիջեթներ"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Վիջեթներ"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Ցուցադրել մեմը"</string>
@@ -116,5 +118,5 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Հեռացնել"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Գտնել"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Այս ծրագիրը տեղադրված չէ:"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Այս պատկերակի ծրագիրը տեղադրված չէ: Դուք կարող եք հեռացնել այն, կամ կարող եք գտնել ծրագիրը և տեղադրել այն ձեռքով:"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Այս պատկերակի ծրագիրը տեղադրված չէ: Դուք կարող եք հեռացնել այն կամ գտնել ծրագիրը և տեղադրել այն ձեռքով:"</string>
 </resources>

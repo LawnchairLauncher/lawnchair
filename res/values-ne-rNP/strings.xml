@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"गृह"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android मूल अनुप्रयोगहरू"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="activity_not_found" msgid="8071924732094499514">"अनुप्रयोग स्थापित छैन।"</string>
+    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
+    <skip />
+    <string name="widgets_tab_label" msgid="2921133187116603919">"विजेटहरू"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"विजेटहरू"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem देखाउनुहोस्"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"एउटा विजेटलाई टिप्नको लागि टच गरेर होल्ड गर्नुहोस्।"</string>
+    <string name="market" msgid="2619650989819296998">"पसल"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"यो गृह स्क्रिनमा वस्तु खसाउन सकिँदैन।"</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"सृजना गर्नको लागि विजेट छान्नुहोस्"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"फोल्डरको नाम"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"फोल्डरलाई पुनःनामाकरण गर्नुहोस्"</string>
+    <string name="rename_action" msgid="5559600076028658757">"ठिक छ"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"रद्द गर्नुहोस्"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"गृह स्क्रिनमा थप्नुहोस्"</string>
+    <string name="group_applications" msgid="3797214114206693605">"अनुप्रयोगहरू"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"सर्टकटहरू"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"विजेटहरू"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"यो गृह स्क्रिनहरूमा कुनै थप ठाउँ छैन"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"यो गृह स्क्रिनमा कुनै थप ठाउँ छैन।"</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"मनपर्ने ट्रे अब कुनै ठाँउ छैन"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"यो विजेट मनपर्ने ट्रे को लागि निकै ठूलो छ"</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"सर्टकट \"<xliff:g id="NAME">%s</xliff:g>\" सिर्जित गरियो।"</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"सर्टकट \"<xliff:g id="NAME">%s</xliff:g>\" हटाइयो।"</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"सर्टकट \"<xliff:g id="NAME">%s</xliff:g>\" पहिल्यै अवस्थित छ।"</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"सर्टकट छान्नुहोस्"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"अनुप्रयोग छनौट गर्नुहोस्"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"अनुप्रयोगहरू"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"हटाउनुहोस्"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"हटाउनुहोस्"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"हटाउनुहोस्"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"हटाउनुहोस्"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"अनुप्रयोग जानकारी"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"खोज्नुहोस्"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"ध्वनि खोज"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"अनुप्रयोगहरू"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"हटाउनुहोस्"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"अद्यावधिक अस्थापित गर्नुहोस्"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"अनुप्रयोग अस्थापना गर्नुहोस्"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"अनुप्रयोग विवरणहरु"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"१ अनुप्रयोग चयन गरियो"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"१ विजेट चयन गरियो"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"१ फोल्डर चयन गरियो"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"१ सर्टकट चयन गरियो"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा अनुप्रयोगलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"सर्टकटहरूको स्थापन रद्द गर्नुहोस्"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"अनुप्रयोगलाई उपयोगकर्ताको हस्तक्षेप बिना सर्टकटहरूलाई हटाउन अनुमति दिनुहोस्।"</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"गृह सेटिङहरू र सर्टकटहरू पढ्नुहोस्"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"गृहमा एउटा अनुप्रयोगलाई सेटिङहरू र सर्टकटहरू पढ्न अनुमति दिनुहोस्।"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"गृह सेटिङहरू र सर्टकटहरू लेख्नुहोस्"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"गृहमा एउटा अनुप्रयोगलाई सेटिङ र सर्टकट बदल्न अनुमति दिनुहोस्।"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"समस्या लोडिङ गर्ने विजेट"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली अनुप्रयोग हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
+    <string name="dream_name" msgid="1530253749244328964">"रकेट लन्चर"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"गृह स्क्रिन %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d को %1$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"गृह स्क्रिन %2$d को %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"अनुप्रयोग पृष्ठ %2$d को %1$d"</string>
+    <!-- String.format failed for translation -->
+    <!-- no translation found for apps_customize_widgets_scroll_format (3106209519974971521) -->
+    <skip />
+    <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागतम"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"गृह आरामसँग बस्नुहोस्"</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"अनुप्रयोगहरु र फोल्डरहरुलाई थप स्क्रीनहरु सिर्जना गर्नुहोस्"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"तपाईँको अनुप्रयोग आईकनको प्रतिलिप गर्नुहोस्"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"आफ्नो पुरानो गृह स्क्रीनबाट अाईकन र फोल्डरहरू आयात गर्नुहोस्?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"ICONS प्रतिलिप गर्नुहोस्"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"START FRESH"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"आफ्नो ठाउँ व्यवस्थापन गर्नुहोस्"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"वालपेपर, विजेट र सेटिङ्स प्रबन्ध गर्न पृष्ठभूमिलाई टच गरेर होल्ड गर्नुहोस्।"</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"यहाँ एउटा फोल्डर छ"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"यस्तै एक किसिमका सिर्जना गर्न, अनुप्रयोगलाई टच गरेर होल्ड गर्नुहोस्, त्यसपछि यसलाई अर्को माथि सार्नुहोस्।"</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"ठिक छ"</string>
+    <string name="folder_opened" msgid="94695026776264709">"फोल्डर खुल्यो <xliff:g id="WIDTH">%1$d</xliff:g> बाट <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"फोल्डर बन्द गर्नको लागि टच गर्नुहोस्"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"पुन: नामाकरण बचत गर्न टच गर्नुहोस्।"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"फोल्डर बन्द भयो"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"फोल्डर <xliff:g id="NAME">%1$s</xliff:g> मा पुनःनामाकरण गरियो।"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"विजेटहरू"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"वालपेपरहरु"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"सेटिंङहरू"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"पर्खँदै"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"डाउनलोड हुँदै"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"स्थापना गर्दै"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
+    <string name="package_state_error" msgid="7672093962724223588">"पुनर्स्थापित भएन"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"सबै हटाउनुहोस्"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"खोजी गर्नुहोस्"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"यो अनुप्रयोग स्थापित छैन"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईँ यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
+</resources>

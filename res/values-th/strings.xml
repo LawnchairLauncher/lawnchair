@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"แอปหลักของ Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"ไม่ได้ติดตั้งแอป"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"แอปที่ดาวน์โหลดถูกปิดในโหมดปลอดภัย"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"วิดเจ็ต"</string>
     <string name="widget_adder" msgid="3201040140710381657">"วิดเจ็ต"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"แสดง Mem"</string>
@@ -51,15 +52,15 @@
     <string name="title_select_application" msgid="3280812711670683644">"เลือกแอป"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"แอป"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"หน้าแรก"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"นำออก"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"ลบ"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ถอนการติดตั้ง"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"นำออก"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"ลบ"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ถอนการติดตั้ง"</string>
     <string name="info_target_label" msgid="8053346143994679532">"ข้อมูลแอป"</string>
     <string name="accessibility_search_button" msgid="1628520399424565142">"ค้นหา"</string>
     <string name="accessibility_voice_search_button" msgid="4637324840434406584">"ค้นหาด้วยเสียง"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"แอป"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"นำออก"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"ลบ"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"ถอนการติดตั้งการอัปเดต"</string>
     <string name="cab_menu_delete_app" msgid="7435191475867183689">"ถอนการติดตั้งแอป"</string>
     <string name="cab_menu_app_info" msgid="8593722221450362342">"รายละเอียดแอป"</string>
@@ -112,11 +113,9 @@
     <string name="package_state_installing" msgid="7588193972189849870">"กำลังติดตั้ง"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ไม่รู้จัก"</string>
     <string name="package_state_error" msgid="7672093962724223588">"ไม่ได้คืนค่า"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"นำออกทั้งหมด"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"นำออก"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"ลบทั้งหมด"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"ลบ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ค้นหา"</string>
-    <!-- no translation found for abandoned_promises_title (7096178467971716750) -->
-    <skip />
-    <!-- no translation found for abandoned_promise_explanation (3990027586878167529) -->
-    <skip />
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"ไม่ได้ติดตั้งแอปนี้"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ยังไม่ได้ติดตั้งแอปสำหรับไอคอนนี้ คุณสามารถนำไอคอนออก หรือค้นหาแอปดังกล่าวแล้วติดตั้งด้วยตนเอง"</string>
 </resources>

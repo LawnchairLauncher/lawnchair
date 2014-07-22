@@ -24,6 +24,8 @@
     <string name="uid_name" msgid="7820867637514617527">"Apl Teras Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Apl tidak dipasang."</string>
+    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
+    <skip />
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widget"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widget"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Papar Mem"</string>
@@ -116,5 +118,5 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Alih keluar"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Carian"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Apl ini tidak dipasang"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Apl untuk ikon ini tidak dipasang. Anda boleh mengalih keluar atau mencari apl dan pasang secara manual."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Apl untuk ikon ini tidak dipasang. Anda boleh mengalih keluar atau mencari dan memasang apl itu secara manual."</string>
 </resources>

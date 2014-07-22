@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="home" msgid="7658288663002113681">"මුල් පිටුව"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android මධ්‍ය යෙදුම්"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="activity_not_found" msgid="8071924732094499514">"යෙදුම ස්ථාපනය කර නැත."</string>
+    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
+    <skip />
+    <string name="widgets_tab_label" msgid="2921133187116603919">"විජට්"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"විජට්"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem පෙන්වන්න"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"විජට් එක ස්පර්ශ කර අහුලා ගැනීමට අල්ලාගෙන සිටින්න."</string>
+    <string name="market" msgid="2619650989819296998">"සාප්පුයාම"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"මෙම මුල් පිටු තිරය වෙත අයිතමය ඇද හෙළිය නොහැකි විය."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"සැදීමට විජට් එක තෝරන්න"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"ෆෝල්ඩරයේ නම"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"ෆෝල්ඩරය නැවත නම් කරන්න"</string>
+    <string name="rename_action" msgid="5559600076028658757">"හරි"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"අවලංගු කරන්න"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"මුල් පිටු තිරය වෙත එක් කරන්න"</string>
+    <string name="group_applications" msgid="3797214114206693605">"යෙදුම්"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"කෙටිමං"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"විජට්"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"මෙම මුල් පිටු තිර මත තවත් ඉඩ නැත."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"ප්‍රියතම දෑ ඇති තැටිය සඳහා මෙම විජටය ඉතා විශාලය"</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"\"<xliff:g id="NAME">%s</xliff:g>\" කෙටිමග සාදන ලදි."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"\"<xliff:g id="NAME">%s</xliff:g>\" කෙටිමග ඉවත් කෙරිණි."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"\"<xliff:g id="NAME">%s</xliff:g>\" කෙටිමග දැනටමත් පවතී."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"කෙටිමග තේරීම"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"යෙදුම තේරීම"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"යෙදුම්"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"මුල් පිටුව"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"ඉවත් කරන්න"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"අස්ථාපනය කරන්න"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"ඉවත් කරන්න"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"අස්ථාපනය කරන්න"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"යෙදුම් තොරතුරු"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"සොයන්න"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"හඬ සෙවීම"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"යෙදුම්"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"ඉවත් කරන්න"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"යාවත්කාලිනය අස්ථාපනය කරන්න"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"යෙදුම අස්ථාපනය කරන්න"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"යෙදුම් විස්තර"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 යෙදුමක් තෝරා ඇත"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 විජටයක් තෝරා ඇත"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 ෆෝල්ඩරයක් තෝරා ඇත"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 කෙටිමඟක් තෝරා ඇත"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"කෙටිමං ස්ථාපනය කරන්න"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"පරිශීලක මැදිහත්වීමෙන් තොරව කෙටිමං එක් කිරීමට යෙදුමකට අවසර දෙයි."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"කෙටිමං අස්ථාපනය කරන්න"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"පරිශීලකයාගේ මැදිහත්වීමෙන් තොරව කෙටිමං ඉවත් කිරීමට යෙදුමකට අවසර දෙයි."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"මුල් පිටු සැකසීම් සහ කෙටිමං කියවන්න"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"මුල් පිටුවේ ඇති සැකසීම් සහ කෙටිමං කියවීමට යෙදුමකට අවසර දෙයි."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"මුල් පිටු සැකසීම් සහ කෙටිමං ලියන්න"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"මුල් පිටුවේ සැකසීම් සහ කෙටිමං ඉවත් කිරීමට යෙදුමට අවසර දෙයි."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"ගැටලු පූරණ විජට් එක"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
+    <string name="dream_name" msgid="1530253749244328964">"රොකට් ආරම්භකය"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"නම් නොකළ ෆෝල්ඩරය"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"මුල් පිටු තිරය %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"%2$d හි %1$d පිටුව"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"මුල් පිටු තිරය %2$d හි %1$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"%2$d හි %1$d යෙදුම් පිටුව"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"විජට් පිටුව %2$d හි %1$d"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"සාදරයෙන් පිළිගනිමු"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"ගෙදර ඉන්නවා වගේ ඉන්න."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"යෙදුම් සහ ෆෝල්ඩර සඳහා තවත් තිර සාදන්න"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"ඔබේ යෙදුම් නිරූපක පිටපත් කිරීම"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"ඔබගේ පැරණි මුල් තිර වල නිරූපක සහ ෆෝල්ඩර ආයාත කරන්නද?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"නිරූපක පිටපත් කරන්න"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"අලුතින් පටන්ගන්න"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"ඔබගේ ඉඩ සංවිධානය කරගන්න"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"බිතුපත, විජට් සහ සැකසීම් කළමනාකරණය කිරීමට පසුබිම ස්පර්ශ කර අල්ලාගෙන සිටින්න."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"මෙන්න ෆෝල්ඩරයක්"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"මෙවැනි එකක් තැනීමට, යෙදුමක් තට්ටු කර අල්ලාගෙන සිටින්න, අනතුරුව එය තවත් එකක් උඩින් ගෙන යන්න."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"හරි"</string>
+    <string name="folder_opened" msgid="94695026776264709">"ෆෝල්ඩරය විවෘත විය, <xliff:g id="WIDTH">%1$d</xliff:g> හි <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"ෆෝල්ඩරය වැසීමට ස්පර්ශ කරන්න"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"නැවත නම් කිරීම සුරැකීමට ස්පර්ශ කරන්න"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"ෆෝල්ඩරය වසා ඇත"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"<xliff:g id="NAME">%1$s</xliff:g> වෙත ෆෝල්ඩරය නැවත නම් කෙරිණි"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"ෆෝල්ඩරය: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"විජට්"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"වෝල්පේපර"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"සැකසීම්"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"රැඳී සිටිමින්"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"බාගනිමින්"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"ස්ථාපනය කරමින්"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"නොදනී"</string>
+    <string name="package_state_error" msgid="7672093962724223588">"ප්‍රතිස්ථාපනය කළේ නැත"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"සියල්ල ඉවත් කරන්න"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"ඉවත් කරන්න"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"මෙම යෙදුම ස්ථාපනය කර නොමැත"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"මෙම නිරුපකයට යෙදුම ස්ථාපනය කර නොමැත. ඔබට එය ඉවත් කළ හැක, හෝ යෙදුම් සඳහා සොයන්න සහ අතින් ස්ථාපනය කරන්න."</string>
+</resources>

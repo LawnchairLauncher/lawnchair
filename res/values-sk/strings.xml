@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Core Apps"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikácia nie je nainštalovaná."</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Stiahnutá aplikácia je v núdzovom režime zakázaná"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Miniaplikácie"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Miniaplikácie"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Zobraziť pamäť"</string>
@@ -115,8 +116,6 @@
     <string name="abandoned_clean_all" msgid="5256770727689657618">"Odstrániť všetky"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstrániť"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Vyhľadať"</string>
-    <!-- no translation found for abandoned_promises_title (7096178467971716750) -->
-    <skip />
-    <!-- no translation found for abandoned_promise_explanation (3990027586878167529) -->
-    <skip />
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Táto aplikácia nie je nainštalovaná"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikácia, ktorú zastupuje táto ikona, nie je nainštalovaná. Ikonu môžete odstrániť alebo vyhľadajte aplikáciu a ručne ju nainštalujte."</string>
 </resources>

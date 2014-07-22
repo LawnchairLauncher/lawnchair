@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="5181331383435256801">"ಲಾಂಚರ್3"</string>
+    <string name="home" msgid="7658288663002113681">"ಮುಖಪುಟ"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android Core ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="activity_not_found" msgid="8071924732094499514">"ಅಪ್ಲಿಕೇಶನ್‌ ಅನ್ನು ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"ವಿಜೆಟ್‌ಗಳು"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"ವಿಜೆಟ್‌ಗಳು"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"ಸ್ಮರಣೆ ತೋರಿಸು"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"ವಿಜೆಟ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಲು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
+    <string name="market" msgid="2619650989819296998">"ಶಾಪ್‌"</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="external_drop_widget_error" msgid="3165821058322217155">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಐಟಂ ಅನ್ನು ಬಿಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."</string>
+    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"ರಚಿಸಲು ವಿಜೆಟ್‌ ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"ಫೋಲ್ಡರ್ ಹೆಸರು"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"ಫೋಲ್ಡರ್ ಅನ್ನು ಮರುಹೆಸರಿಸಿ"</string>
+    <string name="rename_action" msgid="5559600076028658757">"ಸರಿ"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"ರದ್ದುಮಾಡು"</string>
+    <string name="menu_item_add_item" msgid="1264911265836810421">"ಮುಖಪುಟಕ್ಕೆ ಸೇರಿಸು"</string>
+    <string name="group_applications" msgid="3797214114206693605">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
+    <string name="group_shortcuts" msgid="6012256992764410535">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"ವಿಜೆಟ್‌ಗಳು"</string>
+    <string name="completely_out_of_space" msgid="6106288382070760318">"ನಿಮ್ಮ ಮುಖಪುಟದ ಪರದೆಗಳಲ್ಲಿ ಯಾವುದೇ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಹೆಚ್ಚು ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇನಲ್ಲಿ ಹೆಚ್ಚಿನ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
+    <string name="invalid_hotseat_item" msgid="5779907847267573691">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇಗೆ ಈ ವಿಜೆಟ್‌ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ"</string>
+    <string name="shortcut_installed" msgid="1701742129426969556">"ಶಾರ್ಟ್‌ಕಟ್‌ \"<xliff:g id="NAME">%s</xliff:g>\" ಅನ್ನು ರಚಿಸಲಾಗಿದೆ."</string>
+    <string name="shortcut_uninstalled" msgid="8176767991305701821">"ಶಾರ್ಟ್‌ಕಟ್‌ \"<xliff:g id="NAME">%s</xliff:g>\" ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."</string>
+    <string name="shortcut_duplicate" msgid="9167217446062498127">"ಶಾರ್ಟ್‌ಕಟ್‌ \"<xliff:g id="NAME">%s</xliff:g>\" ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ."</string>
+    <string name="title_select_shortcut" msgid="6680642571148153868">"ಶಾರ್ಟ್‌ಕಟ್‌ ಆರಿಸಿ"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"ಅಪ್ಲಿಕೇಶನ್ ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"ಮುಖಪುಟ"</string>
+    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"ತೆಗೆದುಹಾಕು"</string>
+    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ಅಸ್ಥಾಪಿಸು"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"ತೆಗೆದುಹಾಕು"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ಅಸ್ಥಾಪಿಸು"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"ಅಪ್ಲಿಕೇಶನ್ ಮಾಹಿತಿ"</string>
+    <string name="accessibility_search_button" msgid="1628520399424565142">"ಹುಡುಕು"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"ಧ್ವನಿ ಹುಡುಕಾಟ"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
+    <string name="accessibility_delete_button" msgid="6466114477993744621">"ತೆಗೆದುಹಾಕು"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"ನವೀಕರಣವನ್ನು ಅಸ್ಥಾಪಿಸು"</string>
+    <string name="cab_menu_delete_app" msgid="7435191475867183689">"ಅಪ್ಲಿಕೇಶನ್ ಅಸ್ಥಾಪಿಸು"</string>
+    <string name="cab_menu_app_info" msgid="8593722221450362342">"ಅಪ್ಲಿಕೇಶನ್ ವಿವರಗಳು"</string>
+    <string name="cab_app_selection_text" msgid="374688303047985416">"1 ಅಪ್ಲಿಕೇಶನ್‌ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 ವಿಜೆಟ್‌ ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 ಫೋಲ್ಡರ್‌ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 ಶಾರ್ಟ್‌ಕಟ್‌ ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಸ್ಥಾಪಿಸಿ"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ಬಳಕೆದಾರರ ಹಸ್ತಕ್ಷೇಪವಿಲ್ಲದೆ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿಸುತ್ತದೆ."</string>
+    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಅಸ್ಥಾಪಿಸಿ"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"ಬಳಕೆದಾರರ ಹಸ್ತಕ್ಷೇಪವಿಲ್ಲದೆ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"ಮುಖಪುಟದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಓದಿ"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"ಮುಖಪುಟದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಓದಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"ಮುಖಪುಟದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬರೆಯಿರಿ"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"ಮುಖಪುಟದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"ವಿಜೆಟ್ ಲೋಡ್‌ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
+    <string name="dream_name" msgid="1530253749244328964">"ರಾಕೆಟ್ ಲಾಂಚರ್"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"ಹೆಸರಿಲ್ಲದ ಫೋಲ್ಡರ್"</string>
+    <string name="workspace_description_format" msgid="2950174241104043327">"ಮುಖಪುಟದ ಪರದೆ %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"%2$d ರಲ್ಲಿ %1$d ಪುಟ"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d ರಲ್ಲಿ %1$d ಮುಖಪುಟದ ಪರದೆ"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"%2$d ರಲ್ಲಿ %1$d ಅಪ್ಲಿಕೇಶನ್ ಪುಟ"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"%2$d ರಲ್ಲಿ %1$d ವಿಜೆಟ್‌ಗಳ ಪುಟ"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"ಸುಸ್ವಾಗತ"</string>
+    <string name="first_run_cling_description" msgid="6447072552696253358">"ನಿಮ್ಮ ಮನೆಯಂತೆ ಭಾವಿಸಿ."</string>
+    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
+    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಮತ್ತು ಫೋಲ್ಡರ್‌ಗಳಿಗಾಗಿ ಇನ್ನಷ್ಟು ಪರದೆಗಳನ್ನು ರಚಿಸಿ"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"ಅಪ್ಲಿಕೇಶನ್‌ ಐಕಾನ್‌ ನಕಲಿಸು"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"ನಿಮ್ಮ ಹಳೆಯ ಮುಖಪುಟದ ಪರದೆಗಳಿಂದ ಐಕಾನ್‌ಗಳು ಮತ್ತು ಫೋಲ್ಡರ್‌ಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳುವುದೇ?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"ಐಕಾನ್‌ಗಳನ್ನು ನಕಲಿಸು"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ಹೊಸದಾಗಿ ಪ್ರಾರಂಭಿಸು"</string>
+    <string name="workspace_cling_title" msgid="5626202359865825661">"ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ವ್ಯವಸ್ಥಿತಗೊಳಿಸಿ"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"ವಾಲ್‌ಪೇಪರ್‌, ವಿಜೆಟ್‌ಗಳು ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಲು ಹಿನ್ನೆಲೆಯನ್ನು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"ಇಲ್ಲೊಂದು ಫೋಲ್ಡರ್ ಇದೆ"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"ಈ ರೀತಿ ರಚಿಸಲು, ಸ್ಪರ್ಶಿಸಿ &amp; ಆಪ್‌ ಹಿಡಿದುಕೊಂಡು ಮತ್ತೊಂದರ ಮೇಲೆ ಸರಿಸಿ."</string>
+    <string name="cling_dismiss" msgid="8962359497601507581">"ಸರಿ"</string>
+    <string name="folder_opened" msgid="94695026776264709">"ಫೋಲ್ಡರ್ ತೆರೆಯಲಾಗಿದೆ, <xliff:g id="WIDTH">%1$d</xliff:g> ಬೈ <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"ಫೋಲ್ಡರ್‌ ಮುಚ್ಚಲು ಸ್ಪರ್ಶಿಸಿ"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"ಮರುಹೆಸರನ್ನು ಉಳಿಸಲು ಸ್ಪರ್ಶಿಸಿ"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"ಫೋಲ್ಡರ್ ಮುಚ್ಚಿದೆ"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"ಫೋಲ್ಡರ್‌ ಅನ್ನು <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಮರುಹೆಸರಿಸಲಾಗಿದೆ"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"ವಿಜೆಟ್‌ಗಳು"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="package_state_enqueued" msgid="6227252464303085641">"ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ"</string>
+    <string name="package_state_downloading" msgid="4088770468458724721">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"</string>
+    <string name="package_state_installing" msgid="7588193972189849870">"ಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"ಅಜ್ಞಾತ"</string>
+    <string name="package_state_error" msgid="7672093962724223588">"ಇನ್ನೂ ಪುನಃಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"</string>
+    <string name="abandoned_clean_all" msgid="5256770727689657618">"ಎಲ್ಲವನ್ನೂ ತೆಗೆದುಹಾಕಿ"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"ತೆಗೆದುಹಾಕಿ"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"ಹುಡುಕು"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ಈ ಐಕಾನ್ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ. ನೀವು ಅದನ್ನು ತೆಗೆದುಹಾಕಬಹುದು ಅಥವಾ ಅಪ್ಲಿಕೇಶನ್ ಹುಡುಕಬಹುದು ಮತ್ತು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅದನ್ನು ಸ್ಥಾಪಿಸಬಹುದು."</string>
+</resources>

@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Principais aplicativos do Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"O aplicativo não está instalado."</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"App transferido por download desativado no modo de segurança"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mostrar memória"</string>
