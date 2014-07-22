@@ -30,8 +30,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -169,8 +167,6 @@ public class CellLayout extends ViewGroup {
 
     private Rect mTempRect = new Rect();
 
-    private final static PorterDuffXfermode sAddBlendMode =
-            new PorterDuffXfermode(PorterDuff.Mode.ADD);
     private final static Paint sPaint = new Paint();
 
     public CellLayout(Context context) {
@@ -579,7 +575,15 @@ public class CellLayout extends ViewGroup {
     }
 
     public void restoreInstanceState(SparseArray<Parcelable> states) {
-        dispatchRestoreInstanceState(states);
+        try {
+            dispatchRestoreInstanceState(states);
+        } catch (IllegalArgumentException ex) {
+            if (LauncherAppState.isDogfoodBuild()) {
+                throw ex;
+            }
+            // Mismatched viewId / viewType preventing restore. Skip restore on production builds.
+            Log.e(TAG, "Ignoring an error while restoring a view instance state", ex);
+        }
     }
 
     @Override
@@ -700,9 +704,6 @@ public class CellLayout extends ViewGroup {
         // First we clear the tag to ensure that on every touch down we start with a fresh slate,
         // even in the case where we return early. Not clearing here was causing bugs whereby on
         // long-press we'd end up picking up an item from a previous drag operation.
-        final int action = ev.getAction();
-
-
         if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
             return true;
         }
