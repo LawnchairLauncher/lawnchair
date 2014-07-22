@@ -3302,7 +3302,7 @@ public class Launcher extends Activity
 
                 width = revealView.getMeasuredWidth();
 
-                ValueAnimator reveal =
+                Animator reveal =
                         ViewAnimationUtils.createCircularReveal(revealView, width / 2,
                                 height / 2 + 100, 0f, revealRadius);
                 reveal.setDuration(revealDuration);
@@ -3528,7 +3528,7 @@ public class Launcher extends Activity
 
                 width = revealView.getMeasuredWidth();
 
-                ValueAnimator reveal =
+                Animator reveal =
                         ViewAnimationUtils.createCircularReveal(revealView, width / 2,
                                 height / 2 + 100, revealRadius, 0f);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
