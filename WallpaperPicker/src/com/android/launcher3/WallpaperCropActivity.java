@@ -133,6 +133,14 @@ public class WallpaperCropActivity extends Activity {
         setCropViewTileSource(bitmapSource, true, false, onLoad);
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mCropView != null) {
+            mCropView.destroy();
+        }
+        super.onDestroy();
+    }
+
     public void setCropViewTileSource(
             final BitmapRegionTileSource.BitmapSource bitmapSource, final boolean touchEnabled,
             final boolean moveToLeft, final Runnable postExecute) {
