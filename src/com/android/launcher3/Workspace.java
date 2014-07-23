@@ -30,8 +30,6 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -49,7 +47,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Parcelable;
-import android.provider.BaseColumns;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -75,6 +72,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1119,10 +1117,10 @@ public class Workspace extends SmoothPagedView
             for (int j = 0; j < itemCount; j++) {
                 View v = swc.getChildAt(j);
 
-                if (v.getTag() instanceof LauncherAppWidgetInfo) {
+                if (v != null  && v.getTag() instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
                     LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) info.hostView;
-                    if (lahv != null && lahv.orientationChangedSincedInflation()) {
+                    if (lahv != null && lahv.isReinflateRequired()) {
                         mLauncher.removeAppWidget(info);
                         // Remove the current widget which is inflated with the wrong orientation
                         cl.removeView(lahv);
@@ -3258,7 +3256,6 @@ public class Workspace extends SmoothPagedView
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-        Resources res = launcher.getResources();
         Display display = launcher.getWindowManager().getDefaultDisplay();
         Point smallestSize = new Point();
         Point largestSize = new Point();
@@ -4591,29 +4588,43 @@ public class Workspace extends SmoothPagedView
     }
 
     public Folder getFolderForTag(final Object tag) {
-        final Folder[] value = new Folder[1];
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+        return (Folder) getFirstMatch(new ItemOperator() {
+
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (v instanceof Folder) {
-                    Folder f = (Folder) v;
-                    if (f.getInfo() == tag && f.getInfo().opened) {
-                        value[0] = f;
-                        return true;
-                    }
-                }
-                return false;
+                return (v instanceof Folder) && (((Folder) v).getInfo() == tag)
+                        && ((Folder) v).getInfo().opened;
             }
         });
-        return value[0];
     }
 
     public View getViewForTag(final Object tag) {
+        return getFirstMatch(new ItemOperator() {
+
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                return info == tag;
+            }
+        });
+    }
+
+    public LauncherAppWidgetHostView getWidgetForAppWidgetId(final int appWidgetId) {
+        return (LauncherAppWidgetHostView) getFirstMatch(new ItemOperator() {
+
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                return (info instanceof LauncherAppWidgetInfo) &&
+                        ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId;
+            }
+        });
+    }
+
+    private View getFirstMatch(final ItemOperator operator) {
         final View[] value = new View[1];
         mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (v.getTag() == tag) {
+                if (operator.evaluate(info, v, parent)) {
                     value[0] = v;
                     return true;
                 }
@@ -4895,7 +4906,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void restorePendingWidgets(final Set<String> installedPackaged) {
-        final ContentResolver contentResolver = getContext().getContentResolver();
+        final AtomicBoolean widgetsChanged = new AtomicBoolean(false);
         // Iterate non recursively as widgets can't be inside a folder.
         mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
 
@@ -4903,22 +4914,21 @@ public class Workspace extends SmoothPagedView
             public boolean evaluate(ItemInfo info, View v, View parent) {
                 if (info instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
-                    if (widgetInfo.restoreStatus == LauncherAppWidgetInfo.RESTORE_PROVIDER_PENDING
+                    if (widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                             && installedPackaged.contains(widgetInfo.providerName.getPackageName())) {
-                        // Package installed. Update pending widgets.
-                        ContentValues values = new ContentValues();
-                        values.put(LauncherSettings.Favorites.RESTORED,
-                                LauncherAppWidgetInfo.RESTORE_COMPLETED);
-                        String where = BaseColumns._ID + "= ?";
-                        String[] args = {Long.toString(widgetInfo.id)};
-                        contentResolver.update(LauncherSettings.Favorites.CONTENT_URI,
-                                values, where, args);
+                        widgetsChanged.set(true);
                     }
                 }
                 // process all the widget
                 return false;
             }
         });
+        if (widgetsChanged.get()) {
+            // Reload layout and update widget status
+            // TODO instead of full reload, just update the specific widgets
+            getContext().getContentResolver()
+                .notifyChange(LauncherSettings.Favorites.CONTENT_URI, null);
+        }
     }
 
     private void moveToScreen(int page, boolean animate) {

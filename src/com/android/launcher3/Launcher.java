@@ -65,7 +65,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -153,6 +152,7 @@ public class Launcher extends Activity
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
+    private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
 
     /**
      * IntentStarter uses request codes starting with this. This must be greater than all activity
@@ -752,6 +752,9 @@ public class Launcher extends Activity
             case REQUEST_CREATE_APPWIDGET:
                 completeAddAppWidget(args.appWidgetId, args.container, screenId, null, null);
                 break;
+            case REQUEST_RECONFIGURE_APPWIDGET:
+                completeRestoreAppWidget(args.appWidgetId);
+                break;
         }
         // Before adding this resetAddInfo(), after a shortcut was added to a workspace screen,
         // if you turned the screen off and then back while in All Apps, Launcher would not
@@ -851,6 +854,21 @@ public class Launcher extends Activity
                     sPendingAddItem = args;
                 }
             }
+            return;
+        }
+
+        if (requestCode == REQUEST_RECONFIGURE_APPWIDGET) {
+            if (resultCode == RESULT_OK) {
+                // Update the widget view.
+                PendingAddArguments args = preparePendingAddArgs(requestCode, data,
+                        pendingAddWidgetId, mPendingAddInfo);
+                if (workspaceLocked) {
+                    sPendingAddItem = args;
+                } else {
+                    completeAdd(args);
+                }
+            }
+            // Leave the widget in the pending state if the user canceled the configure.
             return;
         }
 
@@ -2446,11 +2464,36 @@ public class Launcher extends Activity
             }
         } else if (v == mAllAppsButton) {
             onClickAllAppsButton(v);
+        } else if (tag instanceof LauncherAppWidgetInfo) {
+            if (v instanceof PendingAppWidgetHostView) {
+                onClickPendingWidget((PendingAppWidgetHostView) v);
+            }
         }
     }
 
     public boolean onTouch(View v, MotionEvent event) {
         return false;
+    }
+
+    /**
+     * Event handler for the app widget view which has not fully restored.
+     */
+    public void onClickPendingWidget(PendingAppWidgetHostView v) {
+        if (v.isReadyForClickSetup()) {
+            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
+            int widgetId = info.appWidgetId;
+            AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
+            if (appWidgetInfo != null) {
+                mPendingAddWidgetInfo = appWidgetInfo;
+                mPendingAddInfo.copyFrom(info);
+                mPendingAddWidgetId = widgetId;
+
+                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+                intent.setComponent(appWidgetInfo.configure);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, info.appWidgetId);
+                Utilities.startActivityForResultSafely(this, intent, REQUEST_RECONFIGURE_APPWIDGET);
+            }
+        }
     }
 
     /**
@@ -4398,7 +4441,64 @@ public class Launcher extends Activity
         }
         final Workspace workspace = mWorkspace;
 
-        final AppWidgetProviderInfo appWidgetInfo;
+        AppWidgetProviderInfo appWidgetInfo;
+        if (((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0) &&
+                ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0)) {
+
+            appWidgetInfo = mModel.findAppWidgetProviderInfoWithComponent(this, item.providerName);
+            if (appWidgetInfo == null) {
+                if (DEBUG_WIDGETS) {
+                    Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
+                            + " belongs to component " + item.providerName
+                            + ", as the povider is null");
+                }
+                LauncherModel.deleteItemFromDatabase(this, item);
+                return;
+            }
+            // Note: This assumes that the id remap broadcast is received before this step.
+            // If that is not the case, the id remap will be ignored and user may see the
+            // click to setup view.
+            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo, null, null);
+            pendingInfo.spanX = item.spanX;
+            pendingInfo.spanY = item.spanY;
+            pendingInfo.minSpanX = item.minSpanX;
+            pendingInfo.minSpanY = item.minSpanY;
+            Bundle options =
+                    AppsCustomizePagedView.getDefaultOptionsForWidget(this, pendingInfo);
+
+            boolean success = false;
+            int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
+            if (options != null) {
+                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(newWidgetId,
+                        appWidgetInfo.provider, options);
+            } else {
+                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(newWidgetId,
+                        appWidgetInfo.provider);
+            }
+
+            // TODO consider showing a permission dialog when the widget is clicked.
+            if (!success) {
+                mAppWidgetHost.deleteAppWidgetId(newWidgetId);
+                if (DEBUG_WIDGETS) {
+                    Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
+                            + " belongs to component " + item.providerName
+                            + ", as the launcher is unable to bing a new widget id");
+                }
+                LauncherModel.deleteItemFromDatabase(this, item);
+                return;
+            }
+
+            item.appWidgetId = newWidgetId;
+
+            // If the widget has a configure activity, it is still needs to set it up, otherwise
+            // the widget is ready to go.
+            item.restoreStatus = (appWidgetInfo.configure == null)
+                    ? LauncherAppWidgetInfo.RESTORE_COMPLETED
+                    : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
+
+            LauncherModel.updateItemInDatabase(this, item);
+        }
+
         if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
             final int appWidgetId = item.appWidgetId;
             appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
@@ -4409,8 +4509,9 @@ public class Launcher extends Activity
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         } else {
             appWidgetInfo = null;
-            item.hostView = new LauncherAppWidgetHostView(this, false);
+            item.hostView = new PendingAppWidgetHostView(this, item.restoreStatus);
             item.hostView.updateAppWidget(null);
+            item.hostView.setOnClickListener(this);
         }
 
         item.hostView.setTag(item);
@@ -4426,6 +4527,29 @@ public class Launcher extends Activity
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
                     + (SystemClock.uptimeMillis()-start) + "ms");
         }
+    }
+
+    /**
+     * Restores a pending widget.
+     *
+     * @param appWidgetId The app widget id
+     * @param cellInfo The position on screen where to create the widget.
+     */
+    private void completeRestoreAppWidget(final int appWidgetId) {
+        LauncherAppWidgetHostView view = mWorkspace.getWidgetForAppWidgetId(appWidgetId);
+        if ((view == null) || !(view instanceof PendingAppWidgetHostView)) {
+            Log.e(TAG, "Widget update called, when the widget no longer exists.");
+            return;
+        }
+
+        PendingAppWidgetHostView pendingView = (PendingAppWidgetHostView) view;
+        pendingView.setStatus(LauncherAppWidgetInfo.RESTORE_COMPLETED);
+
+        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) pendingView.getTag();
+        info.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+
+        mWorkspace.reinflateWidgetsIfNecessary();
+        LauncherModel.updateItemInDatabase(this, info);
     }
 
     public void onPageBoundSynchronously(int page) {
