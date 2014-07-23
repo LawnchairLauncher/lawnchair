@@ -99,6 +99,8 @@ public class LauncherProvider extends ContentProvider {
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
+    private static final String URI_PARAM_IS_EXTERNAL_ADD = "isExternalAdd";
+
     private LauncherProviderChangeListener mListener;
 
     /**
@@ -175,6 +177,14 @@ public class LauncherProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues initialValues) {
         SqlArguments args = new SqlArguments(uri);
 
+        // In very limited cases, we support system|signature permission apps to add to the db
+        String externalAdd = uri.getQueryParameter(URI_PARAM_IS_EXTERNAL_ADD);
+        if (externalAdd != null && "true".equals(externalAdd)) {
+            if (!mOpenHelper.initializeExternalAdd(initialValues)) {
+                return null;
+            }
+        }
+
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         addModifiedTime(initialValues);
         final long rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
@@ -185,6 +195,7 @@ public class LauncherProvider extends ContentProvider {
 
         return uri;
     }
+
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
@@ -1245,6 +1256,37 @@ public class LauncherProvider extends ContentProvider {
             if (LOGD) Log.d(TAG, "mMaxItemId: " + mMaxItemId);
         }
 
+        private boolean initializeExternalAdd(ContentValues values) {
+            // 1. Ensure that externally added items have a valid item id
+            long id = generateNewItemId();
+            values.put(LauncherSettings.Favorites._ID, id);
+
+            // 2. In the case of an app widget, and if no app widget id is specified, we
+            // attempt allocate and bind the widget.
+            Integer itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+            if (itemType != null &&
+                    itemType.intValue() == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
+                    !values.containsKey(LauncherSettings.Favorites.APPWIDGET_ID)) {
+
+                final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+                ComponentName cn = ComponentName.unflattenFromString(
+                        values.getAsString(Favorites.APPWIDGET_PROVIDER));
+
+                if (cn != null) {
+                    try {
+                        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                        if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
+                            return false;
+                        }
+                    } catch (RuntimeException e) {
+                        Log.e(TAG, "Failed to initialize external widget", e);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         private static final void beginDocument(XmlPullParser parser, String firstElementName)
                 throws XmlPullParserException, IOException {
             int type;
@@ -1752,6 +1794,7 @@ public class LauncherProvider extends ContentProvider {
 
             return false;
         }
+
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, ComponentName cn,
                Bundle extras) {
             boolean allocatedAppWidgets = false;
