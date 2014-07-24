@@ -308,10 +308,10 @@ public class WallpaperCropActivity extends Activity {
         return 0;
     }
 
-    protected void setWallpaper(String filePath, final boolean finishActivityWhenDone) {
-        int rotation = getRotationFromExif(filePath);
+    protected void setWallpaper(Uri uri, final boolean finishActivityWhenDone) {
+        int rotation = getRotationFromExif(this, uri);
         BitmapCropTask cropTask = new BitmapCropTask(
-                this, filePath, null, rotation, 0, 0, true, false, null);
+                this, uri, null, rotation, 0, 0, true, false, null);
         final Point bounds = cropTask.getImageBounds();
         Runnable onEndCrop = new Runnable() {
             public void run() {

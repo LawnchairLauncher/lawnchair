@@ -24,6 +24,8 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.util.Log;
 
+import java.io.File;
+
 /**
  * Utilities to discover and interact with partner customizations. There can
  * only be one set of customizations on a device, and it must be bundled with
@@ -39,6 +41,9 @@ public class Partner {
     public static final String RESOURCE_FOLDER = "partner_folder";
     public static final String RESOURCE_WALLPAPERS = "partner_wallpapers";
     public static final String RESOURCE_DEFAULT_LAYOUT = "partner_default_layout";
+
+    public static final String RESOURCE_DEFAULT_WALLPAPER_HIDDEN = "default_wallpapper_hidden";
+    public static final String RESOURCE_SYSTEM_WALLPAPER_DIR = "system_wallpaper_directory";
 
     private static boolean sSearched = false;
     private static Partner sPartner;
@@ -93,5 +98,17 @@ public class Partner {
         int folder = getResources().getIdentifier(Partner.RESOURCE_FOLDER,
                 "xml", getPackageName());
         return folder != 0;
+    }
+
+    public boolean hideDefaultWallpaper() {
+        int resId = getResources().getIdentifier(RESOURCE_DEFAULT_WALLPAPER_HIDDEN, "bool",
+                getPackageName());
+        return resId != 0 && getResources().getBoolean(resId);
+    }
+
+    public File getWallpaperDirectory() {
+        int resId = getResources().getIdentifier(RESOURCE_SYSTEM_WALLPAPER_DIR, "string",
+                getPackageName());
+        return (resId != 0) ? new File(getResources().getString(resId)) : null;
     }
 }
