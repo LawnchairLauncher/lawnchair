@@ -50,11 +50,13 @@
         android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
-
     <permission
         android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS"
         android:protectionLevel="signature"
         />
+    <permission
+        android:name="com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST"
+        android:protectionLevel="signatureOrSystem" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
