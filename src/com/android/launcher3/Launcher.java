@@ -209,6 +209,10 @@ public class Launcher extends Activity
     static final String INTRO_SCREEN_DISMISSED = "launcher.intro_screen_dismissed";
     static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
 
+    static final String FIRST_LOAD_COMPLETE = "launcher.first_load_complete";
+    static final String ACTION_FIRST_LOAD_COMPLETE =
+            "com.android.launcher3.action.FIRST_LOAD_COMPLETE";
+
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
             "com.android.launcher.toolbar_search_icon";
@@ -4454,6 +4458,7 @@ public class Launcher extends Activity
         }
 
         setWorkspaceLoading(false);
+        sendLoadingCompleteBroadcastIfNecessary();
 
         // If we received the result of any pending adds while the loader was running (e.g. the
         // widget configuration forced an orientation change), process them now.
@@ -4475,6 +4480,18 @@ public class Launcher extends Activity
         if (upgradePath) {
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
+        }
+    }
+
+    private void sendLoadingCompleteBroadcastIfNecessary() {
+        if (!mSharedPrefs.getBoolean(FIRST_LOAD_COMPLETE, false)) {
+            String permission =
+                    getResources().getString(R.string.receive_first_load_broadcast_permission);
+            Intent intent = new Intent(ACTION_FIRST_LOAD_COMPLETE);
+            sendBroadcast(intent, permission);
+            SharedPreferences.Editor editor = mSharedPrefs.edit();
+            editor.putBoolean(FIRST_LOAD_COMPLETE, true);
+            editor.apply();
         }
     }
 

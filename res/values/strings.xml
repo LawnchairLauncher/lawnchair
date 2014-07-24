@@ -27,6 +27,9 @@
     <!-- Permission to receive the com.android.launcher3.action.LAUNCH intent -->
     <string name="receive_launch_broadcasts_permission" translatable="false">com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS</string>
 
+    <!-- Permission to receive the com.android.launcher3.action.FIRST_LOAD_COMPLETE intent -->
+    <string name="receive_first_load_broadcast_permission" translatable="false">com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST</string>
+
     <!-- Application name -->
     <string name="application_name">Launcher3</string>
     <!-- Accessibility-facing application name -->
