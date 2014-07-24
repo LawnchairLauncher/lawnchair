@@ -150,7 +150,7 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
     }
 
     @Override
-    public View getContent() {
+    public ViewGroup getContent() {
         return mPagedView;
     }
 

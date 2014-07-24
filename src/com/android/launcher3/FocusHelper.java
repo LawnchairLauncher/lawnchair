@@ -71,20 +71,20 @@ public class FocusHelper {
     /**
      * Private helper to get the parent TabHost in the view hiearchy.
      */
-    private static TabHost findTabHostParent(View v) {
+    private static AppsCustomizeTabHost findTabHostParent(View v) {
         ViewParent p = v.getParent();
-        while (p != null && !(p instanceof TabHost)) {
+        while (p != null && !(p instanceof AppsCustomizeTabHost)) {
             p = p.getParent();
         }
-        return (TabHost) p;
+        return (AppsCustomizeTabHost) p;
     }
 
     /**
      * Handles key events in a AppsCustomize tab between the last tab view and the shop button.
      */
     static boolean handleAppsCustomizeTabKeyEvent(View v, int keyCode, KeyEvent e) {
-        final TabHost tabHost = findTabHostParent(v);
-        final ViewGroup contents = tabHost.getTabContentView();
+        final AppsCustomizeTabHost tabHost = findTabHostParent(v);
+        final ViewGroup contents = tabHost.getContent();
         final View shop = tabHost.findViewById(R.id.market_button);
 
         final int action = e.getAction();
@@ -134,8 +134,7 @@ public class FocusHelper {
 
         final PagedViewGridLayout parent = (PagedViewGridLayout) w.getParent();
         final PagedView container = (PagedView) parent.getParent();
-        final TabHost tabHost = findTabHostParent(container);
-        final TabWidget tabs = tabHost.getTabWidget();
+        final AppsCustomizeTabHost tabHost = findTabHostParent(container);
         final int widgetIndex = parent.indexOfChild(w);
         final int widgetCount = parent.getChildCount();
         final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parent));
@@ -194,8 +193,6 @@ public class FocusHelper {
                         int newWidgetIndex = ((y - 1) * cellCountX) + x;
                         child = parent.getChildAt(newWidgetIndex);
                         if (child != null) child.requestFocus();
-                    } else {
-                        tabs.requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -294,8 +291,7 @@ public class FocusHelper {
         // Note we have an extra parent because of the
         // PagedViewCellLayout/PagedViewCellLayoutChildren relationship
         final PagedView container = (PagedView) parentLayout.getParent();
-        final TabHost tabHost = findTabHostParent(container);
-        final TabWidget tabs = tabHost.getTabWidget();
+        final AppsCustomizeTabHost tabHost = findTabHostParent(container);
         final int iconIndex = itemContainer.indexOfChild(v);
         final int itemCount = itemContainer.getChildCount();
         final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parentLayout));
@@ -354,8 +350,6 @@ public class FocusHelper {
                     if (y > 0) {
                         int newiconIndex = ((y - 1) * countX) + x;
                         itemContainer.getChildAt(newiconIndex).requestFocus();
-                    } else {
-                        tabs.requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -439,8 +433,8 @@ public class FocusHelper {
         if (!LauncherAppState.getInstance().isScreenLarge()) return false;
 
         final FocusOnlyTabWidget parent = (FocusOnlyTabWidget) v.getParent();
-        final TabHost tabHost = findTabHostParent(parent);
-        final ViewGroup contents = tabHost.getTabContentView();
+        final AppsCustomizeTabHost tabHost = findTabHostParent(parent);
+        final ViewGroup contents = tabHost.getContent();
         final int tabCount = parent.getTabCount();
         final int tabIndex = parent.getChildTabIndex(v);
 
