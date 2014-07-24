@@ -840,12 +840,26 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         final Context context = this;
         new AsyncTask<Void, Bitmap, Bitmap>() {
             protected Bitmap doInBackground(Void...args) {
-                int rotation = WallpaperCropActivity.getRotationFromExif(context, uri);
-                return createThumbnail(defaultSize, context, uri, null, null, 0, rotation, false);
-
+                try {
+                    int rotation = WallpaperCropActivity.getRotationFromExif(context, uri);
+                    return createThumbnail(defaultSize, context, uri, null, null, 0, rotation, false);
+                } catch (SecurityException securityException) {
+                    if (isDestroyed()) {
+                        // Temporarily granted permissions are revoked when the activity
+                        // finishes, potentially resulting in a SecurityException here.
+                        // Even though {@link #isDestroyed} might also return true in different
+                        // situations where the configuration changes, we are fine with
+                        // catching these cases here as well.
+                        cancel(false);
+                    } else {
+                        // otherwise it had a different cause and we throw it further
+                        throw securityException;
+                    }
+                    return null;
+                }
             }
             protected void onPostExecute(Bitmap thumb) {
-                if (thumb != null) {
+                if (!isCancelled() && thumb != null) {
                     image.setImageBitmap(thumb);
                     Drawable thumbDrawable = image.getDrawable();
                     thumbDrawable.setDither(true);
