@@ -49,11 +49,12 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         return mUserManager.getBadgedDrawableForUser(unbadged, user.getUser());
     }
 
-    public String getBadgedLabelForUser(String label, UserHandleCompat user) {
+    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
         if (user == null) {
             return label;
         }
-        return mUserManager.getBadgedLabelForUser(label, user.getUser());
+        // TODO Remove casts when API has made it from lmp-dev -> sdk
+        return (CharSequence) mUserManager.getBadgedLabelForUser((String) label, user.getUser());
     }
 }
 
