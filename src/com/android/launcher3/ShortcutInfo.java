@@ -185,7 +185,8 @@ public class ShortcutInfo extends ItemInfo {
         String titleStr = title != null ? title.toString() : null;
         values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
 
-        String uri = intent != null ? intent.toUri(0) : null;
+        String uri = restoredIntent != null ? restoredIntent.toUri(0)
+                : (intent != null ? intent.toUri(0) : null);
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
 
         if (customIcon) {
