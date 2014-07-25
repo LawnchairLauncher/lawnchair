@@ -16,8 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="migration_cling_title">Importa icone</string>
-  <string name="migration_cling_description">Importare icone e cartelle dalla vecchia schermata iniziale?</string>
-  <string name="migration_cling_copy_apps">COPIA ICONE</string>
-  <string name="migration_cling_use_default">RIPRISTINA</string>
+  <string name="migration_cling_title">Kopiér dine appikoner</string>
+  <string name="migration_cling_description">Importere ikoner og mapper fra dine gamle startskærme?</string>
+  <string name="migration_cling_copy_apps">KOPIÉR IKONER</string>
+  <string name="migration_cling_use_default">START FORFRA</string>
 </resources>

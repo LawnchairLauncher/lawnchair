@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Mysig</string>
   <string name="grid_size_condensed">Kondenserad</string>
   <string name="grid_size_custom">Anpassad</string>
+  <string name="grid_size_custom_and_size">Anpassad (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Välj anpassad storlek</string>
   <string name="preferences_interface_homescreen_rows_title">Antal rader</string>
   <string name="preferences_interface_homescreen_columns_title">Antal kolumner</string>

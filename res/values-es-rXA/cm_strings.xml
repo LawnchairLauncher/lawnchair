@@ -22,6 +22,8 @@
   <string name="app_settings">AXUSTES D\'APLICACIÓN</string>
   <string name="setting_state_on">SÍ</string>
   <string name="setting_state_off">NON</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">Aniciu CM</string>
   <string name="themes_button_text">Temes</string>
   <string name="scrolling_page_outlines">Berbesos de pantalla</string>
   <string name="scrolling_fade_adjacent">Efeutu de dilíu</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Acoyedor</string>
   <string name="grid_size_condensed">Condensáu</string>
   <string name="grid_size_custom">Personalizáu</string>
+  <string name="grid_size_custom_and_size">Personalizáu (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Esbilla\'l tamañu personalizáu</string>
   <string name="preferences_interface_homescreen_rows_title">Númberu de fileres</string>
   <string name="preferences_interface_homescreen_columns_title">Númberu de columnes</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Panel de gueta</string>
   <string name="search_screen_left_unsupported_toast">Ye necesario tener una aplicación de gueta y CyanogenMod pa poder usar esta carauterística.</string>
   <string name="dialog_confirm">Confirmar</string>
+  <string name="permission_desc_read_extension_data">Permitir que les estensiones de DaskClock soliciten datos</string>
+  <string name="permission_label_read_extension_data">Solicitar datos d\'estensiones de DashClock</string>
 </resources>

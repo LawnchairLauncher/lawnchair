@@ -22,6 +22,8 @@
   <string name="app_settings">PROG INSTELLINGS</string>
   <string name="setting_state_on">AAN</string>
   <string name="setting_state_off">AF</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Tuis</string>
   <string name="themes_button_text">Temas</string>
   <string name="scrolling_page_outlines">Bladsy buitelyne</string>
   <string name="scrolling_fade_adjacent">Vervaag kant bladsye</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Snoesig</string>
   <string name="grid_size_condensed">Verkorte</string>
   <string name="grid_size_custom">Persoonlik</string>
+  <string name="grid_size_custom_and_size">Persoonlik (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Kies persoonlike grootte</string>
   <string name="preferences_interface_homescreen_rows_title">Aantal rye</string>
   <string name="preferences_interface_homescreen_columns_title">Aantal kolomme</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Soek paneel</string>
   <string name="search_screen_left_unsupported_toast">Jy moet \'n ondersteunde soek program hê en CyanogenMod om hierdie funksie te gebruik.</string>
   <string name="dialog_confirm">Bevestig</string>
+  <string name="permission_desc_read_extension_data">Laat toegang tot byvoegsels vir DashClock se data toe</string>
+  <string name="permission_label_read_extension_data">Vra byvoegsel vir DashClock data aan</string>
 </resources>

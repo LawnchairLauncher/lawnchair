@@ -22,6 +22,8 @@
   <string name="app_settings">UYGULAMA AYARLARI</string>
   <string name="setting_state_on">AÇIK</string>
   <string name="setting_state_off">KAPALI</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Temalar</string>
   <string name="scrolling_page_outlines">Sayfa anahatları</string>
   <string name="scrolling_fade_adjacent">Yan sayfaları soldur</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">Arama paneli</string>
   <string name="search_screen_left_unsupported_toast">Bu özelliği kullanabilmeniz için desteklenen bir arama uygulaması ve CyanogenMod\'a sahip olmanız gerekiyor.</string>
   <string name="dialog_confirm">Onayla</string>
+  <string name="permission_desc_read_extension_data">DashClock eklenti verisini istemeyi etkinleştirir</string>
+  <string name="permission_label_read_extension_data">DashClock eklenti verisini iste</string>
 </resources>

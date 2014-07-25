@@ -22,6 +22,8 @@
   <string name="app_settings">SOVELLUKSEN ASETUKSET</string>
   <string name="setting_state_on">PÄÄLLÄ</string>
   <string name="setting_state_off">POIS</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Koti</string>
   <string name="themes_button_text">Teemat</string>
   <string name="scrolling_page_outlines">Sivun ulkoreunat</string>
   <string name="scrolling_fade_adjacent">Häivytä sivun reunat</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">Hakupaneeli</string>
   <string name="search_screen_left_unsupported_toast">Sinulla tulee olla tuettu hakusovellus ja CyanogenMod käyttääksesi tätä toimintoa.</string>
   <string name="dialog_confirm">Vahvista</string>
+  <string name="permission_desc_read_extension_data">Sallii DashClock-laajennuksen tietojen pyynnöt</string>
+  <string name="permission_label_read_extension_data">Pyydä DashClock-laajennuksen tiedot</string>
 </resources>

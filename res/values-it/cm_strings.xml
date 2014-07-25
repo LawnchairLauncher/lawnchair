@@ -22,6 +22,8 @@
   <string name="app_settings">IMPOSTAZIONI APP</string>
   <string name="setting_state_on">ON</string>
   <string name="setting_state_off">OFF</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Temi</string>
   <string name="scrolling_page_outlines">Contorni pagina</string>
   <string name="scrolling_fade_adjacent">Dissolvenza pagine laterali</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">Pannello ricerca</string>
   <string name="search_screen_left_unsupported_toast">È necessario disporre di un app per la ricerca supportata e CyanogenMod per utilizzare questa funzionalità.</string>
   <string name="dialog_confirm">Conferma</string>
+  <string name="permission_desc_read_extension_data">Consenti l\'accesso ai dati delle estensioni DashClock</string>
+  <string name="permission_label_read_extension_data">Accesso ai dati delle estensioni DashClock</string>
 </resources>

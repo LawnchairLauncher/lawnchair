@@ -16,8 +16,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="migration_cling_title">Importa icone</string>
-  <string name="migration_cling_description">Importare icone e cartelle dalla vecchia schermata iniziale?</string>
-  <string name="migration_cling_copy_apps">COPIA ICONE</string>
-  <string name="migration_cling_use_default">RIPRISTINA</string>
+  <string name="migration_cling_title">앱 아이콘 복사</string>
+  <string name="migration_cling_description">이전 홈 화면에서 아이콘과 폴더를 가져올까요?</string>
+  <string name="migration_cling_copy_apps">아이콘 복사</string>
+  <string name="migration_cling_use_default">새로 시작</string>
 </resources>

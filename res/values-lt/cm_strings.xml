@@ -22,6 +22,8 @@
   <string name="app_settings">PROGRAMOS NUSTATYMAI</string>
   <string name="setting_state_on">ĮJUNGTA</string>
   <string name="setting_state_off">IŠJUNGTA</string>
+  <string name="search_panel_gel">„Google“ Dabar</string>
+  <string name="search_panel_custom_home">CM pagrindinis</string>
   <string name="themes_button_text">Temos</string>
   <string name="scrolling_page_outlines">Puslapio kontūrai</string>
   <string name="scrolling_fade_adjacent">Išblukinti šoninius puslapius</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Jaukus</string>
   <string name="grid_size_condensed">Suglaustas</string>
   <string name="grid_size_custom">Individualus</string>
+  <string name="grid_size_custom_and_size">Individualus (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Pasirinkite individualų dydį</string>
   <string name="preferences_interface_homescreen_rows_title">Eilučių skaičius</string>
   <string name="preferences_interface_homescreen_columns_title">Stulpelių skaičius</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Paieškos panėlė</string>
   <string name="search_screen_left_unsupported_toast">Jūs privalote turėti palaikomą paieškos programą ir „CyanogenMod“ norėdami naudotis šia funkcija.</string>
   <string name="dialog_confirm">Patvirtinti</string>
+  <string name="permission_desc_read_extension_data">Leidžia prašyti „DashClock“ papildomų duomenų</string>
+  <string name="permission_label_read_extension_data">Prašyti „DashClock“ papildomų duomenų</string>
 </resources>

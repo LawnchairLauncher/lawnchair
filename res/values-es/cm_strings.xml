@@ -22,6 +22,8 @@
   <string name="app_settings">AJUSTES DE LA APLICACIÓN</string>
   <string name="setting_state_on">SÍ</string>
   <string name="setting_state_off">NO</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Temas</string>
   <string name="scrolling_page_outlines">Bordes de pantalla</string>
   <string name="scrolling_fade_adjacent">Efecto de fundido</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">Panel de búsqueda</string>
   <string name="search_screen_left_unsupported_toast">Debes tener una aplicación de búsqueda y CyanogenMod para poder utilizar esta característica.</string>
   <string name="dialog_confirm">Confirmar</string>
+  <string name="permission_desc_read_extension_data">Permitir que las extensiones de DashClock soliciten datos</string>
+  <string name="permission_label_read_extension_data">Solicitar datos de extensiones de DashClock</string>
 </resources>

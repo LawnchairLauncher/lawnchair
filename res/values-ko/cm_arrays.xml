@@ -15,9 +15,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="migration_cling_title">Importa icone</string>
-  <string name="migration_cling_description">Importare icone e cartelle dalla vecchia schermata iniziale?</string>
-  <string name="migration_cling_copy_apps">COPIA ICONE</string>
-  <string name="migration_cling_use_default">RIPRISTINA</string>
+<resources>
+  <string-array name="transition_effect_entries">
+    <item>없음</item>
+    <item>확대</item>
+    <item>축소</item>
+    <item>위로 회전</item>
+    <item>아래로 회전</item>
+    <item>큐브 인</item>
+    <item>큐브 아웃</item>
+    <item>스택</item>
+    <item>아코디언</item>
+    <item>뒤집기</item>
+    <item>실린더 인</item>
+    <item>실린더 아웃</item>
+    <item>회전목마</item>
+    <item>개요</item>
+  </string-array>
 </resources>

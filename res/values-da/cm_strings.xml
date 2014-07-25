@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Hyggeligt</string>
   <string name="grid_size_condensed">Sammentrængt</string>
   <string name="grid_size_custom">Brugerdefineret</string>
+  <string name="grid_size_custom_and_size">Brugerdefineret (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Vælg brugerdefineret størrelse</string>
   <string name="preferences_interface_homescreen_rows_title">Antal rækker</string>
   <string name="preferences_interface_homescreen_columns_title">Antal kolonner</string>

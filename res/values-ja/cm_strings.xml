@@ -22,6 +22,8 @@
   <string name="app_settings">アプリの設定</string>
   <string name="setting_state_on">ON</string>
   <string name="setting_state_off">OFF</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CMホーム</string>
   <string name="themes_button_text">テーマ</string>
   <string name="scrolling_page_outlines">ページの外枠を表示</string>
   <string name="scrolling_fade_adjacent">側面のページをフェード</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">検索パネル</string>
   <string name="search_screen_left_unsupported_toast">この機能を利用するには、サポートされている検索アプリとCyanogenModが必要です。</string>
   <string name="dialog_confirm">確認</string>
+  <string name="permission_desc_read_extension_data">DashClockエクステンションデータのリクエストを許可します</string>
+  <string name="permission_label_read_extension_data">DashClockエクステンションデータのリクエスト</string>
 </resources>

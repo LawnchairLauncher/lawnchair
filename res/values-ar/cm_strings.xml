@@ -22,6 +22,8 @@
   <string name="app_settings">إعدادات التطبيق</string>
   <string name="setting_state_on">يعمل</string>
   <string name="setting_state_off">لايعمل</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">منزل CM</string>
   <string name="themes_button_text">المواضيع</string>
   <string name="scrolling_page_outlines">الخطوط العريضة لي الصفحة</string>
   <string name="scrolling_fade_adjacent">تتلاشى الصفحات الجانبية</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">لوحة البحث</string>
   <string name="search_screen_left_unsupported_toast">يجب أن يكون تطبيق البحث و CyanogenMod مدعومين  لستخدام هذه الميزة.</string>
   <string name="dialog_confirm">تأكيد</string>
+  <string name="permission_desc_read_extension_data">يسمح بطلب بيانات ملحق DashClock</string>
+  <string name="permission_label_read_extension_data">طلب بيانات ملحق DashClock</string>
 </resources>

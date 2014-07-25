@@ -15,9 +15,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="migration_cling_title">Importa icone</string>
-  <string name="migration_cling_description">Importare icone e cartelle dalla vecchia schermata iniziale?</string>
-  <string name="migration_cling_copy_apps">COPIA ICONE</string>
-  <string name="migration_cling_use_default">RIPRISTINA</string>
+<resources>
+  <string-array name="transition_effect_entries">
+    <item>Bat ere ez</item>
+    <item>Zoom sarkorra</item>
+    <item>Zoom irtenkorra</item>
+    <item>Gorantz biratu</item>
+    <item>Beherantz biratu</item>
+    <item>Kubiko sarkorra</item>
+    <item>Kubiko irtenkorra</item>
+    <item>Pilatu</item>
+    <item>Akordeoia</item>
+    <item>Irauli</item>
+    <item>Zilindro sarkorra</item>
+    <item>Zilindro irtenkorra</item>
+    <item>Zaldiko-maldikoa</item>
+    <item>Perspektiba</item>
+  </string-array>
 </resources>
