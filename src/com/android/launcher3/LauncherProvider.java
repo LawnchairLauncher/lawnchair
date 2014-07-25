@@ -1447,7 +1447,7 @@ public class LauncherProvider extends ContentProvider {
                         }
                     } else if (TAG_FOLDER.equals(name)) {
                         // Folder contents are nested in this XML file
-                        added = loadFolder(db, values, mContext.getResources(), parser);
+                        added = loadFolder(db, values, res, parser);
 
                     } else if (TAG_PARTNER_FOLDER.equals(name)) {
                         // Folder contents come from an external XML resource
