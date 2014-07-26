@@ -93,6 +93,6 @@
     <string name="dialog_confirm">Confirm</string>
 
     <!-- Dashclock permission info (for CMHome) -->
-    <string name="permission_desc_read_extension_data">Allows requesting DashClock extension data</string>
-    <string name="permission_label_read_extension_data">Request DashClock extension data</string>
+    <string name="permission_label_read_extension_data">request DashClock extension data</string>
+    <string name="permission_desc_read_extension_data">Allows the app to request DashClock extension data</string>
 </resources>
