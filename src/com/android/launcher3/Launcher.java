@@ -2776,12 +2776,9 @@ public class Launcher extends Activity
 
             Bundle optsBundle = null;
             if (useLaunchAnimation) {
-                ActivityOptions opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
-                        v.getMeasuredWidth(), v.getMeasuredHeight());
-                optsBundle = opts.toBundle();
-            }
-            if (useLaunchAnimation && Utilities.isLmp()) {
-                ActivityOptions opts = ActivityOptions.makeCustomAnimation(this, R.anim.task_open_enter, R.anim.no_anim);
+                ActivityOptions opts = Utilities.isLmp() ?
+                        ActivityOptions.makeCustomAnimation(this, R.anim.task_open_enter, R.anim.no_anim) :
+                        ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
                 optsBundle = opts.toBundle();
             }
 

@@ -23,12 +23,12 @@
     <alpha android:fromAlpha="0" android:toAlpha="1.0"
             android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
             android:interpolator="@interpolator/decelerate_quart"
-            android:startOffset="300"
+            android:startOffset="0"
             android:duration="167"/>
 
     <translate android:fromYDelta="110%" android:toYDelta="0"
             android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
             android:interpolator="@interpolator/decelerate_quint"
-            android:startOffset="300"
+            android:startOffset="0"
             android:duration="417" />
 </set>
