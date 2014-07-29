@@ -1839,7 +1839,7 @@ public class LauncherModel extends BroadcastReceiver
             final boolean isSafeMode = manager.isSafeMode();
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
             final boolean isSdCardReady = context.registerReceiver(null,
-                    new IntentFilter(StartupReceiver.SYESTEM_READY)) != null;
+                    new IntentFilter(StartupReceiver.SYSTEM_READY)) != null;
 
             LauncherAppState app = LauncherAppState.getInstance();
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -2267,7 +2267,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 if (!isSdCardReady && !sPendingPackages.isEmpty()) {
                     context.registerReceiver(new AppsAvailabilityCheck(),
-                            new IntentFilter(StartupReceiver.SYESTEM_READY),
+                            new IntentFilter(StartupReceiver.SYSTEM_READY),
                             null, sWorker);
                 }
 
