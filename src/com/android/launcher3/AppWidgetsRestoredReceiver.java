@@ -39,7 +39,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
      */
     static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
         final ContentResolver cr = context.getContentResolver();
-        final List<Integer> idsToRemove = new ArrayList<>();
+        final List<Integer> idsToRemove = new ArrayList<Integer>();
         final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
 
         for (int i = 0; i < oldWidgetIds.length; i++) {

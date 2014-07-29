@@ -4829,7 +4829,7 @@ public class Workspace extends SmoothPagedView
     void updateShortcutsAndWidgets(ArrayList<AppInfo> apps) {
         // Create a map of the apps to test against
         final HashMap<ComponentName, AppInfo> appsMap = new HashMap<ComponentName, AppInfo>();
-        final HashSet<String> pkgNames = new HashSet<>();
+        final HashSet<String> pkgNames = new HashSet<String>();
         for (AppInfo ai : apps) {
             appsMap.put(ai.componentName, ai);
             pkgNames.add(ai.componentName.getPackageName());
@@ -4881,7 +4881,7 @@ public class Workspace extends SmoothPagedView
 
         if (state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
             // Update any pending widget
-            HashSet<String> packages = new HashSet<>();
+            HashSet<String> packages = new HashSet<String>();
             packages.add(pkgName);
             restorePendingWidgets(packages);
         }

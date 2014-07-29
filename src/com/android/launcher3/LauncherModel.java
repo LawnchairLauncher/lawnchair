@@ -166,7 +166,8 @@ public class LauncherModel extends BroadcastReceiver
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
 
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
-    static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages = new HashMap<>();
+    static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
+            new HashMap<UserHandleCompat, HashSet<String>>();
 
     // </ only access in worker thread >
 
@@ -1988,7 +1989,7 @@ public class LauncherModel extends BroadcastReceiver
                                                     + " (check again later)", true);
                                             HashSet<String> pkgs = sPendingPackages.get(user);
                                             if (pkgs == null) {
-                                                pkgs = new HashSet<>();
+                                                pkgs = new HashSet<String>();
                                                 sPendingPackages.put(user, pkgs);
                                             }
                                             pkgs.add(cn.getPackageName());
@@ -2826,7 +2827,7 @@ public class LauncherModel extends BroadcastReceiver
                 ArrayList<String> packagesRemoved;
                 for (Entry<UserHandleCompat, HashSet<String>> entry : sPendingPackages.entrySet()) {
                     UserHandleCompat user = entry.getKey();
-                    packagesRemoved = new ArrayList<>();
+                    packagesRemoved = new ArrayList<String>();
                     for (String pkg : entry.getValue()) {
                         if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
                             Launcher.addDumpLog(TAG, "Package not found: " + pkg, true);
