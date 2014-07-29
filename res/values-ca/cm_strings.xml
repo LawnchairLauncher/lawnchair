@@ -22,6 +22,8 @@
   <string name="app_settings">CONFIGURACIÓ DE L\'APP</string>
   <string name="setting_state_on">SÍ</string>
   <string name="setting_state_off">NO</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">Inici CM</string>
   <string name="themes_button_text">Temes</string>
   <string name="scrolling_page_outlines">Vores de la pàgina</string>
   <string name="scrolling_fade_adjacent">Esvaeix els costats de les pàgines</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Acollidora</string>
   <string name="grid_size_condensed">Condensada</string>
   <string name="grid_size_custom">Personalitzada</string>
+  <string name="grid_size_custom_and_size">Personalitzada (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Selecciona la mida personalitzada</string>
   <string name="preferences_interface_homescreen_rows_title">Nombre de files</string>
   <string name="preferences_interface_homescreen_columns_title">Nombre de columnes</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Quadre de cerca</string>
   <string name="search_screen_left_unsupported_toast">Has de tenir una app de cerca suportada i perquè CyanogenMod utilitzi aquesta característica.</string>
   <string name="dialog_confirm">Confirma</string>
+  <string name="permission_desc_read_extension_data">Permet sol·licitar dades d\'extensió del DashClock</string>
+  <string name="permission_label_read_extension_data">Sol·licita dades d\'extensió del DashClock</string>
 </resources>

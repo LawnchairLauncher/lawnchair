@@ -22,6 +22,8 @@
   <string name="app_settings">APP-EINSTELLUNGEN</string>
   <string name="setting_state_on">AN</string>
   <string name="setting_state_off">AUS</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Designs</string>
   <string name="scrolling_page_outlines">Seitenumriss anzeigen</string>
   <string name="scrolling_fade_adjacent">Seiten einblenden</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Mittel</string>
   <string name="grid_size_condensed">Klein</string>
   <string name="grid_size_custom">Benutzerdefiniert</string>
+  <string name="grid_size_custom_and_size">Benutzerdefiniert (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Benutzerdefinierte Größe auswählen</string>
   <string name="preferences_interface_homescreen_rows_title">Anzahl der Zeilen</string>
   <string name="preferences_interface_homescreen_columns_title">Anzahl der Spalten</string>
@@ -46,7 +49,7 @@
   <string name="icon_labels_show">Anzeigen</string>
   <string name="icon_labels_hide">Verbergen</string>
   <string name="protected_app_settings">Geschützte Apps</string>
-  <string name="search_screen_left_text">Google Now</string>
-  <string name="search_screen_left_unsupported_toast">Um diese Funktion nutzen zu können, müssen Sie CyanogenMod und eine unterstützte Such-App installiert haben.</string>
+  <string name="search_screen_left_text">Such-Bildschirm</string>
+  <string name="search_screen_left_unsupported_toast">Um diese Funktion nutzen zu können, muss CyanogenMod und eine unterstützte Such-App installiert sein.</string>
   <string name="dialog_confirm">Bestätigen</string>
 </resources>

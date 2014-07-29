@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="preferences_interface_homescreen_search_default">true</bool>
-    <bool name="preferences_interface_homescreen_search_screen_left_default">false</bool>
     <string name="preferences_interface_homescreen_scrolling_transition_effect">none</string>
     <bool name="preferences_interface_homescreen_scrolling_wallpaper_scroll_default">true</bool>
     <bool name="preferences_interface_homescreen_scrolling_page_outlines_default">@bool/config_workspaceDefaultShowOutlines</bool>

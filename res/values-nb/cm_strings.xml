@@ -22,6 +22,8 @@
   <string name="app_settings">APP-INNSTILLINGER</string>
   <string name="setting_state_on">PÅ</string>
   <string name="setting_state_off">AV</string>
+  <string name="search_panel_gel">Google nå</string>
+  <string name="search_panel_custom_home">CM hjem</string>
   <string name="themes_button_text">Temaer</string>
   <string name="scrolling_page_outlines">Skjermkontur</string>
   <string name="scrolling_fade_adjacent">Fade skjermsider</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Koselig</string>
   <string name="grid_size_condensed">Kondensert</string>
   <string name="grid_size_custom">Egendefinert</string>
+  <string name="grid_size_custom_and_size">Egendefinert (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Velg egendefinert størrelse</string>
   <string name="preferences_interface_homescreen_rows_title">Antall rader</string>
   <string name="preferences_interface_homescreen_columns_title">Antall kolonner</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Søke-panelet</string>
   <string name="search_screen_left_unsupported_toast">Du må ha en støttet søke app og CyanogenMod for å bruke denne funksjonen.</string>
   <string name="dialog_confirm">Bekreft</string>
+  <string name="permission_desc_read_extension_data">Tillater DashClock å be om utvidelsesdata</string>
+  <string name="permission_label_read_extension_data">Be om DashClock utvidelsesdata</string>
 </resources>

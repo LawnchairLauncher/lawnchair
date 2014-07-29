@@ -22,6 +22,8 @@
   <string name="app_settings">යෙදුම් සැකසීම්</string>
   <string name="setting_state_on">සක්‍රීයයි</string>
   <string name="setting_state_off">අක්‍රීයයි</string>
+  <string name="search_panel_gel">ගූගල් දැන්</string>
+  <string name="search_panel_custom_home">CM නිවස</string>
   <string name="themes_button_text">තේමා</string>
   <string name="scrolling_page_outlines">පිටුවේ පිට මායිම්</string>
   <string name="scrolling_fade_adjacent">පැති පිටු අවපැහැ කරන්න</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">ප්‍රියජනක</string>
   <string name="grid_size_condensed">ඝනීභූත</string>
   <string name="grid_size_custom">රිසිවූ</string>
+  <string name="grid_size_custom_and_size">රිසිවූ (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">රිසිකළ ප්‍රමාණය තෝරන්න</string>
   <string name="preferences_interface_homescreen_rows_title">පේළි ගණන</string>
   <string name="preferences_interface_homescreen_columns_title">තීරු ගණන</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">සෙවීම් පුවරුව</string>
   <string name="search_screen_left_unsupported_toast">මෙම විශේෂාංගය භාවිතාකිරීම සඳහා, ඔබ සතුව, සහාය දක්වන සෙවීම් යෙදුමක් සහ CyanogenMod තිබිය යුතුමය.</string>
   <string name="dialog_confirm">තහවුරු කරන්න</string>
+  <string name="permission_desc_read_extension_data">DashClock දිගුවේ දත්ත ඉල්ලුම් කිරීම අනුමත කරන්න</string>
+  <string name="permission_label_read_extension_data">DashClock දිගුවේ දත්ත ඉල්ලුම් කරන්න</string>
 </resources>

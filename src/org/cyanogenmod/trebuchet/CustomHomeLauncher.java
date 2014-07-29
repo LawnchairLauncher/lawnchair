@@ -40,9 +40,9 @@ import org.cyanogenmod.trebuchet.home.HomeWrapper;
 
 import java.lang.Override;
 
-public class TrebuchetLauncher extends Launcher {
+public class CustomHomeLauncher extends Launcher {
 
-    private static final String TAG = "TrebuchetLauncher";
+    private static final String TAG = "CustomHomeLauncher";
 
     private static final boolean DEBUG = false;
     private static final float MIN_PROGRESS = 0;
@@ -54,7 +54,8 @@ public class TrebuchetLauncher extends Launcher {
         private final ComponentName mComponentName;
         private final HomeWrapper mInstance;
 
-        private HomeAppStub(int uid, ComponentName componentName, Context context)
+        private HomeAppStub(int uid, ComponentName componentName,
+                            Context context, Context homeActivityContext)
                 throws SecurityException, ReflectiveOperationException {
             super();
             mUid = uid;
@@ -64,7 +65,8 @@ public class TrebuchetLauncher extends Launcher {
             ClassLoader classloader = context.getClassLoader();
             Class<?> homeInterface = classloader.loadClass(Home.class.getName());
             Class<?> homeClazz = classloader.loadClass(mComponentName.getClassName());
-            mInstance = new HomeWrapper(context, homeInterface, homeClazz.newInstance());
+            mInstance = new HomeWrapper(context, homeInterface,
+                         homeClazz.newInstance(), homeActivityContext);
         }
 
         @Override
@@ -197,8 +199,8 @@ public class TrebuchetLauncher extends Launcher {
     }
 
     @Override
-    protected boolean hasCustomContentToLeft() {
-        return mCurrentHomeApp != null && super.hasCustomContentToLeft();
+    protected boolean isCustomHomeActive() {
+        return mCurrentHomeApp != null;
     }
 
     @Override
@@ -212,6 +214,10 @@ public class TrebuchetLauncher extends Launcher {
         if (mCurrentHomeApp != null) {
             mQsbScroller = addToCustomContentPage(mCurrentHomeApp.mInstance.createCustomView(),
                     mCustomContentCallbacks, mCurrentHomeApp.mInstance.getName());
+
+            if (!isCustomContentModeGel()) {
+                mCurrentHomeApp.mInstance.setShowContent(true);
+            }
         }
     }
 
@@ -227,6 +233,18 @@ public class TrebuchetLauncher extends Launcher {
             return;
         }
         mCurrentHomeApp.mInstance.onRequestSearch(mode);
+    }
+
+    @Override
+    public void updateDynamicGrid() {
+        super.updateDynamicGrid();
+
+        if (isCustomContentModeGel() && mCurrentHomeApp != null) {
+            mCurrentHomeApp.mInstance.setShowContent(false);
+        } else if (getCustomContentMode() == CustomContentMode.CUSTOM_HOME
+                   && mCurrentHomeApp != null) {
+            mCurrentHomeApp.mInstance.setShowContent(true);
+        }
     }
 
     private synchronized void obtainCurrentHomeAppStubLocked(boolean invalidate) {
@@ -254,7 +272,7 @@ public class TrebuchetLauncher extends Launcher {
                 continue;
             }
             try {
-                mCurrentHomeApp = new HomeAppStub(key, pkg, ctx);
+                mCurrentHomeApp = new HomeAppStub(key, pkg, ctx, this);
             } catch (ReflectiveOperationException ex) {
                 if (!DEBUG) {
                     Log.w(TAG, "Cannot instantiate home package: " + qualifiedPkg + ". Ignored.");

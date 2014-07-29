@@ -22,6 +22,8 @@
   <string name="app_settings">NASTAVENIA APLIKÁCIÍ</string>
   <string name="setting_state_on">Zapnuté</string>
   <string name="setting_state_off">VYPNUTÉ</string>
+  <string name="search_panel_gel">Asistent Google</string>
+  <string name="search_panel_custom_home">Domov CM</string>
   <string name="themes_button_text">Témy</string>
   <string name="scrolling_page_outlines">Obrysy stránky</string>
   <string name="scrolling_fade_adjacent">Stmavnuté bočné strany</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Útulná</string>
   <string name="grid_size_condensed">Zhustená</string>
   <string name="grid_size_custom">Vlastná</string>
+  <string name="grid_size_custom_and_size">Vlastná (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Vyberte vlastnú veľkosť</string>
   <string name="preferences_interface_homescreen_rows_title">Počet riadkov</string>
   <string name="preferences_interface_homescreen_columns_title">Počet stĺpcov</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Panel vyhľadávania</string>
   <string name="search_screen_left_unsupported_toast">Musíte mať podporovaný vyhľadávač a CyanogenMod pre použitie tejto funkcie.</string>
   <string name="dialog_confirm">Potvrdiť</string>
+  <string name="permission_desc_read_extension_data">Umožňuje požadovanie údajov DashClock rozšírení</string>
+  <string name="permission_label_read_extension_data">Požadovať údaje DashClock rozšírení</string>
 </resources>

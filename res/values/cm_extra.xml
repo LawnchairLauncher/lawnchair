@@ -15,16 +15,13 @@
      limitations under the License.
 -->
 <resources>
-    <!-- AOSP dummy strings (required by old Launcher3 code) -->
-    <string name="chooser_wallpaper" translatable="false">""</string>
-    <string name="folder_cling_move_item" translatable="false">""</string>
-    <string name="group_wallpapers" translatable="false">""</string>
-    <string name="menu_add" translatable="false">""</string>
-    <string name="menu_help" translatable="false">""</string>
-    <string name="menu_manage_apps" translatable="false">""</string>
-    <string name="menu_notifications" translatable="false">""</string>
-    <string name="menu_search" translatable="false">""</string>
-    <string name="menu_settings" translatable="false">""</string>
-    <string name="menu_wallpaper" translatable="false">""</string>
-    <string name="workspace_cling_open_all_apps" translatable="false">""</string>
+    <!-- Dummy strings to prevent aapt warnings -->
+    <string name="all_apps_cling_add_item"></string>
+    <string name="all_apps_cling_title"></string>
+    <string name="custom_workspace_cling_description_1"></string>
+    <string name="custom_workspace_cling_description_2"></string>
+    <string name="custom_workspace_cling_title_1"></string>
+    <string name="custom_workspace_cling_title_2"></string>
+    <!-- Dummy strings required by old Launcher3 code -->
+    <string name="group_wallpapers" translatable="false"></string>
 </resources>

@@ -18,6 +18,7 @@ package org.cyanogenmod.trebuchet.home;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -45,6 +46,7 @@ public class HomeWrapper {
     private static final int M_LAST_ID = M_ID_GETOPERATIONFLAGS + 1;
 
     private final Context mContext;
+    private final Context mHostActivityContext;
     private final Class<?> mClass;
     private final Object mInstance;
 
@@ -53,12 +55,16 @@ public class HomeWrapper {
     private final int mNotificationFlags;
     private final int mOperationFlags;
 
-    public HomeWrapper(Context context, Class<?> cls, Object instance) throws SecurityException {
+    public HomeWrapper(Context context, Class<?> cls,
+                       Object instance,
+                       Context hostActivityContext) throws SecurityException {
         super();
         mContext = context;
+        mHostActivityContext = hostActivityContext;
         mClass = cls;
         mInstance = instance;
         cachedMethods = new SparseArray<Method>(M_LAST_ID);
+        setHostActivityContext();
 
         final String sha1 = createDigest(cls);
         if (!sha1.equals(Home.SIGNATURE)) {
@@ -71,9 +77,33 @@ public class HomeWrapper {
         mOperationFlags = getOperationFlags();
     }
 
+    /** @see Home#setHostActivityContext(Context) **/
+    private void setHostActivityContext() {
+        try {
+            Method method = mClass.getMethod("setHostActivityContext", Context.class);
+            method.invoke(mInstance, mHostActivityContext);
+        } catch (ReflectiveOperationException ex) {
+            throw new SecurityException(ex);
+        }
+    }
+
     /** @see Home#onStart(Context) **/
     public void onStart() {
         invokeVoidContextMethod(M_ID_ONSTART, "onStart");
+    }
+
+    /**
+     * Load and show the content of this home app if true,
+     * hide and remove providers if false.
+     * @param showContent Should content be shown
+     */
+    public void setShowContent(boolean showContent) {
+        try {
+            Method method = mClass.getMethod("setShowContent", Context.class, boolean.class);
+            method.invoke(mInstance, mContext, showContent);
+        } catch (ReflectiveOperationException ex) {
+            throw new SecurityException(ex);
+        }
     }
 
     /** @see Home#onDestroy(Context) **/

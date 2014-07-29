@@ -22,6 +22,8 @@
   <string name="app_settings">הגדרות יישום</string>
   <string name="setting_state_on">מופעל</string>
   <string name="setting_state_off">מושבת</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">ערכות עיצוב</string>
   <string name="scrolling_page_outlines">תיאור דף</string>
   <string name="scrolling_fade_adjacent">עימום דפים צדדיים</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">נעים</string>
   <string name="grid_size_condensed">מרוכז</string>
   <string name="grid_size_custom">מותאם אישית</string>
+  <string name="grid_size_custom_and_size">מותאם אישית (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">בחר גודל מותאם אישית</string>
   <string name="preferences_interface_homescreen_rows_title">מספר שורות</string>
   <string name="preferences_interface_homescreen_columns_title">מספר עמודות</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">לוח חיפוש</string>
   <string name="search_screen_left_unsupported_toast">אתה חייב יישום חיפוש נתמך ו-CyanogenMod כדי להשתמש בתכונה זו.</string>
   <string name="dialog_confirm">אשר</string>
+  <string name="permission_desc_read_extension_data">אפשר בקשה לקבלת מידע על הרחבת DashClock</string>
+  <string name="permission_label_read_extension_data">בקשת מידע על הרחבת DashClock</string>
 </resources>

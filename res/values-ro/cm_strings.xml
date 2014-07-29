@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Comod</string>
   <string name="grid_size_condensed">Condensat</string>
   <string name="grid_size_custom">Particularizat</string>
+  <string name="grid_size_custom_and_size">Particularizat (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Selectare dimensiune particularizată</string>
   <string name="preferences_interface_homescreen_rows_title">Numărul de rânduri</string>
   <string name="preferences_interface_homescreen_columns_title">Numărul de coloane</string>

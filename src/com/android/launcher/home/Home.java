@@ -65,7 +65,7 @@ public interface Home {
      * </pre><br/>
      * DO NOT MODIFY!
      */
-    public static final String SIGNATURE = "5/A6Mxkz8gHHzzVf4qZR+hiSOAw=";
+    public static final String SIGNATURE = "sZFp8JclUBYdIw0QaJZDosZ8SWM=";
 
     /**
      * Defines the name of the metadata used to declared the full qualified Home stub class
@@ -98,12 +98,27 @@ public interface Home {
     public static final int MODE_SEARCH_VOICE = 0x0001;
 
     /**
+     * Invoked when creating the Home object to set
+     * a reference to the host Activity that will
+     * contain this instance.
+     * @param context The Activity Context of the host activity.
+     */
+    void setHostActivityContext(Context context);
+
+    /**
      * Invoked the first time the <code>Home</code> app is created.<br/>
      * This method should be used by implementors classes of this protocol to load the needed
      * resources.
      * @param context the current {@link Context} of the host launcher.
      */
     void onStart(Context context);
+
+    /**
+     * Load and show the content of this home app if true,
+     * hide and remove providers if false.
+     * @param showContent Should content be shown
+     */
+    void setShowContent(boolean showContent);
 
     /**
      * Invoked when the <code>Home</code> app should be destroy.<br/>

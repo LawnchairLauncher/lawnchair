@@ -22,6 +22,8 @@
   <string name="app_settings">USTAWIENIA APLIKACJI</string>
   <string name="setting_state_on">WŁĄCZONE</string>
   <string name="setting_state_off">WYŁĄCZONE</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Motywy</string>
   <string name="scrolling_page_outlines">Kontury strony</string>
   <string name="scrolling_fade_adjacent">Przenikaj strony boczne</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Luźny</string>
   <string name="grid_size_condensed">Zagęszczony</string>
   <string name="grid_size_custom">Własny</string>
+  <string name="grid_size_custom_and_size">Niestandardowy (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Wybierz własny rozmiar</string>
   <string name="preferences_interface_homescreen_rows_title">Liczba wierszy</string>
   <string name="preferences_interface_homescreen_columns_title">Liczba kolumn</string>
@@ -46,7 +49,9 @@
   <string name="icon_labels_show">Pokaż</string>
   <string name="icon_labels_hide">Ukryj</string>
   <string name="protected_app_settings">Chronione aplikacje</string>
-  <string name="search_screen_left_text">Pasek wyszukiwania</string>
+  <string name="search_screen_left_text">Panel wyszukiwania</string>
   <string name="search_screen_left_unsupported_toast">Musisz posiadać aplikację wyszukiwania wspieraną przez CyanogenMod by używać tej funkcji.</string>
   <string name="dialog_confirm">Potwierdź</string>
+  <string name="permission_desc_read_extension_data">Pozwala na żądanie dostępu do danych rozszerzenia DashClock</string>
+  <string name="permission_label_read_extension_data">Żądanie dostępu do danych rozszerzenia DashClock</string>
 </resources>

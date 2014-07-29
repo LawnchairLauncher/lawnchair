@@ -22,6 +22,8 @@
   <string name="app_settings">НАСТРОЙКИ ПРИЛОЖЕНИЯ</string>
   <string name="setting_state_on">ВКЛ.</string>
   <string name="setting_state_off">ВЫКЛ.</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">Дом. экран CM</string>
   <string name="themes_button_text">Темы</string>
   <string name="scrolling_page_outlines">Границы страниц</string>
   <string name="scrolling_fade_adjacent">Затемнять края при переходе</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Удобная</string>
   <string name="grid_size_condensed">Сжатая</string>
   <string name="grid_size_custom">Настраиваемая</string>
+  <string name="grid_size_custom_and_size">Настраиваемая (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Выберите размер сетки</string>
   <string name="preferences_interface_homescreen_rows_title">Количество строк</string>
   <string name="preferences_interface_homescreen_columns_title">Количество столбцов</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Поисковый экран слева</string>
   <string name="search_screen_left_unsupported_toast">Для использования этой функции необходимо наличие поддерживаемого приложения поиска и CyanogenMod.</string>
   <string name="dialog_confirm">Подтвердить</string>
+  <string name="permission_desc_read_extension_data">Приложение сможет запрашивать данные расширений DashClock.</string>
+  <string name="permission_label_read_extension_data">Запрос данных расширений DashClock</string>
 </resources>

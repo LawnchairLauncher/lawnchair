@@ -22,6 +22,8 @@
   <string name="app_settings">NASTAVENÍ APL</string>
   <string name="setting_state_on">Zap.</string>
   <string name="setting_state_off">Vyp.</string>
+  <string name="search_panel_gel">Chytré karty Google</string>
+  <string name="search_panel_custom_home">CM Plocha</string>
   <string name="themes_button_text">Motivy</string>
   <string name="scrolling_page_outlines">Ohraničení stránek</string>
   <string name="scrolling_fade_adjacent">Prolínat hrany ploch</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Pohodlná</string>
   <string name="grid_size_condensed">Zůžená</string>
   <string name="grid_size_custom">Vlastní</string>
+  <string name="grid_size_custom_and_size">Vlastní (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Zvolte vlastní velikost</string>
   <string name="preferences_interface_homescreen_rows_title">Počet řádek</string>
   <string name="preferences_interface_homescreen_columns_title">Počet sloupců</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Panel vyhledávání</string>
   <string name="search_screen_left_unsupported_toast">Pro použití této funkce musíte mít nainstalovanou podporovanou aplikaci vyhledávání a CyanogenMod.</string>
   <string name="dialog_confirm">Potvrdit</string>
+  <string name="permission_desc_read_extension_data">Umožnit vyžádat data rozšíření DashClock</string>
+  <string name="permission_label_read_extension_data">Vyžádat data rozšíření DashClock</string>
 </resources>

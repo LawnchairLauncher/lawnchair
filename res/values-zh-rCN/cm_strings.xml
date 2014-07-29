@@ -22,6 +22,8 @@
   <string name="app_settings">应用设置</string>
   <string name="setting_state_on">打开</string>
   <string name="setting_state_off">关闭</string>
+  <string name="search_panel_gel">Google 即时</string>
+  <string name="search_panel_custom_home">CM 桌面</string>
   <string name="themes_button_text">主题</string>
   <string name="scrolling_page_outlines">页概述</string>
   <string name="scrolling_fade_adjacent">边页淡出</string>
@@ -32,6 +34,7 @@
   <string name="grid_size_condensed">紧凑</string>
   <string name="grid_size_custom">自定义
 </string>
+  <string name="grid_size_custom_and_size">自定义（%1$s）</string>
   <string name="preferences_interface_homescreen_custom">选择自定义尺寸</string>
   <string name="preferences_interface_homescreen_rows_title">行数</string>
   <string name="preferences_interface_homescreen_columns_title">列数</string>
@@ -50,4 +53,6 @@
   <string name="search_screen_left_text">搜索面板</string>
   <string name="search_screen_left_unsupported_toast">您必须有一个受支持的搜索应用和 CyanogenMod 以使用此功能。</string>
   <string name="dialog_confirm">确认</string>
+  <string name="permission_desc_read_extension_data">允许读取 DashClock 扩展数据</string>
+  <string name="permission_label_read_extension_data">读取 DashClock 扩展数据</string>
 </resources>

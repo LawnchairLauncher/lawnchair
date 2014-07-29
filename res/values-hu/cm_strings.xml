@@ -22,6 +22,8 @@
   <string name="app_settings">ALKALMAZÁS BEÁLLÍTÁSAI</string>
   <string name="setting_state_on">BE</string>
   <string name="setting_state_off">KI</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Kezdőlap</string>
   <string name="themes_button_text">Témák</string>
   <string name="scrolling_page_outlines">Oldal körvonalak</string>
   <string name="scrolling_fade_adjacent">Elhalványuló váltás az oldalak közt</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Hangulatos</string>
   <string name="grid_size_condensed">Tömörített</string>
   <string name="grid_size_custom">Egyéni</string>
+  <string name="grid_size_custom_and_size">Egyéni (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Válassza ki az egyéni méretet</string>
   <string name="preferences_interface_homescreen_rows_title">Sorok száma</string>
   <string name="preferences_interface_homescreen_columns_title">Oszlopok száma</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Keresés panel</string>
   <string name="search_screen_left_unsupported_toast">Rendelkeznie kell egy támogatott kereső alkalmazással és CyanogenMod-dal, hogy használhassa ezt a funkciót.</string>
   <string name="dialog_confirm">Megerősítés</string>
+  <string name="permission_desc_read_extension_data">Lehetővé teszi a DashClock bővítmény számára az adat-hozzáférési kérelmet</string>
+  <string name="permission_label_read_extension_data">A DashClock adathozzáférést kér a bővítmény számára</string>
 </resources>

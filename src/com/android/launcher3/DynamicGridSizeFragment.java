@@ -313,14 +313,13 @@ public class DynamicGridSizeFragment extends Fragment implements NumberPicker.On
                 LauncherAppState app = LauncherAppState.getInstance();
                 DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-                String state = mTitles[position];
                 int rows = SettingsProvider.getIntCustomDefault(getActivity(),
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_ROWS, grid.numRowsBase);
                 int columns = SettingsProvider.getIntCustomDefault(getActivity(),
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_COLUMNS, grid.numColumnsBase);
-                state += " " + "(" + rows + " " + "\u00d7" + " " + columns + ")";
+                String gridSize = rows + " " + "\u00d7" + " " + columns;
 
-                textView.setText(state);
+                textView.setText(getString(R.string.grid_size_custom_and_size, gridSize));
             }
 
             convertView.setOnClickListener(mSettingsItemListener);

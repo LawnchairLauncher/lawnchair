@@ -31,6 +31,7 @@
   <string name="grid_size_cozy">Kodune</string>
   <string name="grid_size_condensed">Kärbitud</string>
   <string name="grid_size_custom">Isiklik</string>
+  <string name="grid_size_custom_and_size">Kohandatud (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Vali sobiv suurus</string>
   <string name="preferences_interface_homescreen_rows_title">Ridade arv</string>
   <string name="preferences_interface_homescreen_columns_title">Veergude arv</string>

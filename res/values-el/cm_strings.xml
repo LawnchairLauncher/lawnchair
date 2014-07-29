@@ -22,6 +22,8 @@
   <string name="app_settings">ΡΥΘΜΙΣΕΙΣ ΕΦΑΡΜΟΓΩΝ</string>
   <string name="setting_state_on">ΕΝΕΡΓΟ</string>
   <string name="setting_state_off">ΑΝΕΝΕΡΓΟ</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">Αρχική σελίδα CM</string>
   <string name="themes_button_text">Θέματα</string>
   <string name="scrolling_page_outlines">Περίγραμμα σελιδών</string>
   <string name="scrolling_fade_adjacent">Ξεθώριασμα πλευρικών σελίδων</string>
@@ -31,6 +33,7 @@
   <string name="grid_size_cozy">Κανονικό</string>
   <string name="grid_size_condensed">Συμπυκνωμένο</string>
   <string name="grid_size_custom">Προσαρμοσμένο</string>
+  <string name="grid_size_custom_and_size">Προσαρμοσμένο (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Επιλέξτε προσαρμοσμένο μέγεθος</string>
   <string name="preferences_interface_homescreen_rows_title">Αριθμός γραμμών</string>
   <string name="preferences_interface_homescreen_columns_title">Αριθμός στηλών</string>
@@ -49,4 +52,6 @@
   <string name="search_screen_left_text">Σελίδα αναζήτησης</string>
   <string name="search_screen_left_unsupported_toast">Πρέπει να έχετε μια υποστηριζόμενη εφαρμογή αναζήτησης και CyanogenMod για να χρησιμοποιήσετε αυτήν τη δυνατότητα.</string>
   <string name="dialog_confirm">Επιβεβαίωση</string>
+  <string name="permission_desc_read_extension_data">Επιτρέπει την αίτηση δεδομένων επέκτασεων DashClock</string>
+  <string name="permission_label_read_extension_data">Αίτηση δεδομένων επέκτασεων DashClock</string>
 </resources>

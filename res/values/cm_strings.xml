@@ -29,6 +29,10 @@
     <string name="setting_state_on">ON</string>
     <string name="setting_state_off">OFF</string>
 
+    <!-- Search Panel states -->
+    <string name="search_panel_gel">Google Now</string>
+    <string name="search_panel_custom_home">CM Home</string>
+
     <!-- Themes button -->
     <string name="themes_button_text">Themes</string>
 
@@ -44,6 +48,7 @@
     <string name="grid_size_cozy">Cozy</string>
     <string name="grid_size_condensed">Condensed</string>
     <string name="grid_size_custom">Custom</string>
+    <string name="grid_size_custom_and_size">Custom (%1$s)</string>
     <string name="preferences_interface_homescreen_custom">Select custom size</string>
     <string name="preferences_interface_homescreen_rows_title">Number of rows</string>
     <string name="preferences_interface_homescreen_columns_title">Number of columns</string>
@@ -87,4 +92,7 @@
     <!-- Dialog -->
     <string name="dialog_confirm">Confirm</string>
 
+    <!-- Dashclock permission info (for CMHome) -->
+    <string name="permission_label_read_extension_data">request DashClock extension data</string>
+    <string name="permission_desc_read_extension_data">Allows the app to request DashClock extension data</string>
 </resources>
