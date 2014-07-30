@@ -325,9 +325,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) &&
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER &&
+                canMergeDragFolder((FolderInfo) item)) &&
                 !mFolder.isFull() && item != mInfo && !mInfo.opened &&
                 !hidden);
+    }
+
+    private boolean canMergeDragFolder(FolderInfo info) {
+        int currentCount = mFolder.getInfo().contents.size();
+        int dragFolderCount = info.contents.size();
+        return (currentCount + dragFolderCount) <= mFolder.getMaxItems();
     }
 
     public boolean acceptDrop(Object dragInfo) {
@@ -368,6 +375,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 item = ((AppInfo) mDragInfo).makeShortcut();
                 item.spanX = 1;
                 item.spanY = 1;
+            } else if (mDragInfo instanceof FolderInfo) {
+                return;
             } else {
                 item = (ShortcutInfo) mDragInfo;
             }
