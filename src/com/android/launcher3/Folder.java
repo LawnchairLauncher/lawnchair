@@ -1010,6 +1010,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return getItemCount() >= mMaxNumItems;
     }
 
+    public int getMaxItems() {
+        return mMaxNumItems;
+    }
+
     private void centerAboutIcon() {
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
