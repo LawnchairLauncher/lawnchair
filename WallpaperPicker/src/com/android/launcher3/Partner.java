@@ -45,6 +45,8 @@ public class Partner {
     public static final String RESOURCE_DEFAULT_WALLPAPER_HIDDEN = "default_wallpapper_hidden";
     public static final String RESOURCE_SYSTEM_WALLPAPER_DIR = "system_wallpaper_directory";
 
+    public static final String RESOURCE_REQUIRE_FIRST_RUN_FLOW = "requires_first_run_flow";
+
     private static boolean sSearched = false;
     private static Partner sPartner;
 
@@ -110,5 +112,11 @@ public class Partner {
         int resId = getResources().getIdentifier(RESOURCE_SYSTEM_WALLPAPER_DIR, "string",
                 getPackageName());
         return (resId != 0) ? new File(getResources().getString(resId)) : null;
+    }
+
+    public boolean requiresFirstRunFlow() {
+        int resId = getResources().getIdentifier(RESOURCE_REQUIRE_FIRST_RUN_FLOW, "bool",
+                getPackageName());
+        return resId != 0 && getResources().getBoolean(resId);
     }
 }
