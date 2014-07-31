@@ -73,6 +73,10 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         mLauncherApps.startActivityForProfile(component, user.getUser(), sourceBounds, opts);
     }
 
+    public void showAppDetailsForProfile(ComponentName component, UserHandleCompat user) {
+        mLauncherApps.showAppDetailsForProfile(component, user.getUser(), null, null);
+    }
+
     public void addOnAppsChangedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
         WrappedCallback wrappedCallback = new WrappedCallback(callback);
         synchronized (mCallbacks) {

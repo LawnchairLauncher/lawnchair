@@ -27,14 +27,21 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.provider.Settings;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Version of {@link LauncherAppsCompat} for devices with API level 16.
+ * Devices Pre-L don't support multiple profiles in one launcher so
+ * user parameters are ignored and all methods operate on the current user.
+ */
 public class LauncherAppsCompatV16 extends LauncherAppsCompat {
 
     private PackageManager mPm;
@@ -79,6 +86,15 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         launchIntent.setSourceBounds(sourceBounds);
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(launchIntent, opts);
+    }
+
+    public void showAppDetailsForProfile(ComponentName component, UserHandleCompat user) {
+        String packageName = component.getPackageName();
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        mContext.startActivity(intent, null);
     }
 
     public synchronized void addOnAppsChangedCallback(OnAppsChangedCallbackCompat callback) {
