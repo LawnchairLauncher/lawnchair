@@ -82,10 +82,9 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -93,9 +92,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
@@ -107,10 +104,10 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.PagedView.PageSwitchListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -1055,12 +1052,15 @@ public class Launcher extends Activity
         }
         mWorkspace.updateInteractionForState();
         mWorkspace.onResume();
+
+        PackageInstallerCompat.getInstance(this).onResume();
     }
 
     @Override
     protected void onPause() {
         // Ensure that items added to Launcher are queued until Launcher returns
         InstallShortcutReceiver.enableInstallQueue();
+        PackageInstallerCompat.getInstance(this).onPause();
 
         super.onPause();
         mPaused = true;
@@ -2028,6 +2028,7 @@ public class Launcher extends Activity
         mWorkspace = null;
         mDragController = null;
 
+        PackageInstallerCompat.getInstance(this).onStop();
         LauncherAnimUtils.onDestroyActivity();
     }
 
@@ -4478,6 +4479,7 @@ public class Launcher extends Activity
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
+        PackageInstallerCompat.getInstance(this).onFinishBind();
     }
 
     private void sendLoadingCompleteBroadcastIfNecessary() {
@@ -4591,9 +4593,10 @@ public class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void updatePackageState(String pkgName, int state) {
+    @Override
+    public void updatePackageState(ArrayList<PackageInstallInfo> installInfo) {
         if (mWorkspace != null) {
-            mWorkspace.updatePackageState(pkgName, state);
+            mWorkspace.updatePackageState(installInfo);
         }
     }
 

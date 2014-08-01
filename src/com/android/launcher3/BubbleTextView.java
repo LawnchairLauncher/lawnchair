@@ -434,65 +434,48 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyState() {
-        final int progressLevel;
-        final int state = getState();
-        if (DEBUG) Log.d(TAG, "applying icon state: " + state);
-
-        switch(state) {
-            case ShortcutInfo.PACKAGE_STATE_DEFAULT:
-                super.setText(mDefaultText);
-                progressLevel = 100;
-                break;
-
-            case ShortcutInfo.PACKAGE_STATE_ENQUEUED:
-                setText(R.string.package_state_enqueued);
-                progressLevel = 0;
-                break;
-
-            case ShortcutInfo.PACKAGE_STATE_DOWNLOADING:
-                setText(R.string.package_state_downloading);
-                // TODO(sunnygoyal): fix progress
-                progressLevel = 30;
-                break;
-
-            case ShortcutInfo.PACKAGE_STATE_INSTALLING:
-                setText(R.string.package_state_installing);
-                progressLevel = 100;
-                break;
-
-            case ShortcutInfo.PACKAGE_STATE_ERROR:
-                setText(R.string.package_state_error);
-                progressLevel = 0;
-                break;
-
-            case ShortcutInfo.PACKAGE_STATE_UNKNOWN:
-            default:
-                progressLevel = 0;
-                setText(R.string.package_state_unknown);
-                break;
-        }
-
-        Drawable[] drawables = getCompoundDrawables();
-        Drawable top = drawables[1];
-        if ((top != null) && !(top instanceof PreloadIconDrawable)) {
-            top = new PreloadIconDrawable(top, getResources());
-            setCompoundDrawables(drawables[0], top, drawables[2], drawables[3]);
-        }
-        if (top != null) {
-            top.setLevel(progressLevel);
-            if ((top instanceof PreloadIconDrawable)
-                    && (state == ShortcutInfo.PACKAGE_STATE_DEFAULT)) {
-                ((PreloadIconDrawable) top).maybePerformFinishedAnimation();
-            }
-        }
-    }
-
-    private int getState() {
-        if (! (getTag() instanceof ShortcutInfo)) {
-            return ShortcutInfo.PACKAGE_STATE_DEFAULT;
-        } else {
+        if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
-            return info.getState();
+            final int state = info.getState();
+
+            final int progressLevel;
+            if (DEBUG) Log.d(TAG, "applying icon state: " + state);
+
+            switch(state) {
+                case ShortcutInfo.PACKAGE_STATE_DEFAULT:
+                    progressLevel = 100;
+                    break;
+
+                case ShortcutInfo.PACKAGE_STATE_INSTALLING:
+                    setText(R.string.package_state_installing);
+                    progressLevel = info.getProgress();
+                    break;
+
+                case ShortcutInfo.PACKAGE_STATE_ERROR:
+                case ShortcutInfo.PACKAGE_STATE_UNKNOWN:
+                default:
+                    progressLevel = 0;
+                    setText(R.string.package_state_unknown);
+                    break;
+            }
+
+            Drawable[] drawables = getCompoundDrawables();
+            Drawable top = drawables[1];
+            if (top != null) {
+                final PreloadIconDrawable preloadDrawable;
+                if (top instanceof PreloadIconDrawable) {
+                    preloadDrawable = (PreloadIconDrawable) top;
+                } else {
+                    preloadDrawable = new PreloadIconDrawable(top, getResources());
+                    setCompoundDrawables(drawables[0], preloadDrawable, drawables[2], drawables[3]);
+                }
+
+                preloadDrawable.setLevel(progressLevel);
+                if (state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
+                    preloadDrawable.maybePerformFinishedAnimation();
+                }
+
+            }
         }
     }
 }

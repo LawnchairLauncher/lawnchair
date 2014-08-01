@@ -67,6 +67,7 @@ import android.widget.TextView;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
@@ -4864,26 +4865,32 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void updatePackageState(final String pkgName, final int state) {
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (info instanceof ShortcutInfo
-                        && ((ShortcutInfo) info).isPromiseFor(pkgName)
-                        && v instanceof BubbleTextView) {
-                    ((ShortcutInfo) info).setState(state);
-                    ((BubbleTextView)v).applyState();
-                }
-                // process all the shortcuts
-                return false;
-            }
-        });
+    public void updatePackageState(ArrayList<PackageInstallInfo> installInfos) {
+        HashSet<String> completedPackages = new HashSet<>();
 
-        if (state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
-            // Update any pending widget
-            HashSet<String> packages = new HashSet<String>();
-            packages.add(pkgName);
-            restorePendingWidgets(packages);
+        for (final PackageInstallInfo installInfo : installInfos) {
+            mapOverItems(MAP_RECURSE, new ItemOperator() {
+                @Override
+                public boolean evaluate(ItemInfo info, View v, View parent) {
+                    if (info instanceof ShortcutInfo
+                            && ((ShortcutInfo) info).isPromiseFor(installInfo.packageName)
+                            && v instanceof BubbleTextView) {
+                        ((ShortcutInfo) info).setProgress(installInfo.progress);
+                        ((ShortcutInfo) info).setState(installInfo.state);
+                        ((BubbleTextView)v).applyState();
+                    }
+                    // process all the shortcuts
+                    return false;
+                }
+            });
+
+            if (installInfo.state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
+                completedPackages.add(installInfo.packageName);
+            }
+        }
+
+        if (!completedPackages.isEmpty()) {
+            restorePendingWidgets(completedPackages);
         }
     }
 

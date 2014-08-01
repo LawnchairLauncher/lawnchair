@@ -17,7 +17,11 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -25,8 +29,10 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static final String TAG = "LauncherAppState";
@@ -251,8 +257,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return getInstance().mBuildInfo.isDogfoodBuild();
     }
 
-    public void setPackageState(String pkgName, int state) {
-        if (DEBUG) Log.d(TAG, "setPackageState(" + pkgName + ", " +  state  + ")");
-        mModel.setPackageState(pkgName, state);
+    public void setPackageState(ArrayList<PackageInstallInfo> installInfo) {
+        mModel.setPackageState(installInfo);
     }
 }
