@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">לוח חיפוש</string>
   <string name="search_screen_left_unsupported_toast">אתה חייב יישום חיפוש נתמך ו-CyanogenMod כדי להשתמש בתכונה זו.</string>
   <string name="dialog_confirm">אשר</string>
-  <string name="permission_desc_read_extension_data">אפשר בקשה לקבלת מידע על הרחבת DashClock</string>
   <string name="permission_label_read_extension_data">בקשת מידע על הרחבת DashClock</string>
+  <string name="permission_desc_read_extension_data">אפשר ליישום לבקש נתונים על הרחבת DashClock</string>
 </resources>

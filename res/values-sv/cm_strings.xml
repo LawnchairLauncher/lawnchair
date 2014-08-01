@@ -22,6 +22,8 @@
   <string name="app_settings">APPINSTÄLLNINGAR</string>
   <string name="setting_state_on">PÅ</string>
   <string name="setting_state_off">AV</string>
+  <string name="search_panel_gel">Google Nu</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Teman</string>
   <string name="scrolling_page_outlines">Skärmkonturer</string>
   <string name="scrolling_fade_adjacent">Tona skärmsidor</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">Sökpanel</string>
   <string name="search_screen_left_unsupported_toast">Du måste ha en stödd sökapp och CyanogenMod för att använda denna funktion.</string>
   <string name="dialog_confirm">Bekräfta</string>
+  <string name="permission_label_read_extension_data">begär data från DashClock-tillägg</string>
+  <string name="permission_desc_read_extension_data">Tillåter appen att begära data från DashClock-tillägg</string>
 </resources>

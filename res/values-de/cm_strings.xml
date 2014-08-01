@@ -52,4 +52,6 @@
   <string name="search_screen_left_text">Such-Bildschirm</string>
   <string name="search_screen_left_unsupported_toast">Um diese Funktion nutzen zu können, muss CyanogenMod und eine unterstützte Such-App installiert sein.</string>
   <string name="dialog_confirm">Bestätigen</string>
+  <string name="permission_label_read_extension_data">DashClock-Erweiterungsdaten anfordern</string>
+  <string name="permission_desc_read_extension_data">Ermöglicht der App, DashClock-Erweiterungsdaten anzufordern</string>
 </resources>

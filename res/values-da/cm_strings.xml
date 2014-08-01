@@ -22,6 +22,8 @@
   <string name="app_settings">APP-INDSTILLINGER</string>
   <string name="setting_state_on">TIL</string>
   <string name="setting_state_off">FRA</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Launcher</string>
   <string name="themes_button_text">Temaer</string>
   <string name="scrolling_page_outlines">Sideomrids</string>
   <string name="scrolling_fade_adjacent">Sideovergange</string>
@@ -50,4 +52,6 @@
   <string name="search_screen_left_text">Søgepanel</string>
   <string name="search_screen_left_unsupported_toast">Du skal have en understøttet søge-app og CyanogenMod for at anvende denne funktion.</string>
   <string name="dialog_confirm">Bekræft</string>
+  <string name="permission_label_read_extension_data">anmod om DashClock-udvidelsesdata</string>
+  <string name="permission_desc_read_extension_data">Tillader appen at anmode om DashClock-udvidelsesdata</string>
 </resources>

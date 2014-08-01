@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">แผงค้นหา</string>
   <string name="search_screen_left_unsupported_toast">คุณต้องมีแอปที่รองรับการค้นหากับ CyanogenMod เพื่อใช้ความสามารถนี้</string>
   <string name="dialog_confirm">Google</string>
-  <string name="permission_desc_read_extension_data">อนุญาตการร้องขอข้อมูลส่วนขยาย DashClock</string>
   <string name="permission_label_read_extension_data">ร้องขอข้อมูลส่วนขยาย DashClock</string>
+  <string name="permission_desc_read_extension_data">อนุญาตให้แอปร้องขอข้อมูลส่วนขยาย DashClock</string>
 </resources>

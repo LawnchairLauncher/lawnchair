@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">Panel pencarian</string>
   <string name="search_screen_left_unsupported_toast">Anda harus memiliki apl pencarain yang didukung dan CyanogenMod untuk menggunakan fitur ini.</string>
   <string name="dialog_confirm">Konfirmasi</string>
-  <string name="permission_desc_read_extension_data">Izinkan meminta data dari ekstensi DashClock</string>
-  <string name="permission_label_read_extension_data">Meminta ekstensi data DashClock</string>
+  <string name="permission_label_read_extension_data">meminta ekstensi data DashClock</string>
+  <string name="permission_desc_read_extension_data">Izinkan aplikasi meminta data dari ekstensi DashClock</string>
 </resources>

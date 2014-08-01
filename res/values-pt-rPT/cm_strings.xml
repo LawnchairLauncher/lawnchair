@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">Painel de pesquisa</string>
   <string name="search_screen_left_unsupported_toast">Deve ter instalada uma aplicação de pesquisa suportada e a CyanogenMod para utilizar este recurso.</string>
   <string name="dialog_confirm">Confirmar</string>
-  <string name="permission_desc_read_extension_data">Permite a solicitação de dados da extensão DashClock</string>
   <string name="permission_label_read_extension_data">Solicitar dados da extensão DashClock</string>
+  <string name="permission_desc_read_extension_data">Permite que a aplicação solicite dados da extensão DashClock</string>
 </resources>

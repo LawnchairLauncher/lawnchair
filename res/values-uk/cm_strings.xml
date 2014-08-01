@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">Панель пошуку</string>
   <string name="search_screen_left_unsupported_toast">Ви повинні мати програму пошуку яка підтримується CyanogenMod для використання цієї функції.</string>
   <string name="dialog_confirm">Підтвердити</string>
-  <string name="permission_desc_read_extension_data">Дозволяє запитувати дані розширення DashClock</string>
-  <string name="permission_label_read_extension_data">Запитувати дані розширення DashClock</string>
+  <string name="permission_label_read_extension_data">запитувати дані розширення DashClock</string>
+  <string name="permission_desc_read_extension_data">Дозволяє програмі запитувати дані DashClock розширення</string>
 </resources>

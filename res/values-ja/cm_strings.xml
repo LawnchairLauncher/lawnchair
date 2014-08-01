@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">検索パネル</string>
   <string name="search_screen_left_unsupported_toast">この機能を利用するには、サポートされている検索アプリとCyanogenModが必要です。</string>
   <string name="dialog_confirm">確認</string>
-  <string name="permission_desc_read_extension_data">DashClockエクステンションデータのリクエストを許可します</string>
   <string name="permission_label_read_extension_data">DashClockエクステンションデータのリクエスト</string>
+  <string name="permission_desc_read_extension_data">DashClockエクステンションデータのリクエストをアプリに許可します</string>
 </resources>

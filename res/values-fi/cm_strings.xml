@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">Hakupaneeli</string>
   <string name="search_screen_left_unsupported_toast">Sinulla tulee olla tuettu hakusovellus ja CyanogenMod käyttääksesi tätä toimintoa.</string>
   <string name="dialog_confirm">Vahvista</string>
-  <string name="permission_desc_read_extension_data">Sallii DashClock-laajennuksen tietojen pyynnöt</string>
-  <string name="permission_label_read_extension_data">Pyydä DashClock-laajennuksen tiedot</string>
+  <string name="permission_label_read_extension_data">pyydä DashClock-laajennuksen tiedot</string>
+  <string name="permission_desc_read_extension_data">Sallii sovelluksen pyytää DashClock-laajennoksen tietoja</string>
 </resources>

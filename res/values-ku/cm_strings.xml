@@ -52,6 +52,4 @@
   <string name="search_screen_left_text">پەرەی گەران</string>
   <string name="search_screen_left_unsupported_toast">پێویسته‌ به‌رنامه‌یه‌کی گه‌ڕانی گونجاوت هه‌بێ بۆ به‌کارهێنانی ساینه‌جین مۆد له‌م خزمه‌تگوزارییه‌.</string>
   <string name="dialog_confirm">دلنیاکردنەوە</string>
-  <string name="permission_desc_read_extension_data">ڕێگه‌دان به‌ داواکردنی کاژێره‌داش بۆ داتای گه‌یاندن</string>
-  <string name="permission_label_read_extension_data">داواکردنی کاژێرداش بۆ داتای گه‌یاندن</string>
 </resources>

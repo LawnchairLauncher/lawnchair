@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">لوحة البحث</string>
   <string name="search_screen_left_unsupported_toast">يجب أن يكون تطبيق البحث و CyanogenMod مدعومين  لستخدام هذه الميزة.</string>
   <string name="dialog_confirm">تأكيد</string>
-  <string name="permission_desc_read_extension_data">يسمح بطلب بيانات ملحق DashClock</string>
   <string name="permission_label_read_extension_data">طلب بيانات ملحق DashClock</string>
+  <string name="permission_desc_read_extension_data">يسمح لي التطبيق بطلب بيانات ملحقة DashClock</string>
 </resources>

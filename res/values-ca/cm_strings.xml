@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">Quadre de cerca</string>
   <string name="search_screen_left_unsupported_toast">Has de tenir una app de cerca suportada i perquè CyanogenMod utilitzi aquesta característica.</string>
   <string name="dialog_confirm">Confirma</string>
-  <string name="permission_desc_read_extension_data">Permet sol·licitar dades d\'extensió del DashClock</string>
-  <string name="permission_label_read_extension_data">Sol·licita dades d\'extensió del DashClock</string>
+  <string name="permission_label_read_extension_data">sol·licita dades de l\'extensió DashClock</string>
+  <string name="permission_desc_read_extension_data">Permet a l\'app sol·licitar dades de l\'extensió DashClock</string>
 </resources>

@@ -52,6 +52,4 @@
   <string name="search_screen_left_text">Panel de gueta</string>
   <string name="search_screen_left_unsupported_toast">Ye necesario tener una aplicación de gueta y CyanogenMod pa poder usar esta carauterística.</string>
   <string name="dialog_confirm">Confirmar</string>
-  <string name="permission_desc_read_extension_data">Permitir que les estensiones de DaskClock soliciten datos</string>
-  <string name="permission_label_read_extension_data">Solicitar datos d\'estensiones de DashClock</string>
 </resources>

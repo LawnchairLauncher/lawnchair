@@ -23,7 +23,7 @@
   <string name="setting_state_on">AAN</string>
   <string name="setting_state_off">UIT</string>
   <string name="search_panel_gel">Google Now</string>
-  <string name="search_panel_custom_home">CM-Home</string>
+  <string name="search_panel_custom_home">CM Home</string>
   <string name="themes_button_text">Thema\'s</string>
   <string name="scrolling_page_outlines">Paginacontouren</string>
   <string name="scrolling_fade_adjacent">Zijkant pagina\'s vervagen</string>
@@ -52,6 +52,6 @@
   <string name="search_screen_left_text">Zoekscherm</string>
   <string name="search_screen_left_unsupported_toast">Een ondersteunde zoek-app en CyanogenMod zijn vereist om deze functie te gebruiken.</string>
   <string name="dialog_confirm">Bevestig</string>
-  <string name="permission_desc_read_extension_data">Hiermee kan de app gegevens van DashClock-extensies opvragen</string>
   <string name="permission_label_read_extension_data">gegevens van DashClock-extensie opvragen</string>
+  <string name="permission_desc_read_extension_data">Hiermee kan de app gegevens van DashClock-extensies opvragen</string>
 </resources>

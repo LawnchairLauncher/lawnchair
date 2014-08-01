@@ -52,6 +52,4 @@
   <string name="search_screen_left_text">Søke-panelet</string>
   <string name="search_screen_left_unsupported_toast">Du må ha en støttet søke app og CyanogenMod for å bruke denne funksjonen.</string>
   <string name="dialog_confirm">Bekreft</string>
-  <string name="permission_desc_read_extension_data">Tillater DashClock å be om utvidelsesdata</string>
-  <string name="permission_label_read_extension_data">Be om DashClock utvidelsesdata</string>
 </resources>
