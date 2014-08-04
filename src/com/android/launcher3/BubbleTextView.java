@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -28,6 +29,7 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -39,6 +41,9 @@ import android.widget.TextView;
  * too aggressive.
  */
 public class BubbleTextView extends TextView {
+
+    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<>(2);
+
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
     static final float SHADOW_Y_OFFSET = 2.0f;
@@ -128,10 +133,7 @@ public class BubbleTextView extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
 
         FastBitmapDrawable iconDrawable = Utilities.createIconDrawable(b);
-        if (info.isDisabled) {
-            iconDrawable.setSaturation(0);
-            iconDrawable.setBrightness(20);
-        }
+        iconDrawable.setGhostModeEnabled(info.isDisabled);
 
         setCompoundDrawables(null, iconDrawable, null, null);
         if (setDefaultPadding) {
@@ -315,7 +317,9 @@ public class BubbleTextView extends TextView {
     }
 
     void setCellLayoutPressedOrFocusedIcon() {
-        if (getParent() instanceof ShortcutAndWidgetContainer) {
+        // Disable pressed state when the icon is in preloader state.
+        if ((getParent() instanceof ShortcutAndWidgetContainer) &&
+                !(getCompoundDrawables()[1] instanceof PreloadIconDrawable)){
             ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) getParent();
             if (parent != null) {
                 CellLayout layout = (CellLayout) parent.getParent();
@@ -385,7 +389,13 @@ public class BubbleTextView extends TextView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
         if (mBackground != null) mBackground.setCallback(this);
+        Drawable top = getCompoundDrawables()[1];
+
+        if (top instanceof PreloadIconDrawable) {
+            ((PreloadIconDrawable) top).applyTheme(getPreloaderTheme());
+        }
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
@@ -466,7 +476,7 @@ public class BubbleTextView extends TextView {
                 if (top instanceof PreloadIconDrawable) {
                     preloadDrawable = (PreloadIconDrawable) top;
                 } else {
-                    preloadDrawable = new PreloadIconDrawable(top, getResources());
+                    preloadDrawable = new PreloadIconDrawable(top, getPreloaderTheme());
                     setCompoundDrawables(drawables[0], preloadDrawable, drawables[2], drawables[3]);
                 }
 
@@ -477,5 +487,19 @@ public class BubbleTextView extends TextView {
 
             }
         }
+    }
+
+    private Theme getPreloaderTheme() {
+        Object tag = getTag();
+        int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
+                (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
+                        : R.style.PreloadIcon;
+        Theme theme = sPreloaderThemes.get(style);
+        if (theme == null) {
+            theme = getResources().newTheme();
+            theme.applyStyle(style, true);
+            sPreloaderThemes.put(style, theme);
+        }
+        return theme;
     }
 }

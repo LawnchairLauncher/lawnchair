@@ -152,6 +152,12 @@
         <attr name="workspace" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="PreloadIconDrawable">
+        <attr name="background" format="reference" />
+        <attr name="ringOutset" format="dimension" />
+        <attr name="indicatorSize" format="dimension" />
+    </declare-styleable>
+
     <!-- Only used in the device overlays -->
     <declare-styleable name="CustomClingTitleText">
     </declare-styleable>

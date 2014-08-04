@@ -380,7 +380,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
         // These correspond two the drawable and view that the icon was dropped _onto_
-        Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
+        Drawable animateDrawable = getTopDrawable((TextView) destView);
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 destView.getMeasuredWidth());
 
@@ -394,7 +394,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void performDestroyAnimation(final View finalView, Runnable onCompleteRunnable) {
-        Drawable animateDrawable = ((TextView) finalView).getCompoundDrawables()[1];
+        Drawable animateDrawable = getTopDrawable((TextView) finalView);
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 finalView.getMeasuredWidth());
 
