@@ -11,6 +11,9 @@ import android.widget.ListView;
 import com.android.launcher3.list.PinnedHeaderListView;
 import com.android.launcher3.list.SettingsPinnedHeaderAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OverviewSettingsPanel {
     public static final String ANDROID_SETTINGS = "com.android.settings";
     public static final String ANDROID_PROTECTED_APPS =
@@ -56,10 +59,14 @@ public class OverviewSettingsPanel {
                 res.getString(R.string.drawer_sorting_text),
                 res.getString(R.string.icon_labels)};
 
-        String[] valuesApp = new String[] {
-                res.getString(R.string.larger_icons_text),
-                res.getString(R.string.protected_app_settings)};
+        List<String> valuesAppList = new ArrayList<String>();
+        valuesAppList.add(res.getString(R.string.larger_icons_text));
+        if (!Utilities.isRestrictedProfile(mLauncher)) {
+            valuesAppList.add(res.getString(R.string.protected_app_settings));
+        }
 
+        String[] valuesApp = new String[valuesAppList.size()];
+        valuesApp = valuesAppList.toArray(valuesApp);
 
         mSettingsAdapter = new SettingsPinnedHeaderAdapter(mLauncher);
         mSettingsAdapter.setHeaders(headers);
