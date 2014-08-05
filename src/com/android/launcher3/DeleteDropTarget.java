@@ -129,11 +129,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private void setHoverColor() {
-        mCurrentDrawable.startTransition(mTransitionDuration);
+        if (mCurrentDrawable != null) {
+            mCurrentDrawable.startTransition(mTransitionDuration);
+        }
         setTextColor(mHoverColor);
     }
     private void resetHoverColor() {
-        mCurrentDrawable.resetTransition();
+        if (mCurrentDrawable != null) {
+            mCurrentDrawable.resetTransition();
+        }
         setTextColor(mOriginalTextColor);
     }
 
@@ -242,8 +246,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
+
+        int width = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicWidth();
+        int height = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicHeight();
         final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
-                mCurrentDrawable.getIntrinsicWidth(), mCurrentDrawable.getIntrinsicHeight());
+                width, height);
         final float scale = (float) to.width() / from.width();
 
         mSearchDropTargetBar.deferOnDragEnd();
@@ -364,8 +371,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
      */
     private AnimatorUpdateListener createFlingToTrashAnimatorListener(final DragLayer dragLayer,
             DragObject d, PointF vel, ViewConfiguration config) {
+
+        int width = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicWidth();
+        int height = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicHeight();
         final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
-                mCurrentDrawable.getIntrinsicWidth(), mCurrentDrawable.getIntrinsicHeight());
+                width, height);
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
 
