@@ -4498,6 +4498,8 @@ public class Launcher extends Activity
             mWorkspace.getUniqueComponents(true, null);
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
+
+        mWorkspace.stripEmptyScreens();
     }
 
     private boolean canRunNewAppsAnimation() {
