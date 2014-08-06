@@ -66,6 +66,7 @@ public abstract class LauncherAppsCompat {
             UserHandleCompat user);
     public abstract void startActivityForProfile(ComponentName component, UserHandleCompat user,
             Rect sourceBounds, Bundle opts);
+    public abstract void showAppDetailsForProfile(ComponentName component, UserHandleCompat user);
     public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user);

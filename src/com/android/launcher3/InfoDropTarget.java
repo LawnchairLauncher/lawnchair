@@ -26,6 +26,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.compat.UserHandleCompat;
+
 public class InfoDropTarget extends ButtonDropTarget {
 
     private ColorStateList mOriginalTextColor;
@@ -82,8 +84,15 @@ public class InfoDropTarget extends ButtonDropTarget {
         } else if (d.dragInfo instanceof PendingAddItemInfo) {
             componentName = ((PendingAddItemInfo) d.dragInfo).componentName;
         }
+        final UserHandleCompat user;
+        if (d.dragInfo instanceof ItemInfo) {
+            user = ((ItemInfo) d.dragInfo).user;
+        } else {
+            user = UserHandleCompat.myUserHandle();
+        }
+
         if (componentName != null) {
-            mLauncher.startApplicationDetailsActivity(componentName);
+            mLauncher.startApplicationDetailsActivity(componentName, user);
         }
 
         // There is no post-drop animation, so clean up the DragView now
