@@ -16,13 +16,9 @@
 
 package com.android.launcher3;
 
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.util.Log;
+import android.util.Pair;
 
 import java.io.File;
 
@@ -32,8 +28,6 @@ import java.io.File;
  * the system.
  */
 public class Partner {
-    private static final String TAG = "Partner";
-
     /** Marker action used to discover partner */
     private static final String
             ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
@@ -55,19 +49,9 @@ public class Partner {
      */
     public static synchronized Partner get(PackageManager pm) {
         if (!sSearched) {
-            final Intent intent = new Intent(ACTION_PARTNER_CUSTOMIZATION);
-            for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
-                if (info.activityInfo != null &&
-                        (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                    final String packageName = info.activityInfo.packageName;
-                    try {
-                        final Resources res = pm.getResourcesForApplication(packageName);
-                        sPartner = new Partner(packageName, res);
-                        break;
-                    } catch (NameNotFoundException e) {
-                        Log.w(TAG, "Failed to find resources for " + packageName);
-                    }
-                }
+            Pair<String, Resources> apkInfo = Utilities.findSystemApk(ACTION_PARTNER_CUSTOMIZATION, pm);
+            if (apkInfo != null) {
+                sPartner = new Partner(apkInfo.first, apkInfo.second);
             }
             sSearched = true;
         }

@@ -1860,7 +1860,7 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 // Make sure the default workspace is loaded
                 Launcher.addDumpLog(TAG, "loadWorkspace: loading default favorites", false);
-                LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary(0);
+                LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary();
             }
 
             // This code path is for our old migration code and should no longer be exercised

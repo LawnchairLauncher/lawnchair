@@ -33,11 +33,9 @@ import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -51,15 +49,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.Xml;
 
+import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -93,8 +90,6 @@ public class LauncherProvider extends ContentProvider {
             "UPGRADED_FROM_OLD_DATABASE";
     static final String EMPTY_DATABASE_CREATED =
             "EMPTY_DATABASE_CREATED";
-    static final String DEFAULT_WORKSPACE_RESOURCE_ID =
-            "DEFAULT_WORKSPACE_RESOURCE_ID";
 
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
@@ -313,41 +308,41 @@ public class LauncherProvider extends ContentProvider {
     }
 
     /**
-     * @param workspaceResId that can be 0 to use default or non-zero for specific resource
+     * Loads the default workspace based on the following priority scheme:
+     *   1) From a package provided by play store
+     *   2) From a partner configuration APK, already in the system image
+     *   3) The default configuration for the particular device
      */
-    synchronized public void loadDefaultFavoritesIfNecessary(int origWorkspaceResId) {
+    synchronized public void loadDefaultFavoritesIfNecessary() {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
-            // By default we use our resources
-            Resources res = getContext().getResources();
-            int workspaceResId = origWorkspaceResId;
 
-            // Use default workspace resource if none provided
-            if (workspaceResId == 0) {
+            WorkspaceLoader loader = AutoInstallsLayout.get(getContext(),
+                    mOpenHelper.mAppWidgetHost, mOpenHelper);
+
+            if (loader == null) {
                 final Partner partner = Partner.get(getContext().getPackageManager());
                 if (partner != null && partner.hasDefaultLayout()) {
                     final Resources partnerRes = partner.getResources();
-                    workspaceResId = partnerRes.getIdentifier(Partner.RESOURCE_DEFAULT_LAYOUT,
+                    int workspaceResId = partnerRes.getIdentifier(Partner.RESOURCE_DEFAULT_LAYOUT,
                             "xml", partner.getPackageName());
-                    res = partnerRes;
+                    if (workspaceResId != 0) {
+                        loader = new SimpleWorkspaceLoader(mOpenHelper, partnerRes, workspaceResId);
+                    }
                 }
             }
-            if (workspaceResId == 0) {
-                workspaceResId =
-                        sp.getInt(DEFAULT_WORKSPACE_RESOURCE_ID, getDefaultWorkspaceResourceId());
+
+            if (loader == null) {
+                loader = new SimpleWorkspaceLoader(mOpenHelper, getContext().getResources(),
+                        getDefaultWorkspaceResourceId());
             }
 
             // Populate favorites table with initial favorites
-            SharedPreferences.Editor editor = sp.edit();
-            editor.remove(EMPTY_DATABASE_CREATED);
-            if (origWorkspaceResId != 0) {
-                editor.putInt(DEFAULT_WORKSPACE_RESOURCE_ID, origWorkspaceResId);
-            }
-
-            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), res, workspaceResId);
+            SharedPreferences.Editor editor = sp.edit().remove(EMPTY_DATABASE_CREATED);
+            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader);
             editor.commit();
         }
     }
@@ -389,12 +384,10 @@ public class LauncherProvider extends ContentProvider {
         mOpenHelper = new DatabaseHelper(getContext());
     }
 
-    private static class DatabaseHelper extends SQLiteOpenHelper {
+    private static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
         private static final String TAG_RESOLVE = "resolve";
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
-        private static final String TAG_CLOCK = "clock";
-        private static final String TAG_SEARCH = "search";
         private static final String TAG_APPWIDGET = "appwidget";
         private static final String TAG_SHORTCUT = "shortcut";
         private static final String TAG_FOLDER = "folder";
@@ -789,7 +782,8 @@ public class LauncherProvider extends ContentProvider {
                 }
 
                 // Add default hotseat icons
-                loadFavorites(db, mContext.getResources(), R.xml.update_workspace);
+                loadFavorites(db, new SimpleWorkspaceLoader(this, mContext.getResources(),
+                        R.xml.update_workspace));
                 version = 9;
             }
 
@@ -1084,12 +1078,18 @@ public class LauncherProvider extends ContentProvider {
         // constructor from the worker thread; however, this doesn't extend until after the
         // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
         // after that point
+        @Override
         public long generateNewItemId() {
             if (mMaxItemId < 0) {
                 throw new RuntimeException("Error: max item id was not initialized");
             }
             mMaxItemId += 1;
             return mMaxItemId;
+        }
+
+        @Override
+        public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
+            return dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
         }
 
         public void updateMaxItemId(long id) {
@@ -1365,9 +1365,10 @@ public class LauncherProvider extends ContentProvider {
             return intent;
         }
 
-        private int loadFavorites(SQLiteDatabase db, Resources res, int workspaceResourceId) {
+        private int loadFavorites(SQLiteDatabase db, WorkspaceLoader loader) {
             ArrayList<Long> screenIds = new ArrayList<Long>();
-            int count = loadFavoritesRecursive(db, res, workspaceResourceId, screenIds);
+            // TODO: Use multiple loaders with fall-back and transaction.
+            int count = loader.loadLayout(db, screenIds);
 
             // Add the screens specified by the items above
             Collections.sort(screenIds);
@@ -1922,7 +1923,7 @@ public class LauncherProvider extends ContentProvider {
             return id;
         }
 
-        public void migrateLauncher2Shortcuts(SQLiteDatabase db, Uri uri) {
+        private void migrateLauncher2Shortcuts(SQLiteDatabase db, Uri uri) {
             final ContentResolver resolver = mContext.getContentResolver();
             Cursor c = null;
             int count = 0;
@@ -1977,7 +1978,6 @@ public class LauncherProvider extends ContentProvider {
                         final int width = (int) grid.numColumns;
                         final int height = (int) grid.numRows;
                         final int hotseatWidth = (int) grid.numHotseatIcons;
-                        PackageManager pm = mContext.getPackageManager();
 
                         final HashSet<String> seenIntents = new HashSet<String>(c.getCount());
 
@@ -2211,7 +2211,7 @@ public class LauncherProvider extends ContentProvider {
      * Build a query string that will match any row where the column matches
      * anything in the values list.
      */
-    static String buildOrWhereString(String column, int[] values) {
+    private static String buildOrWhereString(String column, int[] values) {
         StringBuilder selectWhere = new StringBuilder();
         for (int i = values.length - 1; i >= 0; i--) {
             selectWhere.append(column).append("=").append(values[i]);
@@ -2226,7 +2226,7 @@ public class LauncherProvider extends ContentProvider {
      * Return attribute value, attempting launcher-specific namespace first
      * before falling back to anonymous attribute.
      */
-    static String getAttributeValue(XmlResourceParser parser, String attribute) {
+    private static String getAttributeValue(XmlResourceParser parser, String attribute) {
         String value = parser.getAttributeValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute);
         if (value == null) {
@@ -2239,7 +2239,7 @@ public class LauncherProvider extends ContentProvider {
      * Return attribute resource value, attempting launcher-specific namespace
      * first before falling back to anonymous attribute.
      */
-    static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
+    private static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
             int defaultValue) {
         int value = parser.getAttributeResourceValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute,
@@ -2283,6 +2283,31 @@ public class LauncherProvider extends ContentProvider {
             } else {
                 throw new IllegalArgumentException("Invalid URI: " + url);
             }
+        }
+    }
+
+    static interface WorkspaceLoader {
+        /**
+         * @param screenIds A mutable list of screen its
+         * @return the number of workspace items added.
+         */
+        int loadLayout(SQLiteDatabase db, ArrayList<Long> screenIds);
+    }
+
+    private static class SimpleWorkspaceLoader implements WorkspaceLoader {
+        private final Resources mRes;
+        private final int mWorkspaceId;
+        private final DatabaseHelper mHelper;
+
+        SimpleWorkspaceLoader(DatabaseHelper helper, Resources res, int workspaceId) {
+            mHelper = helper;
+            mRes = res;
+            mWorkspaceId = workspaceId;
+        }
+
+        @Override
+        public int loadLayout(SQLiteDatabase db, ArrayList<Long> screenIds) {
+            return mHelper.loadFavoritesRecursive(db, mRes, mWorkspaceId, screenIds);
         }
     }
 }

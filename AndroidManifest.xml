@@ -23,10 +23,6 @@
     <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="16"/>
 
     <permission
-        android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="signatureOrSystem" />
-    <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="dangerous"
@@ -156,15 +152,6 @@
             android:enabled="@bool/debug_memory_enabled"
             >
         </service>
-
-        <!-- Intent received used to prepopulate the default workspace. -->
-        <receiver
-            android:name="com.android.launcher3.PreloadReceiver"
-            android:permission="com.android.launcher3.permission.PRELOAD_WORKSPACE">
-            <intent-filter>
-                <action android:name="com.android.launcher3.action.PRELOAD_WORKSPACE" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name="com.android.launcher3.WallpaperChangedReceiver">
