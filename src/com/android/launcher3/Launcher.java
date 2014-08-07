@@ -66,6 +66,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -403,6 +404,12 @@ public class Launcher extends Activity
         }
     }
 
+    public static float sAnimatorDurationScale = 1f;
+
+    public static boolean isAnimatorScaleSafe() {
+        return sAnimatorDurationScale >= 1f;
+    }
+
     private CustomContentMode mCustomContentMode = CustomContentMode.CUSTOM_HOME;
 
     // Preferences
@@ -456,6 +463,38 @@ public class Launcher extends Activity
             updateDynamicGrid();
         }
     };
+
+    private class AnimatorScaleObserver extends ContentObserver {
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public AnimatorScaleObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            try {
+                Float curAnimationDurationScale = Settings.Global.getFloat(getContentResolver(),
+                        Settings.Global.ANIMATOR_DURATION_SCALE);
+                if (curAnimationDurationScale != sAnimatorDurationScale) {
+                    // the Animator Duration scale has changed, restart the Launcher to respect
+                    // these changes
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
+            } catch (Settings.SettingNotFoundException e) {
+                sAnimatorDurationScale = 1f;
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -564,6 +603,16 @@ public class Launcher extends Activity
                 "cyanogenmod.intent.action.PROTECTED_COMPONENT_UPDATE");
         registerReceiver(protectedAppsChangedReceiver, protectedAppsFilter,
                 "cyanogenmod.permission.PROTECTED_APP", null);
+
+        try {
+            sAnimatorDurationScale = Settings.Global.getFloat(getContentResolver(),
+                    Settings.Global.ANIMATOR_DURATION_SCALE);
+        } catch (Settings.SettingNotFoundException e) {
+            sAnimatorDurationScale = 1f;
+        }
+
+        AnimatorScaleObserver obs = new AnimatorScaleObserver(new Handler());
+        getContentResolver().registerContentObserver(Settings.Global.CONTENT_URI, true, obs);
     }
 
     public void restoreCustomContentMode() {
