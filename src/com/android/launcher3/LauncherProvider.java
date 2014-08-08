@@ -1285,7 +1285,60 @@ public class LauncherProvider extends ContentProvider {
                 }
                 return false;
             }
+
+            // Add screen id if not present
+            long screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
+            if (!addScreenIdIfNecessary(screenId)) {
+                return false;
+            }
             return true;
+        }
+
+        // Returns true of screen id exists, or if successfully added
+        private boolean addScreenIdIfNecessary(long screenId) {
+            if (!hasScreenId(screenId)) {
+                int rank = getMaxScreenRank() + 1;
+
+                ContentValues v = new ContentValues();
+                v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+                v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, rank);
+                if (dbInsertAndCheck(this, getWritableDatabase(),
+                        TABLE_WORKSPACE_SCREENS, null, v) < 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private boolean hasScreenId(long screenId) {
+            SQLiteDatabase db = getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT * FROM " + TABLE_WORKSPACE_SCREENS + " WHERE "
+                    + LauncherSettings.WorkspaceScreens._ID + " = " + screenId, null);
+            if (c != null) {
+                int count = c.getCount();
+                c.close();
+                return count > 0;
+            } else {
+                return false;
+            }
+        }
+
+        private int getMaxScreenRank() {
+            SQLiteDatabase db = getWritableDatabase();
+            Cursor c = db.rawQuery("SELECT MAX(" + LauncherSettings.WorkspaceScreens.SCREEN_RANK
+                    + ") FROM " + TABLE_WORKSPACE_SCREENS, null);
+
+            // get the result
+            final int maxRankIndex = 0;
+            int rank = -1;
+            if (c != null && c.moveToNext()) {
+                rank = c.getInt(maxRankIndex);
+            }
+            if (c != null) {
+                c.close();
+            }
+
+            return rank;
         }
 
         private static final void beginDocument(XmlPullParser parser, String firstElementName)
@@ -1334,6 +1387,7 @@ public class LauncherProvider extends ContentProvider {
             // Ensure that the max ids are initialized
             mMaxItemId = initializeMaxItemId(db);
             mMaxScreenId = initializeMaxScreenId(db);
+
             return count;
         }
 
