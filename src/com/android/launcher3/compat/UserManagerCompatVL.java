@@ -32,6 +32,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         super(context);
     }
 
+    @Override
     public List<UserHandleCompat> getUserProfiles() {
         List<UserHandle> users = mUserManager.getUserProfiles();
         if (users == null) {
@@ -45,16 +46,17 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         return compatUsers;
     }
 
+    @Override
     public Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user) {
-        return mUserManager.getBadgedDrawableForUser(unbadged, user.getUser());
+        return mUserManager.getBadgedIconForUser(unbadged, user.getUser());
     }
 
+    @Override
     public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
         if (user == null) {
             return label;
         }
-        // TODO Remove casts when API has made it from lmp-dev -> sdk
-        return (CharSequence) mUserManager.getBadgedLabelForUser((String) label, user.getUser());
+        return mUserManager.getBadgedLabelForUser(label, user.getUser());
     }
 }
 
