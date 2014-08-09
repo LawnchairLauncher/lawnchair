@@ -17,7 +17,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="migration_cling_title">Копирај твоје иконе апликација</string>
-  <string name="migration_cling_description">Увези иконе и фолдере са твог старог Почетног екрана?</string>
+  <string name="migration_cling_description">Увези иконе и фолдере са твојих старих Почетних екрана?</string>
   <string name="migration_cling_copy_apps">КОПИРАЈ ИКОНЕ</string>
   <string name="migration_cling_use_default">ПОЧНИ ИЗНОВА</string>
 </resources>

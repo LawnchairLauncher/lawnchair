@@ -52,4 +52,6 @@
   <string name="search_screen_left_text">Panel wyszukiwania</string>
   <string name="search_screen_left_unsupported_toast">Musisz posiadać aplikację wyszukiwania wspieraną przez CyanogenMod by używać tej funkcji.</string>
   <string name="dialog_confirm">Potwierdź</string>
+  <string name="permission_label_read_extension_data">żądanie danych z rozszerzeń DashClock\'a</string>
+  <string name="permission_desc_read_extension_data">Pozwala aplikacji na żądanie danych z rozszerzeń DashClock\'a</string>
 </resources>

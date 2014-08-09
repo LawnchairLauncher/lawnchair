@@ -27,7 +27,7 @@
   <string name="themes_button_text">رووکارەکان</string>
   <string name="scrolling_page_outlines">ده‌رهێڵی لاپه‌ڕه‌</string>
   <string name="scrolling_fade_adjacent">کاڵبوونه‌وه‌ی لاپه‌ڕه‌ هێڵ</string>
-  <string name="scrolling_wallpaper">بابۆڵه‌کردنی سه‌رشاشه‌</string>
+  <string name="scrolling_wallpaper">بابۆڵه‌کردنی سه‌رڕوونما</string>
   <string name="grid_size_text">قه‌باره‌ی تۆڕ</string>
   <string name="grid_size_comfortable">ئاسووده‌</string>
   <string name="grid_size_cozy">پێدانی ئاسوده‌یی</string>
@@ -52,4 +52,6 @@
   <string name="search_screen_left_text">پەرەی گەران</string>
   <string name="search_screen_left_unsupported_toast">پێویسته‌ به‌رنامه‌یه‌کی گه‌ڕانی گونجاوت هه‌بێ بۆ به‌کارهێنانی ساینه‌جین مۆد له‌م خزمه‌تگوزارییه‌.</string>
   <string name="dialog_confirm">دلنیاکردنەوە</string>
+  <string name="permission_label_read_extension_data">داواکردنی کاتژمێرداش بۆ داتای گه‌یاندن</string>
+  <string name="permission_desc_read_extension_data">ڕێگه‌دان به‌ به‌رنامه‌ بۆ داواکردنی کاژێرداش</string>
 </resources>
