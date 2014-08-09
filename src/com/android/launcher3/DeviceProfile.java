@@ -297,7 +297,7 @@ public class DeviceProfile {
         searchBarVisible = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
                 R.bool.preferences_interface_homescreen_search_default);
         searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
-        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx  : 2 * edgeMarginPx);
+        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx  : 3 * edgeMarginPx);
     }
 
     void addCallback(DeviceProfileCallbacks cb) {
@@ -382,9 +382,9 @@ public class DeviceProfile {
         hotseatIconSizePx = (int) (DynamicGrid.pxFromDp(hotseatIconSize, dm) * scale);
 
         // Search Bar
-        searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
         searchBarSpaceMaxWidthPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width);
         searchBarHeightPx = resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
+        searchBarSpaceWidthPx = Math.min(searchBarSpaceMaxWidthPx, widthPx);
         searchBarSpaceHeightPx = searchBarHeightPx + getSearchBarTopOffset();
 
         // Calculate the actual text height
@@ -707,15 +707,19 @@ public class DeviceProfile {
         // Update search bar for live settings
         searchBarVisible = SettingsProvider.getBoolean(launcher, SettingsProvider.SETTINGS_UI_HOMESCREEN_SEARCH,
                 R.bool.preferences_interface_homescreen_search_default);
-        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx : 2 * edgeMarginPx);
+        searchBarSpaceHeightPx = 2 * edgeMarginPx + (searchBarVisible ? searchBarHeightPx : 3 * edgeMarginPx);
         FrameLayout.LayoutParams lp;
         Resources res = launcher.getResources();
         boolean hasVerticalBarLayout = isVerticalBarLayout();
 
         // Layout the search bar space
         View searchBar = launcher.getSearchBar();
+        LinearLayout dropTargetBar = (LinearLayout) launcher.getSearchBar().getDropTargetBar();
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         if (hasVerticalBarLayout) {
+            // If search bar is invisible add some extra padding for the drop targets
+            searchBarSpaceHeightPx = searchBarVisible ? searchBarSpaceHeightPx
+                    : searchBarSpaceHeightPx + 5 * edgeMarginPx;
             // Vertical search bar space
             lp.gravity = Gravity.TOP | Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
@@ -724,9 +728,7 @@ public class DeviceProfile {
                     0, 2 * edgeMarginPx, 0,
                     2 * edgeMarginPx);
 
-            searchBar.setVisibility(searchBarVisible ? View.VISIBLE : View.GONE);
-            LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
-            targets.setOrientation(LinearLayout.VERTICAL);
+            dropTargetBar.setOrientation(LinearLayout.VERTICAL);
         } else {
             // Horizontal search bar space
             lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
@@ -740,7 +742,6 @@ public class DeviceProfile {
         searchBar.setLayoutParams(lp);
 
         // Layout the drop target icons
-        LinearLayout dropTargetBar = (LinearLayout) launcher.getSearchBar().getDropTargetBar();
         if (hasVerticalBarLayout) {
             dropTargetBar.setOrientation(LinearLayout.VERTICAL);
         } else {
