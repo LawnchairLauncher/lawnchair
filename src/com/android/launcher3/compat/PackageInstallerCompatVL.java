@@ -33,7 +33,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private static final String TAG = "PackageInstallerCompatVL";
     private static final boolean DEBUG = false;
 
-    private final SparseArray<InstallSessionInfo> mPendingReplays = new SparseArray<>();
+    private final SparseArray<InstallSessionInfo> mPendingReplays = new SparseArray<InstallSessionInfo>();
     private final PackageInstaller mInstaller;
 
     private boolean mResumed;
@@ -97,7 +97,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             return;
         }
 
-        ArrayList<PackageInstallInfo> updates = new ArrayList<>();
+        ArrayList<PackageInstallInfo> updates = new ArrayList<PackageInstallInfo>();
         if (newInfo != null) {
             updates.add(newInfo);
         }

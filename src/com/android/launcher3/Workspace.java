@@ -4866,7 +4866,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void updatePackageState(ArrayList<PackageInstallInfo> installInfos) {
-        HashSet<String> completedPackages = new HashSet<>();
+        HashSet<String> completedPackages = new HashSet<String>();
 
         for (final PackageInstallInfo installInfo : installInfos) {
             mapOverItems(MAP_RECURSE, new ItemOperator() {
