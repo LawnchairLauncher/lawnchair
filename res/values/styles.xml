@@ -161,6 +161,18 @@
         <item name="android:shadowRadius">2.0</item>
     </style>
 
+    <style name="PreloadIcon">
+        <item name="background">@drawable/virtual_preload</item>
+        <item name="indicatorSize">4dp</item>
+        <item name="ringOutset">4dp</item>
+    </style>
+
+    <style name="PreloadIcon.Folder">
+        <item name="background">@drawable/virtual_preload_folder</item>
+        <item name="indicatorSize">4dp</item>
+        <item name="ringOutset">4dp</item>
+    </style>
+
     <!-- Overridden in device overlays -->
     <style name="CustomClingTitleText">
     </style>

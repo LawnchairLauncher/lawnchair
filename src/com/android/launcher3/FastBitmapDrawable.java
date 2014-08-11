@@ -28,15 +28,17 @@ import android.graphics.drawable.Drawable;
 
 class FastBitmapDrawable extends Drawable {
 
-    private static final ColorMatrix sTempSaturationMatrix = new ColorMatrix();
-    private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
+    private static ColorMatrix sGhostModeMatrix;
+    private static final ColorMatrix sTempMatrix = new ColorMatrix();
+
+    private static final int GHOST_MODE_MIN_COLOR_RANGE = 130;
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private Bitmap mBitmap;
     private int mAlpha;
 
-    private float mSatutation = 1;
     private int mBrightness = 0;
+    private boolean mGhostModeEnabled = false;
 
     FastBitmapDrawable(Bitmap b) {
         mAlpha = 255;
@@ -101,13 +103,19 @@ class FastBitmapDrawable extends Drawable {
         return mBitmap;
     }
 
-    public float getSaturation() {
-        return mSatutation;
+    /**
+     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost'
+     * appearance.
+     */
+    public void setGhostModeEnabled(boolean enabled) {
+        if (mGhostModeEnabled != enabled) {
+            mGhostModeEnabled = enabled;
+            updateFilter();
+        }
     }
 
-    public void setSaturation(float saturation) {
-        mSatutation = saturation;
-        updateFilter();
+    public boolean isGhostModeEnabled() {
+        return mGhostModeEnabled;
     }
 
     public int getBrightness() {
@@ -115,36 +123,58 @@ class FastBitmapDrawable extends Drawable {
     }
 
     public void addBrightness(int amount) {
-        mBrightness += amount;
-        updateFilter();
+        setBrightness(mBrightness + amount);
     }
 
     public void setBrightness(int brightness) {
-        mBrightness = brightness;
-        updateFilter();
+        if (mBrightness != brightness) {
+            mBrightness = brightness;
+            updateFilter();
+        }
     }
 
     private void updateFilter() {
-        if (mSatutation != 1 || mBrightness != 0) {
-            sTempSaturationMatrix.setSaturation(mSatutation);
+        if (mGhostModeEnabled) {
+            if (sGhostModeMatrix == null) {
+                sGhostModeMatrix = new ColorMatrix();
+                sGhostModeMatrix.setSaturation(0);
 
-            if (mBrightness != 0) {
-                // Brightness: C-new = C-old*(1-amount) + amount
-                float scale = 1 - mBrightness / 255.0f;
-                sTempBrightnessMatrix.setScale(scale, scale, scale, 1);
-                float[] array = sTempBrightnessMatrix.getArray();
-
-                // Add the amount to RGB components of the matrix, as per the above formula.
-                // Fifth elements in the array correspond to the constant being added to
-                // red, blue, green, and alpha channel respectively.
-                array[4] = mBrightness;
-                array[9] = mBrightness;
-                array[14] = mBrightness;
-                sTempSaturationMatrix.preConcat(sTempBrightnessMatrix);
+                // For ghost mode, set the color range to [GHOST_MODE_MIN_COLOR_RANGE, 255]
+                float range = (255 - GHOST_MODE_MIN_COLOR_RANGE) / 255.0f;
+                sTempMatrix.set(new float[] {
+                        range, 0, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
+                        0, range, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
+                        0, 0, range, 0, GHOST_MODE_MIN_COLOR_RANGE,
+                        0, 0, 0, 1, 0 });
+                sGhostModeMatrix.preConcat(sTempMatrix);
             }
-            mPaint.setColorFilter(new ColorMatrixColorFilter(sTempSaturationMatrix));
+
+            if (mBrightness == 0) {
+                mPaint.setColorFilter(new ColorMatrixColorFilter(sGhostModeMatrix));
+            } else {
+                setBrightnessMatrix(sTempMatrix, mBrightness);
+                sTempMatrix.postConcat(sGhostModeMatrix);
+                mPaint.setColorFilter(new ColorMatrixColorFilter(sTempMatrix));
+            }
+        } else if (mBrightness != 0) {
+            setBrightnessMatrix(sTempMatrix, mBrightness);
+            mPaint.setColorFilter(new ColorMatrixColorFilter(sTempMatrix));
         } else {
             mPaint.setColorFilter(null);
         }
+    }
+
+    private static void setBrightnessMatrix(ColorMatrix matrix, int brightness) {
+        // Brightness: C-new = C-old*(1-amount) + amount
+        float scale = 1 - brightness / 255.0f;
+        matrix.setScale(scale, scale, scale, 1);
+        float[] array = matrix.getArray();
+
+        // Add the amount to RGB components of the matrix, as per the above formula.
+        // Fifth elements in the array correspond to the constant being added to
+        // red, blue, green, and alpha channel respectively.
+        array[4] = brightness;
+        array[9] = brightness;
+        array[14] = brightness;
     }
 }

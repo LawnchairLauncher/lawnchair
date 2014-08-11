@@ -73,6 +73,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1986,6 +1987,12 @@ public class Workspace extends SmoothPagedView
         d.copyBounds(bounds);
         if (bounds.width() == 0 || bounds.height() == 0) {
             bounds.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        } else {
+            bounds.offsetTo(0, 0);
+        }
+        if (d instanceof PreloadIconDrawable) {
+            int inset = -((PreloadIconDrawable) d).getOutset();
+            bounds.inset(inset, inset);
         }
         return bounds;
     }
@@ -2013,7 +2020,7 @@ public class Workspace extends SmoothPagedView
         Bitmap b = Bitmap.createBitmap(bmpWidth, bmpHeight,
                 Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
-        drawDragView(v, c, 0, true);
+        drawDragView(v, c, 0);
         c.setBitmap(null);
 
         // The outline is used to visualize where the item will land if dropped
@@ -2528,18 +2535,18 @@ public class Workspace extends SmoothPagedView
      * @param destCanvas the canvas to draw on
      * @param padding the horizontal and vertical padding to use when drawing
      */
-    private void drawDragView(View v, Canvas destCanvas, int padding, boolean pruneToDrawable) {
+    private void drawDragView(View v, Canvas destCanvas, int padding) {
         final Rect clipRect = mTempRect;
         v.getDrawingRect(clipRect);
 
         boolean textVisible = false;
 
         destCanvas.save();
-        if (v instanceof TextView && pruneToDrawable) {
+        if (v instanceof TextView) {
             Drawable d = ((TextView) v).getCompoundDrawables()[1];
             Rect bounds = getDrawableBounds(d);
             clipRect.set(0, 0, bounds.width() + padding, bounds.height() + padding);
-            destCanvas.translate(padding / 2, padding / 2);
+            destCanvas.translate(padding / 2 - bounds.left, padding / 2 - bounds.top);
             d.draw(destCanvas);
         } else {
             if (v instanceof FolderIcon) {
@@ -2549,14 +2556,6 @@ public class Workspace extends SmoothPagedView
                     ((FolderIcon) v).setTextVisible(false);
                     textVisible = true;
                 }
-            } else if (v instanceof BubbleTextView) {
-                final BubbleTextView tv = (BubbleTextView) v;
-                clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
-                        tv.getLayout().getLineTop(0);
-            } else if (v instanceof TextView) {
-                final TextView tv = (TextView) v;
-                clipRect.bottom = tv.getExtendedPaddingTop() - tv.getCompoundDrawablePadding() +
-                        tv.getLayout().getLineTop(0);
             }
             destCanvas.translate(-v.getScrollX() + padding / 2, -v.getScrollY() + padding / 2);
             destCanvas.clipRect(clipRect, Op.REPLACE);
@@ -2573,22 +2572,26 @@ public class Workspace extends SmoothPagedView
     /**
      * Returns a new bitmap to show when the given View is being dragged around.
      * Responsibility for the bitmap is transferred to the caller.
+     * @param expectedPadding padding to add to the drag view. If a different padding was used
+     * its value will be changed
      */
-    public Bitmap createDragBitmap(View v, Canvas canvas, int padding) {
+    public Bitmap createDragBitmap(View v, Canvas canvas, AtomicInteger expectedPadding) {
         Bitmap b;
 
+        int padding = expectedPadding.get();
         if (v instanceof TextView) {
             Drawable d = ((TextView) v).getCompoundDrawables()[1];
             Rect bounds = getDrawableBounds(d);
             b = Bitmap.createBitmap(bounds.width() + padding,
                     bounds.height() + padding, Bitmap.Config.ARGB_8888);
+            expectedPadding.set(padding - bounds.left - bounds.top);
         } else {
             b = Bitmap.createBitmap(
                     v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
         }
 
         canvas.setBitmap(b);
-        drawDragView(v, canvas, padding, true);
+        drawDragView(v, canvas, padding);
         canvas.setBitmap(null);
 
         return b;
@@ -2604,7 +2607,7 @@ public class Workspace extends SmoothPagedView
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
-        drawDragView(v, canvas, padding, true);
+        drawDragView(v, canvas, padding);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
         canvas.setBitmap(null);
         return b;
@@ -2664,7 +2667,8 @@ public class Workspace extends SmoothPagedView
     public void beginDragShared(View child, DragSource source) {
         mLauncher.onDragStarted(child);
         // The drag bitmap follows the touch point around on the screen
-        final Bitmap b = createDragBitmap(child, new Canvas(), DRAG_BITMAP_PADDING);
+        AtomicInteger padding = new AtomicInteger(DRAG_BITMAP_PADDING);
+        final Bitmap b = createDragBitmap(child, new Canvas(), padding);
 
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
@@ -2672,7 +2676,7 @@ public class Workspace extends SmoothPagedView
         float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
         int dragLayerX = Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
         int dragLayerY = Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
-                        - DRAG_BITMAP_PADDING / 2);
+                        - padding.get() / 2);
 
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -2687,7 +2691,7 @@ public class Workspace extends SmoothPagedView
             dragLayerY += top;
             // Note: The drag region is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-            dragVisualizeOffset = new Point(-DRAG_BITMAP_PADDING / 2, DRAG_BITMAP_PADDING / 2);
+            dragVisualizeOffset = new Point(-padding.get() / 2, padding.get() / 2);
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
             int previewSize = grid.folderIconSizePx;
@@ -2731,7 +2735,8 @@ public class Workspace extends SmoothPagedView
         mLauncher.onDragStarted(child);
 
         // Compose a new drag bitmap that is of the icon size
-        final Bitmap tmpB = createDragBitmap(child, new Canvas(), DRAG_BITMAP_PADDING);
+        AtomicInteger padding = new AtomicInteger(DRAG_BITMAP_PADDING);
+        final Bitmap tmpB = createDragBitmap(child, new Canvas(), padding);
         Bitmap b = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
         Paint p = new Paint();
         p.setFilterBitmap(true);
@@ -2749,7 +2754,7 @@ public class Workspace extends SmoothPagedView
 
         // Note: The drag region is used to calculate drag layer offsets, but the
         // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-        Point dragVisualizeOffset = new Point(-DRAG_BITMAP_PADDING / 2, DRAG_BITMAP_PADDING / 2);
+        Point dragVisualizeOffset = new Point(-padding.get() / 2, padding.get() / 2);
         Rect dragRect = new Rect(0, 0, iconSize, iconSize);
 
         if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
@@ -3981,14 +3986,15 @@ public class Workspace extends SmoothPagedView
             } else {
                 cellLayout.findCellForSpan(mTargetCell, 1, 1);
             }
+            // Add the item to DB before adding to screen ensures that the container and other
+            // values of the info is properly updated.
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId,
+                    mTargetCell[0], mTargetCell[1]);
+
             addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1], info.spanX,
                     info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getShortcutsAndWidgets().measureChild(view);
-
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId,
-                    lp.cellX, lp.cellY);
 
             if (d.dragView != null) {
                 // We wrap the animation call in the temporary set and reset of the current
