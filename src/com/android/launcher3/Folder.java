@@ -1182,6 +1182,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (mIsExternalDrag) {
             si.cellX = mEmptyCell[0];
             si.cellY = mEmptyCell[1];
+
+            // Actually move the item in the database if it was an external drag. Call this
+            // before creating the view, so that ShortcutInfo is updated appropriately.
+            LauncherModel.addOrMoveItemInDatabase(
+                    mLauncher, si, mInfo.id, 0, si.cellX, si.cellY);
+
+            // We only need to update the locations if it doesn't get handled in #onDropCompleted.
+            if (d.dragSource != this) {
+                updateItemLocationsInDatabaseBatch();
+            }
+            mIsExternalDrag = false;
+
             currentDragView = createAndAddShortcut(si);
         } else {
             currentDragView = mCurrentDragView;
@@ -1208,18 +1220,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
         mItemsInvalidated = true;
         setupContentDimensions(getItemCount());
-
-        // Actually move the item in the database if it was an external drag.
-        if (mIsExternalDrag) {
-            LauncherModel.addOrMoveItemInDatabase(
-                    mLauncher, si, mInfo.id, 0, si.cellX, si.cellY);
-
-            // We only need to update the locations if it doesn't get handled in #onDropCompleted.
-            if (d.dragSource != this) {
-                updateItemLocationsInDatabaseBatch();
-            }
-            mIsExternalDrag = false;
-        }
 
         // Temporarily suppress the listener, as we did all the work already here.
         mSuppressOnAdd = true;
