@@ -46,17 +46,21 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             Log.i(TAG, "Widget state restore id " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
 
             final AppWidgetProviderInfo provider = widgets.getAppWidgetInfo(newWidgetIds[i]);
+            final int state;
+            if (LauncherModel.isValidProvider(provider)) {
+                state = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+            } else {
+                state = LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+            }
 
             ContentValues values = new ContentValues();
             values.put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i]);
-            values.put(LauncherSettings.Favorites.RESTORED, LauncherModel.isValidProvider(provider)
-                    ? LauncherAppWidgetInfo.RESTORE_COMPLETED
-                            : LauncherAppWidgetInfo.RESTORE_PROVIDER_PENDING);
+            values.put(LauncherSettings.Favorites.RESTORED, state);
 
             String[] widgetIdParams = new String[] { Integer.toString(oldWidgetIds[i]) };
 
             int result = cr.update(Favorites.CONTENT_URI, values,
-                    "appWidgetId=? and restored=1", widgetIdParams);
+                    "appWidgetId=? and (restored & 1) = 1", widgetIdParams);
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
                         new String[] {Favorites.APPWIDGET_ID},

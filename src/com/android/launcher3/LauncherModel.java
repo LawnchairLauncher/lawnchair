@@ -2128,47 +2128,59 @@ public class LauncherModel extends BroadcastReceiver
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
                                 String savedProvider = c.getString(appWidgetProviderIndex);
                                 id = c.getLong(idIndex);
+                                final ComponentName component =
+                                        ComponentName.unflattenFromString(savedProvider);
 
                                 final int restoreStatus = c.getInt(restoredIndex);
-                                final boolean restorePending = Utilities.isLmp()
-                                        && (restoreStatus ==
-                                            LauncherAppWidgetInfo.RESTORE_REMAP_PENDING);
-                                final boolean providerPending = Utilities.isLmp()
-                                        && (restoreStatus ==
-                                            LauncherAppWidgetInfo.RESTORE_PROVIDER_PENDING);
+                                final boolean isIdValid = (restoreStatus &
+                                        LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) == 0;
 
-                                // Do not try to get the provider if restore is pending, as the
-                                // widget id is invalid, and it might point to some other provider.
-                                final AppWidgetProviderInfo provider = restorePending ? null
-                                        : widgets.getAppWidgetInfo(appWidgetId);
-                                boolean providerValid = isValidProvider(provider);
+                                final boolean wasProviderReady = (restoreStatus &
+                                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
 
-                                // Skip provider check,
-                                //    1. when the widget id re-map is pending
-                                //    2. provider is pending install for a restored widget
-                                if (!isSafeMode && !providerPending && !restorePending
-                                        && !providerValid) {
+                                final AppWidgetProviderInfo provider = isIdValid
+                                        ? widgets.getAppWidgetInfo(appWidgetId)
+                                        : findAppWidgetProviderInfoWithComponent(context, component);
+
+                                final boolean isProviderReady = isValidProvider(provider);
+                                if (!isSafeMode && wasProviderReady && !isProviderReady) {
                                     String log = "Deleting widget that isn't installed anymore: "
-                                        + "id=" + id + " appWidgetId=" + appWidgetId;
+                                            + "id=" + id + " appWidgetId=" + appWidgetId;
                                     Log.e(TAG, log);
                                     Launcher.addDumpLog(TAG, log, false);
                                     itemsToRemove.add(id);
                                 } else {
-                                    if (providerValid) {
+                                    if (isProviderReady) {
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 provider.provider);
                                         int[] minSpan =
                                                 Launcher.getMinSpanForWidget(context, provider);
                                         appWidgetInfo.minSpanX = minSpan[0];
                                         appWidgetInfo.minSpanY = minSpan[1];
+
+                                        int status = restoreStatus;
+                                        if (!wasProviderReady) {
+                                            // If provider was not previously ready, update the
+                                            // status and UI flag.
+
+                                            // Id would be valid only if the widget restore broadcast was received.
+                                            if (isIdValid) {
+                                                status = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+                                            } else {
+                                                status &= ~LauncherAppWidgetInfo
+                                                        .FLAG_PROVIDER_NOT_READY;
+                                            }
+                                        }
+                                        appWidgetInfo.restoreStatus = status;
                                     } else {
                                         Log.v(TAG, "Widget restore pending id=" + id
                                                 + " appWidgetId=" + appWidgetId
                                                 + " status =" + restoreStatus);
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
-                                                ComponentName.unflattenFromString(savedProvider));
+                                                component);
                                         appWidgetInfo.restoreStatus = restoreStatus;
                                     }
+
                                     appWidgetInfo.id = id;
                                     appWidgetInfo.screenId = c.getInt(screenIndex);
                                     appWidgetInfo.cellX = c.getInt(cellXIndex);
@@ -2195,15 +2207,15 @@ public class LauncherModel extends BroadcastReceiver
                                         break;
                                     }
 
-                                    if (providerValid) {
+                                    if (isProviderReady) {
                                         String providerName = provider.provider.flattenToString();
-
-                                        if (!providerName.equals(savedProvider) || providerPending) {
+                                        if (!providerName.equals(savedProvider) ||
+                                                (appWidgetInfo.restoreStatus != restoreStatus)) {
                                             ContentValues values = new ContentValues();
                                             values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
                                                     providerName);
                                             values.put(LauncherSettings.Favorites.RESTORED,
-                                                    LauncherAppWidgetInfo.RESTORE_COMPLETED);
+                                                    appWidgetInfo.restoreStatus);
                                             String where = BaseColumns._ID + "= ?";
                                             String[] args = {Long.toString(id)};
                                             contentResolver.update(contentUri, values, where, args);
