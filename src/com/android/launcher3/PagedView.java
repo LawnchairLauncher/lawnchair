@@ -152,16 +152,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int mTouchState = TOUCH_STATE_REST;
     protected boolean mForceScreenScrolled = false;
 
-
     protected OnLongClickListener mLongClickListener;
 
     protected int mTouchSlop;
     private int mPagingTouchSlop;
     private int mMaximumVelocity;
-    protected int mPageLayoutPaddingTop;
-    protected int mPageLayoutPaddingBottom;
-    protected int mPageLayoutPaddingLeft;
-    protected int mPageLayoutPaddingRight;
     protected int mPageLayoutWidthGap;
     protected int mPageLayoutHeightGap;
     protected int mCellCountX = 0;
@@ -283,14 +278,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.PagedView, defStyle, 0);
 
-        mPageLayoutPaddingTop = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingTop, 0);
-        mPageLayoutPaddingBottom = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingBottom, 0);
-        mPageLayoutPaddingLeft = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingLeft, 0);
-        mPageLayoutPaddingRight = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingRight, 0);
         mPageLayoutWidthGap = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutWidthGap, 0);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
