@@ -36,6 +36,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -109,6 +110,12 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);
             if (child.getId() == R.id.overview_panel) {
+                LinearLayout layout = (LinearLayout)
+                        child.findViewById(R.id.settings_container);
+                FrameLayout.LayoutParams lp =
+                        (FrameLayout.LayoutParams) layout.getLayoutParams();
+                lp.bottomMargin += insets.bottom - mInsets.bottom;
+                layout.setLayoutParams(lp);
                 continue;
             }
             setInsets(child, insets, mInsets);
