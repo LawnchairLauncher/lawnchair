@@ -36,6 +36,7 @@
     <color name="quantum_panel_text_shadow_color">#FFC4C4C4</color>
     <color name="folder_items_glow_color">#FFCCCCCC</color>
     <color name="outline_color">#FFFFFFFF</color>
-    
+    <color name="widget_text_panel">#FF374248</color>
+
     <color name="first_run_cling_circle_background_color">#64b1ea</color>
 </resources>
