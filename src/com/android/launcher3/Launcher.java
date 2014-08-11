@@ -3248,12 +3248,6 @@ public class Launcher extends Activity
             final View page = content.getPageAt(content.getCurrentPage());
             final View revealView = toView.findViewById(R.id.fake_page);
 
-            if (contentType == AppsCustomizePagedView.ContentType.Widgets) {
-                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));
-            } else {
-                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel));
-            }
-
             // Hide the real page background, and swap in the fake one
             revealView.setVisibility(View.VISIBLE);
             content.setPageBackgroundsVisible(false);
@@ -3276,27 +3270,24 @@ public class Launcher extends Activity
 
             mStateAnimation.play(panelAlphaAndDrift);
 
-            if (page != null) {
-                page.setVisibility(View.VISIBLE);
-                page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            page.setVisibility(View.VISIBLE);
+            page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-                ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, "translationY", yDrift, 0);
-                pageDrift.setDuration(revealDuration);
-                pageDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                mStateAnimation.play(pageDrift);
+            ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, "translationY", yDrift, 0);
+            pageDrift.setDuration(revealDuration);
+            pageDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(pageDrift);
 
-                // TODO (adamcohen): remove this 0.01f hack once fw is fixed
-                // it's there to work around a framework bug (16918357)
-                page.setAlpha(0.01f);
-                ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(page, "alpha", 0.01f, 1f);
-                itemsAlpha.setDuration(revealDuration);
-                itemsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
-                itemsAlpha.setStartDelay(itemsAlphaStagger);
-                mStateAnimation.play(itemsAlpha);
-            }
+            // TODO (adamcohen): remove this 0.01f hack once fw is fixed
+            // it's there to work around a framework bug (16918357)
+            page.setAlpha(0.01f);
+            ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(page, "alpha", 0.01f, 1f);
+            itemsAlpha.setDuration(revealDuration);
+            itemsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
+            itemsAlpha.setStartDelay(itemsAlphaStagger);
+            mStateAnimation.play(itemsAlpha);
 
-            View pageIndicators = toView.findViewById(R.id.apps_customize_page_indicator);
-            pageIndicators.setAlpha(0.01f);
+            View pageIndicators = fromView.findViewById(R.id.apps_customize_page_indicator);
             ObjectAnimator indicatorsAlpha =
                     ObjectAnimator.ofFloat(pageIndicators, "alpha", 1f);
             indicatorsAlpha.setDuration(revealDuration);
@@ -3319,9 +3310,7 @@ public class Launcher extends Activity
 
                     revealView.setVisibility(View.INVISIBLE);
                     revealView.setLayerType(View.LAYER_TYPE_NONE, null);
-                    if (page != null) {
-                        page.setLayerType(View.LAYER_TYPE_NONE, null);
-                    }
+                    page.setLayerType(View.LAYER_TYPE_NONE, null);
                     content.setPageBackgroundsVisible(true);
 
                     // Hide the search bar
@@ -3450,13 +3439,6 @@ public class Launcher extends Activity
             final View page = content.getPageAt(content.getNextPage());
             final View revealView = fromView.findViewById(R.id.fake_page);
 
-            AppsCustomizePagedView.ContentType contentType = content.getContentType();
-            if (contentType == AppsCustomizePagedView.ContentType.Widgets) {
-                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));
-            } else {
-                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel));
-            }
-
             int width = revealView.getMeasuredWidth();
             int height = revealView.getMeasuredHeight();
             float revealRadius = (float) Math.sqrt((width * width) / 4 + (height * height) / 4);
@@ -3471,7 +3453,7 @@ public class Launcher extends Activity
 
             PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
             PropertyValuesHolder panelDrift =
-                    PropertyValuesHolder.ofFloat("translationY", 0, yDrift);
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, yDrift);
             ObjectAnimator panelAlphaAndDrift =
                     ObjectAnimator.ofPropertyValuesHolder(revealView, panelAlpha, panelDrift);
             panelAlphaAndDrift.setDuration(revealDuration);
@@ -3481,26 +3463,23 @@ public class Launcher extends Activity
 
             mStateAnimation.play(panelAlphaAndDrift);
 
-            if (page != null) {
-                page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-                ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, "translationY", 0, yDrift);
-                pageDrift.setDuration(revealDuration);
-                pageDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                pageDrift.setStartDelay(itemsAlphaStagger);
-                mStateAnimation.play(pageDrift);
+            ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, View.TRANSLATION_Y, 0, yDrift);
+            pageDrift.setDuration(revealDuration);
+            pageDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            pageDrift.setStartDelay(itemsAlphaStagger);
+            mStateAnimation.play(pageDrift);
 
-                page.setAlpha(1f);
-                ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(page, View.ALPHA, 1f, 0f);
-                itemsAlpha.setDuration(revealDuration);
-                itemsAlpha.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                mStateAnimation.play(itemsAlpha);
-            }
+            page.setAlpha(1f);
+            ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(page, View.ALPHA, 1f, 0f);
+            itemsAlpha.setDuration(revealDuration);
+            itemsAlpha.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(itemsAlpha);
 
             View pageIndicators = fromView.findViewById(R.id.apps_customize_page_indicator);
-            pageIndicators.setAlpha(1f);
             ObjectAnimator indicatorsAlpha =
-                    ObjectAnimator.ofFloat(pageIndicators, "alpha", 0f);
+                    ObjectAnimator.ofFloat(pageIndicators, View.ALPHA, 0f);
             indicatorsAlpha.setDuration(revealDuration);
             indicatorsAlpha.setInterpolator(new DecelerateInterpolator(1.5f));
             mStateAnimation.play(indicatorsAlpha);
@@ -3543,9 +3522,7 @@ public class Launcher extends Activity
                     }
 
                     revealView.setLayerType(View.LAYER_TYPE_NONE, null);
-                    if (page != null) {
-                        page.setLayerType(View.LAYER_TYPE_NONE, null);
-                    }
+                    page.setLayerType(View.LAYER_TYPE_NONE, null);
                     content.setPageBackgroundsVisible(true);
                     mAppsCustomizeContent.updateCurrentPageScroll();
                 }
