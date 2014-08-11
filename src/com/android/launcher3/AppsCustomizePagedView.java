@@ -185,6 +185,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Dimens
     private int mContentWidth, mContentHeight;
     private int mWidgetCountX, mWidgetCountY;
+    private int mWidgetWidthGap, mWidgetHeightGap;
     private PagedViewCellLayout mWidgetSpacingLayout;
     private int mNumAppsPages;
     private int mNumWidgetPages;
@@ -196,7 +197,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private static float TRANSITION_SCALE_FACTOR = 0.74f;
     private static float TRANSITION_PIVOT = 0.65f;
     private static float TRANSITION_MAX_ROTATION = 22;
-    private static final boolean PERFORM_OVERSCROLL_ROTATION = false;
+    private static final boolean PERFORM_OVERSCROLL_ROTATION = true;
     private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
     private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
 
@@ -244,6 +245,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        mWidgetWidthGap = mWidgetHeightGap = grid.edgeMarginPx;
         mWidgetCountX = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountX, 2);
         mWidgetCountY = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountY, 2);
         mClingFocusedX = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedX, 0);
@@ -283,9 +285,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     void setAllAppsPadding(Rect r) {
         mAllAppsPadding.set(r);
     }
-
     void setWidgetsPageIndicatorPadding(int pageIndicatorHeight) {
-        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), pageIndicatorHeight);
+        mPageLayoutPaddingBottom = pageIndicatorHeight;
     }
 
     WidgetPreviewLoader getWidgetPreviewLoader() {
@@ -364,6 +365,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // use for each page
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        mWidgetSpacingLayout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
+                mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
         mCellCountX = (int) grid.allAppsNumCols;
         mCellCountY = (int) grid.allAppsNumRows;
         updatePageCounts();
@@ -999,9 +1002,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         setVisibilityOnChildren(layout, View.GONE);
         int widthSpec = MeasureSpec.makeMeasureSpec(mContentWidth, MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
+        layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
 
-        Drawable bg = getContext().getDrawable(R.drawable.quantum_panel);
+        Resources res = getContext().getResources();
+        Drawable bg = res.getDrawable(R.drawable.quantum_panel);
         if (bg != null) {
             layout.setBackground(bg);
             bg.setVisible(mPageBackgroundsVisible, false);
@@ -1163,23 +1168,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // immediately after syncing, we don't have a proper width.
         int widthSpec = MeasureSpec.makeMeasureSpec(mContentWidth, MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
-        layout.setBackground(getContext().getDrawable(R.drawable.quantum_panel_dark));
+        layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
     }
 
     public void syncWidgetPageItems(final int page, final boolean immediate) {
         int numItemsPerPage = mWidgetCountX * mWidgetCountY;
 
-        final PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
-
         // Calculate the dimensions of each cell we are giving to each widget
         final ArrayList<Object> items = new ArrayList<Object>();
-        int contentWidth = mContentWidth - getPaddingLeft() - getPaddingRight()
-                - layout.getPaddingLeft() - layout.getPaddingRight();
-        final int cellWidth = contentWidth / mWidgetCountX;
-        int contentHeight = mContentHeight - getPaddingTop() - getPaddingBottom()
-                - layout.getPaddingTop() - layout.getPaddingBottom();
-        final int cellHeight = contentHeight / mWidgetCountY;
+        int contentWidth = mContentWidth;
+        final int cellWidth = ((contentWidth - mPageLayoutPaddingLeft - mPageLayoutPaddingRight
+                - ((mWidgetCountX - 1) * mWidgetWidthGap)) / mWidgetCountX);
+        int contentHeight = mContentHeight;
+        final int cellHeight = ((contentHeight - mPageLayoutPaddingTop - mPageLayoutPaddingBottom
+                - ((mWidgetCountY - 1) * mWidgetHeightGap)) / mWidgetCountY);
 
         // Prepare the set of widgets to load previews for in the background
         int offset = page * numItemsPerPage;
@@ -1188,6 +1191,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         // Prepopulate the pages with the other widget info, and fill in the previews later
+        final PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
         layout.setColumnCount(layout.getCellCountX());
         for (int i = 0; i < items.size(); ++i) {
             Object rawInfo = items.get(i);
@@ -1228,22 +1232,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // Layout each widget
             int ix = i % mWidgetCountX;
             int iy = i / mWidgetCountX;
-
-            if (ix > 0) {
-                View border = widget.findViewById(R.id.left_border);
-                border.setVisibility(View.VISIBLE);
-            }
-            if (ix < mWidgetCountX - 1) {
-                View border = widget.findViewById(R.id.right_border);
-                border.setVisibility(View.VISIBLE);
-            }
-
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
                     GridLayout.spec(iy, GridLayout.START),
                     GridLayout.spec(ix, GridLayout.TOP));
             lp.width = cellWidth;
             lp.height = cellHeight;
             lp.setGravity(Gravity.TOP | Gravity.START);
+            if (ix > 0) lp.leftMargin = mWidgetWidthGap;
+            if (iy > 0) lp.topMargin = mWidgetHeightGap;
             layout.addView(widget, lp);
         }
 

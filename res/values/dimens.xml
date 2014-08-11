@@ -62,7 +62,7 @@
     <dimen name="apps_customize_tab_bar_height">52dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">0dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
-    <dimen name="apps_customize_horizontal_padding">0dp</dimen>
+    <dimen name="apps_customize_horizontal_padding">4dp</dimen>
 
     <!-- The AppsCustomize page indicator -->
     <dimen name="apps_customize_page_indicator_height">12dp</dimen>
@@ -89,8 +89,9 @@
     <dimen name="app_widget_preview_padding_left">16dp</dimen>
     <dimen name="app_widget_preview_padding_right">16dp</dimen>
     <dimen name="app_widget_preview_padding_top">32dp</dimen>
-    <dimen name="app_widget_preview_label_vertical_padding">8dp</dimen>
-    <dimen name="app_widget_preview_label_horizontal_padding">8dp</dimen>
+    <dimen name="app_widget_preview_label_margin_top">4dp</dimen>
+    <dimen name="app_widget_preview_label_margin_left">2dp</dimen>
+    <dimen name="app_widget_preview_label_margin_right">2dp</dimen>
 
     <!-- Padding applied to shortcut previews -->
     <dimen name="shortcut_preview_padding_left">0dp</dimen>

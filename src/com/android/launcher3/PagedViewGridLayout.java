@@ -56,6 +56,18 @@ public class PagedViewGridLayout extends GridLayout implements Page {
         }
     }
 
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // PagedView currently has issues with different-sized pages since it calculates the
+        // offset of each page to scroll to before it updates the actual size of each page
+        // (which can change depending on the content if the contents aren't a fixed size).
+        // We work around this by having a minimum size on each widget page).
+        int widthSpecSize = Math.min(getSuggestedMinimumWidth(),
+                MeasureSpec.getSize(widthMeasureSpec));
+        int widthSpecMode = MeasureSpec.EXACTLY;
+        super.onMeasure(MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode),
+                heightMeasureSpec);
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
