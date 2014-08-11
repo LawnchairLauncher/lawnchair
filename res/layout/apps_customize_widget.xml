@@ -25,24 +25,45 @@
     android:background="@drawable/focusable_view_bg"
     android:focusable="true">
 
-    <!-- The preview of the widget or shortcut. -->
-    <com.android.launcher3.PagedViewWidgetImageView
-        android:id="@+id/widget_preview"
-        style="@style/PagedViewWidgetImageView"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingTop="@dimen/app_widget_preview_padding_top"
-        android:paddingEnd="@dimen/app_widget_preview_padding_right"
-        android:paddingRight="@dimen/app_widget_preview_padding_right"
-        android:scaleType="matrix"
-        android:background="@drawable/screenpanel" />
+        android:layout_weight="1">
+        <FrameLayout
+            android:id="@+id/left_border"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/widget_text_panel"
+            android:visibility="gone" />
+
+        <!-- The preview of the widget or shortcut. -->
+        <com.android.launcher3.PagedViewWidgetImageView
+            android:id="@+id/widget_preview"
+            style="@style/PagedViewWidgetImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/app_widget_preview_padding_top"
+            android:paddingEnd="@dimen/app_widget_preview_padding_right"
+            android:paddingRight="@dimen/app_widget_preview_padding_right"
+            android:scaleType="matrix" />
+        <FrameLayout
+            android:id="@+id/right_border"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/widget_text_panel"
+            android:visibility="gone" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/app_widget_preview_label_margin_top"
-        android:layout_marginStart="@dimen/app_widget_preview_label_margin_left"
-        android:layout_marginEnd="@dimen/app_widget_preview_label_margin_right"
+        android:paddingTop="@dimen/app_widget_preview_label_vertical_padding"
+        android:paddingBottom="@dimen/app_widget_preview_label_vertical_padding"
+        android:paddingLeft="@dimen/app_widget_preview_label_horizontal_padding"
+        android:paddingRight="@dimen/app_widget_preview_label_horizontal_padding"
+        android:background="@color/widget_text_panel"
         android:orientation="horizontal">
         <!-- The name of the widget. -->
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -56,7 +77,7 @@
             android:fadingEdge="horizontal"
 
             android:textColor="#FFFFFFFF"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textAlignment="viewStart"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"
@@ -73,7 +94,7 @@
             android:layout_weight="0"
             android:gravity="start"
 
-            android:textColor="#FFAAAAAA"
+            android:textColor="#FFFFFFFF"
             android:textSize="12sp"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"

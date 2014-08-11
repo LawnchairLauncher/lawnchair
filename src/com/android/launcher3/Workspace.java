@@ -210,7 +210,6 @@ public class Workspace extends SmoothPagedView
     private final int[] mTempXY = new int[2];
     private int[] mTempVisiblePagesRange = new int[2];
     private boolean mOverscrollTransformsSet;
-    private float mLastOverscrollPivotX;
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -1692,20 +1691,13 @@ public class Workspace extends SmoothPagedView
 
             final boolean isLeftPage = mOverScrollX < 0;
             index = (!isRtl && isLeftPage) || (isRtl && !isLeftPage) ? lowerIndex : upperIndex;
-            pivotX = isLeftPage ? rightBiasedPivot : leftBiasedPivot;
 
             CellLayout cl = (CellLayout) getChildAt(index);
             float scrollProgress = getScrollProgress(screenCenter, cl, index);
             cl.setOverScrollAmount(Math.abs(scrollProgress), isLeftPage);
-            float rotation = -WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
-            cl.setRotationY(rotation);
 
-            if (!mOverscrollTransformsSet || Float.compare(mLastOverscrollPivotX, pivotX) != 0) {
+            if (!mOverscrollTransformsSet) {
                 mOverscrollTransformsSet = true;
-                mLastOverscrollPivotX = pivotX;
-                cl.setCameraDistance(mDensity * mCameraDistance);
-                cl.setPivotX(cl.getMeasuredWidth() * pivotX);
-                cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
                 cl.setOverscrollTransformsDirty(true);
             }
         } else {
