@@ -213,6 +213,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     int mWidgetLoadingId = -1;
     PendingAddWidgetInfo mCreateWidgetInfo = null;
     private boolean mDraggingWidget = false;
+    boolean mPageBackgroundsVisible;
 
     private Toast mWidgetInstructionToast;
 
@@ -1003,12 +1004,26 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
-        layout.setPadding(mAllAppsPadding.left, mAllAppsPadding.top, mAllAppsPadding.right,
-                mAllAppsPadding.bottom);
-        setVisibilityOnChildren(layout, View.VISIBLE);
 
         Resources res = getContext().getResources();
-        layout.setBackground(res.getDrawable(R.drawable.quantum_panel));
+        Drawable bg = res.getDrawable(R.drawable.quantum_panel);
+        if (bg != null) {
+            layout.setBackground(bg);
+            bg.setVisible(mPageBackgroundsVisible, false);
+        }
+
+        setVisibilityOnChildren(layout, View.VISIBLE);
+    }
+
+    public void setPageBackgroundsVisible(boolean visible) {
+        mPageBackgroundsVisible = visible;
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            Drawable bg = getChildAt(i).getBackground();
+            if (bg != null) {
+                bg.setVisible(visible, false);
+            }
+        }
     }
 
     public void syncAppsPageItems(int page, boolean immediate) {
@@ -1437,24 +1452,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         v.setPivotX(pageWidth / 2.0f);
                         v.setRotationY(0f);
                     }
-                }
-
-                // TODO: clean this up
-                alpha = 1;
-                translationX = 0;
-                scale = 1;
-
-                v.setTranslationX(translationX);
-                v.setScaleX(scale);
-                v.setScaleY(scale);
-                v.setAlpha(alpha);
-
-                // If the view has 0 alpha, we set it to be invisible so as to prevent
-                // it from accepting touches
-                if (alpha == 0) {
-                    v.setVisibility(INVISIBLE);
-                } else if (v.getVisibility() != VISIBLE) {
-                    v.setVisibility(VISIBLE);
                 }
             }
         }

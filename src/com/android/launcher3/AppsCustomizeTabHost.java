@@ -181,9 +181,6 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         mPagedView.onLauncherTransitionStart(l, animated, toWorkspace);
-        if (animated && !Utilities.isLmp()) {
-            enableAndBuildHardwareLayer();
-        }
     }
 
     @Override
@@ -195,9 +192,6 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         mPagedView.onLauncherTransitionEnd(l, animated, toWorkspace);
         mInTransition = false;
-        if (animated && !Utilities.isLmp()) {
-            setLayerType(LAYER_TYPE_NONE, null);
-        }
 
         if (!toWorkspace) {
             // Make sure adjacent pages are loaded (we wait until after the transition to
@@ -241,20 +235,4 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
             throw new RuntimeException("Failed; can't get z-order of views");
         }
     }
-
-    private void enableAndBuildHardwareLayer() {
-        // isHardwareAccelerated() checks if we're attached to a window and if that
-        // window is HW accelerated-- we were sometimes not attached to a window
-        // and buildLayer was throwing an IllegalStateException
-        if (isHardwareAccelerated()) {
-            // Turn on hardware layers for performance
-            setLayerType(LAYER_TYPE_HARDWARE, null);
-
-            // force building the layer, so you don't get a blip early in an animation
-            // when the layer is created layer
-            buildLayer();
-        }
-    }
-
-
 }

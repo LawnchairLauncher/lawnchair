@@ -92,7 +92,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
@@ -3065,16 +3067,6 @@ public class Launcher extends Activity
         return (mState == State.APPS_CUSTOMIZE) || (mOnResumeState == State.APPS_CUSTOMIZE);
     }
 
-    /**
-     * Helper method for the cameraZoomIn/cameraZoomOut animations
-     * @param view The view being animated
-     * @param scaleFactor The scale factor used for the zoom
-     */
-    private void setPivotsForZoom(View view, float scaleFactor) {
-        view.setPivotX(view.getWidth() / 2.0f);
-        view.setPivotY(view.getHeight() / 2.0f);
-    }
-
     private void setWorkspaceBackground(boolean workspace) {
         mLauncherView.setBackground(workspace ?
                 mWorkspaceBackgroundDrawable : null);
@@ -3185,14 +3177,14 @@ public class Launcher extends Activity
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomInTime);
         final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
         final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
+        final int itemsAlphaStagger =
+                res.getInteger(R.integer.config_appsCustomizeItemsAlphaStagger);
 
         final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mWorkspace;
         final AppsCustomizeTabHost toView = mAppsCustomizeTabHost;
         final int startDelay =
                 res.getInteger(R.integer.config_workspaceAppsCustomizeAnimationStagger);
-
-        setPivotsForZoom(toView, scale);
 
         Workspace.State workspaceState = contentType == AppsCustomizePagedView.ContentType.Widgets ?
                 Workspace.State.OVERVIEW_HIDDEN : Workspace.State.NORMAL_HIDDEN;
@@ -3205,146 +3197,92 @@ public class Launcher extends Activity
         }
 
         if (animated) {
-            if (!material) {
-                toView.setScaleX(scale);
-                toView.setScaleY(scale);
-                final LauncherViewPropertyAnimator scaleAnim =
-                        new LauncherViewPropertyAnimator(toView);
-                scaleAnim.
-                    scaleX(1f).scaleY(1f).
-                    setDuration(duration).
-                    setInterpolator(new Workspace.ZoomOutInterpolator());
+            mStateAnimation = LauncherAnimUtils.createAnimatorSet();
 
-                toView.setVisibility(View.VISIBLE);
-                toView.setAlpha(0f);
-                final ObjectAnimator alphaAnim = LauncherAnimUtils
-                    .ofFloat(toView, "alpha", 0f, 1f)
-                    .setDuration(fadeDuration);
-                alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
-                alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        if (animation == null) {
-                            throw new RuntimeException("animation is null");
-                        }
-                        float t = (Float) animation.getAnimatedValue();
-                        dispatchOnLauncherTransitionStep(fromView, t);
-                        dispatchOnLauncherTransitionStep(toView, t);
-                    }
-                });
+            final AppsCustomizePagedView content = (AppsCustomizePagedView)
+                    toView.findViewById(R.id.apps_customize_pane_content);
 
-                // toView should appear right at the end of the workspace shrink
-                // animation
-                mStateAnimation = LauncherAnimUtils.createAnimatorSet();
-                mStateAnimation.play(scaleAnim).after(startDelay);
-                mStateAnimation.play(alphaAnim).after(startDelay);
+            final View page = content.getPageAt(content.getCurrentPage());
+            final View revealView = toView.findViewById(R.id.fake_page);
 
-                mStateAnimation.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        // Prepare the position
-                        toView.setTranslationX(0.0f);
-                        toView.setTranslationY(0.0f);
-                        toView.setVisibility(View.VISIBLE);
-                        toView.bringToFront();
-                    }
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        dispatchOnLauncherTransitionEnd(fromView, animated, false);
-                        dispatchOnLauncherTransitionEnd(toView, animated, false);
+            // Hide the real page background, and swap in the fake one
+            revealView.setVisibility(View.VISIBLE);
+            content.setPageBackgroundsVisible(false);
 
-                        // Hide the search bar
-                        if (mSearchDropTargetBar != null) {
-                            mSearchDropTargetBar.hideSearchBar(false);
-                        }
-                    }
-                });
-            } else {
-                int width = toView.getMeasuredWidth();
-                int height = toView.getMeasuredHeight();
-                float revealRadius = (float) Math.sqrt((width * width) / 4 + height * height);
+            int width = revealView.getMeasuredWidth();
+            int height = revealView.getMeasuredHeight();
 
-                mStateAnimation = LauncherAnimUtils.createAnimatorSet();
+            float revealRadius = (float) Math.sqrt((width * width) / 4 + (height * height) / 4);
+            float yDrift = height / 2f;
 
-                AppsCustomizePagedView content = (AppsCustomizePagedView)
-                        toView.findViewById(R.id.apps_customize_pane_content);
+            revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat("alpha", 0.4f, 1f);
+            PropertyValuesHolder panelDrift =
+                    PropertyValuesHolder.ofFloat("translationY", yDrift, 0f);
 
-                View page = content.getPageAt(content.getCurrentPage());
-                View revealView = content;
+            ObjectAnimator panelAlphaAndDrift =
+                    ObjectAnimator.ofPropertyValuesHolder(revealView, panelAlpha, panelDrift);
+            panelAlphaAndDrift.setDuration(revealDuration);
+            panelAlphaAndDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
-                float yDrift = height / 2f - 400;
+            mStateAnimation.play(panelAlphaAndDrift);
 
-                LauncherViewPropertyAnimator panelAlphaAndDrift =
-                        new LauncherViewPropertyAnimator(revealView);
-                revealView.setTranslationY(yDrift);
-                revealView.setAlpha(0.3f);
-                panelAlphaAndDrift.alpha(1)
-                    .translationY(0)
-                    .setDuration(revealDuration)
-                    .setInterpolator(new LogDecelerateInterpolator(100, 0));
+            page.setVisibility(View.VISIBLE);
+            page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-                mStateAnimation.play(panelAlphaAndDrift);
+            ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, "translationY", yDrift, 0);
+            pageDrift.setDuration(revealDuration);
+            pageDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(pageDrift);
 
-                if (page instanceof CellLayout) {
-                    CellLayout cellLayout = (CellLayout) page;
-                    cellLayout.enableHardwareLayer(true);
+            // TODO (adamcohen): remove this 0.01f hack once fw is fixed
+            // it's there to work around a framework bug (16918357)
+            page.setAlpha(0.01f);
+            ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(page, "alpha", 0.01f, 1f);
+            itemsAlpha.setDuration(revealDuration);
+            itemsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
+            itemsAlpha.setStartDelay(itemsAlphaStagger);
+            mStateAnimation.play(itemsAlpha);
 
-                    View iconsView = cellLayout.getShortcutsAndWidgets();
-                    iconsView.setAlpha(0f);
+            View pageIndicators = fromView.findViewById(R.id.apps_customize_page_indicator);
+            ObjectAnimator indicatorsAlpha =
+                    ObjectAnimator.ofFloat(pageIndicators, "alpha", 1f);
+            indicatorsAlpha.setDuration(revealDuration);
+            mStateAnimation.play(indicatorsAlpha);
 
-                    LauncherViewPropertyAnimator iconsAlpha =
-                            new LauncherViewPropertyAnimator(iconsView);
-                    iconsAlpha.alpha(1f)
-                        .setDuration(revealDuration - 100)
-                        .setInterpolator(new LogDecelerateInterpolator(100, 0));
-                    mStateAnimation.play(iconsAlpha);
-                }
-
-                View pageIndicators = toView.findViewById(R.id.apps_customize_page_indicator);
-                pageIndicators.setAlpha(0f);
-                final LauncherViewPropertyAnimator indicatorsAlpha =
-                        new LauncherViewPropertyAnimator(pageIndicators);
-                indicatorsAlpha.alpha(1f);
-                indicatorsAlpha.setDuration(revealDuration);
-                mStateAnimation.play(indicatorsAlpha);
-
-                width = revealView.getMeasuredWidth();
-
-                Animator reveal =
+            if (material) {
+                ValueAnimator reveal = (ValueAnimator)
                         ViewAnimationUtils.createCircularReveal(revealView, width / 2,
-                                height / 2 + 100, 0f, revealRadius);
+                                height / 2, 0f, revealRadius);
                 reveal.setDuration(revealDuration);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-
-                toView.setTranslationX(0);
-                toView.setTranslationY(0);
-                toView.setAlpha(1f);
-                // toView should appear right at the end of the workspace shrink
-                // animation
                 mStateAnimation.play(reveal);
-
-                reveal.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        // Prepare the position
-                        toView.bringToFront();
-                        toView.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                mStateAnimation.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        dispatchOnLauncherTransitionEnd(fromView, animated, false);
-                        dispatchOnLauncherTransitionEnd(toView, animated, false);
-
-                        // Hide the search bar
-                        if (mSearchDropTargetBar != null) {
-                            mSearchDropTargetBar.hideSearchBar(false);
-                        }
-                    }
-                });
             }
+
+            mStateAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
+                    dispatchOnLauncherTransitionEnd(toView, animated, false);
+
+                    revealView.setVisibility(View.INVISIBLE);
+                    revealView.setLayerType(View.LAYER_TYPE_NONE, null);
+                    page.setLayerType(View.LAYER_TYPE_NONE, null);
+                    content.setPageBackgroundsVisible(true);
+
+                    // Hide the search bar
+                    if (mSearchDropTargetBar != null) {
+                        mSearchDropTargetBar.hideSearchBar(false);
+                    }
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    // Prepare the position
+                    toView.bringToFront();
+                    toView.setVisibility(View.VISIBLE);
+                }
+            });
 
             boolean delayAnim = false;
             if (workspaceAnim != null) {
@@ -3368,13 +3306,14 @@ public class Launcher extends Activity
                     // we waited for a layout/draw pass
                     if (mStateAnimation != stateAnimation)
                         return;
-                    setPivotsForZoom(toView, scale);
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
                     LauncherAnimUtils.startAnimationAfterNextDraw(mStateAnimation, toView);
                 }
             };
             if (delayAnim) {
+                toView.bringToFront();
+                toView.setVisibility(View.VISIBLE);
                 final ViewTreeObserver observer = toView.getViewTreeObserver();
                 observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
                         public void onGlobalLayout() {
@@ -3429,6 +3368,8 @@ public class Launcher extends Activity
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
         final int fadeOutDuration = res.getInteger(R.integer.config_appsCustomizeFadeOutTime);
         final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
+        final int itemsAlphaStagger =
+                res.getInteger(R.integer.config_appsCustomizeItemsAlphaStagger);
 
         final float scaleFactor = (float)
                 res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
@@ -3445,116 +3386,84 @@ public class Launcher extends Activity
                     toState, animated);
         }
 
-        setPivotsForZoom(fromView, scaleFactor);
         showHotseat(animated);
         if (animated) {
-            if (!material) {
-                final LauncherViewPropertyAnimator scaleAnim =
-                        new LauncherViewPropertyAnimator(fromView);
-                scaleAnim.
-                    scaleX(scaleFactor).scaleY(scaleFactor).
-                    setDuration(duration).
-                    setInterpolator(new Workspace.ZoomInInterpolator());
+            mStateAnimation = LauncherAnimUtils.createAnimatorSet();
 
-                final ObjectAnimator alphaAnim = LauncherAnimUtils
-                    .ofFloat(fromView, "alpha", 1f, 0f)
-                    .setDuration(fadeOutDuration);
-                alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-                alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        float t = 1f - (Float) animation.getAnimatedValue();
-                        dispatchOnLauncherTransitionStep(fromView, t);
-                        dispatchOnLauncherTransitionStep(toView, t);
-                    }
-                });
+            final AppsCustomizePagedView content = (AppsCustomizePagedView)
+                    fromView.findViewById(R.id.apps_customize_pane_content);
 
-                mStateAnimation = LauncherAnimUtils.createAnimatorSet();
+            final View page = content.getPageAt(content.getNextPage());
+            final View revealView = fromView.findViewById(R.id.fake_page);
 
-                dispatchOnLauncherTransitionPrepare(fromView, animated, true);
-                dispatchOnLauncherTransitionPrepare(toView, animated, true);
-                mAppsCustomizeContent.stopScrolling();
+            int width = revealView.getMeasuredWidth();
+            int height = revealView.getMeasuredHeight();
+            float revealRadius = (float) Math.sqrt((width * width) / 4 + (height * height) / 4);
 
-                mStateAnimation.playTogether(scaleAnim, alphaAnim);
-            } else {
-                mStateAnimation = LauncherAnimUtils.createAnimatorSet();
+            // Hide the real page background, and swap in the fake one
+            revealView.setVisibility(View.VISIBLE);
+            content.setPageBackgroundsVisible(false);
 
-                int width = fromView.getMeasuredWidth();
-                int height = fromView.getMeasuredHeight();
-                float revealRadius = (float) Math.sqrt((width * width) / 4 + height * height);
+            float yDrift = height / 2f;
 
-                AppsCustomizePagedView content = (AppsCustomizePagedView)
-                        fromView.findViewById(R.id.apps_customize_pane_content);
+            revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-                final View page = content.getPageAt(content.getNextPage());
-                View revealView = page;
+            PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f);
+            PropertyValuesHolder panelDrift =
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, yDrift);
+            ObjectAnimator panelAlphaAndDrift =
+                    ObjectAnimator.ofPropertyValuesHolder(revealView, panelAlpha, panelDrift);
+            panelAlphaAndDrift.setDuration(revealDuration);
 
-                float yDrift = height / 2f - 400;
+            panelAlphaAndDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            panelAlphaAndDrift.setStartDelay(itemsAlphaStagger);
 
-                LauncherViewPropertyAnimator panelAlphaAndDrift =
-                        new LauncherViewPropertyAnimator(revealView);
-                revealView.setTranslationY(0);
-                revealView.setAlpha(1);
-                panelAlphaAndDrift.alpha(0)
-                    .translationY(yDrift)
-                    .setDuration(revealDuration)
-                    .setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(panelAlphaAndDrift);
 
-                mStateAnimation.play(panelAlphaAndDrift);
+            page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-                if (page instanceof CellLayout) {
-                    final CellLayout cellLayout = (CellLayout) page;
-                    cellLayout.enableHardwareLayer(true);
+            ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, View.TRANSLATION_Y, 0, yDrift);
+            pageDrift.setDuration(revealDuration);
+            pageDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            pageDrift.setStartDelay(itemsAlphaStagger);
+            mStateAnimation.play(pageDrift);
 
-                    final View iconsView = cellLayout.getShortcutsAndWidgets();
+            page.setAlpha(1f);
+            ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(page, View.ALPHA, 1f, 0f);
+            itemsAlpha.setDuration(revealDuration);
+            itemsAlpha.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(itemsAlpha);
 
-                    LauncherViewPropertyAnimator iconsAlpha =
-                            new LauncherViewPropertyAnimator(iconsView);
-                    iconsAlpha.alpha(0f)
-                        .setDuration(revealDuration - 100)
-                        .setInterpolator(new LogDecelerateInterpolator(100, 0));
+            View pageIndicators = fromView.findViewById(R.id.apps_customize_page_indicator);
+            ObjectAnimator indicatorsAlpha =
+                    ObjectAnimator.ofFloat(pageIndicators, View.ALPHA, 0f);
+            indicatorsAlpha.setDuration(revealDuration);
+            indicatorsAlpha.setInterpolator(new DecelerateInterpolator(1.5f));
+            mStateAnimation.play(indicatorsAlpha);
 
-                    mStateAnimation.play(iconsAlpha);
+            width = revealView.getMeasuredWidth();
 
-                    mStateAnimation.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            cellLayout.setTranslationY(0);
-                            cellLayout.setAlpha(1f);
-                            iconsView.setAlpha(1f);
-                        }
-                    });
-                }
-
-                View pageIndicators = fromView.findViewById(R.id.apps_customize_page_indicator);
-                final LauncherViewPropertyAnimator indicatorsAlpha =
-                        new LauncherViewPropertyAnimator(pageIndicators);
-                indicatorsAlpha.alpha(0f);
-                indicatorsAlpha.setDuration(revealDuration);
-                indicatorsAlpha.setInterpolator(new DecelerateInterpolator(1.5f));
-                mStateAnimation.play(indicatorsAlpha);
-
-                width = revealView.getMeasuredWidth();
-
+            if (material) {
                 Animator reveal =
                         ViewAnimationUtils.createCircularReveal(revealView, width / 2,
                                 height / 2 + 100, revealRadius, 0f);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
                 reveal.setDuration(revealDuration);
+                reveal.setStartDelay(itemsAlphaStagger);
 
                 reveal.addListener(new AnimatorListenerAdapter() {
-                    @Override
                     public void onAnimationEnd(Animator animation) {
-                        fromView.setVisibility(View.GONE);
+                        revealView.setVisibility(View.INVISIBLE);
                     }
                 });
 
-                dispatchOnLauncherTransitionPrepare(fromView, animated, true);
-                dispatchOnLauncherTransitionPrepare(toView, animated, true);
-                mAppsCustomizeContent.stopScrolling();
-
                 mStateAnimation.play(reveal);
             }
+
+            dispatchOnLauncherTransitionPrepare(fromView, animated, true);
+            dispatchOnLauncherTransitionPrepare(toView, animated, true);
+            mAppsCustomizeContent.stopScrolling();
+
             if (workspaceAnim != null) {
                 mStateAnimation.play(workspaceAnim);
             }
@@ -3568,6 +3477,10 @@ public class Launcher extends Activity
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
+
+                    revealView.setLayerType(View.LAYER_TYPE_NONE, null);
+                    page.setLayerType(View.LAYER_TYPE_NONE, null);
+                    content.setPageBackgroundsVisible(true);
                     mAppsCustomizeContent.updateCurrentPageScroll();
                 }
             });
