@@ -33,12 +33,17 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * This is set during the package backup creation.
      */
-    public static final int RESTORE_REMAP_PENDING = 1;
+    public static final int FLAG_ID_NOT_VALID = 1;
 
     /**
-     * Widget provider is not yet installed.
+     * Indicates that the provider is not available yet.
      */
-    public static final int RESTORE_PROVIDER_PENDING = 2;
+    public static final int FLAG_PROVIDER_NOT_READY = 2;
+
+    /**
+     * Indicates that the widget UI is not yet ready, and user needs to set it up again.
+     */
+    public static final int FLAG_UI_NOT_READY = 4;
 
     /**
      * Indicates that the widget hasn't been instantiated yet.
@@ -89,6 +94,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         super.onAddToDatabase(context, values);
         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
         values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString());
+        values.put(LauncherSettings.Favorites.RESTORED, restoreStatus);
     }
 
     /**
@@ -121,6 +127,10 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     public final boolean isWidgetIdValid() {
-        return restoreStatus != RESTORE_REMAP_PENDING;
+        return (restoreStatus & FLAG_ID_NOT_VALID) == 0;
+    }
+
+    public final boolean hasRestoreFlag(int flag) {
+        return (restoreStatus & flag) == flag;
     }
 }

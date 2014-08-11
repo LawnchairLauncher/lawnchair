@@ -874,20 +874,25 @@ public class LauncherBackupHelper implements BackupHelper {
             values.put(Favorites.INTENT, favorite.intent);
         }
         values.put(Favorites.ITEM_TYPE, favorite.itemType);
-        if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
-            if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
-                values.put(Favorites.APPWIDGET_PROVIDER, favorite.appWidgetProvider);
-            }
-            values.put(Favorites.APPWIDGET_ID, favorite.appWidgetId);
-        }
 
         UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
         long userSerialNumber =
                 UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
-        // Let LauncherModel know we've been here.
-        values.put(LauncherSettings.Favorites.RESTORED, 1);
+        if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
+            if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
+                values.put(Favorites.APPWIDGET_PROVIDER, favorite.appWidgetProvider);
+            }
+            values.put(Favorites.APPWIDGET_ID, favorite.appWidgetId);
+            values.put(LauncherSettings.Favorites.RESTORED,
+                    LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+                    LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
+                    LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+        } else {
+            // Let LauncherModel know we've been here.
+            values.put(LauncherSettings.Favorites.RESTORED, 1);
+        }
 
         return values;
     }

@@ -148,6 +148,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         LauncherTransitionable {
     static final String TAG = "AppsCustomizePagedView";
 
+    private static Rect sTmpRect = new Rect();
+
     /**
      * The different content types that this paged view can show.
      */
@@ -222,8 +224,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         new ArrayList<AsyncTaskPageData>();
     private ArrayList<Runnable> mDeferredPrepareLoadWidgetPreviewsTasks =
         new ArrayList<Runnable>();
-
-    private Rect mTmpRect = new Rect();
 
     WidgetPreviewLoader mWidgetPreviewLoader;
 
@@ -538,26 +538,26 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mLauncher.getWorkspace().beginDragShared(v, this);
     }
 
-    Bundle getDefaultOptionsForWidget(Launcher launcher, PendingAddWidgetInfo info) {
+    static Bundle getDefaultOptionsForWidget(Launcher launcher, PendingAddWidgetInfo info) {
         Bundle options = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            AppWidgetResizeFrame.getWidgetSizeRanges(mLauncher, info.spanX, info.spanY, mTmpRect);
-            Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(mLauncher,
+            AppWidgetResizeFrame.getWidgetSizeRanges(launcher, info.spanX, info.spanY, sTmpRect);
+            Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(launcher,
                     info.componentName, null);
 
-            float density = getResources().getDisplayMetrics().density;
+            float density = launcher.getResources().getDisplayMetrics().density;
             int xPaddingDips = (int) ((padding.left + padding.right) / density);
             int yPaddingDips = (int) ((padding.top + padding.bottom) / density);
 
             options = new Bundle();
             options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                    mTmpRect.left - xPaddingDips);
+                    sTmpRect.left - xPaddingDips);
             options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                    mTmpRect.top - yPaddingDips);
+                    sTmpRect.top - yPaddingDips);
             options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                    mTmpRect.right - xPaddingDips);
+                    sTmpRect.right - xPaddingDips);
             options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                    mTmpRect.bottom - yPaddingDips);
+                    sTmpRect.bottom - yPaddingDips);
         }
         return options;
     }

@@ -124,6 +124,12 @@ public class ItemInfo {
     }
 
     ItemInfo(ItemInfo info) {
+        copyFrom(info);
+        // tempdebug:
+        LauncherModel.checkItemInfo(this);
+    }
+
+    public void copyFrom(ItemInfo info) {
         id = info.id;
         cellX = info.cellX;
         cellY = info.cellY;
@@ -134,8 +140,6 @@ public class ItemInfo {
         container = info.container;
         user = info.user;
         contentDescription = info.contentDescription;
-        // tempdebug:
-        LauncherModel.checkItemInfo(this);
     }
 
     public Intent getIntent() {
