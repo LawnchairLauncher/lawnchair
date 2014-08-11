@@ -86,7 +86,7 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
             return;
         }
         mReplayPending = false;
-        ArrayList<PackageInstallInfo> updates = new ArrayList<>();
+        ArrayList<PackageInstallInfo> updates = new ArrayList<PackageInstallInfo>();
         for (String packageName: mPrefs.getAll().keySet()) {
             final String json = mPrefs.getString(packageName, null);
             if (!TextUtils.isEmpty(json)) {
@@ -125,7 +125,7 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
                 replayUpdates();
             } else {
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-                ArrayList<PackageInstallInfo> update = new ArrayList<>();
+                ArrayList<PackageInstallInfo> update = new ArrayList<PackageInstallInfo>();
                 update.add(installInfo);
                 sendUpdate(app, update);
             }
