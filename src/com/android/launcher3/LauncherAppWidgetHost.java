@@ -22,12 +22,16 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.os.TransactionTooLargeException;
 
+import java.util.ArrayList;
+
 /**
  * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}
  * which correctly captures all long-press events. This ensures that users can
  * always pick up and move widgets.
  */
 public class LauncherAppWidgetHost extends AppWidgetHost {
+
+    private final ArrayList<Runnable> mProviderChangeListeners = new ArrayList<Runnable>();
 
     Launcher mLauncher;
 
@@ -64,9 +68,21 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         clearViews();
     }
 
+    public void addProviderChangeListener(Runnable callback) {
+        mProviderChangeListeners.add(callback);
+    }
+
+    public void removeProviderChangeListener(Runnable callback) {
+        mProviderChangeListeners.remove(callback);
+    }
+
     protected void onProvidersChanged() {
         // Once we get the message that widget packages are updated, we need to rebind items
         // in AppsCustomize accordingly.
         mLauncher.bindPackagesUpdated(LauncherModel.getSortedWidgetsAndShortcuts(mLauncher));
+
+        for (Runnable callback : mProviderChangeListeners) {
+            callback.run();
+        }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!--
+     Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,15 +15,6 @@
      limitations under the License.
 -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="20dip"
-    android:paddingRight="20dip"
-    android:layout_margin="10dip"
-    android:gravity="center"
-    android:background="@drawable/bg_appwidget_not_ready"
-    android:textAppearance="?android:attr/textAppearanceMediumInverse"
-    android:textColor="@color/appwidget_not_ready_color"
-    android:text="@string/gadget_pending_text"
-    />
+    android:layout_height="match_parent" />

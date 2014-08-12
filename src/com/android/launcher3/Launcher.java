@@ -23,7 +23,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -90,10 +89,8 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
@@ -4445,7 +4442,9 @@ public class Launcher extends Activity
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         } else {
             appWidgetInfo = null;
-            item.hostView = new PendingAppWidgetHostView(this, item.restoreStatus);
+            PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item);
+            view.updateIcon(mIconCache);
+            item.hostView = view;
             item.hostView.updateAppWidget(null);
             item.hostView.setOnClickListener(this);
         }
@@ -4478,10 +4477,7 @@ public class Launcher extends Activity
             return;
         }
 
-        PendingAppWidgetHostView pendingView = (PendingAppWidgetHostView) view;
-        pendingView.setStatus(LauncherAppWidgetInfo.RESTORE_COMPLETED);
-
-        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) pendingView.getTag();
+        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
         info.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
 
         mWorkspace.reinflateWidgetsIfNecessary();

@@ -67,6 +67,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     int restoreStatus;
 
+    /**
+     * Indicates the installation progress of the widget provider
+     */
+    int installProgress;
+
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
     /**
