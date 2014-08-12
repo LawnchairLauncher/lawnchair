@@ -20,8 +20,16 @@ import android.content.Context;
 import android.view.View;
 
 public class AppsCustomizeCellLayout extends CellLayout implements Page {
+
+    final FocusIndicatorView mFocusHandlerView;
+
     public AppsCustomizeCellLayout(Context context) {
         super(context);
+
+        mFocusHandlerView = new FocusIndicatorView(context);
+        addView(mFocusHandlerView, 0);
+        mFocusHandlerView.getLayoutParams().width = FocusIndicatorView.DEFAULT_LAYOUT_SIZE;
+        mFocusHandlerView.getLayoutParams().height = FocusIndicatorView.DEFAULT_LAYOUT_SIZE;
     }
 
     @Override

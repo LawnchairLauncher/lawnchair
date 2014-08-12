@@ -16,5 +16,4 @@
 
 <com.android.launcher3.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
    style="@style/WorkspaceIcon"
-   android:focusable="true"
-   android:background="@drawable/focusable_view_bg" />
+   android:focusable="true" />

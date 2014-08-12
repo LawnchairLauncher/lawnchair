@@ -384,6 +384,8 @@ public class Launcher extends Activity
 
     private Stats mStats;
 
+    FocusIndicatorView mFocusHandler;
+
     static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
@@ -1289,6 +1291,7 @@ public class Launcher extends Activity
         final DragController dragController = mDragController;
 
         mLauncherView = findViewById(R.id.launcher);
+        mFocusHandler = (FocusIndicatorView) findViewById(R.id.focus_indicator);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
         mWorkspace.setPageSwitchListener(this);
@@ -1428,6 +1431,7 @@ public class Launcher extends Activity
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache, true);
         favorite.setOnClickListener(this);
+        favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
     }
 

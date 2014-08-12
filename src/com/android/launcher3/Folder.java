@@ -112,6 +112,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private static String sDefaultFolderName;
     private static String sHintText;
 
+    private FocusIndicatorView mFocusIndicatorHandler;
+
     private int DRAG_MODE_NONE = 0;
     private int DRAG_MODE_REORDER = 1;
     private int mDragMode = DRAG_MODE_NONE;
@@ -177,6 +179,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         super.onFinishInflate();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
         mContent = (CellLayout) findViewById(R.id.folder_content);
+
+        mFocusIndicatorHandler = new FocusIndicatorView(getContext());
+        mContent.addView(mFocusIndicatorHandler, 0);
+        mFocusIndicatorHandler.getLayoutParams().height = FocusIndicatorView.DEFAULT_LAYOUT_SIZE;
+        mFocusIndicatorHandler.getLayoutParams().width = FocusIndicatorView.DEFAULT_LAYOUT_SIZE;
 
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -572,6 +579,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         textView.setOnClickListener(this);
         textView.setOnLongClickListener(this);
+        textView.setOnFocusChangeListener(mFocusIndicatorHandler);
 
         // We need to check here to verify that the given item's location isn't already occupied
         // by another item.

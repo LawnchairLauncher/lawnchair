@@ -1041,6 +1041,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
             icon.setOnKeyListener(this);
+            icon.setOnFocusChangeListener(layout.mFocusHandlerView);
 
             int index = i - startIndex;
             int x = index % mCellCountX;

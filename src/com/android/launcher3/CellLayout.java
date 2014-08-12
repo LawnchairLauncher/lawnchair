@@ -989,10 +989,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
-        if (getChildCount() > 0) {
-            return (ShortcutAndWidgetContainer) getChildAt(0);
-        }
-        return null;
+        return mShortcutsAndWidgets;
     }
 
     public View getChildAt(int x, int y) {

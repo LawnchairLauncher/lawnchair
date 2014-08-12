@@ -19,8 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:focusable="true"
-    android:background="@drawable/focusable_view_bg">
+    android:focusable="true" >
     <ImageView
         android:id="@+id/preview_background"
         android:layout_gravity="center_horizontal"
