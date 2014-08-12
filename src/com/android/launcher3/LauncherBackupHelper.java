@@ -692,6 +692,9 @@ public class LauncherBackupHelper implements BackupHelper {
                         .decodeByteArray(widget.icon.data, 0, widget.icon.data.length);
                 if (icon == null) {
                     Log.w(TAG, "failed to unpack widget icon for " + key.name);
+                } else {
+                    IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(widget.provider),
+                            icon, widget.icon.dpi);
                 }
             }
 

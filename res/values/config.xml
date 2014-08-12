@@ -17,6 +17,10 @@
     <!-- Max number of page indicators to show -->
     <integer name="config_maxNumberOfPageIndicatorsToShow">21</integer>
 
+    <!-- App data backup and restore. To enble backup, register with an android backup service.
+         http://developer.android.com/guide/topics/data/backup.html#BackupKey -->
+    <bool name="enable_backup">false</bool>
+
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
 

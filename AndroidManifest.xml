@@ -72,11 +72,15 @@
 
     <application
         android:name="com.android.launcher3.LauncherApplication"
-        android:label="@string/application_name"
-        android:icon="@mipmap/ic_launcher_home"
+        android:allowBackup="@bool/enable_backup"
+        android:backupAgent="com.android.launcher3.LauncherBackupAgentHelper"
         android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher_home"
+        android:label="@string/application_name"
         android:largeHeap="@bool/config_largeHeap"
-        android:supportsRtl="true">
+        android:restoreAnyVersion="true"
+        android:supportsRtl="true" >
+
         <activity
             android:name="com.android.launcher3.Launcher"
             android:launchMode="singleTask"

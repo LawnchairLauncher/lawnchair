@@ -3089,7 +3089,7 @@ public class LauncherModel extends BroadcastReceiver
         info.user = UserHandleCompat.myUserHandle();
         info.contentDescription = mUserManager.getBadgedLabelForUser(
                 info.title.toString(), info.user);
-        info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user));
+        info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user, false));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.restoredIntent = intent;
         info.wasPromise = true;
@@ -3378,7 +3378,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Attempts to find an AppWidgetProviderInfo that matches the given component.
      */
-    AppWidgetProviderInfo findAppWidgetProviderInfoWithComponent(Context context,
+    static AppWidgetProviderInfo findAppWidgetProviderInfoWithComponent(Context context,
             ComponentName component) {
         List<AppWidgetProviderInfo> widgets =
             AppWidgetManager.getInstance(context).getInstalledProviders();

@@ -16,22 +16,20 @@
 
 package com.android.launcher3;
 
-import com.android.launcher3.backup.BackupProtos;
-
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
@@ -54,11 +52,14 @@ import java.util.Map.Entry;
  * Cache of application icons.  Icons can be made from any thread.
  */
 public class IconCache {
-    @SuppressWarnings("unused")
+
     private static final String TAG = "Launcher.IconCache";
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
     private static final String RESOURCE_FILE_PREFIX = "icon_";
+
+    // Empty class name is used for storing package default entry.
+    private static final String EMPTY_CLASS_NAME = ".";
 
     private static final boolean DEBUG = true;
 
@@ -237,7 +238,7 @@ public class IconCache {
             HashMap<Object, CharSequence> labelCache) {
         synchronized (mCache) {
             CacheEntry entry = cacheLocked(application.componentName, info, labelCache,
-                    info.getUser());
+                    info.getUser(), false);
 
             application.title = entry.title;
             application.iconBitmap = entry.icon;
@@ -246,10 +247,10 @@ public class IconCache {
     }
 
     public Bitmap getIcon(Intent intent, UserHandleCompat user) {
-        return getIcon(intent, null, user);
+        return getIcon(intent, null, user, true);
     }
 
-    public Bitmap getIcon(Intent intent, String title, UserHandleCompat user) {
+    public Bitmap getIcon(Intent intent, String title, UserHandleCompat user, boolean usePkgIcon) {
         synchronized (mCache) {
             LauncherActivityInfoCompat launcherActInfo =
                     mLauncherApps.resolveActivity(intent, user);
@@ -257,11 +258,11 @@ public class IconCache {
 
             // null info means not installed, but if we have a component from the intent then
             // we should still look in the cache for restored app icons.
-            if (launcherActInfo == null && component == null) {
+            if (component == null) {
                 return getDefaultIcon(user);
             }
 
-            CacheEntry entry = cacheLocked(component, launcherActInfo, null, user);
+            CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, usePkgIcon);
             if (title != null) {
                 entry.title = title;
                 entry.contentDescription = mUserManager.getBadgedLabelForUser(title, user);
@@ -284,7 +285,7 @@ public class IconCache {
                 return null;
             }
 
-            CacheEntry entry = cacheLocked(component, info, labelCache, info.getUser());
+            CacheEntry entry = cacheLocked(component, info, labelCache, info.getUser(), false);
             return entry.icon;
         }
     }
@@ -294,7 +295,7 @@ public class IconCache {
     }
 
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache, UserHandleCompat user) {
+            HashMap<Object, CharSequence> labelCache, UserHandleCompat user, boolean usePackageIcon) {
         CacheKey cacheKey = new CacheKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null) {
@@ -324,10 +325,47 @@ public class IconCache {
                             componentName.toShortString());
                     entry.icon = preloaded;
                 } else {
-                    if (DEBUG) Log.d(TAG, "using default icon for " +
-                            componentName.toShortString());
-                    entry.icon = getDefaultIcon(user);
+                    if (usePackageIcon) {
+                        CacheEntry packageEntry = getEntryForPackage(
+                                componentName.getPackageName(), user);
+                        if (packageEntry != null && packageEntry.icon != null) {
+                            if (DEBUG) Log.d(TAG, "using package default icon for " +
+                                    componentName.toShortString());
+                            entry.icon = packageEntry.icon;
+                        }
+                    }
+                    if (entry.icon == null) {
+                        if (DEBUG) Log.d(TAG, "using default icon for " +
+                                componentName.toShortString());
+                        entry.icon = getDefaultIcon(user);
+                    }
                 }
+            }
+        }
+        return entry;
+    }
+
+    /**
+     * Gets an entry for the package, which can be used as a fallback entry for various components.
+     */
+    private CacheEntry getEntryForPackage(String packageName, UserHandleCompat user) {
+        ComponentName cn = getPackageComponent(packageName);
+        CacheKey cacheKey = new CacheKey(cn, user);
+        CacheEntry entry = mCache.get(cacheKey);
+        if (entry == null) {
+            entry = new CacheEntry();
+            mCache.put(cacheKey, entry);
+
+            try {
+                ApplicationInfo info = mPackageManager.getApplicationInfo(packageName, 0);
+                entry.title = info.loadLabel(mPackageManager);
+                entry.icon = Utilities.createIconBitmap(info.loadIcon(mPackageManager), mContext);
+            } catch (NameNotFoundException e) {
+                if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
+            }
+
+            if (entry.icon == null) {
+                entry.icon = getPreloadedIcon(cn, user);
             }
         }
         return entry;
@@ -470,5 +508,9 @@ public class IconCache {
         String resourceName = component.flattenToShortString();
         String filename = resourceName.replace(File.separatorChar, '_');
         return RESOURCE_FILE_PREFIX + filename;
+    }
+
+    static ComponentName getPackageComponent(String packageName) {
+        return new ComponentName(packageName, EMPTY_CLASS_NAME);
     }
 }

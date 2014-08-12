@@ -27,6 +27,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -45,7 +46,10 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -74,6 +78,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -431,7 +436,6 @@ public class Workspace extends SmoothPagedView
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        Context context = getContext();
         mCurrentPage = mDefaultPage;
         Launcher.setScreen(mCurrentPage);
         LauncherAppState app = LauncherAppState.getInstance();
@@ -4887,7 +4891,14 @@ public class Workspace extends SmoothPagedView
                         ((ShortcutInfo) info).setProgress(installInfo.progress);
                         ((ShortcutInfo) info).setState(installInfo.state);
                         ((BubbleTextView)v).applyState();
+                    } else if (v instanceof PendingAppWidgetHostView
+                            && info instanceof LauncherAppWidgetInfo
+                            && ((LauncherAppWidgetInfo) info).providerName.getPackageName()
+                                .equals(installInfo.packageName)) {
+                        ((LauncherAppWidgetInfo) info).installProgress = installInfo.progress;
+                        ((PendingAppWidgetHostView) v).applyState();
                     }
+
                     // process all the shortcuts
                     return false;
                 }
@@ -4904,7 +4915,8 @@ public class Workspace extends SmoothPagedView
     }
 
     private void restorePendingWidgets(final Set<String> installedPackaged) {
-        final AtomicBoolean widgetsChanged = new AtomicBoolean(false);
+        final ArrayList<LauncherAppWidgetInfo> changedInfo = new ArrayList<LauncherAppWidgetInfo>();
+
         // Iterate non recursively as widgets can't be inside a folder.
         mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
 
@@ -4914,18 +4926,28 @@ public class Workspace extends SmoothPagedView
                     LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
                     if (widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                             && installedPackaged.contains(widgetInfo.providerName.getPackageName())) {
-                        widgetsChanged.set(true);
+
+                        changedInfo.add(widgetInfo);
+
+                        // Remove the provider not ready flag
+                        widgetInfo.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                        LauncherModel.updateItemInDatabase(getContext(), widgetInfo);
                     }
                 }
                 // process all the widget
                 return false;
             }
         });
-        if (widgetsChanged.get()) {
-            // Reload layout and update widget status
-            // TODO instead of full reload, just update the specific widgets
-            getContext().getContentResolver()
-                .notifyChange(LauncherSettings.Favorites.CONTENT_URI, null);
+        if (!changedInfo.isEmpty()) {
+            DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
+                    mLauncher.getAppWidgetHost());
+            if (LauncherModel.findAppWidgetProviderInfoWithComponent(getContext(),
+                    changedInfo.get(0).providerName) != null) {
+                // Re-inflate the widgets which have changed status
+                widgetRefresh.run();
+            } else {
+                // widgetRefresh will automatically run when the packages are updated.
+            }
         }
     }
 
@@ -5002,5 +5024,54 @@ public class Workspace extends SmoothPagedView
 
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
+    }
+
+    /**
+     * Used as a workaround to ensure that the AppWidgetService receives the
+     * PACKAGE_ADDED broadcast before updating widgets.
+     */
+    private class DeferredWidgetRefresh implements Runnable {
+        private final ArrayList<LauncherAppWidgetInfo> mInfos;
+        private final LauncherAppWidgetHost mHost;
+        private final Handler mHandler;
+
+        private boolean mRefreshPending;
+
+        public DeferredWidgetRefresh(ArrayList<LauncherAppWidgetInfo> infos,
+                LauncherAppWidgetHost host) {
+            mInfos = infos;
+            mHost = host;
+            mHandler = new Handler();
+            mRefreshPending = true;
+
+            mHost.addProviderChangeListener(this);
+            // Force refresh after 10 seconds, if we don't get the provider changed event.
+            // This could happen when the provider is no longer available in the app.
+            mHandler.postDelayed(this, 10000);
+        }
+
+        @Override
+        public void run() {
+            mHost.removeProviderChangeListener(this);
+            mHandler.removeCallbacks(this);
+
+            if (!mRefreshPending) {
+                return;
+            }
+
+            mRefreshPending = false;
+
+            for (LauncherAppWidgetInfo info : mInfos) {
+                if (info.hostView instanceof PendingAppWidgetHostView) {
+                    PendingAppWidgetHostView view = (PendingAppWidgetHostView) info.hostView;
+                    mLauncher.removeAppWidget(info);
+
+                    CellLayout cl = (CellLayout) view.getParent().getParent();
+                    // Remove the current widget
+                    cl.removeView(view);
+                    mLauncher.bindAppWidget(info);
+                }
+            }
+        }
     }
 }
