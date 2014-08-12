@@ -15,7 +15,8 @@
 -->
 <com.android.launcher3.AppsCustomizeTabHost
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+    android:clipChildren="false">
 
     <LinearLayout
         android:id="@+id/content"
@@ -27,15 +28,19 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clipChildren="false">
             <FrameLayout
                 android:id="@+id/fake_page_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
                 <FrameLayout
-                android:id="@+id/fake_page"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                    android:id="@+id/fake_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false" />
             </FrameLayout>
             <com.android.launcher3.AppsCustomizePagedView
                 android:id="@+id/apps_customize_pane_content"

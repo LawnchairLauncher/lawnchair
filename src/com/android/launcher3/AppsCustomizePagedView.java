@@ -1003,8 +1003,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         Drawable bg = getContext().getResources().getDrawable(R.drawable.quantum_panel);
         if (bg != null) {
+            bg.setAlpha(mPageBackgroundsVisible ? 255: 0);
             layout.setBackground(bg);
-            bg.setVisible(mPageBackgroundsVisible, false);
         }
 
         setVisibilityOnChildren(layout, View.VISIBLE);
@@ -1016,7 +1016,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         for (int i = 0; i < childCount; ++i) {
             Drawable bg = getChildAt(i).getBackground();
             if (bg != null) {
-                bg.setVisible(visible, false);
+                bg.setAlpha(visible ? 255 : 0);
             }
         }
     }
@@ -1163,7 +1163,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // immediately after syncing, we don't have a proper width.
         int widthSpec = MeasureSpec.makeMeasureSpec(mContentWidth, MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
-        layout.setBackground(getContext().getResources().getDrawable(R.drawable.quantum_panel_dark));
+
+        Drawable bg = getContext().getResources().getDrawable(R.drawable.quantum_panel_dark);
+        if (bg != null) {
+            bg.setAlpha(mPageBackgroundsVisible ? 255 : 0);
+            layout.setBackground(bg);
+        }
         layout.measure(widthSpec, heightSpec);
     }
 

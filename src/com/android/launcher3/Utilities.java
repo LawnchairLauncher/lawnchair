@@ -67,6 +67,8 @@ public final class Utilities {
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
 
+    static int[] sLoc0 = new int[2];
+    static int[] sLoc1 = new int[2];
 
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
@@ -344,6 +346,25 @@ public final class Utilities {
             r.right = (int) (r.right * scale + 0.5f);
             r.bottom = (int) (r.bottom * scale + 0.5f);
         }
+    }
+
+    public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
+        v0.getLocationInWindow(sLoc0);
+        v1.getLocationInWindow(sLoc1);
+
+        sLoc0[0] += (v0.getMeasuredWidth() * v0.getScaleX()) / 2;
+        sLoc0[1] += (v0.getMeasuredHeight() * v0.getScaleY()) / 2;
+        sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
+        sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
+
+        if (delta == null) {
+            delta = new int[2];
+        }
+
+        delta[0] = sLoc1[0] - sLoc0[0];
+        delta[1] = sLoc1[1] - sLoc0[1];
+
+        return delta;
     }
 
     public static void scaleRectAboutCenter(Rect r, float scale) {

@@ -126,6 +126,7 @@ public class DeviceProfile {
     int searchBarSpaceHeightPx;
     int searchBarHeightPx;
     int pageIndicatorHeightPx;
+    int allAppsButtonVisualSize;
 
     float dragViewScale;
 
@@ -242,6 +243,18 @@ public class DeviceProfile {
         // Calculate the remaining vars
         updateFromConfiguration(context, res, wPx, hPx, awPx, ahPx);
         updateAvailableDimensions(context);
+        computeAllAppsButtonSize(context);
+    }
+
+    /**
+     * Determine the exact visual footprint of the all apps button, taking into account scaling
+     * and internal padding of the drawable.
+     */
+    private void computeAllAppsButtonSize(Context context) {
+        Resources res = context.getResources();
+        float padding = res.getInteger(R.integer.config_allAppsButtonPaddingPercent) / 100f;
+        LauncherAppState app = LauncherAppState.getInstance();
+        allAppsButtonVisualSize = (int) (hotseatIconSizePx * (1 - padding));
     }
 
     void addCallback(DeviceProfileCallbacks cb) {

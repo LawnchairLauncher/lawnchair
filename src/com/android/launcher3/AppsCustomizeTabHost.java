@@ -174,7 +174,7 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
             // Make sure the current page is loaded (we start loading the side pages after the
             // transition to prevent slowing down the animation)
             // TODO: revisit this
-            mPagedView.loadAssociatedPages(mPagedView.getCurrentPage(), true);
+            mPagedView.loadAssociatedPages(mPagedView.getCurrentPage());
         }
     }
 

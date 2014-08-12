@@ -1159,7 +1159,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected boolean shouldDrawChild(View child) {
-        return child.getAlpha() > 0 && child.getVisibility() == VISIBLE;
+        return child.getVisibility() == VISIBLE;
     }
 
     @Override
