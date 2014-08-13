@@ -22,6 +22,7 @@ public class OverviewSettingsPanel {
             "com.android.settings.Settings$ThemeSettingsActivity";
     public static final int HOME_SETTINGS_POSITION = 0;
     public static final int DRAWER_SETTINGS_POSITION = 1;
+    public static final int APP_SETTINGS_POSITION = 2;
 
     private Launcher mLauncher;
     private View mOverviewPanel;
@@ -75,9 +76,10 @@ public class OverviewSettingsPanel {
         mSettingsAdapter.addPartition(false, true);
         mSettingsAdapter.mPinnedHeaderCount = headers.length;
 
-        mSettingsAdapter.changeCursor(0, createCursor(headers[0], mValues));
-        mSettingsAdapter.changeCursor(1, createCursor(headers[1], valuesDrawer));
-        mSettingsAdapter.changeCursor(2, createCursor(headers[2], valuesApp));
+        mSettingsAdapter.changeCursor(HOME_SETTINGS_POSITION, createCursor(headers[0], mValues));
+        mSettingsAdapter.changeCursor(DRAWER_SETTINGS_POSITION, createCursor(headers[1],
+                valuesDrawer));
+        mSettingsAdapter.changeCursor(APP_SETTINGS_POSITION, createCursor(headers[2], valuesApp));
         mListView.setAdapter(mSettingsAdapter);
     }
 
