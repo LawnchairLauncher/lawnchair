@@ -3474,9 +3474,6 @@ public class Launcher extends Activity
 
         setPivotsForZoom(toView, scale);
 
-        // Shrink workspaces away if going to AppsCustomize from workspace
-        Animator workspaceAnim =
-                mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
         if (!LauncherAppState.isDisableAllApps()
                 || contentType == AppsCustomizePagedView.ContentType.Widgets) {
             // Set the content type for the all apps/widgets space
@@ -3538,14 +3535,18 @@ public class Launcher extends Activity
                 }
             });
 
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+
+            // Shrink workspaces away if going to AppsCustomize from workspace
+            Animator workspaceAnim =
+                    mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
+
             if (workspaceAnim != null) {
                 mStateAnimation.play(workspaceAnim);
             }
 
             boolean delayAnim = false;
-
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
 
             // If any of the objects being animated haven't been measured/laid out
             // yet, delay the animation until we get a layout pass
