@@ -22,6 +22,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 
 import java.util.HashSet;
@@ -124,6 +125,16 @@ public class LauncherAnimUtils {
         anim.setValues(values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);
+        return anim;
+    }
+
+    public static Animator createCircularReveal(View view, int centerX,
+            int centerY, float startRadius, float endRadius) {
+        Animator anim = ViewAnimationUtils.createCircularReveal(view, centerX,
+                centerY, startRadius, endRadius);
+        if (anim instanceof ValueAnimator) {
+            new FirstFrameAnimatorHelper((ValueAnimator) anim, view);
+        }
         return anim;
     }
 }

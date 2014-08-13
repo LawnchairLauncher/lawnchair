@@ -2241,9 +2241,6 @@ public class Workspace extends SmoothPagedView
             } else if (stateIsOverview || stateIsOverviewHidden) {
                 mNewScale = mOverviewModeShrinkFactor;
             }
-            if (workspaceToAllApps) {
-                updateChildrenLayersEnabled(false);
-            }
         }
 
         final int duration;
