@@ -57,16 +57,6 @@ class HotseatIconKeyEventListener implements View.OnKeyListener {
     }
 }
 
-/**
- * A keyboard listener we set on the last tab button in AppsCustomize to jump to then
- * market icon and vice versa.
- */
-class AppsCustomizeTabKeyEventListener implements View.OnKeyListener {
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleAppsCustomizeTabKeyEvent(v, keyCode, event);
-    }
-}
-
 public class FocusHelper {
     /**
      * Private helper to get the parent TabHost in the view hiearchy.
@@ -77,41 +67,6 @@ public class FocusHelper {
             p = p.getParent();
         }
         return (AppsCustomizeTabHost) p;
-    }
-
-    /**
-     * Handles key events in a AppsCustomize tab between the last tab view and the shop button.
-     */
-    static boolean handleAppsCustomizeTabKeyEvent(View v, int keyCode, KeyEvent e) {
-        final AppsCustomizeTabHost tabHost = findTabHostParent(v);
-        final ViewGroup contents = tabHost.getContent();
-        final View shop = tabHost.findViewById(R.id.market_button);
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the shop button if we aren't on it
-                    if (v != shop) {
-                        shop.requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // Select the content view (down is handled by the tab key handler otherwise)
-                    if (v == shop) {
-                        contents.requestFocus();
-                        wasHandled = true;
-                    }
-                }
-                break;
-            default: break;
-        }
-        return wasHandled;
     }
 
     /**
