@@ -236,8 +236,8 @@ public class CustomHomeLauncher extends Launcher {
     }
 
     @Override
-    public void updateDynamicGrid() {
-        super.updateDynamicGrid();
+    public void updateDynamicGrid(int page) {
+        super.updateDynamicGrid(page);
 
         if (isCustomContentModeGel() && mCurrentHomeApp != null) {
             mCurrentHomeApp.mInstance.setShowContent(false);

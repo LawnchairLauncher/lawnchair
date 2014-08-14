@@ -5028,6 +5028,10 @@ public class Launcher extends Activity
     }
 
     public void updateDynamicGrid() {
+        updateDynamicGrid(mWorkspace.getRestorePage());
+    }
+
+    public void updateDynamicGrid(int page) {
         mSearchDropTargetBar.setupQSB(Launcher.this);
 
         initializeDynamicGrid();
@@ -5035,7 +5039,7 @@ public class Launcher extends Activity
         mGrid.layout(Launcher.this);
 
         // Synchronized reload
-        mModel.startLoader(true, mWorkspace.getCurrentPage());
+        mModel.startLoader(true, page);
         mWorkspace.updateCustomContentVisibility();
 
     }
@@ -5046,7 +5050,7 @@ public class Launcher extends Activity
 
     public boolean updateGridIfNeeded() {
         if (mDynamicGridUpdateRequired) {
-            updateDynamicGrid();
+            updateDynamicGrid(mWorkspace.getCurrentPage());
             mDynamicGridUpdateRequired = false;
             return true;
         }
