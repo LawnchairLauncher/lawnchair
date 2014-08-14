@@ -44,7 +44,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -144,8 +143,7 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
         View.OnClickListener, View.OnKeyListener, DragSource,
-        PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener,
-        LauncherTransitionable {
+        PagedViewWidget.ShortPressListener, LauncherTransitionable {
     static final String TAG = "AppsCustomizePagedView";
 
     private static Rect sTmpRect = new Rect();
@@ -167,7 +165,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Save and Restore
     private int mSaveInstanceStateItemIndex = -1;
-    private PagedViewIcon mPressedIcon;
 
     // Content
     private ArrayList<AppInfo> mApps;
@@ -444,39 +441,29 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void onClick(View v) {
         // When we have exited all apps or are in transition, disregard clicks
-        if (!mLauncher.isAllAppsVisible() ||
-                mLauncher.getWorkspace().isSwitchingState()) return;
+        if (!mLauncher.isAllAppsVisible()
+                || mLauncher.getWorkspace().isSwitchingState()
+                || !(v instanceof PagedViewWidget)) return;
 
-        if (v instanceof PagedViewIcon) {
-            // Animate some feedback to the click
-            final AppInfo appInfo = (AppInfo) v.getTag();
-
-            // Lock the drawable state to pressed until we return to Launcher
-            if (mPressedIcon != null) {
-                mPressedIcon.lockDrawableState();
-            }
-            mLauncher.onClickPagedViewIcon(v, appInfo);
-        } else if (v instanceof PagedViewWidget) {
-            // Let the user know that they have to long press to add a widget
-            if (mWidgetInstructionToast != null) {
-                mWidgetInstructionToast.cancel();
-            }
-            mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
-                Toast.LENGTH_SHORT);
-            mWidgetInstructionToast.show();
-
-            // Create a little animation to show that the widget can move
-            float offsetY = getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
-            final ImageView p = (ImageView) v.findViewById(R.id.widget_preview);
-            AnimatorSet bounce = LauncherAnimUtils.createAnimatorSet();
-            ValueAnimator tyuAnim = LauncherAnimUtils.ofFloat(p, "translationY", offsetY);
-            tyuAnim.setDuration(125);
-            ValueAnimator tydAnim = LauncherAnimUtils.ofFloat(p, "translationY", 0f);
-            tydAnim.setDuration(100);
-            bounce.play(tyuAnim).before(tydAnim);
-            bounce.setInterpolator(new AccelerateInterpolator());
-            bounce.start();
+        // Let the user know that they have to long press to add a widget
+        if (mWidgetInstructionToast != null) {
+            mWidgetInstructionToast.cancel();
         }
+        mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
+            Toast.LENGTH_SHORT);
+        mWidgetInstructionToast.show();
+
+        // Create a little animation to show that the widget can move
+        float offsetY = getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
+        final ImageView p = (ImageView) v.findViewById(R.id.widget_preview);
+        AnimatorSet bounce = LauncherAnimUtils.createAnimatorSet();
+        ValueAnimator tyuAnim = LauncherAnimUtils.ofFloat(p, "translationY", offsetY);
+        tyuAnim.setDuration(125);
+        ValueAnimator tydAnim = LauncherAnimUtils.ofFloat(p, "translationY", 0f);
+        tydAnim.setDuration(100);
+        bounce.play(tyuAnim).before(tydAnim);
+        bounce.setInterpolator(new AccelerateInterpolator());
+        bounce.start();
     }
 
     public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -492,7 +479,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     private void beginDraggingApplication(View v) {
-        mLauncher.getWorkspace().onDragStartedWithItem(v);
         mLauncher.getWorkspace().beginDragShared(v, this);
     }
 
@@ -726,7 +712,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected boolean beginDragging(final View v) {
         if (!super.beginDragging(v)) return false;
 
-        if (v instanceof PagedViewIcon) {
+        if (v instanceof BubbleTextView) {
             beginDraggingApplication(v);
         } else if (v instanceof PagedViewWidget) {
             if (!beginDraggingWidget(v)) {
@@ -741,9 +727,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             public void run() {
                 // We don't enter spring-loaded mode if the drag has been cancelled
                 if (mLauncher.getDragController().isDragging()) {
-                    // Reset the alpha on the dragged icon before we drag
-                    resetDrawableState();
-
                     // Go into spring loaded mode (must happen before we startDrag())
                     mLauncher.enterSpringLoadedDragMode();
                 }
@@ -992,10 +975,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
         for (int i = startIndex; i < endIndex; ++i) {
             AppInfo info = mApps.get(i);
-            PagedViewIcon icon = (PagedViewIcon) mLayoutInflater.inflate(
+            BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
-            icon.applyFromApplicationInfo(info, true, this);
-            icon.setOnClickListener(this);
+            icon.applyFromApplicationInfo(info);
+            icon.setOnClickListener(mLauncher);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
             icon.setOnKeyListener(this);
@@ -1557,23 +1540,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Stop all background tasks
         cancelAllTasks();
-    }
-
-    @Override
-    public void iconPressed(PagedViewIcon icon) {
-        // Reset the previously pressed icon and store a reference to the pressed icon so that
-        // we can reset it on return to Launcher (in Launcher.onResume())
-        if (mPressedIcon != null) {
-            mPressedIcon.resetDrawableState();
-        }
-        mPressedIcon = icon;
-    }
-
-    public void resetDrawableState() {
-        if (mPressedIcon != null) {
-            mPressedIcon.resetDrawableState();
-            mPressedIcon = null;
-        }
     }
 
     /*

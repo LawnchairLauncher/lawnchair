@@ -118,10 +118,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private FocusIndicatorView mFocusIndicatorHandler;
 
-    private int DRAG_MODE_NONE = 0;
-    private int DRAG_MODE_REORDER = 1;
-    private int mDragMode = DRAG_MODE_NONE;
-
     // We avoid measuring the scroll view with a 0 width or height, as this
     // results in CellLayout being measured as UNSPECIFIED, which it does
     // not support.
@@ -254,7 +250,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             mLauncher.getLauncherClings().dismissFolderCling(null);
 
-            mLauncher.getWorkspace().onDragStartedWithItem(v);
             mLauncher.getWorkspace().beginDragShared(v, this);
 
             mCurrentDragInfo = item;
@@ -783,9 +778,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 mReorderAlarm.setAlarm(REORDER_DELAY);
                 mPreviousTargetCell[0] = mTargetCell[0];
                 mPreviousTargetCell[1] = mTargetCell[1];
-                mDragMode = DRAG_MODE_REORDER;
-            } else {
-                mDragMode = DRAG_MODE_NONE;
             }
         }
     }
@@ -841,7 +833,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mOnExitAlarm.setAlarm(ON_EXIT_CLOSE_DELAY);
         }
         mReorderAlarm.cancelAlarm();
-        mDragMode = DRAG_MODE_NONE;
     }
 
     public void onDropCompleted(final View target, final DragObject d,
