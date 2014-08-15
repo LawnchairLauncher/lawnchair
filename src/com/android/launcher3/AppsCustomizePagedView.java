@@ -28,7 +28,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -49,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -176,7 +176,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private int mClingFocusedY;
 
     // Caching
-    private Canvas mCanvas;
     private IconCache mIconCache;
 
     // Dimens
@@ -224,13 +223,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mApps = new ArrayList<AppInfo>();
         mWidgets = new ArrayList<Object>();
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
-        mCanvas = new Canvas();
         mRunningTasks = new ArrayList<AppsCustomizeAsyncTask>();
 
         // Save the default widget preview background
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         mWidgetCountX = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountX, 2);
         mWidgetCountY = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountY, 2);
         mClingFocusedX = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedX, 0);
@@ -391,7 +387,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (!app.shouldShowAppOrWidgetProvider(widget.provider)) {
                     continue;
                 }
-                widget.label = widget.label.trim();
                 if (widget.minWidth > 0 && widget.minHeight > 0) {
                     // Ensure that all widgets we show can be added on a workspace of this size
                     int[] spanXY = Launcher.getSpanForWidget(mLauncher, widget);
@@ -520,18 +515,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             @Override
             public void run() {
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
-                // Options will be null for platforms with JB or lower, so this serves as an
-                // SDK level check.
-                if (options == null) {
-                    if (AppWidgetManager.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
-                            mWidgetLoadingId, info.componentName)) {
-                        mWidgetCleanupState = WIDGET_BOUND;
-                    }
-                } else {
-                    if (AppWidgetManager.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
-                            mWidgetLoadingId, info.componentName, options)) {
-                        mWidgetCleanupState = WIDGET_BOUND;
-                    }
+                if(AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
+                        mWidgetLoadingId, pInfo, options)) {
+                    mWidgetCleanupState = WIDGET_BOUND;
                 }
             }
         };
@@ -659,9 +645,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
             int[] previewSizeBeforeScale = new int[1];
 
-            preview = getWidgetPreviewLoader().generateWidgetPreview(createWidgetInfo.componentName,
-                    createWidgetInfo.previewImage, createWidgetInfo.icon, spanX, spanY,
-                    maxWidth, maxHeight, null, previewSizeBeforeScale);
+            preview = getWidgetPreviewLoader().generateWidgetPreview(createWidgetInfo.info,
+                    spanX, spanY, maxWidth, maxHeight, null, previewSizeBeforeScale);
 
             // Compare the size of the drag preview to the preview in the AppsCustomize tray
             int previewWidthInAppsCustomize = Math.min(previewSizeBeforeScale[0],
@@ -678,15 +663,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
             Drawable icon = mIconCache.getFullResIcon(createShortcutInfo.shortcutActivityInfo);
-            preview = Bitmap.createBitmap(icon.getIntrinsicWidth(),
-                    icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-
-            mCanvas.setBitmap(preview);
-            mCanvas.save();
-            WidgetPreviewLoader.renderDrawableToBitmap(icon, preview, 0, 0,
-                    icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-            mCanvas.restore();
-            mCanvas.setBitmap(null);
+            preview = Utilities.createIconBitmap(icon, mLauncher);
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
 

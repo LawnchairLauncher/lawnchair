@@ -99,6 +99,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -257,7 +258,7 @@ public class Launcher extends Activity
     private View mWeightWatcher;
     private LauncherClings mLauncherClings;
 
-    private AppWidgetManager mAppWidgetManager;
+    private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private ItemInfo mPendingAddInfo = new ItemInfo();
@@ -438,7 +439,7 @@ public class Launcher extends Activity
 
         mStats = new Stats(this);
 
-        mAppWidgetManager = AppWidgetManager.getInstance(this);
+        mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
@@ -1569,6 +1570,7 @@ public class Launcher extends Activity
         launcherInfo.spanY = spanXY[1];
         launcherInfo.minSpanX = mPendingAddInfo.minSpanX;
         launcherInfo.minSpanY = mPendingAddInfo.minSpanY;
+        launcherInfo.user = mAppWidgetManager.getUser(appWidgetInfo);
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 container, screenId, cellXY[0], cellXY[1], false);
@@ -2194,10 +2196,9 @@ public class Launcher extends Activity
             mPendingAddWidgetId = appWidgetId;
 
             // Launch over to configure widget, if needed
-            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-            intent.setComponent(appWidgetInfo.configure);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_APPWIDGET);
+            mAppWidgetManager.startConfigActivity(appWidgetInfo, appWidgetId, this,
+                    mAppWidgetHost, REQUEST_CREATE_APPWIDGET);
+
         } else {
             // Otherwise just add it
             Runnable onComplete = new Runnable() {
@@ -2281,14 +2282,8 @@ public class Launcher extends Activity
             appWidgetId = getAppWidgetHost().allocateAppWidgetId();
             Bundle options = info.bindOptions;
 
-            boolean success = false;
-            if (options != null) {
-                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
-                        info.componentName, options);
-            } else {
-                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
-                        info.componentName);
-            }
+            boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
+                    appWidgetId, info.info, options);
             if (success) {
                 addAppWidgetImpl(appWidgetId, info, null, info.info);
             } else {
@@ -2296,6 +2291,8 @@ public class Launcher extends Activity
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
+                mAppWidgetManager.getUser(mPendingAddWidgetInfo)
+                    .addToIntent(intent, AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE);
                 // TODO: we need to make sure that this accounts for the options bundle.
                 // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                 startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
@@ -2476,10 +2473,8 @@ public class Launcher extends Activity
                 mPendingAddInfo.copyFrom(info);
                 mPendingAddWidgetId = widgetId;
 
-                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-                intent.setComponent(appWidgetInfo.configure);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, info.appWidgetId);
-                Utilities.startActivityForResultSafely(this, intent, REQUEST_RECONFIGURE_APPWIDGET);
+                AppWidgetManagerCompat.getInstance(this).startConfigActivity(appWidgetInfo,
+                        info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
             }
         }
     }
@@ -4378,15 +4373,9 @@ public class Launcher extends Activity
             Bundle options =
                     AppsCustomizePagedView.getDefaultOptionsForWidget(this, pendingInfo);
 
-            boolean success = false;
             int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
-            if (options != null) {
-                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(newWidgetId,
-                        appWidgetInfo.provider, options);
-            } else {
-                success = mAppWidgetManager.bindAppWidgetIdIfAllowed(newWidgetId,
-                        appWidgetInfo.provider);
-            }
+            boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
+                    newWidgetId, appWidgetInfo, options);
 
             // TODO consider showing a permission dialog when the widget is clicked.
             if (!success) {
