@@ -329,10 +329,6 @@ public class Launcher extends Activity
     // External icons saved in case of resource changes, orientation, etc.
     private static Drawable.ConstantState[] sGlobalSearchIcon = new Drawable.ConstantState[2];
     private static Drawable.ConstantState[] sVoiceSearchIcon = new Drawable.ConstantState[2];
-    private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
-
-    private Intent mAppMarketIntent = null;
-    private static final boolean DISABLE_MARKET_BUTTON = true;
 
     private Drawable mWorkspaceBackgroundDrawable;
 
@@ -557,11 +553,7 @@ public class Launcher extends Activity
         boolean voiceVisible = false;
         // If we have a saved version of these external icons, we load them up immediately
         int coi = getCurrentOrientationIndexForGlobalIcons();
-        if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null ||
-                sAppMarketIcon[coi] == null) {
-            if (!DISABLE_MARKET_BUTTON) {
-                updateAppMarketIcon();
-            }
+        if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null) {
             searchVisible = updateGlobalSearchIcon();
             voiceVisible = updateVoiceSearchIcon(searchVisible);
         }
@@ -572,9 +564,6 @@ public class Launcher extends Activity
         if (sVoiceSearchIcon[coi] != null) {
             updateVoiceSearchIcon(sVoiceSearchIcon[coi]);
             voiceVisible = true;
-        }
-        if (!DISABLE_MARKET_BUTTON && sAppMarketIcon[coi] != null) {
-            updateAppMarketIcon(sAppMarketIcon[coi]);
         }
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
@@ -1753,11 +1742,6 @@ public class Launcher extends Activity
                     }
                 });
             }
-            // When Launcher comes back to foreground, a different Activity might be responsible for
-            // the app market intent, so refresh the icon
-            if (!DISABLE_MARKET_BUTTON) {
-                updateAppMarketIcon();
-            }
             clearTypedText();
         }
     }
@@ -2737,16 +2721,6 @@ public class Launcher extends Activity
             };
         }
         return mHapticFeedbackTouchListener;
-    }
-
-    public void onClickAppMarketButton(View v) {
-        if (!DISABLE_MARKET_BUTTON) {
-            if (mAppMarketIntent != null) {
-                startActivitySafely(v, mAppMarketIntent, "app market");
-            } else {
-                Log.e(TAG, "Invalid app market intent.");
-            }
-        }
     }
 
     public void onDragStarted(View view) {}
@@ -4008,44 +3982,6 @@ public class Launcher extends Activity
     public void disableVoiceButtonProxy(boolean disabled) {
         updateVoiceButtonProxyVisible(disabled);
     }
-    /**
-     * Sets the app market icon
-     */
-    private void updateAppMarketIcon() {
-        if (!DISABLE_MARKET_BUTTON) {
-            final View marketButton = findViewById(R.id.market_button);
-            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
-            // Find the app market activity by resolving an intent.
-            // (If multiple app markets are installed, it will return the ResolverActivity.)
-            ComponentName activityName = intent.resolveActivity(getPackageManager());
-            if (activityName != null) {
-                int coi = getCurrentOrientationIndexForGlobalIcons();
-                mAppMarketIntent = intent;
-                sAppMarketIcon[coi] = updateTextButtonWithIconFromExternalActivity(
-                        R.id.market_button, activityName, R.drawable.ic_launcher_market_holo,
-                        TOOLBAR_ICON_METADATA_NAME);
-                marketButton.setVisibility(View.VISIBLE);
-            } else {
-                // We should hide and disable the view so that we don't try and restore the visibility
-                // of it when we swap between drag & normal states from IconDropTarget subclasses.
-                marketButton.setVisibility(View.GONE);
-                marketButton.setEnabled(false);
-            }
-        }
-    }
-
-    private void updateAppMarketIcon(Drawable.ConstantState d) {
-        if (!DISABLE_MARKET_BUTTON) {
-            // Ensure that the new drawable we are creating has the approprate toolbar icon bounds
-            Resources r = getResources();
-            Drawable marketIconDrawable = d.newDrawable(r);
-            int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
-            int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
-            marketIconDrawable.setBounds(0, 0, w, h);
-
-            updateTextButtonWithDrawable(R.id.market_button, marketIconDrawable);
-        }
-    }
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
@@ -4552,12 +4488,6 @@ public class Launcher extends Activity
         }
 
         mWorkspace.restoreInstanceStateForRemainingPages();
-
-        // Update the market app icon as necessary (the other icons will be managed in response to
-        // package changes in bindSearchablesChanged()
-        if (!DISABLE_MARKET_BUTTON) {
-            updateAppMarketIcon();
-        }
 
         setWorkspaceLoading(false);
         sendLoadingCompleteBroadcastIfNecessary();

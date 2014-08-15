@@ -214,7 +214,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     int mWidgetLoadingId = -1;
     PendingAddWidgetInfo mCreateWidgetInfo = null;
     private boolean mDraggingWidget = false;
-    boolean mPageBackgroundsVisible;
+    boolean mPageBackgroundsVisible = true;
 
     private Toast mWidgetInstructionToast;
 
@@ -376,52 +376,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
 
         final boolean hostIsTransitioning = getTabHost().isInTransition();
-
-        // Restore the page
         int page = getPageForComponent(mSaveInstanceStateItemIndex);
         invalidatePageData(Math.max(0, page), hostIsTransitioning);
-
-        // Show All Apps cling if we are finished transitioning, otherwise, we will try again when
-        // the transition completes in AppsCustomizeTabHost (otherwise the wrong offsets will be
-        // returned while animating)
-        if (!hostIsTransitioning) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    showAllAppsCling();
-                }
-            });
-        }
     }
 
-    void showAllAppsCling() {
-        if (!mHasShownAllAppsCling && isDataReady()) {
-            mHasShownAllAppsCling = true;
-            // Calculate the position for the cling punch through
-            int[] offset = new int[2];
-            int[] pos = mWidgetSpacingLayout.estimateCellPosition(mClingFocusedX, mClingFocusedY);
-            mLauncher.getDragLayer().getLocationInDragLayer(this, offset);
-            // PagedViews are centered horizontally but top aligned
-            // Note we have to shift the items up now that Launcher sits under the status bar
-            pos[0] += (getMeasuredWidth() - mWidgetSpacingLayout.getMeasuredWidth()) / 2 +
-                    offset[0];
-            pos[1] += offset[1] - mLauncher.getDragLayer().getPaddingTop();
-        }
-    }
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
         if (!isDataReady()) {
             if ((LauncherAppState.isDisableAllApps() || !mApps.isEmpty()) && !mWidgets.isEmpty()) {
                 setDataIsReady();
-                setMeasuredDimension(width, height);
-                onDataReady(width, height);
+                onDataReady(getMeasuredWidth(), getMeasuredHeight());
             }
         }
-
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     public void onPackagesUpdated(ArrayList<Object> widgetsAndShortcuts) {
@@ -1179,11 +1146,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Calculate the dimensions of each cell we are giving to each widget
         final ArrayList<Object> items = new ArrayList<Object>();
-        int contentWidth = mContentWidth - getPaddingLeft() - getPaddingRight()
-                - layout.getPaddingLeft() - layout.getPaddingRight();
+        int contentWidth = mContentWidth - layout.getPaddingLeft() - layout.getPaddingRight();
         final int cellWidth = contentWidth / mWidgetCountX;
-        int contentHeight = mContentHeight - getPaddingTop() - getPaddingBottom()
-                - layout.getPaddingTop() - layout.getPaddingBottom();
+        int contentHeight = mContentHeight - layout.getPaddingTop() - layout.getPaddingBottom();
+
         final int cellHeight = contentHeight / mWidgetCountY;
 
         // Prepare the set of widgets to load previews for in the background
