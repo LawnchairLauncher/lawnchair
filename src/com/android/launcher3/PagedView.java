@@ -166,6 +166,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int mUnboundedScrollX;
     protected int[] mTempVisiblePagesRange = new int[2];
     protected boolean mForceDrawAllChildrenNextFrame;
+    private boolean mSpacePagesAutomatically = false;
 
     // mOverScrollX is equal to getScrollX() when we're within the normal scroll range. Otherwise
     // it is equal to the scaled overscroll position. We use a separate value so as to prevent
@@ -844,6 +845,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int verticalPadding = getPaddingTop() + getPaddingBottom();
         final int horizontalPadding = getPaddingLeft() + getPaddingRight();
 
+        int referenceChildWidth = 0;
         // The children are given the same width and height as the workspace
         // unless they were set to WRAP_CONTENT
         if (DEBUG) Log.d(TAG, "PagedView.onMeasure(): " + widthSize + ", " + heightSize);
@@ -888,6 +890,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     childWidth = getViewportWidth() - mInsets.left - mInsets.right;
                     childHeight = getViewportHeight();
                 }
+                if (referenceChildWidth == 0) {
+                    referenceChildWidth = childWidth;
+                }
 
                 final int childWidthMeasureSpec =
                         MeasureSpec.makeMeasureSpec(childWidth, childWidthMode);
@@ -896,7 +901,22 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
             }
         }
+        if (mSpacePagesAutomatically) {
+            int spacing = (getViewportWidth() - mInsets.left - mInsets.right
+                    - referenceChildWidth) / 2;
+            if (spacing >= 0) {
+                setPageSpacing(spacing);
+            }
+            mSpacePagesAutomatically = false;
+        }
         setMeasuredDimension(scaledWidthSize, scaledHeightSize);
+    }
+
+    /**
+     * This method should be called once before first layout / measure pass.
+     */
+    protected void setSinglePageInViewport() {
+        mSpacePagesAutomatically = true;
     }
 
     @Override
