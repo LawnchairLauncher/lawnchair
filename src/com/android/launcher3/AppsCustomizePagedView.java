@@ -1937,6 +1937,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         mSortMode = sortMode;
 
+        sortApps();
+    }
+
+    public void sortApps() {
         Collections.sort(mFilteredApps, getComparatorForSortMode());
 
         if (mContentType == ContentType.Applications) {
