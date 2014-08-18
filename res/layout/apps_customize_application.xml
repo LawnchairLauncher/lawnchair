@@ -20,5 +20,4 @@
 
     style="@style/WorkspaceIcon.AppsCustomize"
     android:id="@+id/application_icon"
-    android:focusable="true"
-    android:background="@drawable/focusable_view_bg" />
+    android:focusable="true" />

@@ -178,6 +178,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
         folderInfo.addListener(icon);
 
+        icon.setOnFocusChangeListener(launcher.mFocusHandler);
         return icon;
     }
 

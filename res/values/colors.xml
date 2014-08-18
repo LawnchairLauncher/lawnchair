@@ -24,6 +24,7 @@
     <color name="info_target_hover_tint">#DA0099CC</color>
 
     <color name="bubble_dark_background">#20000000</color>
+    <color name="focused_background">#80c6c5c5</color>
 
     <color name="appwidget_error_color">#FCCC</color>
 
