@@ -74,11 +74,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final int MIN_LENGTH_FOR_FLING = 25;
 
     protected static final int PAGE_SNAP_ANIMATION_DURATION = 750;
+    protected static final int OVER_SCROLL_PAGE_SNAP_ANIMATION_DURATION = 350;
     protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
     private static final float OVERSCROLL_ACCELERATE_FACTOR = 2;
-    private static final float OVERSCROLL_DAMP_FACTOR = 0.14f;
+    private static final float OVERSCROLL_DAMP_FACTOR = 0.07f;
 
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
@@ -1601,29 +1602,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return f * f * f + 1.0f;
     }
 
-    protected void acceleratedOverScroll(float amount) {
+    protected float acceleratedOverFactor(float amount) {
         int screenSize = getViewportWidth();
 
         // We want to reach the max over scroll effect when the user has
         // over scrolled half the size of the screen
         float f = OVERSCROLL_ACCELERATE_FACTOR * (amount / screenSize);
 
-        if (f == 0) return;
+        if (f == 0) return 0;
 
         // Clamp this factor, f, to -1 < f < 1
         if (Math.abs(f) >= 1) {
             f /= Math.abs(f);
         }
-
-        int overScrollAmount = (int) Math.round(f * screenSize);
-        if (amount < 0) {
-            mOverScrollX = overScrollAmount;
-            super.scrollTo(0, getScrollY());
-        } else {
-            mOverScrollX = mMaxScrollX + overScrollAmount;
-            super.scrollTo(mMaxScrollX, getScrollY());
-        }
-        invalidate();
+        return f;
     }
 
     protected void dampedOverScroll(float amount) {
@@ -1642,10 +1634,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
         if (amount < 0) {
             mOverScrollX = overScrollAmount;
-            super.scrollTo(0, getScrollY());
+            super.scrollTo(mOverScrollX, getScrollY());
         } else {
             mOverScrollX = mMaxScrollX + overScrollAmount;
-            super.scrollTo(mMaxScrollX, getScrollY());
+            super.scrollTo(mOverScrollX, getScrollY());
         }
         invalidate();
     }
@@ -2145,8 +2137,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return minDistanceFromScreenCenterIndex;
     }
 
+    protected boolean isInOverScroll() {
+        return (mOverScrollX > mMaxScrollX || mOverScrollX < 0);
+    }
+
+    protected int getPageSnapDuration() {
+        if (isInOverScroll()) {
+            return OVER_SCROLL_PAGE_SNAP_ANIMATION_DURATION;
+        }
+        return PAGE_SNAP_ANIMATION_DURATION;
+
+    }
+
     protected void snapToDestination() {
-        snapToPage(getPageNearestToCenterOfScreen(), PAGE_SNAP_ANIMATION_DURATION);
+        snapToPage(getPageNearestToCenterOfScreen(), getPageSnapDuration());
     }
 
     private static class ScrollInterpolator implements Interpolator {
@@ -2177,10 +2181,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int delta = newX - mUnboundedScrollX;
         int duration = 0;
 
-        if (Math.abs(velocity) < mMinFlingVelocity) {
+        if (Math.abs(velocity) < mMinFlingVelocity || isInOverScroll()) {
             // If the velocity is low enough, then treat this more as an automatic page advance
             // as opposed to an apparent physical response to flinging
-            snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
+            snapToPage(whichPage, getPageSnapDuration());
             return;
         }
 
@@ -2204,11 +2208,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void snapToPage(int whichPage) {
-        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
+        snapToPage(whichPage, getPageSnapDuration());
     }
 
     protected void snapToPageImmediately(int whichPage) {
-        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION, true, null);
+        snapToPage(whichPage, getPageSnapDuration(), true, null);
     }
 
     protected void snapToPage(int whichPage, int duration) {
