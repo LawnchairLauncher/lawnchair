@@ -259,6 +259,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
+        setSinglePageInViewport();
     }
 
     @Override
