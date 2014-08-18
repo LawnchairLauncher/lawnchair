@@ -17,9 +17,9 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
-import android.content.pm.InstallSessionInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
+import android.content.pm.PackageInstaller.SessionInfo;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -33,7 +33,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private static final String TAG = "PackageInstallerCompatVL";
     private static final boolean DEBUG = false;
 
-    private final SparseArray<InstallSessionInfo> mPendingReplays = new SparseArray<InstallSessionInfo>();
+    private final SparseArray<SessionInfo> mPendingReplays = new SparseArray<SessionInfo>();
     private final PackageInstaller mInstaller;
 
     private boolean mResumed;
@@ -47,7 +47,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
         mInstaller.addSessionCallback(mCallback);
         // On start, send updates for all active sessions
-        for (InstallSessionInfo info : mInstaller.getAllSessions()) {
+        for (SessionInfo info : mInstaller.getAllSessions()) {
             mPendingReplays.append(info.getSessionId(), info);
         }
     }
@@ -102,7 +102,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             updates.add(newInfo);
         }
         for (int i = mPendingReplays.size() - 1; i > 0; i--) {
-            InstallSessionInfo session = mPendingReplays.valueAt(i);
+            SessionInfo session = mPendingReplays.valueAt(i);
             if (session.getAppPackageName() != null) {
                 updates.add(new PackageInstallInfo(session.getAppPackageName(),
                         ShortcutInfo.PACKAGE_STATE_INSTALLING,
@@ -119,7 +119,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
         @Override
         public void onCreated(int sessionId) {
-            InstallSessionInfo session = mInstaller.getSessionInfo(sessionId);
+            SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if (session != null) {
                 mPendingReplays.put(sessionId, session);
                 replayUpdates(null);
@@ -129,7 +129,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         @Override
         public void onFinished(int sessionId, boolean success) {
             mPendingReplays.remove(sessionId);
-            InstallSessionInfo session = mInstaller.getSessionInfo(sessionId);
+            SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if ((session != null) && (session.getAppPackageName() != null)) {
                 // Replay all updates with a one time update for this installed package. No
                 // need to store this record for future updates, as the app list will get
@@ -142,7 +142,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
         @Override
         public void onProgressChanged(int sessionId, float progress) {
-            InstallSessionInfo session = mInstaller.getSessionInfo(sessionId);
+            SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if (session != null) {
                 mPendingReplays.put(sessionId, session);
                 replayUpdates(null);
