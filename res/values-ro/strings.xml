@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"scrie setări și comenzi rapide pentru ecranul de pornire"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite aplicației să modifice setările și comenzile rapide din ecranul de pornire."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problemă la încărcarea widgetului"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aceasta este o aplicație de sistem și nu poate fi dezinstalată."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Dosar fără nume"</string>

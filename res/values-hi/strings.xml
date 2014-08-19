@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग और शॉर्टकट लिखें"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ऐप्लिकेशन को होम में सेटिंग और शॉर्टकट बदलने देती है."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करने में समस्‍या"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="dream_name" msgid="1530253749244328964">"रॉकेट लॉन्‍चर"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>

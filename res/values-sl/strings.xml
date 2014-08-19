@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"zapis nastavitev in bližnjic na začetnem zaslonu"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Aplikaciji dovoli spreminjanje nastavitev in bližnjic na začetnem zaslonu."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Težava pri nalaganju pripomočka"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To je sistemska aplikacija in je ni mogoče odstraniti."</string>
     <string name="dream_name" msgid="1530253749244328964">"Raketno izstrelišče"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovana mapa"</string>
