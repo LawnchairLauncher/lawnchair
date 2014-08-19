@@ -997,11 +997,27 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         return false;
     }
 
+    private File getDefaultThumbFile() {
+        return new File(getFilesDir(), Build.VERSION.SDK_INT
+                + "_" + DEFAULT_WALLPAPER_THUMBNAIL_FILENAME);
+    }
+
+    private boolean saveDefaultWallpaperThumb(Bitmap b) {
+        // Delete old thumbnails.
+        new File(getFilesDir(), OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
+        new File(getFilesDir(), DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
+
+        for (int i = Build.VERSION_CODES.JELLY_BEAN; i < Build.VERSION.SDK_INT; i++) {
+            new File(getFilesDir(), i + "_" + DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
+        }
+        return writeImageToFileAsJpeg(getDefaultThumbFile(), b);
+    }
+
     private ResourceWallpaperInfo getPreKKDefaultWallpaperInfo() {
         Resources sysRes = Resources.getSystem();
         int resId = sysRes.getIdentifier("default_wallpaper", "drawable", "android");
 
-        File defaultThumbFile = new File(getFilesDir(), DEFAULT_WALLPAPER_THUMBNAIL_FILENAME);
+        File defaultThumbFile = getDefaultThumbFile();
         Bitmap thumb = null;
         boolean defaultWallpaperExists = false;
         if (defaultThumbFile.exists()) {
@@ -1014,7 +1030,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             thumb = createThumbnail(
                     defaultThumbSize, this, null, null, sysRes, resId, rotation, false);
             if (thumb != null) {
-                defaultWallpaperExists = writeImageToFileAsJpeg(defaultThumbFile, thumb);
+                defaultWallpaperExists = saveDefaultWallpaperThumb(thumb);
             }
         }
         if (defaultWallpaperExists) {
@@ -1025,17 +1041,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private DefaultWallpaperInfo getDefaultWallpaper() {
-        File defaultThumbFile = new File(getFilesDir(), DEFAULT_WALLPAPER_THUMBNAIL_FILENAME);
+        File defaultThumbFile = getDefaultThumbFile();
         Bitmap thumb = null;
         boolean defaultWallpaperExists = false;
         if (defaultThumbFile.exists()) {
             thumb = BitmapFactory.decodeFile(defaultThumbFile.getAbsolutePath());
             defaultWallpaperExists = true;
         } else {
-            // Delete old thumbnail file, since we had a bug where the thumbnail wasn't being drawn
-            // before
-            new File(getFilesDir(), OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
-
             Resources res = getResources();
             Point defaultThumbSize = getDefaultThumbnailSize(res);
             Drawable wallpaperDrawable = WallpaperManager.getInstance(this).getBuiltInDrawable(
@@ -1049,7 +1061,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 c.setBitmap(null);
             }
             if (thumb != null) {
-                defaultWallpaperExists = writeImageToFileAsJpeg(defaultThumbFile, thumb);
+                defaultWallpaperExists = saveDefaultWallpaperThumb(thumb);
             }
         }
         if (defaultWallpaperExists) {
