@@ -79,7 +79,9 @@
     <integer name="config_dropAnimMaxDuration">500</integer>
 
     <!-- The duration of the UserFolder opening and closing animation -->
-    <integer name="config_folderAnimDuration">120</integer>
+    <integer name="config_folderExpandDuration">120</integer>
+    <integer name="config_materialFolderExpandDuration">200</integer>
+    <integer name="config_materialFolderExpandStagger">60</integer>
 
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
