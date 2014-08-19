@@ -2914,7 +2914,10 @@ public class Launcher extends Activity
 
         ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
-        oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
+        if (Utilities.isLmp()) {
+            oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
+        }
+        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.start();
     }
 
@@ -2931,7 +2934,7 @@ public class Launcher extends Activity
         copyFolderIconToImage(fi);
         ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
-        oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
+        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -3288,8 +3291,7 @@ public class Launcher extends Activity
                 int allAppsButtonSize = LauncherAppState.getInstance().
                         getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
                 float startRadius = isWidgetTray ? 0 : allAppsButtonSize / 2;
-                ValueAnimator reveal = (ValueAnimator)
-                        LauncherAnimUtils.createCircularReveal(revealView, width / 2,
+                Animator reveal = LauncherAnimUtils.createCircularReveal(revealView, width / 2,
                                 height / 2, startRadius, revealRadius);
                 reveal.setDuration(revealDuration);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
