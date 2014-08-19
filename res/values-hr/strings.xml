@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"pisanje postavki početnog zaslona i prečaca"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Aplikaciji omogućuje promjenu postavki i prečaca na početnom zaslonu."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem pri učitavanju widgeta"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ovo je aplikacija sustava i ne može se ukloniti."</string>
     <string name="dream_name" msgid="1530253749244328964">"Lansirna rampa"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovana mapa"</string>
