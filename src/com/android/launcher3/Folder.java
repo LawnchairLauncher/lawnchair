@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -40,6 +41,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -72,6 +74,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private static final int CLOSE_FOLDER_DELAY_MS = 150;
 
     private int mExpandDuration;
+    private int mMaterialExpandDuration;
+    private int mMaterialExpandStagger;
     protected CellLayout mContent;
     private ScrollView mScrollView;
     private final LayoutInflater mInflater;
@@ -157,7 +161,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mInputMethodManager = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        mExpandDuration = res.getInteger(R.integer.config_folderAnimDuration);
+        mExpandDuration = res.getInteger(R.integer.config_folderExpandDuration);
+        mMaterialExpandDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
+        mMaterialExpandStagger = res.getInteger(R.integer.config_materialFolderExpandStagger);
 
         if (sDefaultFolderName == null) {
             sDefaultFolderName = res.getString(R.string.folder_name);
@@ -443,18 +449,93 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mState = STATE_SMALL;
     }
 
+    private void prepareReveal() {
+        setScaleX(1f);
+        setScaleY(1f);
+        setAlpha(1f);
+        mState = STATE_SMALL;
+    }
+
     public void animateOpen() {
-        positionAndSizeAsIcon();
-
         if (!(getParent() instanceof DragLayer)) return;
-        centerAboutIcon();
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
-        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
-        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
-        final ObjectAnimator oa =
-            LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
-        oa.addListener(new AnimatorListenerAdapter() {
+        Animator openFolderAnim = null;
+        final Runnable onCompleteRunnable;
+        if (!Utilities.isLmp()) {
+            positionAndSizeAsIcon();
+            centerAboutIcon();
+
+            PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
+            PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
+            PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
+            final ObjectAnimator oa =
+                LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+            oa.setDuration(mExpandDuration);
+            openFolderAnim = oa;
+
+            setLayerType(LAYER_TYPE_HARDWARE, null);
+            onCompleteRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    setLayerType(LAYER_TYPE_NONE, null);
+                }
+            };
+        } else {
+            prepareReveal();
+            centerAboutIcon();
+
+            int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
+            int height = getFolderHeight();
+
+            float transX = - 0.075f * (width / 2 - getPivotX());
+            float transY = - 0.075f * (height / 2 - getPivotY());
+            setTranslationX(transX);
+            setTranslationY(transY);
+            PropertyValuesHolder tx = PropertyValuesHolder.ofFloat("translationX", transX, 0);
+            PropertyValuesHolder ty = PropertyValuesHolder.ofFloat("translationY", transY, 0);
+
+            int rx = (int) Math.max(Math.max(width - getPivotX(), 0), getPivotX());
+            int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
+            float radius = (float) Math.sqrt(rx * rx + ry * ry);
+            AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+            Animator reveal = LauncherAnimUtils.createCircularReveal(this, (int) getPivotX(),
+                    (int) getPivotY(), 0, radius);
+            reveal.setDuration(mMaterialExpandDuration);
+            reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+
+            mContent.setAlpha(0f);
+            Animator iconsAlpha = LauncherAnimUtils.ofFloat(mContent, "alpha", 0f, 1f);
+            iconsAlpha.setDuration(mMaterialExpandDuration);
+            iconsAlpha.setStartDelay(mMaterialExpandStagger);
+            iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
+
+            mFolderName.setAlpha(0f);
+            Animator textAlpha = LauncherAnimUtils.ofFloat(mFolderName, "alpha", 0f, 1f);
+            textAlpha.setDuration(mMaterialExpandDuration);
+            textAlpha.setStartDelay(mMaterialExpandStagger);
+            textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
+
+            Animator drift = LauncherAnimUtils.ofPropertyValuesHolder(this, tx, ty);
+            drift.setDuration(mMaterialExpandDuration);
+            drift.setStartDelay(mMaterialExpandStagger);
+            drift.setInterpolator(new LogDecelerateInterpolator(60, 0));
+
+            anim.play(drift);
+            anim.play(iconsAlpha);
+            anim.play(textAlpha);
+            anim.play(reveal);
+
+            openFolderAnim = anim;
+
+            mContent.setLayerType(LAYER_TYPE_HARDWARE, null);
+            onCompleteRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    mContent.setLayerType(LAYER_TYPE_NONE, null);
+                }
+            };
+        }
+        openFolderAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
@@ -465,7 +546,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
-                setLayerType(LAYER_TYPE_NONE, null);
+
+                if (onCompleteRunnable != null) {
+                    onCompleteRunnable.run();
+                }
 
                 // Only show cling if we are not in the middle of a drag - this would be quite jarring.
                 if (!mDragController.isDragging()) {
@@ -479,9 +563,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 setFocusOnFirstChild();
             }
         });
-        oa.setDuration(mExpandDuration);
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-        oa.start();
+        openFolderAnim.start();
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.
         if (mDragController.isDragging()) {
