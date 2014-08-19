@@ -159,6 +159,7 @@ public class Hotseat extends FrameLayout {
                 allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
                 mLauncher.setAllAppsButton(allAppsButton);
                 allAppsButton.setOnClickListener(mLauncher);
+                allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
             }
 
             // Note: We do this to ensure that the hotseat is always laid out in the orientation of

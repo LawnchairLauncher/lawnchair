@@ -30,6 +30,11 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
+        <com.android.launcher3.FocusIndicatorView
+            android:id="@+id/focus_indicator"
+            android:layout_width="52dp"
+            android:layout_height="52dp" />
+
         <!-- The workspace contains 5 screens of cells -->
         <com.android.launcher3.Workspace
             android:id="@+id/workspace"
