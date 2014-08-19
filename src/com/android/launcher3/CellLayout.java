@@ -71,7 +71,6 @@ public class CellLayout extends ViewGroup {
     private int mWidthGap;
     private int mHeightGap;
     private int mMaxGap;
-    private boolean mScrollingTransformsDirty = false;
     private boolean mDropPending = false;
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -386,23 +385,6 @@ public class CellLayout extends ViewGroup {
 
     boolean getIsDragOverlapping() {
         return mIsDragOverlapping;
-    }
-
-    protected void setOverscrollTransformsDirty(boolean dirty) {
-        mScrollingTransformsDirty = dirty;
-    }
-
-    protected void resetOverscrollTransforms() {
-        if (mScrollingTransformsDirty) {
-            setOverscrollTransformsDirty(false);
-            setTranslationX(0);
-            setRotationY(0);
-            // It doesn't matter if we pass true or false here, the important thing is that we
-            // pass 0, which results in the overscroll drawable not being drawn any more.
-            setOverScrollAmount(0, false);
-            setPivotX(getMeasuredWidth() / 2);
-            setPivotY(getMeasuredHeight() / 2);
-        }
     }
 
     @Override

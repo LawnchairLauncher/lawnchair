@@ -190,16 +190,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private int mNumWidgetPages;
     private Rect mAllAppsPadding = new Rect();
 
-    // Relating to the scroll and overscroll effects
-    Workspace.ZInterpolator mZInterpolator = new Workspace.ZInterpolator(0.5f);
-    private static float CAMERA_DISTANCE = 6500;
-    private static float TRANSITION_SCALE_FACTOR = 0.74f;
-    private static float TRANSITION_PIVOT = 0.65f;
-    private static float TRANSITION_MAX_ROTATION = 22;
-    private static final boolean PERFORM_OVERSCROLL_ROTATION = false;
-    private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
-    private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
-
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private static final int sPageSleepDelay = 200;
@@ -1365,73 +1355,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // In apps customize, we have a scrolling effect which emulates pulling cards off of a stack.
     @Override
     protected void screenScrolled(int screenCenter) {
-        final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
-
-        for (int i = 0; i < getChildCount(); i++) {
-            View v = getPageAt(i);
-            if (v != null) {
-                float scrollProgress = getScrollProgress(screenCenter, v, i);
-
-                float interpolatedProgress;
-                float translationX;
-                float maxScrollProgress = Math.max(0, scrollProgress);
-                float minScrollProgress = Math.min(0, scrollProgress);
-
-                if (isRtl) {
-                    translationX = maxScrollProgress * v.getMeasuredWidth();
-                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(maxScrollProgress));
-                } else {
-                    translationX = minScrollProgress * v.getMeasuredWidth();
-                    interpolatedProgress = mZInterpolator.getInterpolation(Math.abs(minScrollProgress));
-                }
-                float scale = (1 - interpolatedProgress) +
-                        interpolatedProgress * TRANSITION_SCALE_FACTOR;
-
-                float alpha;
-                if (isRtl && (scrollProgress > 0)) {
-                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(maxScrollProgress));
-                } else if (!isRtl && (scrollProgress < 0)) {
-                    alpha = mAlphaInterpolator.getInterpolation(1 - Math.abs(scrollProgress));
-                } else {
-                    //  On large screens we need to fade the page as it nears its leftmost position
-                    alpha = mLeftScreenAlphaInterpolator.getInterpolation(1 - scrollProgress);
-                }
-
-                v.setCameraDistance(mDensity * CAMERA_DISTANCE);
-                int pageWidth = v.getMeasuredWidth();
-                int pageHeight = v.getMeasuredHeight();
-
-                if (PERFORM_OVERSCROLL_ROTATION) {
-                    float xPivot = isRtl ? 1f - TRANSITION_PIVOT : TRANSITION_PIVOT;
-                    boolean isOverscrollingFirstPage = isRtl ? scrollProgress > 0 : scrollProgress < 0;
-                    boolean isOverscrollingLastPage = isRtl ? scrollProgress < 0 : scrollProgress > 0;
-
-                    if (i == 0 && isOverscrollingFirstPage) {
-                        // Overscroll to the left
-                        v.setPivotX(xPivot * pageWidth);
-                        v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
-                        scale = 1.0f;
-                        alpha = 1.0f;
-                        // On the first page, we don't want the page to have any lateral motion
-                        translationX = 0;
-                    } else if (i == getChildCount() - 1 && isOverscrollingLastPage) {
-                        // Overscroll to the right
-                        v.setPivotX((1 - xPivot) * pageWidth);
-                        v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
-                        scale = 1.0f;
-                        alpha = 1.0f;
-                        // On the last page, we don't want the page to have any lateral motion.
-                        translationX = 0;
-                    } else {
-                        v.setPivotY(pageHeight / 2.0f);
-                        v.setPivotX(pageWidth / 2.0f);
-                        v.setRotationY(0f);
-                    }
-                }
-            }
-        }
-
         enableHwLayersOnVisiblePages();
     }
 
@@ -1476,7 +1400,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     protected void overScroll(float amount) {
-        acceleratedOverScroll(amount);
+        dampedOverScroll(amount);
     }
 
     /**

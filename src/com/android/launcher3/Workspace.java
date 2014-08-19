@@ -215,7 +215,7 @@ public class Workspace extends SmoothPagedView
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int[] mTempVisiblePagesRange = new int[2];
-    private boolean mOverscrollTransformsSet;
+    private boolean mOverscrollEffectSet;
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -280,6 +280,8 @@ public class Workspace extends SmoothPagedView
     private float[] mNewAlphas;
     private int mLastChildCount = -1;
     private float mTransitionProgress;
+
+    float mOverScrollEffect = 0f;
 
     private Runnable mDeferredAction;
     private boolean mDeferDropAfterUninstall;
@@ -1683,14 +1685,11 @@ public class Workspace extends SmoothPagedView
         updateStateForCustomContent(screenCenter);
         enableHwLayersOnVisiblePages();
 
-        boolean shouldOverScroll = (mOverScrollX < 0 && (!hasCustomContent() || isLayoutRtl())) ||
-                (mOverScrollX > mMaxScrollX && (!hasCustomContent() || !isLayoutRtl()));
+        boolean shouldOverScroll = (mOverScrollEffect < 0 && (!hasCustomContent() || isLayoutRtl())) ||
+                (mOverScrollEffect > 0 && (!hasCustomContent() || !isLayoutRtl()));
 
         if (shouldOverScroll) {
             int index = 0;
-            float pivotX = 0f;
-            final float leftBiasedPivot = 0.25f;
-            final float rightBiasedPivot = 0.75f;
             final int lowerIndex = 0;
             final int upperIndex = getChildCount() - 1;
 
@@ -1698,25 +1697,27 @@ public class Workspace extends SmoothPagedView
             index = (!isRtl && isLeftPage) || (isRtl && !isLeftPage) ? lowerIndex : upperIndex;
 
             CellLayout cl = (CellLayout) getChildAt(index);
-            float scrollProgress = getScrollProgress(screenCenter, cl, index);
-            cl.setOverScrollAmount(Math.abs(scrollProgress), isLeftPage);
+            float effect = Math.abs(mOverScrollEffect);
+            cl.setOverScrollAmount(Math.abs(effect), isLeftPage);
 
-            if (!mOverscrollTransformsSet) {
-                mOverscrollTransformsSet = true;
-                cl.setOverscrollTransformsDirty(true);
-            }
+            mOverscrollEffectSet = true;
         } else {
-            if (mOverscrollTransformsSet && getChildCount() > 0) {
-                mOverscrollTransformsSet = false;
-                ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
-                ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();
+            if (mOverscrollEffectSet && getChildCount() > 0) {
+                mOverscrollEffectSet = false;
+                ((CellLayout) getChildAt(0)).setOverScrollAmount(0, false);
+                ((CellLayout) getChildAt(getChildCount() - 1)).setOverScrollAmount(0, false);
             }
         }
     }
 
+    private void computeOverScrollEffect(float amount) {
+        mOverScrollEffect = acceleratedOverFactor(amount);
+    }
+
     @Override
     protected void overScroll(float amount) {
-        acceleratedOverScroll(amount);
+        computeOverScrollEffect(amount);
+        dampedOverScroll(amount);
     }
 
     protected void onAttachedToWindow() {
