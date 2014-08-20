@@ -14,10 +14,8 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.PagedViewIcon
+<com.android.launcher3.BubbleTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
-
     style="@style/WorkspaceIcon.AppsCustomize"
     android:id="@+id/application_icon"
     android:focusable="true" />

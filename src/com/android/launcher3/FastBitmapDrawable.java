@@ -16,29 +16,61 @@
 
 package com.android.launcher3;
 
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.SparseArray;
 
 class FastBitmapDrawable extends Drawable {
 
+    static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
+
+        @Override
+        public float getInterpolation(float input) {
+            if (input < 0.05f) {
+                return input / 0.05f;
+            } else if (input < 0.3f){
+                return 1;
+            } else {
+                return (1 - input) / 0.7f;
+            }
+        }
+    };
+    static final long CLICK_FEEDBACK_DURATION = 2000;
+
+    private static final int PRESSED_BRIGHTNESS = 100;
     private static ColorMatrix sGhostModeMatrix;
     private static final ColorMatrix sTempMatrix = new ColorMatrix();
+
+    /**
+     * Store the brightness colors filters to optimize animations during icon press. This
+     * only works for non-ghost-mode icons.
+     */
+    private static final SparseArray<ColorFilter> sCachedBrightnessFilter =
+            new SparseArray<ColorFilter>();
 
     private static final int GHOST_MODE_MIN_COLOR_RANGE = 130;
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-    private Bitmap mBitmap;
+    private final Bitmap mBitmap;
     private int mAlpha;
 
     private int mBrightness = 0;
     private boolean mGhostModeEnabled = false;
+
+    private boolean mPressed = false;
+    private ObjectAnimator mPressedAnimator;
 
     FastBitmapDrawable(Bitmap b) {
         mAlpha = 255;
@@ -114,6 +146,23 @@ class FastBitmapDrawable extends Drawable {
         }
     }
 
+    public void setPressed(boolean pressed) {
+        if (mPressed != pressed) {
+            mPressed = pressed;
+            if (mPressed) {
+                mPressedAnimator = ObjectAnimator
+                        .ofInt(this, "brightness", PRESSED_BRIGHTNESS)
+                        .setDuration(CLICK_FEEDBACK_DURATION);
+                mPressedAnimator.setInterpolator(CLICK_FEEDBACK_INTERPOLATOR);
+                mPressedAnimator.start();
+            } else if (mPressedAnimator != null) {
+                mPressedAnimator.cancel();
+                setBrightness(0);
+            }
+        }
+        invalidateSelf();
+    }
+
     public boolean isGhostModeEnabled() {
         return mGhostModeEnabled;
     }
@@ -122,14 +171,11 @@ class FastBitmapDrawable extends Drawable {
         return mBrightness;
     }
 
-    public void addBrightness(int amount) {
-        setBrightness(mBrightness + amount);
-    }
-
     public void setBrightness(int brightness) {
         if (mBrightness != brightness) {
             mBrightness = brightness;
             updateFilter();
+            invalidateSelf();
         }
     }
 
@@ -157,8 +203,13 @@ class FastBitmapDrawable extends Drawable {
                 mPaint.setColorFilter(new ColorMatrixColorFilter(sTempMatrix));
             }
         } else if (mBrightness != 0) {
-            setBrightnessMatrix(sTempMatrix, mBrightness);
-            mPaint.setColorFilter(new ColorMatrixColorFilter(sTempMatrix));
+            ColorFilter filter = sCachedBrightnessFilter.get(mBrightness);
+            if (filter == null) {
+                filter = new PorterDuffColorFilter(Color.argb(mBrightness, 255, 255, 255),
+                        PorterDuff.Mode.SRC_ATOP);
+                sCachedBrightnessFilter.put(mBrightness, filter);
+            }
+            mPaint.setColorFilter(filter);
         } else {
             mPaint.setColorFilter(null);
         }

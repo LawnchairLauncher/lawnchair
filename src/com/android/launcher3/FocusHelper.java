@@ -22,8 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ScrollView;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,7 +87,6 @@ public class FocusHelper {
 
         final PagedViewGridLayout parent = (PagedViewGridLayout) w.getParent();
         final PagedView container = (PagedView) parent.getParent();
-        final AppsCustomizeTabHost tabHost = findTabHostParent(container);
         final int widgetIndex = parent.indexOfChild(w);
         final int widgetCount = parent.getChildCount();
         final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parent));
@@ -228,6 +225,13 @@ public class FocusHelper {
      * Handles key events in a PageViewCellLayout containing PagedViewIcons.
      */
     static boolean handleAppsCustomizeKeyEvent(View v, int keyCode, KeyEvent e) {
+        final int action = e.getAction();
+        if (((action == KeyEvent.ACTION_DOWN) && v.onKeyDown(keyCode, e))
+                || ((action == KeyEvent.ACTION_UP) && v.onKeyUp(keyCode, e))) {
+            // Let the view handle the confirmation key.
+            return true;
+        }
+
         ViewGroup parentLayout;
         ViewGroup itemContainer;
         int countX;
@@ -246,7 +250,6 @@ public class FocusHelper {
         // Note we have an extra parent because of the
         // PagedViewCellLayout/PagedViewCellLayoutChildren relationship
         final PagedView container = (PagedView) parentLayout.getParent();
-        final AppsCustomizeTabHost tabHost = findTabHostParent(container);
         final int iconIndex = itemContainer.indexOfChild(v);
         final int itemCount = itemContainer.getChildCount();
         final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parentLayout));
@@ -255,7 +258,6 @@ public class FocusHelper {
         final int x = iconIndex % countX;
         final int y = iconIndex / countX;
 
-        final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
         ViewGroup newParent = null;
         // Side pages do not always load synchronously, so check before focusing child siblings
@@ -316,15 +318,6 @@ public class FocusHelper {
                         int newiconIndex = Math.min(itemCount - 1, ((y + 1) * countX) + x);
                         itemContainer.getChildAt(newiconIndex).requestFocus();
                     }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_ENTER:
-            case KeyEvent.KEYCODE_DPAD_CENTER:
-                if (handleKeyEvent) {
-                    // Simulate a click on the icon
-                    View.OnClickListener clickListener = (View.OnClickListener) container;
-                    clickListener.onClick(v);
                 }
                 wasHandled = true;
                 break;

@@ -27,7 +27,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -47,9 +46,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Handler.Callback;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -76,9 +73,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -212,7 +207,7 @@ public class Workspace extends SmoothPagedView
 
     private HolographicOutlineHelper mOutlineHelper;
     private Bitmap mDragOutline = null;
-    private final Rect mTempRect = new Rect();
+    private static final Rect sTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int[] mTempVisiblePagesRange = new int[2];
     private boolean mOverscrollEffectSet;
@@ -240,6 +235,8 @@ public class Workspace extends SmoothPagedView
     private boolean mAddToExistingFolderOnDrop = false;
     private DropTarget.DragEnforcer mDragEnforcer;
     private float mMaxDistanceForFolderCreation;
+
+    private final Canvas mCanvas = new Canvas();
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -1994,14 +1991,7 @@ public class Workspace extends SmoothPagedView
     * appearance).
     *
     */
-    public void onDragStartedWithItem(View v) {
-        final Canvas canvas = new Canvas();
-
-        // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(v, canvas, DRAG_BITMAP_PADDING);
-    }
-
-    private Rect getDrawableBounds(Drawable d) {
+    private static Rect getDrawableBounds(Drawable d) {
         Rect bounds = new Rect();
         d.copyBounds(bounds);
         if (bounds.width() == 0 || bounds.height() == 0) {
@@ -2017,8 +2007,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onExternalDragStartedWithItem(View v) {
-        final Canvas canvas = new Canvas();
-
         // Compose a drag bitmap with the view scaled to the icon size
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -2038,22 +2026,19 @@ public class Workspace extends SmoothPagedView
         // Compose the bitmap to create the icon from
         Bitmap b = Bitmap.createBitmap(bmpWidth, bmpHeight,
                 Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        drawDragView(v, c, 0);
-        c.setBitmap(null);
+        mCanvas.setBitmap(b);
+        drawDragView(v, mCanvas, 0);
+        mCanvas.setBitmap(null);
 
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, canvas, DRAG_BITMAP_PADDING, iconSize, iconSize, true);
+        mDragOutline = createDragOutline(b, DRAG_BITMAP_PADDING, iconSize, iconSize, true);
     }
 
     public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, boolean clipAlpha) {
-        final Canvas canvas = new Canvas();
-
         int[] size = estimateItemSize(info.spanX, info.spanY, info, false);
 
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, canvas, DRAG_BITMAP_PADDING, size[0],
-                size[1], clipAlpha);
+        mDragOutline = createDragOutline(b, DRAG_BITMAP_PADDING, size[0], size[1], clipAlpha);
     }
 
     public void exitWidgetResizeMode() {
@@ -2551,8 +2536,8 @@ public class Workspace extends SmoothPagedView
      * @param destCanvas the canvas to draw on
      * @param padding the horizontal and vertical padding to use when drawing
      */
-    private void drawDragView(View v, Canvas destCanvas, int padding) {
-        final Rect clipRect = mTempRect;
+    private static void drawDragView(View v, Canvas destCanvas, int padding) {
+        final Rect clipRect = sTempRect;
         v.getDrawingRect(clipRect);
 
         boolean textVisible = false;
@@ -2591,7 +2576,7 @@ public class Workspace extends SmoothPagedView
      * @param expectedPadding padding to add to the drag view. If a different padding was used
      * its value will be changed
      */
-    public Bitmap createDragBitmap(View v, Canvas canvas, AtomicInteger expectedPadding) {
+    public Bitmap createDragBitmap(View v, AtomicInteger expectedPadding) {
         Bitmap b;
 
         int padding = expectedPadding.get();
@@ -2606,9 +2591,9 @@ public class Workspace extends SmoothPagedView
                     v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
         }
 
-        canvas.setBitmap(b);
-        drawDragView(v, canvas, padding);
-        canvas.setBitmap(null);
+        mCanvas.setBitmap(b);
+        drawDragView(v, mCanvas, padding);
+        mCanvas.setBitmap(null);
 
         return b;
     }
@@ -2617,15 +2602,15 @@ public class Workspace extends SmoothPagedView
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    private Bitmap createDragOutline(View v, Canvas canvas, int padding) {
+    private Bitmap createDragOutline(View v, int padding) {
         final int outlineColor = getResources().getColor(R.color.outline_color);
         final Bitmap b = Bitmap.createBitmap(
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
-        canvas.setBitmap(b);
-        drawDragView(v, canvas, padding);
-        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
-        canvas.setBitmap(null);
+        mCanvas.setBitmap(b);
+        drawDragView(v, mCanvas, padding);
+        mOutlineHelper.applyExpensiveOutlineWithBlur(b, mCanvas, outlineColor, outlineColor);
+        mCanvas.setBitmap(null);
         return b;
     }
 
@@ -2633,11 +2618,11 @@ public class Workspace extends SmoothPagedView
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h,
+    private Bitmap createDragOutline(Bitmap orig, int padding, int w, int h,
             boolean clipAlpha) {
         final int outlineColor = getResources().getColor(R.color.outline_color);
         final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(b);
+        mCanvas.setBitmap(b);
 
         Rect src = new Rect(0, 0, orig.getWidth(), orig.getHeight());
         float scaleFactor = Math.min((w - padding) / (float) orig.getWidth(),
@@ -2649,10 +2634,10 @@ public class Workspace extends SmoothPagedView
         // center the image
         dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
 
-        canvas.drawBitmap(orig, src, dst, null);
-        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor,
+        mCanvas.drawBitmap(orig, src, dst, null);
+        mOutlineHelper.applyExpensiveOutlineWithBlur(b, mCanvas, outlineColor, outlineColor,
                 clipAlpha);
-        canvas.setBitmap(null);
+        mCanvas.setBitmap(null);
 
         return b;
     }
@@ -2670,21 +2655,20 @@ public class Workspace extends SmoothPagedView
         CellLayout layout = (CellLayout) child.getParent().getParent();
         layout.prepareChildForDrag(child);
 
-        child.clearFocus();
-        child.setPressed(false);
-
-        final Canvas canvas = new Canvas();
-
-        // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(child, canvas, DRAG_BITMAP_PADDING);
         beginDragShared(child, this);
     }
 
     public void beginDragShared(View child, DragSource source) {
+        child.clearFocus();
+        child.setPressed(false);
+
+        // The outline is used to visualize where the item will land if dropped
+        mDragOutline = createDragOutline(child, DRAG_BITMAP_PADDING);
+
         mLauncher.onDragStarted(child);
         // The drag bitmap follows the touch point around on the screen
         AtomicInteger padding = new AtomicInteger(DRAG_BITMAP_PADDING);
-        final Bitmap b = createDragBitmap(child, new Canvas(), padding);
+        final Bitmap b = createDragBitmap(child, padding);
 
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
@@ -2698,7 +2682,7 @@ public class Workspace extends SmoothPagedView
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
-        if (child instanceof BubbleTextView || child instanceof PagedViewIcon) {
+        if (child instanceof BubbleTextView) {
             int iconSize = grid.iconSizePx;
             int top = child.getPaddingTop();
             int left = (bmpWidth - iconSize) / 2;
@@ -2717,7 +2701,7 @@ public class Workspace extends SmoothPagedView
         // Clear the pressed state if necessary
         if (child instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) child;
-            icon.clearPressedOrFocusedBackground();
+            icon.clearPressedBackground();
         } else if (child instanceof FolderIcon) {
             // The folder cling isn't flexible enough to be shown in non-default workspace positions
             // Also if they are dragging it a folder, we assume they don't need to see the cling.
@@ -2752,14 +2736,14 @@ public class Workspace extends SmoothPagedView
 
         // Compose a new drag bitmap that is of the icon size
         AtomicInteger padding = new AtomicInteger(DRAG_BITMAP_PADDING);
-        final Bitmap tmpB = createDragBitmap(child, new Canvas(), padding);
+        final Bitmap tmpB = createDragBitmap(child, padding);
         Bitmap b = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
         Paint p = new Paint();
         p.setFilterBitmap(true);
-        Canvas c = new Canvas(b);
-        c.drawBitmap(tmpB, new Rect(0, 0, tmpB.getWidth(), tmpB.getHeight()),
+        mCanvas.setBitmap(b);
+        mCanvas.drawBitmap(tmpB, new Rect(0, 0, tmpB.getWidth(), tmpB.getHeight()),
                 new Rect(0, 0, iconSize, iconSize), p);
-        c.setBitmap(null);
+        mCanvas.setBitmap(null);
 
         // Find the child's location on the screen
         int bmpWidth = tmpB.getWidth();
@@ -4033,12 +4017,12 @@ public class Workspace extends SmoothPagedView
         int height = MeasureSpec.makeMeasureSpec(unScaledSize[1], MeasureSpec.EXACTLY);
         Bitmap b = Bitmap.createBitmap(unScaledSize[0], unScaledSize[1],
                 Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
+        mCanvas.setBitmap(b);
 
         layout.measure(width, height);
         layout.layout(0, 0, unScaledSize[0], unScaledSize[1]);
-        layout.draw(c);
-        c.setBitmap(null);
+        layout.draw(mCanvas);
+        mCanvas.setBitmap(null);
         layout.setVisibility(visibility);
         return b;
     }
