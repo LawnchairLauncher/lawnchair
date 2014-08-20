@@ -243,6 +243,12 @@ s -->
     <string name="workspace_cling_title">Organize your space</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=70] -->
     <string name="workspace_cling_move_item">Touch &amp; hold background to manage wallpaper, widgets and settings.</string>
+    <!-- The title text for workspace longpress action [CHAR_LIMIT=40] -->
+    <string name="workspace_cling_longpress_title">Wallpapers, widgets, &amp; settings</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=70] -->
+    <string name="workspace_cling_longpress_description">Touch &amp; hold background to customize</string>
+    <!-- The description of the button to dismiss the cling [CHAR_LIMIT=30] -->
+    <string name="workspace_cling_longpress_dismiss">GOT IT</string>
     <!-- The title text for the Folder cling [CHAR_LIMIT=30] -->
     <string name="folder_cling_title">Here\'s a folder</string>
     <!-- The description of how to create a folder [CHAR_LIMIT=70] -->
