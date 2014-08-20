@@ -1115,6 +1115,17 @@ public class Workspace extends SmoothPagedView
         return super.onInterceptTouchEvent(ev);
     }
 
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        // Ignore pointer scroll events if the custom content doesn't allow scrolling.
+        if ((getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID)
+                && (mCustomContentCallbacks != null)
+                && !mCustomContentCallbacks.isScrollingAllowed()) {
+            return false;
+        }
+        return super.onGenericMotionEvent(event);
+    }
+
     protected void reinflateWidgetsIfNecessary() {
         final int clCount = getChildCount();
         for (int i = 0; i < clCount; i++) {
