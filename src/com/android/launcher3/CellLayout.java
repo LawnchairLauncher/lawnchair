@@ -72,6 +72,7 @@ public class CellLayout extends ViewGroup {
     private int mHeightGap;
     private int mMaxGap;
     private boolean mDropPending = false;
+    private boolean mIsDragTarget = true;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
@@ -367,20 +368,28 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    void setIsDragOverlapping(boolean isDragOverlapping) {
-        if (mIsDragOverlapping != isDragOverlapping) {
-            mIsDragOverlapping = isDragOverlapping;
-            setUseActiveGlowBackground(mIsDragOverlapping);
-            invalidate();
-        }
-    }
-
     void setUseActiveGlowBackground(boolean use) {
         mUseActiveGlowBackground = use;
     }
 
     void disableBackground() {
         mDrawBackground = false;
+    }
+
+    void disableDragTarget() {
+        mIsDragTarget = false;
+    }
+
+    boolean isDragTarget() {
+        return mIsDragTarget;
+    }
+
+    void setIsDragOverlapping(boolean isDragOverlapping) {
+        if (mIsDragOverlapping != isDragOverlapping) {
+            mIsDragOverlapping = isDragOverlapping;
+            setUseActiveGlowBackground(mIsDragOverlapping);
+            invalidate();
+        }
     }
 
     boolean getIsDragOverlapping() {
@@ -946,6 +955,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public void setBackgroundAlphaMultiplier(float multiplier) {
+
         if (mBackgroundAlphaMultiplier != multiplier) {
             mBackgroundAlphaMultiplier = multiplier;
             invalidate();

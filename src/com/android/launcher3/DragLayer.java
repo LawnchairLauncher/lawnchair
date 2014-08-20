@@ -96,8 +96,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         setOnHierarchyChangeListener(this);
 
         final Resources res = getResources();
-        mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left_holo);
-        mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right_holo);
+        mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left);
+        mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
+        mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
+        mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
         mBackground = res.getDrawable(R.drawable.apps_customize_bg);
     }
 
@@ -850,8 +852,11 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     }
 
     private boolean mInScrollArea;
+    private boolean mShowPageHints;
     private Drawable mLeftHoverDrawable;
     private Drawable mRightHoverDrawable;
+    private Drawable mLeftHoverDrawableActive;
+    private Drawable mRightHoverDrawableActive;
 
     void onEnterScrollArea(int direction) {
         mInScrollArea = true;
@@ -860,6 +865,16 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
 
     void onExitScrollArea() {
         mInScrollArea = false;
+        invalidate();
+    }
+
+    void showPageHints() {
+        mShowPageHints = true;
+        invalidate();
+    }
+
+    void hidePageHints() {
+        mShowPageHints = false;
         invalidate();
     }
 
@@ -883,25 +898,32 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         super.dispatchDraw(canvas);
 
         // Draw screen hover indicators above children.
-        if (mInScrollArea && !LauncherAppState.getInstance().isScreenLarge()) {
+        if (mShowPageHints) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = getMeasuredWidth();
             Rect childRect = new Rect();
-            getDescendantRectRelativeToSelf(workspace.getChildAt(0), childRect);
+            getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.getChildCount() - 1),
+                    childRect);
 
             int page = workspace.getNextPage();
             final boolean isRtl = isLayoutRtl();
             CellLayout leftPage = (CellLayout) workspace.getChildAt(isRtl ? page + 1 : page - 1);
             CellLayout rightPage = (CellLayout) workspace.getChildAt(isRtl ? page - 1 : page + 1);
 
-            if (leftPage != null && leftPage.getIsDragOverlapping()) {
-                mLeftHoverDrawable.setBounds(0, childRect.top,
-                        mLeftHoverDrawable.getIntrinsicWidth(), childRect.bottom);
-                mLeftHoverDrawable.draw(canvas);
-            } else if (rightPage != null && rightPage.getIsDragOverlapping()) {
-                mRightHoverDrawable.setBounds(width - mRightHoverDrawable.getIntrinsicWidth(),
+            if (leftPage != null && leftPage.isDragTarget()) {
+                Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?
+                        mLeftHoverDrawableActive : mLeftHoverDrawable;
+                left.setBounds(0, childRect.top,
+                        left.getIntrinsicWidth(), childRect.bottom);
+                left.draw(canvas);
+            }
+            if (rightPage != null && rightPage.isDragTarget()) {
+                Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
+                        mRightHoverDrawableActive : mRightHoverDrawable;
+
+                right.setBounds(width - right.getIntrinsicWidth(),
                         childRect.top, width, childRect.bottom);
-                mRightHoverDrawable.draw(canvas);
+                right.draw(canvas);
             }
         }
     }

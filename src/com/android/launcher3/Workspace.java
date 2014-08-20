@@ -585,6 +585,7 @@ public class Workspace extends SmoothPagedView
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
         customScreen.disableBackground();
+        customScreen.disableDragTarget();
 
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
@@ -1583,7 +1584,7 @@ public class Workspace extends SmoothPagedView
     private void updatePageAlphaValues(int screenCenter) {
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
         if (mWorkspaceFadeInAdjacentScreens &&
-                mState == State.NORMAL &&
+                !workspaceInModalState() &&
                 !mIsSwitchingState &&
                 !isInOverscroll) {
             for (int i = numCustomPages(); i < getChildCount(); i++) {
@@ -1592,6 +1593,7 @@ public class Workspace extends SmoothPagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
+                    //child.setBackgroundAlphaMultiplier(1 - alpha);
                 }
             }
         }
@@ -1685,8 +1687,7 @@ public class Workspace extends SmoothPagedView
         updateStateForCustomContent(screenCenter);
         enableHwLayersOnVisiblePages();
 
-        boolean shouldOverScroll = (mOverScrollEffect < 0 && (!hasCustomContent() || isLayoutRtl())) ||
-                (mOverScrollEffect > 0 && (!hasCustomContent() || !isLayoutRtl()));
+        boolean shouldOverScroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
 
         if (shouldOverScroll) {
             int index = 0;
@@ -1710,14 +1711,16 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private void computeOverScrollEffect(float amount) {
-        mOverScrollEffect = acceleratedOverFactor(amount);
-    }
-
     @Override
     protected void overScroll(float amount) {
-        computeOverScrollEffect(amount);
-        dampedOverScroll(amount);
+        boolean shouldOverScroll = (amount < 0 && (!hasCustomContent() || isLayoutRtl())) ||
+                (amount > 0 && (!hasCustomContent() || !isLayoutRtl()));
+        if (shouldOverScroll) {
+            dampedOverScroll(amount);
+            mOverScrollEffect = acceleratedOverFactor(amount);
+        } else {
+            mOverScrollEffect = 0;
+        }
     }
 
     protected void onAttachedToWindow() {
@@ -3242,10 +3245,8 @@ public class Workspace extends SmoothPagedView
         setCurrentDropLayout(layout);
         setCurrentDragOverlappingLayout(layout);
 
-        // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
-        // don't need to show the outlines
-        if (LauncherAppState.getInstance().isScreenLarge()) {
-            showOutlines();
+        if (!workspaceInModalState()) {
+            mLauncher.getDragLayer().showPageHints();
         }
     }
 
@@ -3320,6 +3321,7 @@ public class Workspace extends SmoothPagedView
         if (!mIsPageMoving) {
             hideOutlines();
         }
+        mLauncher.getDragLayer().hidePageHints();
     }
 
     void setCurrentDropLayout(CellLayout layout) {
