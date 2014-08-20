@@ -82,7 +82,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -1025,10 +1024,6 @@ public class Launcher extends Activity
         if (mWaitingForResume != null) {
             // Resets the previous workspace icon press state
             mWaitingForResume.setStayPressed(false);
-        }
-        if (mAppsCustomizeContent != null) {
-            // Resets the previous all apps icon press state
-            mAppsCustomizeContent.resetDrawableState();
         }
 
         // It is possible that widgets can receive updates while launcher is not in the foreground.
@@ -2451,11 +2446,17 @@ public class Launcher extends Activity
             }
         } else if (v == mAllAppsButton) {
             onClickAllAppsButton(v);
+        } else if (tag instanceof AppInfo) {
+            startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v);
             }
         }
+    }
+
+    public void onClickPagedViewIcon(View v) {
+        startAppShortcutOrInfoActivity(v);
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -2539,17 +2540,6 @@ public class Launcher extends Activity
     }
 
     /**
-     * Event handler for a paged view icon click.
-     * @param v The view that was clicked.
-     * @param appInfo The {link AppInfo} of the view.
-     */
-    public void onClickPagedViewIcon(View v, AppInfo appInfo) {
-        if (LOGD) Log.d(TAG, "onClickPagedViewIcon");
-        startActivitySafely(v, appInfo.intent, appInfo);
-        getStats().recordLaunch(appInfo.intent);
-    }
-
-    /**
      * Event handler for an app shortcut click.
      *
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
@@ -2586,7 +2576,7 @@ public class Launcher extends Activity
             builder.setPositiveButton(R.string.abandoned_search,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            startAppShortcutActivity(v);
+                            startAppShortcutOrInfoActivity(v);
                         }
                     }
             );
@@ -2603,24 +2593,29 @@ public class Launcher extends Activity
         }
 
         // Start activities
-        startAppShortcutActivity(v);
+        startAppShortcutOrInfoActivity(v);
     }
 
-    private void startAppShortcutActivity(View v) {
+    private void startAppShortcutOrInfoActivity(View v) {
         Object tag = v.getTag();
-        if (!(tag instanceof ShortcutInfo)) {
-            throw new IllegalArgumentException("Input must be a Shortcut");
-        }
-        final ShortcutInfo shortcut = (ShortcutInfo) tag;
-        final Intent intent = shortcut.intent;
+        final ShortcutInfo shortcut;
+        final Intent intent;
+        if (tag instanceof ShortcutInfo) {
+            shortcut = (ShortcutInfo) tag;
+            intent = shortcut.intent;
+            int[] pos = new int[2];
+            v.getLocationOnScreen(pos);
+            intent.setSourceBounds(new Rect(pos[0], pos[1],
+                    pos[0] + v.getWidth(), pos[1] + v.getHeight()));
 
-        int[] pos = new int[2];
-        v.getLocationOnScreen(pos);
-        intent.setSourceBounds(new Rect(pos[0], pos[1],
-                pos[0] + v.getWidth(), pos[1] + v.getHeight()));
+        } else if (tag instanceof AppInfo) {
+            shortcut = null;
+            intent = ((AppInfo) tag).intent;
+        } else {
+            throw new IllegalArgumentException("Input must be a Shortcut or AppInfo");
+        }
 
         boolean success = startActivitySafely(v, intent, tag);
-
         mStats.recordLaunch(intent, shortcut);
 
         if (success && v instanceof BubbleTextView) {

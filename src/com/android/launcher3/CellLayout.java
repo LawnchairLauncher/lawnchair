@@ -123,7 +123,7 @@ public class CellLayout extends ViewGroup {
     private int mDragOutlineCurrent = 0;
     private final Paint mDragOutlinePaint = new Paint();
 
-    private BubbleTextView mPressedOrFocusedIcon;
+    private final FastBitmapView mTouchFeedbackView;
 
     private HashMap<CellLayout.LayoutParams, Animator> mReorderAnimators = new
             HashMap<CellLayout.LayoutParams, Animator>();
@@ -288,6 +288,9 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                 mCountX, mCountY);
 
+        mTouchFeedbackView = new FastBitmapView(context);
+        // Make the feedback view large enough to hold the blur bitmap.
+        addView(mTouchFeedbackView, (int) (grid.cellWidthPx * 1.5), (int) (grid.cellHeightPx * 1.5));
         addView(mShortcutsAndWidgets);
     }
 
@@ -334,14 +337,6 @@ public class CellLayout extends ViewGroup {
         return mDropPending;
     }
 
-    private void invalidateBubbleTextView(BubbleTextView icon) {
-        final int padding = icon.getPressedOrFocusedBackgroundPadding();
-        invalidate(icon.getLeft() + getPaddingLeft() - padding,
-                icon.getTop() + getPaddingTop() - padding,
-                icon.getRight() + getPaddingLeft() + padding,
-                icon.getBottom() + getPaddingTop() + padding);
-    }
-
     void setOverScrollAmount(float r, boolean left) {
         if (left && mOverScrollForegroundDrawable != mOverScrollLeft) {
             mOverScrollForegroundDrawable = mOverScrollLeft;
@@ -355,16 +350,23 @@ public class CellLayout extends ViewGroup {
         invalidate();
     }
 
-    void setPressedOrFocusedIcon(BubbleTextView icon) {
-        // We draw the pressed or focused BubbleTextView's background in CellLayout because it
-        // requires an expanded clip rect (due to the glow's blur radius)
-        BubbleTextView oldIcon = mPressedOrFocusedIcon;
-        mPressedOrFocusedIcon = icon;
-        if (oldIcon != null) {
-            invalidateBubbleTextView(oldIcon);
-        }
-        if (mPressedOrFocusedIcon != null) {
-            invalidateBubbleTextView(mPressedOrFocusedIcon);
+    void setPressedIcon(BubbleTextView icon, Bitmap background, int padding) {
+        if (icon == null || background == null) {
+            mTouchFeedbackView.setBitmap(null);
+            mTouchFeedbackView.animate().cancel();
+        } else {
+            int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight()
+                    - (mCountX * mCellWidth);
+            mTouchFeedbackView.setTranslationX(icon.getLeft() + (int) Math.ceil(offset / 2f)
+                    - padding);
+            mTouchFeedbackView.setTranslationY(icon.getTop() - padding);
+            if (mTouchFeedbackView.setBitmap(background)) {
+                mTouchFeedbackView.setAlpha(0);
+                mTouchFeedbackView.animate().alpha(1)
+                    .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
+                    .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
+                    .start();
+            }
         }
     }
 
@@ -428,23 +430,6 @@ public class CellLayout extends ViewGroup {
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
                 paint.setAlpha((int)(alpha + .5f));
                 canvas.drawBitmap(b, null, mTempRect, paint);
-            }
-        }
-
-        // We draw the pressed or focused BubbleTextView's background in CellLayout because it
-        // requires an expanded clip rect (due to the glow's blur radius)
-        if (mPressedOrFocusedIcon != null) {
-            final int padding = mPressedOrFocusedIcon.getPressedOrFocusedBackgroundPadding();
-            final Bitmap b = mPressedOrFocusedIcon.getPressedOrFocusedBackground();
-            if (b != null) {
-                int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() -
-                        (mCountX * mCellWidth);
-                int left = getPaddingLeft() + (int) Math.ceil(offset / 2f);
-                int top = getPaddingTop();
-                canvas.drawBitmap(b,
-                        mPressedOrFocusedIcon.getLeft() + left - padding,
-                        mPressedOrFocusedIcon.getTop() + top - padding,
-                        null);
             }
         }
 
