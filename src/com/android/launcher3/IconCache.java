@@ -146,6 +146,10 @@ public class IconCache {
         return getFullResDefaultActivityIcon();
     }
 
+    public int getFullResIconDpi() {
+        return mIconDpi;
+    }
+
     public Drawable getFullResIcon(ResolveInfo info) {
         return getFullResIcon(info.activityInfo);
     }

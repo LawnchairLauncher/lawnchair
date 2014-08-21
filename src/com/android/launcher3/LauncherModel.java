@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
@@ -52,7 +51,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import com.android.launcher3.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
@@ -3040,11 +3039,11 @@ public class LauncherModel extends BroadcastReceiver
     public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
-        widgetsAndShortcuts.addAll(AppWidgetManager.getInstance(context).getInstalledProviders());
+        widgetsAndShortcuts.addAll(AppWidgetManagerCompat.getInstance(context).getAllProviders());
+
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
-        Collections.sort(widgetsAndShortcuts,
-            new LauncherModel.WidgetAndShortcutNameComparator(packageManager));
+        Collections.sort(widgetsAndShortcuts, new WidgetAndShortcutNameComparator(context));
         return widgetsAndShortcuts;
     }
 
@@ -3390,44 +3389,6 @@ public class LauncherModel extends BroadcastReceiver
         return null;
     }
 
-    /**
-     * Returns a list of all the widgets that can handle configuration with a particular mimeType.
-     */
-    List<WidgetMimeTypeHandlerData> resolveWidgetsForMimeType(Context context, String mimeType) {
-        final PackageManager packageManager = context.getPackageManager();
-        final List<WidgetMimeTypeHandlerData> supportedConfigurationActivities =
-            new ArrayList<WidgetMimeTypeHandlerData>();
-
-        final Intent supportsIntent =
-            new Intent(InstallWidgetReceiver.ACTION_SUPPORTS_CLIPDATA_MIMETYPE);
-        supportsIntent.setType(mimeType);
-
-        // Create a set of widget configuration components that we can test against
-        final List<AppWidgetProviderInfo> widgets =
-            AppWidgetManager.getInstance(context).getInstalledProviders();
-        final HashMap<ComponentName, AppWidgetProviderInfo> configurationComponentToWidget =
-            new HashMap<ComponentName, AppWidgetProviderInfo>();
-        for (AppWidgetProviderInfo info : widgets) {
-            configurationComponentToWidget.put(info.configure, info);
-        }
-
-        // Run through each of the intents that can handle this type of clip data, and cross
-        // reference them with the components that are actual configuration components
-        final List<ResolveInfo> activities = packageManager.queryIntentActivities(supportsIntent,
-                PackageManager.MATCH_DEFAULT_ONLY);
-        for (ResolveInfo info : activities) {
-            final ActivityInfo activityInfo = info.activityInfo;
-            final ComponentName infoComponent = new ComponentName(activityInfo.packageName,
-                    activityInfo.name);
-            if (configurationComponentToWidget.containsKey(infoComponent)) {
-                supportedConfigurationActivities.add(
-                        new InstallWidgetReceiver.WidgetMimeTypeHandlerData(info,
-                                configurationComponentToWidget.get(infoComponent)));
-            }
-        }
-        return supportedConfigurationActivities;
-    }
-
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data, Bitmap fallbackIcon) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
@@ -3570,14 +3531,6 @@ public class LauncherModel extends BroadcastReceiver
             return 0;
         }
     };
-    public static final Comparator<AppWidgetProviderInfo> getWidgetNameComparator() {
-        final Collator collator = Collator.getInstance();
-        return new Comparator<AppWidgetProviderInfo>() {
-            public final int compare(AppWidgetProviderInfo a, AppWidgetProviderInfo b) {
-                return collator.compare(a.label.toString().trim(), b.label.toString().trim());
-            }
-        };
-    }
     static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
         if (info.activityInfo != null) {
             return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
@@ -3618,11 +3571,14 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
     public static class WidgetAndShortcutNameComparator implements Comparator<Object> {
-        private Collator mCollator;
-        private PackageManager mPackageManager;
-        private HashMap<Object, String> mLabelCache;
-        WidgetAndShortcutNameComparator(PackageManager pm) {
-            mPackageManager = pm;
+        private final AppWidgetManagerCompat mManager;
+        private final PackageManager mPackageManager;
+        private final HashMap<Object, String> mLabelCache;
+        private final Collator mCollator;
+
+        WidgetAndShortcutNameComparator(Context context) {
+            mManager = AppWidgetManagerCompat.getInstance(context);
+            mPackageManager = context.getPackageManager();
             mLabelCache = new HashMap<Object, String>();
             mCollator = Collator.getInstance();
         }
@@ -3631,17 +3587,17 @@ public class LauncherModel extends BroadcastReceiver
             if (mLabelCache.containsKey(a)) {
                 labelA = mLabelCache.get(a);
             } else {
-                labelA = (a instanceof AppWidgetProviderInfo) ?
-                    ((AppWidgetProviderInfo) a).label :
-                    ((ResolveInfo) a).loadLabel(mPackageManager).toString().trim();
+                labelA = (a instanceof AppWidgetProviderInfo)
+                        ? mManager.loadLabel((AppWidgetProviderInfo) a)
+                        : ((ResolveInfo) a).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(a, labelA);
             }
             if (mLabelCache.containsKey(b)) {
                 labelB = mLabelCache.get(b);
             } else {
-                labelB = (b instanceof AppWidgetProviderInfo) ?
-                    ((AppWidgetProviderInfo) b).label :
-                    ((ResolveInfo) b).loadLabel(mPackageManager).toString().trim();
+                labelB = (b instanceof AppWidgetProviderInfo)
+                        ? mManager.loadLabel((AppWidgetProviderInfo) b)
+                        : ((ResolveInfo) b).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(b, labelB);
             }
             return mCollator.compare(labelA, labelB);

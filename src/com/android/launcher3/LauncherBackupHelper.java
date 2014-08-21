@@ -299,36 +299,26 @@ public class LauncherBackupHelper implements BackupHelper {
         Set<String> savedIds = getSavedIdsByType(Key.FAVORITE, in);
         if (DEBUG) Log.d(TAG, "favorite savedIds.size()=" + savedIds.size());
 
-        // Don't backup apps in other profiles for now.
-        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
-        long userSerialNumber =
-                UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
-
         // persist things that have changed since the last backup
         ContentResolver cr = mContext.getContentResolver();
+        // Don't backup apps in other profiles for now.
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
-                null, null, null);
+                getUserSelectionArg(), null, null);
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
         try {
             cursor.moveToPosition(-1);
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
-                final long profileId = cursor.getLong(PROFILE_ID_INDEX);
-                if (userSerialNumber == profileId) {
-                    final long updateTime = cursor.getLong(ID_MODIFIED);
-                    Key key = getKey(Key.FAVORITE, id);
-                    keys.add(key);
-                    final String backupKey = keyToBackupKey(key);
-                    currentIds.add(backupKey);
-                    if (!savedIds.contains(backupKey) || updateTime >= in.t) {
-                        byte[] blob = packFavorite(cursor);
-                        writeRowToBackup(key, blob, out, data);
-                    } else {
-                        if (VERBOSE) Log.v(TAG, "favorite " + id + " was too old: " + updateTime);
-                    }
+                final long updateTime = cursor.getLong(ID_MODIFIED);
+                Key key = getKey(Key.FAVORITE, id);
+                keys.add(key);
+                final String backupKey = keyToBackupKey(key);
+                currentIds.add(backupKey);
+                if (!savedIds.contains(backupKey) || updateTime >= in.t) {
+                    byte[] blob = packFavorite(cursor);
+                    writeRowToBackup(key, blob, out, data);
                 } else {
-                    if (VERBOSE) Log.v(TAG, "favorite " + id + " is for other profile: "
-                            + profileId);
+                    if (VERBOSE) Log.v(TAG, "favorite " + id + " was too old: " + updateTime);
                 }
             }
         } finally {
@@ -469,20 +459,19 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         final ContentResolver cr = mContext.getContentResolver();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
+        final UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
 
         // read the old ID set
         Set<String> savedIds = getSavedIdsByType(Key.ICON, in);
         if (DEBUG) Log.d(TAG, "icon savedIds.size()=" + savedIds.size());
 
         // Don't backup apps in other profiles for now.
-        UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
-        long userSerialNumber =
-                UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         int startRows = out.rows;
         if (DEBUG) Log.d(TAG, "starting here: " + startRows);
+
         String where = "(" + Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION + " OR " +
                 Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT + ") AND " +
-                Favorites.PROFILE_ID + "=" + userSerialNumber;
+                getUserSelectionArg();
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
@@ -617,7 +606,8 @@ public class LauncherBackupHelper implements BackupHelper {
 
         int startRows = out.rows;
         if (DEBUG) Log.d(TAG, "starting here: " + startRows);
-        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPWIDGET;
+        String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPWIDGET + " AND "
+                + getUserSelectionArg();
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
         Set<String> currentIds = new HashSet<String>(cursor.getCount());
@@ -1190,6 +1180,11 @@ public class LauncherBackupHelper implements BackupHelper {
         }
 
         return true;
+    }
+
+    private String getUserSelectionArg() {
+        return Favorites.PROFILE_ID + '=' + UserManagerCompat.getInstance(mContext)
+                .getSerialNumberForUser(UserHandleCompat.myUserHandle());
     }
 
     private class KeyParsingException extends Throwable {

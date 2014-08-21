@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -29,6 +28,8 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.launcher3.compat.AppWidgetManagerCompat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -42,124 +43,123 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-abstract class SoftReferenceThreadLocal<T> {
-    private ThreadLocal<SoftReference<T>> mThreadLocal;
-    public SoftReferenceThreadLocal() {
-        mThreadLocal = new ThreadLocal<SoftReference<T>>();
-    }
+public class WidgetPreviewLoader {
 
-    abstract T initialValue();
+    private static abstract class SoftReferenceThreadLocal<T> {
+        private ThreadLocal<SoftReference<T>> mThreadLocal;
+        public SoftReferenceThreadLocal() {
+            mThreadLocal = new ThreadLocal<SoftReference<T>>();
+        }
 
-    public void set(T t) {
-        mThreadLocal.set(new SoftReference<T>(t));
-    }
+        abstract T initialValue();
 
-    public T get() {
-        SoftReference<T> reference = mThreadLocal.get();
-        T obj;
-        if (reference == null) {
-            obj = initialValue();
-            mThreadLocal.set(new SoftReference<T>(obj));
-            return obj;
-        } else {
-            obj = reference.get();
-            if (obj == null) {
+        public void set(T t) {
+            mThreadLocal.set(new SoftReference<T>(t));
+        }
+
+        public T get() {
+            SoftReference<T> reference = mThreadLocal.get();
+            T obj;
+            if (reference == null) {
                 obj = initialValue();
                 mThreadLocal.set(new SoftReference<T>(obj));
+                return obj;
+            } else {
+                obj = reference.get();
+                if (obj == null) {
+                    obj = initialValue();
+                    mThreadLocal.set(new SoftReference<T>(obj));
+                }
+                return obj;
             }
-            return obj;
         }
     }
-}
 
-class CanvasCache extends SoftReferenceThreadLocal<Canvas> {
-    @Override
-    protected Canvas initialValue() {
-        return new Canvas();
+    private static class CanvasCache extends SoftReferenceThreadLocal<Canvas> {
+        @Override
+        protected Canvas initialValue() {
+            return new Canvas();
+        }
     }
-}
 
-class PaintCache extends SoftReferenceThreadLocal<Paint> {
-    @Override
-    protected Paint initialValue() {
-        return null;
+    private static class PaintCache extends SoftReferenceThreadLocal<Paint> {
+        @Override
+        protected Paint initialValue() {
+            return null;
+        }
     }
-}
 
-class BitmapCache extends SoftReferenceThreadLocal<Bitmap> {
-    @Override
-    protected Bitmap initialValue() {
-        return null;
+    private static class BitmapCache extends SoftReferenceThreadLocal<Bitmap> {
+        @Override
+        protected Bitmap initialValue() {
+            return null;
+        }
     }
-}
 
-class RectCache extends SoftReferenceThreadLocal<Rect> {
-    @Override
-    protected Rect initialValue() {
-        return new Rect();
+    private static class RectCache extends SoftReferenceThreadLocal<Rect> {
+        @Override
+        protected Rect initialValue() {
+            return new Rect();
+        }
     }
-}
 
-class BitmapFactoryOptionsCache extends SoftReferenceThreadLocal<BitmapFactory.Options> {
-    @Override
-    protected BitmapFactory.Options initialValue() {
-        return new BitmapFactory.Options();
+    private static class BitmapFactoryOptionsCache extends
+            SoftReferenceThreadLocal<BitmapFactory.Options> {
+        @Override
+        protected BitmapFactory.Options initialValue() {
+            return new BitmapFactory.Options();
+        }
     }
-}
 
-public class WidgetPreviewLoader {
-    static final String TAG = "WidgetPreviewLoader";
-    static final String ANDROID_INCREMENTAL_VERSION_NAME_KEY = "android.incremental.version";
+    private static final String TAG = "WidgetPreviewLoader";
+    private static final String ANDROID_INCREMENTAL_VERSION_NAME_KEY = "android.incremental.version";
+
+    private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
+    private static final HashSet<String> sInvalidPackages = new HashSet<String>();
+
+    // Used for drawing shortcut previews
+    private final BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
+    private final PaintCache mCachedShortcutPreviewPaint = new PaintCache();
+    private final CanvasCache mCachedShortcutPreviewCanvas = new CanvasCache();
+
+    // Used for drawing widget previews
+    private final CanvasCache mCachedAppWidgetPreviewCanvas = new CanvasCache();
+    private final RectCache mCachedAppWidgetPreviewSrcRect = new RectCache();
+    private final RectCache mCachedAppWidgetPreviewDestRect = new RectCache();
+    private final PaintCache mCachedAppWidgetPreviewPaint = new PaintCache();
+    private final PaintCache mDefaultAppWidgetPreviewPaint = new PaintCache();
+    private final BitmapFactoryOptionsCache mCachedBitmapFactoryOptions = new BitmapFactoryOptionsCache();
+
+    private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<>();
+    private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps = new ArrayList<>();
+
+    private final Context mContext;
+    private final int mAppIconSize;
+    private final IconCache mIconCache;
+    private final AppWidgetManagerCompat mManager;
 
     private int mPreviewBitmapWidth;
     private int mPreviewBitmapHeight;
     private String mSize;
-    private Context mContext;
-    private PackageManager mPackageManager;
     private PagedViewCellLayout mWidgetSpacingLayout;
 
-    // Used for drawing shortcut previews
-    private BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
-    private PaintCache mCachedShortcutPreviewPaint = new PaintCache();
-    private CanvasCache mCachedShortcutPreviewCanvas = new CanvasCache();
-
-    // Used for drawing widget previews
-    private CanvasCache mCachedAppWidgetPreviewCanvas = new CanvasCache();
-    private RectCache mCachedAppWidgetPreviewSrcRect = new RectCache();
-    private RectCache mCachedAppWidgetPreviewDestRect = new RectCache();
-    private PaintCache mCachedAppWidgetPreviewPaint = new PaintCache();
-    private PaintCache mDefaultAppWidgetPreviewPaint = new PaintCache();
     private String mCachedSelectQuery;
-    private BitmapFactoryOptionsCache mCachedBitmapFactoryOptions = new BitmapFactoryOptionsCache();
 
-    private int mAppIconSize;
-    private IconCache mIconCache;
-
-    private static final float sWidgetPreviewIconPaddingPercentage = 0.25f;
 
     private CacheDb mDb;
 
-    private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews;
-    private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps;
-    private final static HashSet<String> sInvalidPackages;
-
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-
-    static {
-        sInvalidPackages = new HashSet<String>();
-    }
 
     public WidgetPreviewLoader(Context context) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
         mContext = context;
-        mPackageManager = mContext.getPackageManager();
         mAppIconSize = grid.iconSizePx;
         mIconCache = app.getIconCache();
+        mManager = AppWidgetManagerCompat.getInstance(context);
+
         mDb = app.getWidgetPreviewCacheDb();
-        mLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();
-        mUnusedBitmaps = new ArrayList<SoftReference<Bitmap>>();
 
         SharedPreferences sp = context.getSharedPreferences(
                 LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
@@ -175,7 +175,7 @@ public class WidgetPreviewLoader {
             editor.commit();
         }
     }
-    
+
     public void recreateDb() {
         LauncherAppState app = LauncherAppState.getInstance();
         app.recreateWidgetPreviewDb();
@@ -328,7 +328,7 @@ public class WidgetPreviewLoader {
         String output;
         if (o instanceof AppWidgetProviderInfo) {
             sb.append(WIDGET_PREFIX);
-            sb.append(((AppWidgetProviderInfo) o).provider.flattenToString());
+            sb.append(((AppWidgetProviderInfo) o).toString());
             output = sb.toString();
             sb.setLength(0);
         } else {
@@ -413,7 +413,7 @@ public class WidgetPreviewLoader {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
     }
 
-    public static void removeItemFromDb(final CacheDb cacheDb, final String objectName) {
+    private static void removeItemFromDb(final CacheDb cacheDb, final String objectName) {
         new AsyncTask<Void, Void, Void>() {
             public Void doInBackground(Void ... args) {
                 SQLiteDatabase db = cacheDb.getWritableDatabase();
@@ -473,7 +473,7 @@ public class WidgetPreviewLoader {
         }
     }
 
-    public Bitmap generatePreview(Object info, Bitmap preview) {
+    private Bitmap generatePreview(Object info, Bitmap preview) {
         if (preview != null &&
                 (preview.getWidth() != mPreviewBitmapWidth ||
                 preview.getHeight() != mPreviewBitmapHeight)) {
@@ -491,8 +491,8 @@ public class WidgetPreviewLoader {
         int[] cellSpans = Launcher.getSpanForWidget(mContext, info);
         int maxWidth = maxWidthForWidgetPreview(cellSpans[0]);
         int maxHeight = maxHeightForWidgetPreview(cellSpans[1]);
-        return generateWidgetPreview(info.provider, info.previewImage, info.icon,
-                cellSpans[0], cellSpans[1], maxWidth, maxHeight, preview, null);
+        return generateWidgetPreview(info, cellSpans[0], cellSpans[1],
+                maxWidth, maxHeight, preview, null);
     }
 
     public int maxWidthForWidgetPreview(int spanX) {
@@ -505,22 +505,20 @@ public class WidgetPreviewLoader {
                 mWidgetSpacingLayout.estimateCellHeight(spanY));
     }
 
-    public Bitmap generateWidgetPreview(ComponentName provider, int previewImage,
-            int iconId, int cellHSpan, int cellVSpan, int maxPreviewWidth, int maxPreviewHeight,
-            Bitmap preview, int[] preScaledWidthOut) {
+    public Bitmap generateWidgetPreview(AppWidgetProviderInfo info, int cellHSpan, int cellVSpan,
+            int maxPreviewWidth, int maxPreviewHeight, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
-        String packageName = provider.getPackageName();
         if (maxPreviewWidth < 0) maxPreviewWidth = Integer.MAX_VALUE;
         if (maxPreviewHeight < 0) maxPreviewHeight = Integer.MAX_VALUE;
 
         Drawable drawable = null;
-        if (previewImage != 0) {
-            drawable = mPackageManager.getDrawable(packageName, previewImage, null);
+        if (info.previewImage != 0) {
+            drawable = mManager.loadPreview(info);
             if (drawable != null) {
                 drawable = mutateOnMainThread(drawable);
             } else {
                 Log.w(TAG, "Can't load widget preview drawable 0x" +
-                        Integer.toHexString(previewImage) + " for provider: " + provider);
+                        Integer.toHexString(info.previewImage) + " for provider: " + info.provider);
             }
         }
 
@@ -562,21 +560,16 @@ public class WidgetPreviewLoader {
             c.setBitmap(null);
 
             // Draw the icon in the top left corner
-            int minOffset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
+            int minOffset = (int) (mAppIconSize * WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE);
             int smallestSide = Math.min(previewWidth, previewHeight);
             float iconScale = Math.min((float) smallestSide
                     / (mAppIconSize + 2 * minOffset), 1f);
 
             try {
-                Drawable icon = null;
-                int hoffset =
-                        (int) ((previewDrawableWidth - mAppIconSize * iconScale) / 2);
-                int yoffset =
-                        (int) ((previewDrawableHeight - mAppIconSize * iconScale) / 2);
-                if (iconId > 0) {
-                    icon = mIconCache.getFullResIcon(packageName, iconId);
-                }
+                Drawable icon = mManager.loadIcon(info, mIconCache);
                 if (icon != null) {
+                    int hoffset = (int) ((previewDrawableWidth - mAppIconSize * iconScale) / 2);
+                    int yoffset = (int) ((previewDrawableHeight - mAppIconSize * iconScale) / 2);
                     icon = mutateOnMainThread(icon);
                     renderDrawableToBitmap(icon, defaultPreview, hoffset,
                             yoffset, (int) (mAppIconSize * iconScale),
@@ -627,7 +620,7 @@ public class WidgetPreviewLoader {
             c.drawBitmap(defaultPreview, src, dest, p);
             c.setBitmap(null);
         }
-        return preview;
+        return mManager.getBadgeBitmap(info, preview);
     }
 
     private Bitmap generateShortcutPreview(
@@ -685,18 +678,10 @@ public class WidgetPreviewLoader {
         return preview;
     }
 
-
-    public static void renderDrawableToBitmap(
-            Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
-        renderDrawableToBitmap(d, bitmap, x, y, w, h, 1f);
-    }
-
     private static void renderDrawableToBitmap(
-            Drawable d, Bitmap bitmap, int x, int y, int w, int h,
-            float scale) {
+            Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
         if (bitmap != null) {
             Canvas c = new Canvas(bitmap);
-            c.scale(scale, scale);
             Rect oldBounds = d.copyBounds();
             d.setBounds(x, y, x + w, y + h);
             d.draw(c);

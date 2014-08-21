@@ -101,4 +101,8 @@
     <!-- The amount that the preview contents are inset from the preview background -->
     <dimen name="folder_preview_padding">4dp</dimen>
     <dimen name="folder_name_padding">10dp</dimen>
+
+<!-- Sizes for managed profile badges -->
+    <dimen name="profile_badge_size">24dp</dimen>
+    <dimen name="profile_badge_margin">4dp</dimen>
 </resources>
