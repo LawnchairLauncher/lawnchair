@@ -1650,8 +1650,10 @@ public class LauncherProvider extends ContentProvider {
                 resolved = systemApp;
             }
             final ActivityInfo info = resolved.activityInfo;
-            final Intent intent = buildMainIntent();
-            intent.setComponent(new ComponentName(info.packageName, info.name));
+            final Intent intent = mPackageManager.getLaunchIntentForPackage(info.packageName);
+            if (intent == null) {
+                return -1;
+            }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
