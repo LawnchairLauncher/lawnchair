@@ -170,11 +170,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private ArrayList<AppInfo> mApps;
     private ArrayList<Object> mWidgets;
 
-    // Cling
-    private boolean mHasShownAllAppsCling;
-    private int mClingFocusedX;
-    private int mClingFocusedY;
-
     // Caching
     private IconCache mIconCache;
 
@@ -229,8 +224,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
         mWidgetCountX = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountX, 2);
         mWidgetCountY = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountY, 2);
-        mClingFocusedX = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedX, 0);
-        mClingFocusedY = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedY, 0);
         a.recycle();
         mWidgetSpacingLayout = new PagedViewCellLayout(getContext());
 

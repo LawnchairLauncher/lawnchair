@@ -126,7 +126,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 /**
  * Default launcher application.
  */
@@ -256,7 +255,6 @@ public class Launcher extends Activity
     private DragLayer mDragLayer;
     private DragController mDragController;
     private View mWeightWatcher;
-    private LauncherClings mLauncherClings;
 
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -434,7 +432,6 @@ public class Launcher extends Activity
         mIconCache = app.getIconCache();
         mIconCache.flushInvalidIcons(grid);
         mDragController = new DragController(this);
-        mLauncherClings = new LauncherClings(this);
         mInflater = getLayoutInflater();
 
         mStats = new Stats(this);
@@ -504,14 +501,13 @@ public class Launcher extends Activity
         // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
         // on the device, then we always show the first run cling experience (or if there is no
         // launcher2). Otherwise, we prompt the user upon started for migration
-        if (mLauncherClings.shouldShowFirstRunOrMigrationClings()) {
+        LauncherClings launcherClings = new LauncherClings(this);
+        if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
             if (mModel.canMigrateFromOldLauncherDb(this)) {
-                mLauncherClings.showMigrationCling();
+                launcherClings.showMigrationCling();
             } else {
-                mLauncherClings.showFirstRunCling();
+                launcherClings.showLongPressCling(true);
             }
-        } else {
-            mLauncherClings.removeFirstRunAndMigrationClings();
         }
     }
 
@@ -1849,10 +1845,6 @@ public class Launcher extends Activity
         return mModel;
     }
 
-    public LauncherClings getLauncherClings() {
-        return mLauncherClings;
-    }
-
     protected SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
     }
@@ -2977,9 +2969,6 @@ public class Launcher extends Activity
                 folder.dismissEditingName();
             }
             closeFolder(folder);
-
-            // Dismiss the folder cling
-            mLauncherClings.dismissFolderCling(null);
         }
     }
 
@@ -4757,7 +4746,7 @@ public class Launcher extends Activity
      * @param hint the hint to be displayed in the search bar.
      */
     protected void onSearchBarHintChanged(String hint) {
-        mLauncherClings.updateSearchBarHint(hint);
+
     }
 
     protected boolean isLauncherPreinstalled() {
@@ -4806,28 +4795,6 @@ public class Launcher extends Activity
     }
     protected String getFirstRunFocusedHotseatAppBubbleDescription() {
         return "";
-    }
-
-    public void dismissFirstRunCling(View v) {
-        mLauncherClings.dismissFirstRunCling(v);
-    }
-    public void dismissMigrationClingCopyApps(View v) {
-        mLauncherClings.dismissMigrationClingCopyApps(v);
-    }
-    public void dismissMigrationClingUseDefault(View v) {
-        mLauncherClings.dismissMigrationClingUseDefault(v);
-    }
-    public void dismissMigrationWorkspaceCling(View v) {
-        mLauncherClings.dismissMigrationWorkspaceCling(v);
-    }
-    public void dismissWorkspaceCling(View v) {
-        mLauncherClings.dismissWorkspaceCling(v);
-    }
-    public void dismissFolderCling(View v) {
-        mLauncherClings.dismissFolderCling(v);
-    }
-    public void markFolderClingDismissedIfNecessary() {
-        mLauncherClings.markFolderClingDismissedIfNecessary();
     }
 
     /**

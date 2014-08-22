@@ -248,8 +248,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.getLauncherClings().dismissFolderCling(null);
-
             mLauncher.getWorkspace().beginDragShared(v, this);
 
             mCurrentDragInfo = item;
@@ -553,15 +551,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     onCompleteRunnable.run();
                 }
 
-                // Only show cling if we are not in the middle of a drag - this would be quite jarring.
-                if (!mDragController.isDragging()) {
-                    Cling cling = mLauncher.getLauncherClings().showFoldersCling();
-                    if (cling != null) {
-                        cling.bringScrimToFront();
-                        bringToFront();
-                        cling.bringToFront();
-                    }
-                }
                 setFocusOnFirstChild();
             }
         });
