@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"የመነሻ ቅንብሮችን እና አቋራጮችን ይጽፋል"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"መተግብሪያው ቅንብሮችን እና አቋራጮችን በመነሻ ውስጥ እንዲቀይራቸው ያስችለዋል።"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ፍርግም የመጫን ችግር"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ይህ የስርዓት መተግበሪያ ነው እና ማራገፍ አይቻልም።"</string>
     <string name="dream_name" msgid="1530253749244328964">"የሮኬት ማስጀመሪያ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ስም-አልባ አቃፊ"</string>

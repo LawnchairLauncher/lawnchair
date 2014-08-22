@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"寫入主畫面的設定和捷徑"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允許應用程式更改主畫面中的設定和捷徑。"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"載入小工具時發生問題"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"這是系統應用程式，無法將其解除安裝。"</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"未命名的資料夾"</string>

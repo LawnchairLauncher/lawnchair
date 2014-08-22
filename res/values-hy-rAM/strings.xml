@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ստեղծել հիմնաէջի կարգավորումներ ու դյուրանցումներ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Ծրագրին թույլ է տալիս փոփոխել հիմնաէջի կարգավորումներն ու դյուրանցումները:"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Վիջեթի բեռնման խնդիր կա"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Սա համակարգային ծրագիր է և չի կարող ապատեղադրվել:"</string>
     <string name="dream_name" msgid="1530253749244328964">"Հրթիռային թողարկիչ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Անանուն թղթապանակ"</string>

@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"skryf Tuis-instellings en -kortpaaie"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Laat die program toe om die instellings en kortpaaie in Tuis te verander."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Kon nie legstuk laai nie"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dit is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
     <string name="dream_name" msgid="1530253749244328964">"Vuurpyllanseerder"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Naamlose vouer"</string>

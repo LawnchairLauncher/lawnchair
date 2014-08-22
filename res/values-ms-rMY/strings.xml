@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"tulis tetapan dan pintasan Laman Utama"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Membenarkan apl menukar tetapan dan pintasan di Laman Utama."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Masalah memuatkan widget"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ini ialah apl sistem dan tidak boleh dinyahpasang."</string>
     <string name="dream_name" msgid="1530253749244328964">"Pelancar Roket"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Folder Tanpa Nama"</string>

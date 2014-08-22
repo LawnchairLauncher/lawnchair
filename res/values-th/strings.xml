@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"เขียนการตั้งค่าและทางลัดหน้าแรกแล้ว"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"อนุญาตให้แอปเปลี่ยนการตั้งค่าและทางลัดในหน้าแรก"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"มีปัญหาขณะโหลดวิดเจ็ต"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"นี่เป็นแอประบบและไม่สามารถถอนการติดตั้งได้"</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"โฟลเดอร์ที่ไม่มีชื่อ"</string>
