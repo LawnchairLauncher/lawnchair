@@ -77,6 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"escribir configuración y accesos directos de la pantalla principal"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite que la aplicación cambie la configuración y los accesos directos de la pantalla principal."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema al cargar el widget"</string>
+    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta es una aplicación del sistema y no se puede desinstalar."</string>
     <string name="dream_name" msgid="1530253749244328964">"Lanzacohetes"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sin nombre"</string>
