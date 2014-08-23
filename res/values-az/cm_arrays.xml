@@ -17,19 +17,19 @@
 -->
 <resources>
   <string-array name="transition_effect_entries">
-    <item>Ниједан</item>
-    <item>Увећавање</item>
-    <item>Умањивање</item>
-    <item>Ротирање нагоре</item>
-    <item>Ротирање надоле</item>
-    <item>Коцка унутра</item>
-    <item>Коцка споља</item>
-    <item>Листање карата</item>
-    <item>Хармоника</item>
-    <item>Окрет</item>
-    <item>Цилиндар унутра</item>
-    <item>Цилиндар споља</item>
-    <item>Рингишпил</item>
-    <item>Преглед</item>
+    <item>Heç bir</item>
+    <item>Zoom in</item>
+    <item>Zoom out</item>
+    <item>Rotate up</item>
+    <item>Rotate down</item>
+    <item>Cube in</item>
+    <item>Cube out</item>
+    <item>Stack</item>
+    <item>Accordion</item>
+    <item>Flip</item>
+    <item>Cylinder in</item>
+    <item>Cylinder out</item>
+    <item>Carousel</item>
+    <item>Overview</item>
   </string-array>
 </resources>
