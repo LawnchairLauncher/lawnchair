@@ -81,6 +81,14 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     private Drawable mBackground;
     private float mBackgroundAlpha = 0;
 
+    // Related to adjacent page hints
+    private boolean mInScrollArea;
+    private boolean mShowPageHints;
+    private Drawable mLeftHoverDrawable;
+    private Drawable mRightHoverDrawable;
+    private Drawable mLeftHoverDrawableActive;
+    private Drawable mRightHoverDrawableActive;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -851,13 +859,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
     }
 
-    private boolean mInScrollArea;
-    private boolean mShowPageHints;
-    private Drawable mLeftHoverDrawable;
-    private Drawable mRightHoverDrawable;
-    private Drawable mLeftHoverDrawableActive;
-    private Drawable mRightHoverDrawableActive;
-
     void onEnterScrollArea(int direction) {
         mInScrollArea = true;
         invalidate();
@@ -896,8 +897,9 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
 
         super.dispatchDraw(canvas);
+    }
 
-        // Draw screen hover indicators above children.
+    private void drawPageHints(Canvas canvas) {
         if (mShowPageHints) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = getMeasuredWidth();
@@ -920,12 +922,21 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
             if (rightPage != null && rightPage.isDragTarget()) {
                 Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
                         mRightHoverDrawableActive : mRightHoverDrawable;
-
                 right.setBounds(width - right.getIntrinsicWidth(),
                         childRect.top, width, childRect.bottom);
                 right.draw(canvas);
             }
         }
+    }
+
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        boolean ret = super.drawChild(canvas, child, drawingTime);
+
+        // We want to draw the page hints above the workspace, but below the drag view.
+        if (child instanceof Workspace) {
+            drawPageHints(canvas);
+        }
+        return ret;
     }
 
     public void setBackgroundAlpha(float alpha) {
