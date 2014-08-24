@@ -3232,20 +3232,24 @@ public class Launcher extends Activity
 
             float revealRadius = (float) Math.sqrt((width * width) / 4 + (height * height) / 4);
             revealView.setTranslationY(0);
+            revealView.setTranslationX(0);
 
             // Get the y delta between the center of the page and the center of the all apps button
             int[] allAppsToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
                     getAllAppsButton(), null);
             float yDrift = isWidgetTray ? height / 2 : allAppsToPanelDelta[1];
+            float xDrift = isWidgetTray ? 0 : allAppsToPanelDelta[0];
 
             float initAlpha = isWidgetTray ? 0.3f : 1f;
             revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat("alpha", initAlpha, 1f);
-            PropertyValuesHolder panelDrift =
+            PropertyValuesHolder panelDriftY =
                     PropertyValuesHolder.ofFloat("translationY", yDrift, 0);
+            PropertyValuesHolder panelDriftX =
+                    PropertyValuesHolder.ofFloat("translationX", xDrift, 0);
 
             ObjectAnimator panelAlphaAndDrift =
-                    LauncherAnimUtils.ofPropertyValuesHolder(revealView, panelAlpha, panelDrift);
+                    LauncherAnimUtils.ofPropertyValuesHolder(revealView, panelAlpha, panelDriftY, panelDriftX);
             panelAlphaAndDrift.setDuration(revealDuration);
             panelAlphaAndDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
@@ -3461,17 +3465,24 @@ public class Launcher extends Activity
             int[] allAppsToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
                     allAppsButton, null);
             float yDrift = isWidgetTray ? height / 2 : allAppsToPanelDelta[1];
+            float xDrift = isWidgetTray ? 0 : allAppsToPanelDelta[0];
 
             revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
             // The vertical motion of the apps panel should be delayed by one frame
             // from the conceal animation in order to give the right feel. We correpsondingly
             // shorten the duration so that the slide and conceal end at the same time.
-            ObjectAnimator panelDrift = LauncherAnimUtils.ofFloat(revealView, "translationY", 0, yDrift);
-            panelDrift.setDuration(revealDuration - SINGLE_FRAME_DELAY);
-            panelDrift.setStartDelay(itemsAlphaStagger + SINGLE_FRAME_DELAY);
-            panelDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
-            mStateAnimation.play(panelDrift);
+            ObjectAnimator panelDriftY = LauncherAnimUtils.ofFloat(revealView, "translationY", 0, yDrift);
+            panelDriftY.setDuration(revealDuration - SINGLE_FRAME_DELAY);
+            panelDriftY.setStartDelay(itemsAlphaStagger + SINGLE_FRAME_DELAY);
+            panelDriftY.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(panelDriftY);
+
+            ObjectAnimator panelDriftX = LauncherAnimUtils.ofFloat(revealView, "translationX", 0, xDrift);
+            panelDriftX.setDuration(revealDuration - SINGLE_FRAME_DELAY);
+            panelDriftX.setStartDelay(itemsAlphaStagger + SINGLE_FRAME_DELAY);
+            panelDriftX.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            mStateAnimation.play(panelDriftX);
 
             if (isWidgetTray) {
                 ObjectAnimator panelAlpha = LauncherAnimUtils.ofFloat(revealView, "alpha", 1f, 0.4f);
