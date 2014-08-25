@@ -622,7 +622,7 @@ public class Launcher extends Activity
                 CustomContentMode.DISABLED.getValue()));
     }
 
-    void initializeDynamicGrid() {
+    private void initializeDynamicGrid() {
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
