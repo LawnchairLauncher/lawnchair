@@ -23,7 +23,6 @@ public class GelIntegrationHelper {
 
     private static final int EDGE_GESTURE_SERVICE_RIGHT_EDGE = 4;
     private static final int EDGE_GESTURE_SERVICE_LEFT_EDGE = 1;
-    private static final int EDGE_GESTURE_SERVICE_NO_EDGE = -1;
 
     private EdgeGestureManager.EdgeGestureActivationListener mEdgeGestureActivationListener = null;
     private static GelIntegrationHelper sInstance;
@@ -96,20 +95,6 @@ public class GelIntegrationHelper {
     private boolean isIntentSupported(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         return pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null;
-    }
-
-    /**
-     * Handle necessary cleanup and reset tasks for GEL integration, to be called from onResume.
-     */
-    public void handleGelResume() {
-        // If there is an active EdgeGestureActivationListener for GEL integration,
-        // it should stop listening when we have resumed the launcher.
-        if(mEdgeGestureActivationListener != null) {
-            EdgeGestureManager edgeGestureManager = EdgeGestureManager.getInstance();
-            // Update the listener so it is not listening to any postions (-1)
-            edgeGestureManager.updateEdgeGestureActivationListener(mEdgeGestureActivationListener,
-                                                                   EDGE_GESTURE_SERVICE_NO_EDGE);
-        }
     }
 
 }
