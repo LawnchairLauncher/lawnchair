@@ -64,7 +64,6 @@ public class Hotseat extends FrameLayout {
 
     public void setup(Launcher launcher) {
         mLauncher = launcher;
-        setOnKeyListener(new HotseatIconKeyEventListener());
     }
 
     CellLayout getLayout() {
@@ -155,6 +154,7 @@ public class Hotseat extends FrameLayout {
             allAppsButton.setCompoundDrawables(null, d, null, null);
 
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
             if (mLauncher != null) {
                 allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
                 mLauncher.setAllAppsButton(allAppsButton);

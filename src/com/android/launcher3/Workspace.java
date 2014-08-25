@@ -999,7 +999,7 @@ public class Workspace extends SmoothPagedView
         final CellLayout layout;
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             layout = mLauncher.getHotseat().getLayout();
-            child.setOnKeyListener(null);
+            child.setOnKeyListener(new HotseatIconKeyEventListener());
 
             // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {

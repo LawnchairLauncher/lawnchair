@@ -17,7 +17,9 @@
 package com.android.launcher3;
 
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -225,13 +227,6 @@ public class FocusHelper {
      * Handles key events in a PageViewCellLayout containing PagedViewIcons.
      */
     static boolean handleAppsCustomizeKeyEvent(View v, int keyCode, KeyEvent e) {
-        final int action = e.getAction();
-        if (((action == KeyEvent.ACTION_DOWN) && v.onKeyDown(keyCode, e))
-                || ((action == KeyEvent.ACTION_UP) && v.onKeyUp(keyCode, e))) {
-            // Let the view handle the confirmation key.
-            return true;
-        }
-
         ViewGroup parentLayout;
         ViewGroup itemContainer;
         int countX;
@@ -258,6 +253,7 @@ public class FocusHelper {
         final int x = iconIndex % countX;
         final int y = iconIndex / countX;
 
+        final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
         ViewGroup newParent = null;
         // Side pages do not always load synchronously, so check before focusing child siblings
@@ -270,13 +266,17 @@ public class FocusHelper {
                     // Select the previous icon or the last icon on the previous page
                     if (iconIndex > 0) {
                         itemContainer.getChildAt(iconIndex - 1).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
                     } else {
                         if (pageIndex > 0) {
                             newParent = getAppsCustomizePage(container, pageIndex - 1);
                             if (newParent != null) {
                                 container.snapToPage(pageIndex - 1);
                                 child = newParent.getChildAt(newParent.getChildCount() - 1);
-                                if (child != null) child.requestFocus();
+                                if (child != null) {
+                                    child.requestFocus();
+                                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
+                                }
                             }
                         }
                     }
@@ -288,13 +288,17 @@ public class FocusHelper {
                     // Select the next icon or the first icon on the next page
                     if (iconIndex < (itemCount - 1)) {
                         itemContainer.getChildAt(iconIndex + 1).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
                     } else {
                         if (pageIndex < (pageCount - 1)) {
                             newParent = getAppsCustomizePage(container, pageIndex + 1);
                             if (newParent != null) {
                                 container.snapToPage(pageIndex + 1);
                                 child = newParent.getChildAt(0);
-                                if (child != null) child.requestFocus();
+                                if (child != null) {
+                                    child.requestFocus();
+                                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
+                                }
                             }
                         }
                     }
@@ -307,16 +311,21 @@ public class FocusHelper {
                     if (y > 0) {
                         int newiconIndex = ((y - 1) * countX) + x;
                         itemContainer.getChildAt(newiconIndex).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                     }
                 }
                 wasHandled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (handleKeyEvent) {
-                    // Select the closest icon in the previous row, otherwise do nothing
+                    // Select the closest icon in the next row, otherwise do nothing
                     if (y < (countY - 1)) {
                         int newiconIndex = Math.min(itemCount - 1, ((y + 1) * countX) + x);
-                        itemContainer.getChildAt(newiconIndex).requestFocus();
+                        int newIconY = newiconIndex / countX;
+                        if (newIconY != y) {
+                            itemContainer.getChildAt(newiconIndex).requestFocus();
+                            v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
+                        }
                     }
                 }
                 wasHandled = true;
@@ -330,10 +339,14 @@ public class FocusHelper {
                         if (newParent != null) {
                             container.snapToPage(pageIndex - 1);
                             child = newParent.getChildAt(0);
-                            if (child != null) child.requestFocus();
+                            if (child != null) {
+                                child.requestFocus();
+                                v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
+                            }
                         }
                     } else {
                         itemContainer.getChildAt(0).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                     }
                 }
                 wasHandled = true;
@@ -347,10 +360,14 @@ public class FocusHelper {
                         if (newParent != null) {
                             container.snapToPage(pageIndex + 1);
                             child = newParent.getChildAt(0);
-                            if (child != null) child.requestFocus();
+                            if (child != null) {
+                                child.requestFocus();
+                                v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
+                            }
                         }
                     } else {
                         itemContainer.getChildAt(itemCount - 1).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                     }
                 }
                 wasHandled = true;
@@ -359,6 +376,7 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the first icon on this page
                     itemContainer.getChildAt(0).requestFocus();
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                 }
                 wasHandled = true;
                 break;
@@ -366,6 +384,7 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the last icon on this page
                     itemContainer.getChildAt(itemCount - 1).requestFocus();
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                 }
                 wasHandled = true;
                 break;
@@ -432,53 +451,56 @@ public class FocusHelper {
      * Handles key events in the workspace hotseat (bottom of the screen).
      */
     static boolean handleHotseatButtonKeyEvent(View v, int keyCode, KeyEvent e, int orientation) {
-        final ViewGroup parent = (ViewGroup) v.getParent();
-        final ViewGroup launcher = (ViewGroup) parent.getParent();
-        final Workspace workspace = (Workspace) launcher.findViewById(R.id.workspace);
-        final int buttonIndex = parent.indexOfChild(v);
-        final int buttonCount = parent.getChildCount();
-        final int pageIndex = workspace.getCurrentPage();
+        ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
+        final CellLayout layout = (CellLayout) parent.getParent();
 
         // NOTE: currently we don't special case for the phone UI in different
-        // orientations, even though the hotseat is on the side in landscape mode.  This
+        // orientations, even though the hotseat is on the side in landscape mode. This
         // is to ensure that accessibility consistency is maintained across rotations.
-
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
         boolean wasHandled = false;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (handleKeyEvent) {
-                    // Select the previous button, otherwise snap to the previous page
-                    if (buttonIndex > 0) {
-                        parent.getChildAt(buttonIndex - 1).requestFocus();
-                    } else {
-                        workspace.snapToPage(pageIndex - 1);
+                    ArrayList<View> views = getCellLayoutChildrenSortedSpatially(layout, parent);
+                    int myIndex = views.indexOf(v);
+                    // Select the previous button, otherwise do nothing
+                    if (myIndex > 0) {
+                        views.get(myIndex - 1).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
                     }
                 }
                 wasHandled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (handleKeyEvent) {
-                    // Select the next button, otherwise snap to the next page
-                    if (buttonIndex < (buttonCount - 1)) {
-                        parent.getChildAt(buttonIndex + 1).requestFocus();
-                    } else {
-                        workspace.snapToPage(pageIndex + 1);
+                    ArrayList<View> views = getCellLayoutChildrenSortedSpatially(layout, parent);
+                    int myIndex = views.indexOf(v);
+                    // Select the next button, otherwise do nothing
+                    if (myIndex < views.size() - 1) {
+                        views.get(myIndex + 1).requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
                     }
                 }
                 wasHandled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (handleKeyEvent) {
-                    // Select the first bubble text view in the current page of the workspace
-                    final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
-                    final ShortcutAndWidgetContainer children = layout.getShortcutsAndWidgets();
-                    final View newIcon = getIconInDirection(layout, children, -1, 1);
-                    if (newIcon != null) {
-                        newIcon.requestFocus();
-                    } else {
-                        workspace.requestFocus();
+                    final Workspace workspace = (Workspace)
+                            v.getRootView().findViewById(R.id.workspace);
+                    if (workspace != null) {
+                        int pageIndex = workspace.getCurrentPage();
+                        CellLayout topLayout = (CellLayout) workspace.getChildAt(pageIndex);
+                        ShortcutAndWidgetContainer children = topLayout.getShortcutsAndWidgets();
+                        final View newIcon = getIconInDirection(layout, children, -1, 1);
+                        // Select the first bubble text view in the current page of the workspace
+                        if (newIcon != null) {
+                            newIcon.requestFocus();
+                            v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
+                        } else {
+                            workspace.requestFocus();
+                        }
                     }
                 }
                 wasHandled = true;
@@ -497,8 +519,8 @@ public class FocusHelper {
      */
     private static ShortcutAndWidgetContainer getCellLayoutChildrenForIndex(
             ViewGroup container, int i) {
-        ViewGroup parent = (ViewGroup) container.getChildAt(i);
-        return (ShortcutAndWidgetContainer) parent.getChildAt(0);
+        CellLayout parent = (CellLayout) container.getChildAt(i);
+        return parent.getShortcutsAndWidgets();
     }
 
     /**
@@ -622,6 +644,7 @@ public class FocusHelper {
                     View newIcon = getIconInDirection(layout, parent, v, -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
                     } else {
                         if (pageIndex > 0) {
                             parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
@@ -633,6 +656,7 @@ public class FocusHelper {
                                 // Snap to the previous page
                                 workspace.snapToPage(pageIndex - 1);
                             }
+                            v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
                         }
                     }
                 }
@@ -644,6 +668,7 @@ public class FocusHelper {
                     View newIcon = getIconInDirection(layout, parent, v, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
                     } else {
                         if (pageIndex < (pageCount - 1)) {
                             parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
@@ -654,6 +679,7 @@ public class FocusHelper {
                                 // Snap to the next page
                                 workspace.snapToPage(pageIndex + 1);
                             }
+                            v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
                         }
                     }
                 }
@@ -669,6 +695,7 @@ public class FocusHelper {
                     } else {
                         tabs.requestFocus();
                     }
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -677,9 +704,11 @@ public class FocusHelper {
                     View newIcon = getClosestIconOnLine(layout, parent, v, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                         wasHandled = true;
                     } else if (hotseat != null) {
                         hotseat.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                     }
                 }
                 break;
@@ -696,10 +725,12 @@ public class FocusHelper {
                             // Snap to the previous page
                             workspace.snapToPage(pageIndex - 1);
                         }
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                     } else {
                         View newIcon = getIconInDirection(layout, parent, -1, 1);
                         if (newIcon != null) {
                             newIcon.requestFocus();
+                            v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                         }
                     }
                 }
@@ -718,11 +749,13 @@ public class FocusHelper {
                             // Snap to the next page
                             workspace.snapToPage(pageIndex + 1);
                         }
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                     } else {
                         View newIcon = getIconInDirection(layout, parent,
                                 parent.getChildCount(), -1);
                         if (newIcon != null) {
                             newIcon.requestFocus();
+                            v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                         }
                     }
                 }
@@ -734,6 +767,7 @@ public class FocusHelper {
                     View newIcon = getIconInDirection(layout, parent, -1, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                     }
                 }
                 wasHandled = true;
@@ -745,6 +779,7 @@ public class FocusHelper {
                             parent.getChildCount(), -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                     }
                 }
                 wasHandled = true;
@@ -774,6 +809,7 @@ public class FocusHelper {
                     View newIcon = getIconInDirection(layout, parent, v, -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);
                     }
                 }
                 wasHandled = true;
@@ -787,6 +823,7 @@ public class FocusHelper {
                     } else {
                         title.requestFocus();
                     }
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT);
                 }
                 wasHandled = true;
                 break;
@@ -796,6 +833,7 @@ public class FocusHelper {
                     View newIcon = getClosestIconOnLine(layout, parent, v, -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                     }
                 }
                 wasHandled = true;
@@ -809,6 +847,7 @@ public class FocusHelper {
                     } else {
                         title.requestFocus();
                     }
+                    v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                 }
                 wasHandled = true;
                 break;
@@ -818,6 +857,7 @@ public class FocusHelper {
                     View newIcon = getIconInDirection(layout, parent, -1, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
                     }
                 }
                 wasHandled = true;
@@ -829,6 +869,7 @@ public class FocusHelper {
                             parent.getChildCount(), -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
+                        v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
                     }
                 }
                 wasHandled = true;
