@@ -127,7 +127,9 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     public void onAnimationStart(Animator animation) {
         // This is the first time we get a handle to the internal ValueAnimator
         // used by the ViewPropertyAnimator.
-        mFirstFrameHelper.onAnimationStart(animation);
+        if (mFirstFrameHelper != null) {
+            mFirstFrameHelper.onAnimationStart(animation);
+        }
 
         for (int i = 0; i < mListeners.size(); i++) {
             Animator.AnimatorListener listener = mListeners.get(i);
@@ -195,7 +197,12 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
         // FirstFrameAnimatorHelper hooks itself up to the updates on the animator,
         // and then adjusts the play time to keep the first two frames jank-free
-        mFirstFrameHelper = new FirstFrameAnimatorHelper(mViewPropertyAnimator, mTarget);
+        // HOWEVER, If the animation scale is less than 1f the FirstFrameAnimatorHelper sometimes
+        // causes the animation to not finish (e.g. opening a Folder will result in the Folder
+        // View's alpha being stuck somewhere between 0-1f.
+        if (Launcher.isAnimatorScaleSafe()) {
+            mFirstFrameHelper = new FirstFrameAnimatorHelper(mViewPropertyAnimator, mTarget);
+        }
 
         if (mPropertiesToSet.contains(Properties.TRANSLATION_X)) {
             mViewPropertyAnimator.translationX(mTranslationX);

@@ -437,6 +437,8 @@ public class Workspace extends SmoothPagedView
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
         UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
 
+        removeExtraEmptyScreen(false, null);
+
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();
     }

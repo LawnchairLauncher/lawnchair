@@ -33,6 +33,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.os.UserManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -357,5 +358,10 @@ public final class Utilities {
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
                     "or use the exported attribute for this activity.", e);
         }
+    }
+
+    public static boolean isRestrictedProfile(Context context) {
+        UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
+        return um.getUserInfo(um.getUserHandle()).isRestricted();
     }
 }

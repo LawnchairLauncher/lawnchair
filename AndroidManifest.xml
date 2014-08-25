@@ -25,7 +25,7 @@
 
     <original-package android:name="com.android.launcher3" />
 
-    <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="16"/>
+    <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="17"/>
 
     <permission
         android:name="com.android.launcher3.permission.PRELOAD_WORKSPACE"
@@ -65,6 +65,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_USERS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INJECT_EVENTS" />
     <uses-permission android:name="android.permission.GET_TASKS"/>

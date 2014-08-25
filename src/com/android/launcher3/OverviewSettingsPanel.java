@@ -11,6 +11,9 @@ import android.widget.ListView;
 import com.android.launcher3.list.PinnedHeaderListView;
 import com.android.launcher3.list.SettingsPinnedHeaderAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OverviewSettingsPanel {
     public static final String ANDROID_SETTINGS = "com.android.settings";
     public static final String ANDROID_PROTECTED_APPS =
@@ -19,6 +22,7 @@ public class OverviewSettingsPanel {
             "com.android.settings.Settings$ThemeSettingsActivity";
     public static final int HOME_SETTINGS_POSITION = 0;
     public static final int DRAWER_SETTINGS_POSITION = 1;
+    public static final int APP_SETTINGS_POSITION = 2;
 
     private Launcher mLauncher;
     private View mOverviewPanel;
@@ -56,10 +60,14 @@ public class OverviewSettingsPanel {
                 res.getString(R.string.drawer_sorting_text),
                 res.getString(R.string.icon_labels)};
 
-        String[] valuesApp = new String[] {
-                res.getString(R.string.larger_icons_text),
-                res.getString(R.string.protected_app_settings)};
+        List<String> valuesAppList = new ArrayList<String>();
+        valuesAppList.add(res.getString(R.string.larger_icons_text));
+        if (!Utilities.isRestrictedProfile(mLauncher)) {
+            valuesAppList.add(res.getString(R.string.protected_app_settings));
+        }
 
+        String[] valuesApp = new String[valuesAppList.size()];
+        valuesApp = valuesAppList.toArray(valuesApp);
 
         mSettingsAdapter = new SettingsPinnedHeaderAdapter(mLauncher);
         mSettingsAdapter.setHeaders(headers);
@@ -68,9 +76,10 @@ public class OverviewSettingsPanel {
         mSettingsAdapter.addPartition(false, true);
         mSettingsAdapter.mPinnedHeaderCount = headers.length;
 
-        mSettingsAdapter.changeCursor(0, createCursor(headers[0], mValues));
-        mSettingsAdapter.changeCursor(1, createCursor(headers[1], valuesDrawer));
-        mSettingsAdapter.changeCursor(2, createCursor(headers[2], valuesApp));
+        mSettingsAdapter.changeCursor(HOME_SETTINGS_POSITION, createCursor(headers[0], mValues));
+        mSettingsAdapter.changeCursor(DRAWER_SETTINGS_POSITION, createCursor(headers[1],
+                valuesDrawer));
+        mSettingsAdapter.changeCursor(APP_SETTINGS_POSITION, createCursor(headers[2], valuesApp));
         mListView.setAdapter(mSettingsAdapter);
     }
 
@@ -208,8 +217,10 @@ public class OverviewSettingsPanel {
             frameAnimation.start();
 
             if (mLauncher.updateGridIfNeeded()) {
-                mLauncher.getWorkspace().showOutlines();
-                mLauncher.mSearchDropTargetBar.hideSearchBar(false);
+                if (mLauncher.getWorkspace().isInOverviewMode()) {
+                    mLauncher.getWorkspace().showOutlines();
+                    mLauncher.mSearchDropTargetBar.hideSearchBar(false);
+                }
             }
         }
 

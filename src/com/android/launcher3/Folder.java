@@ -121,6 +121,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     RelativeLayout mFolderTitleSection;
     private float mFolderIconPivotX;
     private float mFolderIconPivotY;
+    private boolean mHideLabels;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -221,11 +222,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mAutoScrollHelper = new FolderAutoScrollHelper(mScrollView);
 
-        if (SettingsProvider.getBoolean(mLauncher,
+        mHideLabels = SettingsProvider.getBoolean(mLauncher,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels_default)) {
+                R.bool.preferences_interface_homescreen_hide_icon_labels_default);
+        if (mHideLabels) {
             mFolderName.setVisibility(View.GONE);
-            mFolderNameHeight = getPaddingBottom();
         }
 
         mFolderLock = (ImageView) findViewById(R.id.folder_lock);
@@ -350,11 +351,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
-        if (!SettingsProvider.getBoolean(mLauncher,
-                SettingsProvider.SETTINGS_UI_HOMESCREEN_HIDE_ICON_LABELS,
-                R.bool.preferences_interface_homescreen_hide_icon_labels_default)) {
-            mInfo.setTitle(newTitle);
-        }
+        mInfo.setTitle(newTitle);
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
 
         if (commit) {
@@ -657,6 +654,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         textView.setOnClickListener(this);
         textView.setOnLongClickListener(this);
+
+        if (mHideLabels) {
+            textView.setTextVisibility(!mHideLabels);
+        }
 
         // We need to check here to verify that the given item's location isn't already occupied
         // by another item.

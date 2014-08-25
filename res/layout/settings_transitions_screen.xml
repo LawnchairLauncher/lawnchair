@@ -4,7 +4,6 @@
     android:layout_gravity="center_horizontal|bottom"
     android:background="@color/settings_bg_color"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/overview_panel_bottom_padding"
     android:paddingTop="@dimen/overview_panel_bottom_padding"
     android:clickable="true" >
 

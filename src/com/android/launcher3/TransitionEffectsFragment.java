@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -34,7 +35,6 @@ public class TransitionEffectsFragment extends Fragment {
     ImageView mTransitionIcon;
     ListView mListView;
     View mCurrentSelection;
-    ScrollView mScrollView;
 
     String[] mTransitionStates;
     TypedArray mTransitionDrawables;
@@ -76,6 +76,14 @@ public class TransitionEffectsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.settings_transitions_screen, container, false);
+        mListView = (ListView) v.findViewById(R.id.settings_transitions_list);
+
+        Launcher launcher = (Launcher) getActivity();
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
+                mListView.getLayoutParams();
+        lp.bottomMargin = ((FrameLayout.LayoutParams) launcher.getOverviewPanel()
+                .findViewById(R.id.settings_container).getLayoutParams()).bottomMargin;
+        mListView.setLayoutParams(lp);
 
         mPageOrDrawer = getArguments().getBoolean(PAGE_OR_DRAWER_SCROLL_SELECT);
 
@@ -86,8 +94,6 @@ public class TransitionEffectsFragment extends Fragment {
                 : R.string.preferences_interface_homescreen_scrolling_transition_effect;
 
         mTransitionIcon = (ImageView) v.findViewById(R.id.settings_transition_image);
-        mListView = (ListView) v.findViewById(R.id.settings_transitions_list);
-        mScrollView = (ScrollView) v.findViewById(R.id.scroll_view);
         TextView title = (TextView) v.findViewById(R.id.transition_effect_title);
         title.setText(getResources().getString(R.string.scroll_effect_text));
         LinearLayout titleLayout = (LinearLayout) v.findViewById(R.id.transition_title);

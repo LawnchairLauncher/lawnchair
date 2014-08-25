@@ -1,15 +1,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@color/settings_bg_color"
     android:layout_height="match_parent" >
 
     <LinearLayout
+        android:id="@+id/settings_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|bottom"
-        android:background="@color/settings_bg_color"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/overview_panel_bottom_padding" >
+        android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/settings_pane_header"
