@@ -18,13 +18,12 @@ package com.android.launcher3;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -41,8 +40,7 @@ class LauncherClings implements OnClickListener {
     private static final String MIGRATION_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
     private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
 
-    private static final String ANIM_SLIDE_FROM_BOTTOM = "slide_from_bottom";
-    private static final String ANIM_SLIDE_FROM_TOP = "slide_from_top";
+    private static final String TAG_CROP_TOP_AND_SIDES = "crop_bg_top_and_sides";
 
     private static final boolean DISABLE_CLINGS = false;
 
@@ -124,10 +122,7 @@ class LauncherClings implements OnClickListener {
         ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
         View cling = mInflater.inflate(R.layout.longpress_cling, root, false);
 
-        final ClearCircleLayout hole = (ClearCircleLayout) cling.findViewById(R.id.cling_longpress_hole);
-        hole.initHole(mLauncher);
-        hole.setClickable(true);
-        hole.setOnLongClickListener(new OnLongClickListener() {
+        cling.setOnLongClickListener(new OnLongClickListener() {
 
             @Override
             public boolean onLongClick(View v) {
@@ -141,6 +136,12 @@ class LauncherClings implements OnClickListener {
         mInflater.inflate(showWelcome ? R.layout.longpress_cling_welcome_content
                 : R.layout.longpress_cling_content, content);
         content.findViewById(R.id.cling_dismiss_longpress_info).setOnClickListener(this);
+
+        if (TAG_CROP_TOP_AND_SIDES.equals(content.getTag())) {
+            Drawable bg = new BorderCropDrawable(mLauncher.getResources().getDrawable(R.drawable.cling_bg),
+                    true, true, true, false);
+            content.setBackground(bg);
+        }
 
         root.addView(cling);
 
@@ -156,29 +157,20 @@ class LauncherClings implements OnClickListener {
             public void onGlobalLayout() {
                 content.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                hole.setAlpha(0);
-                ValueAnimator anim1 = LauncherAnimUtils.ofFloat(hole, "alpha", 1);
-
-                ObjectAnimator anim2;
-
-                if (ANIM_SLIDE_FROM_TOP.equals(content.getTag())) {
+                ObjectAnimator anim;
+                if (TAG_CROP_TOP_AND_SIDES.equals(content.getTag())) {
                     content.setTranslationY(-content.getMeasuredHeight());
-                    anim2 = LauncherAnimUtils.ofFloat(content, "translationY", 0);
-                } else if (ANIM_SLIDE_FROM_BOTTOM.equals(content.getTag())) {
-                    content.setTranslationY(content.getMeasuredHeight());
-                    anim2 = LauncherAnimUtils.ofFloat(content, "translationY", 0);
+                    anim = LauncherAnimUtils.ofFloat(content, "translationY", 0);
                 } else {
                     content.setScaleX(0);
                     content.setScaleY(0);
                     PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1);
                     PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1);
-                    anim2 = LauncherAnimUtils.ofPropertyValuesHolder(content, scaleX, scaleY);
+                    anim = LauncherAnimUtils.ofPropertyValuesHolder(content, scaleX, scaleY);
                 }
 
-                AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
                 anim.setDuration(SHOW_CLING_DURATION);
                 anim.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                anim.playTogether(anim1, anim2);
                 anim.start();
             }
         });

@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:id="@+id/longpress_cling"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <com.android.launcher3.ClearCircleLayout
-        android:id="@+id/cling_longpress_hole"
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        launcher:holeLocation="page_indicator" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <FrameLayout
         android:id="@+id/cling_content"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#FF009688"
-        android:elevation="6dp" />
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/cling_bg" />
 
-</FrameLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+</LinearLayout>
