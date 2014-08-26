@@ -25,17 +25,15 @@
         <attr name="sourceViewId" format="integer" />
     </declare-styleable>
 
-    <!-- Cling specific attributes. These attributes are used to customize
+    <!-- ClearCircleLayout specific attributes. These attributes are used to customize
          the cling in XML files. -->
-    <declare-styleable name="Cling">
+    <declare-styleable name="ClearCircleLayout">
         <!-- Used to identify how to draw the cling bg -->
-        <attr name="drawIdentifier" format="string"  />
+        <attr name="holeLocation" format="string"  />
     </declare-styleable>
 
-    <!-- Page Indicator specific attributes. These attributes are used to customize
-         the cling in XML files. -->
+    <!-- Page Indicator specific attributes. -->
     <declare-styleable name="PageIndicator">
-        <!-- Used to identify how to draw the cling bg -->
         <attr name="windowSize" format="integer"  />
     </declare-styleable>
 
