@@ -73,31 +73,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
-        <include layout="@layout/first_run_cling"
-            android:id="@+id/first_run_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-        <include layout="@layout/migration_cling"
-            android:id="@+id/migration_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-        <include layout="@layout/migration_workspace_cling"
-            android:id="@+id/migration_workspace_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-        <include layout="@layout/workspace_cling"
-            android:id="@+id/workspace_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-        <include layout="@layout/folder_cling"
-            android:id="@+id/folder_cling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
 
         <!-- This is the search bar voice button proxy view.  It allows us to have a larger
              touch target than the microphone constrained by the search bar bounds. -->

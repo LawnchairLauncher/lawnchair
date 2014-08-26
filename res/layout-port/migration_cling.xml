@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!--
+     Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,88 +14,92 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.Cling
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/migration_cling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    launcher:drawIdentifier="migration_portrait">
-    <FrameLayout
-        android:id="@+id/content"
+    android:background="#FF009688" >
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" >
+
+        <ImageView
+            android:layout_width="@dimen/cling_migration_bg_size"
+            android:layout_height="@dimen/cling_migration_bg_size"
+            android:layout_below="@+id/ic_cling_migration"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/cling_migration_bg_shift"
+            android:src="@drawable/bg_migration_cling" />
+
+        <ImageView
+            android:id="@+id/ic_cling_migration"
+            android:layout_width="@dimen/cling_migration_logo_width"
+            android:layout_height="@dimen/cling_migration_logo_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_migration" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:gravity="center"
-                android:text="@string/first_run_cling_title"
-                android:textSize="42dp"
-                android:textColor="#FFffffff" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="0dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/on_boarding_welcome" />
+            android:layout_below="@+id/ic_cling_migration"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" >
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/cling_arrow_up" />
+                android:paddingBottom="8dp"
+                android:text="@string/first_run_cling_title"
+                android:textColor="#E1000000"
+                android:textSize="34sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/migration_cling_title"
+                android:textColor="#E1000000"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="24dp"
+                android:text="@string/migration_cling_description"
+                android:textColor="#E1000000"
+                android:textSize="16sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:orientation="vertical"
-                android:background="@drawable/cling">
-                <TextView
-                    style="@style/ClingTitleText"
-                    android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/cling_dismiss_migration_copy_apps"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/migration_cling_title" />
-                <TextView
-                    style="@style/ClingText"
-                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/migration_cling_copy_apps"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/cling_dismiss_migration_use_default"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/migration_cling_description" />
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/migration_cling_use_default"
+                    android:textColor="#deFFFFFF"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+    </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="25dp"
-            android:orientation="vertical">
-            <Button
-                style="@style/ClingButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/migration_cling_copy_apps"
-                android:onClick="dismissMigrationClingCopyApps" />
-            <Button
-                style="@style/ClingButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/migration_cling_use_default"
-                android:onClick="dismissMigrationClingUseDefault" />
-        </LinearLayout>
-    </FrameLayout>
-</com.android.launcher3.Cling>
+</FrameLayout>

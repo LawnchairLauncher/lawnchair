@@ -596,7 +596,6 @@ public class Workspace extends SmoothPagedView
         mDefaultPage = mOriginalDefaultPage + 1;
 
         // Update the custom content hint
-        mLauncher.getLauncherClings().updateCustomContentHintVisibility();
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage + 1;
         } else {
@@ -625,7 +624,6 @@ public class Workspace extends SmoothPagedView
         mDefaultPage = mOriginalDefaultPage - 1;
 
         // Update the custom content hint
-        mLauncher.getLauncherClings().updateCustomContentHintVisibility();
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage - 1;
         } else {
@@ -2702,10 +2700,6 @@ public class Workspace extends SmoothPagedView
         if (child instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedBackground();
-        } else if (child instanceof FolderIcon) {
-            // The folder cling isn't flexible enough to be shown in non-default workspace positions
-            // Also if they are dragging it a folder, we assume they don't need to see the cling.
-            mLauncher.markFolderClingDismissedIfNecessary();
         }
 
         if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
@@ -3053,10 +3047,6 @@ public class Workspace extends SmoothPagedView
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
-                    // The folder cling isn't flexible enough to be shown in non-default workspace
-                    // positions. Also if they are creating a folder, we assume they don't need to
-                    // see the cling.
-                    mLauncher.markFolderClingDismissedIfNecessary();
                     return;
                 }
 
@@ -3965,10 +3955,6 @@ public class Workspace extends SmoothPagedView
                 d.postAnimationRunnable = exitSpringLoadedRunnable;
                 if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,
                         true, d.dragView, d.postAnimationRunnable)) {
-                    // The folder cling isn't flexible enough to be shown in non-default workspace
-                    // positions. Also if they are creating a folder, we assume they don't need to
-                    // see the cling.
-                    mLauncher.markFolderClingDismissedIfNecessary();
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,

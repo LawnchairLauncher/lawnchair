@@ -132,6 +132,10 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         return true; // I'll take it from here
     }
 
+    Rect getInsets() {
+        return mInsets;
+    }
+
     @Override
     public void addView(View child, int index, android.view.ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
@@ -200,8 +204,7 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         }
 
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null && !mLauncher.getLauncherClings().isFolderClingVisible() &&
-                intercept) {
+        if (currentFolder != null && intercept) {
             if (currentFolder.isEditingName()) {
                 if (!isEventOverFolderTextRegion(currentFolder, ev)) {
                     currentFolder.dismissEditingName();
