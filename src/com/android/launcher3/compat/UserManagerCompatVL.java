@@ -48,12 +48,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
 
     @Override
     public Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user) {
-        try {
-            // STOPSHIP(mokani): Clean this up.
-            return mUserManager.getBadgedIconForUser(unbadged, user.getUser());
-        } catch (Throwable t) {
-            return unbadged;
-        }
+        return mUserManager.getBadgedIconForUser(unbadged, user.getUser());
     }
 
     @Override
