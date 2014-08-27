@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"写入主屏幕设置和快捷方式"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允许应用更改主屏幕中的设置和快捷方式。"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"加载小部件时出现问题"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"设置"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"这是系统应用，无法卸载。"</string>
     <string name="dream_name" msgid="1530253749244328964">"火箭发射器"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"未命名文件夹"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"使用全新配置"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"整理您的空间"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"触摸并按住背景，即可管理壁纸、小部件和设置。"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"壁纸、小部件和设置"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"触摸并按住背景，即可进行个性化设置"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"知道了"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"这是一个文件夹"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"要创建一个类似的文件夹，请触摸并按住某个应用，然后将其移至另一个应用上。"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"确定"</string>

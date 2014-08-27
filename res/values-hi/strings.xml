@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग और शॉर्टकट लिखें"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ऐप्लिकेशन को होम में सेटिंग और शॉर्टकट बदलने देती है."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करने में समस्‍या"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="dream_name" msgid="1530253749244328964">"रॉकेट लॉन्‍चर"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"फिर से शुरू करें"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"अपने स्थान को व्यवस्थित करें"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, विजेट और सेटिंग प्रबंधित करने के लिए पृष्ठभूमि को स्पर्श करके रखें."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वॉलपेपर, विजेट और सेटिंग"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"पृष्ठभूमि कस्टमाइज़ करने के लिए स्पर्श करके रखें"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"समझ लिया"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"यहां एक फ़ोल्डर है"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"इसके जैसा कोई एक बनाने के लिए, किसी ऐप्लिकेशन को स्पर्श करके रखें, फिर इसे किसी दूसरे पर ले जाएं."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ठीक"</string>

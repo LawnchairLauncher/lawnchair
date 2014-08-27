@@ -97,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ΝΕΑ ΕΝΑΡΞΗ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Οργανώστε το χώρο σας"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Αγγίξτε παρατεταμένα το φόντο για να διαχειριστείτε την ταπετσαρία, τα γραφικά στοιχεία και τις ρυθμίσεις."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Ταπετσαρίες, γραφικά στοιχεία και ρυθμίσεις"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Αγγίξτε παρατεταμένα το παρασκήνιο για προσαρμογή"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ΕΓΙΝΕ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ορίστε ένας φάκελος"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Για να δημιουργήσετε έναν φάκελο σαν κι αυτόν, πατήστε παρατεταμένα μια εφαρμογή και στη συνέχεια, μετακινήστε τη πάνω σε μια άλλη."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

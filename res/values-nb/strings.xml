@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"angi startsideinnstillinger og -snarveier"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Lar appen endre innstillingene og snarveiene på startsiden."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem ved innlasting av modul"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Konfigurering"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dette er en systemapp som ikke kan avinstalleres."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Mappe uten navn"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"START PÅ NYTT"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiser plassen din"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Trykk og hold på bakgrunnen for å administrere bakgrunnen, moduler og innstillinger."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Bakgrunner, moduler og innstillinger"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Trykk og hold på bakgrunnen for å tilpasse den"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"SKJØNNER"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Dette er en mappe"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"For å opprette en som denne, trykker og holder du på en app og flytter den over en annen."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
