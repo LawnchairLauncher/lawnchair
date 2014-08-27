@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"skriva inställningar och genvägar för startsidan"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Tillåter att appen ändrar inställningar och genvägar på startsidan."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Det gick inte att läsa in widgeten"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Konfiguration"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Det här är en systemapp som inte kan avinstalleras."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Namnlös mapp"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"BÖRJA OM"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organisera ditt utrymme"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Tryck länge på bakgrunden om du vill hantera bakgrundsbilder, widgetar och inställningar."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Bakgrunder, widgetar och inställningar"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Tryck länge på bakgrunden om du vill anpassa den"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Det här är en mapp"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Skapa en till mapp av det här slaget genom att trycka och hålla ned en app och sedan dra den ovanpå en annan."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

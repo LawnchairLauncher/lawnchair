@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"tulis tetapan dan pintasan Laman Utama"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Membenarkan apl menukar tetapan dan pintasan di Laman Utama."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Masalah memuatkan widget"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Persediaan"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ini ialah apl sistem dan tidak boleh dinyahpasang."</string>
     <string name="dream_name" msgid="1530253749244328964">"Pelancar Roket"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Folder Tanpa Nama"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"MULAKAN YANG BAHARU"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Susun ruang anda"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Sentuh &amp; tahan latar belakang untuk mengurus kertas dinding, widget dan tetapan."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Kertas dinding, widget &amp; tetapan"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Sentuh &amp; tahan latar belakang untuk memperibadikan"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"FAHAM"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ini ada folder"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Untuk membuat satu folder seperti ini, sentuh &amp; tahan apl, kemudian alihkan ke atas folder lain."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

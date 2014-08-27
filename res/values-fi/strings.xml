@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"kirjoita aloitusruudun asetuksia ja pikakuvakkeita"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Antaa sovelluksen muuttaa aloitusruudun asetuksia ja pikakuvakkeita."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Ongelma ladattaessa widgetiä"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Asetus"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Tämä on järjestelmäsovellus, eikä sitä voi poistaa."</string>
     <string name="dream_name" msgid="1530253749244328964">"Sinko"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Nimetön kansio"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ALOITA ALUSTA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Järjestä tilasi"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Hallitse taustakuvaa, widgetejä ja asetuksia koskettamalla taustaa pitkään."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Taustakuvat, widgetit ja asetukset"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Muokkaa taustaa koskettamalla ja painamalla pitkään"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"SELVÄ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Tässä on kansio"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Luo se seuraavasti: kosketa sovellusta pitkään ja siirrä se sitten toisen päälle."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
