@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"寫入主螢幕設定和捷徑"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允許應用程式變更主螢幕中的設定和捷徑。"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"載入小工具時發生問題"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"設定"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"這是系統應用程式，不可解除安裝。"</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"未命名的資料夾"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"重新開始"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"管理您的空間"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"輕觸並按住背景，即可管理桌布、小工具和設定。"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"桌布、小工具和設定"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"輕觸並按住背景即可自訂"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"知道了"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"資料夾顯示如下"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"如要建立類似的資料夾，請輕觸並按住應用程式，然後將應用程式疊放在另一個應用程式上。"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"確定"</string>

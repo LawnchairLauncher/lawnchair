@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"សរសេរ​ការ​កំណត់ ​និង​ផ្លូវកាត់​​លើ​អេក្រង់​ដើម"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​ប្ដូរ​ការ​កំណត់ និង​ផ្លូវ​កាត់​ក្នុង​អេក្រង់​ដើម។"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"បញ្ហា​ក្នុង​ការ​ផ្ទុក​ធាតុ​​ក្រាហ្វិក"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"រៀបចំ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
     <string name="dream_name" msgid="1530253749244328964">"កម្មវិធី​ចាប់ផ្ដើម​រ៉ូកែត"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ថត​គ្មាន​ឈ្មោះ"</string>
@@ -87,7 +86,7 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"អេក្រង់​ដើម %1$d នៃ %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ទំព័រ​កម្មវិធី %1$d នៃ %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ទំព័រ​ធាតុ​ក្រាហ្វិក ​%1$d នៃ %2$d"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"សូម​ស្វាគមន៍"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"សូម​ស្វាគមន៍​"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"ធ្វើ​ដោយ​ខ្លួន​ឯង​នៅ​លើ​អេក្រង់​ដើម។"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ចាប់ផ្ដើម​ធ្វើ​ឲ្យ​ស្រស់"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"រៀបចំ​ចន្លោះ​របស់​អ្នក"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"ប៉ះ &amp; សង្កត់​លើ​ផ្ទៃ​ខាង​ក្រោម ដើម្បី​គ្រប់គ្រង​ផ្ទាំង​រូបភាព, ធាតុ​ក្រាហ្វិក និង​ការ​កំណត់។"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ផ្ទាំងរូបភាព,ធាតុក្រាហ្វិក &amp; ការកំណត់"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ប៉ះ &amp; សង្កត់​ផ្ទៃ​ខាង​ក្រោយ​ដើម្បី​ប្ដូរ​តាម​​តម្រូវ​ការ"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"យល់​ហើយ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"នេះ​ជា​ថត"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"ដើម្បី​បង្កើត​មួយ​ដូច​នេះ ប៉ះ &amp; សង្កត់​​លើ​កម្មវិធី បន្ទាប់​មក​ផ្លាស់ទី​វា​ទៅ​លើ​ធាតុ​មួយ​ផ្សេង​ទៀត។"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"យល់ព្រម"</string>

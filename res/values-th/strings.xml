@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"เขียนการตั้งค่าและทางลัดหน้าแรกแล้ว"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"อนุญาตให้แอปเปลี่ยนการตั้งค่าและทางลัดในหน้าแรก"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"มีปัญหาขณะโหลดวิดเจ็ต"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ตั้งค่า"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"นี่เป็นแอประบบและไม่สามารถถอนการติดตั้งได้"</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"โฟลเดอร์ที่ไม่มีชื่อ"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"เริ่มต้นใหม่"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"จัดระเบียบพื้นที่ของคุณ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"แตะพื้นหลังค้างไว้เพื่อจัดการวอลเปเปอร์ วิดเจ็ต และการตั้งค่า"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"วอลเปเปอร์ วิดเจ็ต และการตั้งค่า"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"แตะพื้นหลังค้างไว้เพื่อกำหนดค่า"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"รับทราบ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"นี่คือโฟลเดอร์"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"หากต้องการสร้างโฟลเดอร์ลักษณะนี้ แตะแอปค้างไว้ แล้วย้ายไปทับอีกแอปหนึ่ง"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ตกลง"</string>

@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"creazione di impostazioni e scorciatoie in Home"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Consente all\'app di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Errore durante il caricamento del widget"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Configurazione"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Questa è un\'app di sistema e non può essere disinstallata."</string>
     <string name="dream_name" msgid="1530253749244328964">"Lanciamissili"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Cartella senza nome"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"RICOMINCIA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizza il tuo spazio"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Tocca e tieni premuto lo sfondo per gestire sfondi, widget e impostazioni."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Sfondi, widget e impostazioni"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Tocca lo sfondo e tieni premuto per personalizzare"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Ecco una cartella"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Per crearne una simile, tocca un\'app e tieni premuto, dopodiché spostala sopra un\'altra."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
