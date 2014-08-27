@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"Изменение настроек и ярлыков главного экрана"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Приложение сможет изменять настройки и ярлыки на главном экране."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Не удалось загрузить виджет"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Настройка"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Это системное приложение, его нельзя удалить."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Папка без названия"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ИСПОЛЬЗОВАТЬ СТАНДАРТНЫЙ МАКЕТ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Организация рабочего пространства"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Чтобы перейти к управлению обоями, виджетами и настройками, нажмите на фоновое изображение и удерживайте его."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Обои, виджеты и настройки"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Чтобы выполнить настройку, коснитесь фона и удерживайте его"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ОК"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Это папка"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Чтобы создать папку, нажмите и удерживайте значок приложения, а затем перетащите его на другой значок."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ОК"</string>

@@ -77,8 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"כתוב הגדרות וקיצורי דרך של דף הבית"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"מאפשר לאפליקציה לשנות את ההגדרות וקיצורי הדרך בדף הבית."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"בעיה בטעינת ווידג\'ט"</string>
-    <!-- no translation found for gadget_setup_text (8274003207686040488) -->
-    <skip />
+    <string name="gadget_setup_text" msgid="8274003207686040488">"הגדר"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"זוהי אפליקציית מערכת ולא ניתן להסיר את התקנתה."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"תיקיה ללא שם"</string>
@@ -98,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"התחל דף חדש"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ארגן את אזור העבודה שלך"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"גע נגיעה רציפה ברקע כדי לנהל את הטפט, רכיבי הווידג\'ט וההגדרות."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"טפטים, ווידג\'טים והגדרות"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"גע והחזק ברקע לביצוע התאמה אישית"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"הבנתי"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"הנה תיקייה"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"כדי ליצור תיקייה כזו, גע נגיעה רציפה באפליקציה, ולאחר מכן גרור ושחרר אותו על-גבי אפליקציה אחרת."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"אישור"</string>
