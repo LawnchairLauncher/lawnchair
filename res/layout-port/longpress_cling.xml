@@ -5,19 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.android.launcher3.ClearCircleLayout
-        android:id="@+id/cling_longpress_hole"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        launcher:holeLocation="center_screen" />
-
     <FrameLayout
         android:id="@+id/cling_content"
-        android:layout_width="360dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#FF009688"
-        android:elevation="6dp"
-        android:tag="slide_from_bottom" />
+        android:layout_gravity="top"
+        android:background="@drawable/cling_bg"
+        android:tag="crop_bg_top_and_sides" />
 
 </FrameLayout>
