@@ -16,9 +16,6 @@
 
 <resources>
 <!-- AppsCustomize -->
-    <integer name="apps_customize_cling_focused_x">1</integer>
-    <integer name="apps_customize_cling_focused_y">1</integer>
-
     <integer name="apps_customize_widget_cell_count_x">2</integer>
     <integer name="apps_customize_widget_cell_count_y">3</integer>
 </resources>

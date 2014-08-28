@@ -65,15 +65,6 @@
             android:id="@+id/search_drop_target_bar"
             layout="@layout/search_drop_target_bar" />
 
-        <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
-             that it is still visible during the transition to AllApps and doesn't overlay on
-             top of that view. -->
-        <com.android.launcher3.ScrimView
-            android:id="@+id/cling_scrim"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
         <!-- This is the search bar voice button proxy view.  It allows us to have a larger
              touch target than the microphone constrained by the search bar bounds. -->
         <com.android.launcher3.DrawableStateProxyView
