@@ -3,12 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="48dp" >
+    android:paddingBottom="24dp"
+    android:paddingTop="36dp" >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
         android:text="@string/first_run_cling_title"
         android:textColor="#E1000000"
         android:textSize="34sp" />
@@ -16,7 +19,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:layout_marginBottom="5.3dp"
+        android:fontFamily="sans-serif-medium"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
         android:text="@string/workspace_cling_longpress_title"
         android:textColor="#E1000000"
         android:textSize="20sp" />
@@ -24,8 +30,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
         android:text="@string/workspace_cling_longpress_description"
-        android:textColor="#E1000000"
+        android:textColor="#99000000"
         android:textSize="16sp" />
 
     <Button
@@ -34,8 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="24dp"
-        android:fontFamily="sans-serif-condensed"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="27dp"
+        android:fontFamily="sans-serif-medium"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
         android:text="@string/workspace_cling_longpress_dismiss"
