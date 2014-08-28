@@ -996,9 +996,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
 
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
-            setHorizontalScrollBarEnabled(false);
             updateCurrentPageScroll();
-            setHorizontalScrollBarEnabled(true);
             mFirstLayout = false;
         }
 
