@@ -114,10 +114,6 @@
         <attr name="widgetCountX" format="integer" />
         <!-- Number of widgets vertically -->
         <attr name="widgetCountY" format="integer" />
-        <!-- The x index of the item to be focused in the cling -->
-        <attr name="clingFocusedX" format="integer" />
-        <!-- The y index of the item to be focused in the cling -->
-        <attr name="clingFocusedY" format="integer" />
     </declare-styleable>
 
     <!-- XML attributes used by default_workspace.xml -->
@@ -146,11 +142,5 @@
         <attr name="background" format="reference" />
         <attr name="ringOutset" format="dimension" />
         <attr name="indicatorSize" format="dimension" />
-    </declare-styleable>
-
-    <!-- Only used in the device overlays -->
-    <declare-styleable name="CustomClingTitleText">
-    </declare-styleable>
-    <declare-styleable name="CustomClingText">
     </declare-styleable>
 </resources>

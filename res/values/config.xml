@@ -93,9 +93,6 @@
     <!-- Camera distance for the overscroll effect -->
     <integer name="config_cameraDistance">8000</integer>
 
-    <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
-    <bool name="config_useCustomClings">false</bool>
-
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 

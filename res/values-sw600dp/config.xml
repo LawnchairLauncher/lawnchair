@@ -2,9 +2,6 @@
     <bool name="is_tablet">true</bool>
     <bool name="allow_rotation">true</bool>
 
-    <!-- Whether or not to use custom clings if a custom workspace layout is passed in -->
-    <bool name="config_useCustomClings">true</bool>
-
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1000</integer>
 

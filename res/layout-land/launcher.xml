@@ -57,15 +57,6 @@
             android:id="@+id/overview_panel"
             android:visibility="gone" />
 
-        <!-- The Workspace cling must appear under the AppsCustomizePagedView below to ensure
-             that it is still visible during the transition to AllApps and doesn't overlay on
-             top of that view. -->
-        <com.android.launcher3.ScrimView
-            android:id="@+id/cling_scrim"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"
             android:layout_width="match_parent"
