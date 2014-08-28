@@ -1078,44 +1078,72 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
+     * Removes all the items from the database corresponding to the specified package.
+     */
+    static void deletePackageFromDatabase(Context context, final String pn,
+            final UserHandleCompat user) {
+        ItemInfoFilter filter  = new ItemInfoFilter() {
+            @Override
+            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
+                return cn.getPackageName().equals(pn) && info.user.equals(user);
+            }
+        };
+        ArrayList<ItemInfo> infos = filterItemInfos(sBgItemsIdMap.values(), filter);
+        deleteItemsFromDatabase(context, infos);
+    }
+
+    /**
      * Removes the specified item from the database
      * @param context
      * @param item
      */
     static void deleteItemFromDatabase(Context context, final ItemInfo item) {
+        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        items.add(item);
+        deleteItemsFromDatabase(context, items);
+    }
+
+    /**
+     * Removes the specified items from the database
+     * @param context
+     * @param item
+     */
+    static void deleteItemsFromDatabase(Context context, final ArrayList<ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
-        final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
 
         Runnable r = new Runnable() {
             public void run() {
-                cr.delete(uriToDelete, null, null);
+                for (ItemInfo item : items) {
+                    final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
+                    cr.delete(uri, null, null);
 
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    switch (item.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                            sBgFolders.remove(item.id);
-                            for (ItemInfo info: sBgItemsIdMap.values()) {
-                                if (info.container == item.id) {
-                                    // We are deleting a folder which still contains items that
-                                    // think they are contained by that folder.
-                                    String msg = "deleting a folder (" + item + ") which still " +
-                                            "contains items (" + info + ")";
-                                    Log.e(TAG, msg);
+                    // Lock on mBgLock *after* the db operation
+                    synchronized (sBgLock) {
+                        switch (item.itemType) {
+                            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                                sBgFolders.remove(item.id);
+                                for (ItemInfo info: sBgItemsIdMap.values()) {
+                                    if (info.container == item.id) {
+                                        // We are deleting a folder which still contains items that
+                                        // think they are contained by that folder.
+                                        String msg = "deleting a folder (" + item + ") which still " +
+                                                "contains items (" + info + ")";
+                                        Log.e(TAG, msg);
+                                    }
                                 }
-                            }
-                            sBgWorkspaceItems.remove(item);
-                            break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                            sBgWorkspaceItems.remove(item);
-                            break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            sBgAppWidgets.remove((LauncherAppWidgetInfo) item);
-                            break;
+                                sBgWorkspaceItems.remove(item);
+                                break;
+                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                                sBgWorkspaceItems.remove(item);
+                                break;
+                            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                                sBgAppWidgets.remove((LauncherAppWidgetInfo) item);
+                                break;
+                        }
+                        sBgItemsIdMap.remove(item.id);
+                        sBgDbIconCache.remove(item);
                     }
-                    sBgItemsIdMap.remove(item.id);
-                    sBgDbIconCache.remove(item);
                 }
             }
         };
@@ -2982,17 +3010,12 @@ public class LauncherModel extends BroadcastReceiver
             }
             // Remove all the components associated with this package
             for (String pn : removedPackageNames) {
-                ArrayList<ItemInfo> infos = getItemInfoForPackageName(pn, mUser);
-                for (ItemInfo i : infos) {
-                    deleteItemFromDatabase(context, i);
-                }
+                deletePackageFromDatabase(context, pn, mUser);
             }
             // Remove all the specific components
             for (AppInfo a : removedApps) {
                 ArrayList<ItemInfo> infos = getItemInfoForComponentName(a.componentName, mUser);
-                for (ItemInfo i : infos) {
-                    deleteItemFromDatabase(context, i);
-                }
+                deleteItemsFromDatabase(context, infos);
             }
             if (!removedPackageNames.isEmpty() || !removedApps.isEmpty()) {
                 // Remove any queued items from the install queue
@@ -3101,17 +3124,17 @@ public class LauncherModel extends BroadcastReceiver
      * to the market page for the item.
      */
     private Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
-        final boolean debug = false;
         ComponentName componentName = intent.getComponent();
-        Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-        Uri marketUri = new Uri.Builder()
+        return getMarketIntent(componentName.getPackageName());
+    }
+
+    static Intent getMarketIntent(String packageName) {
+        return new Intent(Intent.ACTION_VIEW)
+            .setData(new Uri.Builder()
                 .scheme("market")
                 .authority("details")
-                .appendQueryParameter("id", componentName.getPackageName())
-                .build();
-        if (debug) Log.d(TAG, "manufactured intent uri: " + marketUri.toString());
-        marketIntent.setData(marketUri);
-        return marketIntent;
+                .appendQueryParameter("id", packageName)
+                .build());
     }
 
     /**
@@ -3234,17 +3257,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
         return new ArrayList<ItemInfo>(filtered);
-    }
-
-    private ArrayList<ItemInfo> getItemInfoForPackageName(final String pn,
-            final UserHandleCompat user) {
-        ItemInfoFilter filter  = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                return cn.getPackageName().equals(pn) && info.user.equals(user);
-            }
-        };
-        return filterItemInfos(sBgItemsIdMap.values(), filter);
     }
 
     private ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,

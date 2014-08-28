@@ -2455,9 +2455,9 @@ public class Launcher extends Activity
     /**
      * Event handler for the app widget view which has not fully restored.
      */
-    public void onClickPendingWidget(PendingAppWidgetHostView v) {
+    public void onClickPendingWidget(final PendingAppWidgetHostView v) {
+        final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
-            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
             int widgetId = info.appWidgetId;
             AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
             if (appWidgetInfo != null) {
@@ -2468,6 +2468,19 @@ public class Launcher extends Activity
                 AppWidgetManagerCompat.getInstance(this).startConfigActivity(appWidgetInfo,
                         info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
             }
+        } else if (info.installProgress < 0) {
+            // The install has not been queued
+            final String packageName = info.providerName.getPackageName();
+            showBrokenAppInstallDialog(packageName,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info);
+                    }
+                });
+        } else {
+            // Download has started.
+            final String packageName = info.providerName.getPackageName();
+            startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info);
         }
     }
 
@@ -2526,6 +2539,23 @@ public class Launcher extends Activity
         }
     }
 
+    private void showBrokenAppInstallDialog(final String packageName,
+            DialogInterface.OnClickListener onSearchClickListener) {
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.abandoned_promises_title)
+            .setMessage(R.string.abandoned_promise_explanation)
+            .setPositiveButton(R.string.abandoned_search, onSearchClickListener)
+            .setNeutralButton(R.string.abandoned_clean_this,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        final UserHandleCompat user = UserHandleCompat.myUserHandle();
+                        mWorkspace.removeAbandonedPromise(packageName, user);
+                    }
+                })
+            .create().show();
+        return;
+    }
+
     /**
      * Event handler for an app shortcut click.
      *
@@ -2557,25 +2587,13 @@ public class Launcher extends Activity
 
         // Check for abandoned promise
         if (shortcut.isAbandoned() && v instanceof BubbleTextView) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.abandoned_promises_title);
-            builder.setMessage(R.string.abandoned_promise_explanation);
-            builder.setPositiveButton(R.string.abandoned_search,
+            showBrokenAppInstallDialog(
+                    shortcut.getRestoredIntent().getComponent().getPackageName(),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startAppShortcutOrInfoActivity(v);
                         }
-                    }
-            );
-            builder.setNeutralButton(R.string.abandoned_clean_this,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            final BubbleTextView bubble = (BubbleTextView) v;
-                            final UserHandleCompat user = UserHandleCompat.myUserHandle();
-                            mWorkspace.removeAbandonedPromise(bubble, user);
-                        }
                     });
-            builder.create().show();
             return;
         }
 
