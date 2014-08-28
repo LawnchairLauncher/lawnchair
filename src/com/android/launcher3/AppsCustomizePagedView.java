@@ -362,8 +362,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         if (!isDataReady()) {
             if ((LauncherAppState.isDisableAllApps() || !mApps.isEmpty()) && !mWidgets.isEmpty()) {
-                setDataIsReady();
-                onDataReady(getMeasuredWidth(), getMeasuredHeight());
+                post(new Runnable() {
+                    // This code triggers requestLayout so must be posted outside of the
+                    // layout pass.
+                    public void run() {
+                        setDataIsReady();
+                        onDataReady(getMeasuredWidth(), getMeasuredHeight());
+                    }
+                });
             }
         }
     }
