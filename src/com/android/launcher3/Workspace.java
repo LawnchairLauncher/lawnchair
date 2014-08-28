@@ -4847,16 +4847,11 @@ public class Workspace extends SmoothPagedView
         restorePendingWidgets(pkgNames);
     }
 
-    public void removeAbandonedPromise(BubbleTextView abandonedIcon, UserHandleCompat user) {
-        if (abandonedIcon.getTag() != null && abandonedIcon.getTag() instanceof ShortcutInfo) {
-            final ShortcutInfo shortcut = (ShortcutInfo) abandonedIcon.getTag();
-            if (shortcut.isAbandoned()) {
-                HashSet<ComponentName> cns = new HashSet<ComponentName>(1);
-                cns.add(shortcut.getRestoredIntent().getComponent());
-                LauncherModel.deleteItemFromDatabase(mLauncher, shortcut);
-                removeItemsByComponentName(cns, user);
-            }
-        }
+    public void removeAbandonedPromise(String packageName, UserHandleCompat user) {
+        ArrayList<String> packages = new ArrayList<String>(1);
+        packages.add(packageName);
+        LauncherModel.deletePackageFromDatabase(mLauncher, packageName, user);
+        removeItemsByPackageName(packages, user);
     }
 
     public void updatePackageState(ArrayList<PackageInstallInfo> installInfos) {
