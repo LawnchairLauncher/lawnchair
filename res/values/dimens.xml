@@ -34,22 +34,6 @@
     <dimen name="cling_migration_bg_size">400dp</dimen>
     <dimen name="cling_migration_bg_shift">-200dp</dimen>
 
-    <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
-    <dimen name="folderClingMarginTop">20dp</dimen>
-    <!-- The offset for the text in the cling -->
-    <dimen name="cling_text_block_offset_x">0dp</dimen>
-    <dimen name="cling_text_block_offset_y">0dp</dimen>
-    <!-- entries for custom clings, will be set in overlays -->
-    <add-resource type="dimen" name="custom_cling_margin_top" />
-    <add-resource type="dimen" name="custom_cling_margin_right" />
-    <add-resource type="dimen" name="custom_cling_margin_left" />
-    
-    <dimen name="cling_title_text_size">20sp</dimen>
-    <dimen name="cling_text_size">14sp</dimen>
-    <dimen name="cling_alt_title_text_size">24sp</dimen>
-    <dimen name="cling_alt_text_size">16sp</dimen>
-    <dimen name="cling_hint_text_size">14sp</dimen>
-
 <!-- Workspace -->
     <dimen name="workspace_max_gap">16dp</dimen>
     <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>

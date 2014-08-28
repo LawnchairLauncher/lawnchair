@@ -127,10 +127,6 @@
     </style>
 
     <!-- Overridden in device overlays -->
-    <style name="CustomClingTitleText">
-    </style>
-    <style name="CustomClingText">
-    </style>
     <style name="PagedViewWidgetImageView">
         <item name="android:paddingLeft">@dimen/app_widget_preview_padding_left</item>
     </style>

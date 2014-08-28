@@ -23,6 +23,4 @@
     <dimen name="apps_customize_tab_bar_height">42dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">3</integer>
     <integer name="apps_customize_widget_cell_count_y">2</integer>
-    <integer name="apps_customize_cling_focused_x">2</integer>
-    <integer name="apps_customize_cling_focused_y">1</integer>
 </resources>

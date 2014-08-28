@@ -19,12 +19,4 @@
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->
     <dimen name="scroll_zone">40dp</dimen>
-
-    <integer name="apps_customize_cling_focused_x">2</integer>
-    <integer name="apps_customize_cling_focused_y">2</integer>
-
-<!-- Cling -->
-    <!-- The offset for the text in the cling -->
-    <dimen name="cling_text_block_offset_x">80dp</dimen>
-    <dimen name="cling_text_block_offset_y">160dp</dimen>
 </resources>
