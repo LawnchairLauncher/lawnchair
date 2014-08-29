@@ -327,7 +327,7 @@ public class LauncherProvider extends ContentProvider {
                 final Partner partner = Partner.get(getContext().getPackageManager());
                 if (partner != null && partner.hasDefaultLayout()) {
                     final Resources partnerRes = partner.getResources();
-                    int workspaceResId = partnerRes.getIdentifier(Partner.RESOURCE_DEFAULT_LAYOUT,
+                    int workspaceResId = partnerRes.getIdentifier(Partner.RES_DEFAULT_LAYOUT,
                             "xml", partner.getPackageName());
                     if (workspaceResId != 0) {
                         loader = new SimpleWorkspaceLoader(mOpenHelper, partnerRes, workspaceResId);
@@ -1509,7 +1509,7 @@ public class LauncherProvider extends ContentProvider {
                         final Partner partner = Partner.get(mPackageManager);
                         if (partner != null) {
                             final Resources partnerRes = partner.getResources();
-                            final int resId = partnerRes.getIdentifier(Partner.RESOURCE_FOLDER,
+                            final int resId = partnerRes.getIdentifier(Partner.RES_FOLDER,
                                     "xml", partner.getPackageName());
                             if (resId != 0) {
                                 final XmlResourceParser partnerParser = partnerRes.getXml(resId);

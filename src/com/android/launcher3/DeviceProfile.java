@@ -69,7 +69,7 @@ public class DeviceProfile {
     float numRows;
     float numColumns;
     float numHotseatIcons;
-    private float iconSize;
+    float iconSize;
     private float iconTextSize;
     private int iconDrawablePaddingOriginalPx;
     private float hotseatIconSize;
@@ -130,6 +130,9 @@ public class DeviceProfile {
 
     float dragViewScale;
 
+    int allAppsShortEdgeCount = -1;
+    int allAppsLongEdgeCount = -1;
+
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
     DeviceProfile(String n, float w, float h, float r, float c,
@@ -150,6 +153,9 @@ public class DeviceProfile {
         hotseatIconSize = his;
         defaultLayoutId = dlId;
         defaultNoAllAppsLayoutId = dnalId;
+    }
+
+    DeviceProfile() {
     }
 
     DeviceProfile(Context context,
@@ -218,6 +224,7 @@ public class DeviceProfile {
             points.add(new DeviceProfileQuery(p, p.iconSize));
         }
         iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
+
         // AllApps uses the original non-scaled icon size
         allAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
 
@@ -240,10 +247,40 @@ public class DeviceProfile {
         // Hotseat
         hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
 
+        // If the partner customization apk contains any grid overrides, apply them
+        applyPartnerDeviceProfileOverrides(context, dm);
+
         // Calculate the remaining vars
         updateFromConfiguration(context, res, wPx, hPx, awPx, ahPx);
         updateAvailableDimensions(context);
         computeAllAppsButtonSize(context);
+    }
+
+    /**
+     * Apply any Partner customization grid overrides.
+     *
+     * Currently we support: all apps row / column count.
+     */
+    private void applyPartnerDeviceProfileOverrides(Context ctx, DisplayMetrics dm) {
+        Partner p = Partner.get(ctx.getPackageManager());
+        if (p != null) {
+            DeviceProfile partnerDp = p.getDeviceProfileOverride(dm);
+            if (partnerDp != null) {
+                if (partnerDp.numRows > 0 && partnerDp.numColumns > 0) {
+                    numRows = partnerDp.numRows;
+                    numColumns = partnerDp.numColumns;
+                }
+                if (partnerDp.allAppsShortEdgeCount > 0 && partnerDp.allAppsLongEdgeCount > 0) {
+                    allAppsShortEdgeCount = partnerDp.allAppsShortEdgeCount;
+                    allAppsLongEdgeCount = partnerDp.allAppsLongEdgeCount;
+                }
+                if (partnerDp.iconSize > 0) {
+                    iconSize = partnerDp.iconSize;
+                    // AllApps uses the original non-scaled icon size
+                    allAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
+                }
+            }
+        }
     }
 
     /**
@@ -380,12 +417,17 @@ public class DeviceProfile {
         int maxRows = (isLandscape ? maxShortEdgeCellCount : maxLongEdgeCellCount);
         int maxCols = (isLandscape ? maxLongEdgeCellCount : maxShortEdgeCellCount);
 
-        allAppsNumRows = (availableHeightPx - pageIndicatorHeightPx) /
-                (allAppsCellHeightPx + allAppsCellPaddingPx);
-        allAppsNumRows = Math.max(minEdgeCellCount, Math.min(maxRows, allAppsNumRows));
-        allAppsNumCols = (availableWidthPx) /
-                (allAppsCellWidthPx + allAppsCellPaddingPx);
-        allAppsNumCols = Math.max(minEdgeCellCount, Math.min(maxCols, allAppsNumCols));
+        if (allAppsShortEdgeCount > 0 && allAppsLongEdgeCount > 0) {
+            allAppsNumRows = isLandscape ? allAppsShortEdgeCount : allAppsLongEdgeCount;
+            allAppsNumCols = isLandscape ? allAppsLongEdgeCount : allAppsShortEdgeCount;
+        } else {
+            allAppsNumRows = (availableHeightPx - pageIndicatorHeightPx) /
+                    (allAppsCellHeightPx + allAppsCellPaddingPx);
+            allAppsNumRows = Math.max(minEdgeCellCount, Math.min(maxRows, allAppsNumRows));
+            allAppsNumCols = (availableWidthPx) /
+                    (allAppsCellWidthPx + allAppsCellPaddingPx);
+            allAppsNumCols = Math.max(minEdgeCellCount, Math.min(maxCols, allAppsNumCols));
+        }
     }
 
     void updateFromConfiguration(Context context, Resources resources, int wPx, int hPx,
