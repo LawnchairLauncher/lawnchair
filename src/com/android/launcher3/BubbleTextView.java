@@ -415,8 +415,10 @@ public class BubbleTextView extends TextView {
                 }
 
                 preloadDrawable.setLevel(progressLevel);
-                if (state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
-                    preloadDrawable.maybePerformFinishedAnimation();
+                if ((state == ShortcutInfo.PACKAGE_STATE_DEFAULT) && info.wasPromise) {
+                    // Clear the promise flag as it is no longer different than a normal shortcut,
+                    // once the animation has been run.
+                    info.wasPromise = !preloadDrawable.maybePerformFinishedAnimation();
                 }
 
             }
