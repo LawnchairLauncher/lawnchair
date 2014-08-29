@@ -1295,6 +1295,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mSuppressOnAdd = true;
         mInfo.add(si);
         mSuppressOnAdd = false;
+        // Clear the drag info, as it is no longer being dragged.
+        mCurrentDragInfo = null;
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case
