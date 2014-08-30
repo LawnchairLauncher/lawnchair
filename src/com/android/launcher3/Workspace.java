@@ -1212,14 +1212,6 @@ public class Workspace extends SmoothPagedView
                 enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
             }
         }
-
-        // If we are not fading in adjacent screens, we still need to restore the alpha in case the
-        // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
-        if (!mWorkspaceFadeInAdjacentScreens) {
-            for (int i = 0; i < getChildCount(); ++i) {
-                ((CellLayout) getPageAt(i)).setShortcutAndWidgetAlpha(1f);
-            }
-        }
     }
 
     protected void onPageEndMoving() {
@@ -2054,8 +2046,9 @@ public class Workspace extends SmoothPagedView
         mNewAlphas = new float[childCount];
     }
 
-    Animator getChangeStateAnimation(final State state, boolean animated) {
-        return getChangeStateAnimation(state, animated, 0, -1);
+    Animator getChangeStateAnimation(final State state, boolean animated,
+            ArrayList<View> layerViews) {
+        return getChangeStateAnimation(state, animated, 0, -1, layerViews);
     }
 
     @Override
@@ -2191,6 +2184,11 @@ public class Workspace extends SmoothPagedView
     private static final int HIDE_WORKSPACE_DURATION = 100;
 
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
+        return getChangeStateAnimation(state, animated, delay, snapPage, null);
+    }
+
+    Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage,
+            ArrayList<View> layerViews) {
         if (mState == state) {
             return null;
         }
@@ -2312,6 +2310,9 @@ public class Workspace extends SmoothPagedView
                     cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
                     cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
                 } else {
+                    if (layerViews != null) {
+                        layerViews.add(cl);
+                    }
                     if (mOldAlphas[i] != mNewAlphas[i] || currentAlpha != mNewAlphas[i]) {
                         LauncherViewPropertyAnimator alphaAnim =
                             new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
@@ -2358,6 +2359,17 @@ public class Workspace extends SmoothPagedView
             Animator overviewPanelAlpha = new LauncherViewPropertyAnimator(overviewPanel)
                 .alpha(finalOverviewPanelAlpha).withLayer();
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
+
+            // For animation optimations, we may need to provide the Launcher transition
+            // with a set of views on which to force build layers in certain scenarios.
+            hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            overviewPanel.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (layerViews != null) {
+                layerViews.add(hotseat);
+                layerViews.add(searchBar);
+                layerViews.add(overviewPanel);
+            }
 
             if (workspaceToOverview) {
                 pageIndicatorAlpha.setInterpolator(new DecelerateInterpolator(2));
@@ -2504,21 +2516,6 @@ public class Workspace extends SmoothPagedView
     private void onTransitionEnd() {
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
-        // The code in getChangeStateAnimation to determine initialAlpha and finalAlpha will ensure
-        // ensure that only the current page is visible during (and subsequently, after) the
-        // transition animation.  If fade adjacent pages is disabled, then re-enable the page
-        // visibility after the transition animation.
-        if (!mWorkspaceFadeInAdjacentScreens) {
-            for (int i = 0; i < getChildCount(); i++) {
-                final CellLayout cl = (CellLayout) getChildAt(i);
-                cl.setShortcutAndWidgetAlpha(1f);
-            }
-        } else {
-            for (int i = 0; i < numCustomPages(); i++) {
-                final CellLayout cl = (CellLayout) getChildAt(i);
-                cl.setShortcutAndWidgetAlpha(1f);
-            }
-        }
         showCustomContentIfNecessary();
     }
 
