@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.ShortcutInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,6 +76,9 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
     @Override
     public void onStop() { }
 
+    @Override
+    public void updateActiveSessionCache() { }
+
     private void replayUpdates() {
         if (DEBUG) Log.d(TAG, "updates resumed");
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
@@ -107,7 +109,7 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
         PackageInstallInfo installInfo = new PackageInstallInfo(packageName);
         installInfo.progress = progress;
         installInfo.state = state;
-        if (state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
+        if (state == STATUS_INSTALLED) {
             // no longer necessary to track this package
             editor.remove(packageName);
             if (DEBUG) Log.d(TAG, "no longer tracking " + packageName);
@@ -123,7 +125,7 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
         if (!mUseQueue) {
             if (mReplayPending) {
                 replayUpdates();
-            } else {
+            } else if (state != STATUS_INSTALLED) {
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 ArrayList<PackageInstallInfo> update = new ArrayList<PackageInstallInfo>();
                 update.add(installInfo);

@@ -298,7 +298,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
                 return -1;
             }
 
-            mValues.put(Favorites.RESTORED, 1);
+            mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
                 .addCategory(Intent.CATEGORY_LAUNCHER)
                 .setComponent(new ComponentName(packageName, className))

@@ -23,8 +23,8 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.ShortcutInfo;
 
 import java.util.ArrayList;
 
@@ -35,12 +35,14 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     private final SparseArray<SessionInfo> mPendingReplays = new SparseArray<SessionInfo>();
     private final PackageInstaller mInstaller;
+    private final IconCache mCache;
 
     private boolean mResumed;
     private boolean mBound;
 
     PackageInstallerCompatVL(Context context) {
         mInstaller = context.getPackageManager().getPackageInstaller();
+        mCache = LauncherAppState.getInstance().getIconCache();
 
         mResumed = false;
         mBound = false;
@@ -49,6 +51,22 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         // On start, send updates for all active sessions
         for (SessionInfo info : mInstaller.getAllSessions()) {
             mPendingReplays.append(info.getSessionId(), info);
+        }
+    }
+
+    @Override
+    public void updateActiveSessionCache() {
+        UserHandleCompat user = UserHandleCompat.myUserHandle();
+        for (SessionInfo info : mInstaller.getAllSessions()) {
+            addSessionInfoToCahce(info, user);
+        }
+    }
+
+    private void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
+        String packageName = info.getAppPackageName();
+        if (packageName != null) {
+            mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
+                    info.getAppLabel());
         }
     }
 
@@ -98,14 +116,14 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         ArrayList<PackageInstallInfo> updates = new ArrayList<PackageInstallInfo>();
-        if (newInfo != null) {
+        if ((newInfo != null) && (newInfo.state != STATUS_INSTALLED)) {
             updates.add(newInfo);
         }
-        for (int i = mPendingReplays.size() - 1; i > 0; i--) {
+        for (int i = mPendingReplays.size() - 1; i >= 0; i--) {
             SessionInfo session = mPendingReplays.valueAt(i);
             if (session.getAppPackageName() != null) {
                 updates.add(new PackageInstallInfo(session.getAppPackageName(),
-                        ShortcutInfo.PACKAGE_STATE_INSTALLING,
+                        STATUS_INSTALLING,
                         (int) (session.getProgress() * 100)));
             }
         }
@@ -121,6 +139,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         public void onCreated(int sessionId) {
             SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if (session != null) {
+                addSessionInfoToCahce(session, UserHandleCompat.myUserHandle());
                 mPendingReplays.put(sessionId, session);
                 replayUpdates(null);
             }
@@ -135,8 +154,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 // need to store this record for future updates, as the app list will get
                 // refreshed on resume.
                 replayUpdates(new PackageInstallInfo(session.getAppPackageName(),
-                        success ? ShortcutInfo.PACKAGE_STATE_DEFAULT
-                                : ShortcutInfo.PACKAGE_STATE_ERROR, 0));
+                        success ? STATUS_INSTALLED : STATUS_FAILED, 0));
             }
         }
 

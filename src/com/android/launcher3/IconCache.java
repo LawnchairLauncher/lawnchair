@@ -30,6 +30,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
@@ -254,18 +255,16 @@ public class IconCache {
         return getIcon(intent, null, user, true);
     }
 
-    public Bitmap getIcon(Intent intent, String title, UserHandleCompat user, boolean usePkgIcon) {
+    private Bitmap getIcon(Intent intent, String title, UserHandleCompat user, boolean usePkgIcon) {
         synchronized (mCache) {
-            LauncherActivityInfoCompat launcherActInfo =
-                    mLauncherApps.resolveActivity(intent, user);
             ComponentName component = intent.getComponent();
-
             // null info means not installed, but if we have a component from the intent then
             // we should still look in the cache for restored app icons.
             if (component == null) {
                 return getDefaultIcon(user);
             }
 
+            LauncherActivityInfoCompat launcherActInfo = mLauncherApps.resolveActivity(intent, user);
             CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, usePkgIcon);
             if (title != null) {
                 entry.title = title;
@@ -274,6 +273,32 @@ public class IconCache {
             return entry.icon;
         }
     }
+
+    /**
+     * Fill in "shortcutInfo" with the icon and label for "info."
+     */
+    public void getTitleAndIcon(ShortcutInfo shortcutInfo, Intent intent, UserHandleCompat user,
+            boolean usePkgIcon) {
+        synchronized (mCache) {
+            ComponentName component = intent.getComponent();
+            // null info means not installed, but if we have a component from the intent then
+            // we should still look in the cache for restored app icons.
+            if (component == null) {
+                shortcutInfo.setIcon(getDefaultIcon(user));
+                shortcutInfo.title = "";
+                shortcutInfo.usingFallbackIcon = true;
+            } else {
+                LauncherActivityInfoCompat launcherActInfo =
+                        mLauncherApps.resolveActivity(intent, user);
+                CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, usePkgIcon);
+
+                shortcutInfo.setIcon(entry.icon);
+                shortcutInfo.title = entry.title;
+                shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
+            }
+        }
+    }
+
 
     public Bitmap getDefaultIcon(UserHandleCompat user) {
         if (!mDefaultIcons.containsKey(user)) {
@@ -332,10 +357,11 @@ public class IconCache {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackage(
                                 componentName.getPackageName(), user);
-                        if (packageEntry != null && packageEntry.icon != null) {
+                        if (packageEntry != null) {
                             if (DEBUG) Log.d(TAG, "using package default icon for " +
                                     componentName.toShortString());
                             entry.icon = packageEntry.icon;
+                            entry.title = packageEntry.title;
                         }
                     }
                     if (entry.icon == null) {
@@ -350,6 +376,21 @@ public class IconCache {
     }
 
     /**
+     * Adds a default package entry in the cache. This entry is not persisted and will be removed
+     * when the cache is flushed.
+     */
+    public void cachePackageInstallInfo(String packageName, UserHandleCompat user,
+            Bitmap icon, CharSequence title) {
+        CacheEntry entry = getEntryForPackage(packageName, user);
+        if (!TextUtils.isEmpty(title)) {
+            entry.title = title;
+        }
+        if (icon != null) {
+            entry.icon = Utilities.createIconBitmap(icon, mContext);
+        }
+    }
+
+    /**
      * Gets an entry for the package, which can be used as a fallback entry for various components.
      */
     private CacheEntry getEntryForPackage(String packageName, UserHandleCompat user) {
@@ -358,6 +399,7 @@ public class IconCache {
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null) {
             entry = new CacheEntry();
+            entry.title = "";
             mCache.put(cacheKey, entry);
 
             try {
