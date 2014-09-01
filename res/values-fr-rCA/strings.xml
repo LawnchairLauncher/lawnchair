@@ -97,7 +97,7 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"DISPOSITION PAR DÉFAUT"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiser son espace personnel"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Maintenez votre doigt sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fonds d\'écran, widgets, et paramètres"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fonds d\'écran, widgets et paramètres"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Maintenez le doigt sur le fond d\'écran pour personnaliser"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"J\'ai compris"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Voici un dossier"</string>
