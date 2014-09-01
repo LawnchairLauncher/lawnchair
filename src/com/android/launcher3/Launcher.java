@@ -2064,14 +2064,25 @@ public class Launcher extends Activity
             sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
         }
 
-        startSearch(initialQuery, selectInitialQuery,
+        boolean clearTextImmediately = startSearch(initialQuery, selectInitialQuery,
                 appSearchData, sourceBounds);
+        if (clearTextImmediately) {
+            clearTypedText();
+        }
     }
 
-    public void startSearch(String initialQuery,
+    /**
+     * Start a text search.
+     *
+     * @return {@code true} if the search will start immediately, so any further keypresses
+     * will be handled directly by the search UI. {@code false} if {@link Launcher} should continue
+     * to buffer keypresses.
+     */
+    public boolean startSearch(String initialQuery,
             boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         startGlobalSearch(initialQuery, selectInitialQuery,
                 appSearchData, sourceBounds);
+        return false;
     }
 
     /**
