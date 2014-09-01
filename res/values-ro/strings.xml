@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"scrie setări și comenzi rapide pentru ecranul de pornire"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite aplicației să modifice setările și comenzile rapide din ecranul de pornire."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problemă la încărcarea widgetului"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Configurați"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aceasta este o aplicație de sistem și nu poate fi dezinstalată."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Dosar fără nume"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"REÎNCEPEȚI"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizați-vă spațiul"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Atingeți lung fundalul pentru a gestiona imaginea de fundal, widgeturile și setările."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Imagini de fundal, widgeturi și setări"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Atingeți lung fundalul pentru a-l personaliza"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"AM ÎNȚELES"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Iată un dosar"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Pentru a crea un dosar similar, atingeți și țineți degetul pe o aplicație, apoi mutați-o deasupra alteia."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

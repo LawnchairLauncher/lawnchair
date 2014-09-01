@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"მთავარი ეკრანის პარამეტრებისა და მალსახმობების ჩაწერა"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"აპისთვის მთავარი ეკრანის პარამეტრებისა და მალსახმობების შეცვლის უფლების მიცემა."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"პრობლემა ვიჯეტის ჩატვირთვისას"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"დაყენება"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ეს სისტემური აპია და მისი წაშლა შეუძლებელია."</string>
     <string name="dream_name" msgid="1530253749244328964">"ფეიერვერკი"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"უსახელო საქაღალდე"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"სტანდარტული განლაგება"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"თქვენი სივრცის ორგანიზება"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"თუ გსურთ ფონების, ვიჯეტების და პარამეტრების მართვა, შეეხეთ და არ აუშვათ ფონს."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ფონები, ვიჯეტები, &amp; პარამეტრები"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"მოსარგებად შეეხეთ &amp; დააყოვნეთ ფონზე"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"გასაგებია"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"აი, საქაღალდე"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"ასეთის შესაქმნელად, შეეხეთ და დააყოვნეთ აპზე, ხოლო შემდეგ გადააჩოჩეთ შემდეგზე."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"კარგი"</string>

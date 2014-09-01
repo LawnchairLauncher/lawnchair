@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"rakstīt sākuma ekrāna iestatījumus un saīsnes"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Ļauj lietotnei mainīt iestatījumus un saīsnes sākuma ekrānā."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Ielādējot logrīku, radās problēma."</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Notiek iestatīšana"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Šī ir sistēmas lietotne, un to nevar atinstalēt."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Mape bez nosaukuma"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"SĀKT NO SĀKUMA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Kārtojiet savu darbvietu"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Pieskarieties fonam un turiet to, lai pārvaldītu fona tapeti, logrīkus un iestatījumus."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fona tapetes, logrīki un iestatījumi"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Lai pielāgotu, pieskarieties fonam un turiet to nospiestu."</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"SAPRATU!"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Lūk, mape!"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Lai izveidotu tādu pašu, pieskarieties lietotnei un turiet to, pēc tam pārvietojiet to virs citas lietotnes."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Labi"</string>
