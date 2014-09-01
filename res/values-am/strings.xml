@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"የመነሻ ቅንብሮችን እና አቋራጮችን ይጽፋል"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"መተግብሪያው ቅንብሮችን እና አቋራጮችን በመነሻ ውስጥ እንዲቀይራቸው ያስችለዋል።"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ፍርግም የመጫን ችግር"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ማዋቀሪያ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ይህ የስርዓት መተግበሪያ ነው እና ማራገፍ አይቻልም።"</string>
     <string name="dream_name" msgid="1530253749244328964">"የሮኬት ማስጀመሪያ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ስም-አልባ አቃፊ"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"እንደ አዲስ ይጀምሩ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ቦታዎን ያደራጁ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"የግድግዳ ወረቀት፣ ምግብሮችን እና ቅንብሮችን ለማቀናበር ጀርባውን ይንኩ እና ይያዙት።"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"የግድግዳ ወረቀቶች፣ ንዑስ ፕሮግራሞች እና ቅንብሮች"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ለማበጀት ጀርባውን ነክተው ይያዙት"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ገባኝ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"አንድ አቃፊ እነሆ"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"አንድ እንደዚህ አይነት ለመፍጠር መተግበሪያውን ነክተው ይያዙት እና ወደ ሌላ ያንቀሳቅሱት።"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"እሺ"</string>

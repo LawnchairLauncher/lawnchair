@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"modifier les paramètres et les raccourcis de l\'écran d\'accueil"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permettre à l\'application de modifier les paramètres et les raccourcis de l\'écran d\'accueil"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problème lors du chargement du widget."</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuration"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Dossier sans nom"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"DISPOSITION PAR DÉFAUT"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organisez votre espace"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fonds d\'écran, widgets et paramètres"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Appuyez de manière prolongée sur l\'arrière-plan pour le personnaliser."</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Voici un dossier"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Pour en créer un, appuyez de manière prolongée sur une application, puis déplacez-la vers une autre."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

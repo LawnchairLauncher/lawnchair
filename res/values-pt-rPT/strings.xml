@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"escrever definições e atalhos do Ecrã principal"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite à aplicação alterar as definições e os atalhos no Ecrã Principal."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema ao carregar o widget"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"É uma aplicação de sistema e não pode ser desinstalada."</string>
     <string name="dream_name" msgid="1530253749244328964">"Lança-mísseis"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Pasta sem nome"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"COMEÇAR DO INÍCIO"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organizar o seu espaço"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Toque sem soltar no fundo para gerir a imagem de fundo, os widgets e as definições."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Imagens de fundo, widgets e definições"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Toque sem soltar no fundo para personalizar"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"COMPREENDI"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Eis uma pasta"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para criar uma pasta, toque sem soltar numa aplicação e arraste-a para cima de outra aplicação."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>

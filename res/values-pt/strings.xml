@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"gravar configurações e atalhos da tela inicial"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite que o aplicativo altere as configurações e os atalhos na tela inicial."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema ao carregar o widget"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Este é um aplicativo do sistema e não pode ser desinstalado."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Pasta sem nome"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"COMEÇAR DO ZERO"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organize seu espaço"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Toque e mantenha pressionada a tela de fundo para gerenciar o plano de fundo, os widgets e as configurações."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Plano de fundo, widgets e configurações"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Toque e mantenha pressionado o segundo plano para personalizar"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ENTENDI"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Aqui está uma pasta"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para criar uma pasta como esta, mantenha pressionado um aplicativo e mova-o para cima de outro."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Ok"</string>
