@@ -48,7 +48,7 @@ public abstract class LauncherAppsCompat {
 
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
-            // TODO change this to use api version once L gets an API number.
+            // STOPSHIP(kennyguy) change this to use api version once L gets an API number.
             if (sInstance == null) {
                 if ("L".equals(Build.VERSION.CODENAME)) {
                     sInstance = new LauncherAppsCompatVL(context);

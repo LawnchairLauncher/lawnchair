@@ -70,11 +70,11 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     public void startActivityForProfile(ComponentName component, UserHandleCompat user,
             Rect sourceBounds, Bundle opts) {
-        mLauncherApps.startActivityForProfile(component, user.getUser(), sourceBounds, opts);
+        mLauncherApps.startMainActivity(component, user.getUser(), sourceBounds, opts);
     }
 
     public void showAppDetailsForProfile(ComponentName component, UserHandleCompat user) {
-        mLauncherApps.showAppDetailsForProfile(component, user.getUser(), null, null);
+        mLauncherApps.startAppDetailsActivity(component, user.getUser(), null, null);
     }
 
     public void addOnAppsChangedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
@@ -82,7 +82,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         synchronized (mCallbacks) {
             mCallbacks.put(callback, wrappedCallback);
         }
-        mLauncherApps.addOnAppsChangedCallback(wrappedCallback);
+        mLauncherApps.addCallback(wrappedCallback);
     }
 
     public void removeOnAppsChangedCallback(
@@ -92,19 +92,19 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             wrappedCallback = mCallbacks.remove(callback);
         }
         if (wrappedCallback != null) {
-            mLauncherApps.removeOnAppsChangedCallback(wrappedCallback);
+            mLauncherApps.removeCallback(wrappedCallback);
         }
     }
 
     public boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user) {
-        return mLauncherApps.isPackageEnabledForProfile(packageName, user.getUser());
+        return mLauncherApps.isPackageEnabled(packageName, user.getUser());
     }
 
     public boolean isActivityEnabledForProfile(ComponentName component, UserHandleCompat user) {
-        return mLauncherApps.isActivityEnabledForProfile(component, user.getUser());
+        return mLauncherApps.isActivityEnabled(component, user.getUser());
     }
 
-    private static class WrappedCallback extends LauncherApps.OnAppsChangedCallback {
+    private static class WrappedCallback extends LauncherApps.Callback {
         private LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
 
         public WrappedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
