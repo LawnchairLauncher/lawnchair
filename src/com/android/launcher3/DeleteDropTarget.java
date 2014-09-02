@@ -30,6 +30,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.View;
@@ -193,11 +195,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
             isVisible = false;
         }
         if (useUninstallLabel) {
-            UserManager userManager = (UserManager)
-                getContext().getSystemService(Context.USER_SERVICE);
-            if (userManager.hasUserRestriction(UserManager.DISALLOW_APPS_CONTROL)
-                    || userManager.hasUserRestriction(UserManager.DISALLOW_UNINSTALL_APPS)) {
-                isVisible = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                UserManager userManager = (UserManager)
+                        getContext().getSystemService(Context.USER_SERVICE);
+                Bundle restrictions = userManager.getUserRestrictions();
+                if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
+                        || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
+                    isVisible = false;
+                }
             }
         }
 
