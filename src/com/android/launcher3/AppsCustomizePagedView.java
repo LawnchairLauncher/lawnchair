@@ -366,8 +366,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     // This code triggers requestLayout so must be posted outside of the
                     // layout pass.
                     public void run() {
-                        setDataIsReady();
-                        onDataReady(getMeasuredWidth(), getMeasuredHeight());
+                        if (isAttachedToWindow()) {
+                            setDataIsReady();
+                            onDataReady(getMeasuredWidth(), getMeasuredHeight());
+                        }
                     }
                 });
             }
