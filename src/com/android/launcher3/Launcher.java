@@ -622,7 +622,7 @@ public class Launcher extends Activity
                 CustomContentMode.DISABLED.getValue()));
     }
 
-    void initializeDynamicGrid() {
+    private void initializeDynamicGrid() {
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
@@ -2754,6 +2754,8 @@ public class Launcher extends Activity
                 if (mAppsCustomizeContent.getContentType() ==
                         AppsCustomizePagedView.ContentType.Applications) {
                     showWorkspace(true);
+                    // Background was set to gradient in onPause(), restore to black if in all apps.
+                    setWorkspaceBackground(mState == State.WORKSPACE);
                 } else {
                     showOverviewMode(true);
                 }

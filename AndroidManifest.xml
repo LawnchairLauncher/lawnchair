@@ -194,12 +194,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.android.launcher3.ThemeChangedReceiver" >
-            <intent-filter>
-                <action android:name="org.cyanogenmod.intent.action.THEME_CHANGED"/>
-            </intent-filter>
-        </receiver>
-
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"
