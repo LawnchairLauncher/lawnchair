@@ -1266,9 +1266,6 @@ public class Workspace extends SmoothPagedView
                 mLauncher.updateVoiceButtonProxyVisible(false);
             }
         }
-        if (getPageIndicator() != null) {
-            getPageIndicator().setContentDescription(getPageIndicatorDescription());
-        }
     }
 
     protected CustomContentCallbacks getCustomContentCallbacks() {
