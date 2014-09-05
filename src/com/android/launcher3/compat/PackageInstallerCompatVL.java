@@ -47,7 +47,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mResumed = false;
         mBound = false;
 
-        mInstaller.addSessionCallback(mCallback);
+        mInstaller.registerSessionCallback(mCallback);
         // On start, send updates for all active sessions
         for (SessionInfo info : mInstaller.getAllSessions()) {
             mPendingReplays.append(info.getSessionId(), info);
@@ -72,7 +72,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public void onStop() {
-        mInstaller.removeSessionCallback(mCallback);
+        mInstaller.unregisterSessionCallback(mCallback);
     }
 
     @Override
@@ -168,10 +168,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onOpened(int sessionId) { }
+        public void onActiveChanged(int sessionId, boolean active) { }
 
         @Override
-        public void onClosed(int sessionId) { }
-
+        public void onBadgingChanged(int sessionId) { }
     };
 }
