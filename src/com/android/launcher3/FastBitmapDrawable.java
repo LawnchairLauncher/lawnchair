@@ -113,12 +113,12 @@ class FastBitmapDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-        return getBounds().width();
+        return mBitmap.getWidth();
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return getBounds().height();
+        return mBitmap.getHeight();
     }
 
     @Override
