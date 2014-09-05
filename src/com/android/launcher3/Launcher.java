@@ -3373,6 +3373,9 @@ public class Launcher extends Activity
             final AnimatorSet stateAnimation = mStateAnimation;
             final Runnable startAnimRunnable = new Runnable() {
                 public void run() {
+                    if (!toView.isAttachedToWindow()) {
+                        return;
+                    }
                     // Check that mStateAnimation hasn't changed while
                     // we waited for a layout/draw pass
                     if (mStateAnimation != stateAnimation)
@@ -3618,6 +3621,9 @@ public class Launcher extends Activity
             final AnimatorSet stateAnimation = mStateAnimation;
             final Runnable startAnimRunnable = new Runnable() {
                 public void run() {
+                    if (!fromView.isAttachedToWindow()) {
+                        return;
+                    }
                     // Check that mStateAnimation hasn't changed while
                     // we waited for a layout/draw pass
                     if (mStateAnimation != stateAnimation)
