@@ -54,12 +54,14 @@ import android.util.Pair;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
+import java.security.InvalidParameterException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -359,7 +361,7 @@ public class LauncherModel extends BroadcastReceiver
         Iterator<AppInfo> iter = allAppsApps.iterator();
         while (iter.hasNext()) {
             ItemInfo a = iter.next();
-            if (LauncherModel.appWasRestored(ctx, a.getIntent(), a.user)) {
+            if (LauncherModel.appWasPromise(ctx, a.getIntent(), a.user)) {
                 restoredAppsFinal.add((AppInfo) a);
             }
         }
@@ -428,7 +430,7 @@ public class LauncherModel extends BroadcastReceiver
                         if (LauncherModel.shortcutExists(context, name, launchIntent)) {
                             // Only InstallShortcutReceiver sends us shortcutInfos, ignore them
                             if (a instanceof AppInfo &&
-                                    LauncherModel.appWasRestored(context, launchIntent, a.user)) {
+                                    LauncherModel.appWasPromise(context, launchIntent, a.user)) {
                                 restoredAppsFinal.add((AppInfo) a);
                             }
                             continue;
@@ -884,33 +886,14 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Returns true if the shortcuts already exists in the database.
-     * we identify a shortcut by the component name of the intent
-     * and the user.
+     * Returns true if the promise shortcuts with the same package name exists on the workspace.
      */
-    static boolean appWasRestored(Context context, Intent intent, UserHandleCompat user) {
-        final ContentResolver cr = context.getContentResolver();
+    static boolean appWasPromise(Context context, Intent intent, UserHandleCompat user) {
         final ComponentName component = intent.getComponent();
         if (component == null) {
             return false;
         }
-        String componentName = component.flattenToString();
-        String shortName = component.flattenToShortString();
-        long serialNumber = UserManagerCompat.getInstance(context)
-                .getSerialNumberForUser(user);
-        final String where = "(intent glob \"*component=" + componentName + "*\" or " +
-                "intent glob \"*component=" + shortName + "*\")" +
-                "and restored = 1 and profileId = " + serialNumber;
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[]{"intent", "restored", "profileId"}, where, null, null);
-        boolean result = false;
-        try {
-            result = c.moveToFirst();
-        } finally {
-            c.close();
-        }
-        Log.d(TAG, "shortcutWasRestored is " + result + " for " + componentName);
-        return result;
+        return !getItemsByPackageName(component.getPackageName(), user).isEmpty();
     }
 
     /**
@@ -1077,19 +1060,23 @@ public class LauncherModel extends BroadcastReceiver
                 | ((int) screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
-    /**
-     * Removes all the items from the database corresponding to the specified package.
-     */
-    static void deletePackageFromDatabase(Context context, final String pn,
-            final UserHandleCompat user) {
+    private static ArrayList<ItemInfo> getItemsByPackageName(
+            final String pn, final UserHandleCompat user) {
         ItemInfoFilter filter  = new ItemInfoFilter() {
             @Override
             public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
                 return cn.getPackageName().equals(pn) && info.user.equals(user);
             }
         };
-        ArrayList<ItemInfo> infos = filterItemInfos(sBgItemsIdMap.values(), filter);
-        deleteItemsFromDatabase(context, infos);
+        return filterItemInfos(sBgItemsIdMap.values(), filter);
+    }
+
+    /**
+     * Removes all the items from the database corresponding to the specified package.
+     */
+    static void deletePackageFromDatabase(Context context, final String pn,
+            final UserHandleCompat user) {
+        deleteItemsFromDatabase(context, getItemsByPackageName(pn, user));
     }
 
     /**
@@ -1898,6 +1885,7 @@ public class LauncherModel extends BroadcastReceiver
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
+                PackageInstallerCompat.getInstance(mContext).updateActiveSessionCache();
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final ArrayList<Long> restoredRows = new ArrayList<Long>();
@@ -1971,6 +1959,7 @@ public class LauncherModel extends BroadcastReceiver
                                 intentDescription = c.getString(intentIndex);
                                 long serialNumber = c.getInt(profileIdIndex);
                                 user = mUserManager.getUserForSerialNumber(serialNumber);
+                                int promiseType = c.getInt(restoredIndex);
                                 if (user == null) {
                                     // User has been deleted remove the item.
                                     itemsToRemove.add(id);
@@ -1992,12 +1981,34 @@ public class LauncherModel extends BroadcastReceiver
                                                 restored = false;
                                             }
                                         } else if (validPkg) {
-                                            // The app is installed but the component is no
-                                            // longer available.
-                                            Launcher.addDumpLog(TAG,
-                                                    "Invalid component removed: " + cn, true);
-                                            itemsToRemove.add(id);
-                                            continue;
+                                            intent = null;
+                                            if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+                                                // We allow auto install apps to have their intent
+                                                // updated after an install.
+                                                intent = manager.getLaunchIntentForPackage(
+                                                        cn.getPackageName());
+                                                if (intent != null) {
+                                                    ContentValues values = new ContentValues();
+                                                    values.put(LauncherSettings.Favorites.INTENT,
+                                                            intent.toUri(0));
+                                                    String where = BaseColumns._ID + "= ?";
+                                                    String[] args = {Long.toString(id)};
+                                                    contentResolver.update(contentUri, values, where, args);
+                                                }
+                                            }
+
+                                            if (intent == null) {
+                                                // The app is installed but the component is no
+                                                // longer available.
+                                                Launcher.addDumpLog(TAG,
+                                                        "Invalid component removed: " + cn, true);
+                                                itemsToRemove.add(id);
+                                                continue;
+                                            } else {
+                                                // no special handling necessary for this item
+                                                restoredRows.add(id);
+                                                restored = false;
+                                            }
                                         } else if (restored) {
                                             // Package is not yet available but might be
                                             // installed later.
@@ -2036,7 +2047,7 @@ public class LauncherModel extends BroadcastReceiver
                                         Launcher.addDumpLog(TAG,
                                                 "constructing info for partially restored package",
                                                 true);
-                                        info = getRestoredItemInfo(c, titleIndex, intent);
+                                        info = getRestoredItemInfo(c, titleIndex, intent, promiseType);
                                         intent = getRestoredItemIntent(c, context, intent);
                                     } else {
                                         // Don't restore items for other profiles.
@@ -2299,7 +2310,7 @@ public class LauncherModel extends BroadcastReceiver
                         selectionBuilder.append(")");
                         ContentValues values = new ContentValues();
                         values.put(LauncherSettings.Favorites.RESTORED, 0);
-                        updater.update(LauncherSettings.Favorites.CONTENT_URI,
+                        updater.update(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
                                 values, selectionBuilder.toString(), null);
                     } catch (RemoteException e) {
                         Log.w(TAG, "Could not update restored rows");
@@ -2879,7 +2890,7 @@ public class LauncherModel extends BroadcastReceiver
                                 packagesRemoved.toArray(new String[packagesRemoved.size()]), user));
                     }
                 }
-            sPendingPackages.clear();
+                sPendingPackages.clear();
             }
         }
     }
@@ -3101,21 +3112,31 @@ public class LauncherModel extends BroadcastReceiver
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent) {
+    public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent,
+            int promiseType) {
         final ShortcutInfo info = new ShortcutInfo();
-        if (cursor != null) {
-            info.title =  cursor.getString(titleIndex);
-        } else {
-            info.title = "";
-        }
         info.user = UserHandleCompat.myUserHandle();
+        mIconCache.getTitleAndIcon(info, intent, info.user, true);
+
+        if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
+            String title = (cursor != null) ? cursor.getString(titleIndex) : null;
+            if (!TextUtils.isEmpty(title)) {
+                info.title = title;
+            }
+            info.status = ShortcutInfo.FLAG_RESTORED_ICON;
+        } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+            if (TextUtils.isEmpty(info.title)) {
+                info.title = (cursor != null) ? cursor.getString(titleIndex) : "";
+            }
+            info.status = ShortcutInfo.FLAG_AUTOINTALL_ICON;
+        } else {
+            throw new InvalidParameterException("Invalid restoreType " + promiseType);
+        }
+
         info.contentDescription = mUserManager.getBadgedLabelForUser(
                 info.title.toString(), info.user);
-        info.setIcon(mIconCache.getIcon(intent, info.title.toString(), info.user, false));
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-        info.restoredIntent = intent;
-        info.wasPromise = true;
-        info.setState(ShortcutInfo.PACKAGE_STATE_UNKNOWN);
+        info.promisedIntent = intent;
         return info;
     }
 
@@ -3230,20 +3251,14 @@ public class LauncherModel extends BroadcastReceiver
         for (ItemInfo i : infos) {
             if (i instanceof ShortcutInfo) {
                 ShortcutInfo info = (ShortcutInfo) i;
-                ComponentName cn = info.intent.getComponent();
-                if (info.restoredIntent != null) {
-                    cn = info.restoredIntent.getComponent();
-                }
+                ComponentName cn = info.getTargetComponent();
                 if (cn != null && f.filterItem(null, info, cn)) {
                     filtered.add(info);
                 }
             } else if (i instanceof FolderInfo) {
                 FolderInfo info = (FolderInfo) i;
                 for (ShortcutInfo s : info.contents) {
-                    ComponentName cn = s.intent.getComponent();
-                    if (s.restoredIntent != null) {
-                        cn = s.restoredIntent.getComponent();
-                    }
+                    ComponentName cn = s.getTargetComponent();
                     if (cn != null && f.filterItem(info, s, cn)) {
                         filtered.add(s);
                     }
@@ -3287,7 +3302,7 @@ public class LauncherModel extends BroadcastReceiver
                 return true;
             }
             // placeholder shortcuts get special treatment, let them through too.
-            if (info.getRestoredIntent() != null) {
+            if (info.isPromise()) {
                 return true;
             }
         }

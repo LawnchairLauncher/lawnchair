@@ -22,6 +22,10 @@ import com.android.launcher3.Utilities;
 
 public abstract class PackageInstallerCompat {
 
+    public static final int STATUS_INSTALLED = 0;
+    public static final int STATUS_INSTALLING = 1;
+    public static final int STATUS_FAILED = 2;
+
     private static final Object sInstanceLock = new Object();
     private static PackageInstallerCompat sInstance;
 
@@ -37,6 +41,8 @@ public abstract class PackageInstallerCompat {
             return sInstance;
         }
     }
+
+    public abstract void updateActiveSessionCache();
 
     public abstract void onPause();
 
