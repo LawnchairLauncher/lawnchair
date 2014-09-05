@@ -2035,6 +2035,10 @@ public class LauncherModel extends BroadcastReceiver
                                             allowMissingTarget = true;
                                             // Add the icon on the workspace anyway.
                                         }
+                                    } else if (cn == null) {
+                                        // For shortcuts with no component, keep them as they are
+                                        restoredRows.add(id);
+                                        restored = false;
                                     }
                                 } catch (URISyntaxException e) {
                                     Launcher.addDumpLog(TAG,
