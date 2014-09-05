@@ -925,7 +925,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         Partner partner = Partner.get(pm);
         if (partner != null) {
             final Resources partnerRes = partner.getResources();
-            final int resId = partnerRes.getIdentifier(Partner.RESOURCE_WALLPAPERS, "array",
+            final int resId = partnerRes.getIdentifier(Partner.RES_WALLPAPERS, "array",
                     partner.getPackageName());
             if (resId != 0) {
                 addWallpapers(bundled, partnerRes, partner.getPackageName(), resId);
