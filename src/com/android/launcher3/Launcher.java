@@ -2600,9 +2600,11 @@ public class Launcher extends Activity
         }
 
         // Check for abandoned promise
-        if (shortcut.isAbandoned() && v instanceof BubbleTextView) {
+        if ((v instanceof BubbleTextView)
+                && shortcut.isPromise()
+                && !shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)) {
             showBrokenAppInstallDialog(
-                    shortcut.getRestoredIntent().getComponent().getPackageName(),
+                    shortcut.getTargetComponent().getPackageName(),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startAppShortcutOrInfoActivity(v);

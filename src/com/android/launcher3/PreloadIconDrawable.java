@@ -189,11 +189,10 @@ class PreloadIconDrawable extends Drawable {
 
     /**
      * Runs the finish animation if it is has not been run after last level change.
-     * @return true if the animation was run.
      */
-    public boolean maybePerformFinishedAnimation() {
+    public void maybePerformFinishedAnimation() {
         if (mAnimationProgress > ANIMATION_PROGRESS_STOPPED) {
-            return false;
+            return;
         }
         if (mAnimator != null) {
             mAnimator.cancel();
@@ -202,7 +201,6 @@ class PreloadIconDrawable extends Drawable {
         mAnimator = ObjectAnimator.ofFloat(this, "animationProgress",
                 ANIMATION_PROGRESS_STARTED, ANIMATION_PROGRESS_COMPLETED);
         mAnimator.start();
-        return true;
     }
 
     public void setAnimationProgress(float progress) {
