@@ -594,8 +594,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
-        if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.setActiveMarker(getNextPage());
+        if (mPageIndicator != null) {
+            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            if (!isReordering(false)) {
+                mPageIndicator.setActiveMarker(getNextPage());
+            }
         }
     }
     protected void pageBeginMoving() {
