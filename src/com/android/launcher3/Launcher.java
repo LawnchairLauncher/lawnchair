@@ -3230,7 +3230,10 @@ public class Launcher extends Activity
             mAppsCustomizeTabHost.setContentTypeImmediate(contentType);
         }
 
-        if (animated) {
+        // If for some reason our views aren't initialized, don't animate
+        boolean initialized = getAllAppsButton() != null;
+
+        if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             final AppsCustomizePagedView content = (AppsCustomizePagedView)
                     toView.findViewById(R.id.apps_customize_pane_content);
@@ -3457,7 +3460,10 @@ public class Launcher extends Activity
                     toState, animated, layerViews);
         }
 
-        if (animated) {
+        // If for some reason our views aren't initialized, don't animate
+        boolean initialized = getAllAppsButton() != null;
+
+        if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
             if (workspaceAnim != null) {
                 mStateAnimation.play(workspaceAnim);
