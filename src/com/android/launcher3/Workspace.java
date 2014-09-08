@@ -31,7 +31,10 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -65,6 +68,7 @@ import android.widget.TextView;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 
@@ -72,6 +76,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -4746,26 +4751,6 @@ public class Workspace extends SmoothPagedView
         stripEmptyScreens();
     }
 
-    private void updateShortcut(HashMap<ComponentName, AppInfo> appsMap, ItemInfo info,
-                                View child) {
-        ComponentName cn = info.getIntent().getComponent();
-        if (info.getRestoredIntent() != null) {
-            cn = info.getRestoredIntent().getComponent();
-        }
-        if (cn != null) {
-            AppInfo appInfo = appsMap.get(cn);
-            if ((appInfo != null) && LauncherModel.isShortcutInfoUpdateable(info)) {
-                ShortcutInfo shortcutInfo = (ShortcutInfo) info;
-                BubbleTextView shortcut = (BubbleTextView) child;
-                shortcutInfo.restore();
-                shortcutInfo.updateIcon(mIconCache);
-                shortcutInfo.title = appInfo.title.toString();
-                shortcutInfo.contentDescription = appInfo.contentDescription;
-                shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, true);
-            }
-        }
-    }
-
     interface ItemOperator {
         /**
          * Process the next itemInfo, possibly with side-effect on {@link ItemOperator#value}.
@@ -4824,13 +4809,83 @@ public class Workspace extends SmoothPagedView
             pkgNames.add(ai.componentName.getPackageName());
         }
 
+        final HashMap<UserHandleCompat, HashSet<ComponentName>> iconsToRemove =
+                new HashMap<UserHandleCompat, HashSet<ComponentName>>();
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (info instanceof ShortcutInfo) {
-                    updateShortcut(appsMap, info, v);
-                    if (parent != null) {
-                        parent.invalidate();
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                    ShortcutInfo shortcutInfo = (ShortcutInfo) info;
+                    ComponentName cn = shortcutInfo.getTargetComponent();
+                    AppInfo appInfo = appsMap.get(cn);
+                    if (cn != null && LauncherModel.isShortcutInfoUpdateable(info)
+                            && pkgNames.contains(cn.getPackageName())) {
+                        boolean promiseStateChanged = false;
+                        boolean infoUpdated = false;
+                        if (shortcutInfo.isPromise()) {
+                            if (shortcutInfo.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                // Auto install icon
+                                PackageManager pm = getContext().getPackageManager();
+                                ResolveInfo matched = pm.resolveActivity(
+                                        new Intent(Intent.ACTION_MAIN)
+                                        .setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER),
+                                        PackageManager.MATCH_DEFAULT_ONLY);
+                                if (matched == null) {
+                                    // Try to find the best match activity.
+                                    Intent intent = pm.getLaunchIntentForPackage(
+                                            cn.getPackageName());
+                                    if (intent != null) {
+                                        cn = intent.getComponent();
+                                        appInfo = appsMap.get(cn);
+                                    }
+
+                                    if ((intent == null) || (appsMap == null)) {
+                                        // Could not find a default activity. Remove this item.
+                                        HashSet<ComponentName> cnSet = iconsToRemove
+                                                .get(shortcutInfo.user);
+                                        if (cnSet == null) {
+                                            cnSet = new HashSet<>();
+                                            iconsToRemove.put(shortcutInfo.user, cnSet);
+                                        }
+                                        cnSet.add(shortcutInfo.getTargetComponent());
+
+                                        // process next shortcut.
+                                        return false;
+                                    }
+                                    shortcutInfo.promisedIntent = intent;
+                                }
+                            }
+
+                            // Restore the shortcut.
+                            shortcutInfo.intent = shortcutInfo.promisedIntent;
+                            shortcutInfo.promisedIntent = null;
+                            shortcutInfo.status &= ~ShortcutInfo.FLAG_RESTORED_ICON
+                                    & ~ShortcutInfo.FLAG_AUTOINTALL_ICON
+                                    & ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+
+                            promiseStateChanged = true;
+                            infoUpdated = true;
+                            shortcutInfo.updateIcon(mIconCache);
+                            LauncherModel.updateItemInDatabase(getContext(), shortcutInfo);
+                        }
+
+
+                        if (appInfo != null) {
+                            shortcutInfo.updateIcon(mIconCache);
+                            shortcutInfo.title = appInfo.title.toString();
+                            shortcutInfo.contentDescription = appInfo.contentDescription;
+                            infoUpdated = true;
+                        }
+
+                        if (infoUpdated) {
+                            BubbleTextView shortcut = (BubbleTextView) v;
+                            shortcut.applyFromShortcutInfo(shortcutInfo,
+                                    mIconCache, true, promiseStateChanged);
+
+                            if (parent != null) {
+                                parent.invalidate();
+                            }
+                        }
                     }
                 }
                 // process all the shortcuts
@@ -4838,6 +4893,12 @@ public class Workspace extends SmoothPagedView
             }
         });
 
+        if (!iconsToRemove.isEmpty()) {
+            for (Map.Entry<UserHandleCompat, HashSet<ComponentName>> entry :
+                iconsToRemove.entrySet()) {
+                removeItemsByComponentName(entry.getValue(), entry.getKey());
+            }
+        }
         restorePendingWidgets(pkgNames);
     }
 
@@ -4855,12 +4916,18 @@ public class Workspace extends SmoothPagedView
             mapOverItems(MAP_RECURSE, new ItemOperator() {
                 @Override
                 public boolean evaluate(ItemInfo info, View v, View parent) {
-                    if (info instanceof ShortcutInfo
-                            && ((ShortcutInfo) info).isPromiseFor(installInfo.packageName)
-                            && v instanceof BubbleTextView) {
-                        ((ShortcutInfo) info).setProgress(installInfo.progress);
-                        ((ShortcutInfo) info).setState(installInfo.state);
-                        ((BubbleTextView)v).applyState();
+                    if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                        ShortcutInfo si = (ShortcutInfo) info;
+                        ComponentName cn = si.getTargetComponent();
+                        if (si.isPromise() && (cn != null)
+                                && installInfo.packageName.equals(cn.getPackageName())) {
+                            si.setInstallProgress(installInfo.progress);
+                            if (installInfo.state == PackageInstallerCompat.STATUS_FAILED) {
+                                // Mark this info as broken.
+                                si.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                            }
+                            ((BubbleTextView)v).applyState(false);
+                        }
                     } else if (v instanceof PendingAppWidgetHostView
                             && info instanceof LauncherAppWidgetInfo
                             && ((LauncherAppWidgetInfo) info).providerName.getPackageName()
@@ -4874,7 +4941,7 @@ public class Workspace extends SmoothPagedView
                 }
             });
 
-            if (installInfo.state == ShortcutInfo.PACKAGE_STATE_DEFAULT) {
+            if (installInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
                 completedPackages.add(installInfo.packageName);
             }
         }

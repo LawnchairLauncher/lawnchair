@@ -26,7 +26,6 @@ import android.graphics.Canvas;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -49,10 +48,6 @@ public class BubbleTextView extends TextView {
     private static final int SHADOW_LARGE_COLOUR = 0xDD000000;
     private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
     static final float PADDING_V = 3.0f;
-
-    private static final String TAG = "BubbleTextView";
-
-    private static final boolean DEBUG = false;
 
     private HolographicOutlineHelper mOutlineHelper;
     private Bitmap mPressedBackground;
@@ -118,6 +113,11 @@ public class BubbleTextView extends TextView {
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
             boolean setDefaultPadding) {
+        applyFromShortcutInfo(info, iconCache, setDefaultPadding, false);
+    }
+
+    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
+            boolean setDefaultPadding, boolean promiseStateChanged) {
         Bitmap b = info.getIcon(iconCache);
         LauncherAppState app = LauncherAppState.getInstance();
 
@@ -135,8 +135,8 @@ public class BubbleTextView extends TextView {
         setText(info.title);
         setTag(info);
 
-        if (info.wasPromise) {
-            applyState();
+        if (promiseStateChanged || info.isPromise()) {
+            applyState(promiseStateChanged);
         }
     }
 
@@ -377,31 +377,13 @@ public class BubbleTextView extends TextView {
         mLongPressHelper.cancelLongPress();
     }
 
-    public void applyState() {
+    public void applyState(boolean promiseStateChanged) {
         if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
-            final int state = info.getState();
-
-            final int progressLevel;
-            if (DEBUG) Log.d(TAG, "applying icon state: " + state);
-
-            switch(state) {
-                case ShortcutInfo.PACKAGE_STATE_DEFAULT:
-                    progressLevel = 100;
-                    break;
-
-                case ShortcutInfo.PACKAGE_STATE_INSTALLING:
-                    setText(R.string.package_state_installing);
-                    progressLevel = info.getProgress();
-                    break;
-
-                case ShortcutInfo.PACKAGE_STATE_ERROR:
-                case ShortcutInfo.PACKAGE_STATE_UNKNOWN:
-                default:
-                    progressLevel = 0;
-                    setText(R.string.package_state_unknown);
-                    break;
-            }
+            final boolean isPromise = info.isPromise();
+            final int progressLevel = isPromise ?
+                    ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
+                            info.getInstallProgress() : 0)) : 100;
 
             Drawable[] drawables = getCompoundDrawables();
             Drawable top = drawables[1];
@@ -415,12 +397,9 @@ public class BubbleTextView extends TextView {
                 }
 
                 preloadDrawable.setLevel(progressLevel);
-                if ((state == ShortcutInfo.PACKAGE_STATE_DEFAULT) && info.wasPromise) {
-                    // Clear the promise flag as it is no longer different than a normal shortcut,
-                    // once the animation has been run.
-                    info.wasPromise = !preloadDrawable.maybePerformFinishedAnimation();
+                if (promiseStateChanged) {
+                    preloadDrawable.maybePerformFinishedAnimation();
                 }
-
             }
         }
     }

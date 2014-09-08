@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -32,17 +33,26 @@ import java.util.Arrays;
  */
 public class ShortcutInfo extends ItemInfo {
 
-    /** {@link #mState} meaning this package is not installed, and there is no other information. */
-    public static final int PACKAGE_STATE_UNKNOWN = -2;
+    public static final int DEFAULT = 0;
 
-    /** {@link #mState} meaning this package is not installed, because installation failed. */
-    public static final int PACKAGE_STATE_ERROR = -1;
+    /**
+     * The shortcut was restored from a backup and it not ready to be used. This is automatically
+     * set during backup/restore
+     */
+    public static final int FLAG_RESTORED_ICON = 1;
 
-    /** {@link #mState} meaning this package is installed.  This is the typical case. */
-    public static final int PACKAGE_STATE_DEFAULT = 0;
+    /**
+     * The icon was added as an auto-install app, and is not ready to be used. This flag can't
+     * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
+     * parsing.
+     */
+    public static final int FLAG_AUTOINTALL_ICON = 2;
 
-    /** {@link #mState} meaning some external entity has promised to install this package. */
-    public static final int PACKAGE_STATE_INSTALLING = 1;
+    /**
+     * The icon is being installed. If {@link FLAG_RESTORED_ICON} or {@link FLAG_AUTOINTALL_ICON}
+     * is set, then the icon is either being installed or is in a broken state.
+     */
+    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4;
 
     /**
      * The intent used to start the application.
@@ -78,29 +88,29 @@ public class ShortcutInfo extends ItemInfo {
      */
     boolean isDisabled = false;
 
-    /**
-     * The installation state of the package that this shortcut represents.
-     */
-    protected int mState;
+    int status;
 
     /**
      * The installation progress [0-100] of the package that this shortcut represents.
      */
-    protected int mProgress;
+    private int mInstallProgress;
 
+    /**
+     * Refer {@link AppInfo#firstInstallTime}.
+     */
     long firstInstallTime;
+
+    /**
+     * TODO move this to {@link status}
+     */
     int flags = 0;
 
     /**
      * If this shortcut is a placeholder, then intent will be a market intent for the package, and
      * this will hold the original intent from the database.  Otherwise, null.
+     * Refer {@link #FLAG_RESTORE_PENDING}, {@link #FLAG_INSTALL_PENDING}
      */
-    Intent restoredIntent;
-
-    /**
-     * This is set once to indicate that it was a promise info at some point of its life.
-     */
-    boolean wasPromise = false;
+    Intent promisedIntent;
 
     ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -108,21 +118,6 @@ public class ShortcutInfo extends ItemInfo {
 
     public Intent getIntent() {
         return intent;
-    }
-
-    protected Intent getRestoredIntent() {
-        return restoredIntent;
-    }
-
-    /**
-     * Overwrite placeholder data with restored data, or do nothing if this is not a placeholder.
-     */
-    public void restore() {
-        if (restoredIntent != null) {
-            intent = restoredIntent;
-            restoredIntent = null;
-            mState = PACKAGE_STATE_DEFAULT;
-        }
     }
 
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
@@ -149,6 +144,7 @@ public class ShortcutInfo extends ItemInfo {
         flags = info.flags;
         firstInstallTime = info.firstInstallTime;
         user = info.user;
+        status = info.status;
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
@@ -184,7 +180,7 @@ public class ShortcutInfo extends ItemInfo {
         String titleStr = title != null ? title.toString() : null;
         values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
 
-        String uri = restoredIntent != null ? restoredIntent.toUri(0)
+        String uri = promisedIntent != null ? promisedIntent.toUri(0)
                 : (intent != null ? intent.toUri(0) : null);
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
 
@@ -224,36 +220,26 @@ public class ShortcutInfo extends ItemInfo {
         }
     }
 
-    public boolean isPromise() {
-        return restoredIntent != null;
+    public ComponentName getTargetComponent() {
+        return promisedIntent != null ? promisedIntent.getComponent() : intent.getComponent();
     }
 
-    public boolean isPromiseFor(String pkgName) {
-        return restoredIntent != null
-                && pkgName != null
-                && pkgName.equals(restoredIntent.getComponent().getPackageName());
+    public boolean hasStatusFlag(int flag) {
+        return (status & flag) != 0;
     }
 
-    public boolean isAbandoned() {
-        return isPromise()
-                && (mState == PACKAGE_STATE_ERROR
-                        || mState == PACKAGE_STATE_UNKNOWN);
+
+    public final boolean isPromise() {
+        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINTALL_ICON);
     }
 
-    public int getProgress() {
-        return mProgress;
+    public int getInstallProgress() {
+        return mInstallProgress;
     }
 
-    public void setProgress(int progress) {
-        mProgress = progress;
-    }
-
-    public void setState(int state) {
-        mState = state;
-    }
-
-    public int getState() {
-        return mState;
+    public void setInstallProgress(int progress) {
+        mInstallProgress = progress;
+        status |= FLAG_INSTALL_SESSION_ACTIVE;
     }
 }
 
