@@ -62,7 +62,7 @@ public class IconCache {
     // Empty class name is used for storing package default entry.
     private static final String EMPTY_CLASS_NAME = ".";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static class CacheEntry {
         public Bitmap icon;
@@ -511,7 +511,7 @@ public class IconCache {
                 Log.w(TAG, "failed to decode pre-load icon for " + key);
             }
         } catch (FileNotFoundException e) {
-            if (DEBUG) Log.d(TAG, "there is no restored icon for: " + key, e);
+            if (DEBUG) Log.d(TAG, "there is no restored icon for: " + key);
         } catch (IOException e) {
             Log.w(TAG, "failed to read pre-load icon for: " + key, e);
         } finally {
