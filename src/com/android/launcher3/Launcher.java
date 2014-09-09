@@ -499,18 +499,7 @@ public class Launcher extends Activity
             showIntroScreen();
         } else {
             showFirstRunActivity();
-        }
-
-        // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
-        // on the device, then we always show the first run cling experience (or if there is no
-        // launcher2). Otherwise, we prompt the user upon started for migration
-        LauncherClings launcherClings = new LauncherClings(this);
-        if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
-            if (mModel.canMigrateFromOldLauncherDb(this)) {
-                launcherClings.showMigrationCling();
-            } else {
-                launcherClings.showLongPressCling(false);
-            }
+            showFirstRunClings();
         }
     }
 
@@ -4942,10 +4931,12 @@ public class Launcher extends Activity
                 @Override
                 public void run() {
                     mDragLayer.dismissOverlayView();
+                    showFirstRunClings();
                 }
             }, ACTIVITY_START_DELAY);
         } else {
             mDragLayer.dismissOverlayView();
+            showFirstRunClings();
         }
         changeWallpaperVisiblity(true);
     }
@@ -4954,6 +4945,20 @@ public class Launcher extends Activity
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(INTRO_SCREEN_DISMISSED, true);
         editor.apply();
+    }
+
+    private void showFirstRunClings() {
+        // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
+        // on the device, then we always show the first run cling experience (or if there is no
+        // launcher2). Otherwise, we prompt the user upon started for migration
+        LauncherClings launcherClings = new LauncherClings(this);
+        if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
+            if (mModel.canMigrateFromOldLauncherDb(this)) {
+                launcherClings.showMigrationCling();
+            } else {
+                launcherClings.showLongPressCling(false);
+            }
+        }
     }
 
     void showWorkspaceSearchAndHotseat() {
