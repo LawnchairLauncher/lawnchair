@@ -20,10 +20,16 @@
   <string name="setting_state_off">關閉</string>
   <string name="themes_button_text">主題</string>
   <string name="scrolling_fade_adjacent">邊頁淡出</string>
+  <string name="scrolling_wallpaper">滾動桌面</string>
   <string name="hidden_apps_title">隱藏的應用程式</string>
+  <string name="scroll_effect_text">滾動效果</string>
+  <string name="drawer_sorting_text">排序模式</string>
   <string name="sort_mode_title">標題</string>
   <string name="sort_mode_launch_count">啟動次數</string>
   <string name="sort_mode_install_time">安裝時間</string>
   <string name="home_screen_search_text">搜尋列</string>
   <string name="larger_icons_text">大圖示</string>
+  <string name="icon_labels">程式名稱</string>
+  <string name="icon_labels_show">顯示</string>
+  <string name="icon_labels_hide">隱藏</string>
 </resources>
