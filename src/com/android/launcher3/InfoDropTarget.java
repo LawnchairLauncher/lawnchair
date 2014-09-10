@@ -90,7 +90,7 @@ public class InfoDropTarget extends ButtonDropTarget {
 
         // There is no post-drop animation, so clean up the DragView now
         d.deferDragViewCleanupPostAnimation = false;
-        return false;
+        return true;
     }
 
     @Override
