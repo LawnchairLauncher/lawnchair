@@ -312,7 +312,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
                             mLauncher.onClickTransitionEffectButton(v, true);
                             break;
                         case 1:
-                            onClickTransitionEffectButton();
+                            onClickSortButton();
                             break;
                         case 2:
                             onIconLabelsBooleanChanged(v,
@@ -380,7 +380,7 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
         ((TextView) v.findViewById(R.id.item_state)).setText(state);
     }
 
-    private void onClickTransitionEffectButton() {
+    private void onClickSortButton() {
         int sort = SettingsProvider.getIntCustomDefault(mLauncher,
                 SettingsProvider.SETTINGS_UI_DRAWER_SORT_MODE, 0);
 

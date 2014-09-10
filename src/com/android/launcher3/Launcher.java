@@ -1450,7 +1450,7 @@ public class Launcher extends Activity
         anim.addListener(mAnimatorListener);
     }
 
-    public void onClickTransitionEffectOverflowMenuButton(View v) {
+    public void onClickTransitionEffectOverflowMenuButton(View v, final boolean drawer) {
         final PopupMenu popupMenu = new PopupMenu(this, v);
 
         final Menu menu = popupMenu.getMenu();
@@ -1458,22 +1458,22 @@ public class Launcher extends Activity
         MenuItem pageOutlines = menu.findItem(R.id.scrolling_page_outlines);
         MenuItem fadeAdjacent = menu.findItem(R.id.scrolling_fade_adjacent);
 
-        pageOutlines.setVisible(!isAllAppsVisible());
+        pageOutlines.setVisible(!drawer);
         pageOutlines.setChecked(SettingsProvider.getBoolean(this,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES,
                 R.bool.preferences_interface_homescreen_scrolling_page_outlines_default
         ));
 
         fadeAdjacent.setChecked(SettingsProvider.getBoolean(this,
-                !isAllAppsVisible() ?
+                !drawer ?
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT :
                         SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT,
-                !isAllAppsVisible() ?
+                !drawer ?
                         R.bool.preferences_interface_homescreen_scrolling_fade_adjacent_default :
                         R.bool.preferences_interface_drawer_scrolling_fade_adjacent_default
         ));
 
-        final PagedView pagedView = !isAllAppsVisible() ? mWorkspace : mAppsCustomizeContent;
+        final PagedView pagedView = !drawer ? mWorkspace : mAppsCustomizeContent;
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -1486,7 +1486,7 @@ public class Launcher extends Activity
                         break;
                     case R.id.scrolling_fade_adjacent:
                         SettingsProvider.get(Launcher.this).edit()
-                                .putBoolean(!isAllAppsVisible() ?
+                                .putBoolean(!drawer ?
                                         SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT :
                                         SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT, !item.isChecked()).commit();
                         pagedView.setFadeInAdjacentScreens(!item.isChecked());

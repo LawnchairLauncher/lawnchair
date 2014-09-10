@@ -7,32 +7,54 @@
     android:paddingTop="@dimen/overview_panel_bottom_padding"
     android:clickable="true" >
 
-    <LinearLayout
-        android:id="@+id/transition_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/listitem_bg"
-        android:clickable="true" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <ImageView
+        <LinearLayout
+            android:id="@+id/transition_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/listitem_bg"
+            android:layout_alignParentLeft="true"
+            android:clickable="true" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:adjustViewBounds="true"
+                android:src="@drawable/action_navigation_previous_light" />
+
+            <TextView
+                android:id="@+id/transition_effect_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scroll_effect_text"
+                android:textAllCaps="true"
+                android:textColor="@color/listitem_text"
+                android:layout_gravity="center_vertical"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:adjustViewBounds="true"
-            android:src="@drawable/handle_left" />
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/listitem_bg"
+            android:clickable="true" >
 
-        <TextView
-            android:id="@+id/transition_effect_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scroll_effect_text"
-            android:textAllCaps="true"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center_vertical"
-            android:textSize="16sp" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/transition_options_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:adjustViewBounds="true"
+                android:src="@drawable/overflow_options_menu" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/settings_transition_image"
