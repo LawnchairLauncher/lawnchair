@@ -127,7 +127,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         try {
             drawable = mPm.getUserBadgedDrawableForDensity(new BitmapDrawable(res, bitmap),
                     info.getProfile(), badgeLocation, 0);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return bitmap;
         }
 

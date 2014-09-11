@@ -55,7 +55,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         // This hack is just to prevent crash in older builds.
         try {
             return mPm.getUserBadgedIcon(unbadged, user.getUser());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return unbadged;
         }
     }
@@ -68,8 +68,8 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
         // This hack is just to prevent crash in older builds.
         try {
-        return mPm.getUserBadgedLabel(label, user.getUser());
-        } catch (Exception e) {
+            return mPm.getUserBadgedLabel(label, user.getUser());
+        } catch (Throwable e) {
             return label;
         }
     }
