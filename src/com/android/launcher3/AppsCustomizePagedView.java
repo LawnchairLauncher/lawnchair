@@ -366,7 +366,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     // This code triggers requestLayout so must be posted outside of the
                     // layout pass.
                     public void run() {
-                        if (isAttachedToWindow()) {
+                        boolean attached = true;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            attached = isAttachedToWindow();
+                        }
+                        if (attached) {
                             setDataIsReady();
                             onDataReady(getMeasuredWidth(), getMeasuredHeight());
                         }

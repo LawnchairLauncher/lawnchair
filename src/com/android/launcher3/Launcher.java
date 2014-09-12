@@ -59,6 +59,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -3378,7 +3379,13 @@ public class Launcher extends Activity
                     if (Utilities.isLmp()) {
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
-                            if (v != null && v.isAttachedToWindow()) v.buildLayer();
+                            if (v != null) {
+                                boolean attached = true;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    attached = v.isAttachedToWindow();
+                                }
+                                if (attached) v.buildLayer();
+                            }
                         }
                     }
                     mStateAnimation.start();
@@ -3625,7 +3632,13 @@ public class Launcher extends Activity
                     if (Utilities.isLmp()) {
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
-                            if (v != null && v.isAttachedToWindow()) v.buildLayer();
+                            if (v != null) {
+                                boolean attached = true;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    attached = v.isAttachedToWindow();
+                                }
+                                if (attached) v.buildLayer();
+                            }
                         }
                     }
                     mStateAnimation.start();
