@@ -3375,9 +3375,6 @@ public class Launcher extends Activity
             final AnimatorSet stateAnimation = mStateAnimation;
             final Runnable startAnimRunnable = new Runnable() {
                 public void run() {
-                    if (!toView.isAttachedToWindow()) {
-                        return;
-                    }
                     // Check that mStateAnimation hasn't changed while
                     // we waited for a layout/draw pass
                     if (mStateAnimation != stateAnimation)
@@ -3389,7 +3386,7 @@ public class Launcher extends Activity
                     if (Utilities.isLmp()) {
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
-                            if (v != null) v.buildLayer();
+                            if (v != null && v.isAttachedToWindow()) v.buildLayer();
                         }
                     }
                     mStateAnimation.start();
