@@ -18,6 +18,7 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -27,9 +28,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class UserManagerCompatVL extends UserManagerCompatV17 {
+    private final PackageManager mPm;
 
     UserManagerCompatVL(Context context) {
         super(context);
+        mPm = context.getPackageManager();
     }
 
     @Override
@@ -48,7 +51,13 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
 
     @Override
     public Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user) {
-        return mUserManager.getBadgedIconForUser(unbadged, user.getUser());
+        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
+        // This hack is just to prevent crash in older builds.
+        try {
+            return mPm.getUserBadgedIcon(unbadged, user.getUser());
+        } catch (Exception e) {
+            return unbadged;
+        }
     }
 
     @Override
@@ -56,7 +65,13 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         if (user == null) {
             return label;
         }
-        return mUserManager.getBadgedLabelForUser(label, user.getUser());
+        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
+        // This hack is just to prevent crash in older builds.
+        try {
+        return mPm.getUserBadgedLabel(label, user.getUser());
+        } catch (Exception e) {
+            return label;
+        }
     }
 }
 
