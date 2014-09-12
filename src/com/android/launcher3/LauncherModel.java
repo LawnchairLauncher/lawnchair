@@ -85,7 +85,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
     static final boolean DEBUG_LOADERS = false;
-    private static final boolean DEBUG_RECEIVER = true;  // STOPSHIP(cwren) temporary for debugging
+    private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
 
