@@ -959,10 +959,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public void setShortcutAndWidgetAlpha(float alpha) {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            getChildAt(i).setAlpha(alpha);
-        }
+        mShortcutsAndWidgets.setAlpha(alpha);
     }
 
     public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
