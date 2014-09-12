@@ -47,7 +47,12 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mResumed = false;
         mBound = false;
 
-        mInstaller.registerSessionCallback(mCallback);
+        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
+        // This hack is just to prevent crash in older builds.
+        try {
+            mInstaller.registerSessionCallback(mCallback);
+        } catch (Throwable e) { }
+
         // On start, send updates for all active sessions
         for (SessionInfo info : mInstaller.getAllSessions()) {
             mPendingReplays.append(info.getSessionId(), info);
@@ -72,7 +77,11 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
+        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
+        // This hack is just to prevent crash in older builds.
+        try {
+            mInstaller.unregisterSessionCallback(mCallback);
+        } catch (Throwable e) { }
     }
 
     @Override
