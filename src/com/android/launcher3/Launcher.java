@@ -3469,6 +3469,15 @@ public class Launcher extends Activity
                     fromView.findViewById(R.id.apps_customize_pane_content);
 
             final View page = content.getPageAt(content.getNextPage());
+
+            // We need to hide side pages of the Apps / Widget tray to avoid some ugly edge cases
+            int count = content.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View child = content.getChildAt(i);
+                if (child != page) {
+                    child.setVisibility(View.INVISIBLE);
+                }
+            }
             final View revealView = fromView.findViewById(R.id.fake_page);
 
             // hideAppsCustomizeHelper is called in some cases when it is already hidden
@@ -3615,6 +3624,19 @@ public class Launcher extends Activity
                         page.setLayerType(View.LAYER_TYPE_NONE, null);
                     }
                     content.setPageBackgroundsVisible(true);
+                    // Unhide side pages
+                    int count = content.getChildCount();
+                    for (int i = 0; i < count; i++) {
+                        View child = content.getChildAt(i);
+                        child.setVisibility(View.VISIBLE);
+                    }
+
+                    // Reset page transforms
+                    page.setTranslationX(0);
+                    page.setTranslationY(0);
+                    page.setAlpha(1);
+                    content.setCurrentPage(content.getNextPage());
+
                     mAppsCustomizeContent.updateCurrentPageScroll();
                 }
             });
