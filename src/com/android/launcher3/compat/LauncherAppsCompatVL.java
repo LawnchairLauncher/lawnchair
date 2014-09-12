@@ -82,7 +82,11 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         synchronized (mCallbacks) {
             mCallbacks.put(callback, wrappedCallback);
         }
-        mLauncherApps.addCallback(wrappedCallback);
+        try {
+            mLauncherApps.registerCallback(wrappedCallback);
+        } catch (Throwable e) {
+            // STOPSHIP(kennyguy): Remove when LRW71 hits googlefood
+        }
     }
 
     public void removeOnAppsChangedCallback(
@@ -92,7 +96,11 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             wrappedCallback = mCallbacks.remove(callback);
         }
         if (wrappedCallback != null) {
-            mLauncherApps.removeCallback(wrappedCallback);
+            try {
+                mLauncherApps.unregisterCallback(wrappedCallback);
+            } catch (Throwable e) {
+                // STOPSHIP(kennyguy): Remove when LRW71 hits googlefood
+            }
         }
     }
 
