@@ -33,6 +33,8 @@
     <dimen name="cling_migration_logo_width">165dp</dimen>
     <dimen name="cling_migration_bg_size">400dp</dimen>
     <dimen name="cling_migration_bg_shift">-200dp</dimen>
+    <dimen name="cling_migration_content_margin">16dp</dimen>
+    <dimen name="cling_migration_content_width">280dp</dimen>
 
 <!-- Workspace -->
     <dimen name="workspace_max_gap">16dp</dimen>
