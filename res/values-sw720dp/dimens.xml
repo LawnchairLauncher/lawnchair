@@ -25,4 +25,9 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">0dp</dimen>
+
+<!-- Cling -->
+    <dimen name="cling_migration_content_margin">96dp</dimen>
+    <dimen name="cling_migration_content_width">320dp</dimen>
+
 </resources>
