@@ -38,9 +38,8 @@ public abstract class AppWidgetManagerCompat {
 
     public static AppWidgetManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
-            // TODO change this to use api version once L gets an API number.
             if (sInstance == null) {
-                if (Utilities.isLmp()) {
+                if (Utilities.isLmpOrAbove()) {
                     sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new AppWidgetManagerCompatV16(context.getApplicationContext());

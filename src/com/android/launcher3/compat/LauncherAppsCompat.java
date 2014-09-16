@@ -23,6 +23,8 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.android.launcher3.Utilities;
+
 import java.util.List;
 
 public abstract class LauncherAppsCompat {
@@ -48,9 +50,8 @@ public abstract class LauncherAppsCompat {
 
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
-            // STOPSHIP(kennyguy) change this to use api version once L gets an API number.
             if (sInstance == null) {
-                if ("L".equals(Build.VERSION.CODENAME)) {
+                if (Utilities.isLmpOrAbove()) {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatV16(context.getApplicationContext());

@@ -32,7 +32,7 @@ public abstract class PackageInstallerCompat {
     public static PackageInstallerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isLmp()) {
+                if (Utilities.isLmpOrAbove()) {
                     sInstance = new PackageInstallerCompatVL(context);
                 } else {
                     sInstance = new PackageInstallerCompatV16(context) { };
