@@ -41,9 +41,9 @@ public abstract class AppWidgetManagerCompat {
             // TODO change this to use api version once L gets an API number.
             if (sInstance == null) {
                 if (Utilities.isLmp()) {
-                    sInstance = new AppWidgetManagerCompatVL(context);
+                    sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
                 } else {
-                    sInstance = new AppWidgetManagerCompatV16(context);
+                    sInstance = new AppWidgetManagerCompatV16(context.getApplicationContext());
                 }
             }
             return sInstance;
