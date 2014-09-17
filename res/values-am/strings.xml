@@ -96,7 +96,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"አዶዎችን ይቅዱ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"እንደ አዲስ ይጀምሩ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ቦታዎን ያደራጁ"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"የግድግዳ ወረቀት፣ ምግብሮችን እና ቅንብሮችን ለማቀናበር ጀርባውን ይንኩ እና ይያዙት።"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"ልጣፍ ፣ ምግብሮችን እና ቅንብሮችን ለማቀናበር ጀርባውን ይንኩ እና ይያዙት።"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"የግድግዳ ወረቀቶች፣ ንዑስ ፕሮግራሞች እና ቅንብሮች"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ለማበጀት ጀርባውን ነክተው ይያዙት"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ገባኝ"</string>
