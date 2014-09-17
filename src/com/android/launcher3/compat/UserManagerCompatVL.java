@@ -51,13 +51,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
 
     @Override
     public Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user) {
-        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
-        // This hack is just to prevent crash in older builds.
-        try {
-            return mPm.getUserBadgedIcon(unbadged, user.getUser());
-        } catch (Throwable e) {
-            return unbadged;
-        }
+        return mPm.getUserBadgedIcon(unbadged, user.getUser());
     }
 
     @Override
@@ -65,13 +59,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         if (user == null) {
             return label;
         }
-        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
-        // This hack is just to prevent crash in older builds.
-        try {
-            return mPm.getUserBadgedLabel(label, user.getUser());
-        } catch (Throwable e) {
-            return label;
-        }
+        return mPm.getUserBadgedLabel(label, user.getUser());
     }
 }
 
