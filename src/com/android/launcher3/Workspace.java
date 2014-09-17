@@ -4801,6 +4801,25 @@ public class Workspace extends SmoothPagedView
     }
 
     void updateShortcutsAndWidgets(ArrayList<AppInfo> apps) {
+        // Break the appinfo list per user
+        final HashMap<UserHandleCompat, ArrayList<AppInfo>> appsPerUser =
+                new HashMap<UserHandleCompat, ArrayList<AppInfo>>();
+        for (AppInfo info : apps) {
+            ArrayList<AppInfo> filtered = appsPerUser.get(info.user);
+            if (filtered == null) {
+                filtered = new ArrayList<AppInfo>();
+                appsPerUser.put(info.user, filtered);
+            }
+            filtered.add(info);
+        }
+
+        for (Map.Entry<UserHandleCompat, ArrayList<AppInfo>> entry : appsPerUser.entrySet()) {
+            updateShortcutsAndWidgetsPerUser(entry.getValue(), entry.getKey());
+        }
+    }
+
+    private void updateShortcutsAndWidgetsPerUser(ArrayList<AppInfo> apps,
+            final UserHandleCompat user) {
         // Create a map of the apps to test against
         final HashMap<ComponentName, AppInfo> appsMap = new HashMap<ComponentName, AppInfo>();
         final HashSet<String> pkgNames = new HashSet<String>();
@@ -4808,9 +4827,8 @@ public class Workspace extends SmoothPagedView
             appsMap.put(ai.componentName, ai);
             pkgNames.add(ai.componentName.getPackageName());
         }
+        final HashSet<ComponentName> iconsToRemove = new HashSet<ComponentName>();
 
-        final HashMap<UserHandleCompat, HashSet<ComponentName>> iconsToRemove =
-                new HashMap<UserHandleCompat, HashSet<ComponentName>>();
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
@@ -4818,7 +4836,8 @@ public class Workspace extends SmoothPagedView
                     ShortcutInfo shortcutInfo = (ShortcutInfo) info;
                     ComponentName cn = shortcutInfo.getTargetComponent();
                     AppInfo appInfo = appsMap.get(cn);
-                    if (cn != null && LauncherModel.isShortcutInfoUpdateable(info)
+                    if (user.equals(shortcutInfo.user) && cn != null
+                            && LauncherModel.isShortcutInfoUpdateable(info)
                             && pkgNames.contains(cn.getPackageName())) {
                         boolean promiseStateChanged = false;
                         boolean infoUpdated = false;
@@ -4841,13 +4860,7 @@ public class Workspace extends SmoothPagedView
 
                                     if ((intent == null) || (appsMap == null)) {
                                         // Could not find a default activity. Remove this item.
-                                        HashSet<ComponentName> cnSet = iconsToRemove
-                                                .get(shortcutInfo.user);
-                                        if (cnSet == null) {
-                                            cnSet = new HashSet<>();
-                                            iconsToRemove.put(shortcutInfo.user, cnSet);
-                                        }
-                                        cnSet.add(shortcutInfo.getTargetComponent());
+                                        iconsToRemove.add(shortcutInfo.getTargetComponent());
 
                                         // process next shortcut.
                                         return false;
@@ -4894,12 +4907,11 @@ public class Workspace extends SmoothPagedView
         });
 
         if (!iconsToRemove.isEmpty()) {
-            for (Map.Entry<UserHandleCompat, HashSet<ComponentName>> entry :
-                iconsToRemove.entrySet()) {
-                removeItemsByComponentName(entry.getValue(), entry.getKey());
-            }
+            removeItemsByComponentName(iconsToRemove, user);
         }
-        restorePendingWidgets(pkgNames);
+        if (user.equals(UserHandleCompat.myUserHandle())) {
+            restorePendingWidgets(pkgNames);
+        }
     }
 
     public void removeAbandonedPromise(String packageName, UserHandleCompat user) {
@@ -4946,6 +4958,7 @@ public class Workspace extends SmoothPagedView
             }
         }
 
+        // Note that package states are sent only for myUser
         if (!completedPackages.isEmpty()) {
             restorePendingWidgets(completedPackages);
         }
