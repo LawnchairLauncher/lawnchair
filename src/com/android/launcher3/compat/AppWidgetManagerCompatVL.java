@@ -121,15 +121,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         } else {
             badgeLocation.offset(bitmap.getWidth() - badgeSize - badgeMargin, top);
         }
-        Drawable drawable = null;
-        // STOPSHIP(mokani): Remove catch block once dogfood build is bigger than LRW70.
-        // This hack is just to prevent crash in older builds.
-        try {
-            drawable = mPm.getUserBadgedDrawableForDensity(new BitmapDrawable(res, bitmap),
-                    info.getProfile(), badgeLocation, 0);
-        } catch (Throwable e) {
-            return bitmap;
-        }
+
+        Drawable drawable = mPm.getUserBadgedDrawableForDensity(
+                new BitmapDrawable(res, bitmap), info.getProfile(), badgeLocation, 0);
 
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
