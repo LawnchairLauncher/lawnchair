@@ -51,9 +51,9 @@ public abstract class LauncherAppsCompat {
             // STOPSHIP(kennyguy) change this to use api version once L gets an API number.
             if (sInstance == null) {
                 if ("L".equals(Build.VERSION.CODENAME)) {
-                    sInstance = new LauncherAppsCompatVL(context);
+                    sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
                 } else {
-                    sInstance = new LauncherAppsCompatV16(context);
+                    sInstance = new LauncherAppsCompatV16(context.getApplicationContext());
                 }
             }
             return sInstance;
