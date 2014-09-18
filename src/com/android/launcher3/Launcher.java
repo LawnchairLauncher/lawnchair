@@ -3632,9 +3632,11 @@ public class Launcher extends Activity
                     }
 
                     // Reset page transforms
-                    page.setTranslationX(0);
-                    page.setTranslationY(0);
-                    page.setAlpha(1);
+                    if (page != null) {
+                        page.setTranslationX(0);
+                        page.setTranslationY(0);
+                        page.setAlpha(1);
+                    }
                     content.setCurrentPage(content.getNextPage());
 
                     mAppsCustomizeContent.updateCurrentPageScroll();
