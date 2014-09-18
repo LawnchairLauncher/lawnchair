@@ -1650,7 +1650,7 @@ public class Launcher extends Activity
         // TODO(sansid): use the APIs directly when compiling against L sdk.
         // Currently we use reflection to access the flags and the API to set the transparency
         // on the System bars.
-        if (Utilities.isLmp()) {
+        if (Utilities.isLmpOrAbove()) {
             try {
                 getWindow().getAttributes().systemUiVisibility |=
                         (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -2809,7 +2809,7 @@ public class Launcher extends Activity
 
             Bundle optsBundle = null;
             if (useLaunchAnimation) {
-                ActivityOptions opts = Utilities.isLmp() ?
+                ActivityOptions opts = Utilities.isLmpOrAbove() ?
                         ActivityOptions.makeCustomAnimation(this, R.anim.task_open_enter, R.anim.no_anim) :
                         ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
                 optsBundle = opts.toBundle();
@@ -2920,7 +2920,7 @@ public class Launcher extends Activity
 
         ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
-        if (Utilities.isLmp()) {
+        if (Utilities.isLmpOrAbove()) {
             oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
         }
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
@@ -3194,7 +3194,7 @@ public class Launcher extends Activity
             mStateAnimation = null;
         }
 
-        boolean material = Utilities.isLmp();
+        boolean material = Utilities.isLmpOrAbove();
 
         final Resources res = getResources();
 
@@ -3376,7 +3376,7 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
                     revealView.setAlpha(initAlpha);
-                    if (Utilities.isLmp()) {
+                    if (Utilities.isLmpOrAbove()) {
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
                             if (v != null) {
@@ -3431,7 +3431,7 @@ public class Launcher extends Activity
             mStateAnimation = null;
         }
 
-        boolean material = Utilities.isLmp();
+        boolean material = Utilities.isLmpOrAbove();
         Resources res = getResources();
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
@@ -3651,7 +3651,7 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
-                    if (Utilities.isLmp()) {
+                    if (Utilities.isLmpOrAbove()) {
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
                             if (v != null) {
