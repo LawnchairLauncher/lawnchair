@@ -57,7 +57,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
 
     /** Marker action used to discover a package which defines launcher customization */
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
-            "com.android.launcher3.action.LAUNCHER_CUSTOMIZATION";
+            "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
 
     private static final String LAYOUT_RES = "default_layout";
 
