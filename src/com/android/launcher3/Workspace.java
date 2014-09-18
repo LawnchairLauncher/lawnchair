@@ -1107,7 +1107,7 @@ public class Workspace extends SmoothPagedView
         case MotionEvent.ACTION_UP:
             if (mTouchState == TOUCH_STATE_REST) {
                 final CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
-                if (!currentPage.lastDownOnOccupiedCell()) {
+                if (currentPage != null && !currentPage.lastDownOnOccupiedCell()) {
                     onWallpaperTap(ev);
                 }
             }
