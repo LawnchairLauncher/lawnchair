@@ -4921,6 +4921,38 @@ public class Workspace extends SmoothPagedView
         removeItemsByPackageName(packages, user);
     }
 
+    public void updatePackageBadge(final String packageName, final UserHandleCompat user) {
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                    ShortcutInfo shortcutInfo = (ShortcutInfo) info;
+                    ComponentName cn = shortcutInfo.getTargetComponent();
+                    if (user.equals(shortcutInfo.user) && cn != null
+                            && shortcutInfo.isPromise()
+                            && packageName.equals(cn.getPackageName())) {
+                        if (shortcutInfo.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                            // For auto install apps update the icon as well as label.
+                            mIconCache.getTitleAndIcon(shortcutInfo,
+                                    shortcutInfo.promisedIntent, user, true);
+                        } else {
+                            // Only update the icon for restored apps.
+                            shortcutInfo.updateIcon(mIconCache);
+                        }
+                        BubbleTextView shortcut = (BubbleTextView) v;
+                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, true, false);
+
+                        if (parent != null) {
+                            parent.invalidate();
+                        }
+                    }
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
+    }
+
     public void updatePackageState(ArrayList<PackageInstallInfo> installInfos) {
         HashSet<String> completedPackages = new HashSet<String>();
 
