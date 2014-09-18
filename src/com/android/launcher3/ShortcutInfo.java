@@ -55,6 +55,11 @@ public class ShortcutInfo extends ItemInfo {
     public static final int FLAG_INSTALL_SESSION_ACTIVE = 4;
 
     /**
+     * Indicates that the widget restore has started.
+     */
+    public static final int FLAG_RESTORE_STARTED = 8;
+
+    /**
      * The intent used to start the application.
      */
     Intent intent;
