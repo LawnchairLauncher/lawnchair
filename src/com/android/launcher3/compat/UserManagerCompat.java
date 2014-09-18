@@ -20,6 +20,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import com.android.launcher3.Utilities;
+
 import java.util.List;
 
 public abstract class UserManagerCompat {
@@ -27,8 +29,7 @@ public abstract class UserManagerCompat {
     }
 
     public static UserManagerCompat getInstance(Context context) {
-        // TODO change this to use api version once L gets an API number.
-        if ("L".equals(Build.VERSION.CODENAME)) {
+        if (Utilities.isLmpOrAbove()) {
             return new UserManagerCompatVL(context);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return new UserManagerCompatV17(context);
