@@ -103,11 +103,10 @@ public final class Utilities {
     }
 
     /**
-     * Indicates if the device is running LMP or not.
-     * TODO(sansid): Change the check to a VERSION_CODES code check once we have a version for L.
+     * Indicates if the device is running LMP or higher.
      */
-    public static boolean isLmp() {
-        return "L".equals(Build.VERSION.CODENAME);
+    public static boolean isLmpOrAbove() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.L;
     }
 
     /**
