@@ -51,6 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:paddingStart="10dip"
+                android:paddingEnd="10dip"
                 android:adjustViewBounds="true"
                 android:src="@drawable/overflow_options_menu" />
         </LinearLayout>
