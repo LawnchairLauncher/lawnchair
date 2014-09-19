@@ -4991,7 +4991,7 @@ public class Launcher extends Activity
             if (mModel.canMigrateFromOldLauncherDb(this)) {
                 launcherClings.showMigrationCling();
             } else {
-                launcherClings.showLongPressCling(false);
+                launcherClings.showLongPressCling(true);
             }
         }
     }
