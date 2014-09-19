@@ -4712,6 +4712,18 @@ public class Launcher extends Activity
     }
 
     /**
+     * Update the label and icon of all the icons in a package
+     *
+     * Implementation of the method from LauncherModel.Callbacks.
+     */
+    @Override
+    public void updatePackageBadge(String packageName) {
+        if (mWorkspace != null) {
+            mWorkspace.updatePackageBadge(packageName, UserHandleCompat.myUserHandle());
+        }
+    }
+
+    /**
      * A package was uninstalled.  We take both the super set of packageNames
      * in addition to specific applications to remove, the reason being that
      * this can be called when a package is updated as well.  In that scenario,
