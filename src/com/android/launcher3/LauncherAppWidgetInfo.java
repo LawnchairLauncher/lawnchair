@@ -46,6 +46,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     public static final int FLAG_UI_NOT_READY = 4;
 
     /**
+     * Indicates that the widget restore has started.
+     */
+    public static final int FLAG_RESTORE_STARTED = 8;
+
+    /**
      * Indicates that the widget hasn't been instantiated yet.
      */
     static final int NO_ID = -1;

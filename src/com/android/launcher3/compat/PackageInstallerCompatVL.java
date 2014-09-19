@@ -27,6 +27,7 @@ import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
@@ -57,11 +58,16 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     }
 
     @Override
-    public void updateActiveSessionCache() {
+    public HashSet<String> updateAndGetActiveSessionCache() {
+        HashSet<String> activePackages = new HashSet<String>();
         UserHandleCompat user = UserHandleCompat.myUserHandle();
         for (SessionInfo info : mInstaller.getAllSessions()) {
             addSessionInfoToCahce(info, user);
+            if (info.getAppPackageName() != null) {
+                activePackages.add(info.getAppPackageName());
+            }
         }
+        return activePackages;
     }
 
     private void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
