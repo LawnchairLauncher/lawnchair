@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -382,12 +383,15 @@ public class IconCache {
      */
     public void cachePackageInstallInfo(String packageName, UserHandleCompat user,
             Bitmap icon, CharSequence title) {
+        remove(packageName, user);
+
         CacheEntry entry = getEntryForPackage(packageName, user);
         if (!TextUtils.isEmpty(title)) {
             entry.title = title;
         }
         if (icon != null) {
-            entry.icon = Utilities.createIconBitmap(icon, mContext);
+            entry.icon = Utilities.createIconBitmap(
+                    new BitmapDrawable(mContext.getResources(), icon), mContext);
         }
     }
 

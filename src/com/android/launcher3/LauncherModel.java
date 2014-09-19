@@ -199,6 +199,7 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
         public void updatePackageState(ArrayList<PackageInstallInfo> installInfo);
+        public void updatePackageBadge(String packageName);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
@@ -342,6 +343,19 @@ public class LauncherModel extends BroadcastReceiver
                 Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
                 if (callbacks != null) {
                     callbacks.updatePackageState(installInfo);
+                }
+            }
+        };
+        mHandler.post(r);
+    }
+
+    public void updatePackageBadge(final String packageName) {
+        // Process the updated package badge
+        Runnable r = new Runnable() {
+            public void run() {
+                Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+                if (callbacks != null) {
+                    callbacks.updatePackageBadge(packageName);
                 }
             }
         };

@@ -35,6 +35,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private static final boolean DEBUG = false;
 
     private final SparseArray<SessionInfo> mPendingReplays = new SparseArray<SessionInfo>();
+    private final HashSet<String> mPendingBadgeUpdates = new HashSet<String>();
     private final PackageInstaller mInstaller;
     private final IconCache mCache;
 
@@ -139,18 +140,20 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         if (!updates.isEmpty()) {
             app.setPackageState(updates);
         }
+
+        if (!mPendingBadgeUpdates.isEmpty()) {
+            for (String pkg : mPendingBadgeUpdates) {
+                app.updatePackageBadge(pkg);
+            }
+            mPendingBadgeUpdates.clear();
+        }
     }
 
     private final SessionCallback mCallback = new SessionCallback() {
 
         @Override
         public void onCreated(int sessionId) {
-            SessionInfo session = mInstaller.getSessionInfo(sessionId);
-            if (session != null) {
-                addSessionInfoToCahce(session, UserHandleCompat.myUserHandle());
-                mPendingReplays.put(sessionId, session);
-                replayUpdates(null);
-            }
+            pushSessionBadgeToLauncher(sessionId);
         }
 
         @Override
@@ -158,6 +161,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             mPendingReplays.remove(sessionId);
             SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if ((session != null) && (session.getAppPackageName() != null)) {
+                mPendingBadgeUpdates.remove(session.getAppPackageName());
                 // Replay all updates with a one time update for this installed package. No
                 // need to store this record for future updates, as the app list will get
                 // refreshed on resume.
@@ -179,6 +183,20 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         public void onActiveChanged(int sessionId, boolean active) { }
 
         @Override
-        public void onBadgingChanged(int sessionId) { }
+        public void onBadgingChanged(int sessionId) {
+            pushSessionBadgeToLauncher(sessionId);
+        }
+
+        private void pushSessionBadgeToLauncher(int sessionId) {
+            SessionInfo session = mInstaller.getSessionInfo(sessionId);
+            if (session != null) {
+                addSessionInfoToCahce(session, UserHandleCompat.myUserHandle());
+                if (session.getAppPackageName() != null) {
+                    mPendingBadgeUpdates.add(session.getAppPackageName());
+                }
+                mPendingReplays.put(sessionId, session);
+                replayUpdates(null);
+            }
+        }
     };
 }
