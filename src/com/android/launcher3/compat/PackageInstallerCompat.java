@@ -20,6 +20,8 @@ import android.content.Context;
 
 import com.android.launcher3.Utilities;
 
+import java.util.HashSet;
+
 public abstract class PackageInstallerCompat {
 
     public static final int STATUS_INSTALLED = 0;
@@ -42,7 +44,7 @@ public abstract class PackageInstallerCompat {
         }
     }
 
-    public abstract void updateActiveSessionCache();
+    public abstract HashSet<String> updateAndGetActiveSessionCache();
 
     public abstract void onPause();
 

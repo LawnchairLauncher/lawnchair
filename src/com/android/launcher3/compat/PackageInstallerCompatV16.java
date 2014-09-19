@@ -29,6 +29,7 @@ import org.json.JSONStringer;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PackageInstallerCompatV16 extends PackageInstallerCompat {
 
@@ -75,9 +76,6 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
 
     @Override
     public void onStop() { }
-
-    @Override
-    public void updateActiveSessionCache() { }
 
     private void replayUpdates() {
         if (DEBUG) Log.d(TAG, "updates resumed");
@@ -168,5 +166,10 @@ public class PackageInstallerCompatV16 extends PackageInstallerCompat {
             Log.e(TAG, "failed to serialize app state update", e);
         }
         return value;
+    }
+
+    @Override
+    public HashSet<String> updateAndGetActiveSessionCache() {
+        return new HashSet<String>();
     }
 }
