@@ -23,7 +23,7 @@
     <string name="home" msgid="7658288663002113681">"Головний екран"</string>
     <string name="uid_name" msgid="7820867637514617527">"Базові програми Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="activity_not_found" msgid="8071924732094499514">"Програму не встановлено."</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"Додаток видалено."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Завантажений додаток вимкнено в безпечному режимі"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Віджети"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Віджети"</string>
@@ -38,7 +38,7 @@
     <string name="rename_action" msgid="5559600076028658757">"OК"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Скасувати"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Додати на головний екран"</string>
-    <string name="group_applications" msgid="3797214114206693605">"Програми"</string>
+    <string name="group_applications" msgid="3797214114206693605">"Додатки"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Ярлики"</string>
     <string name="group_widgets" msgid="1569030723286851002">"Віджети"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"На головних екранах більше немає місця."</string>
@@ -50,7 +50,7 @@
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" уже існує."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Вибрати ярлик"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Вибрати програму"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"Програми"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Додатки"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Головний екран"</string>
     <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Вилучити"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Видалити"</string>
@@ -59,7 +59,7 @@
     <string name="info_target_label" msgid="8053346143994679532">"Про програму"</string>
     <string name="accessibility_search_button" msgid="1628520399424565142">"Пошук"</string>
     <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Голосовий пошук"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Програми"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Додатки"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"Вилучити"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Видалити оновлення"</string>
     <string name="cab_menu_delete_app" msgid="7435191475867183689">"Видалити програму"</string>
