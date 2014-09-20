@@ -27,7 +27,7 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्स सुरक्षित मोड में अक्षम है"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"विजेट"</string>
     <string name="widget_adder" msgid="3201040140710381657">"विजेट"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"स्मृति दिखाएं"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"मेमोरी दिखाएं"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="market" msgid="2619650989819296998">"खरीदारी करें"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -36,7 +36,7 @@
     <string name="rename_folder_label" msgid="3727762225964550653">"फ़ोल्‍डर का नाम"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"फ़ोल्‍डर का नाम बदलें"</string>
     <string name="rename_action" msgid="5559600076028658757">"ठीक"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"रद्द करें"</string>
+    <string name="cancel_action" msgid="7009134900002915310">"रहने दें"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"होम स्‍क्रीन में जोड़ें"</string>
     <string name="group_applications" msgid="3797214114206693605">"ऐप्लिकेशन"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"शॉर्टकट"</string>
