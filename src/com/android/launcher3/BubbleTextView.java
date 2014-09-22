@@ -40,7 +40,7 @@ import android.widget.TextView;
  */
 public class BubbleTextView extends TextView {
 
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<>(2);
+    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
     private static final float SHADOW_LARGE_RADIUS = 4.0f;
     private static final float SHADOW_SMALL_RADIUS = 1.75f;

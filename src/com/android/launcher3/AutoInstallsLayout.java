@@ -142,7 +142,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
         mDb = db;
         try {
             return parseLayout(mRes, mLayoutId, screenIds);
-        } catch (XmlPullParserException | IOException | RuntimeException e) {
+        } catch (Exception e) {
             Log.w(TAG, "Got exception parsing layout.", e);
             return -1;
         }
