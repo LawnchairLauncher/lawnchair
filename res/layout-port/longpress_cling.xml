@@ -3,7 +3,8 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:id="@+id/longpress_cling"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/cling_scrim_background" >
 
     <FrameLayout
         android:id="@+id/cling_content"
