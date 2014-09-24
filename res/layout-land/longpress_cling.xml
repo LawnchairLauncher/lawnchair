@@ -4,6 +4,7 @@
     android:id="@+id/longpress_cling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cling_scrim_background"
     android:orientation="vertical" >
 
     <Space
