@@ -20,7 +20,6 @@
     <!-- App version -->
     <string name="application_version" translatable="false">1.0</string>
 
-    <string name="launcher_settings">LAUNCHER SETTINGS</string>
     <string name="home_screen_settings">HOME SCREEN SETTINGS</string>
     <string name="drawer_settings">DRAWER SETTINGS</string>
     <string name="app_settings">APP SETTINGS</string>
@@ -50,14 +49,9 @@
     <string name="grid_size_custom">Custom</string>
     <string name="grid_size_custom_and_size">Custom (%1$s)</string>
     <string name="preferences_interface_homescreen_custom">Select custom size</string>
-    <string name="preferences_interface_homescreen_rows_title">Number of rows</string>
-    <string name="preferences_interface_homescreen_columns_title">Number of columns</string>
 
     <!-- Folder titles -->
     <string name="google_title" translatable="false">Google</string>
-
-    <!-- Hidden apps -->
-    <string name="hidden_apps_title">Hidden apps</string>
 
     <!-- Scroll effect -->
     <string name="scroll_effect_text">Scroll effect</string>
@@ -85,9 +79,6 @@
 
     <!-- Text for hiding/showing search screen on left (if installed) -->
     <string name="search_screen_left_text">Search panel</string>
-
-    <!-- Toast message when search screen on left is not supported -->
-    <string name="search_screen_left_unsupported_toast">You must have a supported search app and CyanogenMod to use this feature.</string>
 
     <!-- Dialog -->
     <string name="dialog_confirm">Confirm</string>
