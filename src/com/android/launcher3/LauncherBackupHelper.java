@@ -354,7 +354,7 @@ public class LauncherBackupHelper implements BackupHelper {
         try {
             ContentResolver cr = mContext.getContentResolver();
             ContentValues values = unpackFavorite(buffer, 0, dataSize);
-            cr.insert(Favorites.CONTENT_URI, values);
+            cr.insert(Favorites.CONTENT_URI_NO_NOTIFICATION, values);
         } catch (InvalidProtocolBufferNanoException e) {
             Log.e(TAG, "failed to decode favorite", e);
         }
