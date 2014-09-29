@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">KÄIVITAJA SEADED</string>
   <string name="home_screen_settings">KODUEKRAANI SEADED</string>
   <string name="drawer_settings">SAHTLI SEADED</string>
   <string name="app_settings">RAKENDUSE SEADED</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Isiklik</string>
   <string name="grid_size_custom_and_size">Kohandatud (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Vali sobiv suurus</string>
-  <string name="preferences_interface_homescreen_rows_title">Ridade arv</string>
-  <string name="preferences_interface_homescreen_columns_title">Veergude arv</string>
-  <string name="hidden_apps_title">Peidetud rakendused</string>
   <string name="scroll_effect_text">Kerimisefekt</string>
   <string name="drawer_sorting_text">Sortimisrežiim</string>
   <string name="sort_mode_title">Pealkiri</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Peida</string>
   <string name="protected_app_settings">Kaitstud rakendused</string>
   <string name="search_screen_left_text">Otsingupaneel</string>
-  <string name="search_screen_left_unsupported_toast">Teil peab olema toetatud otsingurakendus ja CyanogenMod et kasutada seda võimalust.</string>
   <string name="dialog_confirm">Kinnita</string>
   <string name="permission_label_read_extension_data">taodelda DashClock laienduse andmeid</string>
   <string name="permission_desc_read_extension_data">Lubab rakendusel taodelda DashClock laienduse andmeid</string>

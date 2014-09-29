@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">ΓΕΝΙΚΕΣ ΡΥΘΜΙΣΕΙΣ</string>
   <string name="home_screen_settings">ΡΥΘΜΙΣΕΙΣ ΑΡΧΙΚΗΣ ΟΘΟΝΗΣ</string>
   <string name="drawer_settings">ΡΥΘΜΙΣΕΙΣ ΣΥΡΤΑΡΙΟΥ</string>
   <string name="app_settings">ΡΥΘΜΙΣΕΙΣ ΕΦΑΡΜΟΓΩΝ</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Προσαρμοσμένο</string>
   <string name="grid_size_custom_and_size">Προσαρμοσμένο (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Επιλέξτε προσαρμοσμένο μέγεθος</string>
-  <string name="preferences_interface_homescreen_rows_title">Αριθμός γραμμών</string>
-  <string name="preferences_interface_homescreen_columns_title">Αριθμός στηλών</string>
-  <string name="hidden_apps_title">Κρυμμένες εφαρμογές</string>
   <string name="scroll_effect_text">Εφέ κύλισης</string>
   <string name="drawer_sorting_text">Ταξινόμηση</string>
   <string name="sort_mode_title">Τίτλος</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Απόκρυψη</string>
   <string name="protected_app_settings">Προστατευμένες εφαρμογές</string>
   <string name="search_screen_left_text">Σελίδα αναζήτησης</string>
-  <string name="search_screen_left_unsupported_toast">Πρέπει να έχετε μια υποστηριζόμενη εφαρμογή αναζήτησης και CyanogenMod για να χρησιμοποιήσετε αυτήν τη δυνατότητα.</string>
   <string name="dialog_confirm">Επιβεβαίωση</string>
   <string name="permission_label_read_extension_data">αίτηση δεδομένων επέκτασεων DashClock</string>
   <string name="permission_desc_read_extension_data">Επιτρέπει στην εφαρμογή να ζητήσει δεδομένα επεκτάσεων DashClock</string>

@@ -20,7 +20,6 @@
   <string name="setting_state_off">AUS</string>
   <string name="scrolling_page_outlines">Säiterummen</string>
   <string name="scrolling_fade_adjacent">Säiten um Rand ausblenden</string>
-  <string name="hidden_apps_title">Verstoppt Apps</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Startunzuel</string>
   <string name="sort_mode_install_time">Installatiounszäit</string>

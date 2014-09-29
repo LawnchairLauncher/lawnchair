@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">ABIARAZLEAREN EZARPENAK</string>
   <string name="home_screen_settings">HASIERA PANTAILAREN EZARPENAK</string>
   <string name="drawer_settings">APLIKAZIOEN EZARPENAK</string>
   <string name="app_settings">APLIKAZIOAREN EZARPENAK</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Pertsonalizatua</string>
   <string name="grid_size_custom_and_size">Pertsonalizatua (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Tamaina pertsonalizatua hautatu</string>
-  <string name="preferences_interface_homescreen_rows_title">Ilara kopurua</string>
-  <string name="preferences_interface_homescreen_columns_title">Zutabe kopurua</string>
-  <string name="hidden_apps_title">Aplikazioak izkutatu</string>
   <string name="scroll_effect_text">Mugitze efektua</string>
   <string name="drawer_sorting_text">Antolatze era</string>
   <string name="sort_mode_title">Izena</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">izkutatu</string>
   <string name="protected_app_settings">Babesturiko aplikazioak</string>
   <string name="search_screen_left_text">Bilaketa panela</string>
-  <string name="search_screen_left_unsupported_toast">Bilaketa aplikazio bat izan behar duzu CyanogenMod-ek ezaugarri hau erabili ahal izateko.</string>
   <string name="dialog_confirm">Berretsi</string>
   <string name="permission_label_read_extension_data">DashClock hedapenen datuak eskatu</string>
   <string name="permission_desc_read_extension_data">Aplikazioa DashClock hedapenen datuak eskatzera baimentzen du</string>

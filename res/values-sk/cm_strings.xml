@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">NASTAVENIA SPÚŠŤAČA</string>
   <string name="home_screen_settings">NASTAVENIA DOMOVSKEJ OBRAZOVKY</string>
   <string name="drawer_settings">NASTAVENIA PONUKY</string>
   <string name="app_settings">NASTAVENIA APLIKÁCIÍ</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Vlastná</string>
   <string name="grid_size_custom_and_size">Vlastná (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Vyberte vlastnú veľkosť</string>
-  <string name="preferences_interface_homescreen_rows_title">Počet riadkov</string>
-  <string name="preferences_interface_homescreen_columns_title">Počet stĺpcov</string>
-  <string name="hidden_apps_title">Skryté aplikácie</string>
   <string name="scroll_effect_text">Efekt posunu</string>
   <string name="drawer_sorting_text">Režim triedenia</string>
   <string name="sort_mode_title">Názov</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Skryť</string>
   <string name="protected_app_settings">Chránené aplikácie</string>
   <string name="search_screen_left_text">Panel vyhľadávania</string>
-  <string name="search_screen_left_unsupported_toast">Musíte mať podporovaný vyhľadávač a CyanogenMod pre použitie tejto funkcie.</string>
   <string name="dialog_confirm">Potvrdiť</string>
   <string name="permission_label_read_extension_data">požadovať údaje DashClock rozšírení</string>
   <string name="permission_desc_read_extension_data">Umožňuje aplikácii požadovať údaje DashClock rozšírení</string>

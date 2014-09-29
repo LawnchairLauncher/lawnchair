@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">INDSTILLINGER FOR LAUNCHER</string>
   <string name="home_screen_settings">INDSTILLINGER FOR STARTSKÆRM</string>
   <string name="drawer_settings">INDSTILLINGER FOR OVERSIGT</string>
   <string name="app_settings">APP-INDSTILLINGER</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Brugerdefineret</string>
   <string name="grid_size_custom_and_size">Brugerdefineret (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Vælg brugerdefineret størrelse</string>
-  <string name="preferences_interface_homescreen_rows_title">Antal rækker</string>
-  <string name="preferences_interface_homescreen_columns_title">Antal kolonner</string>
-  <string name="hidden_apps_title">Skjulte apps</string>
   <string name="scroll_effect_text">Rulleeffekt</string>
   <string name="drawer_sorting_text">Sorteringstilstand</string>
   <string name="sort_mode_title">Titel</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Skjul</string>
   <string name="protected_app_settings">Beskyttede apps</string>
   <string name="search_screen_left_text">Søgepanel</string>
-  <string name="search_screen_left_unsupported_toast">Du skal have en understøttet søge-app og CyanogenMod for at anvende denne funktion.</string>
   <string name="dialog_confirm">Bekræft</string>
   <string name="permission_label_read_extension_data">anmod om DashClock-udvidelsesdata</string>
   <string name="permission_desc_read_extension_data">Tillader appen at anmode om DashClock-udvidelsesdata</string>

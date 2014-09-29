@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">런처 설정</string>
   <string name="home_screen_settings">홈 화면 설정</string>
   <string name="drawer_settings">서랍 설정</string>
   <string name="app_settings">애플리케이션 설정</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">사용자 정의</string>
   <string name="grid_size_custom_and_size">사용자 정의 (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">사용자 정의 크기 선택</string>
-  <string name="preferences_interface_homescreen_rows_title">행 수</string>
-  <string name="preferences_interface_homescreen_columns_title">열 수</string>
-  <string name="hidden_apps_title">숨겨진 앱</string>
   <string name="scroll_effect_text">스크롤 효과</string>
   <string name="drawer_sorting_text">정렬 모드</string>
   <string name="sort_mode_title">이름</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">숨기기</string>
   <string name="protected_app_settings">보호된 앱</string>
   <string name="search_screen_left_text">검색 패널</string>
-  <string name="search_screen_left_unsupported_toast">이 기능을 사용하려면 지원되는 검색 앱과 CyanogenMod가 필요합니다.</string>
   <string name="dialog_confirm">확인</string>
   <string name="permission_label_read_extension_data">DashClock 확장 프로그램 데이터 요청</string>
   <string name="permission_desc_read_extension_data">앱이 DashClock의 확장 프로그램 데이터를 요청할 수 있도록 허용</string>

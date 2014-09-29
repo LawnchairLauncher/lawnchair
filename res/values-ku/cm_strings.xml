@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">ڕێکخستنی ده‌ستپێکه‌ر</string>
   <string name="home_screen_settings">رێکخستنی ڕوونمای سەرەکی</string>
   <string name="drawer_settings">ڕێکخستنی کێشان</string>
   <string name="app_settings">ڕێکخستنەکانی بەرنامە</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">دروستکراو</string>
   <string name="grid_size_custom_and_size">خوازراو (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">دیاریکردنی قه‌باره‌ی خوازراو</string>
-  <string name="preferences_interface_homescreen_rows_title">ژماره‌ی ئاسۆییه‌کان</string>
-  <string name="preferences_interface_homescreen_columns_title">ژماره‌ی ستوونه‌کان</string>
-  <string name="hidden_apps_title">شاردنەوەی بەرنامەکان</string>
   <string name="scroll_effect_text">کاریگه‌ری بابۆڵه‌کردن</string>
   <string name="drawer_sorting_text">جۆری پۆڵێنکردن</string>
   <string name="sort_mode_title">ناونیشان</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">شاردنەوە</string>
   <string name="protected_app_settings">بەرنامە پارێزراوەکان</string>
   <string name="search_screen_left_text">پەرەی گەران</string>
-  <string name="search_screen_left_unsupported_toast">پێویسته‌ به‌رنامه‌یه‌کی گه‌ڕانی گونجاوت هه‌بێ بۆ به‌کارهێنانی ساینه‌جین مۆد له‌م خزمه‌تگوزارییه‌.</string>
   <string name="dialog_confirm">دلنیاکردنەوە</string>
   <string name="permission_label_read_extension_data">داواکردنی کاتژمێرداش بۆ داتای گه‌یاندن</string>
   <string name="permission_desc_read_extension_data">ڕێگه‌دان به‌ به‌رنامه‌ بۆ داواکردنی کاژێرداش</string>

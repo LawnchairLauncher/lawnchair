@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">PENGATURAN PELUNCUR</string>
   <string name="home_screen_settings">PENGATURAN LAYAR HOME</string>
   <string name="drawer_settings">PENGATURAN DRAWER</string>
   <string name="app_settings">PENGATURAN APL</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Kustom</string>
   <string name="grid_size_custom_and_size">Kustom (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Pilih ukuran kustom</string>
-  <string name="preferences_interface_homescreen_rows_title">Jumlah baris</string>
-  <string name="preferences_interface_homescreen_columns_title">Jumlah kolom</string>
-  <string name="hidden_apps_title">Aplikasi tersembunyi</string>
   <string name="scroll_effect_text">Efek gulir</string>
   <string name="drawer_sorting_text">Mode penyortiran</string>
   <string name="sort_mode_title">Judul</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Sembunyikan</string>
   <string name="protected_app_settings">Aplikasi yang di lindungi</string>
   <string name="search_screen_left_text">Panel pencarian</string>
-  <string name="search_screen_left_unsupported_toast">Anda harus memiliki apl pencarain yang didukung dan CyanogenMod untuk menggunakan fitur ini.</string>
   <string name="dialog_confirm">Konfirmasi</string>
   <string name="permission_label_read_extension_data">meminta ekstensi data DashClock</string>
   <string name="permission_desc_read_extension_data">Izinkan aplikasi meminta data dari ekstensi DashClock</string>
