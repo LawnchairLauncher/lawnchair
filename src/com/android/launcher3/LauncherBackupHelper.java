@@ -148,11 +148,12 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private HashMap<ComponentName, AppWidgetProviderInfo> mWidgetMap;
 
-    private ArrayList<Key> mKeys;
+    private final ArrayList<Key> mKeys;
 
     public LauncherBackupHelper(Context context, boolean restoreEnabled) {
         mContext = context;
         mRestoreEnabled = restoreEnabled;
+        mKeys = new ArrayList<Key>();
     }
 
     private void dataChanged() {
@@ -218,9 +219,6 @@ public class LauncherBackupHelper implements BackupHelper {
     @Override
     public void restoreEntity(BackupDataInputStream data) {
         if (VERBOSE) Log.v(TAG, "restoreEntity");
-        if (mKeys == null) {
-            mKeys = new ArrayList<Key>();
-        }
         byte[] buffer = new byte[512];
             String backupKey = data.getKey();
             int dataSize = data.size();
