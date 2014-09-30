@@ -1385,6 +1385,10 @@ public class LauncherModel extends BroadcastReceiver
         return isLaunching;
     }
 
+    public boolean isCurrentCallbacks(Callbacks callbacks) {
+        return (mCallbacks != null && mCallbacks.get() == callbacks);
+    }
+
     public void startLoader(boolean isLaunching, int synchronousBindPage) {
         startLoader(isLaunching, synchronousBindPage, LOADER_FLAG_NONE);
     }
