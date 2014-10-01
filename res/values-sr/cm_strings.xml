@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">ПОДЕШАВАЊА ПОКРЕТАЧА</string>
   <string name="home_screen_settings">ПОДЕШАВАЊА ПОЧЕТНОГ ЕКРАНА</string>
   <string name="drawer_settings">ПОДЕШАВАЊА ФИОКЕ</string>
   <string name="app_settings">ПОДЕШАВАЊА АПЛИКАЦИЈА</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Прилагођено</string>
   <string name="grid_size_custom_and_size">Прилагођено (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Изабери прилагођену величину</string>
-  <string name="preferences_interface_homescreen_rows_title">Број редова</string>
-  <string name="preferences_interface_homescreen_columns_title">Број колона</string>
-  <string name="hidden_apps_title">Сакривене апликације</string>
   <string name="scroll_effect_text">Ефекат</string>
   <string name="drawer_sorting_text">Сортирање</string>
   <string name="sort_mode_title">Наслов</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Сакриј</string>
   <string name="protected_app_settings">Заштићене апликације</string>
   <string name="search_screen_left_text">Панел за претрагу</string>
-  <string name="search_screen_left_unsupported_toast">Мораш да имаш подржану апликацију за претрагу и CyanogenMod да би користио ову функцију.</string>
   <string name="dialog_confirm">Потврди</string>
   <string name="permission_label_read_extension_data">захтевање података за DashClock додатак</string>
   <string name="permission_desc_read_extension_data">Дозвољава апликацији да захтева податке за DashClock додатак</string>

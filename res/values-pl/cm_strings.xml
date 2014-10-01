@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">USTAWIENIA LAUNCHERA</string>
   <string name="home_screen_settings">USTAWIENIA EKRANU GŁÓWNEGO</string>
   <string name="drawer_settings">USTAWIENIA SZUFLADY APLIKACJI</string>
   <string name="app_settings">USTAWIENIA APLIKACJI</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Własny</string>
   <string name="grid_size_custom_and_size">Niestandardowy (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Wybierz własny rozmiar</string>
-  <string name="preferences_interface_homescreen_rows_title">Liczba wierszy</string>
-  <string name="preferences_interface_homescreen_columns_title">Liczba kolumn</string>
-  <string name="hidden_apps_title">Ukryte aplikacje</string>
   <string name="scroll_effect_text">Efekt przewijania</string>
   <string name="drawer_sorting_text">Tryb sortowania</string>
   <string name="sort_mode_title">Tytuł</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Ukryj</string>
   <string name="protected_app_settings">Chronione aplikacje</string>
   <string name="search_screen_left_text">Panel wyszukiwania</string>
-  <string name="search_screen_left_unsupported_toast">Musisz posiadać aplikację wyszukiwania wspieraną przez CyanogenMod by używać tej funkcji.</string>
   <string name="dialog_confirm">Potwierdź</string>
   <string name="permission_label_read_extension_data">żądanie danych z rozszerzeń DashClock\'a</string>
   <string name="permission_desc_read_extension_data">Pozwala aplikacji na żądanie danych z rozszerzeń DashClock\'a</string>

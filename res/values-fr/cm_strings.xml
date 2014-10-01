@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">PARAMÈTRES DU LANCEUR</string>
   <string name="home_screen_settings">PARAMÈTRES DE L\'ÉCRAN D\'ACCUEIL</string>
   <string name="drawer_settings">PARAMÈTRES DE L\'ÉCRAN DES APPLICATIONS</string>
   <string name="app_settings">PARAMÈTRES DE L\'APPLICATION</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Personnalisée</string>
   <string name="grid_size_custom_and_size">Personnalisée (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Sélectionner la taille personnalisée</string>
-  <string name="preferences_interface_homescreen_rows_title">Nombre de lignes</string>
-  <string name="preferences_interface_homescreen_columns_title">Nombre de colonnes</string>
-  <string name="hidden_apps_title">Applications masquées</string>
   <string name="scroll_effect_text">Effet de défilement</string>
   <string name="drawer_sorting_text">Mode de tri</string>
   <string name="sort_mode_title">Titre</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Masquer</string>
   <string name="protected_app_settings">Applications protégées</string>
   <string name="search_screen_left_text">Panneau de recherche</string>
-  <string name="search_screen_left_unsupported_toast">Vous devez avoir une application de recherche compatible et CyanogenMod pour utiliser cette fonctionnalité.</string>
   <string name="dialog_confirm">Confirmer</string>
   <string name="permission_label_read_extension_data">Demander des données d\'extension DashClock</string>
   <string name="permission_desc_read_extension_data">Autoriser l\'application à demander des données d\'extension DashClock</string>

@@ -1450,7 +1450,7 @@ public class Launcher extends Activity
         anim.addListener(mAnimatorListener);
     }
 
-    public void onClickTransitionEffectOverflowMenuButton(View v) {
+    public void onClickTransitionEffectOverflowMenuButton(View v, final boolean drawer) {
         final PopupMenu popupMenu = new PopupMenu(this, v);
 
         final Menu menu = popupMenu.getMenu();
@@ -1458,22 +1458,22 @@ public class Launcher extends Activity
         MenuItem pageOutlines = menu.findItem(R.id.scrolling_page_outlines);
         MenuItem fadeAdjacent = menu.findItem(R.id.scrolling_fade_adjacent);
 
-        pageOutlines.setVisible(!isAllAppsVisible());
+        pageOutlines.setVisible(!drawer);
         pageOutlines.setChecked(SettingsProvider.getBoolean(this,
                 SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_PAGE_OUTLINES,
                 R.bool.preferences_interface_homescreen_scrolling_page_outlines_default
         ));
 
         fadeAdjacent.setChecked(SettingsProvider.getBoolean(this,
-                !isAllAppsVisible() ?
+                !drawer ?
                         SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT :
                         SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT,
-                !isAllAppsVisible() ?
+                !drawer ?
                         R.bool.preferences_interface_homescreen_scrolling_fade_adjacent_default :
                         R.bool.preferences_interface_drawer_scrolling_fade_adjacent_default
         ));
 
-        final PagedView pagedView = !isAllAppsVisible() ? mWorkspace : mAppsCustomizeContent;
+        final PagedView pagedView = !drawer ? mWorkspace : mAppsCustomizeContent;
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -1486,7 +1486,7 @@ public class Launcher extends Activity
                         break;
                     case R.id.scrolling_fade_adjacent:
                         SettingsProvider.get(Launcher.this).edit()
-                                .putBoolean(!isAllAppsVisible() ?
+                                .putBoolean(!drawer ?
                                         SettingsProvider.SETTINGS_UI_HOMESCREEN_SCROLLING_FADE_ADJACENT :
                                         SettingsProvider.SETTINGS_UI_DRAWER_SCROLLING_FADE_ADJACENT, !item.isChecked()).commit();
                         pagedView.setFadeInAdjacentScreens(!item.isChecked());
@@ -3474,9 +3474,6 @@ public class Launcher extends Activity
 
         setPivotsForZoom(toView, scale);
 
-        // Shrink workspaces away if going to AppsCustomize from workspace
-        Animator workspaceAnim =
-                mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
         if (!LauncherAppState.isDisableAllApps()
                 || contentType == AppsCustomizePagedView.ContentType.Widgets) {
             // Set the content type for the all apps/widgets space
@@ -3538,14 +3535,18 @@ public class Launcher extends Activity
                 }
             });
 
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+
+            // Shrink workspaces away if going to AppsCustomize from workspace
+            Animator workspaceAnim =
+                    mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
+
             if (workspaceAnim != null) {
                 mStateAnimation.play(workspaceAnim);
             }
 
             boolean delayAnim = false;
-
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
 
             // If any of the objects being animated haven't been measured/laid out
             // yet, delay the animation until we get a layout pass

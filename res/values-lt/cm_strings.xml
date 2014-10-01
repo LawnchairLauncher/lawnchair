@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">PALEIDĖJO NUSTATYMAI</string>
   <string name="home_screen_settings">PAGRINDINIO EKRANO NUSTATYMAI</string>
   <string name="drawer_settings">STALČIAUS NUSTATYMAI</string>
   <string name="app_settings">PROGRAMOS NUSTATYMAI</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Individualus</string>
   <string name="grid_size_custom_and_size">Individualus (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Pasirinkite individualų dydį</string>
-  <string name="preferences_interface_homescreen_rows_title">Eilučių skaičius</string>
-  <string name="preferences_interface_homescreen_columns_title">Stulpelių skaičius</string>
-  <string name="hidden_apps_title">Paslėptos programos</string>
   <string name="scroll_effect_text">Slinkimo efektas</string>
   <string name="drawer_sorting_text">Rūšiavimo režimas</string>
   <string name="sort_mode_title">Pavadinimas</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Paslėpti</string>
   <string name="protected_app_settings">Apsaugotos programos</string>
   <string name="search_screen_left_text">Paieškos panėlė</string>
-  <string name="search_screen_left_unsupported_toast">Jūs privalote turėti palaikomą paieškos programą ir „CyanogenMod“ norėdami naudotis šia funkcija.</string>
   <string name="dialog_confirm">Patvirtinti</string>
   <string name="permission_label_read_extension_data">prašyti „DashClock“ papildomų duomenų</string>
   <string name="permission_desc_read_extension_data">Leidžia programai prašyti „DashClock“ papildomų duomenų</string>

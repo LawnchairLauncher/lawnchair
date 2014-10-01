@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">启动器设置</string>
   <string name="home_screen_settings">主屏幕设置</string>
   <string name="drawer_settings">抽屉设置</string>
   <string name="app_settings">应用设置</string>
@@ -36,9 +35,6 @@
 </string>
   <string name="grid_size_custom_and_size">自定义（%1$s）</string>
   <string name="preferences_interface_homescreen_custom">选择自定义尺寸</string>
-  <string name="preferences_interface_homescreen_rows_title">行数</string>
-  <string name="preferences_interface_homescreen_columns_title">列数</string>
-  <string name="hidden_apps_title">隐藏的应用</string>
   <string name="scroll_effect_text">滚动特效</string>
   <string name="drawer_sorting_text">排序模式</string>
   <string name="sort_mode_title">标题</string>
@@ -51,7 +47,6 @@
   <string name="icon_labels_hide">隐藏</string>
   <string name="protected_app_settings">受保护的应用</string>
   <string name="search_screen_left_text">搜索面板</string>
-  <string name="search_screen_left_unsupported_toast">您必须有一个受支持的搜索应用和 CyanogenMod 以使用此功能。</string>
   <string name="dialog_confirm">确认</string>
   <string name="permission_label_read_extension_data">请求 DashClock 的扩展数据</string>
   <string name="permission_desc_read_extension_data">允许此应用请求 DashClock 的扩展数据</string>

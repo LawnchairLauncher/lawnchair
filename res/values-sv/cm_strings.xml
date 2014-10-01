@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">LAUNCHERINSTÄLLNINGAR</string>
   <string name="home_screen_settings">HEMSKÄRMSINSTÄLLNINGAR</string>
   <string name="drawer_settings">APPMENYINSTÄLLNINGAR</string>
   <string name="app_settings">APPINSTÄLLNINGAR</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Anpassad</string>
   <string name="grid_size_custom_and_size">Anpassad (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Välj anpassad storlek</string>
-  <string name="preferences_interface_homescreen_rows_title">Antal rader</string>
-  <string name="preferences_interface_homescreen_columns_title">Antal kolumner</string>
-  <string name="hidden_apps_title">Gömda appar</string>
   <string name="scroll_effect_text">Rullningseffekt</string>
   <string name="drawer_sorting_text">Sorteringsläge</string>
   <string name="sort_mode_title">Titel</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Dölj</string>
   <string name="protected_app_settings">Skyddade appar</string>
   <string name="search_screen_left_text">Sökpanel</string>
-  <string name="search_screen_left_unsupported_toast">Du måste ha en stödd sökapp och CyanogenMod för att använda denna funktion.</string>
   <string name="dialog_confirm">Bekräfta</string>
   <string name="permission_label_read_extension_data">begär data från DashClock-tillägg</string>
   <string name="permission_desc_read_extension_data">Tillåter appen att begära data från DashClock-tillägg</string>

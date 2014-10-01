@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">CONFIGURACIÓ DEL LLANÇADOR</string>
   <string name="home_screen_settings">CONFIGURACIÓ DE LA PANTALLA D\'INICI</string>
   <string name="drawer_settings">CONFIGURACIÓ DEL CALAIX</string>
   <string name="app_settings">CONFIGURACIÓ DE L\'APP</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Personalitzada</string>
   <string name="grid_size_custom_and_size">Personalitzada (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Selecciona la mida personalitzada</string>
-  <string name="preferences_interface_homescreen_rows_title">Nombre de files</string>
-  <string name="preferences_interface_homescreen_columns_title">Nombre de columnes</string>
-  <string name="hidden_apps_title">Apps amagades</string>
   <string name="scroll_effect_text">Efecte desplaçament</string>
   <string name="drawer_sorting_text">Mode d\'ordenació</string>
   <string name="sort_mode_title">Títol</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Amaga</string>
   <string name="protected_app_settings">Apps protegides</string>
   <string name="search_screen_left_text">Quadre de cerca</string>
-  <string name="search_screen_left_unsupported_toast">Has de tenir una app de cerca suportada i perquè CyanogenMod utilitzi aquesta característica.</string>
   <string name="dialog_confirm">Confirma</string>
   <string name="permission_label_read_extension_data">sol·licita dades de l\'extensió DashClock</string>
   <string name="permission_desc_read_extension_data">Permet a l\'app sol·licitar dades de l\'extensió DashClock</string>

@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">啟動器設定</string>
   <string name="home_screen_settings">主螢幕設定</string>
   <string name="drawer_settings">抽屜設定</string>
   <string name="setting_state_on">開啟</string>
@@ -24,7 +23,6 @@
   <string name="themes_button_text">主題</string>
   <string name="scrolling_page_outlines">頁面輪廓</string>
   <string name="scrolling_fade_adjacent">邊頁淡出</string>
-  <string name="hidden_apps_title">隱藏的應用程式</string>
   <string name="scroll_effect_text">滾動效果</string>
   <string name="drawer_sorting_text">排序模式</string>
   <string name="sort_mode_title">標題</string>

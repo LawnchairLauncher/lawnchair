@@ -16,7 +16,6 @@
      limitations under the License.
 -->
 <resources>
-  <string name="launcher_settings">BAŞLATICI AYARLARI</string>
   <string name="home_screen_settings">ANA EKRAN AYARLARI</string>
   <string name="drawer_settings">ÇEKMECE AYARLARI</string>
   <string name="app_settings">UYGULAMA AYARLARI</string>
@@ -35,9 +34,6 @@
   <string name="grid_size_custom">Özel</string>
   <string name="grid_size_custom_and_size">Özel (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Özel boyut seçin</string>
-  <string name="preferences_interface_homescreen_rows_title">Satır sayısı</string>
-  <string name="preferences_interface_homescreen_columns_title">Sütun sayısı</string>
-  <string name="hidden_apps_title">Gizli uygulamalar</string>
   <string name="scroll_effect_text">Kaydırma efekti</string>
   <string name="drawer_sorting_text">Sıralama modu</string>
   <string name="sort_mode_title">Başlık</string>
@@ -50,7 +46,6 @@
   <string name="icon_labels_hide">Gizle</string>
   <string name="protected_app_settings">Korunan uygulamalar</string>
   <string name="search_screen_left_text">Arama paneli</string>
-  <string name="search_screen_left_unsupported_toast">Bu özelliği kullanabilmeniz için desteklenen bir arama uygulaması ve CyanogenMod\'a sahip olmanız gerekiyor.</string>
   <string name="dialog_confirm">Onayla</string>
   <string name="permission_label_read_extension_data">DashClock eklenti verisini iste</string>
   <string name="permission_desc_read_extension_data">Uygulamanın DashClock eklenti verisini istemesine izin verir</string>
