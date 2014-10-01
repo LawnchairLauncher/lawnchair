@@ -36,7 +36,6 @@ import android.util.Pair;
 import android.util.Patterns;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
-import com.android.launcher3.LauncherProvider.WorkspaceLoader;
 import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -47,13 +46,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * This class contains contains duplication of functionality as found in
- * LauncherProvider#DatabaseHelper. It has been isolated and differentiated in order
- * to cleanly and separately represent AutoInstall default layout format and policy.
+ * Layout parsing code for auto installs layout
  */
-public class AutoInstallsLayout implements WorkspaceLoader {
+public class AutoInstallsLayout {
     private static final String TAG = "AutoInstalls";
-    private static final boolean LOGD = true;
+    private static final boolean LOGD = false;
 
     /** Marker action used to discover a package which defines launcher customization */
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
@@ -76,7 +73,8 @@ public class AutoInstallsLayout implements WorkspaceLoader {
             Log.e(TAG, "Layout definition not found in package: " + pkg);
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHost, callback, pkg, res, layoutId);
+        return new AutoInstallsLayout(context, appWidgetHost, callback, res, layoutId,
+                TAG_WORKSPACE);
     }
 
     // Object Tags
@@ -116,45 +114,55 @@ public class AutoInstallsLayout implements WorkspaceLoader {
     private final AppWidgetHost mAppWidgetHost;
     private final LayoutParserCallback mCallback;
 
-    private final PackageManager mPackageManager;
+    protected final PackageManager mPackageManager;
+    protected final Resources mSourceRes;
+    protected final int mLayoutId;
+
+    private final int mHotseatAllAppsRank;
+
+    private final long[] mTemp = new long[2];
     private final ContentValues mValues;
+    private final String mRootTag;
 
-    private final Resources mRes;
-    private final int mLayoutId;
-
-    private SQLiteDatabase mDb;
+    protected SQLiteDatabase mDb;
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, String packageName, Resources res, int layoutId) {
+            LayoutParserCallback callback, Resources res,
+            int layoutId, String rootTag) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
 
         mPackageManager = context.getPackageManager();
         mValues = new ContentValues();
+        mRootTag = rootTag;
 
-        mRes = res;
+        mSourceRes = res;
         mLayoutId = layoutId;
+        mHotseatAllAppsRank = LauncherAppState.getInstance()
+                .getDynamicGrid().getDeviceProfile().hotseatAllAppsRank;
     }
 
-    @Override
+    /**
+     * Loads the layout in the db and returns the number of entries added on the desktop.
+     */
     public int loadLayout(SQLiteDatabase db, ArrayList<Long> screenIds) {
         mDb = db;
         try {
-            return parseLayout(mRes, mLayoutId, screenIds);
+            return parseLayout(mLayoutId, screenIds);
         } catch (Exception e) {
             Log.w(TAG, "Got exception parsing layout.", e);
             return -1;
         }
     }
 
-    private int parseLayout(Resources res, int layoutId, ArrayList<Long> screenIds)
+    /**
+     * Parses the layout and returns the number of elements added on the homescreen.
+     */
+    protected int parseLayout(int layoutId, ArrayList<Long> screenIds)
             throws XmlPullParserException, IOException {
-        final int hotseatAllAppsRank = LauncherAppState.getInstance()
-                .getDynamicGrid().getDeviceProfile().hotseatAllAppsRank;
-
-        XmlResourceParser parser = res.getXml(layoutId);
-        beginDocument(parser, TAG_WORKSPACE);
+        XmlResourceParser parser = mSourceRes.getXml(layoutId);
+        beginDocument(parser, mRootTag);
         final int depth = parser.getDepth();
         int type;
         HashMap<String, TagParser> tagParserMap = getLayoutElementsMap();
@@ -165,45 +173,60 @@ public class AutoInstallsLayout implements WorkspaceLoader {
             if (type != XmlPullParser.START_TAG) {
                 continue;
             }
-
-            mValues.clear();
-            final int container;
-            final long screenId;
-
-            if (HOTSEAT_CONTAINER_NAME.equals(getAttributeValue(parser, ATTR_CONTAINER))) {
-                container = Favorites.CONTAINER_HOTSEAT;
-
-                // Hack: hotseat items are stored using screen ids
-                long rank = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
-                screenId = (rank < hotseatAllAppsRank) ? rank : (rank + 1);
-
-            } else {
-                container = Favorites.CONTAINER_DESKTOP;
-                screenId = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
-
-                mValues.put(Favorites.CELLX, getAttributeValue(parser, ATTR_X));
-                mValues.put(Favorites.CELLY, getAttributeValue(parser, ATTR_Y));
-            }
-
-            mValues.put(Favorites.CONTAINER, container);
-            mValues.put(Favorites.SCREEN, screenId);
-
-            TagParser tagParser = tagParserMap.get(parser.getName());
-            if (tagParser == null) {
-                if (LOGD) Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());
-                continue;
-            }
-            long newElementId = tagParser.parseAndAdd(parser, res);
-            if (newElementId >= 0) {
-                // Keep track of the set of screens which need to be added to the db.
-                if (!screenIds.contains(screenId) &&
-                        container == Favorites.CONTAINER_DESKTOP) {
-                    screenIds.add(screenId);
-                }
-                count++;
-            }
+            count += parseAndAddNode(parser, tagParserMap, screenIds);
         }
         return count;
+    }
+
+    /**
+     * Parses container and screenId attribute from the current tag, and puts it in the out.
+     * @param out array of size 2.
+     */
+    protected void parseContainerAndScreen(XmlResourceParser parser, long[] out) {
+        if (HOTSEAT_CONTAINER_NAME.equals(getAttributeValue(parser, ATTR_CONTAINER))) {
+            out[0] = Favorites.CONTAINER_HOTSEAT;
+            // Hack: hotseat items are stored using screen ids
+            long rank = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
+            out[1] = (rank < mHotseatAllAppsRank) ? rank : (rank + 1);
+        } else {
+            out[0] = Favorites.CONTAINER_DESKTOP;
+            out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
+        }
+    }
+
+    /**
+     * Parses the current node and returns the number of elements added.
+     */
+    protected int parseAndAddNode(
+            XmlResourceParser parser,
+            HashMap<String, TagParser> tagParserMap,
+            ArrayList<Long> screenIds)
+                    throws XmlPullParserException, IOException {
+        mValues.clear();
+        parseContainerAndScreen(parser, mTemp);
+        final long container = mTemp[0];
+        final long screenId = mTemp[1];
+
+        mValues.put(Favorites.CONTAINER, container);
+        mValues.put(Favorites.SCREEN, screenId);
+        mValues.put(Favorites.CELLX, getAttributeValue(parser, ATTR_X));
+        mValues.put(Favorites.CELLY, getAttributeValue(parser, ATTR_Y));
+
+        TagParser tagParser = tagParserMap.get(parser.getName());
+        if (tagParser == null) {
+            if (LOGD) Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());
+            return 0;
+        }
+        long newElementId = tagParser.parseAndAdd(parser);
+        if (newElementId >= 0) {
+            // Keep track of the set of screens which need to be added to the db.
+            if (!screenIds.contains(screenId) &&
+                    container == Favorites.CONTAINER_DESKTOP) {
+                screenIds.add(screenId);
+            }
+            return 1;
+        }
+        return 0;
     }
 
     protected long addShortcut(String title, Intent intent, int type) {
@@ -225,7 +248,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
         HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
-        parsers.put(TAG_SHORTCUT, new ShortcutParser());
+        parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
         return parsers;
     }
 
@@ -235,23 +258,26 @@ public class AutoInstallsLayout implements WorkspaceLoader {
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_FOLDER, new FolderParser());
         parsers.put(TAG_APPWIDGET, new AppWidgetParser());
-        parsers.put(TAG_SHORTCUT, new ShortcutParser());
+        parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
         return parsers;
     }
 
-    private interface TagParser {
+    protected interface TagParser {
         /**
          * Parses the tag and adds to the db
          * @return the id of the row added or -1;
          */
-        long parseAndAdd(XmlResourceParser parser, Resources res)
+        long parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException;
     }
 
-    private class AppShortcutParser implements TagParser {
+    /**
+     * App shortcuts: required attributes packageName and className
+     */
+    protected class AppShortcutParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser, Resources res) {
+        public long parseAndAdd(XmlResourceParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
 
@@ -277,20 +303,30 @@ public class AutoInstallsLayout implements WorkspaceLoader {
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+                    if (LOGD) Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
                 }
                 return -1;
             } else {
-                if (LOGD) Log.d(TAG, "Skipping invalid <favorite> with no component or uri");
-                return -1;
+                return invalidPackageOrClass(parser);
             }
+        }
+
+        /**
+         * Helper method to allow extending the parser capabilities
+         */
+        protected long invalidPackageOrClass(XmlResourceParser parser) {
+            if (LOGD) Log.d(TAG, "Skipping invalid <favorite> with no component");
+            return -1;
         }
     }
 
-    private class AutoInstallParser implements TagParser {
+    /**
+     * AutoInstall: required attributes packageName and className
+     */
+    protected class AutoInstallParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser, Resources res) {
+        public long parseAndAdd(XmlResourceParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
@@ -309,11 +345,19 @@ public class AutoInstallsLayout implements WorkspaceLoader {
         }
     }
 
-    private class ShortcutParser implements TagParser {
+    /**
+     * Parses a web shortcut. Required attributes url, icon, title
+     */
+    protected class ShortcutParser implements TagParser {
+
+        private final Resources mIconRes;
+
+        public ShortcutParser(Resources iconRes) {
+            mIconRes = iconRes;
+        }
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser, Resources res) {
-            final String url = getAttributeValue(parser, ATTR_URL);
+        public long parseAndAdd(XmlResourceParser parser) {
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
 
@@ -322,29 +366,46 @@ public class AutoInstallsLayout implements WorkspaceLoader {
                 return -1;
             }
 
-            if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
+            final Intent intent = parseIntent(parser);
+            if (intent == null) {
                 return -1;
             }
-            Drawable icon = res.getDrawable(iconId);
+
+            Drawable icon = mIconRes.getDrawable(iconId);
             if (icon == null) {
                 if (LOGD) Log.d(TAG, "Ignoring shortcut, can't load icon");
                 return -1;
             }
 
             ItemInfo.writeBitmap(mValues, Utilities.createIconBitmap(icon, mContext));
-            final Intent intent = new Intent(Intent.ACTION_VIEW, null)
-                .setData(Uri.parse(url))
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+            mValues.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
+            mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
+            mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                         Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            return addShortcut(res.getString(titleResId), intent, Favorites.ITEM_TYPE_SHORTCUT);
+            return addShortcut(mSourceRes.getString(titleResId),
+                    intent, Favorites.ITEM_TYPE_SHORTCUT);
+        }
+
+        protected Intent parseIntent(XmlResourceParser parser) {
+            final String url = getAttributeValue(parser, ATTR_URL);
+            if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
+                if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
+                return null;
+            }
+            return new Intent(Intent.ACTION_VIEW, null).setData(Uri.parse(url));
         }
     }
 
-    private class AppWidgetParser implements TagParser {
+    /**
+     * AppWidget parser: Required attributes packageName, className, spanX and spanY.
+     * Options child nodes: <extra key=... value=... />
+     */
+    protected class AppWidgetParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser, Resources res)
+        public long parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
@@ -429,16 +490,24 @@ public class AutoInstallsLayout implements WorkspaceLoader {
         }
     }
 
-    private class FolderParser implements TagParser {
-        private final HashMap<String, TagParser> mFolderElements = getFolderElementsMap();
+    protected class FolderParser implements TagParser {
+        private final HashMap<String, TagParser> mFolderElements;
+
+        public FolderParser() {
+            this(getFolderElementsMap());
+        }
+
+        public FolderParser(HashMap<String, TagParser> elements) {
+            mFolderElements = elements;
+        }
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser, Resources res)
+        public long parseAndAdd(XmlResourceParser parser)
                 throws XmlPullParserException, IOException {
             final String title;
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             if (titleResId != 0) {
-                title = res.getString(titleResId);
+                title = mSourceRes.getString(titleResId);
             } else {
                 title = mContext.getResources().getString(R.string.folder_name);
             }
@@ -469,7 +538,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
 
                 TagParser tagParser = mFolderElements.get(parser.getName());
                 if (tagParser != null) {
-                    final long id = tagParser.parseAndAdd(parser, res);
+                    final long id = tagParser.parseAndAdd(parser);
                     if (id >= 0) {
                         folderItems.add(id);
                     }
@@ -508,7 +577,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
         }
     }
 
-    private static final void beginDocument(XmlPullParser parser, String firstElementName)
+    protected static final void beginDocument(XmlPullParser parser, String firstElementName)
             throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG
@@ -528,7 +597,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
      * Return attribute value, attempting launcher-specific namespace first
      * before falling back to anonymous attribute.
      */
-    private static String getAttributeValue(XmlResourceParser parser, String attribute) {
+    protected static String getAttributeValue(XmlResourceParser parser, String attribute) {
         String value = parser.getAttributeValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute);
         if (value == null) {
@@ -541,7 +610,7 @@ public class AutoInstallsLayout implements WorkspaceLoader {
      * Return attribute resource value, attempting launcher-specific namespace
      * first before falling back to anonymous attribute.
      */
-    private static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
+    protected static int getAttributeResourceValue(XmlResourceParser parser, String attribute,
             int defaultValue) {
         int value = parser.getAttributeResourceValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute,
