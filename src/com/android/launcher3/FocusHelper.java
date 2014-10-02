@@ -637,8 +637,8 @@ public class FocusHelper {
                 boolean satisfiesRow = (lineDelta < 0) ? (tmpLp.cellY < row) : (tmpLp.cellY > row);
                 if (satisfiesRow &&
                         (newV instanceof BubbleTextView || newV instanceof FolderIcon)) {
-                    float tmpDistance = (float) Math.sqrt(Math.pow(tmpLp.cellX - lp.cellX, 2) +
-                            Math.pow(tmpLp.cellY - lp.cellY, 2));
+                    float tmpDistance = (float) Math.hypot(
+                            tmpLp.cellX - lp.cellX, tmpLp.cellY - lp.cellY);
                     if (tmpDistance < closestDistance) {
                         closestIndex = index;
                         closestDistance = tmpDistance;

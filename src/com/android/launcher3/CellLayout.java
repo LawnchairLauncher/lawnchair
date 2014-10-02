@@ -891,8 +891,7 @@ public class CellLayout extends ViewGroup {
 
     public float getDistanceFromCell(float x, float y, int[] cell) {
         cellToCenterPoint(cell[0], cell[1], mTmpPoint);
-        float distance = (float) Math.sqrt( Math.pow(x - mTmpPoint[0], 2) +
-                Math.pow(y - mTmpPoint[1], 2));
+        float distance = (float) Math.hypot(x - mTmpPoint[0], y - mTmpPoint[1]);
         return distance;
     }
 
@@ -1454,8 +1453,7 @@ public class CellLayout extends ViewGroup {
                     }
                 }
                 validRegions.push(currentRect);
-                double distance = Math.sqrt(Math.pow(cellXY[0] - pixelX, 2)
-                        + Math.pow(cellXY[1] - pixelY, 2));
+                double distance = Math.hypot(cellXY[0] - pixelX, cellXY[1] - pixelY);
 
                 if ((distance <= bestDistance && !contained) ||
                         currentRect.contains(bestRect)) {
@@ -1525,8 +1523,7 @@ public class CellLayout extends ViewGroup {
                     }
                 }
 
-                float distance = (float)
-                        Math.sqrt((x - cellX) * (x - cellX) + (y - cellY) * (y - cellY));
+                float distance = (float) Math.hypot(x - cellX, y - cellY);
                 int[] curDirection = mTmpPoint;
                 computeDirectionVector(x - cellX, y - cellY, curDirection);
                 // The direction score is just the dot product of the two candidate direction
