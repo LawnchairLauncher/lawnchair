@@ -88,13 +88,11 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
@@ -2593,6 +2591,16 @@ public class Launcher extends Activity
 
         // Open shortcut
         final ShortcutInfo shortcut = (ShortcutInfo) tag;
+
+        if (shortcut.isDisabled != 0) {
+            int error = R.string.activity_not_available;
+            if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
+                error = R.string.safemode_shortcut_error;
+            }
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final Intent intent = shortcut.intent;
 
         // Check for special shortcuts
@@ -4769,24 +4777,30 @@ public class Launcher extends Activity
      * we only remove specific components from the workspace, where as
      * package-removal should clear all items by package name.
      *
+     * @param reason if non-zero, the icons are not permanently removed, rather marked as disabled.
      * Implementation of the method from LauncherModel.Callbacks.
      */
+    @Override
     public void bindComponentsRemoved(final ArrayList<String> packageNames,
-            final ArrayList<AppInfo> appInfos, final UserHandleCompat user) {
+            final ArrayList<AppInfo> appInfos, final UserHandleCompat user, final int reason) {
         Runnable r = new Runnable() {
             public void run() {
-                bindComponentsRemoved(packageNames, appInfos, user);
+                bindComponentsRemoved(packageNames, appInfos, user, reason);
             }
         };
         if (waitUntilResume(r)) {
             return;
         }
 
-        if (!packageNames.isEmpty()) {
-            mWorkspace.removeItemsByPackageName(packageNames, user);
-        }
-        if (!appInfos.isEmpty()) {
-            mWorkspace.removeItemsByApplicationInfo(appInfos, user);
+        if (reason == 0) {
+            if (!packageNames.isEmpty()) {
+                mWorkspace.removeItemsByPackageName(packageNames, user);
+            }
+            if (!appInfos.isEmpty()) {
+                mWorkspace.removeItemsByApplicationInfo(appInfos, user);
+            }
+        } else {
+            mWorkspace.disableShortcutsByPackageName(packageNames, user, reason);
         }
 
         // Notify the drag controller

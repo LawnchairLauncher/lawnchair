@@ -122,7 +122,7 @@ public class BubbleTextView extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
 
         FastBitmapDrawable iconDrawable = Utilities.createIconDrawable(b);
-        iconDrawable.setGhostModeEnabled(info.isDisabled);
+        iconDrawable.setGhostModeEnabled(info.isDisabled != 0);
 
         setCompoundDrawables(null, iconDrawable, null, null);
         if (setDefaultPadding) {
