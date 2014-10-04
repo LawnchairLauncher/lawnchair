@@ -16,20 +16,15 @@
      limitations under the License.
 -->
 <resources>
-  <string-array name="transition_effect_entries">
-    <item>Heç bir</item>
-    <item>Yaxınlaşdır</item>
-    <item>Uzaqlaşdır</item>
-    <item>Yuxarı döndər</item>
-    <item>Aşağı döndər</item>
-    <item>Kub daxili</item>
-    <item>Kub xarici</item>
-    <item>Yığın</item>
-    <item>Akkordion</item>
-    <item>Çevir</item>
-    <item>Silindir daxili</item>
-    <item>Silindir xarici</item>
-    <item>Karusel</item>
-    <item>İcmal</item>
-  </string-array>
+  <string name="home_screen_settings">ƏSAS EKRAN TƏNZİMLƏMƏLƏRİ</string>
+  <string name="drawer_settings">TƏTBİQETMƏ MENYUSU</string>
+  <string name="app_settings">TƏTBİQETMƏ TƏNZİMLƏMƏLƏRİ</string>
+  <string name="setting_state_on">AÇIQ</string>
+  <string name="setting_state_off">BAĞLI</string>
+  <string name="search_panel_gel">Google Now</string>
+  <string name="search_panel_custom_home">CM Home</string>
+  <string name="themes_button_text">Temalar</string>
+  <string name="scrolling_page_outlines">Səhifə sərhədi</string>
+  <string name="scrolling_fade_adjacent">Yan səhifələri soldur</string>
+  <string name="scrolling_wallpaper">Divar kağızını sürüşdür</string>
 </resources>
