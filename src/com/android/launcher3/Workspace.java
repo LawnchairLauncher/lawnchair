@@ -4800,6 +4800,28 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+
+    void updateShortcuts(ArrayList<ShortcutInfo> shortcuts) {
+        final HashSet<ShortcutInfo> updates = new HashSet<ShortcutInfo>(shortcuts);
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView &&
+                        updates.contains(info)) {
+                    ShortcutInfo shortcutInfo = (ShortcutInfo) info;
+                    BubbleTextView shortcut = (BubbleTextView) v;
+                    shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, true, false);
+
+                    if (parent != null) {
+                        parent.invalidate();
+                    }
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
+    }
+
     void updateShortcutsAndWidgets(ArrayList<AppInfo> apps) {
         // Break the appinfo list per user
         final HashMap<UserHandleCompat, ArrayList<AppInfo>> appsPerUser =
