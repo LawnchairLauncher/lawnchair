@@ -287,7 +287,6 @@ public class WidgetPreviewLoader {
 
     static class CacheDb extends SQLiteOpenHelper {
         final static int DB_VERSION = 2;
-        final static String DB_NAME = "widgetpreviews.db";
         final static String TABLE_NAME = "shortcut_and_widget_previews";
         final static String COLUMN_NAME = "name";
         final static String COLUMN_SIZE = "size";
@@ -295,7 +294,8 @@ public class WidgetPreviewLoader {
         Context mContext;
 
         public CacheDb(Context context) {
-            super(context, new File(context.getCacheDir(), DB_NAME).getPath(), null, DB_VERSION);
+            super(context, new File(context.getCacheDir(),
+                    LauncherFiles.WIDGET_PREVIEWS_DB).getPath(), null, DB_VERSION);
             // Store the context for later use
             mContext = context;
         }
