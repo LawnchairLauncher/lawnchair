@@ -180,7 +180,6 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
 
     static class ImageDb extends SQLiteOpenHelper {
         final static int DB_VERSION = 1;
-        final static String DB_NAME = "saved_wallpaper_images.db";
         final static String TABLE_NAME = "saved_wallpaper_images";
         final static String COLUMN_ID = "id";
         final static String COLUMN_IMAGE_THUMBNAIL_FILENAME = "image_thumbnail";
@@ -189,7 +188,8 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         Context mContext;
 
         public ImageDb(Context context) {
-            super(context, context.getDatabasePath(DB_NAME).getPath(), null, DB_VERSION);
+            super(context, context.getDatabasePath(LauncherFiles.WALLPAPER_IMAGES_DB).getPath(),
+                    null, DB_VERSION);
             // Store the context for later use
             mContext = context;
         }
@@ -197,8 +197,9 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         public static void moveFromCacheDirectoryIfNecessary(Context context) {
             // We used to store the saved images in the cache directory, but that meant they'd get
             // deleted sometimes-- move them to the data directory
-            File oldSavedImagesFile = new File(context.getCacheDir(), ImageDb.DB_NAME);
-            File savedImagesFile = context.getDatabasePath(ImageDb.DB_NAME);
+            File oldSavedImagesFile = new File(context.getCacheDir(),
+                    LauncherFiles.WALLPAPER_IMAGES_DB);
+            File savedImagesFile = context.getDatabasePath(LauncherFiles.WALLPAPER_IMAGES_DB);
             if (oldSavedImagesFile.exists()) {
                 oldSavedImagesFile.renameTo(savedImagesFile);
             }
