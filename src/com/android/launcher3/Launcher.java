@@ -689,19 +689,20 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * Copied from View -- the View version of the method isn't called
-     * anywhere else in our process and only exists for API level 17+,
-     * so it's ok to keep our own version with no API requirement.
-     */
     public static int generateViewId() {
-        for (;;) {
-            final int result = sNextGeneratedId.get();
-            // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
-            int newValue = result + 1;
-            if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
-            if (sNextGeneratedId.compareAndSet(result, newValue)) {
-                return result;
+        if (Build.VERSION.SDK_INT >= 17) {
+            return View.generateViewId();
+        } else {
+            // View.generateViewId() is not available. The following fallback logic is a copy
+            // of its implementation.
+            for (;;) {
+                final int result = sNextGeneratedId.get();
+                // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+                int newValue = result + 1;
+                if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
+                if (sNextGeneratedId.compareAndSet(result, newValue)) {
+                    return result;
+                }
             }
         }
     }
