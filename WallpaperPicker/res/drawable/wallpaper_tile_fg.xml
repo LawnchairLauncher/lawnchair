@@ -15,9 +15,33 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:drawable="@drawable/tile_picker_selected" />
-    <item android:state_focused="true" android:drawable="@drawable/tile_picker_focused" />
-    <item android:state_pressed="true" android:drawable="@drawable/tile_picker_pressed" />
-    <item android:state_selected="true" android:drawable="@drawable/tile_picker_selected" />
+    <item android:state_checked="true" >
+        <shape>
+            <stroke
+                android:width="2dp"
+                android:color="#FFFFFFFF" />
+            <solid android:color="#33FFFFFF"/>
+        </shape>
+    </item>
+    <item android:state_focused="true" >
+        <shape>
+            <stroke
+                android:width="2dp"
+                android:color="#FFFFFFFF" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#33FFFFFF"/>
+        </shape>
+    </item>
+    <item android:state_selected="true" >
+        <shape>
+            <stroke
+                android:width="2dp"
+                android:color="#FFFFFFFF" />
+            <solid android:color="#33FFFFFF"/>
+        </shape>
+    </item>
     <item android:drawable="@android:color/transparent" />
 </selector>
