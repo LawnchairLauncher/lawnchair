@@ -54,8 +54,6 @@ public final class Utilities {
 
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
-    public static int sIconTextureWidth = -1;
-    public static int sIconTextureHeight = -1;
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -89,7 +87,7 @@ public final class Utilities {
      * Resizes an icon drawable to the correct icon size.
      */
     static void resizeIconDrawable(Drawable icon) {
-        icon.setBounds(0, 0, sIconTextureWidth, sIconTextureHeight);
+        icon.setBounds(0, 0, sIconWidth, sIconHeight);
     }
 
     private static boolean isPropertyEnabled(String propertyName) {
@@ -110,29 +108,18 @@ public final class Utilities {
     }
 
     /**
-     * Returns a bitmap suitable for the all apps view. Used to convert pre-ICS
-     * icon bitmaps that are stored in the database (which were 74x74 pixels at hdpi size)
-     * to the proper size (48dp)
+     * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
     static Bitmap createIconBitmap(Bitmap icon, Context context) {
-        int textureWidth = sIconTextureWidth;
-        int textureHeight = sIconTextureHeight;
-        int sourceWidth = icon.getWidth();
-        int sourceHeight = icon.getHeight();
-        if (sourceWidth > textureWidth && sourceHeight > textureHeight) {
-            // Icon is bigger than it should be; clip it (solves the GB->ICS migration case)
-            return Bitmap.createBitmap(icon,
-                    (sourceWidth - textureWidth) / 2,
-                    (sourceHeight - textureHeight) / 2,
-                    textureWidth, textureHeight);
-        } else if (sourceWidth == textureWidth && sourceHeight == textureHeight) {
-            // Icon is the right size, no need to change it
-            return icon;
-        } else {
-            // Icon is too small, render to a larger bitmap
-            final Resources resources = context.getResources();
-            return createIconBitmap(new BitmapDrawable(resources, icon), context);
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                initStatics(context);
+            }
         }
+        if (sIconWidth == icon.getWidth() && sIconHeight == icon.getHeight()) {
+            return icon;
+        }
+        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context);
     }
 
     /**
@@ -172,8 +159,8 @@ public final class Utilities {
             }
 
             // no intrinsic size --> use default size
-            int textureWidth = sIconTextureWidth;
-            int textureHeight = sIconTextureHeight;
+            int textureWidth = sIconWidth;
+            int textureHeight = sIconHeight;
 
             final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
@@ -201,30 +188,6 @@ public final class Utilities {
             canvas.setBitmap(null);
 
             return bitmap;
-        }
-    }
-
-    /**
-     * Returns a Bitmap representing the thumbnail of the specified Bitmap.
-     *
-     * @param bitmap The bitmap to get a thumbnail of.
-     * @param context The application's context.
-     *
-     * @return A thumbnail for the specified bitmap or the bitmap itself if the
-     *         thumbnail could not be created.
-     */
-    static Bitmap resampleIconBitmap(Bitmap bitmap, Context context) {
-        synchronized (sCanvas) { // we share the statics :-(
-            if (sIconWidth == -1) {
-                initStatics(context);
-            }
-
-            if (bitmap.getWidth() == sIconWidth && bitmap.getHeight() == sIconHeight) {
-                return bitmap;
-            } else {
-                final Resources resources = context.getResources();
-                return createIconBitmap(new BitmapDrawable(resources, bitmap), context);
-            }
         }
     }
 
@@ -330,12 +293,10 @@ public final class Utilities {
     private static void initStatics(Context context) {
         final Resources resources = context.getResources();
         sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
-        sIconTextureWidth = sIconTextureHeight = sIconWidth;
     }
 
     public static void setIconSize(int widthPx) {
         sIconWidth = sIconHeight = widthPx;
-        sIconTextureWidth = sIconTextureHeight = widthPx;
     }
 
     public static void scaleRect(Rect r, float scale) {
