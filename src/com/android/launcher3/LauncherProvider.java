@@ -1050,7 +1050,7 @@ public class LauncherProvider extends ContentProvider {
                     long id = c.getLong(idIndex);
                     byte[] data = c.getBlob(iconIndex);
                     try {
-                        Bitmap bitmap = Utilities.resampleIconBitmap(
+                        Bitmap bitmap = Utilities.createIconBitmap(
                                 BitmapFactory.decodeByteArray(data, 0, data.length),
                                 mContext);
                         if (bitmap != null) {
