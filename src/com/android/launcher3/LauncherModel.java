@@ -198,6 +198,7 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
+        public void bindShortcutsUpdated(ArrayList<ShortcutInfo> shortcuts);
         public void updatePackageState(ArrayList<PackageInstallInfo> installInfo);
         public void updatePackageBadge(String packageName);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
@@ -3059,6 +3060,43 @@ public class LauncherModel extends BroadcastReceiver
                 });
             }
 
+            // Update shortcuts which use an iconResource
+            if (mOp == OP_ADD || mOp == OP_UPDATE) {
+                final ArrayList<ShortcutInfo> iconsChanged = new ArrayList<ShortcutInfo>();
+                HashSet<String> packageSet = new HashSet<String>(Arrays.asList(packages));
+                // We need to iteration over the items here, so that we can avoid new Bitmap
+                // creation on the UI thread.
+                synchronized (sBgLock) {
+                    for (ItemInfo info : sBgWorkspaceItems) {
+                        if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
+                            ShortcutInfo si = (ShortcutInfo) info;
+                            if ((si.iconResource != null)
+                                    && packageSet.contains(si.getTargetComponent().getPackageName())){
+                                Bitmap icon = Utilities.createIconBitmap(si.iconResource.packageName,
+                                        si.iconResource.resourceName, mIconCache, context);
+                                if (icon != null) {
+                                    si.setIcon(icon);
+                                    si.usingFallbackIcon = false;
+                                    iconsChanged.add(si);
+                                    updateItemInDatabase(context, si);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!iconsChanged.isEmpty()) {
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                            if (callbacks == cb && cb != null) {
+                                callbacks.bindShortcutsUpdated(iconsChanged);
+                            }
+                        }
+                    });
+                }
+            }
+
             final ArrayList<String> removedPackageNames =
                     new ArrayList<String>();
             if (mOp == OP_REMOVE) {
@@ -3385,19 +3423,9 @@ public class LauncherModel extends BroadcastReceiver
         case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
             String packageName = c.getString(iconPackageIndex);
             String resourceName = c.getString(iconResourceIndex);
-            PackageManager packageManager = context.getPackageManager();
             info.customIcon = false;
             // the resource
-            try {
-                Resources resources = packageManager.getResourcesForApplication(packageName);
-                if (resources != null) {
-                    final int id = resources.getIdentifier(resourceName, null, null);
-                    icon = Utilities.createIconBitmap(
-                            mIconCache.getFullResIcon(resources, id), context);
-                }
-            } catch (Exception e) {
-                // drop this.  we have other places to look for icons
-            }
+            icon = Utilities.createIconBitmap(packageName, resourceName, mIconCache, context);
             // the db
             if (icon == null) {
                 icon = getIconFromCursor(c, iconIndex, context);
@@ -3490,19 +3518,10 @@ public class LauncherModel extends BroadcastReceiver
             customIcon = true;
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra != null && extra instanceof ShortcutIconResource) {
-                try {
-                    iconResource = (ShortcutIconResource) extra;
-                    final PackageManager packageManager = context.getPackageManager();
-                    Resources resources = packageManager.getResourcesForApplication(
-                            iconResource.packageName);
-                    final int id = resources.getIdentifier(iconResource.resourceName, null, null);
-                    icon = Utilities.createIconBitmap(
-                            mIconCache.getFullResIcon(resources, id),
-                            context);
-                } catch (Exception e) {
-                    Log.w(TAG, "Could not load shortcut icon: " + extra);
-                }
+            if (extra instanceof ShortcutIconResource) {
+                iconResource = (ShortcutIconResource) extra;
+                icon = Utilities.createIconBitmap(iconResource.packageName,
+                        iconResource.resourceName, mIconCache, context);
             }
         }
 
