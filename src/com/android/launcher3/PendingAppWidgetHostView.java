@@ -41,9 +41,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
     private final Intent mIconLookupIntent;
+    private final boolean mDisabledForSafeMode;
 
     private Bitmap mIcon;
-    private PreloadIconDrawable mDrawable;
 
     private Drawable mCenterDrawable;
     private Drawable mTopCornerDrawable;
@@ -53,11 +53,13 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
-    public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info) {
+    public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
+            boolean disabledForSafeMode) {
         super(context);
         mInfo = info;
         mStartState = info.restoreStatus;
         mIconLookupIntent = new Intent().setComponent(info.providerName);
+        mDisabledForSafeMode = disabledForSafeMode;
 
         mPaint = new TextPaint();
         mPaint.setColor(0xFFFFFFFF);
@@ -106,14 +108,21 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             return;
         }
         mIcon = icon;
-        if (mDrawable != null) {
-            mDrawable.setCallback(null);
-            mDrawable = null;
+        if (mCenterDrawable != null) {
+            mCenterDrawable.setCallback(null);
+            mCenterDrawable = null;
         }
         if (mIcon != null) {
-            // The view displays two modes, one with a setup icon and another with a preload icon
-            // in the center.
-            if (isReadyForClickSetup()) {
+            // The view displays three modes,
+            //   1) App icon in the center
+            //   2) Preload icon in the center
+            //   3) Setup icon in the center and app icon in the top right corner.
+            if (mDisabledForSafeMode) {
+                FastBitmapDrawable disabledIcon = Utilities.createIconDrawable(mIcon);
+                disabledIcon.setGhostModeEnabled(true);
+                mCenterDrawable = disabledIcon;
+                mTopCornerDrawable = null;
+            } else if (isReadyForClickSetup()) {
                 mCenterDrawable = getResources().getDrawable(R.drawable.ic_setting);
                 mTopCornerDrawable = new FastBitmapDrawable(mIcon);
             } else {
@@ -123,8 +132,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 }
 
                 FastBitmapDrawable drawable = Utilities.createIconDrawable(mIcon);
-                mDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
-                mDrawable.setCallback(this);
+                mCenterDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
+                mCenterDrawable.setCallback(this);
+                mTopCornerDrawable = null;
                 applyState();
             }
             mDrawableSizeChanged = true;
@@ -133,12 +143,12 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     @Override
     protected boolean verifyDrawable(Drawable who) {
-        return (who == mDrawable) || super.verifyDrawable(who);
+        return (who == mCenterDrawable) || super.verifyDrawable(who);
     }
 
     public void applyState() {
-        if (mDrawable != null) {
-            mDrawable.setLevel(Math.max(mInfo.installProgress, 0));
+        if (mCenterDrawable != null) {
+            mCenterDrawable.setLevel(Math.max(mInfo.installProgress, 0));
         }
     }
 
@@ -158,23 +168,30 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mDrawable != null) {
+        if (mCenterDrawable == null) {
+            // Nothing to draw
+            return;
+        }
+
+        if (mTopCornerDrawable == null) {
             if (mDrawableSizeChanged) {
+                int outset = (mCenterDrawable instanceof PreloadIconDrawable) ?
+                        ((PreloadIconDrawable) mCenterDrawable).getOutset() : 0;
                 int maxSize = LauncherAppState.getInstance().getDynamicGrid()
-                        .getDeviceProfile().iconSizePx + 2 * mDrawable.getOutset();
+                        .getDeviceProfile().iconSizePx + 2 * outset;
                 int size = Math.min(maxSize, Math.min(
                         getWidth() - getPaddingLeft() - getPaddingRight(),
                         getHeight() - getPaddingTop() - getPaddingBottom()));
 
                 mRect.set(0, 0, size, size);
-                mRect.inset(mDrawable.getOutset(), mDrawable.getOutset());
+                mRect.inset(outset, outset);
                 mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
-                mDrawable.setBounds(mRect);
+                mCenterDrawable.setBounds(mRect);
                 mDrawableSizeChanged = false;
             }
-
-            mDrawable.draw(canvas);
-        } else if ((mCenterDrawable != null) && (mTopCornerDrawable != null)) {
+            mCenterDrawable.draw(canvas);
+        } else  {
+            // Draw the top corner icon and "Setup" text is possible
             if (mDrawableSizeChanged) {
                 DeviceProfile grid = getDeviceProfile();
                 int iconSize = grid.iconSizePx;

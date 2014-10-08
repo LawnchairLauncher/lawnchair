@@ -2278,7 +2278,7 @@ public class LauncherModel extends BroadcastReceiver
                                             // App restore has started. Update the flag
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
-                                        } else if (REMOVE_UNRESTORED_ICONS) {
+                                        } else if (REMOVE_UNRESTORED_ICONS && !isSafeMode) {
                                             Launcher.addDumpLog(TAG,
                                                     "Unrestored widget removed: " + component, true);
                                             itemsToRemove.add(id);

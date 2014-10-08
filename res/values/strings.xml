@@ -44,6 +44,8 @@
     <string name="activity_not_available">App isn\'t available</string>
     <!-- SafeMode shortcut error string -->
     <string name="safemode_shortcut_error">Downloaded app disabled in Safe mode</string>
+    <!-- SafeMode widget error string -->
+    <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
     <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
 
