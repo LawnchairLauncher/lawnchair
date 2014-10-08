@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
@@ -112,12 +111,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
     }
 
     public boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user) {
-        try {
-            PackageInfo info = mPm.getPackageInfo(packageName, 0);
-            return info != null && info.applicationInfo.enabled;
-        } catch (NameNotFoundException e) {
-            return false;
-        }
+        return isAppEnabled(mPm, packageName, 0);
     }
 
     public boolean isActivityEnabledForProfile(ComponentName component, UserHandleCompat user) {
@@ -198,8 +192,13 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
                     callback.onPackagesAvailable(packages, user, replacing);
                 }
             } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
-                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING,
-                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT);
+                // This intent is broadcasted when moving a package or mounting/un-mounting
+                // external storage.
+                // However on Kitkat this is also sent when a package is being updated, and
+                // contains an extra Intent.EXTRA_REPLACING=true for that case.
+                // Using false as default for Intent.EXTRA_REPLACING gives correct value on
+                // lower devices as the intent is not sent when the app is updating/replacing.
+                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
                 for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
                     callback.onPackagesUnavailable(packages, user, replacing);

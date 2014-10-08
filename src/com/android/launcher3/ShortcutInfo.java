@@ -88,10 +88,20 @@ public class ShortcutInfo extends ItemInfo {
     private Bitmap mIcon;
 
     /**
+     * Indicates that the icon is disabled due to safe mode restrictions.
+     */
+    public static final int FLAG_DISABLED_SAFEMODE = 1;
+
+    /**
+     * Indicates that the icon is disabled as the app is not available.
+     */
+    public static final int FLAG_DISABLED_NOT_AVAILABLE = 2;
+
+    /**
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
      * sd-card is not available).
      */
-    boolean isDisabled = false;
+    int isDisabled = DEFAULT;
 
     int status;
 
