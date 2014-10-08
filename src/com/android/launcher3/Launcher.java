@@ -403,6 +403,10 @@ public class Launcher extends Activity
                     .build());
         }
 
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.preOnCreate();
+        }
+
         super.onCreate(savedInstanceState);
 
         LauncherAppState.setApplicationContext(getApplicationContext());
@@ -499,13 +503,38 @@ public class Launcher extends Activity
             showFirstRunActivity();
             showFirstRunClings();
         }
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onCreate(savedInstanceState);
+        }
+    }
+
+    private LauncherCallbacks mLauncherCallbacks;
+
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onPostCreate(savedInstanceState);
+        }
+    }
+
+    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
+        mLauncherCallbacks = callbacks;
+        return true;
     }
 
     @Override
-    public void onLauncherProviderChange() { }
+    public void onLauncherProviderChange() {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onLauncherProviderChange();
+        }
+    }
 
-    /** To be overriden by subclasses to hint to Launcher that we have custom content */
+    /** To be overridden by subclasses to hint to Launcher that we have custom content */
     protected boolean hasCustomContentToLeft() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.hasCustomContentToLeft();
+        }
         return false;
     }
 
@@ -515,6 +544,9 @@ public class Launcher extends Activity
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
     protected void populateCustomContentContainer() {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.populateCustomContentContainer();
+        }
     }
 
     /**
@@ -953,12 +985,20 @@ public class Launcher extends Activity
     protected void onStop() {
         super.onStop();
         FirstFrameAnimatorHelper.setIsVisible(false);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onStop();
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onStart();
+        }
     }
 
     @Override
@@ -968,6 +1008,11 @@ public class Launcher extends Activity
             startTime = System.currentTimeMillis();
             Log.v(TAG, "Launcher.onResume()");
         }
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.preOnResume();
+        }
+
         super.onResume();
 
         // Restore the previous launcher state
@@ -1056,6 +1101,10 @@ public class Launcher extends Activity
         mWorkspace.onResume();
 
         PackageInstallerCompat.getInstance(this).onResume();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onResume();
+        }
     }
 
     @Override
@@ -1074,25 +1123,10 @@ public class Launcher extends Activity
         if (mWorkspace.getCustomContentCallbacks() != null) {
             mWorkspace.getCustomContentCallbacks().onHide();
         }
-    }
 
-    QSBScroller mQsbScroller = new QSBScroller() {
-        int scrollY = 0;
-
-        @Override
-        public void setScrollY(int scroll) {
-            scrollY = scroll;
-
-            if (mWorkspace.isOnOrMovingToCustomContent()) {
-                mSearchDropTargetBar.setTranslationY(- scrollY);
-                getQsbBar().setTranslationY(-scrollY);
-            }
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onPause();
         }
-    };
-
-    public void resetQSBScroll() {
-        mSearchDropTargetBar.animate().translationY(0).start();
-        getQsbBar().animate().translationY(0).start();
     }
 
     public interface CustomContentCallbacks {
@@ -1111,17 +1145,16 @@ public class Launcher extends Activity
     }
 
     protected boolean hasSettings() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.hasSettings();
+        }
         return false;
     }
 
-    public interface QSBScroller {
-        public void setScrollY(int scrollY);
-    }
 
-    public QSBScroller addToCustomContentPage(View customContent,
+    public void addToCustomContentPage(View customContent,
             CustomContentCallbacks callbacks, String description) {
         mWorkspace.addToCustomContentPage(customContent, callbacks, description);
-        return mQsbScroller;
     }
 
     // The custom content needs to offset its content to account for the QSB
@@ -1146,6 +1179,10 @@ public class Launcher extends Activity
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mHasFocus = hasFocus;
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onWindowFocusChanged(hasFocus);
+        }
     }
 
     private boolean acceptFilter() {
@@ -1884,8 +1921,11 @@ public class Launcher extends Activity
             Folder openFolder = mWorkspace.getOpenFolder();
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
+
+            boolean moveToDefaultScreen = mLauncherCallbacks != null ?
+                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null && shouldMoveToDefaultScreenOnHomeIntent()) {
+                    openFolder == null && moveToDefaultScreen) {
                 mWorkspace.moveToDefaultScreen(true);
             }
 
@@ -1912,27 +1952,18 @@ public class Launcher extends Activity
                 mAppsCustomizeTabHost.reset();
             }
 
-            onHomeIntent();
+            if (mLauncherCallbacks != null) {
+                mLauncherCallbacks.onHomeIntent();
+            }
         }
 
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }
-    }
 
-    /**
-     * Override point for subclasses to prevent movement to the default screen when the home
-     * button is pressed. Used (for example) in GEL, to prevent movement during a search.
-     */
-    protected boolean shouldMoveToDefaultScreenOnHomeIntent() {
-        return true;
-    }
-
-    /**
-     * Override point for subclasses to provide custom behaviour for when a home intent is fired.
-     */
-    protected void onHomeIntent() {
-        // Do nothing
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onNewIntent(intent);
+        }
     }
 
     @Override
@@ -1984,6 +2015,10 @@ public class Launcher extends Activity
             outState.putInt("apps_customize_currentIndex", currentIndex);
         }
         outState.putSerializable(RUNTIME_STATE_VIEW_IDS, mItemIdToViewId);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onSaveInstanceState(outState);
+        }
     }
 
     @Override
@@ -2033,6 +2068,10 @@ public class Launcher extends Activity
 
         PackageInstallerCompat.getInstance(this).onStop();
         LauncherAnimUtils.onDestroyActivity();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onDestroy();
+        }
     }
 
     public DragController getDragController() {
@@ -2086,6 +2125,11 @@ public class Launcher extends Activity
      */
     public boolean startSearch(String initialQuery,
             boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData,
+                    sourceBounds);
+        }
+
         startGlobalSearch(initialQuery, selectInitialQuery,
                 appSearchData, sourceBounds);
         return false;
@@ -2112,7 +2156,7 @@ public class Launcher extends Activity
         } else {
             appSearchData = new Bundle(appSearchData);
         }
-        // Set source to package name of app that starts global search, if not set already.
+        // Set source to package name of app that starts global search if not set already.
         if (!appSearchData.containsKey("source")) {
             appSearchData.putString("source", getPackageName());
         }
@@ -2150,6 +2194,10 @@ public class Launcher extends Activity
                 showWorkspace(true);
             }
         }
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.onPrepareOptionsMenu(menu);
+        }
+
         return false;
     }
 
@@ -2184,7 +2232,11 @@ public class Launcher extends Activity
         }
     }
 
-    protected void onWorkspaceLockedChanged() { }
+    protected void onWorkspaceLockedChanged() {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onWorkspaceLockedChanged();
+        }
+    }
 
     private void resetAddInfo() {
         mPendingAddInfo.container = ItemInfo.NO_ID;
@@ -2346,6 +2398,9 @@ public class Launcher extends Activity
     }
 
     protected ComponentName getWallpaperPickerComponent() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.getWallpaperPickerComponent();
+        }
         return new ComponentName(getPackageName(), LauncherWallpaperPickerActivity.class.getName());
     }
 
@@ -2384,6 +2439,10 @@ public class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.handleBackPressed()) {
+            return;
+        }
+
         if (isAllAppsVisible()) {
             if (mAppsCustomizeContent.getContentType() ==
                     AppsCustomizePagedView.ContentType.Applications) {
@@ -2466,6 +2525,9 @@ public class Launcher extends Activity
 
     public void onClickPagedViewIcon(View v) {
         startAppShortcutOrInfoActivity(v);
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickPagedViewIcon(v);
+        }
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -2527,6 +2589,11 @@ public class Launcher extends Activity
     }
 
     public void startVoice() {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            mLauncherCallbacks.startVoice();
+            return;
+        }
+
         try {
             final SearchManager searchManager =
                     (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -2556,6 +2623,9 @@ public class Launcher extends Activity
             showWorkspace(true);
         } else {
             showAllApps(true, AppsCustomizePagedView.ContentType.Applications, false);
+        }
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickAllAppsButton(v);
         }
     }
 
@@ -2631,6 +2701,10 @@ public class Launcher extends Activity
 
         // Start activities
         startAppShortcutOrInfoActivity(v);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickAppShortcut(v);
+        }
     }
 
     private void startAppShortcutOrInfoActivity(View v) {
@@ -2704,6 +2778,10 @@ public class Launcher extends Activity
                 }
             }
         }
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickFolderIcon(v);
+        }
     }
 
     /**
@@ -2713,6 +2791,10 @@ public class Launcher extends Activity
     protected void onClickAddWidgetButton(View view) {
         if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
         showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickAddWidgetButton(view);
+        }
     }
 
     /**
@@ -2724,6 +2806,10 @@ public class Launcher extends Activity
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
         pickWallpaper.setComponent(getWallpaperPickerComponent());
         startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickWallpaperPicker(v);
+        }
     }
 
     /**
@@ -2732,6 +2818,9 @@ public class Launcher extends Activity
      */
     protected void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onClickSettingsButton(v);
+        }
     }
 
     public void onTouchDownAllAppsButton(View v) {
@@ -2759,13 +2848,27 @@ public class Launcher extends Activity
         return mHapticFeedbackTouchListener;
     }
 
-    public void onDragStarted(View view) {}
+    public void onDragStarted(View view) {
+        if (isOnCustomContent()) {
+            // Custom content screen doesn't participate in drag and drop. If on custom
+            // content screen, move to default.
+            moveWorkspaceToDefaultScreen();
+        }
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onDragStarted(view);
+        }
+    }
 
     /**
      * Called when the user stops interacting with the launcher.
      * This implies that the user is now on the homescreen and is not doing housekeeping.
      */
-    protected void onInteractionEnd() {}
+    protected void onInteractionEnd() {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onInteractionEnd();
+        }
+    }
 
     /**
      * Called when the user starts interacting with the launcher.
@@ -2776,7 +2879,11 @@ public class Launcher extends Activity
      * This is a good time to stop doing things that only make sense
      * when the user is on the homescreen and not doing housekeeping.
      */
-    protected void onInteractionBegin() {}
+    protected void onInteractionBegin() {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onInteractionBegin();
+        }
+    }
 
     void startApplicationDetailsActivity(ComponentName componentName, UserHandleCompat user) {
         String packageName = componentName.getPackageName();
@@ -3972,6 +4079,13 @@ public class Launcher extends Activity
     }
 
     public View getQsbBar() {
+        if (mLauncherCallbacks != null) {
+            View qsb = mLauncherCallbacks.getQsbBar();
+            if (qsb != null) {
+                return qsb;
+            }
+        }
+
         if (mQsb == null) {
             mQsb = mInflater.inflate(R.layout.qsb, mSearchDropTargetBar, false);
             mSearchDropTargetBar.addView(mQsb);
@@ -3980,6 +4094,10 @@ public class Launcher extends Activity
     }
 
     protected boolean updateGlobalSearchIcon() {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return true;
+        }
+
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
@@ -4015,6 +4133,7 @@ public class Launcher extends Activity
     }
 
     protected void updateGlobalSearchIcon(Drawable.ConstantState d) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) return;
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final View searchButton = (ImageView) findViewById(R.id.search_button);
         updateButtonWithDrawable(R.id.search_button, d);
@@ -4022,6 +4141,9 @@ public class Launcher extends Activity
     }
 
     protected boolean updateVoiceSearchIcon(boolean searchVisible) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return true;
+        }
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
 
@@ -4068,6 +4190,10 @@ public class Launcher extends Activity
     }
 
     protected void updateVoiceSearchIcon(Drawable.ConstantState d) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return;
+        }
+
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         updateButtonWithDrawable(R.id.voice_button, d);
@@ -4075,6 +4201,9 @@ public class Launcher extends Activity
     }
 
     public void updateVoiceButtonProxyVisible(boolean forceDisableVoiceButtonProxy) {
+        if (mLauncherCallbacks != null) {
+            forceDisableVoiceButtonProxy |= mLauncherCallbacks.forceDisableVoiceButtonProxy();
+        }
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
         if (voiceButtonProxy != null) {
             boolean visible = !forceDisableVoiceButtonProxy &&
@@ -4617,6 +4746,10 @@ public class Launcher extends Activity
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
         PackageInstallerCompat.getInstance(this).onFinishBind();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.finishBindingItems(upgradePath);
+        }
     }
 
     private void sendLoadingCompleteBroadcastIfNecessary() {
@@ -4697,6 +4830,9 @@ public class Launcher extends Activity
                 mAppsCustomizeContent.onPackagesUpdated(
                         LauncherModel.getSortedWidgetsAndShortcuts(this));
             }
+        }
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.bindAllApplications(apps);
         }
     }
 
@@ -4891,16 +5027,10 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * Called when the SearchBar hint should be changed.
-     *
-     * @param hint the hint to be displayed in the search bar.
-     */
-    protected void onSearchBarHintChanged(String hint) {
-
-    }
-
     protected boolean isLauncherPreinstalled() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.isLauncherPreinstalled();
+        }
         PackageManager pm = getPackageManager();
         try {
             ApplicationInfo ai = pm.getApplicationInfo(getComponentName().getPackageName(), 0);
@@ -4920,6 +5050,9 @@ public class Launcher extends Activity
      * when our wallpaper cropper was not yet used to set a wallpaper.
      */
     protected boolean overrideWallpaperDimensions() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.overrideWallpaperDimensions();
+        }
         return true;
     }
 
@@ -4928,6 +5061,9 @@ public class Launcher extends Activity
      * before showing the standard launcher experience.
      */
     protected boolean hasFirstRunActivity() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.hasFirstRunActivity();
+        }
         return false;
     }
 
@@ -4935,6 +5071,9 @@ public class Launcher extends Activity
      * To be overridden by subclasses to launch any first run activity
      */
     protected Intent getFirstRunActivity() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.getFirstRunActivity();
+        }
         return null;
     }
 
@@ -4971,6 +5110,9 @@ public class Launcher extends Activity
      * screen that must be displayed and dismissed.
      */
     protected boolean hasDismissableIntroScreen() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.hasDismissableIntroScreen();
+        }
         return false;
     }
 
@@ -4978,6 +5120,9 @@ public class Launcher extends Activity
      * Full screen intro screen to be shown and dismissed before the launcher can be used.
      */
     protected View getIntroScreen() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.getIntroScreen();
+        }
         return null;
     }
 
@@ -5089,6 +5234,9 @@ public class Launcher extends Activity
 
     @Override
     public void onPageSwitch(View newPage, int newPageIndex) {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onPageSwitch(newPage, newPageIndex);
+        }
     }
 
     /**
@@ -5119,6 +5267,9 @@ public class Launcher extends Activity
             for (int i = 0; i < sDumpLogs.size(); i++) {
                 writer.println("  " + sDumpLogs.get(i));
             }
+        }
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.dump(prefix, fd, writer, args);
         }
     }
 
