@@ -27,7 +27,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.provider.Settings;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,8 +55,7 @@ class LauncherClings implements OnClickListener {
     /** Ctor */
     public LauncherClings(Launcher launcher) {
         mLauncher = launcher;
-        mInflater = LayoutInflater.from(new
-                ContextThemeWrapper(mLauncher, android.R.style.Theme_DeviceDefault));
+        mInflater = LayoutInflater.from(mLauncher);
     }
 
     @Override
