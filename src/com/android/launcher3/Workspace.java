@@ -4629,6 +4629,34 @@ public class Workspace extends SmoothPagedView
         });
     }
 
+    public void disableShortcutsByPackageName(final ArrayList<String> packages,
+            final UserHandleCompat user, final int reason) {
+        final HashSet<String> packageNames = new HashSet<String>();
+        packageNames.addAll(packages);
+
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                    ShortcutInfo shortcutInfo = (ShortcutInfo) info;
+                    ComponentName cn = shortcutInfo.getTargetComponent();
+                    if (user.equals(shortcutInfo.user) && cn != null
+                            && packageNames.contains(cn.getPackageName())) {
+                        shortcutInfo.isDisabled |= reason;
+                        BubbleTextView shortcut = (BubbleTextView) v;
+                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, true, false);
+
+                        if (parent != null) {
+                            parent.invalidate();
+                        }
+                    }
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
+    }
+
     // Removes ALL items that match a given package name, this is usually called when a package
     // has been removed and we want to remove all components (widgets, shortcuts, apps) that
     // belong to that package.
@@ -4859,7 +4887,6 @@ public class Workspace extends SmoothPagedView
                     ComponentName cn = shortcutInfo.getTargetComponent();
                     AppInfo appInfo = appsMap.get(cn);
                     if (user.equals(shortcutInfo.user) && cn != null
-                            && LauncherModel.isShortcutInfoUpdateable(info)
                             && pkgNames.contains(cn.getPackageName())) {
                         boolean promiseStateChanged = false;
                         boolean infoUpdated = false;
@@ -4904,8 +4931,14 @@ public class Workspace extends SmoothPagedView
                             LauncherModel.updateItemInDatabase(getContext(), shortcutInfo);
                         }
 
+                        if ((shortcutInfo.isDisabled & ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE) != 0) {
+                            // Since package was just updated, the target must be available now.
+                            shortcutInfo.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
+                            infoUpdated = true;
+                        }
 
-                        if (appInfo != null) {
+                        // Only update the icon and labels if the shortcuts points to an app target
+                        if ((appInfo != null) && LauncherModel.isShortcutAppTarget(shortcutInfo)) {
                             shortcutInfo.updateIcon(mIconCache);
                             shortcutInfo.title = appInfo.title.toString();
                             shortcutInfo.contentDescription = appInfo.contentDescription;
