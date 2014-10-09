@@ -202,7 +202,7 @@ public class WallpaperCropActivity extends Activity {
     }
 
     public static String getSharedPreferencesKey() {
-        return WallpaperCropActivity.class.getName();
+        return LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
     }
 
     // As a ratio of screen height, the total distance we want the parallax effect to span

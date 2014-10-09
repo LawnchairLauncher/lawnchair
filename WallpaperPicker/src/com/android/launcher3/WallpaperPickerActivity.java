@@ -86,8 +86,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     public static final int PICK_LIVE_WALLPAPER = 7;
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
     private static final String SELECTED_INDEX = "SELECTED_INDEX";
-    private static final String OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb.jpg";
-    private static final String DEFAULT_WALLPAPER_THUMBNAIL_FILENAME = "default_thumb2.jpg";
     private static final int FLAG_POST_DELAY_MILLIS = 200;
 
     private View mSelectedTile;
@@ -999,16 +997,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private File getDefaultThumbFile() {
         return new File(getFilesDir(), Build.VERSION.SDK_INT
-                + "_" + DEFAULT_WALLPAPER_THUMBNAIL_FILENAME);
+                + "_" + LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL);
     }
 
     private boolean saveDefaultWallpaperThumb(Bitmap b) {
         // Delete old thumbnails.
-        new File(getFilesDir(), OLD_DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
-        new File(getFilesDir(), DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
+        new File(getFilesDir(), LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL_OLD).delete();
+        new File(getFilesDir(), LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL).delete();
 
         for (int i = Build.VERSION_CODES.JELLY_BEAN; i < Build.VERSION.SDK_INT; i++) {
-            new File(getFilesDir(), i + "_" + DEFAULT_WALLPAPER_THUMBNAIL_FILENAME).delete();
+            new File(getFilesDir(), i + "_" + LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL).delete();
         }
         return writeImageToFileAsJpeg(getDefaultThumbFile(), b);
     }
