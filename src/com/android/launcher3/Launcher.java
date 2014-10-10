@@ -4923,31 +4923,6 @@ public class Launcher extends Activity
         return true;
     }
 
-    protected boolean shouldClingFocusHotseatApp() {
-        return false;
-    }
-    protected String getFirstRunClingSearchBarHint() {
-        return "";
-    }
-    protected String getFirstRunCustomContentHint() {
-        return "";
-    }
-    protected int getFirstRunFocusedHotseatAppDrawableId() {
-        return -1;
-    }
-    protected ComponentName getFirstRunFocusedHotseatAppComponentName() {
-        return null;
-    }
-    protected int getFirstRunFocusedHotseatAppRank() {
-        return -1;
-    }
-    protected String getFirstRunFocusedHotseatAppBubbleTitle() {
-        return "";
-    }
-    protected String getFirstRunFocusedHotseatAppBubbleDescription() {
-        return "";
-    }
-
     /**
      * To be overridden by subclasses to indicate that there is an activity to launch
      * before showing the standard launcher experience.
