@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Programu Msingi za Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Programu haijasakinishwa."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Programu haipatikani"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Programu iliyopakuliwa imezimwa katika Hali Salama"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Wijeti"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Wijeti"</string>
