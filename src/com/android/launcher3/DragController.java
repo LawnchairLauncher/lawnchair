@@ -26,10 +26,16 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.*;
+import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -318,18 +324,17 @@ public class DragController {
         }
         endDrag();
     }
-    public void onAppsRemoved(final ArrayList<String> packageNames, ArrayList<AppInfo> appInfos) {
+    public void onAppsRemoved(final ArrayList<String> packageNames, HashSet<ComponentName> cns) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             Object rawDragInfo = mDragObject.dragInfo;
             if (rawDragInfo instanceof ShortcutInfo) {
                 ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
-                for (AppInfo info : appInfos) {
+                for (ComponentName componentName : cns) {
                     // Added null checks to prevent NPE we've seen in the wild
-                    if (dragInfo != null &&
-                            dragInfo.intent != null && info != null) {
+                    if (dragInfo != null && dragInfo.intent != null) {
                         ComponentName cn = dragInfo.intent.getComponent();
-                        boolean isSameComponent = cn != null && (cn.equals(info.componentName) ||
+                        boolean isSameComponent = cn != null && (cn.equals(componentName) ||
                                 packageNames.contains(cn.getPackageName()));
                         if (isSameComponent) {
                             cancelDrag();

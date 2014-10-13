@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 
 import java.lang.ref.WeakReference;
@@ -135,6 +136,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         sContext.unregisterReceiver(mModel);
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
         launcherApps.removeOnAppsChangedCallback(mModel);
+        PackageInstallerCompat.getInstance(sContext).onStop();
 
         ContentResolver resolver = sContext.getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);

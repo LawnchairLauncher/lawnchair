@@ -198,7 +198,9 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
-        public void bindShortcutsUpdated(ArrayList<ShortcutInfo> shortcuts);
+        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
+                ArrayList<ShortcutInfo> removed, UserHandleCompat user);
+        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         public void updatePackageState(ArrayList<PackageInstallInfo> installInfo);
         public void updatePackageBadge(String packageName);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
@@ -373,15 +375,6 @@ public class LauncherModel extends BroadcastReceiver
             return;
         }
 
-        final ArrayList<AppInfo> restoredAppsFinal = new ArrayList<AppInfo>();
-        Iterator<AppInfo> iter = allAppsApps.iterator();
-        while (iter.hasNext()) {
-            ItemInfo a = iter.next();
-            if (LauncherModel.appWasPromise(ctx, a.getIntent(), a.user)) {
-                restoredAppsFinal.add((AppInfo) a);
-            }
-        }
-
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
             public void run() {
@@ -389,16 +382,6 @@ public class LauncherModel extends BroadcastReceiver
                     public void run() {
                         Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                         if (callbacks == cb && cb != null) {
-                            if (!restoredAppsFinal.isEmpty()) {
-                                for (AppInfo info : restoredAppsFinal) {
-                                    final Intent intent = info.getIntent();
-                                    if (intent != null) {
-                                        mIconCache.deletePreloadedIcon(intent.getComponent(),
-                                                info.user);
-                                    }
-                                }
-                                callbacks.bindAppsUpdated(restoredAppsFinal);
-                            }
                             callbacks.bindAppsAdded(null, null, null, allAppsApps);
                         }
                     }
@@ -423,7 +406,6 @@ public class LauncherModel extends BroadcastReceiver
             public void run() {
                 final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<ItemInfo>();
                 final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
-                final ArrayList<AppInfo> restoredAppsFinal = new ArrayList<AppInfo>();
 
                 // Get the list of workspace screens.  We need to append to this list and
                 // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
@@ -443,12 +425,7 @@ public class LauncherModel extends BroadcastReceiver
                         final Intent launchIntent = a.getIntent();
 
                         // Short-circuit this logic if the icon exists somewhere on the workspace
-                        if (LauncherModel.shortcutExists(context, name, launchIntent)) {
-                            // Only InstallShortcutReceiver sends us shortcutInfos, ignore them
-                            if (a instanceof AppInfo &&
-                                    LauncherModel.appWasPromise(context, launchIntent, a.user)) {
-                                restoredAppsFinal.add((AppInfo) a);
-                            }
+                        if (shortcutExists(context, name, launchIntent)) {
                             continue;
                         }
 
@@ -524,9 +501,6 @@ public class LauncherModel extends BroadcastReceiver
                                 }
                                 callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
                                         addNotAnimated, addAnimated, null);
-                                if (!restoredAppsFinal.isEmpty()) {
-                                    callbacks.bindAppsUpdated(restoredAppsFinal);
-                                }
                             }
                         }
                     });
@@ -902,17 +876,6 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Returns true if the promise shortcuts with the same package name exists on the workspace.
-     */
-    static boolean appWasPromise(Context context, Intent intent, UserHandleCompat user) {
-        final ComponentName component = intent.getComponent();
-        if (component == null) {
-            return false;
-        }
-        return !getItemsByPackageName(component.getPackageName(), user).isEmpty();
-    }
-
-    /**
      * Returns an ItemInfo array containing all the items in the LauncherModel.
      * The ItemInfo.id is not set through this function.
      */
@@ -1111,7 +1074,7 @@ public class LauncherModel extends BroadcastReceiver
      * @param context
      * @param item
      */
-    static void deleteItemsFromDatabase(Context context, final ArrayList<ItemInfo> items) {
+    static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
 
         Runnable r = new Runnable() {
@@ -3048,6 +3011,9 @@ public class LauncherModel extends BroadcastReceiver
                 return;
             }
 
+            final HashMap<ComponentName, AppInfo> addedOrUpdatedApps =
+                    new HashMap<ComponentName, AppInfo>();
+
             if (added != null) {
                 // Ensure that we add all the workspace applications to the db
                 if (LauncherAppState.isDisableAllApps()) {
@@ -3056,23 +3022,15 @@ public class LauncherModel extends BroadcastReceiver
                 } else {
                     addAppsToAllApps(context, added);
                 }
+                for (AppInfo ai : added) {
+                    addedOrUpdatedApps.put(ai.componentName, ai);
+                }
             }
 
             if (modified != null) {
                 final ArrayList<AppInfo> modifiedFinal = modified;
-
-                // Update the launcher db to reflect the changes
-                for (AppInfo a : modifiedFinal) {
-                    ArrayList<ItemInfo> infos =
-                            getItemInfoForComponentName(a.componentName, mUser);
-                    for (ItemInfo i : infos) {
-                        if (i instanceof ShortcutInfo && isShortcutAppTarget((ShortcutInfo) i)) {
-                            ShortcutInfo info = (ShortcutInfo) i;
-                            info.title = a.title.toString();
-                            info.contentDescription = a.contentDescription;
-                            updateItemInDatabase(context, info);
-                        }
-                    }
+                for (AppInfo ai : modified) {
+                    addedOrUpdatedApps.put(ai.componentName, ai);
                 }
 
                 mHandler.post(new Runnable() {
@@ -3085,37 +3043,128 @@ public class LauncherModel extends BroadcastReceiver
                 });
             }
 
-            // Update shortcuts which use an iconResource
+            // Update shortcut infos
             if (mOp == OP_ADD || mOp == OP_UPDATE) {
-                final ArrayList<ShortcutInfo> iconsChanged = new ArrayList<ShortcutInfo>();
+                final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<ShortcutInfo>();
+                final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<ShortcutInfo>();
+                final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<LauncherAppWidgetInfo>();
+
                 HashSet<String> packageSet = new HashSet<String>(Arrays.asList(packages));
-                // We need to iterate over the items here, so that we can avoid new Bitmap
-                // creation on the UI thread.
                 synchronized (sBgLock) {
-                    for (ItemInfo info : sBgWorkspaceItems) {
+                    for (ItemInfo info : sBgItemsIdMap.values()) {
                         if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
                             ShortcutInfo si = (ShortcutInfo) info;
+                            boolean infoUpdated = false;
+                            boolean shortcutUpdated = false;
+
+                            // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
-                                    && packageSet.contains(si.getTargetComponent().getPackageName())){
+                                    && packageSet.contains(si.iconResource.packageName)) {
                                 Bitmap icon = Utilities.createIconBitmap(si.iconResource.packageName,
                                         si.iconResource.resourceName, mIconCache, context);
                                 if (icon != null) {
                                     si.setIcon(icon);
                                     si.usingFallbackIcon = false;
-                                    iconsChanged.add(si);
-                                    updateItemInDatabase(context, si);
+                                    infoUpdated = true;
                                 }
+                            }
+
+                            ComponentName cn = si.getTargetComponent();
+                            if (cn != null && packageSet.contains(cn.getPackageName())) {
+                                AppInfo appInfo = addedOrUpdatedApps.get(cn);
+
+                                if (si.isPromise()) {
+                                    mIconCache.deletePreloadedIcon(cn, mUser);
+                                    if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                        // Auto install icon
+                                        PackageManager pm = context.getPackageManager();
+                                        ResolveInfo matched = pm.resolveActivity(
+                                                new Intent(Intent.ACTION_MAIN)
+                                                .setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER),
+                                                PackageManager.MATCH_DEFAULT_ONLY);
+                                        if (matched == null) {
+                                            // Try to find the best match activity.
+                                            Intent intent = pm.getLaunchIntentForPackage(
+                                                    cn.getPackageName());
+                                            if (intent != null) {
+                                                cn = intent.getComponent();
+                                                appInfo = addedOrUpdatedApps.get(cn);
+                                            }
+
+                                            if ((intent == null) || (appInfo == null)) {
+                                                removedShortcuts.add(si);
+                                                continue;
+                                            }
+                                            si.promisedIntent = intent;
+                                        }
+                                    }
+
+                                    // Restore the shortcut.
+                                    si.intent = si.promisedIntent;
+                                    si.promisedIntent = null;
+                                    si.status &= ~ShortcutInfo.FLAG_RESTORED_ICON
+                                            & ~ShortcutInfo.FLAG_AUTOINTALL_ICON
+                                            & ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+
+                                    infoUpdated = true;
+                                    si.updateIcon(mIconCache);
+                                }
+
+                                if (appInfo != null && Intent.ACTION_MAIN.equals(si.intent.getAction())
+                                        && si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                    si.updateIcon(mIconCache);
+                                    si.title = appInfo.title.toString();
+                                    si.contentDescription = appInfo.contentDescription;
+                                    infoUpdated = true;
+                                }
+
+                                if ((si.isDisabled & ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE) != 0) {
+                                    // Since package was just updated, the target must be available now.
+                                    si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
+                                    shortcutUpdated = true;
+                                }
+                            }
+
+                            if (infoUpdated || shortcutUpdated) {
+                                updatedShortcuts.add(si);
+                            }
+                            if (infoUpdated) {
+                                updateItemInDatabase(context, si);
+                            }
+                        } else if (info instanceof LauncherAppWidgetInfo) {
+                            LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
+                            if (mUser.equals(widgetInfo.user)
+                                    && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
+                                    && packageSet.contains(widgetInfo.providerName.getPackageName())) {
+                                widgetInfo.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                                widgets.add(widgetInfo);
+                                updateItemInDatabase(context, widgetInfo);
                             }
                         }
                     }
                 }
 
-                if (!iconsChanged.isEmpty()) {
+                if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
+                    mHandler.post(new Runnable() {
+
+                        public void run() {
+                            Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                            if (callbacks == cb && cb != null) {
+                                callbacks.bindShortcutsChanged(
+                                        updatedShortcuts, removedShortcuts, mUser);
+                            }
+                        }
+                    });
+                    if (!removedShortcuts.isEmpty()) {
+                        deleteItemsFromDatabase(context, removedShortcuts);
+                    }
+                }
+                if (!widgets.isEmpty()) {
                     mHandler.post(new Runnable() {
                         public void run() {
                             Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
                             if (callbacks == cb && cb != null) {
-                                callbacks.bindShortcutsUpdated(iconsChanged);
+                                callbacks.bindWidgetsRestored(widgets);
                             }
                         }
                     });
@@ -3412,20 +3461,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
         return filterItemInfos(sBgItemsIdMap.values(), filter);
-    }
-
-    /**
-     * @return true if the ShortcutInfo points to an app shortcut target, i.e. it has been added by
-     * dragging from AllApps list.
-     */
-    public static boolean isShortcutAppTarget(ShortcutInfo info) {
-        // We need to check for ACTION_MAIN otherwise getComponent() might
-        // return null for some shortcuts (for instance, for shortcuts to
-        // web pages.)
-        Intent intent = info.promisedIntent != null ? info.promisedIntent : info.intent;
-        ComponentName name = intent.getComponent();
-        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                Intent.ACTION_MAIN.equals(intent.getAction()) && name != null;
     }
 
     /**
