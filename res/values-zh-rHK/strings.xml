@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Android 核心應用程式"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"尚未安裝應用程式。"</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"目前無法使用這個應用程式"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"小工具"</string>
     <string name="widget_adder" msgid="3201040140710381657">"小工具"</string>

@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Pagrindinės „Android“ programos"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Programa neįdiegta."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Programa nepasiekiama"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Atsisiųsta programa išjungta Saugos režimu"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Valdikliai"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Valdikliai"</string>

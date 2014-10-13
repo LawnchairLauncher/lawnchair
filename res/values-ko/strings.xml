@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Android 핵심 앱"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"앱이 설치되지 않았습니다."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"앱을 사용할 수 없음"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"다운로드한 앱은 안전 모드에서 사용할 수 없습니다."</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"위젯"</string>
     <string name="widget_adder" msgid="3201040140710381657">"위젯"</string>

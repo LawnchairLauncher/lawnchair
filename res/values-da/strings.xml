@@ -24,6 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Kerneapps i Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Appen er ikke installeret."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Appen er ikke tilgængelig"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Downloadet app er deaktiveret i sikker tilstand"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
@@ -58,7 +59,7 @@
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Afinstaller"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Oplysninger om appen"</string>
     <string name="accessibility_search_button" msgid="1628520399424565142">"Søg"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Stemmesøgning"</string>
+    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Talesøgning"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Apps"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"Fjern"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Afinstaller opdatering"</string>
