@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -28,12 +30,16 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     // It can be any number >0. The view is resized using scaleX and scaleY.
     static final int DEFAULT_LAYOUT_SIZE = 100;
     private static final float MIN_VISIBLE_ALPHA = 0.2f;
+    private static final long ANIM_DURATION = 150;
 
     private static final int[] sTempPos = new int[2];
     private static final int[] sTempShift = new int[2];
 
     private final int[] mIndicatorPos = new int[2];
     private final int[] mTargetViewPos = new int[2];
+
+    private ObjectAnimator mCurrentAnimation;
+    private ViewAnimState mTargetState;
 
     private View mLastFocusedView;
     private boolean mInitiated;
@@ -82,34 +88,58 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
             int indicatorWidth = getWidth();
             int indicatorHeight = getHeight();
 
-            float scaleX = v.getScaleX() * v.getWidth() / indicatorWidth;
-            float scaleY = v.getScaleY() * v.getHeight() / indicatorHeight;
+            endCurrentAnimation();
+            ViewAnimState nextState = new ViewAnimState();
+            nextState.scaleX = v.getScaleX() * v.getWidth() / indicatorWidth;
+            nextState.scaleY = v.getScaleY() * v.getHeight() / indicatorHeight;
 
             getLocationRelativeToParentPagedView(v, mTargetViewPos);
-            float x = mTargetViewPos[0] - mIndicatorPos[0] - (1 - scaleX) * indicatorWidth / 2;
-            float y = mTargetViewPos[1] - mIndicatorPos[1] - (1 - scaleY) * indicatorHeight / 2;
+            nextState.x = mTargetViewPos[0] - mIndicatorPos[0] - (1 - nextState.scaleX) * indicatorWidth / 2;
+            nextState.y = mTargetViewPos[1] - mIndicatorPos[1] - (1 - nextState.scaleY) * indicatorHeight / 2;
 
             if (getAlpha() > MIN_VISIBLE_ALPHA) {
-                animate()
-                .translationX(x)
-                .translationY(y)
-                .scaleX(scaleX)
-                .scaleY(scaleY)
-                .alpha(1);
+                mTargetState = nextState;
+                mCurrentAnimation = LauncherAnimUtils.ofPropertyValuesHolder(this,
+                        PropertyValuesHolder.ofFloat(View.ALPHA, 1),
+                        PropertyValuesHolder.ofFloat(View.TRANSLATION_X, mTargetState.x),
+                        PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, mTargetState.y),
+                        PropertyValuesHolder.ofFloat(View.SCALE_X, mTargetState.scaleX),
+                        PropertyValuesHolder.ofFloat(View.SCALE_Y, mTargetState.scaleY));
             } else {
-                setTranslationX(x);
-                setTranslationY(y);
-                setScaleX(scaleX);
-                setScaleY(scaleY);
-                animate().alpha(1);
+                applyState(nextState);
+                mCurrentAnimation = LauncherAnimUtils.ofPropertyValuesHolder(this,
+                        PropertyValuesHolder.ofFloat(View.ALPHA, 1));
             }
             mLastFocusedView = v;
         } else {
             if (mLastFocusedView == v) {
                 mLastFocusedView = null;
-                animate().alpha(0);
+                endCurrentAnimation();
+                mCurrentAnimation = LauncherAnimUtils.ofPropertyValuesHolder(this,
+                        PropertyValuesHolder.ofFloat(View.ALPHA, 0));
             }
         }
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.setDuration(ANIM_DURATION).start();
+        }
+    }
+
+    private void endCurrentAnimation() {
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.cancel();
+            mCurrentAnimation = null;
+        }
+        if (mTargetState != null) {
+            applyState(mTargetState);
+            mTargetState = null;
+        }
+    }
+
+    private void applyState(ViewAnimState state) {
+        setTranslationX(state.x);
+        setTranslationY(state.y);
+        setScaleX(state.scaleX);
+        setScaleY(state.scaleY);
     }
 
     @Override
@@ -142,5 +172,9 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
         } else {
             shift[0] = shift[1] = 0;
         }
+    }
+
+    private static final class ViewAnimState {
+        float x, y, scaleX, scaleY;
     }
 }
