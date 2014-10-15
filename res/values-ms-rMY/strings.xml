@@ -24,8 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Apl Teras Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Apl tidak dipasang."</string>
-    <!-- no translation found for activity_not_available (7456344436509528827) -->
-    <skip />
+    <string name="activity_not_available" msgid="7456344436509528827">"Apl tidak tersedia"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Apl yang dimuat turun dilumpuhkan dalam mod Selamat"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widget"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widget"</string>
