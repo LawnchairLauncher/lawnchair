@@ -3499,17 +3499,6 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    ShortcutInfo addShortcut(Context context, Intent data, long container, int screen,
-            int cellX, int cellY, boolean notify) {
-        final ShortcutInfo info = infoFromShortcutIntent(context, data, null);
-        if (info == null) {
-            return null;
-        }
-        addItemToDatabase(context, info, container, screen, cellX, cellY, notify);
-
-        return info;
-    }
-
     /**
      * Attempts to find an AppWidgetProviderInfo that matches the given component.
      */
@@ -3525,7 +3514,7 @@ public class LauncherModel extends BroadcastReceiver
         return null;
     }
 
-    ShortcutInfo infoFromShortcutIntent(Context context, Intent data, Bitmap fallbackIcon) {
+    ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
@@ -3558,12 +3547,8 @@ public class LauncherModel extends BroadcastReceiver
         // users wouldn't get here without intent forwarding anyway.
         info.user = UserHandleCompat.myUserHandle();
         if (icon == null) {
-            if (fallbackIcon != null) {
-                icon = fallbackIcon;
-            } else {
-                icon = mIconCache.getDefaultIcon(info.user);
-                info.usingFallbackIcon = true;
-            }
+            icon = mIconCache.getDefaultIcon(info.user);
+            info.usingFallbackIcon = true;
         }
         info.setIcon(icon);
 

@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,17 +44,17 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final String TAG = "InstallShortcutReceiver";
     private static final boolean DBG = false;
 
-    public static final String ACTION_INSTALL_SHORTCUT =
+    private static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher.action.INSTALL_SHORTCUT";
 
-    public static final String DATA_INTENT_KEY = "intent.data";
-    public static final String LAUNCH_INTENT_KEY = "intent.launch";
-    public static final String NAME_KEY = "name";
-    public static final String ICON_KEY = "icon";
-    public static final String ICON_RESOURCE_NAME_KEY = "iconResource";
-    public static final String ICON_RESOURCE_PACKAGE_NAME_KEY = "iconResourcePackage";
+    private static final String DATA_INTENT_KEY = "intent.data";
+    private static final String LAUNCH_INTENT_KEY = "intent.launch";
+    private static final String NAME_KEY = "name";
+    private static final String ICON_KEY = "icon";
+    private static final String ICON_RESOURCE_NAME_KEY = "iconResource";
+    private static final String ICON_RESOURCE_PACKAGE_NAME_KEY = "iconResourcePackage";
     // The set of shortcuts that are pending install
-    public static final String APPS_PENDING_INSTALL = "apps_to_install";
+    private static final String APPS_PENDING_INSTALL = "apps_to_install";
 
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
     public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
@@ -63,17 +62,13 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final int INSTALL_SHORTCUT_SUCCESSFUL = 0;
     private static final int INSTALL_SHORTCUT_IS_DUPLICATE = -1;
 
-    // A mime-type representing shortcut data
-    public static final String SHORTCUT_MIMETYPE =
-            "com.android.launcher3/shortcut";
-
     private static Object sLock = new Object();
 
     private static void addToStringSet(SharedPreferences sharedPrefs,
             SharedPreferences.Editor editor, String key, String value) {
         Set<String> strings = sharedPrefs.getStringSet(key, null);
         if (strings == null) {
-            strings = new HashSet<String>(0);
+            strings = new HashSet<String>(1);
         } else {
             strings = new HashSet<String>(strings);
         }
@@ -133,6 +128,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         Intent launchIntent = Intent.parseUri(object.getString(LAUNCH_INTENT_KEY), 0);
                         String pn = launchIntent.getPackage();
                         if (pn == null) {
+                            if (launchIntent.getComponent() == null) {
+                                continue;
+                            }
                             pn = launchIntent.getComponent().getPackageName();
                         }
                         if (packageNames.contains(pn)) {
@@ -355,7 +353,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         }
         LauncherAppState app = LauncherAppState.getInstance();
-        ShortcutInfo info = app.getModel().infoFromShortcutIntent(context, data, null);
+        ShortcutInfo info = app.getModel().infoFromShortcutIntent(context, data);
         info.title = ensureValidName(context, launchIntent, info.title);
         return info;
     }
