@@ -53,7 +53,6 @@ import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -71,7 +70,6 @@ import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -418,22 +416,9 @@ public class Launcher extends Activity
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
         LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
-        // Determine the dynamic grid properties
-        Point smallestSize = new Point();
-        Point largestSize = new Point();
-        Point realSize = new Point();
-        Display display = getWindowManager().getDefaultDisplay();
-        display.getCurrentSizeRange(smallestSize, largestSize);
-        display.getRealSize(realSize);
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
 
         // Lazy-initialize the dynamic grid
-        DeviceProfile grid = app.initDynamicGrid(this,
-                Math.min(smallestSize.x, smallestSize.y),
-                Math.min(largestSize.x, largestSize.y),
-                realSize.x, realSize.y,
-                dm.widthPixels, dm.heightPixels);
+        DeviceProfile grid = app.initDynamicGrid(this);
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),

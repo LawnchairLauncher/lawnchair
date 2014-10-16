@@ -25,8 +25,12 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Point;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -190,21 +194,35 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return LauncherFiles.SHARED_PREFERENCES_KEY;
     }
 
-    DeviceProfile initDynamicGrid(Context context, int minWidth, int minHeight,
-                                  int width, int height,
-                                  int availableWidth, int availableHeight) {
+    DeviceProfile initDynamicGrid(Context context) {
+        // Determine the dynamic grid properties
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+
+        Point realSize = new Point();
+        display.getRealSize(realSize);
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+
         if (mDynamicGrid == null) {
+            Point smallestSize = new Point();
+            Point largestSize = new Point();
+            display.getCurrentSizeRange(smallestSize, largestSize);
+
             mDynamicGrid = new DynamicGrid(context,
                     context.getResources(),
-                    minWidth, minHeight, width, height,
-                    availableWidth, availableHeight);
+                    Math.min(smallestSize.x, smallestSize.y),
+                    Math.min(largestSize.x, largestSize.y),
+                    realSize.x, realSize.y,
+                    dm.widthPixels, dm.heightPixels);
             mDynamicGrid.getDeviceProfile().addCallback(this);
         }
 
         // Update the icon size
         DeviceProfile grid = mDynamicGrid.getDeviceProfile();
-        grid.updateFromConfiguration(context, context.getResources(), width, height,
-                availableWidth, availableHeight);
+        grid.updateFromConfiguration(context, context.getResources(),
+                realSize.x, realSize.y,
+                dm.widthPixels, dm.heightPixels);
         return grid;
     }
     public DynamicGrid getDynamicGrid() {
