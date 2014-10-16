@@ -86,6 +86,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -226,6 +227,10 @@ public class Launcher extends Activity
     private AnimatorSet mStateAnimation;
 
     private boolean mIsSafeModeEnabled;
+
+    LauncherOverlayCallbacks mLauncherOverlayCallbacks = new LauncherOverlayCallbacksImpl();
+    LauncherOverlay mLauncherOverlay;
+    ViewGroup mLauncherOverlayView;
 
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
@@ -506,6 +511,13 @@ public class Launcher extends Activity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
+            if (mLauncherCallbacks.hasLauncherOverlay()) {
+                ViewStub stub = (ViewStub) findViewById(R.id.launcher_overlay_stub);
+                mLauncherOverlayView = (ViewGroup) stub.inflate();
+                mLauncherOverlay = mLauncherCallbacks.setLauncherOverlayView(mLauncherOverlayView,
+                        mLauncherOverlayCallbacks);
+                mWorkspace.setLauncherOverlay(mLauncherOverlay);
+            }
         }
     }
 
@@ -1142,6 +1154,84 @@ public class Launcher extends Activity
 
         // Indicates whether the user is allowed to scroll away from the custom content.
         boolean isScrollingAllowed();
+    }
+
+    public interface LauncherOverlay {
+
+        /**
+         * Touch interaction leading to overscroll has begun
+         */
+        public void onScrollInteractionBegin();
+
+        /**
+         * Touch interaction related to overscroll has ended
+         */
+        public void onScrollInteractionEnd();
+
+        /**
+         * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
+         * screen (or in the case of RTL, the rightmost screen).
+         */
+        public void onScrollChange(int progress, boolean rtl);
+
+        /**
+         * Screen has stopped scrolling
+         */
+        public void onScrollSettled();
+
+        /**
+         * This method can be called by the Launcher in order to force the LauncherOverlay
+         * to exit fully immersive mode.
+         */
+        public void forceExitFullImmersion();
+    }
+
+    public interface LauncherOverlayCallbacks {
+        /**
+         * This method indicates whether a call to {@link #enterFullImmersion()} will succeed,
+         * however it doesn't modify any state within the launcher.
+         */
+        public boolean canEnterFullImmersion();
+
+        /**
+         * Should be called to tell Launcher that the LauncherOverlay will take over interaction,
+         * eg. by occupying the full screen and handling all touch events.
+         *
+         * @return true if Launcher allows the LauncherOverlay to become fully immersive. In this
+         *          case, Launcher will modify any necessary state and assumes the overlay is
+         *          handling all interaction. If false, the LauncherOverlay should cancel any
+         *
+         */
+        public boolean enterFullImmersion();
+
+        /**
+         * Must be called when exiting fully immersive mode. Indicates to Launcher that it has
+         * full control over UI and state.
+         */
+        public void exitFullImmersion();
+    }
+
+    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
+
+        @Override
+        public boolean canEnterFullImmersion() {
+            return mState == State.WORKSPACE;
+        }
+
+        @Override
+        public boolean enterFullImmersion() {
+            if (mState == State.WORKSPACE) {
+                // When fully immersed, disregard any touches which fall through.
+                mDragLayer.setBlockTouch(true);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void exitFullImmersion() {
+            mDragLayer.setBlockTouch(false);
+        }
     }
 
     protected boolean hasSettings() {
@@ -4084,11 +4174,8 @@ public class Launcher extends Activity
     }
 
     public View getQsbBar() {
-        if (mLauncherCallbacks != null) {
-            View qsb = mLauncherCallbacks.getQsbBar();
-            if (qsb != null) {
-                return qsb;
-            }
+        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+            return mLauncherCallbacks.getQsbBar();
         }
 
         if (mQsb == null) {
