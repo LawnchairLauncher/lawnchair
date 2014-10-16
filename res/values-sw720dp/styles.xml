@@ -19,13 +19,6 @@
 
 <resources>
 <!-- Workspace -->
-    <style name="TabIndicator.AppsCustomize">
-        <item name="android:paddingLeft">32dp</item>
-        <item name="android:paddingRight">32dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:maxWidth">240dp</item>
-    </style>
-
     <style name="SearchButton">
     </style>
     <style name="DropTargetButtonContainer">

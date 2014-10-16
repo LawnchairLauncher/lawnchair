@@ -29,8 +29,6 @@
 
     <color name="appwidget_error_color">#FCCC</color>
 
-    <color name="workspace_all_apps_and_delete_zone_text_color">#CCFFFFFF</color>
-    <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
     <color name="workspace_icon_text_color">#FFF</color>
 
     <color name="quantum_panel_text_color">#FF666666</color>
