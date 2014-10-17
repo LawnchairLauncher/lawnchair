@@ -78,35 +78,6 @@
         <item name="android:shadowRadius">4.0</item>
     </style>
 
-    <style name="TabIndicator">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingLeft">20dp</item>
-        <item name="android:paddingRight">20dp</item>
-        <item name="android:background">@drawable/tab_widget_indicator_selector</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-    <style name="TabIndicator.AppsCustomize">
-        <!-- Overridden in values-land -->
-    </style>
-
-    <style name="MarketButton">
-        <item name="android:paddingLeft">5dp</item>
-        <item name="android:paddingRight">5dp</item>
-        <item name="android:textColor">@color/workspace_all_apps_and_delete_zone_text_color</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:shadowColor">@color/workspace_all_apps_and_delete_zone_text_shadow_color</item>
-        <item name="android:shadowDx">0.0</item>
-        <item name="android:shadowDy">0.0</item>
-        <item name="android:shadowRadius">2.0</item>
-    </style>
-
     <style name="PreloadIcon">
         <item name="background">@drawable/virtual_preload</item>
         <item name="indicatorSize">4dp</item>
