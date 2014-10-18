@@ -43,7 +43,7 @@ import com.android.launcher3.R;
 import java.util.ArrayList;
 import java.util.List;
 
-@TargetApi(Build.VERSION_CODES.L)
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     private final UserManager mUserManager;
