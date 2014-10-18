@@ -4610,6 +4610,7 @@ public class Launcher extends Activity
             mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
         }
         PackageInstallerCompat.getInstance(this).onFinishBind();
+        mModel.recheckRestoredItems(this);
     }
 
     private void sendLoadingCompleteBroadcastIfNecessary() {
@@ -4715,6 +4716,24 @@ public class Launcher extends Activity
         if (!LauncherAppState.isDisableAllApps() &&
                 mAppsCustomizeContent != null) {
             mAppsCustomizeContent.updateApps(apps);
+        }
+    }
+
+    /**
+     * Packages were restored
+     */
+    public void bindAppsRestored(final ArrayList<AppInfo> apps) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindAppsRestored(apps);
+            }
+        };
+        if (waitUntilResume(r)) {
+            return;
+        }
+
+        if (mWorkspace != null) {
+            mWorkspace.updateShortcutsAndWidgets(apps);
         }
     }
 
