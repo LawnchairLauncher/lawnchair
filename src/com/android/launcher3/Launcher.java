@@ -1134,7 +1134,9 @@ public class Launcher extends Activity
     @Override
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
-        mModel.stopLoader();
+        if (mModel.isCurrentCallbacks(this)) {
+            mModel.stopLoader();
+        }
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.surrender();
         }
@@ -1997,8 +1999,13 @@ public class Launcher extends Activity
 
         // Stop callbacks from LauncherModel
         LauncherAppState app = (LauncherAppState.getInstance());
-        mModel.stopLoader();
-        app.setLauncher(null);
+
+        // It's possible to receive onDestroy after a new Launcher activity has
+        // been created. In this case, don't interfere with the new Launcher.
+        if (mModel.isCurrentCallbacks(this)) {
+            mModel.stopLoader();
+            app.setLauncher(null);
+        }
 
         try {
             mAppWidgetHost.stopListening();
