@@ -106,7 +106,7 @@ public final class Utilities {
      * Indicates if the device is running LMP or higher.
      */
     public static boolean isLmpOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.L;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     /**
