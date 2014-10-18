@@ -721,8 +721,13 @@ public class Launcher extends Activity
      * a configuration step, this allows the proper animations to run after other transitions.
      */
     private long completeAdd(PendingAddArguments args) {
+        long screenId = args.screenId;
+        if (args.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            // When the screen id represents an actual screen (as opposed to a rank) we make sure
+            // that the drop page actually exists.
+            screenId = ensurePendingDropLayoutExists(args.screenId);
+        }
 
-        long screenId = ensurePendingDropLayoutExists(args.screenId);
         switch (args.requestCode) {
             case REQUEST_CREATE_SHORTCUT:
                 completeAddShortcut(args.intent, args.container, screenId, args.cellX,
@@ -814,7 +819,12 @@ public class Launcher extends Activity
                 }
             } else {
                 if (!workspaceLocked) {
-                    mPendingAddInfo.screenId = ensurePendingDropLayoutExists(mPendingAddInfo.screenId);
+                    if (mPendingAddInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                        // When the screen id represents an actual screen (as opposed to a rank)
+                        // we make sure that the drop page actually exists.
+                        mPendingAddInfo.screenId =
+                                ensurePendingDropLayoutExists(mPendingAddInfo.screenId);
+                    }
                     final CellLayout dropLayout = mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
 
                     dropLayout.setDropPending(true);
