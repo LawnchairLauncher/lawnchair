@@ -22,6 +22,7 @@
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#DAFF0000</color>
     <color name="info_target_hover_tint">#DA0099CC</color>
+    <color name="cling_scrim_background">#80000000</color>
 
     <color name="bubble_dark_background">#20000000</color>
     <color name="focused_background">#80c6c5c5</color>
