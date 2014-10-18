@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.UserHandle;
 
+import com.android.launcher3.Utilities;
+
 public class UserHandleCompat {
     private UserHandle mUser;
 
@@ -86,8 +88,7 @@ public class UserHandleCompat {
      * profiles so this is a no-op.
      */
     public void addToIntent(Intent intent, String name) {
-        // TODO change this to use api version once L gets an API number.
-        if ("L".equals(Build.VERSION.CODENAME) && mUser != null) {
+        if (Utilities.isLmpOrAbove() && mUser != null) {
             intent.putExtra(name, mUser);
         }
     }
