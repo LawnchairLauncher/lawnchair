@@ -81,7 +81,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
     }
 
     @Override
@@ -112,7 +111,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             // Not yet ready
             return;
         }
-        if ((mPendingReplays.size() == 0) && (newInfo == null)) {
+        if ((mPendingReplays.size() == 0) && (newInfo == null) && mPendingBadgeUpdates.isEmpty()) {
             // Nothing to update
             return;
         }
