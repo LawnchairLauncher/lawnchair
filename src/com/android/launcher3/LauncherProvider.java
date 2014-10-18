@@ -1291,6 +1291,7 @@ public class LauncherProvider extends ContentProvider {
                         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                         if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
+                            return false;
                         }
                     } catch (RuntimeException e) {
                         Log.e(TAG, "Failed to initialize external widget", e);
