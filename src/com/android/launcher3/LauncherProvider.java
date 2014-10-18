@@ -308,6 +308,13 @@ public class LauncherProvider extends ContentProvider {
     }
 
     /**
+     * Clears all the data for a fresh start.
+     */
+    synchronized public void createEmptyDB() {
+        mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+    }
+
+    /**
      * Loads the default workspace based on the following priority scheme:
      *   1) From a package provided by play store
      *   2) From a partner configuration APK, already in the system image
@@ -908,7 +915,14 @@ public class LauncherProvider extends ContentProvider {
             // This shouldn't happen -- throw our hands up in the air and start over.
             Log.w(TAG, "Database version downgrade from: " + oldVersion + " to " + newVersion +
                     ". Wiping databse.");
+            createEmptyDB(db);
+        }
 
+
+        /**
+         * Clears all the data for a fresh start.
+         */
+        public void createEmptyDB(SQLiteDatabase db) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
             onCreate(db);
