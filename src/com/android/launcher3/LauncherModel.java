@@ -86,6 +86,7 @@ public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
     static final boolean DEBUG_LOADERS = false;
     private static final boolean DEBUG_RECEIVER = false;
+    private static final boolean REMOVE_UNRESTORED_ICONS = true;
 
     static final String TAG = "Launcher.Model";
 
@@ -1885,7 +1886,8 @@ public class LauncherModel extends BroadcastReceiver
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
-                PackageInstallerCompat.getInstance(mContext).updateActiveSessionCache();
+                final HashSet<String> installingPkgs = PackageInstallerCompat
+                        .getInstance(mContext).updateAndGetActiveSessionCache();
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final ArrayList<Long> restoredRows = new ArrayList<Long>();
@@ -2014,6 +2016,25 @@ public class LauncherModel extends BroadcastReceiver
                                             // installed later.
                                             Launcher.addDumpLog(TAG,
                                                     "package not yet restored: " + cn, true);
+
+                                            if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
+                                                // Restore has started once.
+                                            } else if (installingPkgs.contains(cn.getPackageName())) {
+                                                // App restore has started. Update the flag
+                                                promiseType |= ShortcutInfo.FLAG_RESTORE_STARTED;
+                                                ContentValues values = new ContentValues();
+                                                values.put(LauncherSettings.Favorites.RESTORED,
+                                                        promiseType);
+                                                String where = BaseColumns._ID + "= ?";
+                                                String[] args = {Long.toString(id)};
+                                                contentResolver.update(contentUri, values, where, args);
+
+                                            } else if (REMOVE_UNRESTORED_ICONS) {
+                                                Launcher.addDumpLog(TAG,
+                                                        "Unrestored package removed: " + cn, true);
+                                                itemsToRemove.add(id);
+                                                continue;
+                                            }
                                         } else if (isSdCardReady) {
                                             // Do not wait for external media load anymore.
                                             // Log the invalid package, and remove it
@@ -2221,6 +2242,19 @@ public class LauncherModel extends BroadcastReceiver
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 component);
                                         appWidgetInfo.restoreStatus = restoreStatus;
+
+                                        if ((restoreStatus & LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) != 0) {
+                                            // Restore has started once.
+                                        } else if (installingPkgs.contains(component.getPackageName())) {
+                                            // App restore has started. Update the flag
+                                            appWidgetInfo.restoreStatus |=
+                                                    LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
+                                        } else if (REMOVE_UNRESTORED_ICONS) {
+                                            Launcher.addDumpLog(TAG,
+                                                    "Unrestored package removed: " + component, true);
+                                            itemsToRemove.add(id);
+                                            continue;
+                                        }
                                     }
 
                                     appWidgetInfo.id = id;
@@ -2249,19 +2283,17 @@ public class LauncherModel extends BroadcastReceiver
                                         break;
                                     }
 
-                                    if (isProviderReady) {
-                                        String providerName = provider.provider.flattenToString();
-                                        if (!providerName.equals(savedProvider) ||
-                                                (appWidgetInfo.restoreStatus != restoreStatus)) {
-                                            ContentValues values = new ContentValues();
-                                            values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
-                                                    providerName);
-                                            values.put(LauncherSettings.Favorites.RESTORED,
-                                                    appWidgetInfo.restoreStatus);
-                                            String where = BaseColumns._ID + "= ?";
-                                            String[] args = {Long.toString(id)};
-                                            contentResolver.update(contentUri, values, where, args);
-                                        }
+                                    String providerName = appWidgetInfo.providerName.flattenToString();
+                                    if (!providerName.equals(savedProvider) ||
+                                            (appWidgetInfo.restoreStatus != restoreStatus)) {
+                                        ContentValues values = new ContentValues();
+                                        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                                                providerName);
+                                        values.put(LauncherSettings.Favorites.RESTORED,
+                                                appWidgetInfo.restoreStatus);
+                                        String where = BaseColumns._ID + "= ?";
+                                        String[] args = {Long.toString(id)};
+                                        contentResolver.update(contentUri, values, where, args);
                                     }
                                     sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
                                     sBgAppWidgets.add(appWidgetInfo);
