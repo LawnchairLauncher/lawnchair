@@ -174,7 +174,7 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void updateIcon(IconCache iconCache) {
-        mIcon = iconCache.getIcon(intent, user);
+        mIcon = iconCache.getIcon(promisedIntent != null ? promisedIntent : intent, user);
         usingFallbackIcon = iconCache.isDefaultIcon(mIcon, user);
     }
 
