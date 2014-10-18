@@ -1905,7 +1905,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final ArrayList<Long> restoredRows = new ArrayList<Long>();
-                final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
+                final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION;
                 if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
 
@@ -2265,7 +2265,7 @@ public class LauncherModel extends BroadcastReceiver
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         } else if (REMOVE_UNRESTORED_ICONS) {
                                             Launcher.addDumpLog(TAG,
-                                                    "Unrestored package removed: " + component, true);
+                                                    "Unrestored widget removed: " + component, true);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -2332,7 +2332,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 if (itemsToRemove.size() > 0) {
                     ContentProviderClient client = contentResolver.acquireContentProviderClient(
-                            LauncherSettings.Favorites.CONTENT_URI);
+                            contentUri);
                     // Remove dead items
                     for (long id : itemsToRemove) {
                         if (DEBUG_LOADERS) {
@@ -2350,7 +2350,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 if (restoredRows.size() > 0) {
                     ContentProviderClient updater = contentResolver.acquireContentProviderClient(
-                            LauncherSettings.Favorites.CONTENT_URI);
+                            contentUri);
                     // Update restored items that no longer require special handling
                     try {
                         StringBuilder selectionBuilder = new StringBuilder();
