@@ -1290,14 +1290,15 @@ public class LauncherProvider extends ContentProvider {
                     try {
                         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-                        if (appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
-                            return true;
+                        if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
                         }
                     } catch (RuntimeException e) {
                         Log.e(TAG, "Failed to initialize external widget", e);
+                        return false;
                     }
+                } else {
+                    return false;
                 }
-                return false;
             }
 
             // Add screen id if not present
@@ -1553,24 +1554,11 @@ public class LauncherProvider extends ContentProvider {
         }
 
         /**
-         * Parse folder starting at current {@link XmlPullParser} location.
+         * Parse folder items starting at {@link XmlPullParser} location. Allow recursive
+         * includes of items.
          */
-        private boolean loadFolder(SQLiteDatabase db, ContentValues values, Resources res,
-                XmlResourceParser parser) throws IOException, XmlPullParserException {
-            final String title;
-            final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
-            if (titleResId != 0) {
-                title = res.getString(titleResId);
-            } else {
-                title = mContext.getResources().getString(R.string.folder_name);
-            }
-
-            values.put(LauncherSettings.Favorites.TITLE, title);
-            long folderId = addFolder(db, values);
-            boolean added = folderId >= 0;
-
-            ArrayList<Long> folderItems = new ArrayList<Long>();
-
+        private void addToFolder(SQLiteDatabase db, Resources res, XmlResourceParser parser,
+                ArrayList<Long> folderItems, long folderId) throws IOException, XmlPullParserException {
             int type;
             int folderDepth = parser.getDepth();
             while ((type = parser.next()) != XmlPullParser.END_TAG ||
@@ -1600,10 +1588,33 @@ public class LauncherProvider extends ContentProvider {
                     if (id >= 0) {
                         folderItems.add(id);
                     }
+                } else if (TAG_INCLUDE.equals(tag) && folderId >= 0) {
+                    addToFolder(db, res, parser, folderItems, folderId);
                 } else {
                     throw new RuntimeException("Folders can contain only shortcuts");
                 }
             }
+        }
+
+        /**
+         * Parse folder starting at current {@link XmlPullParser} location.
+         */
+        private boolean loadFolder(SQLiteDatabase db, ContentValues values, Resources res,
+                XmlResourceParser parser) throws IOException, XmlPullParserException {
+            final String title;
+            final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
+            if (titleResId != 0) {
+                title = res.getString(titleResId);
+            } else {
+                title = mContext.getResources().getString(R.string.folder_name);
+            }
+
+            values.put(LauncherSettings.Favorites.TITLE, title);
+            long folderId = addFolder(db, values);
+            boolean added = folderId >= 0;
+
+            ArrayList<Long> folderItems = new ArrayList<Long>();
+            addToFolder(db, res, parser, folderItems, folderId);
 
             // We can only have folders with >= 2 items, so we need to remove the
             // folder and clean up if less than 2 items were included, or some
