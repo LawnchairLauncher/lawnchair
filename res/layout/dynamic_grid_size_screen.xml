@@ -17,11 +17,12 @@
         android:clickable="true" >
 
         <ImageView
+            android:id="@+id/nav_prev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
-            android:src="@drawable/action_navigation_previous_light" />
+            android:src="@drawable/ic_navigation_prev" />
 
         <TextView
             android:layout_width="wrap_content"

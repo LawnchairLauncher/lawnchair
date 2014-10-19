@@ -17,15 +17,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@drawable/listitem_bg"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:clickable="true" >
 
             <ImageView
+                android:id="@+id/nav_prev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
-                android:src="@drawable/action_navigation_previous_light" />
+                android:src="@drawable/ic_navigation_prev" />
 
             <TextView
                 android:id="@+id/transition_effect_title"
@@ -38,24 +39,16 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/transition_options_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/listitem_bg"
-            android:clickable="true" >
-
-            <ImageView
-                android:id="@+id/transition_options_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:paddingStart="10dip"
-                android:paddingEnd="10dip"
-                android:adjustViewBounds="true"
-                android:src="@drawable/overflow_options_menu" />
-        </LinearLayout>
+            android:layout_gravity="right"
+            android:paddingStart="10dip"
+            android:paddingEnd="10dip"
+            android:adjustViewBounds="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/overflow_options_menu" />
     </RelativeLayout>
 
     <ImageView

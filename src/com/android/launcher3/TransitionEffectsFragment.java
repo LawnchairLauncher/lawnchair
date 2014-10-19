@@ -4,11 +4,13 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -120,6 +122,12 @@ public class TransitionEffectsFragment extends Fragment {
 
         mListView.setSelection(mCurrentPosition);
 
+        // RTL
+        ImageView navPrev = (ImageView) v.findViewById(R.id.nav_prev);
+        Configuration config = getResources().getConfiguration();
+        if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            navPrev.setImageResource(R.drawable.ic_navigation_next);
+        }
         return v;
     }
 
@@ -163,7 +171,13 @@ public class TransitionEffectsFragment extends Fragment {
             DisplayMetrics displaymetrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int width = displaymetrics.widthPixels;
-            final ObjectAnimator anim = ObjectAnimator.ofFloat(this, "translationX", width, 0);
+            Configuration config = getResources().getConfiguration();
+            final ObjectAnimator anim;
+            if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+                anim = ObjectAnimator.ofFloat(this, "translationX", -width, 0);
+            } else {
+                anim = ObjectAnimator.ofFloat(this, "translationX", width, 0);
+            }
 
             final View darkPanel = ((Launcher) getActivity()).getDarkPanel();
             darkPanel.setVisibility(View.VISIBLE);
@@ -211,6 +225,13 @@ public class TransitionEffectsFragment extends Fragment {
                     parent, false);
             TextView textView = (TextView) convertView
                     .findViewById(R.id.item_name);
+
+            // RTL
+            Configuration config = getResources().getConfiguration();
+            if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+                textView.setGravity(Gravity.RIGHT);
+            }
+
             textView.setText(titles[position]);
             // Set Selected State
             if (position == mCurrentPosition) {

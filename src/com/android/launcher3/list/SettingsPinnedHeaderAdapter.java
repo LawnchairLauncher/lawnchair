@@ -2,23 +2,24 @@ package com.android.launcher3.list;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.android.launcher3.AppsCustomizePagedView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.OverviewSettingsPanel;
-import com.android.launcher3.AppsCustomizePagedView;
 import com.android.launcher3.R;
-
 import com.android.launcher3.settings.SettingsProvider;
-import android.view.View.OnClickListener;
-import android.content.SharedPreferences;
 
 public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
     private static final int PARTITION_TAG = 0;
@@ -76,6 +77,12 @@ public class SettingsPinnedHeaderAdapter extends PinnedHeaderListAdapter {
     @Override
     protected void bindView(View v, int partition, Cursor cursor, int position) {
         TextView text = (TextView)v.findViewById(R.id.item_name);
+        // RTL
+        Configuration config = mLauncher.getResources().getConfiguration();
+        if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            text.setGravity(Gravity.RIGHT);
+        }
+
         String title = cursor.getString(1);
         text.setText(title);
 
