@@ -638,7 +638,7 @@ public class WidgetPreviewLoader {
             c.setBitmap(null);
         }
         // Render the icon
-        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info));
+        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info.activityInfo));
 
         int paddingTop = mContext.
                 getResources().getDimensionPixelOffset(R.dimen.shortcut_preview_padding_top);
