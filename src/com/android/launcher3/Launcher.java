@@ -2535,6 +2535,11 @@ public class Launcher extends Activity
      * Event handler for the app widget view which has not fully restored.
      */
     public void onClickPendingWidget(final PendingAppWidgetHostView v) {
+        if (mIsSafeModeEnabled) {
+            Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
             int widgetId = info.appWidgetId;
@@ -2787,10 +2792,13 @@ public class Launcher extends Activity
      */
     protected void onClickAddWidgetButton(View view) {
         if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
-        showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickAddWidgetButton(view);
+        if (mIsSafeModeEnabled) {
+            Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
+        } else {
+            showAllApps(true, AppsCustomizePagedView.ContentType.Widgets, true);
+            if (mLauncherCallbacks != null) {
+                mLauncherCallbacks.onClickAddWidgetButton(view);
+            }
         }
     }
 
@@ -4588,8 +4596,9 @@ public class Launcher extends Activity
         final Workspace workspace = mWorkspace;
 
         AppWidgetProviderInfo appWidgetInfo;
-        if (((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0) &&
-                ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0)) {
+        if (!mIsSafeModeEnabled
+                && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0)
+                && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0)) {
 
             appWidgetInfo = mModel.findAppWidgetProviderInfoWithComponent(this, item.providerName);
             if (appWidgetInfo == null) {
@@ -4639,7 +4648,7 @@ public class Launcher extends Activity
             LauncherModel.updateItemInDatabase(this, item);
         }
 
-        if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+        if (!mIsSafeModeEnabled && item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
             final int appWidgetId = item.appWidgetId;
             appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             if (DEBUG_WIDGETS) {
@@ -4649,7 +4658,8 @@ public class Launcher extends Activity
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         } else {
             appWidgetInfo = null;
-            PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item);
+            PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item,
+                    mIsSafeModeEnabled);
             view.updateIcon(mIconCache);
             item.hostView = view;
             item.hostView.updateAppWidget(null);
