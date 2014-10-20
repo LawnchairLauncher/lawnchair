@@ -24,9 +24,4 @@
         <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
     </style>
-
-<!-- AppsCustomize -->
-    <style name="TabIndicator.AppsCustomize">
-        <item name="android:maxWidth">150dp</item>
-    </style>
 </resources>
