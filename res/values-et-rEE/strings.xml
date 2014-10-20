@@ -30,7 +30,6 @@
     <string name="widget_adder" msgid="3201040140710381657">"Vidinad"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mälu kuvamine"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Vidina valimiseks vajutage ja hoidke seda all."</string>
-    <string name="market" msgid="2619650989819296998">"Pood"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Üksust ei saanud sellele avaekraanile tuua."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Valige loomiseks vidin"</string>
