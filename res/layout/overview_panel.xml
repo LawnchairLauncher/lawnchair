@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The Android Open Source Project
+<!--
+     Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,47 +14,50 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal|bottom"
-    android:orientation="horizontal">
+    android:gravity="top"
+    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/wallpaper_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
-        android:text="@string/wallpaper_button_text"
+        android:layout_weight="1"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/wallpaper_button"
-        android:gravity="center_horizontal"
         android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:text="@string/wallpaper_button_text"
         android:textAllCaps="true"
         android:textSize="12sp" />
+
     <TextView
         android:id="@+id/widget_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
-        android:text="@string/widget_button_text"
+        android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:gravity="center_horizontal"
         android:drawableTop="@drawable/widget_button"
         android:fontFamily="sans-serif-condensed"
-        android:textAllCaps="true"
-        android:textSize="12sp"/>
-    <TextView
-        android:id="@+id/settings_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|top"
-        android:text="@string/settings_button_text"
-        android:drawablePadding="4dp"
         android:gravity="center_horizontal"
-        android:drawableTop="@drawable/setting_button"
-        android:fontFamily="sans-serif-condensed"
+        android:text="@string/widget_button_text"
         android:textAllCaps="true"
         android:textSize="12sp" />
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/settings_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:drawableTop="@drawable/setting_button"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:text="@string/settings_button_text"
+        android:textAllCaps="true"
+        android:textSize="12sp" />
+
+</LinearLayout>
