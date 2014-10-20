@@ -38,12 +38,10 @@ public class Stats {
     public static final String EXTRA_CELLX = "cellX";
     public static final String EXTRA_CELLY = "cellY";
 
-    private static final String LOG_FILE_NAME = "launches.log";
     private static final int LOG_VERSION = 1;
     private static final int LOG_TAG_VERSION = 0x1;
     private static final int LOG_TAG_LAUNCH = 0x1000;
 
-    private static final String STATS_FILE_NAME = "stats.log";
     private static final int STATS_VERSION = 1;
     private static final int INITIAL_STATS_SIZE = 100;
 
@@ -69,7 +67,8 @@ public class Stats {
 
         if (LOCAL_LAUNCH_LOG) {
             try {
-                mLog = new DataOutputStream(mLauncher.openFileOutput(LOG_FILE_NAME, Context.MODE_APPEND));
+                mLog = new DataOutputStream(mLauncher.openFileOutput(
+                        LauncherFiles.LAUNCHES_LOG, Context.MODE_APPEND));
                 mLog.writeInt(LOG_TAG_VERSION);
                 mLog.writeInt(LOG_VERSION);
             } catch (FileNotFoundException e) {
@@ -160,7 +159,8 @@ public class Stats {
     private void saveStats() {
         DataOutputStream stats = null;
         try {
-            stats = new DataOutputStream(mLauncher.openFileOutput(STATS_FILE_NAME + ".tmp", Context.MODE_PRIVATE));
+            stats = new DataOutputStream(mLauncher.openFileOutput(
+                    LauncherFiles.STATS_LOG + ".tmp", Context.MODE_PRIVATE));
             stats.writeInt(STATS_VERSION);
             final int N = mHistogram.size();
             stats.writeInt(N);
@@ -170,8 +170,8 @@ public class Stats {
             }
             stats.close();
             stats = null;
-            mLauncher.getFileStreamPath(STATS_FILE_NAME + ".tmp")
-                     .renameTo(mLauncher.getFileStreamPath(STATS_FILE_NAME));
+            mLauncher.getFileStreamPath(LauncherFiles.STATS_LOG + ".tmp")
+                     .renameTo(mLauncher.getFileStreamPath(LauncherFiles.STATS_LOG));
         } catch (FileNotFoundException e) {
             Log.e(TAG, "unable to create stats data: " + e);
         } catch (IOException e) {
@@ -190,7 +190,7 @@ public class Stats {
         mHistogram = new ArrayList<Integer>(INITIAL_STATS_SIZE);
         DataInputStream stats = null;
         try {
-            stats = new DataInputStream(mLauncher.openFileInput(STATS_FILE_NAME));
+            stats = new DataInputStream(mLauncher.openFileInput(LauncherFiles.STATS_LOG));
             final int version = stats.readInt();
             if (version == STATS_VERSION) {
                 final int N = stats.readInt();
