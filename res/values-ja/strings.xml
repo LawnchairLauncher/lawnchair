@@ -30,7 +30,6 @@
     <string name="widget_adder" msgid="3201040140710381657">"ウィジェット"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"メモリーを表示"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ウィジェットを追加するには押し続けます。"</string>
-    <string name="market" msgid="2619650989819296998">"ショップ"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"このホーム画面にアイテムをドロップできませんでした"</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"作成するウィジェットの選択"</string>

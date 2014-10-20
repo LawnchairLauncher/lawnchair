@@ -30,7 +30,6 @@
     <string name="widget_adder" msgid="3201040140710381657">"Mga Widget"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Ipakita ang Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Pindutin nang matagal upang kumuha ng widget."</string>
-    <string name="market" msgid="2619650989819296998">"Mamili"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Hindi ma-drop ang item sa Home screen na ito."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Pumili ng widget na gagawin"</string>
