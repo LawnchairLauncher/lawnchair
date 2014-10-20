@@ -30,7 +30,6 @@
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Vis Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Tryk på en widget, og hold den nede for at vælge."</string>
-    <string name="market" msgid="2619650989819296998">"Køb i Google Play Butik"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Elementet kunne ikke trækkes til startskærmen."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Vælg den widget, du vil oprette"</string>
