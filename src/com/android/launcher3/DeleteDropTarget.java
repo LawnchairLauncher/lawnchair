@@ -21,8 +21,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -41,11 +39,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
-
-import java.util.List;
-import java.util.Set;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
@@ -266,7 +260,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             public void run() {
                 completeDrop(d);
                 mSearchDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragMode();
+                mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
             }
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
