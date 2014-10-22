@@ -26,6 +26,7 @@
     <string name="activity_not_found" msgid="8071924732094499514">"एप्‍लिकेशन इंस्‍टॉल नहीं है."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ऐप्स उपलब्ध नहीं है"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्स सुरक्षित मोड में अक्षम है"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोड में अक्षम हैं"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"शॉर्टकट"</string>
     <string name="widget_adder" msgid="3201040140710381657">"शॉर्टकट"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"मेमोरी दिखाएं"</string>

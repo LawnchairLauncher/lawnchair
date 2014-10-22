@@ -26,6 +26,7 @@
     <string name="activity_not_found" msgid="8071924732094499514">"Aplicația nu este instalată."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Aplicația nu este disponibilă"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Aplicația descărcată este dezactivată în modul de siguranță"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"Widgeturile sunt dezactivate în modul de siguranță"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgeturi"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgeturi"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Afișați memoria"</string>

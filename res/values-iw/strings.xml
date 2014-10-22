@@ -26,6 +26,7 @@
     <string name="activity_not_found" msgid="8071924732094499514">"האפליקציה לא מותקנת."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"האפליקציה אינה זמינה"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"אפליקציה שהורדת הושבתה במצב בטוח"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"ווידג\'טים מושבתים במצב בטוח"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"רכיבי ווידג\'ט"</string>
     <string name="widget_adder" msgid="3201040140710381657">"רכיבי ווידג\'ט"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"הצג זכרון"</string>
