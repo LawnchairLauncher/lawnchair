@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!--
+     Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,21 +14,45 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.SearchDropTargetBar
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:focusable="false"
+<com.android.launcher3.SearchDropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="false"
+    android:orientation="horizontal" >
 
     <!-- Drag specific targets container -->
+
     <LinearLayout
         android:id="@+id/drag_target_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center">
+        android:layout_gravity="center" >
 
-        <include
-            layout="@layout/drop_target_bar" />
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1" >
+
+            <!-- Delete target -->
+
+            <com.android.launcher3.DeleteDropTarget
+                android:id="@+id/delete_target_text"
+                style="@style/DropTargetButton"
+                android:drawableStart="@drawable/remove_target_selector"
+                android:text="@string/delete_zone_label_workspace" />
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1" >
+
+            <!-- Info target -->
+
+            <com.android.launcher3.InfoDropTarget
+                android:id="@+id/info_target_text"
+                style="@style/DropTargetButton"
+                android:drawableStart="@drawable/info_target_selector"
+                android:text="@string/info_target_label" />
+        </FrameLayout>
     </LinearLayout>
+
 </com.android.launcher3.SearchDropTargetBar>
