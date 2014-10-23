@@ -322,27 +322,32 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
 
+            final boolean usingExternallyProvidedLayout = loader != null;
             if (loader == null) {
-                loader = new DefaultLayoutParser(getContext(), mOpenHelper.mAppWidgetHost,
-                        mOpenHelper, getContext().getResources(), getDefaultWorkspaceResourceId());
+                loader = getDefaultLayoutParser();
             }
-
             // Populate favorites table with initial favorites
-            SharedPreferences.Editor editor = sp.edit().remove(EMPTY_DATABASE_CREATED);
-            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader);
-            editor.commit();
+            if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
+                    && usingExternallyProvidedLayout) {
+                // Unable to load external layout. Cleanup and load the internal layout.
+                createEmptyDB();
+                mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
+                        getDefaultLayoutParser());
+            }
+            sp.edit().remove(EMPTY_DATABASE_CREATED).commit();
         }
+    }
+
+    private DefaultLayoutParser getDefaultLayoutParser() {
+        int defaultLayout = LauncherAppState.getInstance()
+                .getDynamicGrid().getDeviceProfile().defaultLayoutId;
+        return new DefaultLayoutParser(getContext(), mOpenHelper.mAppWidgetHost,
+                mOpenHelper, getContext().getResources(), defaultLayout);
     }
 
     public void migrateLauncher2Shortcuts() {
         mOpenHelper.migrateLauncher2Shortcuts(mOpenHelper.getWritableDatabase(),
                 Uri.parse(getContext().getString(R.string.old_launcher_provider_uri)));
-    }
-
-    private static int getDefaultWorkspaceResourceId() {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        return grid.defaultLayoutId;
     }
 
     private static interface ContentValuesCallback {
