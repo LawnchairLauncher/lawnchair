@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -85,5 +86,23 @@ public interface LauncherCallbacks {
     public ComponentName getWallpaperPickerComponent();
     public boolean overrideWallpaperDimensions();
     public boolean isLauncherPreinstalled();
+
+    /**
+     * Returning true will immediately result in a call to {@link #setLauncherOverlayView(ViewGroup,
+     * com.android.launcher3.Launcher.LauncherOverlayCallbacks)}.
+     *
+     * @return true if this launcher extension will provide an overlay
+     */
+    public boolean hasLauncherOverlay();
+
+    /**
+     * Handshake to establish an overlay relationship
+     *
+     * @param overlayView Full screen overlay ViewGroup into which custom views can be placed.
+     * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
+     * @return an interface used to make requests and notify the Launcher in relation to the overlay
+     */
+    public Launcher.LauncherOverlay setLauncherOverlayView(ViewGroup overlayView,
+            Launcher.LauncherOverlayCallbacks callbacks);
 
 }
