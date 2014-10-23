@@ -62,6 +62,7 @@
 
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
+    <dimen name="drop_target_text_size">14sp</dimen>
 
 <!-- Dragging -->
     <!-- the area at the edge of the screen that makes the workspace go left
