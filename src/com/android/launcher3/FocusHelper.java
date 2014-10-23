@@ -17,12 +17,10 @@
 package com.android.launcher3;
 
 import android.content.res.Configuration;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ScrollView;
 
 import java.util.ArrayList;
@@ -58,16 +56,6 @@ class HotseatIconKeyEventListener implements View.OnKeyListener {
 }
 
 public class FocusHelper {
-    /**
-     * Private helper to get the parent TabHost in the view hiearchy.
-     */
-    private static AppsCustomizeTabHost findTabHostParent(View v) {
-        ViewParent p = v.getParent();
-        while (p != null && !(p instanceof AppsCustomizeTabHost)) {
-            p = p.getParent();
-        }
-        return (AppsCustomizeTabHost) p;
-    }
 
     /**
      * Returns the Viewgroup containing page contents for the page at the index specified.
@@ -79,148 +67,6 @@ public class FocusHelper {
             page = ((CellLayout) page).getShortcutsAndWidgets();
         }
         return page;
-    }
-
-    /**
-     * Handles key events in a PageViewExtendedLayout containing PagedViewWidgets.
-     */
-    static boolean handlePagedViewGridLayoutWidgetKeyEvent(PagedViewWidget w, int keyCode,
-            KeyEvent e) {
-
-        final PagedViewGridLayout parent = (PagedViewGridLayout) w.getParent();
-        final PagedView container = (PagedView) parent.getParent();
-        final int widgetIndex = parent.indexOfChild(w);
-        final int widgetCount = parent.getChildCount();
-        final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parent));
-        final int pageCount = container.getChildCount();
-        final int cellCountX = parent.getCellCountX();
-        final int cellCountY = parent.getCellCountY();
-        final int x = widgetIndex % cellCountX;
-        final int y = widgetIndex / cellCountX;
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        ViewGroup newParent = null;
-        // Now that we load items in the bg asynchronously, we can't just focus
-        // child siblings willy-nilly
-        View child = null;
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (handleKeyEvent) {
-                    // Select the previous widget or the last widget on the previous page
-                    if (widgetIndex > 0) {
-                        parent.getChildAt(widgetIndex - 1).requestFocus();
-                    } else {
-                        if (pageIndex > 0) {
-                            newParent = getAppsCustomizePage(container, pageIndex - 1);
-                            if (newParent != null) {
-                                child = newParent.getChildAt(newParent.getChildCount() - 1);
-                                if (child != null) child.requestFocus();
-                            }
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the next widget or the first widget on the next page
-                    if (widgetIndex < (widgetCount - 1)) {
-                        parent.getChildAt(widgetIndex + 1).requestFocus();
-                    } else {
-                        if (pageIndex < (pageCount - 1)) {
-                            newParent = getAppsCustomizePage(container, pageIndex + 1);
-                            if (newParent != null) {
-                                child = newParent.getChildAt(0);
-                                if (child != null) child.requestFocus();
-                            }
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                if (handleKeyEvent) {
-                    // Select the closest icon in the previous row, otherwise select the tab bar
-                    if (y > 0) {
-                        int newWidgetIndex = ((y - 1) * cellCountX) + x;
-                        child = parent.getChildAt(newWidgetIndex);
-                        if (child != null) child.requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // Select the closest icon in the previous row, otherwise do nothing
-                    if (y < (cellCountY - 1)) {
-                        int newWidgetIndex = Math.min(widgetCount - 1, ((y + 1) * cellCountX) + x);
-                        child = parent.getChildAt(newWidgetIndex);
-                        if (child != null) child.requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_ENTER:
-            case KeyEvent.KEYCODE_DPAD_CENTER:
-                if (handleKeyEvent) {
-                    // Simulate a click on the widget
-                    View.OnClickListener clickListener = (View.OnClickListener) container;
-                    clickListener.onClick(w);
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_PAGE_UP:
-                if (handleKeyEvent) {
-                    // Select the first item on the previous page, or the first item on this page
-                    // if there is no previous page
-                    if (pageIndex > 0) {
-                        newParent = getAppsCustomizePage(container, pageIndex - 1);
-                        if (newParent != null) {
-                            child = newParent.getChildAt(0);
-                        }
-                    } else {
-                        child = parent.getChildAt(0);
-                    }
-                    if (child != null) child.requestFocus();
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-                if (handleKeyEvent) {
-                    // Select the first item on the next page, or the last item on this page
-                    // if there is no next page
-                    if (pageIndex < (pageCount - 1)) {
-                        newParent = getAppsCustomizePage(container, pageIndex + 1);
-                        if (newParent != null) {
-                            child = newParent.getChildAt(0);
-                        }
-                    } else {
-                        child = parent.getChildAt(widgetCount - 1);
-                    }
-                    if (child != null) child.requestFocus();
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_MOVE_HOME:
-                if (handleKeyEvent) {
-                    // Select the first item on this page
-                    child = parent.getChildAt(0);
-                    if (child != null) child.requestFocus();
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_MOVE_END:
-                if (handleKeyEvent) {
-                    // Select the last item on this page
-                    parent.getChildAt(widgetCount - 1).requestFocus();
-                }
-                wasHandled = true;
-                break;
-            default: break;
-        }
-        return wasHandled;
     }
 
     /**
@@ -385,60 +231,6 @@ public class FocusHelper {
                     // Select the last icon on this page
                     itemContainer.getChildAt(itemCount - 1).requestFocus();
                     v.playSoundEffect(SoundEffectConstants.NAVIGATION_DOWN);
-                }
-                wasHandled = true;
-                break;
-            default: break;
-        }
-        return wasHandled;
-    }
-
-    /**
-     * Handles key events in the tab widget.
-     */
-    static boolean handleTabKeyEvent(AccessibleTabView v, int keyCode, KeyEvent e) {
-        if (!LauncherAppState.getInstance().isScreenLarge()) return false;
-
-        final FocusOnlyTabWidget parent = (FocusOnlyTabWidget) v.getParent();
-        final AppsCustomizeTabHost tabHost = findTabHostParent(parent);
-        final ViewGroup contents = tabHost.getContent();
-        final int tabCount = parent.getTabCount();
-        final int tabIndex = parent.getChildTabIndex(v);
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (handleKeyEvent) {
-                    // Select the previous tab
-                    if (tabIndex > 0) {
-                        parent.getChildTabViewAt(tabIndex - 1).requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the next tab, or if the last tab has a focus right id, select that
-                    if (tabIndex < (tabCount - 1)) {
-                        parent.getChildTabViewAt(tabIndex + 1).requestFocus();
-                    } else {
-                        if (v.getNextFocusRightId() != View.NO_ID) {
-                            tabHost.findViewById(v.getNextFocusRightId()).requestFocus();
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                // Do nothing
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // Select the content view
-                    contents.requestFocus();
                 }
                 wasHandled = true;
                 break;
