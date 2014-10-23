@@ -125,11 +125,11 @@ s -->
          device. [CHAR_LIMIT=30]-->
     <string name="delete_zone_label_all_apps">Uninstall</string>
 
-    <!-- Label for delete drop target. [CHAR_LIMIT=30] -->
+    <!-- Label for delete drop target. [CHAR_LIMIT=20] -->
     <string name="delete_target_label">Remove</string>
-    <!-- Label for uninstall drop target. [CHAR_LIMIT=30]-->
+    <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
     <string name="delete_target_uninstall_label">Uninstall</string>
-    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
+    <!-- Label for the info icon. [CHAR_LIMIT=20] -->
     <string name="info_target_label">App info</string>
 
     <!-- Accessibility: Search button -->

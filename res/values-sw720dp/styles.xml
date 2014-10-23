@@ -18,26 +18,22 @@
 -->
 
 <resources>
-<!-- Workspace -->
-    <style name="SearchButton">
-    </style>
+
+    <!-- Workspace -->
+    <style name="SearchButton"></style>
+
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
     </style>
-    <style name="DropTargetButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:drawablePadding">7.5dp</item>
+
+    <style name="DropTargetButton" parent="DropTargetButton.Base">
         <item name="android:paddingLeft">60dp</item>
         <item name="android:paddingRight">60dp</item>
-        <item name="android:textColor">#FFFFFFFF</item>
-        <item name="android:textSize">16sp</item>
         <item name="android:shadowColor">#393939</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">0.0</item>
         <item name="android:shadowRadius">2.0</item>
     </style>
+
 </resources>
