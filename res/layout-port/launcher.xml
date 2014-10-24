@@ -15,14 +15,15 @@
 -->
 
 <!-- Full screen view projects under the status bar and contains the background -->
-<FrameLayout
+<com.android.launcher3.LauncherRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
 
     android:id="@+id/launcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/workspace_bg">
+    android:background="@drawable/workspace_bg"
+    android:fitsSystemWindows="true">
 
     <com.android.launcher3.DragLayer
         android:id="@+id/drag_layer"
@@ -90,4 +91,4 @@
         android:layout_height="match_parent"
         android:inflatedId="@+id/launcher_overlay"
         android:layout="@layout/launcher_overlay" />
-</FrameLayout>
+</com.android.launcher3.LauncherRootView>

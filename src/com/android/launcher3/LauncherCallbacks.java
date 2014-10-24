@@ -98,11 +98,11 @@ public interface LauncherCallbacks {
     /**
      * Handshake to establish an overlay relationship
      *
-     * @param overlayView Full screen overlay ViewGroup into which custom views can be placed.
+     * @param container Full screen overlay ViewGroup into which custom views can be placed.
      * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
      * @return an interface used to make requests and notify the Launcher in relation to the overlay
      */
-    public Launcher.LauncherOverlay setLauncherOverlayView(ViewGroup overlayView,
+    public Launcher.LauncherOverlay setLauncherOverlayView(InsettableFrameLayout container,
             Launcher.LauncherOverlayCallbacks callbacks);
 
 }
