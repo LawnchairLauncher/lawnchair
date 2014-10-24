@@ -3741,14 +3741,14 @@ public class Launcher extends Activity
                     yDrift = isWidgetTray ? height / 2 : allAppsToPanelDelta[1];
                     xDrift = isWidgetTray ? 0 : allAppsToPanelDelta[0];
                 } else {
-                    yDrift = 5 * height / 4;
+                    yDrift = 2 * height / 3;
                     xDrift = 0;
                 }
 
                 revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 TimeInterpolator decelerateInterpolator = material ?
                         new LogDecelerateInterpolator(100, 0) :
-                        new LogDecelerateInterpolator(30, 0);
+                        new DecelerateInterpolator(1f);
 
                 // The vertical motion of the apps panel should be delayed by one frame
                 // from the conceal animation in order to give the right feel. We correpsondingly
@@ -3772,9 +3772,9 @@ public class Launcher extends Activity
                     revealView.setAlpha(1f);
                     ObjectAnimator panelAlpha = LauncherAnimUtils.ofFloat(revealView, "alpha",
                             1f, finalAlpha);
-                    panelAlpha.setDuration(revealDuration);
-                    panelAlpha.setInterpolator(material ? decelerateInterpolator :
-                        new AccelerateInterpolator(1.5f));
+                    panelAlpha.setDuration(material ? revealDuration : 150);
+                    panelAlpha.setInterpolator(decelerateInterpolator);
+                    panelAlpha.setStartDelay(material ? 0 : itemsAlphaStagger + SINGLE_FRAME_DELAY);
                     mStateAnimation.play(panelAlpha);
                 }
 
