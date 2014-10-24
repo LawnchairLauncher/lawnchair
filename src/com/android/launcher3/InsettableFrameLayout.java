@@ -1,6 +1,7 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,16 +19,17 @@ public class InsettableFrameLayout extends FrameLayout implements
     }
 
     public void setFrameLayoutChildInsets(View child, Rect newInsets, Rect oldInsets) {
-        final FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) child.getLayoutParams();
+        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
         if (child instanceof Insettable) {
             ((Insettable) child).setInsets(newInsets);
-        } else {
-            flp.topMargin += (newInsets.top - oldInsets.top);
-            flp.leftMargin += (newInsets.left - oldInsets.left);
-            flp.rightMargin += (newInsets.right - oldInsets.right);
-            flp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
+        } else if (!lp.ignoreInsets) {
+            lp.topMargin += (newInsets.top - oldInsets.top);
+            lp.leftMargin += (newInsets.left - oldInsets.left);
+            lp.rightMargin += (newInsets.right - oldInsets.right);
+            lp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
         }
-        child.setLayoutParams(flp);
+        child.setLayoutParams(lp);
     }
 
     @Override
@@ -38,6 +40,48 @@ public class InsettableFrameLayout extends FrameLayout implements
             setFrameLayoutChildInsets(child, insets, mInsets);
         }
         mInsets.set(insets);
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new InsettableFrameLayout.LayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    }
+
+    // Override to allow type-checking of LayoutParams.
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof InsettableFrameLayout.LayoutParams;
+    }
+
+    @Override
+    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new LayoutParams(p);
+    }
+
+    class LayoutParams extends FrameLayout.LayoutParams {
+        boolean ignoreInsets = false;
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            TypedArray a = c.obtainStyledAttributes(attrs,
+                    R.styleable.InsettableFrameLayout_Layout);
+            ignoreInsets = a.getBoolean(
+                    R.styleable.InsettableFrameLayout_Layout_layout_ignoreInsets, false);
+            a.recycle();
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams lp) {
+            super(lp);
+        }
     }
 
     @Override

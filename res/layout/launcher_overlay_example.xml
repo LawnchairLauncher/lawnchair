@@ -14,19 +14,21 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.InsettableFrameLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    launcher:layout_ignoreInsets="true">
 
-    <com.android.launcher3.InsettableFrameLayout
+    <FrameLayout
         android:id="@+id/search_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ff00ff00"
         android:visibility="invisible" />
 
-    <com.android.launcher3.InsettableFrameLayout
+    <FrameLayout
         android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -34,4 +36,4 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="36dp"
         android:background="#ffff0000" />
-</com.android.launcher3.InsettableFrameLayout>
+</FrameLayout>
