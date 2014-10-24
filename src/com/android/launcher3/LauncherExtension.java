@@ -252,11 +252,11 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public LauncherOverlay setLauncherOverlayView(ViewGroup overlayView,
+        public LauncherOverlay setLauncherOverlayView(InsettableFrameLayout container,
                 LauncherOverlayCallbacks callbacks) {
 
             mLauncherOverlay.setOverlayCallbacks(callbacks);
-            mLauncherOverlay.setOverlayView(overlayView);
+            mLauncherOverlay.setOverlayContainer(container);
 
             return mLauncherOverlay;
         }
@@ -335,9 +335,9 @@ public class LauncherExtension extends Launcher {
                 hideOverlayPanel();
             }
 
-            public void setOverlayView(ViewGroup overlayView) {
+            public void setOverlayContainer(InsettableFrameLayout container) {
                 mOverlayView = (ViewGroup) getLayoutInflater().inflate(
-                        R.layout.launcher_overlay_example, overlayView);
+                        R.layout.launcher_overlay_example, container);
                 mSearchOverlay = mOverlayView.findViewById(R.id.search_overlay);
                 mSearchBox = mOverlayView.findViewById(R.id.search_box);
             }
