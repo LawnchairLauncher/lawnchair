@@ -1480,9 +1480,13 @@ public class LauncherProvider extends ContentProvider {
 
                                     // Canonicalize
                                     // the Play Store sets the package parameter, but Launcher
-                                    // does not, so we clear that out to keep them the same
+                                    // does not, so we clear that out to keep them the same.
+                                    // Also ignore intent flags for the purposes of deduping.
                                     intent.setPackage(null);
+                                    int flags = intent.getFlags();
+                                    intent.setFlags(0);
                                     final String key = intent.toUri(0);
+                                    intent.setFlags(flags);
                                     if (seenIntents.contains(key)) {
                                         Launcher.addDumpLog(TAG, "skipping duplicate", true);
                                         continue;
