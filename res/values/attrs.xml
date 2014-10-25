@@ -145,4 +145,8 @@
         <attr name="ringOutset" format="dimension" />
         <attr name="indicatorSize" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="InsettableFrameLayout_Layout">
+        <attr name="layout_ignoreInsets" format="boolean" />
+    </declare-styleable>
 </resources>
