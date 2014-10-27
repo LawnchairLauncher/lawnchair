@@ -26,8 +26,7 @@
     <string name="activity_not_found" msgid="8071924732094499514">"未安装该应用。"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"应用不可用"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"安全模式下不允许使用下载的此应用"</string>
-    <!-- no translation found for safemode_widget_error (4863470563535682004) -->
-    <skip />
+    <string name="safemode_widget_error" msgid="4863470563535682004">"安全模式下不允许使用小部件"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"小部件"</string>
     <string name="widget_adder" msgid="3201040140710381657">"小部件"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"显示内存空间"</string>
