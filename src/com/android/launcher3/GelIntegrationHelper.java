@@ -3,11 +3,13 @@ package com.android.launcher3;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.service.gesture.EdgeGestureManager;
+import android.util.Log;
 import com.android.internal.util.gesture.EdgeGesturePosition;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
  * in CyanogenMod.
  */
 public class GelIntegrationHelper {
+    private static final String TAG = "GelIntegrationHelper";
     private static final String GEL_ACTIVITY = "com.google.android.velvet.ui.VelvetActivity";
     private static final String GEL_PACKAGE_NAME = "com.google.android.googlequicksearchbox";
 
@@ -88,8 +91,12 @@ public class GelIntegrationHelper {
             intent.setComponent(globalSearchActivity);
         }
 
-        launcherActivity.startActivity(intent);
-        launcherActivity.overridePendingTransition(0, R.anim.exit_out_right);
+        try {
+            launcherActivity.startActivity(intent);
+            launcherActivity.overridePendingTransition(0, R.anim.exit_out_right);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Unable to launch global search activity.");
+        }
     }
 
     private boolean isIntentSupported(Context context, Intent intent) {
