@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/longpress_cling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    launcher:layout_ignoreInsets="true"
     android:background="@color/cling_scrim_background" >
 
     <FrameLayout
