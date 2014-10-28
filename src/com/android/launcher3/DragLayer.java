@@ -38,6 +38,8 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.InsettableFrameLayout.LayoutParams;
+
 import java.util.ArrayList;
 
 /**
@@ -410,15 +412,41 @@ public class DragLayer extends InsettableFrameLayout {
         return mDragController.dispatchUnhandledMove(focused, direction);
     }
 
-    public static class LayoutParams extends FrameLayout.LayoutParams {
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    }
+
+    // Override to allow type-checking of LayoutParams.
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof LayoutParams;
+    }
+
+    @Override
+    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new LayoutParams(p);
+    }
+
+    public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
         public int x, y;
         public boolean customPosition = false;
 
-        /**
-         * {@inheritDoc}
-         */
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
         public LayoutParams(int width, int height) {
             super(width, height);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams lp) {
+            super(lp);
         }
 
         public void setWidth(int width) {
