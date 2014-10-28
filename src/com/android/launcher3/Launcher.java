@@ -1327,9 +1327,16 @@ public class Launcher extends Activity
     }
 
     protected void startThemeSettings() {
-        Intent settings = new Intent().setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
-                OverviewSettingsPanel.THEME_SETTINGS);
-        startActivity(settings);
+        Intent chooser = new Intent(Intent.ACTION_MAIN)
+                .addCategory(OverviewSettingsPanel.THEME_CHOOSER_CATEGORY)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            startActivity(chooser);
+        } catch (ActivityNotFoundException e) {
+            Intent settings = new Intent().setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
+                    OverviewSettingsPanel.THEME_SETTINGS);
+            startActivity(settings);
+        }
 
         if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(false);
