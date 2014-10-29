@@ -146,6 +146,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private byte[] mBuffer = new byte[512];
     private long mLastBackupRestoreTime;
 
+    private DeviceProfieData mCurrentProfile;
     boolean restoreSuccessful;
 
     public LauncherBackupHelper(Context context) {
@@ -241,7 +242,26 @@ public class LauncherBackupHelper implements BackupHelper {
      * to this device.
      */
     private boolean isBackupCompatible(Journal oldState) {
-        return true;
+        DeviceProfieData currentProfile = getDeviceProfieData();
+
+        DeviceProfieData oldProfile = oldState.profile;
+
+        if (oldProfile == null || oldProfile.desktopCols == 0) {
+            // Profile info is not valid, ignore the check.
+            return true;
+        }
+
+        boolean isHotsetCompatible = false;
+        if (currentProfile.allappsRank >= oldProfile.hotseatCount) {
+            isHotsetCompatible = true;
+        }
+        if ((currentProfile.hotseatCount >= oldProfile.hotseatCount) &&
+                (currentProfile.allappsRank == oldProfile.allappsRank)) {
+            isHotsetCompatible = true;
+        }
+
+        return isHotsetCompatible && (currentProfile.desktopCols >= oldProfile.desktopCols)
+                && (currentProfile.desktopRows >= oldProfile.desktopRows);
     }
 
     /**
@@ -348,6 +368,9 @@ public class LauncherBackupHelper implements BackupHelper {
      * @return the current device profile information.
      */
     private DeviceProfieData getDeviceProfieData() {
+        if (mCurrentProfile != null) {
+            return mCurrentProfile;
+        }
         LauncherAppState.setApplicationContext(mContext.getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
@@ -359,12 +382,12 @@ public class LauncherBackupHelper implements BackupHelper {
             profile = app.getDynamicGrid().getDeviceProfile();
         }
 
-        DeviceProfieData data = new DeviceProfieData();
-        data.desktopRows = profile.numRows;
-        data.desktopCols = profile.numColumns;
-        data.hotseatCount = profile.numHotseatIcons;
-        data.allappsRank = profile.hotseatAllAppsRank;
-        return data;
+        mCurrentProfile = new DeviceProfieData();
+        mCurrentProfile.desktopRows = profile.numRows;
+        mCurrentProfile.desktopCols = profile.numColumns;
+        mCurrentProfile.hotseatCount = profile.numHotseatIcons;
+        mCurrentProfile.allappsRank = profile.hotseatAllAppsRank;
+        return mCurrentProfile;
     }
 
     /**
@@ -695,18 +718,18 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** keys need to be strings, decode and parse. */
-    private Key backupKeyToKey(String backupKey) throws KeyParsingException {
+    private Key backupKeyToKey(String backupKey) throws InvalidBackupException {
         try {
             Key key = Key.parseFrom(Base64.decode(backupKey, Base64.DEFAULT));
             if (key.checksum != checkKey(key)) {
                 key = null;
-                throw new KeyParsingException("invalid key read from stream" + backupKey);
+                throw new InvalidBackupException("invalid key read from stream" + backupKey);
             }
             return key;
         } catch (InvalidProtocolBufferNanoException e) {
-            throw new KeyParsingException(e);
+            throw new InvalidBackupException(e);
         } catch (IllegalArgumentException e) {
-            throw new KeyParsingException(e);
+            throw new InvalidBackupException(e);
         }
     }
 
@@ -777,7 +800,7 @@ public class LauncherBackupHelper implements BackupHelper {
 
     /** Deserialize a Favorite from persistence, after verifying checksum wrapper. */
     private ContentValues unpackFavorite(byte[] buffer, int dataSize)
-            throws InvalidProtocolBufferNanoException {
+            throws IOException {
         Favorite favorite = unpackProto(new Favorite(), buffer, dataSize);
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, favorite.id);
@@ -810,6 +833,8 @@ public class LauncherBackupHelper implements BackupHelper {
                 UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
+        DeviceProfieData currentProfile = getDeviceProfieData();
+
         if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
             if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
                 values.put(Favorites.APPWIDGET_PROVIDER, favorite.appWidgetProvider);
@@ -819,9 +844,31 @@ public class LauncherBackupHelper implements BackupHelper {
                     LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
                     LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
                     LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+
+            // Verify placement
+            if (((favorite.cellX + favorite.spanX) > currentProfile.desktopCols)
+                    || ((favorite.cellY + favorite.spanY) > currentProfile.desktopRows)) {
+                restoreSuccessful = false;
+                throw new InvalidBackupException("Widget not in screen bounds, aborting restore");
+            }
         } else {
             // Let LauncherModel know we've been here.
             values.put(LauncherSettings.Favorites.RESTORED, 1);
+
+            // Verify placement
+            if (favorite.container == Favorites.CONTAINER_HOTSEAT) {
+                if ((favorite.screen >= currentProfile.hotseatCount)
+                        || (favorite.screen == currentProfile.allappsRank)) {
+                    restoreSuccessful = false;
+                    throw new InvalidBackupException("Item not in hotseat bounds, aborting restore");
+                }
+            } else {
+                if ((favorite.cellX >= currentProfile.desktopCols)
+                        || (favorite.cellY >= currentProfile.desktopRows)) {
+                    restoreSuccessful = false;
+                    throw new InvalidBackupException("Item not in desktop bounds, aborting restore");
+                }
+            }
         }
 
         return values;
@@ -1083,12 +1130,12 @@ public class LauncherBackupHelper implements BackupHelper {
                 .getSerialNumberForUser(UserHandleCompat.myUserHandle());
     }
 
-    private class KeyParsingException extends IOException {
-        private KeyParsingException(Throwable cause) {
+    private class InvalidBackupException extends IOException {
+        private InvalidBackupException(Throwable cause) {
             super(cause);
         }
 
-        public KeyParsingException(String reason) {
+        public InvalidBackupException(String reason) {
             super(reason);
         }
     }
