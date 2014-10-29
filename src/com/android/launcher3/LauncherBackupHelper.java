@@ -40,6 +40,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.backup.BackupProtos;
 import com.android.launcher3.backup.BackupProtos.CheckedMessage;
+import com.android.launcher3.backup.BackupProtos.DeviceProfieData;
 import com.android.launcher3.backup.BackupProtos.Favorite;
 import com.android.launcher3.backup.BackupProtos.Journal;
 import com.android.launcher3.backup.BackupProtos.Key;
@@ -66,12 +67,16 @@ import java.util.zip.CRC32;
  * Persist the launcher home state across calamities.
  */
 public class LauncherBackupHelper implements BackupHelper {
-
     private static final String TAG = "LauncherBackupHelper";
     private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
     private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
 
+    private static final int BACKUP_VERSION = 2;
     private static final int MAX_JOURNAL_SIZE = 1000000;
+
+    // Journal key is such that it is always smaller than any dynamically generated
+    // key (any Base64 encoded string).
+    private static final String JOURNAL_KEY = "#";
 
     /** icons are large, dribble them out */
     private static final int MAX_ICONS_PER_PASS = 10;
@@ -79,11 +84,7 @@ public class LauncherBackupHelper implements BackupHelper {
     /** widgets contain previews, which are very large, dribble them out */
     private static final int MAX_WIDGETS_PER_PASS = 5;
 
-    public static final int IMAGE_COMPRESSION_QUALITY = 75;
-
-    public static final String LAUNCHER_PREFIX = "L";
-
-    public static final String LAUNCHER_PREFS_PREFIX = "LP";
+    private static final int IMAGE_COMPRESSION_QUALITY = 75;
 
     private static final Bitmap.CompressFormat IMAGE_FORMAT =
             android.graphics.Bitmap.CompressFormat.PNG;
@@ -145,10 +146,13 @@ public class LauncherBackupHelper implements BackupHelper {
     private byte[] mBuffer = new byte[512];
     private long mLastBackupRestoreTime;
 
-    public LauncherBackupHelper(Context context, boolean restoreEnabled) {
+    boolean restoreSuccessful;
+
+    public LauncherBackupHelper(Context context) {
         mContext = context;
         mExistingKeys = new HashSet<String>();
         mKeys = new ArrayList<Key>();
+        restoreSuccessful = true;
     }
 
     private void dataChanged() {
@@ -178,7 +182,6 @@ public class LauncherBackupHelper implements BackupHelper {
      * @param oldState notes from the last backup
      * @param data incremental key/value pairs to persist off-device
      * @param newState notes for the next backup
-     * @throws IOException
      */
     @Override
     public void performBackup(ParcelFileDescriptor oldState, BackupDataOutput data,
@@ -220,6 +223,12 @@ public class LauncherBackupHelper implements BackupHelper {
 
             mExistingKeys.clear();
             mLastBackupRestoreTime = newBackupTime;
+
+            // We store the journal at two places.
+            //   1) Storing it in newState allows us to do partial backups by comparing old state
+            //   2) Storing it in backup data allows us to validate keys during restore
+            Journal state = getCurrentStateJournal();
+            writeRowToBackup(JOURNAL_KEY, state, data);
         } catch (IOException e) {
             Log.e(TAG, "launcher backup has failed", e);
         }
@@ -228,14 +237,26 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /**
+     * @return true if the backup corresponding to oldstate can be successfully applied
+     * to this device.
+     */
+    private boolean isBackupCompatible(Journal oldState) {
+        return true;
+    }
+
+    /**
      * Restore launcher configuration from the restored data stream.
-     *
-     * <P>Keys may arrive in any order.
+     * It assumes that the keys will arrive in lexical order. So if the journal was present in the
+     * backup, it should arrive first.
      *
      * @param data the key/value pair from the server
      */
     @Override
     public void restoreEntity(BackupDataInputStream data) {
+        if (!restoreSuccessful) {
+            return;
+        }
+
         int dataSize = data.size();
         if (mBuffer.length < dataSize) {
             mBuffer = new byte[dataSize];
@@ -244,6 +265,27 @@ public class LauncherBackupHelper implements BackupHelper {
             int bytesRead = data.read(mBuffer, 0, dataSize);
             if (DEBUG) Log.d(TAG, "read " + bytesRead + " of " + dataSize + " available");
             String backupKey = data.getKey();
+
+            if (JOURNAL_KEY.equals(backupKey)) {
+                if (VERBOSE) Log.v(TAG, "Journal entry restored");
+                if (!mKeys.isEmpty()) {
+                    // We received the journal key after a restore key.
+                    Log.wtf(TAG, keyToBackupKey(mKeys.get(0)) + " received after " + JOURNAL_KEY);
+                    restoreSuccessful = false;
+                    return;
+                }
+
+                Journal journal = new Journal();
+                MessageNano.mergeFrom(journal, readCheckedBytes(mBuffer, dataSize));
+                applyJournal(journal);
+                restoreSuccessful = isBackupCompatible(journal);
+                return;
+            }
+
+            if (!mExistingKeys.isEmpty() && !mExistingKeys.contains(backupKey)) {
+                if (DEBUG) Log.e(TAG, "Ignoring key not present in the backup state " + backupKey);
+                return;
+            }
             Key key = backupKeyToKey(backupKey);
             mKeys.add(key);
             switch (key.type) {
@@ -288,6 +330,8 @@ public class LauncherBackupHelper implements BackupHelper {
         journal.t = mLastBackupRestoreTime;
         journal.key = mKeys.toArray(new BackupProtos.Key[mKeys.size()]);
         journal.appVersion = getAppVersion();
+        journal.backupVersion = BACKUP_VERSION;
+        journal.profile = getDeviceProfieData();
         return journal;
     }
 
@@ -298,6 +342,29 @@ public class LauncherBackupHelper implements BackupHelper {
         } catch (NameNotFoundException e) {
             return 0;
         }
+    }
+
+    /**
+     * @return the current device profile information.
+     */
+    private DeviceProfieData getDeviceProfieData() {
+        LauncherAppState.setApplicationContext(mContext.getApplicationContext());
+        LauncherAppState app = LauncherAppState.getInstance();
+
+        DeviceProfile profile;
+        if (app.getDynamicGrid() == null) {
+            // Initialize the grid
+            profile = app.initDynamicGrid(mContext);
+        } else {
+            profile = app.getDynamicGrid().getDeviceProfile();
+        }
+
+        DeviceProfieData data = new DeviceProfieData();
+        data.desktopRows = profile.numRows;
+        data.desktopCols = profile.numColumns;
+        data.hotseatCount = profile.numHotseatIcons;
+        data.allappsRank = profile.hotseatAllAppsRank;
+        return data;
     }
 
     /**
@@ -901,7 +968,6 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         return journal;
     }
-
 
     private void writeRowToBackup(Key key, MessageNano proto, BackupDataOutput data)
             throws IOException {

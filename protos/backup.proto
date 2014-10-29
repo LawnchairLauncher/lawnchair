@@ -37,12 +37,36 @@ message CheckedMessage {
   required int64 checksum = 2;
 }
 
+message DeviceProfieData {
+  required float desktop_rows = 1;
+  required float desktop_cols = 2;
+  required float hotseat_count = 3;
+  required int32 allapps_rank = 4;
+}
+
 message Journal {
   required int32 app_version = 1;
+
+  // Time when the backup was created
   required int64 t = 2;
+
+  // Total bytes written during the last backup
+  // OBSOLETE: A state may contain entries which are already present in the backup
+  // and were not written in the last backup
   optional int64 bytes = 3;
+
+  // Total entries written during the last backup
+  // OBSOLETE: A state may contain entries which are already present in the backup
+  // and were not written in the last backup
   optional int32 rows = 4;
+
+  // Valid keys for this state
   repeated Key key = 5;
+
+  // Backup format version.
+  optional int32 backup_version = 6 [default = 1];
+
+  optional DeviceProfieData profile = 7;
 }
 
 message Favorite {

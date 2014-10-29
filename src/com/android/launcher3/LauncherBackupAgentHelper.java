@@ -22,7 +22,6 @@ import android.app.backup.BackupManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.ParcelFileDescriptor;
-import android.provider.Settings;
 import android.util.Log;
 
 import java.io.IOException;
@@ -30,12 +29,13 @@ import java.io.IOException;
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     private static final String TAG = "LauncherBackupAgentHelper";
+
+    private static final String LAUNCHER_DATA_PREFIX = "L";
+
     static final boolean VERBOSE = true;
     static final boolean DEBUG = false;
 
     private static BackupManager sBackupManager;
-
-    protected static final String SETTING_RESTORE_ENABLED = "launcher_restore_enabled";
 
     /**
      * Notify the backup manager that out database is dirty.
@@ -51,28 +51,13 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         sBackupManager.dataChanged();
     }
 
-    @Override
-    public void onDestroy() {
-        // There is only one process accessing this preference file, but the restore
-        // modifies the file outside the normal codepaths, so it looks like another
-        // process.  This forces a reload of the file, in case this process persists.
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
-        super.onDestroy();
-    }
+    private LauncherBackupHelper mHelper;
 
     @Override
     public void onCreate() {
-        boolean restoreEnabled = 0 != Settings.Secure.getInt(
-                getContentResolver(), SETTING_RESTORE_ENABLED, 1);
-        if (VERBOSE) Log.v(TAG, "restore is " + (restoreEnabled ? "enabled" : "disabled"));
-
-        addHelper(LauncherBackupHelper.LAUNCHER_PREFS_PREFIX,
-                new LauncherPreferencesBackupHelper(this,
-                        LauncherAppState.getSharedPreferencesKey(),
-                        restoreEnabled));
-        addHelper(LauncherBackupHelper.LAUNCHER_PREFIX,
-                new LauncherBackupHelper(this, restoreEnabled));
+        super.onCreate();
+        mHelper = new LauncherBackupHelper(this);
+        addHelper(LAUNCHER_DATA_PREFIX, mHelper);
     }
 
     @Override
@@ -92,7 +77,10 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         boolean hasData = c.moveToNext();
         c.close();
 
-        if (!hasData) {
+        if (hasData && mHelper.restoreSuccessful) {
+            LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
+            LauncherClings.synchonouslyMarkFirstRunClingDismissed(this);
+        } else {
             if (VERBOSE) Log.v(TAG, "Nothing was restored, clearing DB");
             LauncherAppState.getLauncherProvider().createEmptyDB();
         }
