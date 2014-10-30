@@ -24,8 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Android मूल अनुप्रयोगहरू"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"अनुप्रयोग स्थापित छैन।"</string>
-    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
-    <skip />
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"सुरक्षित मोडमा डाउनलोड गरेको अनुप्रयोग अक्षम गरिएको छ"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"विजेटहरू"</string>
     <string name="widget_adder" msgid="3201040140710381657">"विजेटहरू"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem देखाउनुहोस्"</string>
@@ -78,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"गृह सेटिङहरू र सर्टकटहरू लेख्नुहोस्"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"गृहमा एउटा अनुप्रयोगलाई सेटिङ र सर्टकट बदल्न अनुमति दिनुहोस्।"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"समस्या लोडिङ गर्ने विजेट"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली अनुप्रयोग हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
     <string name="dream_name" msgid="1530253749244328964">"रकेट लन्चर"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
@@ -99,6 +99,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"START FRESH"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"आफ्नो ठाउँ व्यवस्थापन गर्नुहोस्"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"वालपेपर, विजेट र सेटिङ्स प्रबन्ध गर्न पृष्ठभूमिलाई टच गरेर होल्ड गर्नुहोस्।"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वालपेपरहरू, विजेट; सेटिङहरू"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"छुनुहोस् ; अनुकूलन पृष्ठभूमि होल्ड गर्नुहोस्"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"बुझियो"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"यहाँ एउटा फोल्डर छ"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"यस्तै एक किसिमका सिर्जना गर्न, अनुप्रयोगलाई टच गरेर होल्ड गर्नुहोस्, त्यसपछि यसलाई अर्को माथि सार्नुहोस्।"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ठिक छ"</string>

@@ -25,8 +25,8 @@
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"एप्‍लिकेशन इंस्‍टॉल नहीं है."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्स सुरक्षित मोड में अक्षम है"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"विजेट"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"विजेट"</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"शॉर्टकट"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"शॉर्टकट"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"मेमोरी दिखाएं"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="market" msgid="2619650989819296998">"खरीदारी करें"</string>
@@ -40,7 +40,7 @@
     <string name="menu_item_add_item" msgid="1264911265836810421">"होम स्‍क्रीन में जोड़ें"</string>
     <string name="group_applications" msgid="3797214114206693605">"ऐप्लिकेशन"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"शॉर्टकट"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"विजेट"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"शॉर्टकट"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"आपकी होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और स्थान नहीं है"</string>
@@ -85,7 +85,7 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ऐप्लिकेशन पृष्ठ %2$d में से %1$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"विजेट पृष्ठ %2$d में से %1$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"शॉर्टकट %2$d में से %1$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागत है"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"जैसा चाहें वैसा उपयोग करें."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
@@ -96,8 +96,8 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"आइकन की प्रतिलिपि बनाएं"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"फिर से शुरू करें"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"अपने स्थान को व्यवस्थित करें"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, विजेट और सेटिंग प्रबंधित करने के लिए पृष्ठभूमि को स्पर्श करके रखें."</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वॉलपेपर, विजेट और सेटिंग"</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, शॉर्टकट और सेटिंग प्रबंधित करने के लिए पृष्ठभूमि को स्पर्श करके रखें."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वॉलपेपर, शॉर्टकट और सेटिंग"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"पृष्ठभूमि कस्टमाइज़ करने के लिए स्पर्श करके रखें"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"समझ लिया"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"यहां एक फ़ोल्डर है"</string>
@@ -109,7 +109,7 @@
     <string name="folder_closed" msgid="4100806530910930934">"फ़ोल्डर बंद किया गया"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"फ़ोल्डर का नाम बदलकर <xliff:g id="NAME">%1$s</xliff:g> किया गया"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"विजेट"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"शॉर्टकट"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"सेटिंग"</string>
     <string name="package_state_enqueued" msgid="6227252464303085641">"प्रतीक्षा में"</string>

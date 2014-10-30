@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ಮುಖಪುಟದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬರೆಯಿರಿ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ಮುಖಪುಟದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ವಿಜೆಟ್ ಲೋಡ್‌ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ಸೆಟಪ್"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="dream_name" msgid="1530253749244328964">"ರಾಕೆಟ್ ಲಾಂಚರ್"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ಹೆಸರಿಲ್ಲದ ಫೋಲ್ಡರ್"</string>
@@ -96,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ಹೊಸದಾಗಿ ಪ್ರಾರಂಭಿಸು"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ವ್ಯವಸ್ಥಿತಗೊಳಿಸಿ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"ವಾಲ್‌ಪೇಪರ್‌, ವಿಜೆಟ್‌ಗಳು ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಲು ಹಿನ್ನೆಲೆಯನ್ನು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು, ವಿಜೆಟ್‌ಗಳು, &amp; ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ಕಸ್ಟಮೈಸ್ ಮಾಡಲು ಹಿನ್ನೆಲೆಯನ್ನು ಸ್ಪರ್ಶಿಸಿ &amp; ಒತ್ತಿ ಹಿಡಿಯಿರಿ"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ಅರ್ಥವಾಯಿತು"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"ಇಲ್ಲೊಂದು ಫೋಲ್ಡರ್ ಇದೆ"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"ಈ ರೀತಿ ರಚಿಸಲು, ಸ್ಪರ್ಶಿಸಿ &amp; ಆಪ್‌ ಹಿಡಿದುಕೊಂಡು ಮತ್ತೊಂದರ ಮೇಲೆ ಸರಿಸಿ."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ಸರಿ"</string>

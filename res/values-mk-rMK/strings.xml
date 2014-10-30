@@ -77,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"напиши подесувања и кратенки на почетна страница"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Овозможува апликацијата да ги менува подесувањата и кратенките на почетната страница."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Проблем при вчитувањето на виџетот"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Поставување"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ова е системска апликација и не може да се деинсталира."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Неименувана папка"</string>
@@ -91,11 +92,14 @@
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Создади повеќе екрани за апликации и папки"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Копирај икони за апликација"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Увези икони и папки од старите екрани на почетната страница?"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Зачувај икони и папки од твоите стари почетни страни?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"КОПИРАЈ ИКОНИ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"СТАРТУВАЈ ОД ПОЧЕТОК"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Организирајте го вашиот простор"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Допри и задржи ја заднината за управување со тапети, виџети и подесувања."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Тапети, додатоци и поставки"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Допрете и задржете на заднината за да приспособите"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"СФАТИВ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Еве папка"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"За да создадете ваква, допрете и држете ја апликацијата, а потоа поместете ја врз другата."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Во ред"</string>

@@ -24,8 +24,7 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Core колдонмолору"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Колдонмо орнотулган эмес."</string>
-    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
-    <skip />
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Жүктөп алынган колдонмо Коопсуз режиминде иштен чыгарылды"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Виджеттер"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Виджеттер"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Мемди көргөзүү"</string>
@@ -78,6 +77,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"Үйдүн тууралоолорун жана тез чакырмаларын жазуу"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Колдонмого Үйдүн тууралоолорун жана тез чакырмаларын өзгөртүүгө уруксат берет."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Виджетти жүктөөдө маселе бар"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Орнотуу"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Бул системдик колдонмо жана аны чечкенге болбойт."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Аты жок фолдер"</string>
@@ -97,6 +97,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ТАЗАСЫН БАШТОО"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Өз мейкиндигиңизди уюштуруңуз"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Тушкагаздарды, виджеттерди жана тууралоолорду башкаруу үчүн фонду басып туруңуз."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Тушкагаздар, виджеттер &amp; жөндөөлөр"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Өзгөчөлөштүрүү үчүн фонго тийип &amp; коё бербей туруңуз"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ТҮШҮНДҮМ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Мынакей фолдер"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Башкасын түзүш үчүн колдонмону басып туруп, башканын жанына жылдырыңыз."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
