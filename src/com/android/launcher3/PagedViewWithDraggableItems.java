@@ -91,6 +91,10 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         return super.onTouchEvent(ev);
     }
 
+    public void reset() {
+        mLastTouchedItem = null;
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mLastTouchedItem = v;

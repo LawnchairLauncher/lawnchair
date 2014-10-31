@@ -50,6 +50,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -3568,6 +3569,9 @@ public class Launcher extends Activity
                     if (mSearchDropTargetBar != null) {
                         mSearchDropTargetBar.hideSearchBar(false);
                     }
+
+                    // This can hold unnecessary references to views.
+                    mStateAnimation = null;
                 }
 
             });
@@ -3853,6 +3857,9 @@ public class Launcher extends Activity
                     content.setCurrentPage(content.getNextPage());
 
                     mAppsCustomizeContent.updateCurrentPageScroll();
+
+                    // This can hold unnecessary references to views.
+                    mStateAnimation = null;
                 }
             });
 
@@ -3896,8 +3903,16 @@ public class Launcher extends Activity
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-            mAppsCustomizeTabHost.onTrimMemory();
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+            // The widget preview db can result in holding onto over
+            // 3MB of memory for caching which isn't necessary.
+            SQLiteDatabase.releaseMemory();
+
+            // We reset the apps customize tray in order to
+            // to free all the memory associated with widget previews
+            if (mAppsCustomizeTabHost != null) {
+                mAppsCustomizeTabHost.reset();
+            }
         }
     }
 
