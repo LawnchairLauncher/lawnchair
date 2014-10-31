@@ -141,14 +141,6 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
             mPagedView.loadAssociatedPages(mPagedView.getCurrentPage());
         }
     }
-
-    public void onTrimMemory() {
-        mContent.setVisibility(GONE);
-        // Clear the widget pages of all their subviews - this will trigger the widget previews
-        // to delete their bitmaps
-        mPagedView.clearAllWidgetPages();
-    }
-
     @Override
     public ViewGroup getContent() {
         return mPagedView;

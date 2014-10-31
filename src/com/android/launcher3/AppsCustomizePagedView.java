@@ -1476,7 +1476,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    @Override
     public void reset() {
+        super.reset();
         // If we have reset, then we should not continue to restore the previous state
         mSaveInstanceStateItemIndex = -1;
 
