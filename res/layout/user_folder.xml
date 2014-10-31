@@ -45,6 +45,7 @@
         android:hint="@string/folder_hint_text"
         android:textSize="14sp"
         android:textColor="#ff777777"
+        android:textColorHint="#ff808080"
         android:textColorHighlight="#ffCCCCCC"
         android:textCursorDrawable="@null"
         android:gravity="center_horizontal"
