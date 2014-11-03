@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -29,15 +30,18 @@ import com.android.launcher3.LauncherAppState;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class PackageInstallerCompatVL extends PackageInstallerCompat {
+public class PackageInstallerCompatVL extends PackageInstallerCompat implements Runnable {
 
     private static final String TAG = "PackageInstallerCompatVL";
     private static final boolean DEBUG = false;
 
+    // All updates to these sets must happen on the {@link #mWorker} thread.
     private final SparseArray<SessionInfo> mPendingReplays = new SparseArray<SessionInfo>();
     private final HashSet<String> mPendingBadgeUpdates = new HashSet<String>();
+
     private final PackageInstaller mInstaller;
     private final IconCache mCache;
+    private final Handler mWorker;
 
     private boolean mResumed;
     private boolean mBound;
@@ -46,16 +50,23 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mInstaller = context.getPackageManager().getPackageInstaller();
         LauncherAppState.setApplicationContext(context.getApplicationContext());
         mCache = LauncherAppState.getInstance().getIconCache();
+        mWorker = new Handler();
 
         mResumed = false;
         mBound = false;
 
-        mInstaller.registerSessionCallback(mCallback);
+        mInstaller.registerSessionCallback(mCallback, mWorker);
 
         // On start, send updates for all active sessions
-        for (SessionInfo info : mInstaller.getAllSessions()) {
-            mPendingReplays.append(info.getSessionId(), info);
-        }
+        mWorker.post(new Runnable() {
+
+            @Override
+            public void run() {
+                for (SessionInfo info : mInstaller.getAllSessions()) {
+                    mPendingReplays.append(info.getSessionId(), info);
+                }
+            }
+        });
     }
 
     @Override
@@ -87,7 +98,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     @Override
     public void onFinishBind() {
         mBound = true;
-        replayUpdates(null);
+        mWorker.post(this);
     }
 
     @Override
@@ -98,12 +109,18 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     @Override
     public void onResume() {
         mResumed = true;
-        replayUpdates(null);
+        mWorker.post(this);
     }
 
     @Override
     public void recordPackageUpdate(String packageName, int state, int progress) {
         // No op
+    }
+
+    @Override
+    public void run() {
+        // Called on mWorker thread.
+        replayUpdates(null);
     }
 
     private void replayUpdates(PackageInstallInfo newInfo) {
