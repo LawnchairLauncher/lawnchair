@@ -28,9 +28,9 @@
   <string name="scrolling_fade_adjacent">Yan sayfaları soldur</string>
   <string name="scrolling_wallpaper">Duvarkağıdını kaydır</string>
   <string name="grid_size_text">Izgara boyutu</string>
-  <string name="grid_size_comfortable">Rahat</string>
+  <string name="grid_size_comfortable">Seyrek</string>
   <string name="grid_size_cozy">Rahat</string>
-  <string name="grid_size_condensed">Kalın</string>
+  <string name="grid_size_condensed">Yoğun</string>
   <string name="grid_size_custom">Özel</string>
   <string name="grid_size_custom_and_size">Özel (%1$s)</string>
   <string name="preferences_interface_homescreen_custom">Özel boyut seçin</string>

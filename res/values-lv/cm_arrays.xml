@@ -17,19 +17,19 @@
 -->
 <resources>
   <string-array name="transition_effect_entries">
-    <item>Heç bir</item>
-    <item>Yaxınlaşdır</item>
-    <item>Uzaqlaşdır</item>
-    <item>Yuxarı döndər</item>
-    <item>Aşağı döndər</item>
-    <item>Kub daxili</item>
-    <item>Kub xarici</item>
-    <item>Yığın</item>
-    <item>Akkordion</item>
-    <item>Çevir</item>
-    <item>Silindir daxili</item>
-    <item>Silindir xarici</item>
-    <item>Karusel</item>
-    <item>İcmal</item>
+    <item>Neviens</item>
+    <item>Tuvināt</item>
+    <item>Tālināt</item>
+    <item>Pagriezt uz augšu</item>
+    <item>Pagriezt uz leju</item>
+    <item>Kubs uz iekšu</item>
+    <item>Kubs uz āru</item>
+    <item>Kaudzē</item>
+    <item>Akordeons</item>
+    <item>Apmest</item>
+    <item>Cilindrs uz iekšu</item>
+    <item>Cilindrs uz āru</item>
+    <item>Karuselis</item>
+    <item>Pārskats</item>
   </string-array>
 </resources>

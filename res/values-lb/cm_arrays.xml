@@ -18,17 +18,17 @@
 <resources>
   <string-array name="transition_effect_entries">
     <item>Keen</item>
-    <item>Zoom in</item>
-    <item>Zoom out</item>
-    <item>Rotate up</item>
+    <item>Erazoomen</item>
+    <item>Erauszoomen</item>
+    <item>Eroprotéieren</item>
     <item>Rotate down</item>
-    <item>Cube in</item>
-    <item>Cube out</item>
+    <item>Cube eran</item>
+    <item>Cube eraus</item>
     <item>Koup</item>
     <item>Akkordeon</item>
     <item>Ëmdréinen</item>
-    <item>Cylinder in</item>
-    <item>Cylinder out</item>
+    <item>Zylinder eran</item>
+    <item>Zylinder eraus</item>
     <item>Karussell</item>
     <item>Iwwersiicht</item>
   </string-array>

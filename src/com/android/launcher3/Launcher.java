@@ -1327,9 +1327,16 @@ public class Launcher extends Activity
     }
 
     protected void startThemeSettings() {
-        Intent settings = new Intent().setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
-                OverviewSettingsPanel.THEME_SETTINGS);
-        startActivity(settings);
+        Intent chooser = new Intent(Intent.ACTION_MAIN)
+                .addCategory(OverviewSettingsPanel.THEME_CHOOSER_CATEGORY)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            startActivity(chooser);
+        } catch (ActivityNotFoundException e) {
+            Intent settings = new Intent().setClassName(OverviewSettingsPanel.ANDROID_SETTINGS,
+                    OverviewSettingsPanel.THEME_SETTINGS);
+            startActivity(settings);
+        }
 
         if (mWorkspace.isInOverviewMode()) {
             mWorkspace.exitOverviewMode(false);
@@ -1394,8 +1401,14 @@ public class Launcher extends Activity
         mOverviewSettingsPanel.notifyDataSetInvalidated();
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction
-                .setCustomAnimations(0, R.anim.exit_out_right);
+        Configuration config = getResources().getConfiguration();
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            fragmentTransaction
+                    .setCustomAnimations(0, R.anim.exit_out_left);
+        } else {
+            fragmentTransaction
+                    .setCustomAnimations(0, R.anim.exit_out_right);
+        }
         fragmentTransaction
                 .remove(mDynamicGridSizeFragment).commit();
 
@@ -1438,8 +1451,14 @@ public class Launcher extends Activity
         mOverviewSettingsPanel.notifyDataSetInvalidated();
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction
-                .setCustomAnimations(0, R.anim.exit_out_right);
+        Configuration config = getResources().getConfiguration();
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            fragmentTransaction
+                    .setCustomAnimations(0, R.anim.exit_out_left);
+        } else {
+            fragmentTransaction
+                    .setCustomAnimations(0, R.anim.exit_out_right);
+        }
         fragmentTransaction
                 .remove(mTransitionEffectsFragment).commit();
 
