@@ -3597,11 +3597,7 @@ public class Launcher extends Activity
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
                             if (v != null) {
-                                boolean attached = true;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    attached = v.isAttachedToWindow();
-                                }
-                                if (attached) v.buildLayer();
+                                if (Utilities.isViewAttachedToWindow(v)) v.buildLayer();
                             }
                         }
                     }
@@ -3877,11 +3873,7 @@ public class Launcher extends Activity
                         for (int i = 0; i < layerViews.size(); i++) {
                             View v = layerViews.get(i);
                             if (v != null) {
-                                boolean attached = true;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    attached = v.isAttachedToWindow();
-                                }
-                                if (attached) v.buildLayer();
+                                if (Utilities.isViewAttachedToWindow(v)) v.buildLayer();
                             }
                         }
                     }

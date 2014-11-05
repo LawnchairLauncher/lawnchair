@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -38,6 +39,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -494,5 +497,15 @@ public final class Utilities {
             }
         }
         return null;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static boolean isViewAttachedToWindow(View v) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return v.isAttachedToWindow();
+        } else {
+            // A proxy call which returns null, if the view is not attached to the window.
+            return v.getKeyDispatcherState() != null;
+        }
     }
 }
