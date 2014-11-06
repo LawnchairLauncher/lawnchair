@@ -18,6 +18,9 @@ package com.android.launcher3;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -39,8 +42,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -507,5 +508,38 @@ public final class Utilities {
             // A proxy call which returns null, if the view is not attached to the window.
             return v.getKeyDispatcherState() != null;
         }
+    }
+
+    /**
+     * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
+     * provided by the same package which is set to be global search activity.
+     * If widgetCategory is not supported, or no such widget is found, returns the first widget
+     * provided by the package.
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static AppWidgetProviderInfo getSearchWidgetProvider(Context context) {
+        SearchManager searchManager =
+                (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+        ComponentName searchComponent = searchManager.getGlobalSearchActivity();
+        if (searchComponent == null) return null;
+        String providerPkg = searchComponent.getPackageName();
+
+        AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProviders()) {
+            if (info.provider.getPackageName().equals(providerPkg)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    if ((info.widgetCategory & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
+                        return info;
+                    } else if (defaultWidgetForSearchPackage == null) {
+                        defaultWidgetForSearchPackage = info;
+                    }
+                } else {
+                    return info;
+                }
+            }
+        }
+        return defaultWidgetForSearchPackage;
     }
 }

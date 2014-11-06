@@ -51,8 +51,6 @@
         <item name="customShadows">false</item>
     </style>
 
-    <style name="SearchDropTargetBar"></style>
-
     <style name="SearchButton"></style>
 
     <style name="DropTargetButtonContainer">
@@ -95,10 +93,6 @@
     <!-- Overridden in device overlays -->
     <style name="PagedViewWidgetImageView">
         <item name="android:paddingLeft">@dimen/app_widget_preview_padding_left</item>
-    </style>
-
-    <style name="SearchButton.WithPaddingStart">
-        <item name="android:paddingLeft">8dp</item>
     </style>
 
 </resources>
