@@ -1245,7 +1245,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (finalChild != null) {
             mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
         } else {
-            onCompleteRunnable.run();
+            mLauncher.runOnUiThread(onCompleteRunnable);
         }
         mDestroyed = true;
     }

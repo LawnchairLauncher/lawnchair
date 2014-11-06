@@ -456,10 +456,21 @@ public class Launcher extends Activity
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
+    Runnable mUpdateDynamicGridRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateDynamicGrid();
+        }
+    };
+
     private BroadcastReceiver protectedAppsChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Update the workspace
+            if (waitUntilResume(mUpdateDynamicGridRunnable, true)) {
+                return;
+            }
+
             updateDynamicGrid();
         }
     };
