@@ -26,6 +26,9 @@
   <string name="scrolling_fade_adjacent">Säiten um Rand ausblenden</string>
   <string name="scrolling_wallpaper">Hannergrondbild scrollen</string>
   <string name="grid_size_text">Gittergréisst</string>
+  <string name="grid_size_custom">Personaliséiert</string>
+  <string name="scroll_effect_text">Scrolleffekt</string>
+  <string name="drawer_sorting_text">Zortéiermodus</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Startunzuel</string>
   <string name="sort_mode_install_time">Installatiounszäit</string>
