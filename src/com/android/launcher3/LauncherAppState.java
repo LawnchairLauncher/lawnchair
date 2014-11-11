@@ -46,12 +46,14 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     private final AppFilter mAppFilter;
     private final BuildInfo mBuildInfo;
-    private LauncherModel mModel;
-    private IconCache mIconCache;
+    private final LauncherModel mModel;
+    private final IconCache mIconCache;
+
+    private final boolean mIsScreenLarge;
+    private final float mScreenDensity;
+    private final int mLongPressTimeout = 300;
+
     private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
-    private boolean mIsScreenLarge;
-    private float mScreenDensity;
-    private int mLongPressTimeout = 300;
     private boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
@@ -159,9 +161,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     };
 
     LauncherModel setLauncher(Launcher launcher) {
-        if (mModel == null) {
-            throw new IllegalStateException("setLauncher() called before init()");
-        }
         mModel.initialize(launcher);
         return mModel;
     }
