@@ -2767,6 +2767,18 @@ public class Workspace extends SmoothPagedView
                     v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
         }
 
+        // Special case for dragging All Apps button
+        if (v.getTag() instanceof ItemInfo) {
+            ItemInfo info = (ItemInfo) v.getTag();
+            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                // Special case for all apps icon
+                Drawable d = ((TextView) v).getCompoundDrawables()[1];
+                Rect r = d.getBounds();
+                b = Bitmap.createBitmap(r.width() + padding,
+                        r.height() + padding, Bitmap.Config.ARGB_8888);
+            }
+        }
+
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding, true);
         canvas.setBitmap(null);
