@@ -18,13 +18,6 @@
 
 <resources>
 
-    <!-- DrawableStateProxyView specific attributes. These attributes are used to customize
-         a DrawableStateProxyView view in XML files. -->
-    <declare-styleable name="DrawableStateProxyView">
-        <!-- The source view to delegate touch presses events to. -->
-        <attr name="sourceViewId" format="integer" />
-    </declare-styleable>
-
     <!-- Page Indicator specific attributes. -->
     <declare-styleable name="PageIndicator">
         <attr name="windowSize" format="integer"  />
@@ -74,13 +67,6 @@
         <attr name="strokeTextColor" format="color" />
         <!-- The width of the stroke -->
         <attr name="strokeWidth" format="float" />
-    </declare-styleable>
-
-    <!-- HolographicLinearLayout specific attributes. -->
-    <declare-styleable name="HolographicLinearLayout">
-        <!-- The source view to generate and apply the drawable states to/from -->
-        <attr name="sourceImageViewId" format="integer" />
-        <attr name="stateHotwordOn" format="boolean" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize

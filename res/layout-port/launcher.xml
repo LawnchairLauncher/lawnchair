@@ -66,18 +66,6 @@
             android:id="@+id/search_drop_target_bar"
             layout="@layout/search_drop_target_bar" />
 
-        <!-- This is the search bar voice button proxy view.  It allows us to have a larger
-             touch target than the microphone constrained by the search bar bounds. -->
-        <com.android.launcher3.DrawableStateProxyView
-            android:id="@+id/voice_button_proxy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="top|end"
-            android:clickable="true"
-            android:onClick="onClickVoiceButton"
-            android:importantForAccessibility="no"
-            launcher:sourceViewId="@+id/voice_button" />
-
         <include layout="@layout/apps_customize_pane"
             android:id="@+id/apps_customize_pane"
             android:layout_width="match_parent"

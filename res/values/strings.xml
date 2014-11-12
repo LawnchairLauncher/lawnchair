@@ -132,10 +132,6 @@ s -->
     <!-- Label for the info icon. [CHAR_LIMIT=20] -->
     <string name="info_target_label">App info</string>
 
-    <!-- Accessibility: Search button -->
-    <string name="accessibility_search_button">Search</string>
-    <!-- Accessibility: Voice Search button -->
-    <string name="accessibility_voice_search_button">Voice Search</string>
     <!-- Accessibility: AllApps button -->
     <string name="accessibility_all_apps_button">Apps</string>
     <!-- Accessibility: Delete button -->
