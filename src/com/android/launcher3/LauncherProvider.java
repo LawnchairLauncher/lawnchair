@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -57,7 +56,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
@@ -1342,29 +1340,8 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private ComponentName getSearchWidgetProvider() {
-            SearchManager searchManager =
-                    (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
-            ComponentName searchComponent = searchManager.getGlobalSearchActivity();
-            if (searchComponent == null) return null;
-            return getProviderInPackage(searchComponent.getPackageName());
-        }
-
-        /**
-         * Gets an appwidget provider from the given package. If the package contains more than
-         * one appwidget provider, an arbitrary one is returned.
-         */
-        private ComponentName getProviderInPackage(String packageName) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-            List<AppWidgetProviderInfo> providers = appWidgetManager.getInstalledProviders();
-            if (providers == null) return null;
-            final int providerCount = providers.size();
-            for (int i = 0; i < providerCount; i++) {
-                ComponentName provider = providers.get(i).provider;
-                if (provider != null && provider.getPackageName().equals(packageName)) {
-                    return provider;
-                }
-            }
-            return null;
+            AppWidgetProviderInfo searchProvider = Utilities.getSearchWidgetProvider(mContext);
+            return (searchProvider == null) ? null : searchProvider.provider;
         }
 
         private void migrateLauncher2Shortcuts(SQLiteDatabase db, Uri uri) {
