@@ -84,16 +84,11 @@ public class AppInfo extends ItemInfo {
         flags = initFlags(info);
         firstInstallTime = info.getFirstInstallTime();
         iconCache.getTitleAndIcon(this, info, labelCache);
-        intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setComponent(info.getComponentName());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
-        intent.putExtra(EXTRA_PROFILE, serialNumber);
+        intent = makeLaunchIntent(context, info, user);
         this.user = user;
     }
 
-    private static int initFlags(LauncherActivityInfoCompat info) {
+    public static int initFlags(LauncherActivityInfoCompat info) {
         int appFlags = info.getApplicationInfo().flags;
         int flags = 0;
         if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -136,5 +131,15 @@ public class AppInfo extends ItemInfo {
 
     public ShortcutInfo makeShortcut() {
         return new ShortcutInfo(this);
+    }
+
+    public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
+            UserHandleCompat user) {
+        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
+        return new Intent(Intent.ACTION_MAIN)
+            .addCategory(Intent.CATEGORY_LAUNCHER)
+            .setComponent(info.getComponentName())
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            .putExtra(EXTRA_PROFILE, serialNumber);
     }
 }
