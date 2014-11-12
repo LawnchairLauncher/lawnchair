@@ -168,7 +168,6 @@ public class Launcher extends Activity
 
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
-    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
     static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
     static final String DISABLE_ALL_APPS_PROPERTY = "launcher_noallapps";
 
@@ -371,8 +370,6 @@ public class Launcher extends Activity
 
     private static PendingAddArguments sPendingAddItem;
 
-    public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
-
     private static class PendingAddArguments {
         int requestCode;
         Intent intent;
@@ -386,10 +383,6 @@ public class Launcher extends Activity
     private Stats mStats;
 
     FocusIndicatorView mFocusHandler;
-
-    static boolean isPropertyEnabled(String propertyName) {
-        return Log.isLoggable(propertyName, Log.VERBOSE);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -2494,7 +2487,7 @@ public class Launcher extends Activity
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (isPropertyEnabled(DUMP_STATE_PROPERTY)) {
+                    if (Utilities.isPropertyEnabled(DUMP_STATE_PROPERTY)) {
                         dumpState();
                         return true;
                     }
@@ -5113,19 +5106,14 @@ public class Launcher extends Activity
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
 
-    public boolean isRotationEnabled() {
-        boolean enableRotation = sForceEnableRotation ||
-                getResources().getBoolean(R.bool.allow_rotation);
-        return enableRotation;
-    }
     public void lockScreenOrientation() {
-        if (isRotationEnabled()) {
+        if (Utilities.isRotationEnabled(this)) {
             setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
                     .getConfiguration().orientation));
         }
     }
     public void unlockScreenOrientation(boolean immediate) {
-        if (isRotationEnabled()) {
+        if (Utilities.isRotationEnabled(this)) {
             if (immediate) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             } else {

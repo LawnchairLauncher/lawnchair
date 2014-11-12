@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -26,16 +27,15 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -194,6 +194,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return LauncherFiles.SHARED_PREFERENCES_KEY;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     DeviceProfile initDynamicGrid(Context context) {
         // Determine the dynamic grid properties
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -269,7 +270,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     public static boolean isDisableAllApps() {
         // Returns false on non-dogfood builds.
         return getInstance().mBuildInfo.isDogfoodBuild() &&
-                Launcher.isPropertyEnabled(Launcher.DISABLE_ALL_APPS_PROPERTY);
+                Utilities.isPropertyEnabled(Launcher.DISABLE_ALL_APPS_PROPERTY);
     }
 
     public static boolean isDogfoodBuild() {
