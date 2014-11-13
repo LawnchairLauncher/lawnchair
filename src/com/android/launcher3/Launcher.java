@@ -1340,7 +1340,8 @@ public class Launcher extends Activity
     protected void startThemeSettings() {
         Intent chooser = new Intent(Intent.ACTION_MAIN)
                 .addCategory(OverviewSettingsPanel.THEME_CHOOSER_CATEGORY)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         try {
             startActivity(chooser);
         } catch (ActivityNotFoundException e) {
