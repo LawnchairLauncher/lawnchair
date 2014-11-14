@@ -388,6 +388,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 // The is an internal launcher target shortcut.
                 UserHandleCompat user = UserManagerCompat.getInstance(context)
                         .getUserForSerialNumber(object.getLong(USER_HANDLE_KEY));
+                if (user == null) {
+                    return null;
+                }
 
                 LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(context)
                         .resolveActivity(launcherIntent, user);
