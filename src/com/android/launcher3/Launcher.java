@@ -3960,11 +3960,11 @@ public class Launcher extends Activity
             SharedPreferences sp = getSharedPreferences(
                     LauncherAppState.getSharedPreferencesKey(), MODE_PRIVATE);
             int widgetId = sp.getInt(QSB_WIDGET_ID, -1);
+            AppWidgetProviderInfo widgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
             if (!searchProvider.provider.flattenToString().equals(
                     sp.getString(QSB_WIDGET_PROVIDER, null))
-                    || (widgetId == -1)
-                    || !mAppWidgetManager.getAppWidgetInfo(widgetId).provider
-                        .equals(searchProvider.provider)) {
+                    || (widgetInfo == null)
+                    || !widgetInfo.provider.equals(searchProvider.provider)) {
                 // A valid widget is not already bound.
                 if (widgetId > -1) {
                     mAppWidgetHost.deleteAppWidgetId(widgetId);
