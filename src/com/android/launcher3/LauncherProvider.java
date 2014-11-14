@@ -1432,6 +1432,12 @@ public class LauncherProvider extends ContentProvider {
                                 userHandle = UserHandleCompat.myUserHandle();
                                 userSerialNumber = userManager.getSerialNumberForUser(userHandle);
                             }
+
+                            if (userHandle == null) {
+                                Launcher.addDumpLog(TAG, "skipping deleted user", true);
+                                continue;
+                            }
+
                             Launcher.addDumpLog(TAG, "migrating \""
                                 + c.getString(titleIndex) + "\" ("
                                 + cellX + "," + cellY + "@"

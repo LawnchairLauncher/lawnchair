@@ -2449,8 +2449,10 @@ public class Workspace extends SmoothPagedView
                 pageIndicator.setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(pageIndicator);
             }
-            searchBar.setAlpha(finalSearchBarAlpha);
-            AlphaUpdateListener.updateVisibility(searchBar);
+            if (searchBar != null) {
+                searchBar.setAlpha(finalSearchBarAlpha);
+                AlphaUpdateListener.updateVisibility(searchBar);
+            }
             updateCustomContentVisibility();
             setScaleX(mNewScale);
             setScaleY(mNewScale);
