@@ -1337,7 +1337,7 @@ public class Workspace extends SmoothPagedView
         float mAnimationStartOffset;
         private final int ANIMATION_DURATION = 250;
         // Don't use all the wallpaper for parallax until you have at least this many pages
-        private final int MIN_PARALLAX_PAGE_SPAN = 3;
+        private final int MIN_PARALLAX_PAGE_SPAN = 2;
         int mNumScreens;
         boolean mCompletedInitialOffset;
 
@@ -1391,7 +1391,7 @@ public class Workspace extends SmoothPagedView
 
         private float wallpaperOffsetForCurrentScroll() {
             if (getChildCount() <= 1) {
-                return 0;
+                return mWallpaperIsLiveWallpaper ? 0 : 0.5f;
             }
 
             // Exclude the leftmost page
