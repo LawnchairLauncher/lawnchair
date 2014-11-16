@@ -1390,7 +1390,7 @@ public class Workspace extends SmoothPagedView
         }
 
         private float wallpaperOffsetForCurrentScroll() {
-            if (getChildCount() <= 1) {
+            if (getNumScreensExcludingEmptyAndCustom() <= 1) {
                 return mWallpaperIsLiveWallpaper ? 0 : 0.5f;
             }
 
