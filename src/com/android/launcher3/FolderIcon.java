@@ -690,7 +690,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             public void onAnimationEnd(Animator animation) {
                 mAnimating = false;
                 if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
+                    mLauncher.runOnUiThread(onCompleteRunnable);
                 }
             }
         });

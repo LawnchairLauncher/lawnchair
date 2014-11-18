@@ -1337,7 +1337,7 @@ public class Workspace extends SmoothPagedView
         float mAnimationStartOffset;
         private final int ANIMATION_DURATION = 250;
         // Don't use all the wallpaper for parallax until you have at least this many pages
-        private final int MIN_PARALLAX_PAGE_SPAN = 3;
+        private final int MIN_PARALLAX_PAGE_SPAN = 2;
         int mNumScreens;
         boolean mCompletedInitialOffset;
 
@@ -1390,8 +1390,8 @@ public class Workspace extends SmoothPagedView
         }
 
         private float wallpaperOffsetForCurrentScroll() {
-            if (getChildCount() <= 1) {
-                return 0;
+            if (getNumScreensExcludingEmptyAndCustom() <= 1) {
+                return mWallpaperIsLiveWallpaper ? 0 : 0.5f;
             }
 
             // Exclude the leftmost page
@@ -2765,6 +2765,18 @@ public class Workspace extends SmoothPagedView
         } else {
             b = Bitmap.createBitmap(
                     v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
+        }
+
+        // Special case for dragging All Apps button
+        if (v.getTag() instanceof ItemInfo) {
+            ItemInfo info = (ItemInfo) v.getTag();
+            if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_ALLAPPS) {
+                // Special case for all apps icon
+                Drawable d = ((TextView) v).getCompoundDrawables()[1];
+                Rect r = d.getBounds();
+                b = Bitmap.createBitmap(r.width() + padding,
+                        r.height() + padding, Bitmap.Config.ARGB_8888);
+            }
         }
 
         canvas.setBitmap(b);

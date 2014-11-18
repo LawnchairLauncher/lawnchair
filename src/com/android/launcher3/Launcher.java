@@ -456,10 +456,21 @@ public class Launcher extends Activity
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
+    Runnable mUpdateDynamicGridRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateDynamicGrid();
+        }
+    };
+
     private BroadcastReceiver protectedAppsChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Update the workspace
+            if (waitUntilResume(mUpdateDynamicGridRunnable, true)) {
+                return;
+            }
+
             updateDynamicGrid();
         }
     };
@@ -1329,7 +1340,8 @@ public class Launcher extends Activity
     protected void startThemeSettings() {
         Intent chooser = new Intent(Intent.ACTION_MAIN)
                 .addCategory(OverviewSettingsPanel.THEME_CHOOSER_CATEGORY)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         try {
             startActivity(chooser);
         } catch (ActivityNotFoundException e) {

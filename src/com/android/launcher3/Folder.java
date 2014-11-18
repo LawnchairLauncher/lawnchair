@@ -1202,7 +1202,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void replaceFolderWithFinalItem() {
-        if (mInfo.hidden) {
+        if (mInfo.hidden && getItemCount() >= 1) {
             return;
         }
         // Add the last remaining child to the workspace in place of the folder
@@ -1245,7 +1245,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (finalChild != null) {
             mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
         } else {
-            onCompleteRunnable.run();
+            mLauncher.runOnUiThread(onCompleteRunnable);
         }
         mDestroyed = true;
     }

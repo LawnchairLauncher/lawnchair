@@ -2445,17 +2445,27 @@ public class LauncherModel extends BroadcastReceiver {
 
                         int NN = shortcuts.size() - 1;
                         for (int j = NN; j >= 0; j--) {
-                            ShortcutInfo sci = shortcuts.get(j);
+                            final ShortcutInfo sci = shortcuts.get(j);
                             if (sci.intent != null && sci.intent.getComponent() != null) {
                                 if (!folder.hidden){
                                     if (mHiddenApps.contains(sci.intent.getComponent())) {
                                         LauncherModel.deleteItemFromDatabase(mContext, sci);
-                                        folder.remove(sci);
+                                        Runnable r = new Runnable() {
+                                            public void run() {
+                                                folder.remove(sci);
+                                            }
+                                        };
+                                        runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                                     }
                                 } else {
                                     if (!mHiddenApps.contains(sci.intent.getComponent())) {
                                         LauncherModel.deleteItemFromDatabase(mContext, sci);
-                                        folder.remove(sci);
+                                        Runnable r = new Runnable() {
+                                            public void run() {
+                                                folder.remove(sci);
+                                            }
+                                        };
+                                        runOnMainThread(r, MAIN_THREAD_BINDING_RUNNABLE);
                                     }
                                 }
 
