@@ -69,13 +69,23 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
             Log.d(TAG, "Restore is only supported on devices running Lollipop and above.");
             return;
         }
-        super.onRestore(data, appVersionCode, newState);
 
-        // If no favorite was migrated, clear the data and start fresh.
-        final Cursor c = getContentResolver().query(
-                LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, null, null, null, null);
-        boolean hasData = c.moveToNext();
-        c.close();
+        // Clear dB before restore
+        LauncherAppState.getLauncherProvider().createEmptyDB();
+
+        boolean hasData;
+        try {
+            super.onRestore(data, appVersionCode, newState);
+            // If no favorite was migrated, clear the data and start fresh.
+            final Cursor c = getContentResolver().query(
+                    LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, null, null, null, null);
+            hasData = c.moveToNext();
+            c.close();
+        } catch (Exception e) {
+            // If the restore fails, we should do a fresh start.
+            Log.e(TAG, "Restore failed", e);
+            hasData = false;
+        }
 
         if (hasData && mHelper.restoreSuccessful) {
             LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
