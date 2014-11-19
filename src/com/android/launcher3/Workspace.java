@@ -283,6 +283,7 @@ public class Workspace extends SmoothPagedView
     private float[] mNewAlphas;
     private int mLastChildCount = -1;
     private float mTransitionProgress;
+    private Animator mStateAnimator = null;
 
     float mOverScrollEffect = 0f;
 
@@ -2243,6 +2244,13 @@ public class Workspace extends SmoothPagedView
 
         AnimatorSet anim = animated ? LauncherAnimUtils.createAnimatorSet() : null;
 
+        // We only want a single instance of a workspace animation to be running at once, so
+        // we cancel any incomplete transition.
+        if (mStateAnimator != null) {
+            mStateAnimator.cancel();
+        }
+        mStateAnimator = anim;
+
         final State oldState = mState;
         final boolean oldStateIsNormal = (oldState == State.NORMAL);
         final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
@@ -2440,6 +2448,12 @@ public class Workspace extends SmoothPagedView
             anim.play(hotseatAlpha);
             anim.play(pageIndicatorAlpha);
             anim.setStartDelay(delay);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mStateAnimator = null;
+                }
+            });
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel);
