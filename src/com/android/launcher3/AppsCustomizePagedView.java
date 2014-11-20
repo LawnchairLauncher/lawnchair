@@ -839,6 +839,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         cancelAllTasks();
     }
 
+    @Override
+    public void trimMemory() {
+        super.trimMemory();
+        clearAllWidgetPages();
+    }
+
     public void clearAllWidgetPages() {
         cancelAllTasks();
         int count = getChildCount();
@@ -1472,9 +1478,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    @Override
     public void reset() {
-        super.reset();
         // If we have reset, then we should not continue to restore the previous state
         mSaveInstanceStateItemIndex = -1;
 

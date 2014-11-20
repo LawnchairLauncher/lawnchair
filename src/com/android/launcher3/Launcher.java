@@ -3815,10 +3815,9 @@ public class Launcher extends Activity
             // 3MB of memory for caching which isn't necessary.
             SQLiteDatabase.releaseMemory();
 
-            // We reset the apps customize tray in order to
-            // to free all the memory associated with widget previews
+            // This clears all widget bitmaps from the widget tray
             if (mAppsCustomizeTabHost != null) {
-                mAppsCustomizeTabHost.reset();
+                mAppsCustomizeTabHost.trimMemory();
             }
         }
     }
