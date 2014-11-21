@@ -87,6 +87,7 @@ public class LauncherModel extends BroadcastReceiver
     static final boolean DEBUG_LOADERS = false;
     private static final boolean DEBUG_RECEIVER = false;
     private static final boolean REMOVE_UNRESTORED_ICONS = true;
+    private static final boolean ADD_MANAGED_PROFILE_SHORTCUTS = false;
 
     static final String TAG = "Launcher.Model";
 
@@ -2847,7 +2848,7 @@ public class LauncherModel extends BroadcastReceiver
                     mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, mLabelCache));
                 }
 
-                if (!user.equals(UserHandleCompat.myUserHandle())) {
+                if (ADD_MANAGED_PROFILE_SHORTCUTS && !user.equals(UserHandleCompat.myUserHandle())) {
                     // Add shortcuts for packages which were installed while launcher was dead.
                     String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
                             + mUserManager.getSerialNumberForUser(user);
@@ -2981,7 +2982,8 @@ public class LauncherModel extends BroadcastReceiver
                     }
 
                     // Auto add shortcuts for added packages.
-                    if (!UserHandleCompat.myUserHandle().equals(mUser)) {
+                    if (ADD_MANAGED_PROFILE_SHORTCUTS
+                            && !UserHandleCompat.myUserHandle().equals(mUser)) {
                         SharedPreferences prefs = context.getSharedPreferences(
                                 LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
                         String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
@@ -3015,7 +3017,8 @@ public class LauncherModel extends BroadcastReceiver
                 case OP_REMOVE:
                     // Remove the packageName for the set of auto-installed shortcuts. This
                     // will ensure that the shortcut when the app is installed again.
-                    if (!UserHandleCompat.myUserHandle().equals(mUser)) {
+                    if (ADD_MANAGED_PROFILE_SHORTCUTS
+                            && !UserHandleCompat.myUserHandle().equals(mUser)) {
                         SharedPreferences prefs = context.getSharedPreferences(
                                 LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
                         String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
