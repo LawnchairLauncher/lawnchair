@@ -371,16 +371,9 @@ public class LauncherBackupHelper implements BackupHelper {
         if (mCurrentProfile != null) {
             return mCurrentProfile;
         }
-        LauncherAppState.setApplicationContext(mContext.getApplicationContext());
-        LauncherAppState app = LauncherAppState.getInstance();
-
-        DeviceProfile profile;
-        if (app.getDynamicGrid() == null) {
-            // Initialize the grid
-            profile = app.initDynamicGrid(mContext);
-        } else {
-            profile = app.getDynamicGrid().getDeviceProfile();
-        }
+        final Context applicationContext = mContext.getApplicationContext();
+        DeviceProfile profile = LauncherAppState.createDynamicGrid(applicationContext, null)
+                .getDeviceProfile();
 
         mCurrentProfile = new DeviceProfieData();
         mCurrentProfile.desktopRows = profile.numRows;
