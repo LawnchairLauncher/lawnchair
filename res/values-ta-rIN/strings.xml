@@ -24,12 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Android முக்கியப் பயன்பாடுகள்"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"பயன்பாடு நிறுவப்படவில்லை."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"பயன்பாடு இல்லை"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய பயன்பாடு பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"விட்ஜெட்கள்"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"விட்ஜெட்கள்"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
+    <string name="widgets_tab_label" msgid="2921133187116603919">"ஷார்ட்கட்ஸ்"</string>
+    <string name="widget_adder" msgid="3201040140710381657">"ஷார்ட்கட்ஸ்"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"நினைவகத்தைக் காட்டு"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் &amp; பிடிக்கவும்."</string>
-    <string name="market" msgid="2619650989819296998">"ஷாப்"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"உருப்படியை இந்த முகப்புத் திரையில் விட முடியவில்லை."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"உருவாக்குவதற்கு விட்ஜெட்டைத் தேர்வுசெய்யவும்"</string>
@@ -40,7 +41,7 @@
     <string name="menu_item_add_item" msgid="1264911265836810421">"முகப்புத் திரையில் சேர்"</string>
     <string name="group_applications" msgid="3797214114206693605">"பயன்பாடுகள்"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"குறுக்குவழிகள்"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"விட்ஜெட்கள்"</string>
+    <string name="group_widgets" msgid="1569030723286851002">"ஷார்ட்கட்ஸ்"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"உங்கள் முகப்புத் திரைகளில் வேறு இடம் இல்லை."</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
@@ -57,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"அகற்று"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"நிறுவல் நீக்கு"</string>
     <string name="info_target_label" msgid="8053346143994679532">"பயன்பாட்டுத் தகவல்"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"தேடு"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"குரல் தேடல்"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"பயன்பாடுகள்"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"அகற்று"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"புதுப்பிப்பை நிறுவல் நீக்கு"</string>
@@ -72,11 +71,12 @@
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளைச் சேர்க்கப் பயன்பாட்டை அனுமதிக்கிறது."</string>
     <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"குறுக்குவழிகளை நிறுவல் நீக்குதல்"</string>
     <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளை அகற்ற பயன்பாட்டை அனுமதிக்கிறது."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"முகப்பின் அமைப்புகள் மற்றும் குறுக்குவழிகளைப் படித்தல்"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"முகப்பில் உள்ள அமைப்புகள் மற்றும் குறுக்குவழிகளைப் படிக்க பயன்பாட்டை அனுமதிக்கிறது."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"முகப்பின் அமைப்புகள் மற்றும் குறுக்குவழிகளை எழுதுதல்"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"முகப்பில் உள்ள அமைப்புகள் மற்றும் குறுக்குவழிகளை மாற்ற பயன்பாட்டை அனுமதிக்கிறது."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"முகப்பின் அமைப்பு மற்றும் குறுக்குவழிகளைப் படித்தல்"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"முகப்பில் உள்ள அமைப்பு மற்றும் குறுக்குவழிகளைப் படிக்க பயன்பாட்டை அனுமதிக்கிறது."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"முகப்பின் அமைப்பு மற்றும் குறுக்குவழிகளை எழுதுதல்"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"முகப்பில் உள்ள அமைப்பு மற்றும் குறுக்குவழிகளை மாற்ற பயன்பாட்டை அனுமதிக்கிறது."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"விட்ஜெட்டை ஏற்றுவதில் சிக்கல்"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"அமைவு"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு பயன்பாடு என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
     <string name="dream_name" msgid="1530253749244328964">"ராக்கெட் லாஞ்சர்"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"பெயரிடப்படாத கோப்புறை"</string>
@@ -95,9 +95,12 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ஐகான்களை நகலெடு"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"புதிதாகத் தொடங்கு"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"இடத்தை ஒழுங்கமைக்கவும்"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"வால்பேப்பர், விட்ஜெட்கள் மற்றும் அமைப்புகளை நிர்வகிப்பதற்கு பின்புலத்தைத் தொட்டுப் &amp; பிடிக்கவும்."</string>
+    <string name="workspace_cling_move_item" msgid="528201129978005352">"வால்பேப்பர், விட்ஜெட்கள், அமைப்பை நிர்வகிக்க பின்புலத்தைத் தொட்டுப் பிடிக்கவும்."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"வால்பேப்பர்கள், விட்ஜெட்கள் &amp; அமைப்புகள்"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"தனிப்பயனாக்க, பின்னணியைத் தொட்டுப் பிடிக்கவும்"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"புரிந்தது"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"இதோ கோப்புறை"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"இதுபோன்ற ஒன்றை உருவாக்கப் பயன்பாட்டைத் தொட்டுப் &amp; பிடிக்கவும், பிறகு அதை வேறொன்றிற்கு நகர்த்தவும்."</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"இதுபோன்ற ஒன்றை உருவாக்க பயன்பாட்டைத் தொட்டுப் பிடிக்கவும், பிறகு அதை வேறொன்றிற்கு நகர்த்தவும்."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"சரி"</string>
     <string name="folder_opened" msgid="94695026776264709">"திறக்கப்பட்டக் கோப்புறை, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"கோப்புறையை மூட, தொடவும்"</string>
@@ -105,9 +108,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"கோப்புறை மூடப்பட்டது"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"கோப்புறை <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"விட்ஜெட்கள்"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"ஷார்ட்கட்ஸ்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"அமைப்புகள்"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"அமைப்பு"</string>
     <string name="package_state_enqueued" msgid="6227252464303085641">"காத்திருக்கிறது"</string>
     <string name="package_state_downloading" msgid="4088770468458724721">"பதிவிறக்குகிறது"</string>
     <string name="package_state_installing" msgid="7588193972189849870">"நிறுவுகிறது"</string>

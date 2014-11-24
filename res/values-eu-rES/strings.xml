@@ -24,12 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Android-en nukleoko aplikazioak"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikazioa instalatu gabe dago."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Ez dago erabilgarri aplikazioa"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Deskargatutako aplikazioa modu seguruan desgaitu da"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"Widgetak desgaitu egin dira modu seguruan"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgetak"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgetak"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Erakutsi memoria"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Eduki ukituta widgeta aukeratzeko."</string>
-    <string name="market" msgid="2619650989819296998">"Denda"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Ezin izan da elementua hasierako pantailan jaregin."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Aukeratu sortu beharreko widgeta"</string>
@@ -57,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"Kendu"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Desinstalatu"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Aplikazioaren informazioa"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"Bilaketa"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Ahots bidezko bilaketa"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Aplikazioak"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"Kendu"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Desinstalatu eguneratzea"</string>
@@ -77,6 +76,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"Idatzi hasierako ezarpenak eta lasterbideak"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Hasierako pantailako ezarpenak eta lasterbideak aldatzea baimentzen die aplikazioei."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Arazo bat izan da widgeta kargatzean"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Konfigurazioa"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Sistema-aplikazioa da hau eta ezin da desinstalatu."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Izenik gabeko karpeta"</string>
@@ -96,6 +96,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"HASI HUTSETIK"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Antolatu zure txokoa"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Eduki ukituta atzeko planoa horma-paperak, widgetak eta ezarpenak kudeatzeko."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Horma-paperak, widgetak eta ezarpenak"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Pertsonalizatzeko, eduki ukituta atzeko planoa"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ADOS"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Hortxe duzu karpeta"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Horrelako bat sortzeko, eduki ukituta aplikazio bat eta eraman beste baten gainera."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Ados"</string>

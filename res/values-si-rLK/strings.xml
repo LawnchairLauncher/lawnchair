@@ -24,13 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Android මධ්‍ය යෙදුම්"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"යෙදුම ස්ථාපනය කර නැත."</string>
-    <!-- no translation found for safemode_shortcut_error (9160126848219158407) -->
-    <skip />
+    <string name="activity_not_available" msgid="7456344436509528827">"යෙදුම නොතිබේ"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"ආරක්ෂිත ආකාරය තුළ බාගන්න ලද යෙදුම් අබල කරන්න"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"සුරක්ෂිත ආකාරය තුළ විජටය අබල කරන ලදි"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"විජට්"</string>
     <string name="widget_adder" msgid="3201040140710381657">"විජට්"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem පෙන්වන්න"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"විජට් එක ස්පර්ශ කර අහුලා ගැනීමට අල්ලාගෙන සිටින්න."</string>
-    <string name="market" msgid="2619650989819296998">"සාප්පුයාම"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"මෙම මුල් පිටු තිරය වෙත අයිතමය ඇද හෙළිය නොහැකි විය."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"සැදීමට විජට් එක තෝරන්න"</string>
@@ -58,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"ඉවත් කරන්න"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"අස්ථාපනය කරන්න"</string>
     <string name="info_target_label" msgid="8053346143994679532">"යෙදුම් තොරතුරු"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"සොයන්න"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"හඬ සෙවීම"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"යෙදුම්"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"ඉවත් කරන්න"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"යාවත්කාලිනය අස්ථාපනය කරන්න"</string>
@@ -78,6 +76,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"මුල් පිටු සැකසීම් සහ කෙටිමං ලියන්න"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"මුල් පිටුවේ සැකසීම් සහ කෙටිමං ඉවත් කිරීමට යෙදුමට අවසර දෙයි."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ගැටලු පූරණ විජට් එක"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ස්ථාපනය කරන්න"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
     <string name="dream_name" msgid="1530253749244328964">"රොකට් ආරම්භකය"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"නම් නොකළ ෆෝල්ඩරය"</string>
@@ -97,6 +96,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"අලුතින් පටන්ගන්න"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ඔබගේ ඉඩ සංවිධානය කරගන්න"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"බිතුපත, විජට් සහ සැකසීම් කළමනාකරණය කිරීමට පසුබිම ස්පර්ශ කර අල්ලාගෙන සිටින්න."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"වෝල්පේපර, විජට්, සහ සැකසීම්"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"පසුබිම අභිරුචිකරණය කිරීමට ස්පර්ශ කර අල්ලා සිටින්න"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"තේරුණා"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"මෙන්න ෆෝල්ඩරයක්"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"මෙවැනි එකක් තැනීමට, යෙදුමක් තට්ටු කර අල්ලාගෙන සිටින්න, අනතුරුව එය තවත් එකක් උඩින් ගෙන යන්න."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"හරි"</string>

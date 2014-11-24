@@ -24,12 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Основни апликации на Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Апликацијата не е инсталирана."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Апликацијата не е достапна"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Преземената апликација е оневозможена во безбеден режим"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"Додатоците се оневозможени во безбеден режим"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Виџети"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Виџети"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Прикажи „Мени“"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Допри и задржи за да се избере виџетот."</string>
-    <string name="market" msgid="2619650989819296998">"Продавница"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Не можеше да се спушти елемент на овој екран на почетната страница."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Избери виџет за да се создаде"</string>
@@ -57,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"Отстрани"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Деинсталирај"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Информации за апликацијата"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"Пребарај"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Гласовно пребарување"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Апликации"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"Отстрани"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Деинсталирај ажурирање"</string>
@@ -77,6 +76,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"напиши подесувања и кратенки на почетна страница"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Овозможува апликацијата да ги менува подесувањата и кратенките на почетната страница."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Проблем при вчитувањето на виџетот"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Поставување"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ова е системска апликација и не може да се деинсталира."</string>
     <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Неименувана папка"</string>
@@ -91,11 +91,14 @@
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
     <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Создади повеќе екрани за апликации и папки"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Копирај икони за апликација"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Увези икони и папки од старите екрани на почетната страница?"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Зачувај икони и папки од твоите стари почетни страни?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"КОПИРАЈ ИКОНИ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"СТАРТУВАЈ ОД ПОЧЕТОК"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Организирајте го вашиот простор"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Допри и задржи ја заднината за управување со тапети, виџети и подесувања."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Тапети, додатоци и поставки"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Допрете и задржете на заднината за да приспособите"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"СФАТИВ"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Еве папка"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"За да создадете ваква, допрете и држете ја апликацијата, а потоа поместете ја врз другата."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Во ред"</string>
