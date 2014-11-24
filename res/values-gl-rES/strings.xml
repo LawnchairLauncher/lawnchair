@@ -24,12 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Aplicacións básicas de Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"A aplicación non está instalada"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Desactivouse a aplicación descargada no modo seguro"</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"A aplicación non está dispoñible"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"A aplicación que descargaches está desactivada no modo seguro"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"Os widgets están desactivados no modo seguro"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
     <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mostrar memoria"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Mantén premido un widget para seleccionalo."</string>
-    <string name="market" msgid="2619650989819296998">"Tenda"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Non se puido engadir á pantalla de inicio."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Escolle o widget que queiras crear"</string>
@@ -57,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"Eliminar"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Desinstalar"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Información da aplicación"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"Buscar"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"Busca de voz"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Aplicacións"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"Eliminar"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Desinstalar actualización"</string>
@@ -77,6 +76,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"modificar a configuración e os atallos da pantalla de inicio"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite a unha aplicación cambiar a configuración e os atallos da pantalla de inicio."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Produciuse un problema ao cargar o widget"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación é do sistema e non se pode desinstalar."</string>
     <string name="dream_name" msgid="1530253749244328964">"Lanzacohetes"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Cartafol sen nome"</string>
@@ -96,6 +96,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"COMEZAR DE CERO"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Organiza o espazo"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Mantén premido o fondo para xestionar o fondo de pantalla e máis."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fondos pantalla, widgets e configuración"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Mantén tocado o segundo plano para personalizar"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"DE ACORDO"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"Isto é un cartafol"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"Para crear un igual, mantén premida a aplicación e móvea sobre outra."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Aceptar"</string>

@@ -24,12 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Core ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"ಅಪ್ಲಿಕೇಶನ್‌ ಅನ್ನು ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"ಅಪ್ಲಿಕೇಶನ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ವಿಜೆಟ್‌ಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="widget_adder" msgid="3201040140710381657">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"ಸ್ಮರಣೆ ತೋರಿಸು"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ವಿಜೆಟ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಲು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
-    <string name="market" msgid="2619650989819296998">"ಶಾಪ್‌"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಐಟಂ ಅನ್ನು ಬಿಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"ರಚಿಸಲು ವಿಜೆಟ್‌ ಆಯ್ಕೆಮಾಡಿ"</string>
@@ -57,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"ತೆಗೆದುಹಾಕು"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ಅಸ್ಥಾಪಿಸು"</string>
     <string name="info_target_label" msgid="8053346143994679532">"ಅಪ್ಲಿಕೇಶನ್ ಮಾಹಿತಿ"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"ಹುಡುಕು"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"ಧ್ವನಿ ಹುಡುಕಾಟ"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"ತೆಗೆದುಹಾಕು"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"ನವೀಕರಣವನ್ನು ಅಸ್ಥಾಪಿಸು"</string>
@@ -77,6 +76,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ಮುಖಪುಟದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬರೆಯಿರಿ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ಮುಖಪುಟದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ವಿಜೆಟ್ ಲೋಡ್‌ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ಸೆಟಪ್"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="dream_name" msgid="1530253749244328964">"ರಾಕೆಟ್ ಲಾಂಚರ್"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ಹೆಸರಿಲ್ಲದ ಫೋಲ್ಡರ್"</string>
@@ -96,6 +96,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ಹೊಸದಾಗಿ ಪ್ರಾರಂಭಿಸು"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ವ್ಯವಸ್ಥಿತಗೊಳಿಸಿ"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"ವಾಲ್‌ಪೇಪರ್‌, ವಿಜೆಟ್‌ಗಳು ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಲು ಹಿನ್ನೆಲೆಯನ್ನು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು, ವಿಜೆಟ್‌ಗಳು, &amp; ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ಕಸ್ಟಮೈಸ್ ಮಾಡಲು ಹಿನ್ನೆಲೆಯನ್ನು ಸ್ಪರ್ಶಿಸಿ &amp; ಒತ್ತಿ ಹಿಡಿಯಿರಿ"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ಅರ್ಥವಾಯಿತು"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"ಇಲ್ಲೊಂದು ಫೋಲ್ಡರ್ ಇದೆ"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"ಈ ರೀತಿ ರಚಿಸಲು, ಸ್ಪರ್ಶಿಸಿ &amp; ಆಪ್‌ ಹಿಡಿದುಕೊಂಡು ಮತ್ತೊಂದರ ಮೇಲೆ ಸರಿಸಿ."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ಸರಿ"</string>

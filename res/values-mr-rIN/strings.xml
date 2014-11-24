@@ -24,12 +24,13 @@
     <string name="uid_name" msgid="7820867637514617527">"Android Core Apps"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"अॅप स्थापित केलेला नाही."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"अॅप उपलब्ध नाही"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड केलेला अ‍ॅप सुरक्षित मोड मध्‍ये अक्षम केला"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोडमध्ये अक्षम झाले"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"विजेट"</string>
     <string name="widget_adder" msgid="3201040140710381657">"विजेट"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem दर्शवा"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट निवडण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
-    <string name="market" msgid="2619650989819296998">"खरेदी करा"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"या मुख्य स्क्रीनवर आयटम ड्रॉप करू शकलो नाही."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"तयार करण्यासाठी विजेट निवडा"</string>
@@ -57,8 +58,6 @@
     <string name="delete_target_label" msgid="1822697352535677073">"काढा"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"विस्थापित करा"</string>
     <string name="info_target_label" msgid="8053346143994679532">"अॅप माहिती"</string>
-    <string name="accessibility_search_button" msgid="1628520399424565142">"शोधा"</string>
-    <string name="accessibility_voice_search_button" msgid="4637324840434406584">"व्हॉइस शोध"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"अॅप्स"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"काढा"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"अद्यतन विस्थापित करा"</string>
@@ -77,6 +76,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"मुख्यपृष्ठ सेटिंग्ज आणि शॉर्टकट लिहा"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट बदलण्यास अॅप ला अनुमती देते."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करण्यात समस्या"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अॅप आहे आणि विस्थापित केला जाऊ शकत नाही."</string>
     <string name="dream_name" msgid="1530253749244328964">"रॉकेट लाँचर"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फोल्डर"</string>
@@ -96,6 +96,9 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"नव्याने प्रारंभ करा"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"आपले स्थान व्यवस्थापित करा"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, विजेट आणि सेटिंग्ज व्यवस्थापित करण्यासाठी पार्श्वभूमीस स्पर्श करा आणि धरून ठेवा."</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वॉलपेपर, विजेट आणि सेटिंग्ज"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"सानुकूल करण्यासाठी पार्श्वभूमीस स्पर्श करा आणि धरुन ठेवा"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"समजले"</string>
     <string name="folder_cling_title" msgid="3894908818693254164">"येथे एक फोल्डर आहे"</string>
     <string name="folder_cling_create_folder" msgid="6158215559475836131">"यासारखे एखादे तयार करण्यासाठी अॅप ला स्पर्श करा आणि धरून ठेवा, नंतर तो दुसर्‍यावर हलवा."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ठीक"</string>
