@@ -195,6 +195,13 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     DeviceProfile initDynamicGrid(Context context) {
+        mDynamicGrid = createDynamicGrid(context, mDynamicGrid);
+        mDynamicGrid.getDeviceProfile().addCallback(this);
+        return mDynamicGrid.getDeviceProfile();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    static DynamicGrid createDynamicGrid(Context context, DynamicGrid dynamicGrid) {
         // Determine the dynamic grid properties
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -204,27 +211,27 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
 
-        if (mDynamicGrid == null) {
+        if (dynamicGrid == null) {
             Point smallestSize = new Point();
             Point largestSize = new Point();
             display.getCurrentSizeRange(smallestSize, largestSize);
 
-            mDynamicGrid = new DynamicGrid(context,
+            dynamicGrid = new DynamicGrid(context,
                     context.getResources(),
                     Math.min(smallestSize.x, smallestSize.y),
                     Math.min(largestSize.x, largestSize.y),
                     realSize.x, realSize.y,
                     dm.widthPixels, dm.heightPixels);
-            mDynamicGrid.getDeviceProfile().addCallback(this);
         }
 
         // Update the icon size
-        DeviceProfile grid = mDynamicGrid.getDeviceProfile();
+        DeviceProfile grid = dynamicGrid.getDeviceProfile();
         grid.updateFromConfiguration(context, context.getResources(),
                 realSize.x, realSize.y,
                 dm.widthPixels, dm.heightPixels);
-        return grid;
+        return dynamicGrid;
     }
+
     public DynamicGrid getDynamicGrid() {
         return mDynamicGrid;
     }
