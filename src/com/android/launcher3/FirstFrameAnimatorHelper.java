@@ -92,12 +92,14 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         }
 
         final long currentPlayTime = animation.getCurrentPlayTime();
+        boolean isFinalFrame = Float.compare(1f, animation.getAnimatedFraction()) == 0;
+
         if (!mHandlingOnAnimationUpdate &&
             sVisible &&
-            // If the current play time exceeds the duration, the animation
-            // will get finished, even if we call setCurrentPlayTime -- therefore
+            // If the current play time exceeds the duration, or the animated fraction is 1,
+            // the animation will get finished, even if we call setCurrentPlayTime -- therefore
             // don't adjust the animation in that case
-            currentPlayTime < animation.getDuration()) {
+            currentPlayTime < animation.getDuration() && !isFinalFrame) {
             mHandlingOnAnimationUpdate = true;
             long frameNum = sGlobalFrameCounter - mStartFrame;
             // If we haven't drawn our first frame, reset the time to t = 0
