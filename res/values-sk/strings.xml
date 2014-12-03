@@ -93,7 +93,7 @@
     <string name="migration_cling_title" msgid="9181776667882933767">"Kopírovanie ikon aplikácií"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Chcete importovať ikony a priečinky zo starých plôch?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"SKOPÍROVAŤ IKONY"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"ZAČAŤ S PREDVOLENÝM ROZLOŽENÍM"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"ZAČAŤ ODZNOVA"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Usporiadajte svoj priestor"</string>
     <string name="workspace_cling_move_item" msgid="528201129978005352">"Ak chcete spravovať tapetu, miniaplikácie a nastavenia, dotknite sa pozadia a podržte."</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadia, miniaplikácie a nastavenia"</string>
