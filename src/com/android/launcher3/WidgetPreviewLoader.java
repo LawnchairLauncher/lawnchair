@@ -166,21 +166,19 @@ public class WidgetPreviewLoader {
                 LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
         final String lastVersionName = sp.getString(ANDROID_INCREMENTAL_VERSION_NAME_KEY, null);
         final String versionName = android.os.Build.VERSION.INCREMENTAL;
-        final boolean isLollipop = Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP;
+        final boolean isLollipopOrGreater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
         if (!versionName.equals(lastVersionName)) {
             try {
                 // clear all the previews whenever the system version changes, to ensure that
                 // previews are up-to-date for any apps that might have been updated with the system
                 clearDb();
             } catch (SQLiteReadOnlyDatabaseException e) {
-                if (isLollipop) {
+                if (isLollipopOrGreater) {
                     // Workaround for Bug. 18554839, if we fail to clear the db due to the read-only
                     // issue, then ignore this error and leave the old previews
                 } else {
                     throw e;
                 }
-            } catch (Exception e) {
-                throw e;
             } finally {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString(ANDROID_INCREMENTAL_VERSION_NAME_KEY, versionName);
