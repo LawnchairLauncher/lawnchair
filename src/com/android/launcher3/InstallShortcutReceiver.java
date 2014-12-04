@@ -193,7 +193,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
                 // If the intent specifies a package, make sure the package exists
                 String packageName = pendingInfo.getTargetPackage();
-                if (TextUtils.isEmpty(packageName)) {
+                if (!TextUtils.isEmpty(packageName)) {
                     UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
                     if (!LauncherModel.isValidPackage(context, packageName, myUserHandle)) {
                         if (DBG) Log.d(TAG, "Ignoring shortcut for absent package:" + intent);
