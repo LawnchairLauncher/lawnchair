@@ -8,6 +8,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -78,13 +79,13 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mLauncher = (Launcher) context;
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
-        mResizeMode = widgetView.getAppWidgetInfo().resizeMode;
+        LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
+                widgetView.getAppWidgetInfo();
+        mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
-        final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
-        int[] result = Launcher.getMinSpanForWidget(mLauncher, info);
-        mMinHSpan = result[0];
-        mMinVSpan = result[1];
+        mMinHSpan = info.minSpanX;
+        mMinVSpan = info.minSpanY;
 
         setBackgroundResource(R.drawable.widget_resize_frame_holo);
         setPadding(0, 0, 0, 0);
@@ -114,8 +115,16 @@ public class AppWidgetResizeFrame extends FrameLayout {
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         addView(mBottomHandle, lp);
 
-        Rect p = AppWidgetHostView.getDefaultPaddingForWidget(context,
-                widgetView.getAppWidgetInfo().provider, null);
+        Rect p = new Rect(0, 0, 0, 0);
+        if (!info.isCustomWidget) {
+            p = AppWidgetHostView.getDefaultPaddingForWidget(context,
+                    widgetView.getAppWidgetInfo().provider, null);
+        } else {
+            Resources r = context.getResources();
+            int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
+            p.set(padding, padding, padding, padding);
+        }
+
         mWidgetPaddingLeft = p.left;
         mWidgetPaddingTop = p.top;
         mWidgetPaddingRight = p.right;
@@ -335,7 +344,6 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
             int spanX, int spanY) {
-
         getWidgetSizeRanges(launcher, spanX, spanY, mTmpRect);
         widgetView.updateAppWidgetSize(null, mTmpRect.left, mTmpRect.top,
                 mTmpRect.right, mTmpRect.bottom);

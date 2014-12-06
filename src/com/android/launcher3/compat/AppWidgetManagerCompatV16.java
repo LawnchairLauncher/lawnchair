@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 
 import java.util.List;
@@ -44,7 +45,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     }
 
     @Override
-    public String loadLabel(AppWidgetProviderInfo info) {
+    public String loadLabel(LauncherAppWidgetProviderInfo info) {
         return info.label.trim();
     }
 
@@ -59,7 +60,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     }
 
     @Override
-    public UserHandleCompat getUser(AppWidgetProviderInfo info) {
+    public UserHandleCompat getUser(LauncherAppWidgetProviderInfo info) {
         return UserHandleCompat.myUserHandle();
     }
 
@@ -79,12 +80,12 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     }
 
     @Override
-    public Drawable loadIcon(AppWidgetProviderInfo info, IconCache cache) {
+    public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
         return cache.getFullResIcon(info.provider.getPackageName(), info.icon);
     }
 
     @Override
-    public Bitmap getBadgeBitmap(AppWidgetProviderInfo info, Bitmap bitmap) {
+    public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap) {
         return bitmap;
     }
 }

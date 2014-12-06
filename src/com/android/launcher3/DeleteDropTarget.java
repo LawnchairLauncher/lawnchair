@@ -105,6 +105,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 switch (addInfo.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                    case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                         return true;
                 }
             }
@@ -146,6 +147,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (info instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) info;
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
+                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET ||
                     item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                 return true;
             }
@@ -341,7 +343,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
             final LauncherAppWidgetInfo launcherAppWidgetInfo = (LauncherAppWidgetInfo) item;
             final LauncherAppWidgetHost appWidgetHost = mLauncher.getAppWidgetHost();
-            if ((appWidgetHost != null) && launcherAppWidgetInfo.isWidgetIdValid()) {
+
+            if (appWidgetHost != null && !launcherAppWidgetInfo.isCustomWidget()
+                    && launcherAppWidgetInfo.isWidgetIdValid()) {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
                 new AsyncTask<Void, Void, Void>() {

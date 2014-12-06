@@ -592,7 +592,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
-            boolean markCells) {
+            boolean markCells, boolean inLayout) {
         final LayoutParams lp = params;
 
         // Hotseat icons - remove text
@@ -613,14 +613,22 @@ public class CellLayout extends ViewGroup {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
-
-            mShortcutsAndWidgets.addView(child, index, lp);
+            if (inLayout) {
+                mShortcutsAndWidgets.addView(child, index, lp, true);
+            } else {
+                mShortcutsAndWidgets.addView(child, index, lp, false);
+            }
 
             if (markCells) markCellsAsOccupiedForView(child);
 
             return true;
         }
         return false;
+    }
+
+    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
+            boolean markCells) {
+        return addViewToCellLayout(child, index, childId, params, markCells, false);
     }
 
     @Override

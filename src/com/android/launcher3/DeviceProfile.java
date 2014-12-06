@@ -67,8 +67,8 @@ public class DeviceProfile {
     String name;
     float minWidthDps;
     float minHeightDps;
-    float numRows;
-    float numColumns;
+    public float numRows;
+    public float numColumns;
     float numHotseatIcons;
     float iconSize;
     private float iconTextSize;
@@ -84,13 +84,13 @@ public class DeviceProfile {
     boolean transposeLayoutWithOrientation;
 
     int desiredWorkspaceLeftRightMarginPx;
-    int edgeMarginPx;
+    public int edgeMarginPx;
     Rect defaultWidgetPadding;
 
     int widthPx;
     int heightPx;
-    int availableWidthPx;
-    int availableHeightPx;
+    public int availableWidthPx;
+    public int availableHeightPx;
     int defaultPageSpacingPx;
 
     int overviewModeMinIconZoneHeightPx;
@@ -100,11 +100,12 @@ public class DeviceProfile {
     float overviewModeIconZoneRatio;
     float overviewModeScaleFactor;
 
+    public int cellWidthPx;
+    public int cellHeightPx;
+
     int iconSizePx;
     int iconTextSizePx;
     int iconDrawablePaddingPx;
-    int cellWidthPx;
-    int cellHeightPx;
     int allAppsIconSizePx;
     int allAppsIconTextSizePx;
     int allAppsCellWidthPx;
@@ -576,6 +577,16 @@ public class DeviceProfile {
             return new Rect(workspacePadding.left, pageIndicatorTop,
                     widthPx - workspacePadding.right, pageIndicatorTop + pageIndicatorHeightPx);
         }
+    }
+
+    public int getWorkspaceGridHeight() {
+        Rect p = getWorkspacePadding();
+        return availableHeightPx - p.top - p.bottom;
+    }
+
+    public int getWorkspaceGridWidth() {
+        Rect p = getWorkspacePadding();
+        return availableWidthPx - p.left - p.right;
     }
 
     /** Returns the workspace padding in the specified orientation */
