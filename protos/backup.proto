@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
- package launcher_backup;
+syntax = "proto2";
+
+package launcher_backup;
 
 option java_package = "com.android.launcher3.backup";
 option java_outer_classname = "BackupProtos";
