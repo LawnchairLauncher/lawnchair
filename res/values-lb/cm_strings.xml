@@ -16,6 +16,8 @@
      limitations under the License.
 -->
 <resources>
+  <string name="home_screen_settings">STARTSCHIERM-ASTELLUNGEN</string>
+  <string name="drawer_settings">ASTELLUNGE VUN DER APPIWWERSIICHT</string>
   <string name="app_settings">APP-ASTELLUNGEN</string>
   <string name="setting_state_on">UN</string>
   <string name="setting_state_off">AUS</string>
@@ -26,13 +28,25 @@
   <string name="scrolling_fade_adjacent">Säiten um Rand ausblenden</string>
   <string name="scrolling_wallpaper">Hannergrondbild scrollen</string>
   <string name="grid_size_text">Gittergréisst</string>
+  <string name="grid_size_comfortable">Gemittlech</string>
+  <string name="grid_size_cozy">Heemlech</string>
+  <string name="grid_size_condensed">Schmuel</string>
   <string name="grid_size_custom">Personaliséiert</string>
+  <string name="grid_size_custom_and_size">Personaliséiert (%1$s)</string>
+  <string name="preferences_interface_homescreen_custom">Personaliséiert Gréisst auswielen</string>
   <string name="scroll_effect_text">Scrolleffekt</string>
   <string name="drawer_sorting_text">Zortéiermodus</string>
   <string name="sort_mode_title">Titel</string>
   <string name="sort_mode_launch_count">Startunzuel</string>
   <string name="sort_mode_install_time">Installatiounszäit</string>
   <string name="home_screen_search_text">Sichkëscht</string>
+  <string name="larger_icons_text">Grouss Symboler</string>
+  <string name="icon_labels">Symbol-Beschrëftungen</string>
+  <string name="icon_labels_show">Uweisen</string>
   <string name="icon_labels_hide">Verstoppen</string>
+  <string name="protected_app_settings">Geschützt Appen</string>
+  <string name="search_screen_left_text">Sichpanneau</string>
   <string name="dialog_confirm">Bestätegen</string>
+  <string name="permission_label_read_extension_data">DashClock-Erweiderungsdaten ufroen</string>
+  <string name="permission_desc_read_extension_data">Erlaabt der App, DashClock-Erweiderungsdaten unzefuerderen</string>
 </resources>
