@@ -27,4 +27,24 @@
   <string name="scrolling_page_outlines">Səhifə sərhədi</string>
   <string name="scrolling_fade_adjacent">Yan səhifələri soldur</string>
   <string name="scrolling_wallpaper">Divar kağızını sürüşdür</string>
+  <string name="grid_size_text">Tor ölçüsü</string>
+  <string name="grid_size_cozy">Rahat</string>
+  <string name="grid_size_condensed">Sıx</string>
+  <string name="grid_size_custom">Xüsusi</string>
+  <string name="grid_size_custom_and_size">Xüsusi (%1$s)</string>
+  <string name="preferences_interface_homescreen_custom">Xüsusi ölçü seçin</string>
+  <string name="scroll_effect_text">Sürüşdürmə effekti</string>
+  <string name="sort_mode_title">Başlıq</string>
+  <string name="sort_mode_launch_count">Başlatma sayı</string>
+  <string name="sort_mode_install_time">Quraşdırma müddəti</string>
+  <string name="home_screen_search_text">Axtarış sətri</string>
+  <string name="larger_icons_text">Böyük nişanlar</string>
+  <string name="icon_labels">Nişan etiketləri</string>
+  <string name="icon_labels_show">Göstər</string>
+  <string name="icon_labels_hide">Gizlət</string>
+  <string name="protected_app_settings">Qorunan tətbiqetmələr</string>
+  <string name="search_screen_left_text">Axtarış paneli</string>
+  <string name="dialog_confirm">Təsdiqlə</string>
+  <string name="permission_label_read_extension_data">DashClock əlavə verilənini istə</string>
+  <string name="permission_desc_read_extension_data">Tətbiqetmənin DashClock əlavə verilənini istəməsinə icazə verər</string>
 </resources>
