@@ -21,12 +21,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.SystemClock;
-import android.support.v4.widget.AutoScrollHelper;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
@@ -123,8 +124,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private boolean mDestroyed;
 
-    private AutoScrollHelper mAutoScrollHelper;
-
     private Runnable mDeferredAction;
     private boolean mDeferDropAfterUninstall;
     private boolean mUninstallSuccessful;
@@ -208,7 +207,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        mAutoScrollHelper = new FolderAutoScrollHelper(mScrollView);
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -700,6 +698,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public boolean isLayoutRtl() {
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
@@ -715,29 +714,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         final MotionEvent translatedEv = MotionEvent.obtain(
                 downTime, downTime, MotionEvent.ACTION_MOVE, d.x, d.y, 0);
 
-        if (!mAutoScrollHelper.isEnabled()) {
-            mAutoScrollHelper.setEnabled(true);
-        }
-
-        final boolean handled = mAutoScrollHelper.onTouch(this, translatedEv);
         translatedEv.recycle();
-
-        if (handled) {
+        mTargetCell = mContent.findNearestArea(
+                (int) r[0], (int) r[1] + scrollOffset, 1, 1, mTargetCell);
+        if (isLayoutRtl()) {
+            mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
+        }
+        if (mTargetCell[0] != mPreviousTargetCell[0]
+                || mTargetCell[1] != mPreviousTargetCell[1]) {
             mReorderAlarm.cancelAlarm();
-        } else {
-            mTargetCell = mContent.findNearestArea(
-                    (int) r[0], (int) r[1] + scrollOffset, 1, 1, mTargetCell);
-            if (isLayoutRtl()) {
-                mTargetCell[0] = mContent.getCountX() - mTargetCell[0] - 1;
-            }
-            if (mTargetCell[0] != mPreviousTargetCell[0]
-                    || mTargetCell[1] != mPreviousTargetCell[1]) {
-                mReorderAlarm.cancelAlarm();
-                mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
-                mReorderAlarm.setAlarm(REORDER_DELAY);
-                mPreviousTargetCell[0] = mTargetCell[0];
-                mPreviousTargetCell[1] = mTargetCell[1];
-            }
+            mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
+            mReorderAlarm.setAlarm(REORDER_DELAY);
+            mPreviousTargetCell[0] = mTargetCell[0];
+            mPreviousTargetCell[1] = mTargetCell[1];
         }
     }
 
@@ -783,8 +772,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onDragExit(DragObject d) {
-        // Exiting folder; stop the auto scroller.
-        mAutoScrollHelper.setEnabled(false);
         // We only close the folder if this is a true drag exit, ie. not because
         // a drop has occurred above the folder.
         if (!d.dragComplete) {

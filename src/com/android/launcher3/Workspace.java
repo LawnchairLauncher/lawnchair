@@ -48,7 +48,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -492,7 +491,7 @@ public class Workspace extends SmoothPagedView
         CellLayout cl = ((CellLayout) child);
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
-        cl.setImportantForAccessibility(ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        cl.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         super.onChildViewAdded(parent, child);
     }
 
@@ -2210,8 +2209,8 @@ public class Workspace extends SmoothPagedView
 
     private void updateAccessibilityFlags() {
         int accessible = mState == State.NORMAL ?
-                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES :
-                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+                IMPORTANT_FOR_ACCESSIBILITY_YES :
+                IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
         setImportantForAccessibility(accessible);
     }
 
