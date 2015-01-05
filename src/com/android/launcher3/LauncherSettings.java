@@ -295,6 +295,7 @@ class LauncherSettings {
          * @see android.provider.LiveFolders#DISPLAY_MODE_GRID
          * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
          */
+        @Deprecated
         static final String DISPLAY_MODE = "displayMode";
 
         /**
@@ -302,5 +303,11 @@ class LauncherSettings {
          * <P>Type: INTEGER</P>
          */
         static final String RESTORED = "restored";
+
+        /**
+         * Indicates the position of the item inside an auto-arranged view like folder or hotseat.
+         * <p>Type: INTEGER</p>
+         */
+        static final String RANK = "rank";
     }
 }

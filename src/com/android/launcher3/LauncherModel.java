@@ -768,6 +768,7 @@ public class LauncherModel extends BroadcastReceiver
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
         values.put(LauncherSettings.Favorites.CELLX, item.cellX);
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+        values.put(LauncherSettings.Favorites.RANK, item.rank);
         values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
         updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
@@ -801,6 +802,7 @@ public class LauncherModel extends BroadcastReceiver
             values.put(LauncherSettings.Favorites.CONTAINER, item.container);
             values.put(LauncherSettings.Favorites.CELLX, item.cellX);
             values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+            values.put(LauncherSettings.Favorites.RANK, item.rank);
             values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
             contentValues.add(values);
@@ -832,6 +834,7 @@ public class LauncherModel extends BroadcastReceiver
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
         values.put(LauncherSettings.Favorites.CELLX, item.cellX);
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+        values.put(LauncherSettings.Favorites.RANK, item.rank);
         values.put(LauncherSettings.Favorites.SPANX, item.spanX);
         values.put(LauncherSettings.Favorites.SPANY, item.spanY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
@@ -845,7 +848,6 @@ public class LauncherModel extends BroadcastReceiver
     static void updateItemInDatabase(Context context, final ItemInfo item) {
         final ContentValues values = new ContentValues();
         item.onAddToDatabase(context, values);
-        item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
         updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
     }
 
@@ -906,6 +908,7 @@ public class LauncherModel extends BroadcastReceiver
         final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
         final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
         final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+        final int rankIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.RANK);
         final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
         final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
         final int profileIdIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
@@ -915,6 +918,7 @@ public class LauncherModel extends BroadcastReceiver
                 ItemInfo item = new ItemInfo();
                 item.cellX = c.getInt(cellXIndex);
                 item.cellY = c.getInt(cellYIndex);
+                item.rank = c.getInt(rankIndex);
                 item.spanX = Math.max(1, c.getInt(spanXIndex));
                 item.spanY = Math.max(1, c.getInt(spanYIndex));
                 item.container = c.getInt(containerIndex);
@@ -1002,7 +1006,6 @@ public class LauncherModel extends BroadcastReceiver
 
         item.id = LauncherAppState.getLauncherProvider().generateNewItemId();
         values.put(LauncherSettings.Favorites._ID, item.id);
-        item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
@@ -1917,6 +1920,8 @@ public class LauncherModel extends BroadcastReceiver
                             (LauncherSettings.Favorites.SPANX);
                     final int spanYIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.SPANY);
+                    final int rankIndex = c.getColumnIndexOrThrow(
+                            LauncherSettings.Favorites.RANK);
                     final int restoredIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.RESTORED);
                     final int profileIdIndex = c.getColumnIndexOrThrow(
@@ -2102,6 +2107,7 @@ public class LauncherModel extends BroadcastReceiver
                                     info.screenId = c.getInt(screenIndex);
                                     info.cellX = c.getInt(cellXIndex);
                                     info.cellY = c.getInt(cellYIndex);
+                                    info.rank = c.getInt(rankIndex);
                                     info.spanX = 1;
                                     info.spanY = 1;
                                     info.intent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);

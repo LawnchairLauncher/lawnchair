@@ -90,6 +90,11 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         if (hasData && mHelper.restoreSuccessful) {
             LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
             LauncherClings.synchonouslyMarkFirstRunClingDismissed(this);
+
+            // TODO: Update the backup set to include rank.
+            if (mHelper.restoredBackupVersion <= 2) {
+                LauncherAppState.getLauncherProvider().updateFolderItemsRank();
+            }
         } else {
             if (VERBOSE) Log.v(TAG, "Nothing was restored, clearing DB");
             LauncherAppState.getLauncherProvider().createEmptyDB();

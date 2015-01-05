@@ -57,7 +57,7 @@ public class LauncherProvider extends ContentProvider {
     private static final boolean LOGD = false;
 
     private static final int MIN_DATABASE_VERSION = 12;
-    private static final int DATABASE_VERSION = 20;
+    private static final int DATABASE_VERSION = 21;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -326,6 +326,10 @@ public class LauncherProvider extends ContentProvider {
                 Uri.parse(getContext().getString(R.string.old_launcher_provider_uri)));
     }
 
+    public void updateFolderItemsRank() {
+        mOpenHelper.updateFolderItemsRank(mOpenHelper.getWritableDatabase(), false);
+    }
+
     public void deleteDatabase() {
         // Are you sure? (y/n)
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -409,7 +413,8 @@ public class LauncherProvider extends ContentProvider {
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
-                    "profileId INTEGER DEFAULT " + userSerialNumber +
+                    "profileId INTEGER DEFAULT " + userSerialNumber + "," +
+                    "rank INTEGER NOT NULL DEFAULT 0" +
                     ");");
             addWorkspacesTable(db);
 
@@ -585,6 +590,12 @@ public class LauncherProvider extends ContentProvider {
                 // else old version remains, which means we wipe old data
             }
 
+            if (version < 21) {
+                if (updateFolderItemsRank(db, true)) {
+                    version  = 21;
+                }
+            }
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 createEmptyDB(db);
@@ -607,6 +618,37 @@ public class LauncherProvider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
             onCreate(db);
+        }
+
+        private boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
+            db.beginTransaction();
+            try {
+                if (addRankColumn) {
+                    // Insert new column for holding rank
+                    db.execSQL("ALTER TABLE favorites ADD COLUMN rank INTEGER NOT NULL DEFAULT 0;");
+                }
+
+                // Get a map for folder ID to folder width
+                Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
+                        + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
+                        + " GROUP BY container;",
+                        new String[] {Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
+
+                while (c.moveToNext()) {
+                    db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE container=?;",
+                            new Object[] {c.getLong(1) + 1, c.getLong(0)});
+                }
+
+                c.close();
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                // Old version remains, which means we wipe old data
+                Log.e(TAG, ex.getMessage(), ex);
+                return false;
+            } finally {
+                db.endTransaction();
+            }
+            return true;
         }
 
         private boolean addProfileColumn(SQLiteDatabase db) {
@@ -1116,6 +1158,8 @@ public class LauncherProvider extends ContentProvider {
                         } finally {
                             db.endTransaction();
                         }
+
+                        updateFolderItemsRank(db, false);
                     }
                 } finally {
                     c.close();
