@@ -32,10 +32,13 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.View.AccessibilityDelegate;
 import android.view.WindowManager;
+
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -62,6 +65,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static LauncherAppState INSTANCE;
 
     private DynamicGrid mDynamicGrid;
+    private AccessibilityDelegate mAccessibilityDelegate;
 
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
@@ -162,7 +166,13 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     LauncherModel setLauncher(Launcher launcher) {
         mModel.initialize(launcher);
+        mAccessibilityDelegate = ((launcher != null) && Utilities.isLmpOrAbove()) ?
+            new LauncherAccessibilityDelegate(launcher) : null;
         return mModel;
+    }
+
+    AccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
     }
 
     public IconCache getIconCache() {

@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -67,6 +66,7 @@ public class PagedViewWidget extends LinearLayout {
 
         setWillNotDraw(false);
         setClipToPadding(false);
+        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     @Override

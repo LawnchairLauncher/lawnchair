@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -115,15 +116,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private boolean isDragSourceWorkspaceOrFolder(DragObject d) {
         return (d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder);
     }
-    private boolean isWorkspaceOrFolderApplication(DragObject d) {
-        return isDragSourceWorkspaceOrFolder(d) && (d.dragInfo instanceof ShortcutInfo);
-    }
-    private boolean isWorkspaceOrFolderWidget(DragObject d) {
-        return isDragSourceWorkspaceOrFolder(d) && (d.dragInfo instanceof LauncherAppWidgetInfo);
-    }
-    private boolean isWorkspaceFolder(DragObject d) {
-        return (d.dragSource instanceof Workspace) && (d.dragInfo instanceof FolderInfo);
-    }
 
     private void setHoverColor() {
         if (mCurrentDrawable != null) {
@@ -177,6 +169,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         return false;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
         boolean isVisible = true;
@@ -284,7 +277,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private boolean isUninstallFromWorkspace(DragObject d) {
-        if (LauncherAppState.isDisableAllApps() && isWorkspaceOrFolderApplication(d)) {
+        if (LauncherAppState.isDisableAllApps() && isDragSourceWorkspaceOrFolder(d)
+                && (d.dragInfo instanceof ShortcutInfo)) {
             ShortcutInfo shortcut = (ShortcutInfo) d.dragInfo;
             // Only allow manifest shortcuts to initiate an un-install.
             return !InstallShortcutReceiver.isValidShortcutLaunchIntent(shortcut.intent);
@@ -297,10 +291,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         boolean wasWaitingForUninstall = mWaitingForUninstall;
         mWaitingForUninstall = false;
         if (isAllAppsApplication(d.dragSource, item)) {
-            // Uninstall the application if it is being dragged from AppsCustomize
-            AppInfo appInfo = (AppInfo) item;
-            mLauncher.startApplicationUninstallActivity(appInfo.componentName, appInfo.flags,
-                    appInfo.user);
+            uninstallApp(mLauncher, (AppInfo) item);
         } else if (isUninstallFromWorkspace(d)) {
             ShortcutInfo shortcut = (ShortcutInfo) item;
             if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
@@ -329,32 +320,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
                     mLauncher.addOnResumeCallback(checkIfUninstallWasSuccess);
                 }
             }
-        } else if (isWorkspaceOrFolderApplication(d)) {
-            LauncherModel.deleteItemFromDatabase(mLauncher, item);
-        } else if (isWorkspaceFolder(d)) {
-            // Remove the folder from the workspace and delete the contents from launcher model
-            FolderInfo folderInfo = (FolderInfo) item;
-            mLauncher.removeFolder(folderInfo);
-            LauncherModel.deleteFolderContentsFromDatabase(mLauncher, folderInfo);
-        } else if (isWorkspaceOrFolderWidget(d)) {
-            // Remove the widget from the workspace
-            mLauncher.removeAppWidget((LauncherAppWidgetInfo) item);
-            LauncherModel.deleteItemFromDatabase(mLauncher, item);
-
-            final LauncherAppWidgetInfo launcherAppWidgetInfo = (LauncherAppWidgetInfo) item;
-            final LauncherAppWidgetHost appWidgetHost = mLauncher.getAppWidgetHost();
-
-            if (appWidgetHost != null && !launcherAppWidgetInfo.isCustomWidget()
-                    && launcherAppWidgetInfo.isWidgetIdValid()) {
-                // Deleting an app widget ID is a void call but writes to disk before returning
-                // to the caller...
-                new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void ... args) {
-                        appWidgetHost.deleteAppWidgetId(launcherAppWidgetInfo.appWidgetId);
-                        return null;
-                    }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-            }
+        } else if (isDragSourceWorkspaceOrFolder(d)) {
+            removeWorkspaceOrFolderItem(mLauncher, item, null);
         }
         if (wasWaitingForUninstall && !mWaitingForUninstall) {
             if (d.dragSource instanceof Folder) {
@@ -363,6 +330,52 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 ((Workspace) d.dragSource).onUninstallActivityReturned(false);
             }
         }
+    }
+
+    public static void uninstallApp(Launcher launcher, AppInfo info) {
+        launcher.startApplicationUninstallActivity(info.componentName, info.flags, info.user);
+    }
+
+    /**
+     * Removes the item from the workspace. If the view is not null, it also removes the view.
+     * @return true if the item was removed.
+     */
+    public static boolean removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
+        if (item instanceof ShortcutInfo) {
+            LauncherModel.deleteItemFromDatabase(launcher, item);
+        } else if (item instanceof FolderInfo) {
+            FolderInfo folder = (FolderInfo) item;
+            launcher.removeFolder(folder);
+            LauncherModel.deleteFolderContentsFromDatabase(launcher, folder);
+        } else if (item instanceof LauncherAppWidgetInfo) {
+            final LauncherAppWidgetInfo widget = (LauncherAppWidgetInfo) item;
+
+            // Remove the widget from the workspace
+            launcher.removeAppWidget(widget);
+            LauncherModel.deleteItemFromDatabase(launcher, widget);
+
+            final LauncherAppWidgetHost appWidgetHost = launcher.getAppWidgetHost();
+
+            if (appWidgetHost != null && !widget.isCustomWidget()
+                    && widget.isWidgetIdValid()) {
+                // Deleting an app widget ID is a void call but writes to disk before returning
+                // to the caller...
+                new AsyncTask<Void, Void, Void>() {
+                    public Void doInBackground(Void ... args) {
+                        appWidgetHost.deleteAppWidgetId(widget.appWidgetId);
+                        return null;
+                    }
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            }
+        } else {
+            return false;
+        }
+
+        if (view != null) {
+            launcher.getWorkspace().removeWorkspaceItem(view);
+            launcher.getWorkspace().stripEmptyScreens();
+        }
+        return true;
     }
 
     public void onDrop(DragObject d) {

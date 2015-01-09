@@ -31,10 +31,7 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -77,8 +74,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -91,9 +86,6 @@ public class Workspace extends SmoothPagedView
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
         Insettable {
     private static final String TAG = "Launcher.Workspace";
-
-    // Y rotation to apply to the workspace screens
-    private static final float WORKSPACE_OVERSCROLL_ROTATION = 24f;
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
     private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
@@ -228,7 +220,6 @@ public class Workspace extends SmoothPagedView
     private Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
     private Point mDisplaySize = new Point();
-    private int mCameraDistance;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
@@ -346,7 +337,6 @@ public class Workspace extends SmoothPagedView
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor = grid.getOverviewModeScale();
-        mCameraDistance = res.getInteger(R.integer.config_cameraDistance);
         mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
@@ -450,7 +440,6 @@ public class Workspace extends SmoothPagedView
      */
     protected void initWorkspace() {
         mCurrentPage = mDefaultPage;
-        Launcher.setScreen(mCurrentPage);
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         mIconCache = app.getIconCache();
@@ -1323,7 +1312,6 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void notifyPageSwitchListener() {
         super.notifyPageSwitchListener();
-        Launcher.setScreen(getNextPage());
 
         if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
@@ -3952,23 +3940,8 @@ public class Workspace extends SmoothPagedView
 
                     // When dragging and dropping from customization tray, we deal with creating
                     // widgets/shortcuts/folders in a slightly different way
-                    switch (pendingInfo.itemType) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                    case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                        int span[] = new int[2];
-                        span[0] = item.spanX;
-                        span[1] = item.spanY;
-                        mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) pendingInfo,
-                                container, screenId, mTargetCell, span, null);
-                        break;
-                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        mLauncher.processShortcutFromDrop(pendingInfo.componentName,
-                                container, screenId, mTargetCell, null);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown item type: " +
-                                pendingInfo.itemType);
-                    }
+                    mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
+                            item.spanX, item.spanY);
                 }
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
@@ -3998,7 +3971,7 @@ public class Workspace extends SmoothPagedView
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
-                    info = new ShortcutInfo((AppInfo) info);
+                    info = ((AppInfo) info).makeShortcut();
                 }
                 view = mLauncher.createShortcut(R.layout.application, cellLayout,
                         (ShortcutInfo) info);
@@ -4250,15 +4223,7 @@ public class Workspace extends SmoothPagedView
 
         if (success && !(beingCalledAfterUninstall && !mUninstallSuccessful)) {
             if (target != this && mDragInfo != null) {
-                CellLayout parentCell = getParentCellLayoutForView(mDragInfo.cell);
-                if (parentCell != null) {
-                    parentCell.removeView(mDragInfo.cell);
-                } else if (LauncherAppState.isDogfoodBuild()) {
-                    throw new NullPointerException("mDragInfo.cell has null parent");
-                }
-                if (mDragInfo.cell instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
-                }
+                removeWorkspaceItem(mDragInfo.cell);
             }
         } else if (mDragInfo != null) {
             CellLayout cellLayout;
@@ -4281,6 +4246,18 @@ public class Workspace extends SmoothPagedView
         }
         mDragOutline = null;
         mDragInfo = null;
+    }
+
+    public void removeWorkspaceItem(View v) {
+        CellLayout parentCell = getParentCellLayoutForView(v);
+        if (parentCell != null) {
+            parentCell.removeView(v);
+        } else if (LauncherAppState.isDogfoodBuild()) {
+            throw new NullPointerException("mDragInfo.cell has null parent");
+        }
+        if (v instanceof DropTarget) {
+            mDragController.removeDropTarget((DropTarget) v);
+        }
     }
 
     public void deferCompleteDropAfterUninstallActivity() {
@@ -4475,12 +4452,6 @@ public class Workspace extends SmoothPagedView
 
     public boolean isDropEnabled() {
         return true;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
-        Launcher.setScreen(mCurrentPage);
     }
 
     @Override

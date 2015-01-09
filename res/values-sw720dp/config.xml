@@ -10,9 +10,6 @@
     <!-- Whether or not the drop targets drop down as opposed to fade in -->
     <bool name="config_useDropTargetDownTransition">false</bool>
 
-    <!-- Camera distance for the overscroll effect -->
-    <integer name="config_cameraDistance">18000</integer>
-
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">false</bool>
 </resources>
