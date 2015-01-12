@@ -64,7 +64,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := launcher_protoutil_lib
 LOCAL_IS_HOST_MODULE := true
 LOCAL_JAR_MANIFEST := util/etc/manifest.txt
-LOCAL_STATIC_JAVA_LIBRARIES := host-libprotobuf-java-2.3.0-nano
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 
