@@ -56,7 +56,6 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int MIN_DATABASE_VERSION = 12;
     private static final int DATABASE_VERSION = 21;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
@@ -489,117 +488,100 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             if (LOGD) Log.d(TAG, "onUpgrade triggered: " + oldVersion);
-
-            int version = oldVersion;
-            if (version < MIN_DATABASE_VERSION) {
-                // The version cannot be lower that this, as Launcher3 never supported a lower
+            switch (oldVersion) {
+                // The version cannot be lower that 12, as Launcher3 never supported a lower
                 // version of the DB.
-                createEmptyDB(db);
-                version = DATABASE_VERSION;
-            }
-
-            if (version < 13) {
-                // With the new shrink-wrapped and re-orderable workspaces, it makes sense
-                // to persist workspace screens and their relative order.
-                mMaxScreenId = 0;
-
-                addWorkspacesTable(db);
-                version = 13;
-            }
-
-            if (version < 14) {
-                db.beginTransaction();
-                try {
-                    // Insert new column for holding widget provider name
-                    db.execSQL("ALTER TABLE favorites " +
-                            "ADD COLUMN appWidgetProvider TEXT;");
-                    db.setTransactionSuccessful();
-                    version = 14;
-                } catch (SQLException ex) {
-                    // Old version remains, which means we wipe old data
-                    Log.e(TAG, ex.getMessage(), ex);
-                } finally {
-                    db.endTransaction();
+                case 12: {
+                    // With the new shrink-wrapped and re-orderable workspaces, it makes sense
+                    // to persist workspace screens and their relative order.
+                    mMaxScreenId = 0;
+                    addWorkspacesTable(db);
+                }
+                case 13: {
+                    db.beginTransaction();
+                    try {
+                        // Insert new column for holding widget provider name
+                        db.execSQL("ALTER TABLE favorites " +
+                                "ADD COLUMN appWidgetProvider TEXT;");
+                        db.setTransactionSuccessful();
+                    } catch (SQLException ex) {
+                        Log.e(TAG, ex.getMessage(), ex);
+                        // Old version remains, which means we wipe old data
+                        break;
+                    } finally {
+                        db.endTransaction();
+                    }
+                }
+                case 14: {
+                    db.beginTransaction();
+                    try {
+                        // Insert new column for holding update timestamp
+                        db.execSQL("ALTER TABLE favorites " +
+                                "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                        db.execSQL("ALTER TABLE workspaceScreens " +
+                                "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                        db.setTransactionSuccessful();
+                    } catch (SQLException ex) {
+                        Log.e(TAG, ex.getMessage(), ex);
+                        // Old version remains, which means we wipe old data
+                        break;
+                    } finally {
+                        db.endTransaction();
+                    }
+                }
+                case 15: {
+                    db.beginTransaction();
+                    try {
+                        // Insert new column for holding restore status
+                        db.execSQL("ALTER TABLE favorites " +
+                                "ADD COLUMN restored INTEGER NOT NULL DEFAULT 0;");
+                        db.setTransactionSuccessful();
+                    } catch (SQLException ex) {
+                        Log.e(TAG, ex.getMessage(), ex);
+                        // Old version remains, which means we wipe old data
+                        break;
+                    } finally {
+                        db.endTransaction();
+                    }
+                }
+                case 16: {
+                    // We use the db version upgrade here to identify users who may not have seen
+                    // clings yet (because they weren't available), but for whom the clings are now
+                    // available (tablet users). Because one of the possible cling flows (migration)
+                    // is very destructive (wipes out workspaces), we want to prevent this from showing
+                    // until clear data. We do so by marking that the clings have been shown.
+                    LauncherClings.synchonouslyMarkFirstRunClingDismissed(mContext);
+                }
+                case 17: {
+                    // No-op
+                }
+                case 18: {
+                    // Due to a data loss bug, some users may have items associated with screen ids
+                    // which no longer exist. Since this can cause other problems, and since the user
+                    // will never see these items anyway, we use database upgrade as an opportunity to
+                    // clean things up.
+                    removeOrphanedItems(db);
+                }
+                case 19: {
+                    // Add userId column
+                    if (!addProfileColumn(db)) {
+                        // Old version remains, which means we wipe old data
+                        break;
+                    }
+                }
+                case 20:
+                    if (!updateFolderItemsRank(db, true)) {
+                        break;
+                    }
+                case 21: {
+                    // DB Upgraded successfully
+                    return;
                 }
             }
 
-            if (version < 15) {
-                db.beginTransaction();
-                try {
-                    // Insert new column for holding update timestamp
-                    db.execSQL("ALTER TABLE favorites " +
-                            "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
-                    db.execSQL("ALTER TABLE workspaceScreens " +
-                            "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
-                    db.setTransactionSuccessful();
-                    version = 15;
-                } catch (SQLException ex) {
-                    // Old version remains, which means we wipe old data
-                    Log.e(TAG, ex.getMessage(), ex);
-                } finally {
-                    db.endTransaction();
-                }
-            }
-
-
-            if (version < 16) {
-                db.beginTransaction();
-                try {
-                    // Insert new column for holding restore status
-                    db.execSQL("ALTER TABLE favorites " +
-                            "ADD COLUMN restored INTEGER NOT NULL DEFAULT 0;");
-                    db.setTransactionSuccessful();
-                    version = 16;
-                } catch (SQLException ex) {
-                    // Old version remains, which means we wipe old data
-                    Log.e(TAG, ex.getMessage(), ex);
-                } finally {
-                    db.endTransaction();
-                }
-            }
-
-            if (version < 17) {
-                // We use the db version upgrade here to identify users who may not have seen
-                // clings yet (because they weren't available), but for whom the clings are now
-                // available (tablet users). Because one of the possible cling flows (migration)
-                // is very destructive (wipes out workspaces), we want to prevent this from showing
-                // until clear data. We do so by marking that the clings have been shown.
-                LauncherClings.synchonouslyMarkFirstRunClingDismissed(mContext);
-                version = 17;
-            }
-
-            if (version < 18) {
-                // No-op
-                version = 18;
-            }
-
-            if (version < 19) {
-                // Due to a data loss bug, some users may have items associated with screen ids
-                // which no longer exist. Since this can cause other problems, and since the user
-                // will never see these items anyway, we use database upgrade as an opportunity to
-                // clean things up.
-                removeOrphanedItems(db);
-                version = 19;
-            }
-
-            if (version < 20) {
-                // Add userId column
-                if (addProfileColumn(db)) {
-                    version = 20;
-                }
-                // else old version remains, which means we wipe old data
-            }
-
-            if (version < 21) {
-                if (updateFolderItemsRank(db, true)) {
-                    version  = 21;
-                }
-            }
-
-            if (version != DATABASE_VERSION) {
-                Log.w(TAG, "Destroying all old data.");
-                createEmptyDB(db);
-            }
+            // DB was not upgraded
+            Log.w(TAG, "Destroying all old data.");
+            createEmptyDB(db);
         }
 
         @Override
