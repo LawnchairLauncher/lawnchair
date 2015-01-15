@@ -46,18 +46,24 @@ public class ShortcutInfo extends ItemInfo {
      * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
      * parsing.
      */
-    public static final int FLAG_AUTOINTALL_ICON = 2;
+    public static final int FLAG_AUTOINTALL_ICON = 2; //0B10;
 
     /**
      * The icon is being installed. If {@link FLAG_RESTORED_ICON} or {@link FLAG_AUTOINTALL_ICON}
      * is set, then the icon is either being installed or is in a broken state.
      */
-    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4;
+    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
 
     /**
      * Indicates that the widget restore has started.
      */
-    public static final int FLAG_RESTORE_STARTED = 8;
+    public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
+
+    /**
+     * Indicates if it represents a common type mentioned in {@link CommonAppTypeParser}.
+     * Upto 15 different types supported.
+     */
+    public static final int FLAG_RESTORED_APP_TYPE = 0B0011110000;
 
     /**
      * The intent used to start the application.

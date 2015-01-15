@@ -19,13 +19,16 @@ import android.app.backup.BackupDataInputStream;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.BackupHelper;
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,6 +54,9 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -58,7 +64,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.zip.CRC32;
 
@@ -138,6 +143,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private final Context mContext;
     private final HashSet<String> mExistingKeys;
     private final ArrayList<Key> mKeys;
+    private final ItemTypeMatcher[] mItemTypeMatchers;
 
     private IconCache mIconCache;
     private BackupManager mBackupManager;
@@ -154,6 +160,7 @@ public class LauncherBackupHelper implements BackupHelper {
         mExistingKeys = new HashSet<String>();
         mKeys = new ArrayList<Key>();
         restoreSuccessful = true;
+        mItemTypeMatchers = new ItemTypeMatcher[CommonAppTypeParser.SUPPORTED_TYPE_COUNT];
     }
 
     private void dataChanged() {
@@ -753,6 +760,17 @@ public class LauncherBackupHelper implements BackupHelper {
         return checksum.getValue();
     }
 
+    /**
+     * @return true if its an hotseat item, that can be replaced during restore.
+     * TODO: Extend check for folders in hotseat.
+     */
+    private boolean isReplaceableHotseatItem(Favorite favorite) {
+        return favorite.container == Favorites.CONTAINER_HOTSEAT
+                && favorite.intent != null
+                && (favorite.itemType == Favorites.ITEM_TYPE_APPLICATION
+                || favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT);
+    }
+
     /** Serialize a Favorite for persistence, including a checksum wrapper. */
     private Favorite packFavorite(Cursor c) {
         Favorite favorite = new Favorite();
@@ -785,9 +803,10 @@ public class LauncherBackupHelper implements BackupHelper {
             favorite.title = title;
         }
         String intentDescription = c.getString(INTENT_INDEX);
+        Intent intent = null;
         if (!TextUtils.isEmpty(intentDescription)) {
             try {
-                Intent intent = Intent.parseUri(intentDescription, 0);
+                intent = Intent.parseUri(intentDescription, 0);
                 intent.removeExtra(ItemInfo.EXTRA_PROFILE);
                 favorite.intent = intent.toUri(0);
             } catch (URISyntaxException e) {
@@ -803,6 +822,31 @@ public class LauncherBackupHelper implements BackupHelper {
             }
         }
 
+        if (isReplaceableHotseatItem(favorite)) {
+            if (intent != null && intent.getComponent() != null) {
+                PackageManager pm = mContext.getPackageManager();
+                ActivityInfo activity = null;;
+                try {
+                    activity = pm.getActivityInfo(intent.getComponent(), 0);
+                } catch (NameNotFoundException e) {
+                    Log.e(TAG, "Target not found", e);
+                }
+                if (activity == null) {
+                    return favorite;
+                }
+                for (int i = 0; i < mItemTypeMatchers.length; i++) {
+                    if (mItemTypeMatchers[i] == null) {
+                        mItemTypeMatchers[i] = new ItemTypeMatcher(
+                                CommonAppTypeParser.getResourceForItemType(i));
+                    }
+                    if (mItemTypeMatchers[i].matches(activity, pm)) {
+                        favorite.targetType = i;
+                        break;
+                    }
+                }
+            }
+        }
+
         return favorite;
     }
 
@@ -810,6 +854,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private ContentValues unpackFavorite(byte[] buffer, int dataSize)
             throws IOException {
         Favorite favorite = unpackProto(new Favorite(), buffer, dataSize);
+
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, favorite.id);
         values.put(Favorites.SCREEN, favorite.screen);
@@ -860,8 +905,17 @@ public class LauncherBackupHelper implements BackupHelper {
                 throw new InvalidBackupException("Widget not in screen bounds, aborting restore");
             }
         } else {
-            // Let LauncherModel know we've been here.
-            values.put(LauncherSettings.Favorites.RESTORED, 1);
+            // Check if it is an hotseat item, that can be replaced.
+            if (isReplaceableHotseatItem(favorite)
+                    && favorite.targetType != Favorite.TARGET_NONE
+                    && favorite.targetType < CommonAppTypeParser.SUPPORTED_TYPE_COUNT) {
+                Log.e(TAG, "Added item type flag");
+                values.put(LauncherSettings.Favorites.RESTORED,
+                        1 | CommonAppTypeParser.encodeItemTypeToFlag(favorite.targetType));
+            } else {
+                // Let LauncherModel know we've been here.
+                values.put(LauncherSettings.Favorites.RESTORED, 1);
+            }
 
             // Verify placement
             if (favorite.container == Favorites.CONTAINER_HOTSEAT) {
@@ -1128,12 +1182,65 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     private class InvalidBackupException extends IOException {
+
+        private static final long serialVersionUID = 8931456637211665082L;
+
         private InvalidBackupException(Throwable cause) {
             super(cause);
         }
 
         public InvalidBackupException(String reason) {
             super(reason);
+        }
+    }
+
+    /**
+     * A class to check if an activity can handle one of the intents from a list of
+     * predefined intents.
+     */
+    private class ItemTypeMatcher {
+
+        private final ArrayList<Intent> mIntents;
+
+        ItemTypeMatcher(int xml_res) {
+            mIntents = xml_res == 0 ? new ArrayList<Intent>() : parseIntents(xml_res);
+        }
+
+        private ArrayList<Intent> parseIntents(int xml_res) {
+            ArrayList<Intent> intents = new ArrayList<Intent>();
+            XmlResourceParser parser = mContext.getResources().getXml(xml_res);
+            try {
+                DefaultLayoutParser.beginDocument(parser, DefaultLayoutParser.TAG_RESOLVE);
+                final int depth = parser.getDepth();
+                int type;
+                while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                        parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+                    if (type != XmlPullParser.START_TAG) {
+                        continue;
+                    } else if (DefaultLayoutParser.TAG_FAVORITE.equals(parser.getName())) {
+                        final String uri = DefaultLayoutParser.getAttributeValue(
+                                parser, DefaultLayoutParser.ATTR_URI);
+                        intents.add(Intent.parseUri(uri, 0));
+                    }
+                }
+            } catch (URISyntaxException | XmlPullParserException | IOException e) {
+                Log.e(TAG, "Unable to parse " + xml_res, e);
+            } finally {
+                parser.close();
+            }
+            return intents;
+        }
+
+        public boolean matches(ActivityInfo activity, PackageManager pm) {
+            for (Intent intent : mIntents) {
+                intent.setPackage(activity.packageName);
+                ResolveInfo info = pm.resolveActivity(intent, 0);
+                if (info != null && (info.activityInfo.name.equals(activity.name)
+                        || info.activityInfo.name.equals(activity.targetActivity))) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

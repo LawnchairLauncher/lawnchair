@@ -1955,6 +1955,7 @@ public class LauncherModel extends BroadcastReceiver
                                 user = mUserManager.getUserForSerialNumber(serialNumber);
                                 int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
+                                boolean itemReplaced = false;
                                 if (user == null) {
                                     // User has been deleted remove the item.
                                     itemsToRemove.add(id);
@@ -1986,9 +1987,7 @@ public class LauncherModel extends BroadcastReceiver
                                                     ContentValues values = new ContentValues();
                                                     values.put(LauncherSettings.Favorites.INTENT,
                                                             intent.toUri(0));
-                                                    String where = BaseColumns._ID + "= ?";
-                                                    String[] args = {Long.toString(id)};
-                                                    contentResolver.update(contentUri, values, where, args);
+                                                    updateItem(id, values);
                                                 }
                                             }
 
@@ -2018,10 +2017,27 @@ public class LauncherModel extends BroadcastReceiver
                                                 ContentValues values = new ContentValues();
                                                 values.put(LauncherSettings.Favorites.RESTORED,
                                                         promiseType);
-                                                String where = BaseColumns._ID + "= ?";
-                                                String[] args = {Long.toString(id)};
-                                                contentResolver.update(contentUri, values, where, args);
+                                                updateItem(id, values);
+                                            } else if ((promiseType & ShortcutInfo.FLAG_RESTORED_APP_TYPE) != 0) {
+                                                // This is a common app. Try to replace this.
+                                                int appType = CommonAppTypeParser.decodeItemTypeFromFlag(promiseType);
+                                                CommonAppTypeParser parser = new CommonAppTypeParser(id, appType, context);
+                                                if (parser.findDefaultApp()) {
+                                                    // Default app found. Replace it.
+                                                    intent = parser.parsedIntent;
+                                                    cn = intent.getComponent();
+                                                    ContentValues values = parser.parsedValues;
+                                                    values.put(LauncherSettings.Favorites.RESTORED, 0);
+                                                    updateItem(id, values);
+                                                    restored = false;
+                                                    itemReplaced = true;
 
+                                                } else if (REMOVE_UNRESTORED_ICONS) {
+                                                    Launcher.addDumpLog(TAG,
+                                                            "Unrestored package removed: " + cn, true);
+                                                    itemsToRemove.add(id);
+                                                    continue;
+                                                }
                                             } else if (REMOVE_UNRESTORED_ICONS) {
                                                 Launcher.addDumpLog(TAG,
                                                         "Unrestored package removed: " + cn, true);
@@ -2067,7 +2083,16 @@ public class LauncherModel extends BroadcastReceiver
                                     continue;
                                 }
 
-                                if (restored) {
+                                if (itemReplaced) {
+                                    if (user.equals(UserHandleCompat.myUserHandle())) {
+                                        info = getShortcutInfo(manager, intent, user, context, null,
+                                                iconIndex, titleIndex, mLabelCache, false);
+                                    } else {
+                                        // Don't replace items for other profiles.
+                                        itemsToRemove.add(id);
+                                        continue;
+                                    }
+                                } else if (restored) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
                                         Launcher.addDumpLog(TAG,
                                                 "constructing info for partially restored package",
@@ -2301,9 +2326,7 @@ public class LauncherModel extends BroadcastReceiver
                                                     providerName);
                                             values.put(LauncherSettings.Favorites.RESTORED,
                                                     appWidgetInfo.restoreStatus);
-                                            String where = BaseColumns._ID + "= ?";
-                                            String[] args = {Long.toString(id)};
-                                            contentResolver.update(contentUri, values, where, args);
+                                            updateItem(id, values);
                                         }
                                     }
                                     sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
@@ -2453,6 +2476,17 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
             return loadedOldDb;
+        }
+
+        /**
+         * Partially updates the item without any notification. Must be called on the worker thread.
+         */
+        private void updateItem(long itemId, ContentValues update) {
+            mContext.getContentResolver().update(
+                    LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                    update,
+                    BaseColumns._ID + "= ?",
+                    new String[]{Long.toString(itemId)});
         }
 
         /** Filters the set of items who are directly or indirectly (via another container) on the

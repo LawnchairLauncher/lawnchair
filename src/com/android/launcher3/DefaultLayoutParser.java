@@ -29,16 +29,16 @@ import java.util.List;
 public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG = "DefaultLayoutParser";
 
-    private static final String TAG_RESOLVE = "resolve";
+    protected static final String TAG_RESOLVE = "resolve";
     private static final String TAG_FAVORITES = "favorites";
-    private static final String TAG_FAVORITE = "favorite";
+    protected static final String TAG_FAVORITE = "favorite";
     private static final String TAG_APPWIDGET = "appwidget";
     private static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
     private static final String TAG_INCLUDE = "include";
 
-    private static final String ATTR_URI = "uri";
+    protected static final String ATTR_URI = "uri";
     private static final String ATTR_WORKSPACE = "workspace";
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
@@ -47,7 +47,12 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources sourceRes, int layoutId) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
-        Log.e(TAG, "Default layout parser initialized");
+    }
+
+    public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
+            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag,
+            int hotseatAllAppsRank) {
+        super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag, hotseatAllAppsRank);
     }
 
     @Override
@@ -218,7 +223,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * Contains a list of <favorite> nodes, and accepts the first successfully parsed node.
      */
-    private class ResolveParser implements TagParser {
+    protected class ResolveParser implements TagParser {
 
         private final AppShortcutWithUriParser mChildParser = new AppShortcutWithUriParser();
 

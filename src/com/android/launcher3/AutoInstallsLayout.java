@@ -112,7 +112,7 @@ public class AutoInstallsLayout {
 
     private final Context mContext;
     private final AppWidgetHost mAppWidgetHost;
-    private final LayoutParserCallback mCallback;
+    protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
     protected final Resources mSourceRes;
@@ -122,13 +122,20 @@ public class AutoInstallsLayout {
 
     private final long[] mTemp = new long[2];
     private final ContentValues mValues;
-    private final String mRootTag;
+    protected final String mRootTag;
 
     protected SQLiteDatabase mDb;
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
+        this(context, appWidgetHost, callback, res, layoutId, rootTag,
+                LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile().hotseatAllAppsRank);
+    }
+
+    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+            LayoutParserCallback callback, Resources res,
+            int layoutId, String rootTag, int hotseatAllAppsRank) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
@@ -139,8 +146,7 @@ public class AutoInstallsLayout {
 
         mSourceRes = res;
         mLayoutId = layoutId;
-        mHotseatAllAppsRank = LauncherAppState.getInstance()
-                .getDynamicGrid().getDeviceProfile().hotseatAllAppsRank;
+        mHotseatAllAppsRank = hotseatAllAppsRank;
     }
 
     /**
