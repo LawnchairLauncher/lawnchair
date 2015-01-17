@@ -75,7 +75,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -491,13 +490,7 @@ public class LauncherModel extends BroadcastReceiver
         Runnable r = new Runnable() {
             public void run() {
                 final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
-
-                ArrayList<Long> workspaceScreens = new ArrayList<Long>();
-                TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(context);
-                for (Integer i : orderedScreens.keySet()) {
-                    long screenId = orderedScreens.get(i);
-                    workspaceScreens.add(screenId);
-                }
+                ArrayList<Long> workspaceScreens = loadWorkspaceScreensDb(context);
 
                 // Find appropriate space for the item.
                 Pair<Long, int[]> coords = findSpaceForItem(context, preferredScreen,
@@ -549,13 +542,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Get the list of workspace screens.  We need to append to this list and
                 // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
                 // called.
-                ArrayList<Long> workspaceScreens = new ArrayList<Long>();
-                TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(context);
-                for (Integer i : orderedScreens.keySet()) {
-                    long screenId = orderedScreens.get(i);
-                    workspaceScreens.add(screenId);
-                }
-
+                ArrayList<Long> workspaceScreens = loadWorkspaceScreensDb(context);
                 synchronized(sBgLock) {
                     for (ItemInfo item : workspaceApps) {
                         if (!allowDuplicate) {
@@ -1443,40 +1430,31 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    /** Loads the workspace screens db into a map of Rank -> ScreenId */
-    private static TreeMap<Integer, Long> loadWorkspaceScreensDb(Context context) {
+    /**
+     * Loads the workspace screen ids in an ordered list.
+     */
+    private static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
         final ContentResolver contentResolver = context.getContentResolver();
         final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-        final Cursor sc = contentResolver.query(screensUri, null, null, null, null);
-        TreeMap<Integer, Long> orderedScreens = new TreeMap<Integer, Long>();
 
+        // Get screens ordered by rank.
+        final Cursor sc = contentResolver.query(screensUri, null, null, null,
+                LauncherSettings.WorkspaceScreens.SCREEN_RANK);
+        ArrayList<Long> screenIds = new ArrayList<Long>();
         try {
-            final int idIndex = sc.getColumnIndexOrThrow(
-                    LauncherSettings.WorkspaceScreens._ID);
-            final int rankIndex = sc.getColumnIndexOrThrow(
-                    LauncherSettings.WorkspaceScreens.SCREEN_RANK);
+            final int idIndex = sc.getColumnIndexOrThrow(LauncherSettings.WorkspaceScreens._ID);
             while (sc.moveToNext()) {
                 try {
-                    long screenId = sc.getLong(idIndex);
-                    int rank = sc.getInt(rankIndex);
-                    orderedScreens.put(rank, screenId);
+                    screenIds.add(sc.getLong(idIndex));
                 } catch (Exception e) {
-                    Launcher.addDumpLog(TAG, "Desktop items loading interrupted - invalid screens: " + e, true);
+                    Launcher.addDumpLog(TAG, "Desktop items loading interrupted"
+                            + " - invalid screens: " + e, true);
                 }
             }
         } finally {
             sc.close();
         }
-
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - loadWorkspaceScreensDb()", true);
-        ArrayList<String> orderedScreensPairs= new ArrayList<String>();
-        for (Integer i : orderedScreens.keySet()) {
-            orderedScreensPairs.add("{ " + i + ": " + orderedScreens.get(i) + " }");
-        }
-        Launcher.addDumpLog(TAG, "11683562 -   screens: " +
-                TextUtils.join(", ", orderedScreensPairs), true);
-        return orderedScreens;
+        return screenIds;
     }
 
     public boolean isAllAppsLoaded() {
@@ -2422,10 +2400,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                     LauncherAppState.getLauncherProvider().updateMaxItemId(maxItemId);
                 } else {
-                    TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(mContext);
-                    for (Integer i : orderedScreens.keySet()) {
-                        sBgWorkspaceScreens.add(orderedScreens.get(i));
-                    }
+                    sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
                     // Log to disk
                     Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
                             TextUtils.join(", ", sBgWorkspaceScreens), true);
