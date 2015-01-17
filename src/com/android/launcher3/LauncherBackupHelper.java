@@ -57,6 +57,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.zip.CRC32;
@@ -140,9 +141,9 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private IconCache mIconCache;
     private BackupManager mBackupManager;
-    private HashMap<ComponentName, AppWidgetProviderInfo> mWidgetMap;
     private byte[] mBuffer = new byte[512];
     private long mLastBackupRestoreTime;
+    private boolean mBackupDataWasUpdated;
 
     private DeviceProfieData mCurrentProfile;
     boolean restoreSuccessful;
@@ -201,7 +202,7 @@ public class LauncherBackupHelper implements BackupHelper {
         // Record the time before performing backup so that entries edited while the backup
         // was going on, do not get missed in next backup.
         long newBackupTime = System.currentTimeMillis();
-
+        mBackupDataWasUpdated = false;
         try {
             backupFavorites(data);
             backupScreens(data);
@@ -219,16 +220,30 @@ public class LauncherBackupHelper implements BackupHelper {
             for (String deleted: mExistingKeys) {
                 if (VERBOSE) Log.v(TAG, "dropping deleted item " + deleted);
                 data.writeEntityHeader(deleted, -1);
+                mBackupDataWasUpdated = true;
             }
 
             mExistingKeys.clear();
-            mLastBackupRestoreTime = newBackupTime;
+            if (!mBackupDataWasUpdated) {
+                // Check if any metadata has changed
+                mBackupDataWasUpdated = (in.profile == null)
+                        || !Arrays.equals(DeviceProfieData.toByteArray(in.profile),
+                            DeviceProfieData.toByteArray(getDeviceProfieData()))
+                        || (in.backupVersion != BACKUP_VERSION)
+                        || (in.appVersion != getAppVersion());
+            }
 
-            // We store the journal at two places.
-            //   1) Storing it in newState allows us to do partial backups by comparing old state
-            //   2) Storing it in backup data allows us to validate keys during restore
-            Journal state = getCurrentStateJournal();
-            writeRowToBackup(JOURNAL_KEY, state, data);
+            if (mBackupDataWasUpdated) {
+                mLastBackupRestoreTime = newBackupTime;
+
+                // We store the journal at two places.
+                //   1) Storing it in newState allows us to do partial backups by comparing old state
+                //   2) Storing it in backup data allows us to validate keys during restore
+                Journal state = getCurrentStateJournal();
+                writeRowToBackup(JOURNAL_KEY, state, data);
+            } else {
+                if (DEBUG) Log.d(TAG, "Nothing was written during backup");
+            }
         } catch (IOException e) {
             Log.e(TAG, "launcher backup has failed", e);
         }
@@ -1020,6 +1035,7 @@ public class LauncherBackupHelper implements BackupHelper {
         byte[] blob = writeCheckedBytes(proto);
         data.writeEntityHeader(backupKey, blob.length);
         data.writeEntityData(blob, blob.length);
+        mBackupDataWasUpdated = true;
         if (VERBOSE) Log.v(TAG, "Writing New entry " + backupKey);
     }
 
