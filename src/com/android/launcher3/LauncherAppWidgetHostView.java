@@ -48,6 +48,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         mLongPressHelper = new CheckLongPressHelper(this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDragLayer = ((Launcher) context).getDragLayer();
+        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     @Override

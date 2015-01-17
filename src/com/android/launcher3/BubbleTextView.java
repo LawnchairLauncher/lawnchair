@@ -49,7 +49,15 @@ public class BubbleTextView extends TextView {
     private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
     static final float PADDING_V = 3.0f;
 
-    private HolographicOutlineHelper mOutlineHelper;
+
+    private final Drawable mBackground;
+    private final CheckLongPressHelper mLongPressHelper;
+    private final HolographicOutlineHelper mOutlineHelper;
+
+    // TODO: Remove custom background handling code, as no instance of BubbleTextView use any
+    // background.
+    private boolean mBackgroundSizeChanged;
+
     private Bitmap mPressedBackground;
 
     private float mSlop;
@@ -58,14 +66,8 @@ public class BubbleTextView extends TextView {
     private final boolean mCustomShadowsEnabled;
     private boolean mIsTextVisible;
 
-    // TODO: Remove custom background handling code, as no instance of BubbleTextView use any
-    // background.
-    private boolean mBackgroundSizeChanged;
-    private final Drawable mBackground;
-
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
-    private CheckLongPressHelper mLongPressHelper;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -90,7 +92,14 @@ public class BubbleTextView extends TextView {
         } else {
             mBackground = null;
         }
-        init();
+        mLongPressHelper = new CheckLongPressHelper(this);
+
+        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
+        if (mCustomShadowsEnabled) {
+            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        }
+
+        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     public void onFinishInflate() {
@@ -100,15 +109,6 @@ public class BubbleTextView extends TextView {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-    }
-
-    private void init() {
-        mLongPressHelper = new CheckLongPressHelper(this);
-
-        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
-        if (mCustomShadowsEnabled) {
-            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
-        }
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
@@ -328,7 +328,7 @@ public class BubbleTextView extends TextView {
         Drawable top = getCompoundDrawables()[1];
 
         if (top instanceof PreloadIconDrawable) {
-            ((PreloadIconDrawable) top).applyTheme(getPreloaderTheme());
+            ((PreloadIconDrawable) top).applyPreloaderTheme(getPreloaderTheme());
         }
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }

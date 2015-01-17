@@ -127,6 +127,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
+        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     public boolean isDropEnabled() {

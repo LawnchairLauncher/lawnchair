@@ -118,9 +118,6 @@ s -->
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
-    <!-- Label for trash icon on workspace. Meant to communicate the idea of removing the
-         icon/widget from the home screen, but not permanently. [CHAR_LIMIT=30] -->
-    <string name="delete_zone_label_workspace">Remove</string>
     <!-- Label for trash icon in All Apps. The icon/widget will become completely unavailable on the
          device. [CHAR_LIMIT=30]-->
     <string name="delete_zone_label_all_apps">Uninstall</string>
@@ -304,4 +301,8 @@ s -->
     <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
         You can remove it, or search for the app and install it manually.
     </string>
+
+<!-- Strings for accessibility actions -->
+    <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+    <string name="action_add_to_workspace">Add To Workspace</string>
 </resources>
