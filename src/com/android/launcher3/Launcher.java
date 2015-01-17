@@ -770,7 +770,7 @@ public class Launcher extends Activity
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(appWidgetId, (PendingAddWidgetInfo) mPendingAddInfo, null,
+                addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
                         mPendingAddWidgetInfo, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
             }
             return;
@@ -2257,12 +2257,12 @@ public class Launcher extends Activity
         mPendingAddInfo.dropPos = null;
     }
 
-    void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info, final
+    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info, final
             AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo) {
         addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
     }
 
-    void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info,
+    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
             final AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo,
             int delay) {
         if (appWidgetInfo.configure != null) {
