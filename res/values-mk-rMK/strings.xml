@@ -53,7 +53,6 @@
     <string name="title_select_application" msgid="3280812711670683644">"Избери апликација"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Апликации"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Почетна страница"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Отстрани"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Деинсталирај"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Отстрани"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Деинсталирај"</string>
@@ -121,4 +120,6 @@
     <string name="abandoned_search" msgid="891119232568284442">"Барај"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Апликацијата не е инсталирана"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Апликацијата за оваа икона не е инсталирана. Може да ја отстраните или да се обидете да ја најдете апликацијата и да ја инсталирате рачно."</string>
+    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
+    <skip />
 </resources>

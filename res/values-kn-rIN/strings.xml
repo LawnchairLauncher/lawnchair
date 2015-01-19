@@ -53,7 +53,6 @@
     <string name="title_select_application" msgid="3280812711670683644">"ಅಪ್ಲಿಕೇಶನ್ ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ಮುಖಪುಟ"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"ತೆಗೆದುಹಾಕು"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"ಅಸ್ಥಾಪಿಸು"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"ತೆಗೆದುಹಾಕು"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ಅಸ್ಥಾಪಿಸು"</string>
@@ -121,4 +120,6 @@
     <string name="abandoned_search" msgid="891119232568284442">"ಹುಡುಕು"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ಈ ಐಕಾನ್ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ. ನೀವು ಅದನ್ನು ತೆಗೆದುಹಾಕಬಹುದು ಅಥವಾ ಅಪ್ಲಿಕೇಶನ್ ಹುಡುಕಬಹುದು ಮತ್ತು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅದನ್ನು ಸ್ಥಾಪಿಸಬಹುದು."</string>
+    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
+    <skip />
 </resources>

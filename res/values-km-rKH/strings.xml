@@ -53,7 +53,6 @@
     <string name="title_select_application" msgid="3280812711670683644">"ជ្រើស​កម្មវិធី"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"កម្មវិធី"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ដើម"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"លុប​ចេញ"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"លុប"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"លុប​ចេញ"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"លុប"</string>
@@ -85,7 +84,7 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"អេក្រង់​ដើម %1$d នៃ %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ទំព័រ​កម្មវិធី %1$d នៃ %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"ទំព័រ​ធាតុ​ក្រាហ្វិក ​%1$d នៃ %2$d"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"សូម​ស្វាគមន៍"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"សូម​ស្វាគមន៍​"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"ធ្វើ​ដោយ​ខ្លួន​ឯង​នៅ​លើ​អេក្រង់​ដើម។"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
@@ -121,4 +120,6 @@
     <string name="abandoned_search" msgid="891119232568284442">"ស្វែងរក"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"មិន​បាន​ដំឡើង​កម្មវិធី​នេះ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"មិន​បាន​ដំឡើង​កម្មវិធី​សម្រាប់​រូបតំណាង​នេះ។ អ្នក​អាច​លុប​វា ឬ​ស្វែងរក​កម្មវិធី និង​ដំឡើង​វា​ដោយ​ដៃ។"</string>
+    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
+    <skip />
 </resources>
