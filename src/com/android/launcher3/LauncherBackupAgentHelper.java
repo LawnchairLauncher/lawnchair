@@ -32,7 +32,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     private static final String LAUNCHER_DATA_PREFIX = "L";
 
-    static final boolean VERBOSE = true;
+    static final boolean VERBOSE = false;
     static final boolean DEBUG = false;
 
     private static BackupManager sBackupManager;
