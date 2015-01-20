@@ -76,28 +76,32 @@ public class InfoDropTarget extends ButtonDropTarget {
         // acceptDrop is called just before onDrop. We do the work here, rather than
         // in onDrop, because it allows us to reject the drop (by returning false)
         // so that the object being dragged isn't removed from the drag source.
+
+        startDetailsActivityForInfo(d.dragInfo, mLauncher);
+        // There is no post-drop animation, so clean up the DragView now
+        d.deferDragViewCleanupPostAnimation = false;
+        return false;
+    }
+
+    public static void startDetailsActivityForInfo(Object info, Launcher launcher) {
         ComponentName componentName = null;
-        if (d.dragInfo instanceof AppInfo) {
-            componentName = ((AppInfo) d.dragInfo).componentName;
-        } else if (d.dragInfo instanceof ShortcutInfo) {
-            componentName = ((ShortcutInfo) d.dragInfo).intent.getComponent();
-        } else if (d.dragInfo instanceof PendingAddItemInfo) {
-            componentName = ((PendingAddItemInfo) d.dragInfo).componentName;
+        if (info instanceof AppInfo) {
+            componentName = ((AppInfo) info).componentName;
+        } else if (info instanceof ShortcutInfo) {
+            componentName = ((ShortcutInfo) info).intent.getComponent();
+        } else if (info instanceof PendingAddItemInfo) {
+            componentName = ((PendingAddItemInfo) info).componentName;
         }
         final UserHandleCompat user;
-        if (d.dragInfo instanceof ItemInfo) {
-            user = ((ItemInfo) d.dragInfo).user;
+        if (info instanceof ItemInfo) {
+            user = ((ItemInfo) info).user;
         } else {
             user = UserHandleCompat.myUserHandle();
         }
 
         if (componentName != null) {
-            mLauncher.startApplicationDetailsActivity(componentName, user);
+            launcher.startApplicationDetailsActivity(componentName, user);
         }
-
-        // There is no post-drop animation, so clean up the DragView now
-        d.deferDragViewCleanupPostAnimation = false;
-        return false;
     }
 
     @Override

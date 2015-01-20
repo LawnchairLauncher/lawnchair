@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.LauncherApps.Callback;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
@@ -38,6 +37,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -49,6 +49,7 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.util.Pair;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -108,7 +109,6 @@ public class LauncherModel extends BroadcastReceiver
     private DeferredHandler mHandler = new DeferredHandler();
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
-    private volatile boolean mFlushingWorkerThread;
 
     /**
      * Maintain a set of packages per user, for which we added a shortcut on the workspace.
@@ -219,10 +219,16 @@ public class LauncherModel extends BroadcastReceiver
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void dumpLogsToLocalData();
+        public void bindAddPendingItem(PendingAddItemInfo info, long container, long screenId,
+                int[] cell, int spanX, int spanY);
     }
 
     public interface ItemInfoFilter {
         public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
+    }
+
+    public interface ScreenPosProvider {
+        int getScreenIndex(ArrayList<Long> screenIDs);
     }
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
@@ -287,67 +293,6 @@ public class LauncherModel extends BroadcastReceiver
         return mOldContentProviderExists && !launcher.isLauncherPreinstalled() ;
     }
 
-    static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> items, int[] xy,
-                                 long screen) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        final int xCount = (int) grid.numColumns;
-        final int yCount = (int) grid.numRows;
-        boolean[][] occupied = new boolean[xCount][yCount];
-
-        int cellX, cellY, spanX, spanY;
-        for (int i = 0; i < items.size(); ++i) {
-            final ItemInfo item = items.get(i);
-            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (item.screenId == screen) {
-                    cellX = item.cellX;
-                    cellY = item.cellY;
-                    spanX = item.spanX;
-                    spanY = item.spanY;
-                    for (int x = cellX; 0 <= x && x < cellX + spanX && x < xCount; x++) {
-                        for (int y = cellY; 0 <= y && y < cellY + spanY && y < yCount; y++) {
-                            occupied[x][y] = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return CellLayout.findVacantCell(xy, 1, 1, xCount, yCount, occupied);
-    }
-    static Pair<Long, int[]> findNextAvailableIconSpace(Context context, String name,
-                                                        Intent launchIntent,
-                                                        int firstScreenIndex,
-                                                        ArrayList<Long> workspaceScreens) {
-        // Lock on the app so that we don't try and get the items while apps are being added
-        LauncherAppState app = LauncherAppState.getInstance();
-        LauncherModel model = app.getModel();
-        boolean found = false;
-        synchronized (app) {
-            if (sWorkerThread.getThreadId() != Process.myTid()) {
-                // Flush the LauncherModel worker thread, so that if we just did another
-                // processInstallShortcut, we give it time for its shortcut to get added to the
-                // database (getItemsInLocalCoordinates reads the database)
-                model.flushWorkerThread();
-            }
-            final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
-
-            // Try adding to the workspace screens incrementally, starting at the default or center
-            // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
-            firstScreenIndex = Math.min(firstScreenIndex, workspaceScreens.size());
-            int count = workspaceScreens.size();
-            for (int screen = firstScreenIndex; screen < count && !found; screen++) {
-                int[] tmpCoordinates = new int[2];
-                if (findNextAvailableIconSpaceInScreen(items, tmpCoordinates,
-                        workspaceScreens.get(screen))) {
-                    // Update the Launcher db
-                    return new Pair<Long, int[]>(workspaceScreens.get(screen), tmpCoordinates);
-                }
-            }
-        }
-        return null;
-    }
-
     public void setPackageState(final ArrayList<PackageInstallInfo> installInfo) {
         // Process the updated package state
         Runnable r = new Runnable() {
@@ -402,11 +347,196 @@ public class LauncherModel extends BroadcastReceiver
 
     public void addAndBindAddedWorkspaceApps(final Context context,
             final ArrayList<ItemInfo> workspaceApps) {
-        final Callbacks callbacks = getCallback();
+        addAndBindAddedWorkspaceApps(context, workspaceApps,
+                new ScreenPosProvider() {
 
-        if (workspaceApps == null) {
-            throw new RuntimeException("workspaceApps and allAppsApps must not be null");
+                    @Override
+                    public int getScreenIndex(ArrayList<Long> screenIDs) {
+                        return screenIDs.isEmpty() ? 0 : 1;
+                    }
+                }, 1, false);
+    }
+
+    private static boolean findNextAvailableIconSpaceInScreen(ArrayList<Rect> occupiedPos,
+            int[] xy, int spanX, int spanY) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        final int xCount = (int) grid.numColumns;
+        final int yCount = (int) grid.numRows;
+        boolean[][] occupied = new boolean[xCount][yCount];
+        if (occupiedPos != null) {
+            for (Rect r : occupiedPos) {
+                for (int x = r.left; 0 <= x && x < r.right && x < xCount; x++) {
+                    for (int y = r.top; 0 <= y && y < r.bottom && y < yCount; y++) {
+                        occupied[x][y] = true;
+                    }
+                }
+            }
         }
+        return CellLayout.findVacantCell(xy, spanX, spanY, xCount, yCount, occupied);
+    }
+
+    /**
+     * Find a position on the screen for the given size or adds a new screen.
+     * @return screenId and the coordinates for the item.
+     */
+    private static Pair<Long, int[]> findSpaceForItem(
+            Context context,
+            ScreenPosProvider preferredScreen,
+            int fallbackStartScreen,
+            ArrayList<Long> workspaceScreens,
+            ArrayList<Long> addedWorkspaceScreensFinal,
+            int spanX, int spanY) {
+        // Load position of items which are on the desktop. We can't use sBgItemsIdMap because
+        // loadWorkspace() may not have been called.
+        final ContentResolver cr = context.getContentResolver();
+        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[] {
+                    LauncherSettings.Favorites.SCREEN,
+                    LauncherSettings.Favorites.CELLX,
+                    LauncherSettings.Favorites.CELLY,
+                    LauncherSettings.Favorites.SPANX,
+                    LauncherSettings.Favorites.SPANY,
+                    LauncherSettings.Favorites.CONTAINER
+                 },
+                 "container=?",
+                 new String[] { Integer.toString(LauncherSettings.Favorites.CONTAINER_DESKTOP) },
+                 null);
+
+        final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
+        final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
+        final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+        final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
+        final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
+        LongSparseArray<ArrayList<Rect>> screenItems = new LongSparseArray<ArrayList<Rect>>();
+        try {
+            while (c.moveToNext()) {
+                Rect rect = new Rect();
+                rect.left = c.getInt(cellXIndex);
+                rect.top = c.getInt(cellYIndex);
+                rect.right = rect.left + Math.max(1, c.getInt(spanXIndex));
+                rect.bottom = rect.top + Math.max(1, c.getInt(spanYIndex));
+
+                long screenId = c.getInt(screenIndex);
+                ArrayList<Rect> items = screenItems.get(screenId);
+                if (items == null) {
+                    items = new ArrayList<Rect>();
+                    screenItems.put(screenId, items);
+                }
+                items.add(rect);
+            }
+        } catch (Exception e) {
+            screenItems.clear();
+        } finally {
+            c.close();
+        }
+
+        // Find appropriate space for the item.
+        long screenId = 0;
+        int[] cordinates = new int[2];
+        boolean found = false;
+
+        int screenCount = workspaceScreens.size();
+        // First check the preferred screen.
+        int preferredScreenIndex = preferredScreen.getScreenIndex(workspaceScreens);
+        if (preferredScreenIndex < screenCount) {
+            screenId = workspaceScreens.get(preferredScreenIndex);
+            found = findNextAvailableIconSpaceInScreen(
+                    screenItems.get(screenId), cordinates, spanX, spanY);
+        }
+
+        if (!found) {
+            // Search on any of the screens.
+            for (int screen = fallbackStartScreen; screen < screenCount; screen++) {
+                screenId = workspaceScreens.get(screen);
+                if (findNextAvailableIconSpaceInScreen(
+                        screenItems.get(screenId), cordinates, spanX, spanY)) {
+                    // We found a space for it
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            // Still no position found. Add a new screen to the end.
+            screenId = LauncherAppState.getLauncherProvider().generateNewScreenId();
+
+            // Save the screen id for binding in the workspace
+            workspaceScreens.add(screenId);
+            addedWorkspaceScreensFinal.add(screenId);
+
+            // If we still can't find an empty space, then God help us all!!!
+            if (!findNextAvailableIconSpaceInScreen(
+                    screenItems.get(screenId), cordinates, spanX, spanY)) {
+                throw new RuntimeException("Can't find space to add the item");
+            }
+        }
+        return Pair.create(screenId, cordinates);
+    }
+
+    /**
+     * Adds the provided items to the workspace.
+     * @param preferredScreen the screen where we should try to add the app first
+     * @param fallbackStartScreen the screen to start search for empty space if
+     * preferredScreen is not available.
+     */
+    public void addAndBindPendingItem(
+            final Context context,
+            final PendingAddItemInfo addInfo,
+            final ScreenPosProvider preferredScreen,
+            final int fallbackStartScreen) {
+        final Callbacks callbacks = getCallback();
+        // Process the newly added applications and add them to the database first
+        Runnable r = new Runnable() {
+            public void run() {
+                final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
+
+                ArrayList<Long> workspaceScreens = new ArrayList<Long>();
+                TreeMap<Integer, Long> orderedScreens = loadWorkspaceScreensDb(context);
+                for (Integer i : orderedScreens.keySet()) {
+                    long screenId = orderedScreens.get(i);
+                    workspaceScreens.add(screenId);
+                }
+
+                // Find appropriate space for the item.
+                Pair<Long, int[]> coords = findSpaceForItem(context, preferredScreen,
+                        fallbackStartScreen, workspaceScreens, addedWorkspaceScreensFinal,
+                        addInfo.spanX,
+                        addInfo.spanY);
+                final long screenId = coords.first;
+                final int[] cordinates = coords.second;
+
+                // Update the workspace screens
+                updateWorkspaceScreenOrder(context, workspaceScreens);
+                runOnMainThread(new Runnable() {
+                    public void run() {
+                        Callbacks cb = getCallback();
+                        if (callbacks == cb && cb != null) {
+                            cb.bindAddScreens(addedWorkspaceScreensFinal);
+                            cb.bindAddPendingItem(addInfo,
+                                    LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                    screenId, cordinates, addInfo.spanX, addInfo.spanY);
+                        }
+                    }
+                });
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    /**
+     * Adds the provided items to the workspace.
+     * @param preferredScreen the screen where we should try to add the app first
+     * @param fallbackStartScreen the screen to start search for empty space if
+     * preferredScreen is not available.
+     */
+    public void addAndBindAddedWorkspaceApps(final Context context,
+            final ArrayList<ItemInfo> workspaceApps,
+            final ScreenPosProvider preferredScreen,
+            final int fallbackStartScreen,
+            final boolean allowDuplicate) {
+        final Callbacks callbacks = getCallback();
         if (workspaceApps.isEmpty()) {
             return;
         }
@@ -427,53 +557,27 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 synchronized(sBgLock) {
-                    Iterator<ItemInfo> iter = workspaceApps.iterator();
-                    while (iter.hasNext()) {
-                        ItemInfo a = iter.next();
-                        final String name = a.title.toString();
-                        final Intent launchIntent = a.getIntent();
-
-                        // Short-circuit this logic if the icon exists somewhere on the workspace
-                        if (shortcutExists(context, name, launchIntent, a.user)) {
-                            continue;
-                        }
-
-                        // Add this icon to the db, creating a new page if necessary.  If there
-                        // is only the empty page then we just add items to the first page.
-                        // Otherwise, we add them to the next pages.
-                        int startSearchPageIndex = workspaceScreens.isEmpty() ? 0 : 1;
-                        Pair<Long, int[]> coords = LauncherModel.findNextAvailableIconSpace(context,
-                                name, launchIntent, startSearchPageIndex, workspaceScreens);
-                        if (coords == null) {
-                            LauncherProvider lp = LauncherAppState.getLauncherProvider();
-
-                            // If we can't find a valid position, then just add a new screen.
-                            // This takes time so we need to re-queue the add until the new
-                            // page is added.  Create as many screens as necessary to satisfy
-                            // the startSearchPageIndex.
-                            int numPagesToAdd = Math.max(1, startSearchPageIndex + 1 -
-                                    workspaceScreens.size());
-                            while (numPagesToAdd > 0) {
-                                long screenId = lp.generateNewScreenId();
-                                // Save the screen id for binding in the workspace
-                                workspaceScreens.add(screenId);
-                                addedWorkspaceScreensFinal.add(screenId);
-                                numPagesToAdd--;
+                    for (ItemInfo item : workspaceApps) {
+                        if (!allowDuplicate) {
+                            // Short-circuit this logic if the icon exists somewhere on the workspace
+                            if (shortcutExists(context, item.title.toString(),
+                                    item.getIntent(), item.user)) {
+                                continue;
                             }
+                        }
 
-                            // Find the coordinate again
-                            coords = LauncherModel.findNextAvailableIconSpace(context,
-                                    name, launchIntent, startSearchPageIndex, workspaceScreens);
-                        }
-                        if (coords == null) {
-                            throw new RuntimeException("Coordinates should not be null");
-                        }
+                        // Find appropriate space for the item.
+                        Pair<Long, int[]> coords = findSpaceForItem(context, preferredScreen,
+                                fallbackStartScreen, workspaceScreens, addedWorkspaceScreensFinal,
+                                1, 1);
+                        long screenId = coords.first;
+                        int[] cordinates = coords.second;
 
                         ShortcutInfo shortcutInfo;
-                        if (a instanceof ShortcutInfo) {
-                            shortcutInfo = (ShortcutInfo) a;
-                        } else if (a instanceof AppInfo) {
-                            shortcutInfo = ((AppInfo) a).makeShortcut();
+                        if (item instanceof ShortcutInfo) {
+                            shortcutInfo = (ShortcutInfo) item;
+                        } else if (item instanceof AppInfo) {
+                            shortcutInfo = ((AppInfo) item).makeShortcut();
                         } else {
                             throw new RuntimeException("Unexpected info type");
                         }
@@ -481,7 +585,7 @@ public class LauncherModel extends BroadcastReceiver
                         // Add the shortcut to the db
                         addItemToDatabase(context, shortcutInfo,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                                coords.first, coords.second[0], coords.second[1], false);
+                                screenId, cordinates[0], cordinates[1], false);
                         // Save the ShortcutInfo for binding in the workspace
                         addedShortcutsFinal.add(shortcutInfo);
                     }
@@ -717,35 +821,6 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    public void flushWorkerThread() {
-        mFlushingWorkerThread = true;
-        Runnable waiter = new Runnable() {
-                public void run() {
-                    synchronized (this) {
-                        notifyAll();
-                        mFlushingWorkerThread = false;
-                    }
-                }
-            };
-
-        synchronized(waiter) {
-            runOnWorkerThread(waiter);
-            if (mLoaderTask != null) {
-                synchronized(mLoaderTask) {
-                    mLoaderTask.notify();
-                }
-            }
-            boolean success = false;
-            while (!success) {
-                try {
-                    waiter.wait();
-                    success = true;
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-    }
-
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
@@ -887,57 +962,6 @@ public class LauncherModel extends BroadcastReceiver
         } finally {
             c.close();
         }
-    }
-
-    /**
-     * Returns an ItemInfo array containing all the items in the LauncherModel.
-     * The ItemInfo.id is not set through this function.
-     */
-    static ArrayList<ItemInfo> getItemsInLocalCoordinates(Context context) {
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
-        final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, new String[] {
-                LauncherSettings.Favorites.ITEM_TYPE, LauncherSettings.Favorites.CONTAINER,
-                LauncherSettings.Favorites.SCREEN,
-                LauncherSettings.Favorites.CELLX, LauncherSettings.Favorites.CELLY,
-                LauncherSettings.Favorites.SPANX, LauncherSettings.Favorites.SPANY,
-                LauncherSettings.Favorites.PROFILE_ID }, null, null, null);
-
-        final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-        final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
-        final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
-        final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-        final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-        final int rankIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.RANK);
-        final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
-        final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
-        final int profileIdIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
-        UserManagerCompat userManager = UserManagerCompat.getInstance(context);
-        try {
-            while (c.moveToNext()) {
-                ItemInfo item = new ItemInfo();
-                item.cellX = c.getInt(cellXIndex);
-                item.cellY = c.getInt(cellYIndex);
-                item.rank = c.getInt(rankIndex);
-                item.spanX = Math.max(1, c.getInt(spanXIndex));
-                item.spanY = Math.max(1, c.getInt(spanYIndex));
-                item.container = c.getInt(containerIndex);
-                item.itemType = c.getInt(itemTypeIndex);
-                item.screenId = c.getInt(screenIndex);
-                long serialNumber = c.getInt(profileIdIndex);
-                item.user = userManager.getUserForSerialNumber(serialNumber);
-                // Skip if user has been deleted.
-                if (item.user != null) {
-                    items.add(item);
-                }
-            }
-        } catch (Exception e) {
-            items.clear();
-        } finally {
-            c.close();
-        }
-
-        return items;
     }
 
     /**
@@ -1543,7 +1567,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     });
 
-                while (!mStopped && !mLoadAndBindStepFinished && !mFlushingWorkerThread) {
+                while (!mStopped && !mLoadAndBindStepFinished) {
                     try {
                         // Just in case mFlushingWorkerThread changes but we aren't woken up,
                         // wait no longer than 1sec at a time

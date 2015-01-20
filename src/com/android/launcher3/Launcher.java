@@ -162,7 +162,6 @@ public class Launcher extends Activity
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
     static final int SCREEN_COUNT = 5;
-    static final int DEFAULT_SCREEN = 2;
 
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
@@ -232,7 +231,6 @@ public class Launcher extends Activity
     private static final int ACTIVITY_START_DELAY = 1000;
 
     private static final Object sLock = new Object();
-    private static int sScreen = DEFAULT_SCREEN;
 
     private HashMap<Integer, Integer> mItemIdToViewId = new HashMap<Integer, Integer>();
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
@@ -675,18 +673,7 @@ public class Launcher extends Activity
         return !mModel.isLoadingWorkspace();
     }
 
-    static int getScreen() {
-        synchronized (sLock) {
-            return sScreen;
-        }
-    }
-
-    static void setScreen(int screen) {
-        synchronized (sLock) {
-            sScreen = screen;
-        }
-    }
-
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int generateViewId() {
         if (Build.VERSION.SDK_INT >= 17) {
             return View.generateViewId();
@@ -1594,7 +1581,6 @@ public class Launcher extends Activity
      * Add a widget to the workspace.
      *
      * @param appWidgetId The app widget id
-     * @param cellInfo The position on screen where to create the widget.
      */
     private void completeAddAppWidget(int appWidgetId, long container, long screenId,
             AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
@@ -2294,20 +2280,39 @@ public class Launcher extends Activity
         closeFolder();
         mWorkspace.moveToCustomContentScreen(animate);
     }
+
+    public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
+            int[] cell, int spanX, int spanY) {
+        switch (info.itemType) {
+            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                int span[] = new int[2];
+                span[0] = spanX;
+                span[1] = spanY;
+                addAppWidgetFromDrop((PendingAddWidgetInfo) info,
+                        container, screenId, cell, span);
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                processShortcutFromDrop(info.componentName, container, screenId, cell);
+                break;
+            default:
+                throw new IllegalStateException("Unknown item type: " + info.itemType);
+            }
+    }
+
     /**
      * Process a shortcut drop.
      *
      * @param componentName The name of the component
      * @param screenId The ID of the screen where it should be added
      * @param cell The cell it should be added to, optional
-     * @param position The location on the screen where it was dropped, optional
      */
-    void processShortcutFromDrop(ComponentName componentName, long container, long screenId,
-            int[] cell, int[] loc) {
+    private void processShortcutFromDrop(ComponentName componentName, long container, long screenId,
+            int[] cell) {
         resetAddInfo();
         mPendingAddInfo.container = container;
         mPendingAddInfo.screenId = screenId;
-        mPendingAddInfo.dropPos = loc;
+        mPendingAddInfo.dropPos = null;
 
         if (cell != null) {
             mPendingAddInfo.cellX = cell[0];
@@ -2325,14 +2330,13 @@ public class Launcher extends Activity
      * @param info The PendingAppWidgetInfo of the widget being added.
      * @param screenId The ID of the screen where it should be added
      * @param cell The cell it should be added to, optional
-     * @param position The location on the screen where it was dropped, optional
      */
-    void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, long screenId,
-            int[] cell, int[] span, int[] loc) {
+    private void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, long screenId,
+            int[] cell, int[] span) {
         resetAddInfo();
         mPendingAddInfo.container = info.container = container;
         mPendingAddInfo.screenId = info.screenId = screenId;
-        mPendingAddInfo.dropPos = loc;
+        mPendingAddInfo.dropPos = null;
         mPendingAddInfo.minSpanX = info.minSpanX;
         mPendingAddInfo.minSpanY = info.minSpanY;
 
@@ -3291,6 +3295,7 @@ public class Launcher extends Activity
         showAppsCustomizeHelper(animated, springLoaded, contentType);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void showAppsCustomizeHelper(final boolean animated, final boolean springLoaded,
                                          final AppsCustomizePagedView.ContentType contentType) {
         if (mStateAnimation != null) {
@@ -3303,13 +3308,10 @@ public class Launcher extends Activity
 
         final Resources res = getResources();
 
-        final int duration = res.getInteger(R.integer.config_appsCustomizeZoomInTime);
-        final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
         final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
         final int itemsAlphaStagger =
                 res.getInteger(R.integer.config_appsCustomizeItemsAlphaStagger);
 
-        final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mWorkspace;
         final AppsCustomizeTabHost toView = mAppsCustomizeTabHost;
 
@@ -3536,14 +3538,10 @@ public class Launcher extends Activity
         boolean material = Utilities.isLmpOrAbove();
         Resources res = getResources();
 
-        final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
-        final int fadeOutDuration = res.getInteger(R.integer.config_appsCustomizeFadeOutTime);
         final int revealDuration = res.getInteger(R.integer.config_appsCustomizeConcealTime);
         final int itemsAlphaStagger =
                 res.getInteger(R.integer.config_appsCustomizeItemsAlphaStagger);
 
-        final float scaleFactor = (float)
-                res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mAppsCustomizeTabHost;
         final View toView = mWorkspace;
         Animator workspaceAnim = null;
@@ -4137,6 +4135,19 @@ public class Launcher extends Activity
         for (int i = 0; i < count; i++) {
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i));
         }
+    }
+
+    @Override
+    public void bindAddPendingItem(final PendingAddItemInfo info, final long container,
+            final long screenId, final int[] cell, final int spanX, final int spanY) {
+        showWorkspace(true, new Runnable() {
+
+            @Override
+            public void run() {
+                mWorkspace.snapToPage(mWorkspace.getPageIndexForScreenId(screenId));
+                addPendingItem(info, container, screenId, cell, spanX, spanY);
+            }
+        });
     }
 
     private boolean shouldShowWeightWatcher() {

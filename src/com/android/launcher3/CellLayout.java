@@ -2981,11 +2981,11 @@ public class CellLayout extends ViewGroup {
     static boolean findVacantCell(int[] vacant, int spanX, int spanY,
             int xCount, int yCount, boolean[][] occupied) {
 
-        for (int y = 0; y < yCount; y++) {
-            for (int x = 0; x < xCount; x++) {
+        for (int y = 0; (y + spanY) <= yCount; y++) {
+            for (int x = 0; (x + spanX) <= xCount; x++) {
                 boolean available = !occupied[x][y];
-out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
-                    for (int j = y; j < y + spanY - 1 && y < yCount; j++) {
+out:            for (int i = x; i < x + spanX; i++) {
+                    for (int j = y; j < y + spanY; j++) {
                         available = available && !occupied[i][j];
                         if (!available) break out;
                     }

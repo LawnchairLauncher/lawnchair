@@ -38,7 +38,7 @@
                 android:id="@+id/delete_target_text"
                 style="@style/DropTargetButton"
                 android:drawableStart="@drawable/remove_target_selector"
-                android:text="@string/delete_zone_label_workspace" />
+                android:text="@string/delete_target_label" />
         </FrameLayout>
 
         <FrameLayout
