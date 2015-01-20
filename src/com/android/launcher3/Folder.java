@@ -71,8 +71,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     static final int STATE_ANIMATING = 1;
     static final int STATE_OPEN = 2;
 
-    private static final int CLOSE_FOLDER_DELAY_MS = 150;
-
     private int mExpandDuration;
     private int mMaterialExpandDuration;
     private int mMaterialExpandStagger;
@@ -342,60 +340,33 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mInfo;
     }
 
-    private class GridComparator implements Comparator<ShortcutInfo> {
-        int mNumCols;
-        public GridComparator(int numCols) {
-            mNumCols = numCols;
-        }
-
-        @Override
-        public int compare(ShortcutInfo lhs, ShortcutInfo rhs) {
-            int lhIndex = lhs.cellY * mNumCols + lhs.cellX;
-            int rhIndex = rhs.cellY * mNumCols + rhs.cellX;
-            return (lhIndex - rhIndex);
-        }
-    }
-
-    private void placeInReadingOrder(ArrayList<ShortcutInfo> items) {
-        int maxX = 0;
-        int count = items.size();
-        for (int i = 0; i < count; i++) {
-            ShortcutInfo item = items.get(i);
-            if (item.cellX > maxX) {
-                maxX = item.cellX;
-            }
-        }
-
-        GridComparator gridComparator = new GridComparator(maxX + 1);
-        Collections.sort(items, gridComparator);
-        final int countX = mContent.getCountX();
-        for (int i = 0; i < count; i++) {
-            int x = i % countX;
-            int y = i / countX;
-            ShortcutInfo item = items.get(i);
-            item.cellX = x;
-            item.cellY = y;
-        }
-    }
-
     void bind(FolderInfo info) {
         mInfo = info;
         ArrayList<ShortcutInfo> children = info.contents;
         ArrayList<ShortcutInfo> overflow = new ArrayList<ShortcutInfo>();
-        setupContentForNumItems(children.size());
-        placeInReadingOrder(children);
-        int count = 0;
+
+        final int totalChildren = children.size();
+        setupContentForNumItems(totalChildren);
+
+        // Arrange children in the grid based on the rank.
+        Collections.sort(children, Utilities.RANK_COMPARATOR);
+        final int countX = mContent.getCountX();
+
+        int visibleChildren = 0;
         for (int i = 0; i < children.size(); i++) {
-            ShortcutInfo child = (ShortcutInfo) children.get(i);
+            ShortcutInfo child = children.get(i);
+            child.cellX = i % countX;
+            child.cellY = i / countX;
+
             if (createAndAddShortcut(child) == null) {
                 overflow.add(child);
             } else {
-                count++;
+                visibleChildren++;
             }
         }
 
         // We rearrange the items in case there are any empty gaps
-        setupContentForNumItems(count);
+        setupContentForNumItems(visibleChildren);
 
         // If our folder has too many items we prune them from the list. This is an issue
         // when upgrading from the old Folders implementation which could contain an unlimited
@@ -414,7 +385,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         } else {
             mFolderName.setText("");
         }
-        updateItemLocationsInDatabase();
 
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(new Runnable() {
@@ -914,22 +884,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Do nothing
     }
 
-    private void updateItemLocationsInDatabase() {
-        ArrayList<View> list = getItemsInReadingOrder();
-        for (int i = 0; i < list.size(); i++) {
-            View v = list.get(i);
-            ItemInfo info = (ItemInfo) v.getTag();
-            LauncherModel.moveItemInDatabase(mLauncher, info, mInfo.id, 0,
-                    info.cellX, info.cellY);
-        }
-    }
-
     private void updateItemLocationsInDatabaseBatch() {
         ArrayList<View> list = getItemsInReadingOrder();
         ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
         for (int i = 0; i < list.size(); i++) {
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
+            info.rank = i;
             items.add(info);
         }
 

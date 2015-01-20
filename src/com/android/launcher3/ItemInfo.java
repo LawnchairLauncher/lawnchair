@@ -98,6 +98,11 @@ public class ItemInfo {
     public int minSpanY = 1;
 
     /**
+     * Indicates the position in an ordered list.
+     */
+    public int rank = 0;
+
+    /**
      * Indicates that this item needs to be updated in the db
      */
     public boolean requiresDbUpdate = false;
@@ -135,6 +140,7 @@ public class ItemInfo {
         cellY = info.cellY;
         spanX = info.spanX;
         spanY = info.spanY;
+        rank = info.rank;
         screenId = info.screenId;
         itemType = info.itemType;
         container = info.container;
@@ -161,6 +167,7 @@ public class ItemInfo {
         values.put(LauncherSettings.Favorites.CELLY, cellY);
         values.put(LauncherSettings.Favorites.SPANX, spanX);
         values.put(LauncherSettings.Favorites.SPANY, spanY);
+        values.put(LauncherSettings.Favorites.RANK, rank);
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         values.put(LauncherSettings.Favorites.PROFILE_ID, serialNumber);
 
@@ -168,11 +175,6 @@ public class ItemInfo {
             // We should never persist an item on the extra empty screen.
             throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
         }
-    }
-
-    void updateValuesWithCoordinates(ContentValues values, int cellX, int cellY) {
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
     }
 
     static byte[] flattenBitmap(Bitmap bitmap) {

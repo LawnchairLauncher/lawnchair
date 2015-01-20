@@ -19,7 +19,6 @@ import android.app.backup.BackupDataInputStream;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.BackupHelper;
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -60,7 +59,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.zip.CRC32;
 
 /**
@@ -148,6 +146,7 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private DeviceProfieData mCurrentProfile;
     boolean restoreSuccessful;
+    int restoredBackupVersion = 1;
 
     public LauncherBackupHelper(Context context) {
         mContext = context;
@@ -299,6 +298,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 MessageNano.mergeFrom(journal, readCheckedBytes(mBuffer, dataSize));
                 applyJournal(journal);
                 restoreSuccessful = isBackupCompatible(journal);
+                restoredBackupVersion = journal.backupVersion;
                 return;
             }
 

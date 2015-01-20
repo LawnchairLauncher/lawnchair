@@ -49,6 +49,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -542,4 +543,12 @@ public final class Utilities {
         }
         return defaultWidgetForSearchPackage;
     }
+
+    public static final Comparator<ItemInfo> RANK_COMPARATOR = new Comparator<ItemInfo>() {
+
+        @Override
+        public int compare(ItemInfo lhs, ItemInfo rhs) {
+            return lhs.rank - rhs.rank;
+        }
+    };
 }
