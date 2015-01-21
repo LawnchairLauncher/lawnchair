@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"尚未安裝這個應用程式"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"新增至工作區"</string>
 </resources>

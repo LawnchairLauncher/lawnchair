@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"搜索"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"未安装此应用"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"未安装此图标对应的应用。您可以移除此图标，也可以尝试搜索相应的应用并手动安装。"</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"添加至工作区"</string>
 </resources>

@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"تلاش کریں"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"یہ ایپ انسٹال کردہ نہیں ہے"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"اس آئیکن کیلئے ایپ انسٹال کردہ نہیں ہے۔ آپ اسے ہٹا سکتے ہیں یا ایپ کو تلاش کر سکتے اور دستی طور پر اسے انسٹال کر سکتے ہیں۔"</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"ورک اسپیس میں شامل کریں"</string>
 </resources>

@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Претражи"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Ова апликација није инсталирана"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Апликација за ову икону није инсталирана. Можете да је уклоните или да потражите апликацију и инсталирате је ручно."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Додај у радни простор"</string>
 </resources>

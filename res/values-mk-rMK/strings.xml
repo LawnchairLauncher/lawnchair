@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Барај"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Апликацијата не е инсталирана"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Апликацијата за оваа икона не е инсталирана. Може да ја отстраните или да се обидете да ја најдете апликацијата и да ја инсталирате рачно."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Додај на работна површина"</string>
 </resources>

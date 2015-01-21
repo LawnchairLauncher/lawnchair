@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Cerca"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aquesta aplicació no està instal·lada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'aplicació d\'aquesta icona no està instal·lada. Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Afegeix a l\'espai de treball"</string>
 </resources>

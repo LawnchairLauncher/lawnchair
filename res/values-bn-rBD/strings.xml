@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"অনুসন্ধান"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"এই অ্যাপ্লিকেশানটি ইন্সটল করা নাই"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি অনুসন্ধান করে এটি নিজে ইন্সটল করতে পারেন।"</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"ওয়ার্কস্পেস যোগ করুন"</string>
 </resources>

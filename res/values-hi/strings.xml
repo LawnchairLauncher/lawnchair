@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"खोजें"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"यह ऐप्स इंस्टॉल नहीं है"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"कार्यस्‍थल में जोड़ें"</string>
 </resources>

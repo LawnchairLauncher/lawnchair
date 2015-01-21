@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Шукати"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Цей додаток не встановлено"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Додаток для цього значка не встановлено. Можна видалити значок або знайти додаток і встановити його вручну."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Додати в робочу область"</string>
 </resources>

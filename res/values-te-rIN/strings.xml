@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ అనువర్తనం కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"వర్క్‌స్పేస్‌కు జోడించు"</string>
 </resources>

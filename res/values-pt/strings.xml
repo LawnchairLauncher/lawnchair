@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Pesquisar"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Este app não está instalado"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"O app deste ícone não está instalado. Você pode remover o ícone, ou procurar o app e instalá-lo manualmente."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Adicionar a espaço de trabalho"</string>
 </resources>

@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Αναζήτηση"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Αυτή η εφαρμογή δεν είναι εγκατεστημένη"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Η εφαρμογή γι\' αυτό το εικονίδιο δεν είναι εγκατεστημένη. Μπορείτε να το καταργήσετε ή να αναζητήσετε την εφαρμογή και να την εγκαταστήσετε με μη αυτόματο τρόπο."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Προσθήκη στο χώρο εργασίας"</string>
 </resources>

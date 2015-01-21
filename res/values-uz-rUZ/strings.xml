@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Qidirish"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Ushbu ilova o‘rnatilmagan"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Ilova o‘rnatilmagan. Belgini o‘chirib tashlashingiz yoki ilovani topib, uni qo‘lda o‘rnatishingiz mumkin."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Ishchi maydonga qo‘shish"</string>
 </resources>

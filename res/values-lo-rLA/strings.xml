@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"ຊອກຫາ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ແອັບຯ​ນີ້​ຍັງ​ບໍ່​ໄດ້​ຕິດ​ຕັ້ງ​ເທື່ອ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"​ແອັບຯ​ສຳ​ລັບ​ໄອ​ຄອນ​ນີ້​ຍັງ​ບໍ່ໄດ້​ຕິດ​ຕັ້ງ​ເທື່ອ. ທ່ານ​ສາ​ມາດ​ລຶບ​ມັນ​ອອກ ຫຼື​ຊອກ​ຫາ​ແອັບຯ ແລ້ວ​ຕິດ​ຕັ້ງ​ມັນ​ໄດ້​ດ້ວຍ​ຕົນ​ເອງ."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"ເພີ່ມ​ໃສ່​ບ່ອນ​ເຮັດ​ວຽກ"</string>
 </resources>

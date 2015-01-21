@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"ស្វែងរក"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"មិន​បាន​ដំឡើង​កម្មវិធី​នេះ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"មិន​បាន​ដំឡើង​កម្មវិធី​សម្រាប់​រូបតំណាង​នេះ។ អ្នក​អាច​លុប​វា ឬ​ស្វែងរក​កម្មវិធី និង​ដំឡើង​វា​ដោយ​ដៃ។"</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"បន្ថែមទៅចន្លោះបណ្តោះអាសន្ន"</string>
 </resources>

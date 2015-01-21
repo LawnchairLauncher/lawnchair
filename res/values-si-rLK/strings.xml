@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"මෙම යෙදුම ස්ථාපනය කර නොමැත"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"මෙම නිරුපකයට යෙදුම ස්ථාපනය කර නොමැත. ඔබට එය ඉවත් කළ හැක, හෝ යෙදුම් සඳහා සොයන්න සහ අතින් ස්ථාපනය කරන්න."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"කාර්ය ඉඩ වෙත එකතු කරන්න"</string>
 </resources>

@@ -120,6 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Търсене"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Това приложение не е инсталирано"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Приложението за тази икона не е инсталирано. Можете да я премахнете или да потърсите приложението и да го инсталирате ръчно."</string>
-    <!-- no translation found for action_add_to_workspace (989613635294321898) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Добавяне към раб. пространство"</string>
 </resources>
