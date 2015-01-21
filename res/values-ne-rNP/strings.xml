@@ -53,7 +53,6 @@
     <string name="title_select_application" msgid="3280812711670683644">"अनुप्रयोग छनौट गर्नुहोस्"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"अनुप्रयोगहरू"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"हटाउनुहोस्"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"हटाउनुहोस्"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"हटाउनुहोस्"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"हटाउनुहोस्"</string>
@@ -123,4 +122,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"खोजी गर्नुहोस्"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"यो अनुप्रयोग स्थापित छैन"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईँ यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
+    <string name="action_add_to_workspace" msgid="989613635294321898">"कार्यक्षेत्रमा जोड्नुहोस्"</string>
 </resources>

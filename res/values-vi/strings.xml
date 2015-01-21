@@ -53,7 +53,6 @@
     <string name="title_select_application" msgid="3280812711670683644">"Chọn ứng dụng"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ứng dụng"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Màn hình chính"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Xóa"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Gỡ cài đặt"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Xóa"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Gỡ cài đặt"</string>
@@ -121,4 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"Tìm kiếm"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Ứng dụng này chưa được cài đặt"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Ứng dụng cho biểu tượng này chưa được cài đặt. Bạn có thể xóa ứng dụng hoặc tìm kiếm và cài đặt ứng dụng theo cách thủ công."</string>
+    <string name="action_add_to_workspace" msgid="989613635294321898">"Thêm vào không gian làm việc"</string>
 </resources>

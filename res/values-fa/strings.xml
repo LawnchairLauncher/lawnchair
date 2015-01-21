@@ -53,7 +53,6 @@
     <string name="title_select_application" msgid="3280812711670683644">"انتخاب برنامه"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"برنامه‌ها"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"صفحه اصلی"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"حذف"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"حذف نصب"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"حذف"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"حذف نصب"</string>
@@ -121,4 +120,5 @@
     <string name="abandoned_search" msgid="891119232568284442">"جستجو"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"این برنامه نصب نشده است."</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"برنامه برای این نماد نصب نشده است. می‌توانید آن را حذف کنید یا سعی کنید برنامه را جستجو کنید و آن را به صورت دستی نصب کنید."</string>
+    <string name="action_add_to_workspace" msgid="989613635294321898">"افزودن به فضای کاری"</string>
 </resources>
