@@ -36,6 +36,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -84,7 +85,9 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         final Context context = getContext();
+        StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskReads();
         mOpenHelper = new DatabaseHelper(context);
+        StrictMode.setThreadPolicy(oldPolicy);
         LauncherAppState.setLauncherProvider(this);
         return true;
     }
