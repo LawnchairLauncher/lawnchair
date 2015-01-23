@@ -19,7 +19,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,10 +35,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
-    private static final String TAG_INCLUDE = "include";
 
     protected static final String ATTR_URI = "uri";
-    private static final String ATTR_WORKSPACE = "workspace";
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
@@ -87,25 +84,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             out[0] = Long.valueOf(strContainer);
         }
         out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
-    }
-
-    @Override
-    protected int parseAndAddNode(
-            XmlResourceParser parser,
-            HashMap<String, TagParser> tagParserMap,
-            ArrayList<Long> screenIds)
-                    throws XmlPullParserException, IOException {
-        if (TAG_INCLUDE.equals(parser.getName())) {
-            final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
-            if (resId != 0) {
-                // recursively load some more favorites, why not?
-                return parseLayout(resId, screenIds);
-            } else {
-                return 0;
-            }
-        } else {
-            return super.parseAndAddNode(parser, tagParserMap, screenIds);
-        }
     }
 
     /**
