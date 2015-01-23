@@ -78,6 +78,7 @@ public class AutoInstallsLayout {
     }
 
     // Object Tags
+    private static final String TAG_INCLUDE = "include";
     private static final String TAG_WORKSPACE = "workspace";
     private static final String TAG_APP_ICON = "appicon";
     private static final String TAG_AUTO_INSTALL = "autoinstall";
@@ -99,6 +100,9 @@ public class AutoInstallsLayout {
     private static final String ATTR_SPAN_Y = "spanY";
     private static final String ATTR_ICON = "icon";
     private static final String ATTR_URL = "url";
+
+    // Attrs for "Include"
+    private static final String ATTR_WORKSPACE = "workspace";
 
     // Style attrs -- "Extra"
     private static final String ATTR_KEY = "key";
@@ -202,6 +206,17 @@ public class AutoInstallsLayout {
             HashMap<String, TagParser> tagParserMap,
             ArrayList<Long> screenIds)
                     throws XmlPullParserException, IOException {
+
+        if (TAG_INCLUDE.equals(parser.getName())) {
+            final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
+            if (resId != 0) {
+                // recursively load some more favorites, why not?
+                return parseLayout(resId, screenIds);
+            } else {
+                return 0;
+            }
+        }
+
         mValues.clear();
         parseContainerAndScreen(parser, mTemp);
         final long container = mTemp[0];
