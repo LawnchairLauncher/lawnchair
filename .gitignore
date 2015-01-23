@@ -1,5 +1,7 @@
 db_files
 *.iml
+.project
+.classpath
 gen/
 tests/stress/gen/
 WallpaperPicker/gen/
