@@ -72,6 +72,17 @@ message Journal {
 }
 
 message Favorite {
+  // Type of the app, this target represents
+  enum TargetType {
+    TARGET_NONE = 0;
+    TARGET_PHONE = 1;
+    TARGET_MESSENGER = 2;
+    TARGET_EMAIL = 3;
+    TARGET_BROWSER = 4;
+    TARGET_GALLERY = 5;
+    TARGET_CAMERA = 6;
+  }
+
   required int64 id = 1;
   required int32 itemType = 2;
   optional string title = 3;
@@ -90,6 +101,7 @@ message Favorite {
   optional string iconPackage = 16;
   optional string iconResource = 17;
   optional bytes icon = 18;
+  optional TargetType targetType = 19 [default = TARGET_NONE];
  }
 
 message Screen {
