@@ -26,6 +26,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -44,6 +45,7 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -572,6 +574,10 @@ public class Workspace extends SmoothPagedView
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
+
+        if (LauncherAppState.getInstance().getAccessibilityDelegate().isInAccessibleDrag()) {
+            newScreen.enableAccessibleDrag(true);
+        }
         return screenId;
     }
 
@@ -1621,7 +1627,6 @@ public class Workspace extends SmoothPagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
-                    //child.setBackgroundAlphaMultiplier(1 - alpha);
                 }
             }
         }
@@ -1632,6 +1637,23 @@ public class Workspace extends SmoothPagedView
             CellLayout child = (CellLayout) getChildAt(i);
             child.setBackgroundAlphaMultiplier(a);
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void enableAccessibleDrag(boolean enable) {
+        for (int i = 0; i < getChildCount(); i++) {
+            CellLayout child = (CellLayout) getChildAt(i);
+            child.enableAccessibleDrag(enable);
+        }
+
+        if (enable) {
+            // We need to allow our individual children to become click handlers in this case
+            setOnClickListener(null);
+        } else {
+            // Reset our click listener
+            setOnClickListener(mLauncher);
+        }
+        mLauncher.getHotseat().getLayout().enableAccessibleDrag(enable);
     }
 
     public boolean hasCustomContent() {
@@ -2184,7 +2206,7 @@ public class Workspace extends SmoothPagedView
 
     private void updateAccessibilityFlags() {
         int accessible = mState == State.NORMAL ?
-                IMPORTANT_FOR_ACCESSIBILITY_YES :
+                IMPORTANT_FOR_ACCESSIBILITY_NO :
                 IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
         setImportantForAccessibility(accessible);
     }
@@ -2674,7 +2696,11 @@ public class Workspace extends SmoothPagedView
         return b;
     }
 
-    void startDrag(CellLayout.CellInfo cellInfo) {
+    public void startDrag(CellLayout.CellInfo cellInfo) {
+        startDrag(cellInfo, false);
+    }
+
+    public void startDrag(CellLayout.CellInfo cellInfo, boolean accessible) {
         View child = cellInfo.cell;
 
         // Make sure the drag was started by a long press as opposed to a long click.
@@ -2687,10 +2713,14 @@ public class Workspace extends SmoothPagedView
         CellLayout layout = (CellLayout) child.getParent().getParent();
         layout.prepareChildForDrag(child);
 
-        beginDragShared(child, this);
+        beginDragShared(child, this, accessible);
     }
 
     public void beginDragShared(View child, DragSource source) {
+        beginDragShared(child, source, false);
+    }
+
+    public void beginDragShared(View child, DragSource source, boolean accessible) {
         child.clearFocus();
         child.setPressed(false);
 
@@ -2744,7 +2774,7 @@ public class Workspace extends SmoothPagedView
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale, accessible);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
@@ -2794,7 +2824,7 @@ public class Workspace extends SmoothPagedView
 
         // Start the drag
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale);
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale, false);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         // Recycle temporary bitmaps
@@ -3149,7 +3179,8 @@ public class Workspace extends SmoothPagedView
 
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
-                        if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
+                        if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
+                                && !d.accessibleDrag) {
                             final Runnable addResizeFrame = new Runnable() {
                                 public void run() {
                                     DragLayer dragLayer = mLauncher.getDragLayer();
@@ -3638,7 +3669,7 @@ public class Workspace extends SmoothPagedView
                     mTargetCell[1]);
 
             manageFolderFeedback(info, mDragTargetLayout, mTargetCell,
-                    targetCellDistance, dragOverView);
+                    targetCellDistance, dragOverView, d.accessibleDrag);
 
             boolean nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
@@ -3676,15 +3707,21 @@ public class Workspace extends SmoothPagedView
     }
 
     private void manageFolderFeedback(ItemInfo info, CellLayout targetLayout,
-            int[] targetCell, float distance, View dragOverView) {
+            int[] targetCell, float distance, View dragOverView, boolean accessibleDrag) {
         boolean userFolderPending = willCreateUserFolder(info, targetLayout, targetCell, distance,
                 false);
-
         if (mDragMode == DRAG_MODE_NONE && userFolderPending &&
                 !mFolderCreationAlarm.alarmPending()) {
-            mFolderCreationAlarm.setOnAlarmListener(new
-                    FolderCreationAlarmListener(targetLayout, targetCell[0], targetCell[1]));
-            mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
+
+            FolderCreationAlarmListener listener = new
+                    FolderCreationAlarmListener(targetLayout, targetCell[0], targetCell[1]);
+
+            if (!accessibleDrag) {
+                mFolderCreationAlarm.setOnAlarmListener(listener);
+                mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
+            } else {
+                listener.onAlarm(mFolderCreationAlarm);
+            }
             return;
         }
 
