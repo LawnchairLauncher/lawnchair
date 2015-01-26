@@ -86,7 +86,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         final Context context = getContext();
-        StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskReads();
+        StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskWrites();
         mOpenHelper = new DatabaseHelper(context);
         StrictMode.setThreadPolicy(oldPolicy);
         LauncherAppState.setLauncherProvider(this);
