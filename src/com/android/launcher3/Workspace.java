@@ -2831,8 +2831,7 @@ public class Workspace extends SmoothPagedView
             }
             if (!transitionStateShouldAllowDrop()) return false;
 
-            mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
-                    d.dragView, mDragViewVisualCenter);
+            mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
 
             // We want the point to be mapped to the dragTarget.
             if (mLauncher.isHotseatLayout(dropTargetLayout)) {
@@ -3034,9 +3033,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDrop(final DragObject d) {
-        mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView,
-                mDragViewVisualCenter);
-
+        mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
 
         // We want the point to be mapped to the dragTarget.
@@ -3542,38 +3539,6 @@ public class Workspace extends SmoothPagedView
         return bestMatchingScreen;
     }
 
-    // This is used to compute the visual center of the dragView. This point is then
-    // used to visualize drop locations and determine where to drop an item. The idea is that
-    // the visual center represents the user's interpretation of where the item is, and hence
-    // is the appropriate point to use when determining drop location.
-    private float[] getDragViewVisualCenter(int x, int y, int xOffset, int yOffset,
-            DragView dragView, float[] recycle) {
-        float res[];
-        if (recycle == null) {
-            res = new float[2];
-        } else {
-            res = recycle;
-        }
-
-        // First off, the drag view has been shifted in a way that is not represented in the
-        // x and y values or the x/yOffsets. Here we account for that shift.
-        x += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetX);
-        y += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
-
-        // These represent the visual top and left of drag view if a dragRect was provided.
-        // If a dragRect was not provided, then they correspond to the actual view left and
-        // top, as the dragRect is in that case taken to be the entire dragView.
-        // R.dimen.dragViewOffsetY.
-        int left = x - xOffset;
-        int top = y - yOffset;
-
-        // In order to find the visual center, we shift by half the dragRect
-        res[0] = left + dragView.getDragRegion().width() / 2;
-        res[1] = top + dragView.getDragRegion().height() / 2;
-
-        return res;
-    }
-
     private boolean isDragWidget(DragObject d) {
         return (d.dragInfo instanceof LauncherAppWidgetInfo ||
                 d.dragInfo instanceof PendingAddWidgetInfo);
@@ -3598,8 +3563,7 @@ public class Workspace extends SmoothPagedView
 
         // Ensure that we have proper spans for the item that we are dropping
         if (item.spanX < 0 || item.spanY < 0) throw new RuntimeException("Improper spans found");
-        mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
-            d.dragView, mDragViewVisualCenter);
+        mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
 
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         // Identify whether we have dragged over a side page
