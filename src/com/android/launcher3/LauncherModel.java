@@ -3859,7 +3859,7 @@ public class LauncherModel extends BroadcastReceiver
                 labelB = mLabelCache.get(b);
             } else {
                 labelB = (b instanceof LauncherAppWidgetProviderInfo)
-                        ? mManager.loadLabel((LauncherAppWidgetProviderInfo) a)
+                        ? mManager.loadLabel((LauncherAppWidgetProviderInfo) b)
                         : ((ResolveInfo) b).loadLabel(mPackageManager).toString().trim();
                 mLabelCache.put(b, labelB);
             }
