@@ -3544,8 +3544,8 @@ public class LauncherModel extends BroadcastReceiver
         boolean customIcon = false;
         ShortcutIconResource iconResource = null;
 
-        if (bitmap != null && bitmap instanceof Bitmap) {
-            icon = Utilities.createIconBitmap(new FastBitmapDrawable((Bitmap)bitmap), context);
+        if (bitmap instanceof Bitmap) {
+            icon = Utilities.createIconBitmap((Bitmap) bitmap, context);
             customIcon = true;
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
