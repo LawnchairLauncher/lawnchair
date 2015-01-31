@@ -73,8 +73,6 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final String DATABASE_NAME = "launcher.db";
-
     private static final int DATABASE_VERSION = 20;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
@@ -431,7 +429,7 @@ public class LauncherProvider extends ContentProvider {
         private boolean mNewDbCreated = false;
 
         DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            super(context, LauncherFiles.LAUNCHER_DB, null, DATABASE_VERSION);
             mContext = context;
             mPackageManager = context.getPackageManager();
             mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
