@@ -90,9 +90,6 @@ public class LauncherModel extends BroadcastReceiver
 
     static final String TAG = "Launcher.Model";
 
-    // true = use a "More Apps" folder for non-workspace apps on upgrade
-    // false = strew non-workspace apps across the workspace on upgrade
-    public static final boolean UPGRADE_USE_MORE_APPS_FOLDER = false;
     public static final int LOADER_FLAG_NONE = 0;
     public static final int LOADER_FLAG_CLEAR_WORKSPACE = 1 << 0;
     public static final int LOADER_FLAG_MIGRATE_SHORTCUTS = 1 << 1;
@@ -198,7 +195,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void bindAddScreens(ArrayList<Long> orderedScreenIds);
         public void bindFolders(HashMap<Long,FolderInfo> folders);
-        public void finishBindingItems(boolean upgradePath);
+        public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
@@ -1501,8 +1498,7 @@ public class LauncherModel extends BroadcastReceiver
             return mIsLoadingAndBindingWorkspace;
         }
 
-        /** Returns whether this is an upgrade path */
-        private boolean loadAndBindWorkspace() {
+        private void loadAndBindWorkspace() {
             mIsLoadingAndBindingWorkspace = true;
 
             // Load the workspace
@@ -1510,20 +1506,18 @@ public class LauncherModel extends BroadcastReceiver
                 Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
             }
 
-            boolean isUpgradePath = false;
             if (!mWorkspaceLoaded) {
-                isUpgradePath = loadWorkspace();
+                loadWorkspace();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
-                        return isUpgradePath;
+                        return;
                     }
                     mWorkspaceLoaded = true;
                 }
             }
 
             // Bind the workspace
-            bindWorkspace(-1, isUpgradePath);
-            return isUpgradePath;
+            bindWorkspace(-1);
         }
 
         private void waitForIdle() {
@@ -1592,15 +1586,13 @@ public class LauncherModel extends BroadcastReceiver
 
             // Divide the set of loaded items into those that we are binding synchronously, and
             // everything else that is to be bound normally (asynchronously).
-            bindWorkspace(synchronousBindPage, false);
+            bindWorkspace(synchronousBindPage);
             // XXX: For now, continue posting the binding of AllApps as there are other issues that
             //      arise from that.
             onlyBindAllApps();
         }
 
         public void run() {
-            boolean isUpgrade = false;
-
             synchronized (mLock) {
                 mIsLoaderTaskRunning = true;
             }
@@ -1617,7 +1609,7 @@ public class LauncherModel extends BroadcastReceiver
                             ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
                 }
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
-                isUpgrade = loadAndBindWorkspace();
+                loadAndBindWorkspace();
 
                 if (mStopped) {
                     break keep_running;
@@ -1655,9 +1647,7 @@ public class LauncherModel extends BroadcastReceiver
             if (LauncherAppState.isDisableAllApps()) {
                 // Ensure that all the applications that are in the system are
                 // represented on the home screen.
-                if (!UPGRADE_USE_MORE_APPS_FOLDER || !isUpgrade) {
-                    verifyApplications();
-                }
+                verifyApplications();
             }
 
             // Clear out this reference, otherwise we end up holding it until all of the
@@ -1834,8 +1824,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Returns whether this is an upgrade path */
-        private boolean loadWorkspace() {
+        private void loadWorkspace() {
             // Log to disk
             Launcher.addDumpLog(TAG, "11683562 - loadWorkspace()", true);
 
@@ -1868,12 +1857,6 @@ public class LauncherModel extends BroadcastReceiver
                 Launcher.addDumpLog(TAG, "loadWorkspace: loading default favorites", false);
                 LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary();
             }
-
-            // This code path is for our old migration code and should no longer be exercised
-            boolean loadedOldDb = false;
-
-            // Log to disk
-            Launcher.addDumpLog(TAG, "11683562 -   loadedOldDb: " + loadedOldDb, true);
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
@@ -2347,7 +2330,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Break early if we've stopped loading
                 if (mStopped) {
                     clearSBgDataStructures();
-                    return false;
+                    return;
                 }
 
                 if (itemsToRemove.size() > 0) {
@@ -2393,60 +2376,29 @@ public class LauncherModel extends BroadcastReceiver
                             null, sWorker);
                 }
 
-                if (loadedOldDb) {
-                    long maxScreenId = 0;
-                    // If we're importing we use the old screen order.
-                    for (ItemInfo item: sBgItemsIdMap.values()) {
-                        long screenId = item.screenId;
-                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                                !sBgWorkspaceScreens.contains(screenId)) {
-                            sBgWorkspaceScreens.add(screenId);
-                            if (screenId > maxScreenId) {
-                                maxScreenId = screenId;
-                            }
-                        }
-                    }
-                    Collections.sort(sBgWorkspaceScreens);
-                    // Log to disk
-                    Launcher.addDumpLog(TAG, "11683562 -   maxScreenId: " + maxScreenId, true);
-                    Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
-                            TextUtils.join(", ", sBgWorkspaceScreens), true);
+                sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
+                // Log to disk
+                Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
+                        TextUtils.join(", ", sBgWorkspaceScreens), true);
 
-                    LauncherAppState.getLauncherProvider().updateMaxScreenId(maxScreenId);
+                // Remove any empty screens
+                ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
+                for (ItemInfo item: sBgItemsIdMap.values()) {
+                    long screenId = item.screenId;
+                    if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                            unusedScreens.contains(screenId)) {
+                        unusedScreens.remove(screenId);
+                    }
+                }
+
+                // If there are any empty screens remove them, and update.
+                if (unusedScreens.size() != 0) {
+                    // Log to disk
+                    Launcher.addDumpLog(TAG, "11683562 -   unusedScreens (to be removed): " +
+                            TextUtils.join(", ", unusedScreens), true);
+
+                    sBgWorkspaceScreens.removeAll(unusedScreens);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
-
-                    // Update the max item id after we load an old db
-                    long maxItemId = 0;
-                    // If we're importing we use the old screen order.
-                    for (ItemInfo item: sBgItemsIdMap.values()) {
-                        maxItemId = Math.max(maxItemId, item.id);
-                    }
-                    LauncherAppState.getLauncherProvider().updateMaxItemId(maxItemId);
-                } else {
-                    sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
-                    // Log to disk
-                    Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
-                            TextUtils.join(", ", sBgWorkspaceScreens), true);
-
-                    // Remove any empty screens
-                    ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
-                    for (ItemInfo item: sBgItemsIdMap.values()) {
-                        long screenId = item.screenId;
-                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                                unusedScreens.contains(screenId)) {
-                            unusedScreens.remove(screenId);
-                        }
-                    }
-
-                    // If there are any empty screens remove them, and update.
-                    if (unusedScreens.size() != 0) {
-                        // Log to disk
-                        Launcher.addDumpLog(TAG, "11683562 -   unusedScreens (to be removed): " +
-                                TextUtils.join(", ", unusedScreens), true);
-
-                        sBgWorkspaceScreens.removeAll(unusedScreens);
-                        updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
-                    }
                 }
 
                 if (DEBUG_LOADERS) {
@@ -2475,7 +2427,6 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             }
-            return loadedOldDb;
         }
 
         /**
@@ -2683,7 +2634,7 @@ public class LauncherModel extends BroadcastReceiver
         /**
          * Binds all loaded data to actual views on the main thread.
          */
-        private void bindWorkspace(int synchronizeBindPage, final boolean isUpgradePath) {
+        private void bindWorkspace(int synchronizeBindPage) {
             final long t = SystemClock.uptimeMillis();
             Runnable r;
 
@@ -2787,7 +2738,7 @@ public class LauncherModel extends BroadcastReceiver
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
-                        callbacks.finishBindingItems(isUpgradePath);
+                        callbacks.finishBindingItems();
                     }
 
                     // If we're profiling, ensure this is the last thing in the queue.

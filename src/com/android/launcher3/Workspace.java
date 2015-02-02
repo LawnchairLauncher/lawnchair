@@ -43,7 +43,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
@@ -4291,88 +4290,6 @@ public class Workspace extends SmoothPagedView
                 info.requiresDbUpdate = false;
                 LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, info.cellX,
                         info.cellY, info.spanX, info.spanY);
-            }
-        }
-    }
-
-    ArrayList<ComponentName> getUniqueComponents(boolean stripDuplicates, ArrayList<ComponentName> duplicates) {
-        ArrayList<ComponentName> uniqueIntents = new ArrayList<ComponentName>();
-        getUniqueIntents((CellLayout) mLauncher.getHotseat().getLayout(), uniqueIntents, duplicates, false);
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            getUniqueIntents(cl, uniqueIntents, duplicates, false);
-        }
-        return uniqueIntents;
-    }
-
-    void getUniqueIntents(CellLayout cl, ArrayList<ComponentName> uniqueIntents,
-            ArrayList<ComponentName> duplicates, boolean stripDuplicates) {
-        int count = cl.getShortcutsAndWidgets().getChildCount();
-
-        ArrayList<View> children = new ArrayList<View>();
-        for (int i = 0; i < count; i++) {
-            View v = cl.getShortcutsAndWidgets().getChildAt(i);
-            children.add(v);
-        }
-
-        for (int i = 0; i < count; i++) {
-            View v = children.get(i);
-            ItemInfo info = (ItemInfo) v.getTag();
-            // Null check required as the AllApps button doesn't have an item info
-            if (info instanceof ShortcutInfo) {
-                ShortcutInfo si = (ShortcutInfo) info;
-                ComponentName cn = si.intent.getComponent();
-
-                Uri dataUri = si.intent.getData();
-                // If dataUri is not null / empty or if this component isn't one that would
-                // have previously showed up in the AllApps list, then this is a widget-type
-                // shortcut, so ignore it.
-                if (dataUri != null && !dataUri.equals(Uri.EMPTY)) {
-                    continue;
-                }
-
-                if (!uniqueIntents.contains(cn)) {
-                    uniqueIntents.add(cn);
-                } else {
-                    if (stripDuplicates) {
-                        cl.removeViewInLayout(v);
-                        LauncherModel.deleteItemFromDatabase(mLauncher, si);
-                    }
-                    if (duplicates != null) {
-                        duplicates.add(cn);
-                    }
-                }
-            }
-            if (v instanceof FolderIcon) {
-                FolderIcon fi = (FolderIcon) v;
-                ArrayList<View> items = fi.getFolder().getItemsInReadingOrder();
-                for (int j = 0; j < items.size(); j++) {
-                    if (items.get(j).getTag() instanceof ShortcutInfo) {
-                        ShortcutInfo si = (ShortcutInfo) items.get(j).getTag();
-                        ComponentName cn = si.intent.getComponent();
-
-                        Uri dataUri = si.intent.getData();
-                        // If dataUri is not null / empty or if this component isn't one that would
-                        // have previously showed up in the AllApps list, then this is a widget-type
-                        // shortcut, so ignore it.
-                        if (dataUri != null && !dataUri.equals(Uri.EMPTY)) {
-                            continue;
-                        }
-
-                        if (!uniqueIntents.contains(cn)) {
-                            uniqueIntents.add(cn);
-                        }  else {
-                            if (stripDuplicates) {
-                                fi.getFolderInfo().remove(si);
-                                LauncherModel.deleteItemFromDatabase(mLauncher, si);
-                            }
-                            if (duplicates != null) {
-                                duplicates.add(cn);
-                            }
-                        }
-                    }
-                }
             }
         }
     }

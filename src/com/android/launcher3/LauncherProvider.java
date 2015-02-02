@@ -65,7 +65,6 @@ public class LauncherProvider extends ContentProvider {
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
     static final String PARAMETER_NOTIFY = "notify";
-    static final String UPGRADED_FROM_OLD_DATABASE = "UPGRADED_FROM_OLD_DATABASE";
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     private static final String URI_PARAM_IS_EXTERNAL_ADD = "isExternalAdd";
@@ -248,12 +247,6 @@ public class LauncherProvider extends ContentProvider {
 
     public long generateNewScreenId() {
         return mOpenHelper.generateNewScreenId();
-    }
-
-    // This is only required one time while loading the workspace during the
-    // upgrade path, and should never be called from anywhere else.
-    public void updateMaxScreenId(long maxScreenId) {
-        mOpenHelper.updateMaxScreenId(maxScreenId);
     }
 
     /**
@@ -473,19 +466,13 @@ public class LauncherProvider extends ContentProvider {
         private void setFlagJustLoadedOldDb() {
             String spKey = LauncherAppState.getSharedPreferencesKey();
             SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean(UPGRADED_FROM_OLD_DATABASE, true);
-            editor.putBoolean(EMPTY_DATABASE_CREATED, false);
-            editor.commit();
+            sp.edit().putBoolean(EMPTY_DATABASE_CREATED, false).commit();
         }
 
         private void setFlagEmptyDbCreated() {
             String spKey = LauncherAppState.getSharedPreferencesKey();
             SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean(EMPTY_DATABASE_CREATED, true);
-            editor.putBoolean(UPGRADED_FROM_OLD_DATABASE, false);
-            editor.commit();
+            sp.edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
         }
 
         @Override
@@ -724,12 +711,6 @@ public class LauncherProvider extends ContentProvider {
             // Log to disk
             Launcher.addDumpLog(TAG, "11683562 - generateNewScreenId(): " + mMaxScreenId, true);
             return mMaxScreenId;
-        }
-
-        public void updateMaxScreenId(long maxScreenId) {
-            // Log to disk
-            Launcher.addDumpLog(TAG, "11683562 - updateMaxScreenId(): " + maxScreenId, true);
-            mMaxScreenId = maxScreenId;
         }
 
         private long initializeMaxScreenId(SQLiteDatabase db) {
