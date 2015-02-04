@@ -42,6 +42,7 @@ public interface LauncherCallbacks {
     public void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
     public void onHomeIntent();
     public boolean handleBackPressed();
+    public void onTrimMemory(int level);
 
     /*
      * Extension points for providing custom behavior on certain user interactions.
