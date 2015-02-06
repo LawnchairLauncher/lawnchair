@@ -108,10 +108,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void onTrimMemory(int level) {
-        }
-
-        @Override
         public void onLauncherProviderChange() {
         }
 

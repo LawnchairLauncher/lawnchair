@@ -3767,9 +3767,6 @@ public class Launcher extends Activity
             if (mAppsCustomizeTabHost != null) {
                 mAppsCustomizeTabHost.trimMemory();
             }
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onTrimMemory(level);
-            }
         }
     }
 
