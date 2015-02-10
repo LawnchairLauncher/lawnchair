@@ -4815,8 +4815,12 @@ public class Launcher extends Activity
 
     public void lockScreenOrientation() {
         if (Utilities.isRotationEnabled(this)) {
-            setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                    .getConfiguration().orientation));
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
+                        .getConfiguration().orientation));
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            }
         }
     }
     public void unlockScreenOrientation(boolean immediate) {
