@@ -620,7 +620,8 @@ public class LauncherProvider extends ContentProvider {
                         new String[] {Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
 
                 while (c.moveToNext()) {
-                    db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE container=?;",
+                    db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
+                            + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
                             new Object[] {c.getLong(1) + 1, c.getLong(0)});
                 }
 
