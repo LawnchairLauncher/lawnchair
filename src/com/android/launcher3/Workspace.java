@@ -560,10 +560,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public long insertNewWorkspaceScreen(long screenId, int insertIndex) {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - insertNewWorkspaceScreen(): " + screenId +
-                " at index: " + insertIndex, true);
-
         if (mWorkspaceScreens.containsKey(screenId)) {
             throw new RuntimeException("Screen id " + screenId + " already exists!");
         }
@@ -663,9 +659,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void addExtraEmptyScreenOnDrag() {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - addExtraEmptyScreenOnDrag()", true);
-
         boolean lastChildOnScreen = false;
         boolean childOnFinalScreen = false;
 
@@ -692,9 +685,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean addExtraEmptyScreen() {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - addExtraEmptyScreen()", true);
-
         if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
             insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
             return true;
@@ -703,9 +693,6 @@ public class Workspace extends SmoothPagedView
     }
 
     private void convertFinalScreenToEmptyScreenIfNecessary() {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - convertFinalScreenToEmptyScreenIfNecessary()", true);
-
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
             Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
@@ -730,7 +717,6 @@ public class Workspace extends SmoothPagedView
 
             // Update the model if we have changed any screens
             mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
-            Launcher.addDumpLog(TAG, "11683562 -   extra empty screen: " + finalScreenId, true);
         }
     }
 
@@ -740,8 +726,6 @@ public class Workspace extends SmoothPagedView
 
     public void removeExtraEmptyScreenDelayed(final boolean animate, final Runnable onComplete,
             final int delay, final boolean stripEmptyScreens) {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - removeExtraEmptyScreen()", true);
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading
             Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
@@ -783,9 +767,7 @@ public class Workspace extends SmoothPagedView
 
     private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
             final boolean stripEmptyScreens) {
-        // Log to disk
         // XXX: Do we need to update LM workspace screens below?
-        Launcher.addDumpLog(TAG, "11683562 - fadeAndRemoveEmptyScreen()", true);
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
         PropertyValuesHolder bgAlpha = PropertyValuesHolder.ofFloat("backgroundAlpha", 0f);
 
@@ -829,8 +811,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public long commitExtraEmptyScreen() {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - commitExtraEmptyScreen()", true);
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
             Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
@@ -889,9 +869,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void stripEmptyScreens() {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - stripEmptyScreens()", true);
-
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
             // This is dangerous and can result in data loss.
@@ -919,7 +896,6 @@ public class Workspace extends SmoothPagedView
 
         int pageShift = 0;
         for (Long id: removeScreens) {
-            Launcher.addDumpLog(TAG, "11683562 -   removing id: " + id, true);
             CellLayout cl = mWorkspaceScreens.get(id);
             mWorkspaceScreens.remove(id);
             mScreenOrder.remove(id);
@@ -4104,7 +4080,6 @@ public class Workspace extends SmoothPagedView
 
         // In the case where we've prebound the widget, we remove it from the DragLayer
         if (finalView instanceof AppWidgetHostView && external) {
-            Log.d(TAG, "6557954 Animate widget drop, final view is appWidgetHostView");
             mLauncher.getDragLayer().removeView(finalView);
         }
 
