@@ -500,10 +500,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         if (lastPhoto != null) {
             ImageView galleryThumbnailBg =
                     (ImageView) pickImageTile.findViewById(R.id.wallpaper_image);
-            galleryThumbnailBg.setImageBitmap(getThumbnailOfLastPhoto());
+            galleryThumbnailBg.setImageBitmap(lastPhoto);
             int colorOverlay = getResources().getColor(R.color.wallpaper_picker_translucent_gray);
             galleryThumbnailBg.setColorFilter(colorOverlay, PorterDuff.Mode.SRC_ATOP);
-
         }
 
         PickImageInfo pickImageInfo = new PickImageInfo();
