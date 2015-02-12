@@ -16,97 +16,37 @@
 
 package com.android.gallery3d.common;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.FloatMath;
+import android.graphics.Point;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.view.WindowManager;
 
-import java.io.ByteArrayOutputStream;
+import com.android.gallery3d.exif.ExifInterface;
+import com.android.launcher3.WallpaperCropActivity;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class BitmapUtils {
+
     private static final String TAG = "BitmapUtils";
-    private static final int DEFAULT_JPEG_QUALITY = 90;
-    public static final int UNCONSTRAINED = -1;
-
-    private BitmapUtils(){}
-
-    /*
-     * Compute the sample size as a function of minSideLength
-     * and maxNumOfPixels.
-     * minSideLength is used to specify that minimal width or height of a
-     * bitmap.
-     * maxNumOfPixels is used to specify the maximal size in pixels that is
-     * tolerable in terms of memory usage.
-     *
-     * The function returns a sample size based on the constraints.
-     * Both size and minSideLength can be passed in as UNCONSTRAINED,
-     * which indicates no care of the corresponding constraint.
-     * The functions prefers returning a sample size that
-     * generates a smaller bitmap, unless minSideLength = UNCONSTRAINED.
-     *
-     * Also, the function rounds up the sample size to a power of 2 or multiple
-     * of 8 because BitmapFactory only honors sample size this way.
-     * For example, BitmapFactory downsamples an image by 2 even though the
-     * request is 3. So we round up the sample size to avoid OOM.
-     */
-    public static int computeSampleSize(int width, int height,
-            int minSideLength, int maxNumOfPixels) {
-        int initialSize = computeInitialSampleSize(
-                width, height, minSideLength, maxNumOfPixels);
-
-        return initialSize <= 8
-                ? Utils.nextPowerOf2(initialSize)
-                : (initialSize + 7) / 8 * 8;
-    }
-
-    private static int computeInitialSampleSize(int w, int h,
-            int minSideLength, int maxNumOfPixels) {
-        if (maxNumOfPixels == UNCONSTRAINED
-                && minSideLength == UNCONSTRAINED) return 1;
-
-        int lowerBound = (maxNumOfPixels == UNCONSTRAINED) ? 1 :
-                (int) FloatMath.ceil(FloatMath.sqrt((float) (w * h) / maxNumOfPixels));
-
-        if (minSideLength == UNCONSTRAINED) {
-            return lowerBound;
-        } else {
-            int sampleSize = Math.min(w / minSideLength, h / minSideLength);
-            return Math.max(sampleSize, lowerBound);
-        }
-    }
-
-    // This computes a sample size which makes the longer side at least
-    // minSideLength long. If that's not possible, return 1.
-    public static int computeSampleSizeLarger(int w, int h,
-            int minSideLength) {
-        int initialSize = Math.max(w / minSideLength, h / minSideLength);
-        if (initialSize <= 1) return 1;
-
-        return initialSize <= 8
-                ? Utils.prevPowerOf2(initialSize)
-                : initialSize / 8 * 8;
-    }
 
     // Find the min x that 1 / x >= scale
     public static int computeSampleSizeLarger(float scale) {
-        int initialSize = (int) FloatMath.floor(1f / scale);
+        int initialSize = (int) Math.floor(1f / scale);
         if (initialSize <= 1) return 1;
 
         return initialSize <= 8
                 ? Utils.prevPowerOf2(initialSize)
                 : initialSize / 8 * 8;
-    }
-
-    // Find the max x that 1 / x <= scale.
-    public static int computeSampleSize(float scale) {
-        Utils.assertTrue(scale > 0);
-        int initialSize = Math.max(1, (int) FloatMath.ceil(1 / scale));
-        return initialSize <= 8
-                ? Utils.nextPowerOf2(initialSize)
-                : (initialSize + 7) / 8 * 8;
     }
 
     public static Bitmap resizeBitmapByScale(
@@ -132,77 +72,104 @@ public class BitmapUtils {
         return config;
     }
 
-    public static Bitmap resizeDownBySideLength(
-            Bitmap bitmap, int maxLength, boolean recycle) {
-        int srcWidth = bitmap.getWidth();
-        int srcHeight = bitmap.getHeight();
-        float scale = Math.min(
-                (float) maxLength / srcWidth, (float) maxLength / srcHeight);
-        if (scale >= 1.0f) return bitmap;
-        return resizeBitmapByScale(bitmap, scale, recycle);
+    /**
+     * As a ratio of screen height, the total distance we want the parallax effect to span
+     * horizontally
+     */
+    public static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+        float aspectRatio = width / (float) height;
+
+        // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
+        // At an aspect ratio of 10/16, the wallpaper parallax effect should span 1.2 * screen width
+        // We will use these two data points to extrapolate how much the wallpaper parallax effect
+        // to span (ie travel) at any aspect ratio:
+
+        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
+        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
+
+        // To find out the desired width at different aspect ratios, we use the following two
+        // formulas, where the coefficient on x is the aspect ratio (width/height):
+        //   (16/10)x + y = 1.5
+        //   (10/16)x + y = 1.2
+        // We solve for x and y and end up with a final formula:
+        final float x =
+            (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+            (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+        final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
+        return x * aspectRatio + y;
     }
 
-    public static Bitmap resizeAndCropCenter(Bitmap bitmap, int size, boolean recycle) {
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-        if (w == size && h == size) return bitmap;
+    private static Point sDefaultWallpaperSize;
 
-        // scale the image so that the shorter side equals to the target;
-        // the longer side will be center-cropped.
-        float scale = (float) size / Math.min(w,  h);
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static Point getDefaultWallpaperSize(Resources res, WindowManager windowManager) {
+        if (sDefaultWallpaperSize == null) {
+            Point minDims = new Point();
+            Point maxDims = new Point();
+            windowManager.getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
 
-        Bitmap target = Bitmap.createBitmap(size, size, getConfig(bitmap));
-        int width = Math.round(scale * bitmap.getWidth());
-        int height = Math.round(scale * bitmap.getHeight());
-        Canvas canvas = new Canvas(target);
-        canvas.translate((size - width) / 2f, (size - height) / 2f);
-        canvas.scale(scale, scale);
-        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        if (recycle) bitmap.recycle();
-        return target;
-    }
+            int maxDim = Math.max(maxDims.x, maxDims.y);
+            int minDim = Math.max(minDims.x, minDims.y);
 
-    public static void recycleSilently(Bitmap bitmap) {
-        if (bitmap == null) return;
-        try {
-            bitmap.recycle();
-        } catch (Throwable t) {
-            Log.w(TAG, "unable recycle bitmap", t);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                Point realSize = new Point();
+                windowManager.getDefaultDisplay().getRealSize(realSize);
+                maxDim = Math.max(realSize.x, realSize.y);
+                minDim = Math.min(realSize.x, realSize.y);
+            }
+
+            // We need to ensure that there is enough extra space in the wallpaper
+            // for the intended parallax effects
+            final int defaultWidth, defaultHeight;
+            if (res.getConfiguration().smallestScreenWidthDp >= 720) {
+                defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+                defaultHeight = maxDim;
+            } else {
+                defaultWidth = Math.max((int) (minDim * WallpaperCropActivity.WALLPAPER_SCREENS_SPAN), maxDim);
+                defaultHeight = maxDim;
+            }
+            sDefaultWallpaperSize = new Point(defaultWidth, defaultHeight);
         }
+        return sDefaultWallpaperSize;
     }
 
-    public static Bitmap rotateBitmap(Bitmap source, int rotation, boolean recycle) {
-        if (rotation == 0) return source;
-        int w = source.getWidth();
-        int h = source.getHeight();
-        Matrix m = new Matrix();
-        m.postRotate(rotation);
-        Bitmap bitmap = Bitmap.createBitmap(source, 0, 0, w, h, m, true);
-        if (recycle) source.recycle();
-        return bitmap;
+    public static int getRotationFromExif(Context context, Uri uri) {
+        return BitmapUtils.getRotationFromExifHelper(null, 0, context, uri);
     }
 
-    public static byte[] compressToBytes(Bitmap bitmap) {
-        return compressToBytes(bitmap, DEFAULT_JPEG_QUALITY);
+    public static int getRotationFromExif(Resources res, int resId) {
+        return BitmapUtils.getRotationFromExifHelper(res, resId, null, null);
     }
 
-    public static byte[] compressToBytes(Bitmap bitmap, int quality) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(65536);
-        bitmap.compress(CompressFormat.JPEG, quality, baos);
-        return baos.toByteArray();
-    }
-
-    public static boolean isSupportedByRegionDecoder(String mimeType) {
-        if (mimeType == null) return false;
-        mimeType = mimeType.toLowerCase();
-        return mimeType.startsWith("image/") &&
-                (!mimeType.equals("image/gif") && !mimeType.endsWith("bmp"));
-    }
-
-    public static boolean isRotationSupported(String mimeType) {
-        if (mimeType == null) return false;
-        mimeType = mimeType.toLowerCase();
-        return mimeType.equals("image/jpeg");
+    private static int getRotationFromExifHelper(Resources res, int resId, Context context, Uri uri) {
+        ExifInterface ei = new ExifInterface();
+        InputStream is = null;
+        BufferedInputStream bis = null;
+        try {
+            if (uri != null) {
+                is = context.getContentResolver().openInputStream(uri);
+                bis = new BufferedInputStream(is);
+                ei.readExif(bis);
+            } else {
+                is = res.openRawResource(resId);
+                bis = new BufferedInputStream(is);
+                ei.readExif(bis);
+            }
+            Integer ori = ei.getTagIntValue(ExifInterface.TAG_ORIENTATION);
+            if (ori != null) {
+                return ExifInterface.getRotationForOrientationValue(ori.shortValue());
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "Getting exif data failed", e);
+        } catch (NullPointerException e) {
+            // Sometimes the ExifInterface has an internal NPE if Exif data isn't valid
+            Log.w(TAG, "Getting exif data failed", e);
+        } finally {
+            Utils.closeSilently(bis);
+            Utils.closeSilently(is);
+        }
+        return 0;
     }
 }

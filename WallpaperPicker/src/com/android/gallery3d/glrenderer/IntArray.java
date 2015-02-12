@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.gallery3d.util;
+package com.android.gallery3d.glrenderer;
 
 public class IntArray {
     private static final int INIT_CAPACITY = 8;
