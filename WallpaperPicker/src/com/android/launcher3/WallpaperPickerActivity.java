@@ -20,7 +20,6 @@ import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -83,7 +82,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public static final int IMAGE_PICK = 5;
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
-    public static final int PICK_LIVE_WALLPAPER = 7;
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
     private static final String SELECTED_INDEX = "SELECTED_INDEX";
     private static final int FLAG_POST_DELAY_MILLIS = 200;
@@ -102,9 +100,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
     private SavedWallpaperImages mSavedImages;
-    private WallpaperInfo mLiveWallpaperInfoOnPickerLaunch;
     private int mSelectedIndex = -1;
-    private WallpaperInfo mLastClickedLiveWallpaperInfo;
 
     public static abstract class WallpaperTileInfo {
         protected View mView;
@@ -885,25 +881,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 Uri uri = data.getData();
                 addTemporaryWallpaperTile(uri, false);
             }
-        } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY) {
+        } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY && resultCode == RESULT_OK) {
+            // Something was set on the third-party activity.
             setResult(RESULT_OK);
             finish();
-        } else if (requestCode == PICK_LIVE_WALLPAPER) {
-            WallpaperManager wm = WallpaperManager.getInstance(this);
-            final WallpaperInfo oldLiveWallpaper = mLiveWallpaperInfoOnPickerLaunch;
-            final WallpaperInfo clickedWallpaper = mLastClickedLiveWallpaperInfo;
-            WallpaperInfo newLiveWallpaper = wm.getWallpaperInfo();
-            // Try to figure out if a live wallpaper was set;
-            if (newLiveWallpaper != null &&
-                    (oldLiveWallpaper == null
-                            || !oldLiveWallpaper.getComponent()
-                                    .equals(newLiveWallpaper.getComponent())
-                            || clickedWallpaper.getComponent()
-                                    .equals(oldLiveWallpaper.getComponent()))) {
-                // Return if a live wallpaper was set
-                setResult(RESULT_OK);
-                finish();
-            }
         }
     }
 
@@ -1108,11 +1089,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public SavedWallpaperImages getSavedImages() {
         return mSavedImages;
-    }
-
-    public void onLiveWallpaperPickerLaunch(WallpaperInfo info) {
-        mLastClickedLiveWallpaperInfo = info;
-        mLiveWallpaperInfoOnPickerLaunch = WallpaperManager.getInstance(this).getWallpaperInfo();
     }
 
     static class ZeroPaddingDrawable extends LevelListDrawable {

@@ -122,8 +122,8 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
             Intent preview = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
             preview.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                     mInfo.getComponent());
-            a.onLiveWallpaperPickerLaunch(mInfo);
-            a.startActivityForResultSafely(preview, WallpaperPickerActivity.PICK_LIVE_WALLPAPER);
+            a.startActivityForResultSafely(preview,
+                    WallpaperPickerActivity.PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);
         }
     }
 
