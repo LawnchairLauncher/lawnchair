@@ -16,14 +16,12 @@
 
 package com.android.launcher3;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,7 +31,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class Hotseat extends FrameLayout {
-    private static final String TAG = "Hotseat";
 
     private CellLayout mContent;
 
@@ -180,38 +177,6 @@ public class Hotseat extends FrameLayout {
             return true;
         }
         return false;
-    }
-
-    void addAllAppsFolder(IconCache iconCache,
-            ArrayList<AppInfo> allApps, ArrayList<ComponentName> onWorkspace,
-            Launcher launcher, Workspace workspace) {
-        if (LauncherAppState.isDisableAllApps()) {
-            FolderInfo fi = new FolderInfo();
-
-            fi.cellX = getCellXFromOrder(mAllAppsButtonRank);
-            fi.cellY = getCellYFromOrder(mAllAppsButtonRank);
-            fi.spanX = 1;
-            fi.spanY = 1;
-            fi.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-            fi.screenId = mAllAppsButtonRank;
-            fi.itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-            fi.title = "More Apps";
-            LauncherModel.addItemToDatabase(launcher, fi, fi.container, fi.screenId, fi.cellX,
-                    fi.cellY, false);
-            FolderIcon folder = FolderIcon.fromXml(R.layout.folder_icon, launcher,
-                    getLayout(), fi, iconCache);
-            workspace.addInScreen(folder, fi.container, fi.screenId, fi.cellX, fi.cellY,
-                    fi.spanX, fi.spanY);
-
-            for (AppInfo info: allApps) {
-                ComponentName cn = info.intent.getComponent();
-                if (!onWorkspace.contains(cn)) {
-                    Log.d(TAG, "Adding to 'more apps': " + info.intent);
-                    ShortcutInfo si = info.makeShortcut();
-                    fi.add(si);
-                }
-            }
-        }
     }
 
     void addAppsToAllAppsFolder(ArrayList<AppInfo> apps) {

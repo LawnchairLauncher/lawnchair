@@ -227,8 +227,6 @@ public class Launcher extends Activity
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
     private static final int ACTIVITY_START_DELAY = 1000;
 
-    private static final Object sLock = new Object();
-
     private HashMap<Integer, Integer> mItemIdToViewId = new HashMap<Integer, Integer>();
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
@@ -334,8 +332,6 @@ public class Launcher extends Activity
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-
-    private static ArrayList<ComponentName> mIntentsOnWorkspaceFromUpgradePath = null;
 
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
@@ -4451,10 +4447,10 @@ public class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void finishBindingItems(final boolean upgradePath) {
+    public void finishBindingItems() {
         Runnable r = new Runnable() {
             public void run() {
-                finishBindingItems(upgradePath);
+                finishBindingItems();
             }
         };
         if (waitUntilResume(r)) {
@@ -4489,14 +4485,10 @@ public class Launcher extends Activity
             sPendingAddItem = null;
         }
 
-        if (upgradePath) {
-            mWorkspace.getUniqueComponents(true, null);
-            mIntentsOnWorkspaceFromUpgradePath = mWorkspace.getUniqueComponents(true, null);
-        }
         PackageInstallerCompat.getInstance(this).onFinishBind();
 
         if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.finishBindingItems(upgradePath);
+            mLauncherCallbacks.finishBindingItems(false);
         }
     }
 
@@ -4563,13 +4555,6 @@ public class Launcher extends Activity
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
         if (LauncherAppState.isDisableAllApps()) {
-            if (mIntentsOnWorkspaceFromUpgradePath != null) {
-                if (LauncherModel.UPGRADE_USE_MORE_APPS_FOLDER) {
-                    getHotseat().addAllAppsFolder(mIconCache, apps,
-                            mIntentsOnWorkspaceFromUpgradePath, Launcher.this, mWorkspace);
-                }
-                mIntentsOnWorkspaceFromUpgradePath = null;
-            }
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.onPackagesUpdated(
                         LauncherModel.getSortedWidgetsAndShortcuts(this));
