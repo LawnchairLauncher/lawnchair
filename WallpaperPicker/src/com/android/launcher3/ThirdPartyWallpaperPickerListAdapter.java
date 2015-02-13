@@ -126,8 +126,6 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
             view = convertView;
         }
 
-        WallpaperPickerActivity.setWallpaperItemPaddingToZero((FrameLayout) view);
-
         ResolveInfo info = mThirdPartyWallpaperPickers.get(position).mResolveInfo;
         TextView label = (TextView) view.findViewById(R.id.wallpaper_item_label);
         label.setText(info.loadLabel(mPackageManager));
