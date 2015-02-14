@@ -309,6 +309,9 @@ public class Launcher extends Activity
 
     private View.OnTouchListener mHapticFeedbackTouchListener;
 
+    public static final int BUILD_LAYER = 0;
+    public static final int BUILD_AND_SET_LAYER = 1;
+
     // Related to the auto-advancing of widgets
     private final int ADVANCE_MSG = 1;
     private final int mAdvanceInterval = 20000;
@@ -3315,7 +3318,7 @@ public class Launcher extends Activity
         final View fromView = mWorkspace;
         final AppsCustomizeTabHost toView = mAppsCustomizeTabHost;
 
-        final ArrayList<View> layerViews = new ArrayList<View>();
+        final HashMap<View, Integer> layerViews = new HashMap<View, Integer>();
 
         Workspace.State workspaceState = contentType == AppsCustomizePagedView.ContentType.Widgets ?
                 Workspace.State.OVERVIEW_HIDDEN : Workspace.State.NORMAL_HIDDEN;
@@ -3375,8 +3378,7 @@ public class Launcher extends Activity
             }
             final float initAlpha = alpha;
 
-            revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            layerViews.add(revealView);
+            layerViews.put(revealView, BUILD_AND_SET_LAYER);
             PropertyValuesHolder panelAlpha = PropertyValuesHolder.ofFloat("alpha", initAlpha, 1f);
             PropertyValuesHolder panelDriftY =
                     PropertyValuesHolder.ofFloat("translationY", yDrift, 0);
@@ -3393,8 +3395,7 @@ public class Launcher extends Activity
 
             if (page != null) {
                 page.setVisibility(View.VISIBLE);
-                page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                layerViews.add(page);
+                layerViews.put(page, BUILD_AND_SET_LAYER);
 
                 ObjectAnimator pageDrift = ObjectAnimator.ofFloat(page, "translationY", yDrift, 0);
                 page.setTranslationY(yDrift);
@@ -3450,9 +3451,11 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
 
                     revealView.setVisibility(View.INVISIBLE);
-                    revealView.setLayerType(View.LAYER_TYPE_NONE, null);
-                    if (page != null) {
-                        page.setLayerType(View.LAYER_TYPE_NONE, null);
+
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_NONE, null);
+                        }
                     }
                     content.setPageBackgroundsVisible(true);
 
@@ -3484,12 +3487,16 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
                     revealView.setAlpha(initAlpha);
+
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                        }
+                    }
+
                     if (Utilities.isLmpOrAbove()) {
-                        for (int i = 0; i < layerViews.size(); i++) {
-                            View v = layerViews.get(i);
-                            if (v != null) {
-                                if (Utilities.isViewAttachedToWindow(v)) v.buildLayer();
-                            }
+                        for (View v : layerViews.keySet()) {
+                            if (Utilities.isViewAttachedToWindow(v)) v.buildLayer();
                         }
                     }
                     mStateAnimation.start();
@@ -3545,7 +3552,7 @@ public class Launcher extends Activity
         final View fromView = mAppsCustomizeTabHost;
         final View toView = mWorkspace;
         Animator workspaceAnim = null;
-        final ArrayList<View> layerViews = new ArrayList<View>();
+        final HashMap<View, Integer> layerViews = new HashMap<View, Integer>();
 
         if (toState == Workspace.State.NORMAL) {
             workspaceAnim = mWorkspace.getChangeStateAnimation(
@@ -3617,7 +3624,7 @@ public class Launcher extends Activity
                     xDrift = 0;
                 }
 
-                revealView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                layerViews.put(revealView, BUILD_AND_SET_LAYER);
                 TimeInterpolator decelerateInterpolator = material ?
                         new LogDecelerateInterpolator(100, 0) :
                         new DecelerateInterpolator(1f);
@@ -3651,7 +3658,7 @@ public class Launcher extends Activity
                 }
 
                 if (page != null) {
-                    page.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                    layerViews.put(page, BUILD_AND_SET_LAYER);
 
                     ObjectAnimator pageDrift = LauncherAnimUtils.ofFloat(page, "translationY",
                             0, yDrift);
@@ -3719,10 +3726,12 @@ public class Launcher extends Activity
                         onCompleteRunnable.run();
                     }
 
-                    revealView.setLayerType(View.LAYER_TYPE_NONE, null);
-                    if (page != null) {
-                        page.setLayerType(View.LAYER_TYPE_NONE, null);
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_NONE, null);
+                        }
                     }
+
                     content.setPageBackgroundsVisible(true);
                     // Unhide side pages
                     int count = content.getChildCount();
@@ -3756,12 +3765,15 @@ public class Launcher extends Activity
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                        }
+                    }
+
                     if (Utilities.isLmpOrAbove()) {
-                        for (int i = 0; i < layerViews.size(); i++) {
-                            View v = layerViews.get(i);
-                            if (v != null) {
-                                if (Utilities.isViewAttachedToWindow(v)) v.buildLayer();
-                            }
+                        for (View v : layerViews.keySet()) {
+                            if (Utilities.isViewAttachedToWindow(v)) v.buildLayer();
                         }
                     }
                     mStateAnimation.start();
