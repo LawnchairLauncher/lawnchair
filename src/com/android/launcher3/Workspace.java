@@ -2065,7 +2065,7 @@ public class Workspace extends SmoothPagedView
     }
 
     Animator getChangeStateAnimation(final State state, boolean animated,
-            ArrayList<View> layerViews) {
+            HashMap<View, Integer> layerViews) {
         return getChangeStateAnimation(state, animated, 0, -1, layerViews);
     }
 
@@ -2196,7 +2196,7 @@ public class Workspace extends SmoothPagedView
     }
 
     Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage,
-            ArrayList<View> layerViews) {
+            HashMap<View, Integer> layerViews) {
         if (mState == state) {
             return null;
         }
@@ -2326,7 +2326,7 @@ public class Workspace extends SmoothPagedView
                     cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
                 } else {
                     if (layerViews != null) {
-                        layerViews.add(cl);
+                        layerViews.put(cl, Launcher.BUILD_LAYER);
                     }
                     if (mOldAlphas[i] != mNewAlphas[i] || currentAlpha != mNewAlphas[i]) {
                         LauncherViewPropertyAnimator alphaAnim =
@@ -2363,12 +2363,12 @@ public class Workspace extends SmoothPagedView
                 pageIndicatorAlpha = ValueAnimator.ofFloat(0, 0);
             }
 
-            Animator hotseatAlpha = new LauncherViewPropertyAnimator(hotseat)
-                .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
+            LauncherViewPropertyAnimator hotseatAlpha = new LauncherViewPropertyAnimator(hotseat)
+                .alpha(finalHotseatAndPageIndicatorAlpha);
             hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
 
-            Animator overviewPanelAlpha = new LauncherViewPropertyAnimator(overviewPanel)
-                .alpha(finalOverviewPanelAlpha).withLayer();
+            LauncherViewPropertyAnimator overviewPanelAlpha =
+                    new LauncherViewPropertyAnimator(overviewPanel).alpha(finalOverviewPanelAlpha);
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
 
             // For animation optimations, we may need to provide the Launcher transition
@@ -2376,8 +2376,14 @@ public class Workspace extends SmoothPagedView
             hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             overviewPanel.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             if (layerViews != null) {
-                layerViews.add(hotseat);
-                layerViews.add(overviewPanel);
+                // If layerViews is not null, we add these views, and indicate that
+                // the caller can manage layer state.
+                layerViews.put(hotseat, Launcher.BUILD_AND_SET_LAYER);
+                layerViews.put(overviewPanel, Launcher.BUILD_AND_SET_LAYER);
+            } else {
+                // Otherwise let the animator handle layer management.
+                hotseatAlpha.withLayer();
+                overviewPanelAlpha.withLayer();
             }
 
             if (workspaceToOverview) {
@@ -2395,12 +2401,17 @@ public class Workspace extends SmoothPagedView
             hotseatAlpha.setDuration(duration);
 
             if (searchBar != null) {
-                Animator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
-                    .alpha(finalSearchBarAlpha).withLayer();
+                LauncherViewPropertyAnimator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
+                    .alpha(finalSearchBarAlpha);
                 searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
                 searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 if (layerViews != null) {
-                    layerViews.add(searchBar);
+                    // If layerViews is not null, we add these views, and indicate that
+                    // the caller can manage layer state.
+                    layerViews.put(searchBar, Launcher.BUILD_AND_SET_LAYER);
+                } else {
+                    // Otherwise let the animator handle layer management.
+                    searchBarAlpha.withLayer();
                 }
                 searchBarAlpha.setDuration(duration);
                 anim.play(searchBarAlpha);
