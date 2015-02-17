@@ -145,9 +145,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @Override
     public AppWidgetProviderInfo getAppWidgetInfo() {
         AppWidgetProviderInfo info = super.getAppWidgetInfo();
-        if (!(info instanceof LauncherAppWidgetProviderInfo)) {
+        if (info != null && !(info instanceof LauncherAppWidgetProviderInfo)) {
             throw new IllegalStateException("Launcher widget must have"
-                    + "LauncherAppWidgetProviderInfo");
+                    + " LauncherAppWidgetProviderInfo");
         }
         return info;
     }
