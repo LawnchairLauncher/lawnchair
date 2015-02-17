@@ -95,6 +95,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
@@ -115,6 +116,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -352,6 +356,18 @@ public class Launcher extends Activity
     static {
         if (ENABLE_CUSTOM_WIDGET_TEST) {
             sCustomAppWidgets.put(DummyWidget.class.getName(), new DummyWidget());
+        }
+    }
+
+    // TODO: remove this field and call method directly when Launcher3 can depend on M APIs
+    private static Method sClipRevealMethod = null;
+    static {
+        Class<?> activityOptionsClass = ActivityOptions.class;
+        try {
+            sClipRevealMethod = activityOptionsClass.getDeclaredMethod("makeClipRevealAnimation",
+                    View.class, int.class, int.class, int.class, int.class);
+        } catch (Exception e) {
+            // Earlier version
         }
     }
 
@@ -2893,9 +2909,41 @@ public class Launcher extends Activity
 
             Bundle optsBundle = null;
             if (useLaunchAnimation) {
-                ActivityOptions opts = Utilities.isLmpOrAbove() ?
-                        ActivityOptions.makeCustomAnimation(this, R.anim.task_open_enter, R.anim.no_anim) :
-                        ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+                ActivityOptions opts = null;
+                if (sClipRevealMethod != null) {
+                    // TODO: call method directly when Launcher3 can depend on M APIs
+                    int left = 0, top = 0;
+                    int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
+                    if (v instanceof TextView) {
+                        // Launch from center of icon, not entire view
+                        TextView tv = (TextView) v;
+                        Drawable[] drawables = tv.getCompoundDrawables();
+                        if (drawables != null && drawables[1] != null) {
+                            Rect bounds = drawables[1].getBounds();
+                            left = (width - bounds.width()) / 2;
+                            top = tv.getPaddingTop();
+                            width = bounds.width();
+                            height = bounds.height();
+                        }
+                    }
+                    try {
+                        opts = (ActivityOptions) sClipRevealMethod.invoke(null, v,
+                                left, top, width, height);
+                    } catch (IllegalAccessException e) {
+                        Log.d(TAG, "Could not call makeClipRevealAnimation: " + e);
+                        sClipRevealMethod = null;
+                    } catch (InvocationTargetException e) {
+                        Log.d(TAG, "Could not call makeClipRevealAnimation: " + e);
+                        sClipRevealMethod = null;
+                    }
+                }
+                if (opts == null) {
+                    opts = Utilities.isLmpOrAbove() ?
+                            ActivityOptions.makeCustomAnimation(this,
+                                    R.anim.task_open_enter, R.anim.no_anim) :
+                            ActivityOptions.makeScaleUpAnimation(v, 0, 0,
+                                    v.getMeasuredWidth(), v.getMeasuredHeight());
+                }
                 optsBundle = opts.toBundle();
             }
 
