@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
@@ -190,8 +191,9 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void updateIcon(IconCache iconCache) {
-        mIcon = iconCache.getIcon(promisedIntent != null ? promisedIntent : intent, user);
-        usingFallbackIcon = iconCache.isDefaultIcon(mIcon, user);
+        if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
+            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user);
+        }
     }
 
     @Override
@@ -213,9 +215,9 @@ public class ShortcutInfo extends ItemInfo {
             if (!usingFallbackIcon) {
                 writeBitmap(values, mIcon);
             }
-            values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
-                    LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
             if (iconResource != null) {
+                values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
+                        LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
                 values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
                         iconResource.packageName);
                 values.put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,

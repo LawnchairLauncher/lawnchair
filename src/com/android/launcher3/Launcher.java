@@ -5033,7 +5033,7 @@ public class Launcher extends Activity
         if (activityInfo == null) {
             return null;
         }
-        return new AppInfo(this, activityInfo, myUser, mIconCache, null);
+        return new AppInfo(this, activityInfo, myUser, mIconCache);
     }
 
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,

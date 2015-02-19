@@ -36,7 +36,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
@@ -162,9 +161,6 @@ public class LauncherModel extends BroadcastReceiver
 
     // sBgFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
     static final HashMap<Long, FolderInfo> sBgFolders = new HashMap<Long, FolderInfo>();
-
-    // sBgDbIconCache is the set of ItemInfos that need to have their icons updated in the database
-    static final HashMap<Object, byte[]> sBgDbIconCache = new HashMap<Object, byte[]>();
 
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
@@ -1131,7 +1127,6 @@ public class LauncherModel extends BroadcastReceiver
                                 break;
                         }
                         sBgItemsIdMap.remove(item.id);
-                        sBgDbIconCache.remove(item);
                     }
                 }
             }
@@ -1204,7 +1199,6 @@ public class LauncherModel extends BroadcastReceiver
                 synchronized (sBgLock) {
                     sBgItemsIdMap.remove(info.id);
                     sBgFolders.remove(info.id);
-                    sBgDbIconCache.remove(info);
                     sBgWorkspaceItems.remove(info);
                 }
 
@@ -1214,7 +1208,6 @@ public class LauncherModel extends BroadcastReceiver
                 synchronized (sBgLock) {
                     for (ItemInfo childInfo : info.contents) {
                         sBgItemsIdMap.remove(childInfo.id);
-                        sBgDbIconCache.remove(childInfo);
                     }
                 }
             }
@@ -1481,12 +1474,9 @@ public class LauncherModel extends BroadcastReceiver
         private boolean mLoadAndBindStepFinished;
         private int mFlags;
 
-        private HashMap<Object, CharSequence> mLabelCache;
-
         LoaderTask(Context context, boolean isLaunching, int flags) {
             mContext = context;
             mIsLaunching = isLaunching;
-            mLabelCache = new HashMap<Object, CharSequence>();
             mFlags = flags;
         }
 
@@ -1633,15 +1623,6 @@ public class LauncherModel extends BroadcastReceiver
                 synchronized (mLock) {
                     android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
                 }
-            }
-
-            // Update the saved icons if necessary
-            if (DEBUG_LOADERS) Log.d(TAG, "Comparing loaded icons to database icons");
-            synchronized (sBgLock) {
-                for (Object key : sBgDbIconCache.keySet()) {
-                    updateSavedIcon(mContext, (ShortcutInfo) key, sBgDbIconCache.get(key));
-                }
-                sBgDbIconCache.clear();
             }
 
             if (LauncherAppState.isDisableAllApps()) {
@@ -1819,7 +1800,6 @@ public class LauncherModel extends BroadcastReceiver
                 sBgAppWidgets.clear();
                 sBgFolders.clear();
                 sBgItemsIdMap.clear();
-                sBgDbIconCache.clear();
                 sBgWorkspaceScreens.clear();
             }
         }
@@ -2068,8 +2048,8 @@ public class LauncherModel extends BroadcastReceiver
 
                                 if (itemReplaced) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        info = getShortcutInfo(manager, intent, user, context, null,
-                                                iconIndex, titleIndex, mLabelCache, false);
+                                        info = getAppShortcutInfo(manager, intent, user, context, null,
+                                                iconIndex, titleIndex, false);
                                     } else {
                                         // Don't replace items for other profiles.
                                         itemsToRemove.add(id);
@@ -2089,8 +2069,8 @@ public class LauncherModel extends BroadcastReceiver
                                     }
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getShortcutInfo(manager, intent, user, context, c,
-                                            iconIndex, titleIndex, mLabelCache, allowMissingTarget);
+                                    info = getAppShortcutInfo(manager, intent, user, context, c,
+                                            iconIndex, titleIndex, allowMissingTarget);
                                 } else {
                                     info = getShortcutInfo(c, context, iconTypeIndex,
                                             iconPackageIndex, iconResourceIndex, iconIndex,
@@ -2145,10 +2125,6 @@ public class LauncherModel extends BroadcastReceiver
                                         break;
                                     }
                                     sBgItemsIdMap.put(info.id, info);
-
-                                    // now that we've loaded everthing re-save it with the
-                                    // icon in case it disappears somehow.
-                                    queueIconToBeChecked(sBgDbIconCache, info, c, iconIndex);
                                 } else {
                                     throw new RuntimeException("Unexpected null ShortcutInfo");
                                 }
@@ -2842,20 +2818,48 @@ public class LauncherModel extends BroadcastReceiver
                 if (apps == null || apps.isEmpty()) {
                     return;
                 }
-                // Sort the applications by name
-                final long sortTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-                Collections.sort(apps,
-                        new LauncherModel.ShortcutNameComparator(mLabelCache));
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "sort took "
-                            + (SystemClock.uptimeMillis()-sortTime) + "ms");
+
+                // Update icon cache
+                HashSet<String> updatedPackages = mIconCache.updateDBIcons(user, apps);
+
+                // If any package icon has changed (app was updated while launcher was dead),
+                // update the corresponding shortcuts.
+                if (!updatedPackages.isEmpty()) {
+                    final ArrayList<ShortcutInfo> updates = new ArrayList<ShortcutInfo>();
+                    synchronized (sBgLock) {
+                        for (ItemInfo info : sBgItemsIdMap.values()) {
+                            if (info instanceof ShortcutInfo && user.equals(info.user)
+                                    && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                ShortcutInfo si = (ShortcutInfo) info;
+                                ComponentName cn = si.getTargetComponent();
+                                if (cn != null && updatedPackages.contains(cn.getPackageName())) {
+                                    si.updateIcon(mIconCache);
+                                    updates.add(si);
+                                }
+                            }
+                        }
+                    }
+
+                    if (!updates.isEmpty()) {
+                        final UserHandleCompat userFinal = user;
+                        mHandler.post(new Runnable() {
+
+                            public void run() {
+                                Callbacks cb = getCallback();
+                                if (cb != null) {
+                                    cb.bindShortcutsChanged(
+                                            updates, new ArrayList<ShortcutInfo>(), userFinal);
+                                }
+                            }
+                        });
+                    }
                 }
 
                 // Create the ApplicationInfos
                 for (int i = 0; i < apps.size(); i++) {
                     LauncherActivityInfoCompat app = apps.get(i);
                     // This builds the icon bitmaps.
-                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, mLabelCache));
+                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache));
                 }
 
                 if (ADD_MANAGED_PROFILE_SHORTCUTS && !user.equals(UserHandleCompat.myUserHandle())) {
@@ -2987,7 +2991,7 @@ public class LauncherModel extends BroadcastReceiver
                 case OP_ADD:
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
-                        mIconCache.remove(packages[i], mUser);
+                        mIconCache.updateIconsForPkg(packages[i], mUser);
                         mBgAllAppsList.addPackage(context, packages[i], mUser);
                     }
 
@@ -3019,6 +3023,7 @@ public class LauncherModel extends BroadcastReceiver
                 case OP_UPDATE:
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
+                        mIconCache.updateIconsForPkg(packages[i], mUser);
                         mBgAllAppsList.updatePackage(context, packages[i], mUser);
                         WidgetPreviewLoader.removePackageFromDb(
                                 mApp.getWidgetPreviewCacheDb(), packages[i]);
@@ -3038,12 +3043,15 @@ public class LauncherModel extends BroadcastReceiver
                         shortcutSet.removeAll(Arrays.asList(mPackages));
                         prefs.edit().putStringSet(shortcutsSetKey, shortcutSet).commit();
                     }
-                    // Fall through
-                case OP_UNAVAILABLE:
-                    boolean clearCache = mOp == OP_REMOVE;
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
-                        mBgAllAppsList.removePackage(packages[i], mUser, clearCache);
+                        mIconCache.removeIconsForPkg(packages[i], mUser);
+                    }
+                    // Fall through
+                case OP_UNAVAILABLE:
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
+                        mBgAllAppsList.removePackage(packages[i], mUser);
                         WidgetPreviewLoader.removePackageFromDb(
                                 mApp.getWidgetPreviewCacheDb(), packages[i]);
                     }
@@ -3136,7 +3144,6 @@ public class LauncherModel extends BroadcastReceiver
                                 AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
                                 if (si.isPromise()) {
-                                    mIconCache.deletePreloadedIcon(cn, mUser);
                                     if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
                                         // Auto install icon
                                         PackageManager pm = context.getPackageManager();
@@ -3381,7 +3388,7 @@ public class LauncherModel extends BroadcastReceiver
             int promiseType) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
-        mIconCache.getTitleAndIcon(info, intent, info.user, true);
+        mIconCache.getTitleAndIcon(info, intent, info.user);
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
             String title = (cursor != null) ? cursor.getString(titleIndex) : null;
@@ -3424,22 +3431,13 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * This is called from the code that adds shortcuts from the intent receiver.  This
-     * doesn't have a Cursor, but
-     */
-    public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent,
-            UserHandleCompat user, Context context) {
-        return getShortcutInfo(manager, intent, user, context, null, -1, -1, null, false);
-    }
-
-    /**
      * Make an ShortcutInfo object for a shortcut that is an application.
      *
      * If c is not null, then it will be used to fill in missing data like the title and icon.
      */
-    public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent,
+    public ShortcutInfo getAppShortcutInfo(PackageManager manager, Intent intent,
             UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
-            HashMap<Object, CharSequence> labelCache, boolean allowMissingTarget) {
+            boolean allowMissingTarget) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
             return null;
@@ -3461,48 +3459,22 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         final ShortcutInfo info = new ShortcutInfo();
-
-        // the resource -- This may implicitly give us back the fallback icon,
-        // but don't worry about that.  All we're doing with usingFallbackIcon is
-        // to avoid saving lots of copies of that in the database, and most apps
-        // have icons anyway.
-        Bitmap icon = mIconCache.getIcon(componentName, lai, labelCache);
-
-        // the db
-        if (icon == null) {
-            if (c != null) {
-                icon = getIconFromCursor(c, iconIndex, context);
-            }
-        }
-        // the fallback icon
-        if (icon == null) {
-            icon = mIconCache.getDefaultIcon(user);
-            info.usingFallbackIcon = true;
-        }
-        info.setIcon(icon);
-
-        // From the cache.
-        if (labelCache != null) {
-            info.title = labelCache.get(componentName);
+        mIconCache.getTitleAndIcon(info, componentName, lai, user, false);
+        if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
+            Bitmap icon = Utilities.createIconBitmap(c, iconIndex, context);
+            info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);
         }
 
-        // from the resource
-        if (info.title == null && lai != null) {
-            info.title = lai.getLabel();
-            if (labelCache != null) {
-                labelCache.put(componentName, info.title);
-            }
-        }
         // from the db
-        if (info.title == null) {
-            if (c != null) {
-                info.title =  c.getString(titleIndex);
-            }
+        if (TextUtils.isEmpty(info.title) && c != null) {
+            info.title =  c.getString(titleIndex);
         }
+
         // fall back to the class name of the activity
         if (info.title == null) {
             info.title = componentName.getClassName();
         }
+
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.contentDescription = mUserManager.getBadgedLabelForUser(
@@ -3581,7 +3553,7 @@ public class LauncherModel extends BroadcastReceiver
             icon = Utilities.createIconBitmap(packageName, resourceName, mIconCache, context);
             // the db
             if (icon == null) {
-                icon = getIconFromCursor(c, iconIndex, context);
+                icon = Utilities.createIconBitmap(c, iconIndex, context);
             }
             // the fallback icon
             if (icon == null) {
@@ -3590,7 +3562,7 @@ public class LauncherModel extends BroadcastReceiver
             }
             break;
         case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
-            icon = getIconFromCursor(c, iconIndex, context);
+            icon = Utilities.createIconBitmap(c, iconIndex, context);
             if (icon == null) {
                 icon = mIconCache.getDefaultIcon(info.user);
                 info.customIcon = false;
@@ -3607,22 +3579,6 @@ public class LauncherModel extends BroadcastReceiver
         }
         info.setIcon(icon);
         return info;
-    }
-
-    Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
-        @SuppressWarnings("all") // suppress dead code warning
-        final boolean debug = false;
-        if (debug) {
-            Log.d(TAG, "getIconFromCursor app="
-                    + c.getString(c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE)));
-        }
-        byte[] data = c.getBlob(iconIndex);
-        try {
-            return Utilities.createIconBitmap(
-                    BitmapFactory.decodeByteArray(data, 0, data.length), context);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
@@ -3671,45 +3627,6 @@ public class LauncherModel extends BroadcastReceiver
         info.iconResource = iconResource;
 
         return info;
-    }
-
-    boolean queueIconToBeChecked(HashMap<Object, byte[]> cache, ShortcutInfo info, Cursor c,
-            int iconIndex) {
-        // If apps can't be on SD, don't even bother.
-        if (!mAppsCanBeOnRemoveableStorage) {
-            return false;
-        }
-        // If this icon doesn't have a custom icon, check to see
-        // what's stored in the DB, and if it doesn't match what
-        // we're going to show, store what we are going to show back
-        // into the DB.  We do this so when we're loading, if the
-        // package manager can't find an icon (for example because
-        // the app is on SD) then we can use that instead.
-        if (!info.customIcon && !info.usingFallbackIcon) {
-            cache.put(info, c.getBlob(iconIndex));
-            return true;
-        }
-        return false;
-    }
-    void updateSavedIcon(Context context, ShortcutInfo info, byte[] data) {
-        boolean needSave = false;
-        try {
-            if (data != null) {
-                Bitmap saved = BitmapFactory.decodeByteArray(data, 0, data.length);
-                Bitmap loaded = info.getIcon(mIconCache);
-                needSave = !saved.sameAs(loaded);
-            } else {
-                needSave = true;
-            }
-        } catch (Exception e) {
-            needSave = true;
-        }
-        if (needSave) {
-            Log.d(TAG, "going to save icon bitmap for info=" + info);
-            // This is slower than is ideal, but this only happens once
-            // or when the app is updated with a new icon.
-            updateItemInDatabase(context, info);
-        }
     }
 
     /**
@@ -3761,38 +3678,7 @@ public class LauncherModel extends BroadcastReceiver
             return new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name);
         }
     }
-    public static class ShortcutNameComparator implements Comparator<LauncherActivityInfoCompat> {
-        private Collator mCollator;
-        private HashMap<Object, CharSequence> mLabelCache;
-        ShortcutNameComparator(PackageManager pm) {
-            mLabelCache = new HashMap<Object, CharSequence>();
-            mCollator = Collator.getInstance();
-        }
-        ShortcutNameComparator(HashMap<Object, CharSequence> labelCache) {
-            mLabelCache = labelCache;
-            mCollator = Collator.getInstance();
-        }
-        public final int compare(LauncherActivityInfoCompat a, LauncherActivityInfoCompat b) {
-            String labelA, labelB;
-            ComponentName keyA = a.getComponentName();
-            ComponentName keyB = b.getComponentName();
-            if (mLabelCache.containsKey(keyA)) {
-                labelA = mLabelCache.get(keyA).toString();
-            } else {
-                labelA = a.getLabel().toString().trim();
 
-                mLabelCache.put(keyA, labelA);
-            }
-            if (mLabelCache.containsKey(keyB)) {
-                labelB = mLabelCache.get(keyB).toString();
-            } else {
-                labelB = b.getLabel().toString().trim();
-
-                mLabelCache.put(keyB, labelB);
-            }
-            return mCollator.compare(labelA, labelB);
-        }
-    };
     public static class WidgetAndShortcutNameComparator implements Comparator<Object> {
         private final AppWidgetManagerCompat mManager;
         private final PackageManager mPackageManager;
