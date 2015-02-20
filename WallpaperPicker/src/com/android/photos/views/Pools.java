@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.util;
+package com.android.photos.views;
 
 /**
  * Helper class for crating pools of objects. An example use looks like this:

@@ -23,8 +23,6 @@ import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LongSparseArray;
-import android.util.Pools.Pool;
-import android.util.Pools.SynchronizedPool;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -32,6 +30,8 @@ import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.glrenderer.BasicTexture;
 import com.android.gallery3d.glrenderer.GLCanvas;
 import com.android.gallery3d.glrenderer.UploadedTexture;
+import com.android.photos.views.Pools.Pool;
+import com.android.photos.views.Pools.SynchronizedPool;
 
 /**
  * Handles laying out, decoding, and drawing of tiles in GL
