@@ -3966,11 +3966,8 @@ public class Launcher extends Activity
             }
 
             Bundle opts = new Bundle();
-            // We indicate that this widget is both acting as a search box affordance as well
-            // as being present on the home screen.
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
-                    AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX |
-                    AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN);
+                    AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX);
 
             SharedPreferences sp = getSharedPreferences(
                     LauncherAppState.getSharedPreferencesKey(), MODE_PRIVATE);
