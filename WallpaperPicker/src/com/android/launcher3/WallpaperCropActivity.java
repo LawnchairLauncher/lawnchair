@@ -25,25 +25,36 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
+import com.android.photos.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
+import com.android.photos.views.TiledImageRenderer.TileSource;
 
-public class WallpaperCropActivity extends Activity {
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+public class WallpaperCropActivity extends Activity implements Handler.Callback {
     private static final String LOGTAG = "Launcher3.CropActivity";
 
     protected static final String WALLPAPER_WIDTH_KEY = "wallpaper.width";
@@ -59,13 +70,29 @@ public class WallpaperCropActivity extends Activity {
     public static final int MAX_BMAP_IN_INTENT = 750000;
     public static final float WALLPAPER_SCREENS_SPAN = 2f;
 
+    private static final int MSG_LOAD_IMAGE = 1;
+
     protected CropView mCropView;
+    protected View mProgressView;
     protected Uri mUri;
     protected View mSetWallpaperButton;
+
+    private HandlerThread mLoaderThread;
+    private Handler mLoaderHandler;
+    private LoadRequest mCurrentLoadRequest;
+    private byte[] mTempStorageForDecoding = new byte[16 * 1024];
+    // A weak-set of reusable bitmaps
+    private Set<Bitmap> mReusableBitmaps =
+            Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mLoaderThread = new HandlerThread("wallpaper_loader");
+        mLoaderThread.start();
+        mLoaderHandler = new Handler(mLoaderThread.getLooper(), this);
+
         init();
         if (!enableRotation()) {
             setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
@@ -76,6 +103,7 @@ public class WallpaperCropActivity extends Activity {
         setContentView(R.layout.wallpaper_cropper);
 
         mCropView = (CropView) findViewById(R.id.cropView);
+        mProgressView = findViewById(R.id.loading);
 
         Intent cropIntent = getIntent();
         final Uri imageUri = cropIntent.getData();
@@ -116,7 +144,7 @@ public class WallpaperCropActivity extends Activity {
                 }
             }
         };
-        setCropViewTileSource(bitmapSource, true, false, onLoad);
+        setCropViewTileSource(bitmapSource, true, false, null, onLoad);
     }
 
     @Override
@@ -124,64 +152,133 @@ public class WallpaperCropActivity extends Activity {
         if (mCropView != null) {
             mCropView.destroy();
         }
+        if (mLoaderThread != null) {
+            mLoaderThread.quit();
+        }
         super.onDestroy();
     }
 
-    public void setCropViewTileSource(
-            final BitmapRegionTileSource.BitmapSource bitmapSource, final boolean touchEnabled,
-            final boolean moveToLeft, final Runnable postExecute) {
-        final Context context = WallpaperCropActivity.this;
-        final View progressView = findViewById(R.id.loading);
-        final AsyncTask<Void, Void, Void> loadBitmapTask = new AsyncTask<Void, Void, Void>() {
-            protected Void doInBackground(Void...args) {
-                if (!isCancelled()) {
-                    try {
-                        bitmapSource.loadInBackground();
-                    } catch (SecurityException securityException) {
-                        if (isDestroyed()) {
-                            // Temporarily granted permissions are revoked when the activity
-                            // finishes, potentially resulting in a SecurityException here.
-                            // Even though {@link #isDestroyed} might also return true in different
-                            // situations where the configuration changes, we are fine with
-                            // catching these cases here as well.
-                            cancel(false);
-                        } else {
-                            // otherwise it had a different cause and we throw it further
-                            throw securityException;
+    /**
+     * This is called on {@link #mLoaderThread}
+     */
+    @Override
+    public boolean handleMessage(Message msg) {
+        if (msg.what == MSG_LOAD_IMAGE) {
+            final LoadRequest req = (LoadRequest) msg.obj;
+            try {
+                req.src.loadInBackground(new InBitmapProvider() {
+
+                    @Override
+                    public Bitmap forPixelCount(int count) {
+                        synchronized (mReusableBitmaps) {
+                            Iterator<Bitmap> itr = mReusableBitmaps.iterator();
+                            while (itr.hasNext()) {
+                                Bitmap b = itr.next();
+                                if (b.getWidth() * b.getHeight() >= count) {
+                                    itr.remove();
+                                    return b;
+                                }
+                            }
                         }
+                        return null;
                     }
-                }
-                return null;
-            }
-            protected void onPostExecute(Void arg) {
-                if (!isCancelled()) {
-                    progressView.setVisibility(View.INVISIBLE);
-                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
-                        mCropView.setTileSource(
-                                new BitmapRegionTileSource(context, bitmapSource), null);
-                        mCropView.setTouchEnabled(touchEnabled);
-                        if (moveToLeft) {
-                            mCropView.moveToLeft();
-                        }
-                    }
-                }
-                if (postExecute != null) {
-                    postExecute.run();
+                });
+            } catch (SecurityException securityException) {
+                if (isDestroyed()) {
+                    // Temporarily granted permissions are revoked when the activity
+                    // finishes, potentially resulting in a SecurityException here.
+                    // Even though {@link #isDestroyed} might also return true in different
+                    // situations where the configuration changes, we are fine with
+                    // catching these cases here as well.
+                    return true;
+                } else {
+                    // otherwise it had a different cause and we throw it further
+                    throw securityException;
                 }
             }
-        };
+
+            req.result = new BitmapRegionTileSource(this, req.src, mTempStorageForDecoding);
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (req == mCurrentLoadRequest) {
+                        onLoadRequestComplete(req,
+                                req.src.getLoadingState() == BitmapSource.State.LOADED);
+                    } else {
+                        addReusableBitmap(req.result);
+                    }
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    private void addReusableBitmap(TileSource src) {
+        synchronized (mReusableBitmaps) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                    && src instanceof BitmapRegionTileSource) {
+                Bitmap preview = ((BitmapRegionTileSource) src).getBitmap();
+                if (preview != null && preview.isMutable()) {
+                    mReusableBitmaps.add(preview);
+                }
+            }
+        }
+    }
+
+    protected void onLoadRequestComplete(LoadRequest req, boolean success) {
+        mCurrentLoadRequest = null;
+        if (success) {
+            TileSource oldSrc = mCropView.getTileSource();
+            mCropView.setTileSource(req.result, null);
+            mCropView.setTouchEnabled(req.touchEnabled);
+            if (req.moveToLeft) {
+                mCropView.moveToLeft();
+            }
+            if (req.scaleProvider != null) {
+                mCropView.setScale(req.scaleProvider.getScale(req.result));
+            }
+
+            // Free last image
+            if (oldSrc != null) {
+                // Call yield instead of recycle, as we only want to free GL resource.
+                // We can still reuse the bitmap for decoding any other image.
+                oldSrc.getPreview().yield();
+            }
+            addReusableBitmap(oldSrc);
+        }
+        if (req.postExecute != null) {
+            req.postExecute.run();
+        }
+    }
+
+    public final void setCropViewTileSource(BitmapSource bitmapSource, boolean touchEnabled,
+            boolean moveToLeft, CropViewScaleProvider scaleProvider, Runnable postExecute) {
+        final LoadRequest req = new LoadRequest();
+        req.moveToLeft = moveToLeft;
+        req.src = bitmapSource;
+        req.touchEnabled = touchEnabled;
+        req.postExecute = postExecute;
+        req.scaleProvider = scaleProvider;
+        mCurrentLoadRequest = req;
+
+        // Remove any pending requests
+        mLoaderHandler.removeMessages(MSG_LOAD_IMAGE);
+        Message.obtain(mLoaderHandler, MSG_LOAD_IMAGE, req).sendToTarget();
+
         // We don't want to show the spinner every time we load an image, because that would be
         // annoying; instead, only start showing the spinner if loading the image has taken
         // longer than 1 sec (ie 1000 ms)
-        progressView.postDelayed(new Runnable() {
+        mProgressView.postDelayed(new Runnable() {
             public void run() {
-                if (loadBitmapTask.getStatus() != AsyncTask.Status.FINISHED) {
-                    progressView.setVisibility(View.VISIBLE);
+                if (mCurrentLoadRequest == req) {
+                    mProgressView.setVisibility(View.VISIBLE);
                 }
             }
         }, 1000);
-        loadBitmapTask.execute();
     }
+
 
     public boolean enableRotation() {
         return getResources().getBoolean(R.bool.allow_rotation);
@@ -371,5 +468,19 @@ public class WallpaperCropActivity extends Activity {
                 savedHeight != wallpaperManager.getDesiredMinimumHeight()) {
             wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
         }
+    }
+
+    static class LoadRequest {
+        BitmapSource src;
+        boolean touchEnabled;
+        boolean moveToLeft;
+        Runnable postExecute;
+        CropViewScaleProvider scaleProvider;
+
+        TileSource result;
+    }
+
+    interface CropViewScaleProvider {
+        float getScale(TileSource src);
     }
 }

@@ -74,6 +74,7 @@ import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
+import com.android.photos.views.TiledImageRenderer.TileSource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -168,7 +169,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             }
             mBitmapSource = new BitmapRegionTileSource.UriBitmapSource(
                     a, mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
-            a.setCropViewTileSource(mBitmapSource, true, false, onLoad);
+            a.setCropViewTileSource(mBitmapSource, true, false, null, onLoad);
         }
         @Override
         public void onSave(final WallpaperPickerActivity a) {
@@ -205,7 +206,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onClick(WallpaperPickerActivity a) {
             BitmapRegionTileSource.UriBitmapSource bitmapSource =
                     new BitmapRegionTileSource.UriBitmapSource(a, Uri.fromFile(mFile), 1024);
-            a.setCropViewTileSource(bitmapSource, false, true, null);
+            a.setCropViewTileSource(bitmapSource, false, true, null, null);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
@@ -231,22 +232,22 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             mThumb = thumb;
         }
         @Override
-        public void onClick(WallpaperPickerActivity a) {
+        public void onClick(final WallpaperPickerActivity a) {
             BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
                     new BitmapRegionTileSource.ResourceBitmapSource(
                             mResources, mResId, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
-            bitmapSource.loadInBackground();
-            BitmapRegionTileSource source = new BitmapRegionTileSource(a, bitmapSource);
-            CropView v = a.getCropView();
-            v.setTileSource(source, null);
-            Point wallpaperSize = BitmapUtils.getDefaultWallpaperSize(
-                    a.getResources(), a.getWindowManager());
-            RectF crop = Utils.getMaxCropRect(
-                    source.getImageWidth(), source.getImageHeight(),
-                    wallpaperSize.x, wallpaperSize.y, false);
-            v.setScale(wallpaperSize.x / crop.width());
-            v.setTouchEnabled(false);
-            a.setSystemWallpaperVisiblity(false);
+            a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleProvider() {
+
+                @Override
+                public float getScale(TileSource src) {
+                    Point wallpaperSize = BitmapUtils.getDefaultWallpaperSize(
+                            a.getResources(), a.getWindowManager());
+                    RectF crop = Utils.getMaxCropRect(
+                            src.getImageWidth(), src.getImageHeight(),
+                            wallpaperSize.x, wallpaperSize.y, false);
+                    return wallpaperSize.x / crop.width();
+                }
+            }, null);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
@@ -271,21 +272,26 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(WallpaperPickerActivity a) {
             CropView c = a.getCropView();
-
             Drawable defaultWallpaper = WallpaperManager.getInstance(a).getBuiltInDrawable(
                     c.getWidth(), c.getHeight(), false, 0.5f, 0.5f);
-
             if (defaultWallpaper == null) {
                 Log.w(TAG, "Null default wallpaper encountered.");
                 c.setTileSource(null, null);
                 return;
             }
 
-            c.setTileSource(
-                    new DrawableTileSource(a, defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE), null);
-            c.setScale(1f);
-            c.setTouchEnabled(false);
-            a.setSystemWallpaperVisiblity(false);
+            LoadRequest req = new LoadRequest();
+            req.moveToLeft = false;
+            req.touchEnabled = false;
+            req.scaleProvider = new CropViewScaleProvider() {
+
+                @Override
+                public float getScale(TileSource src) {
+                    return 1f;
+                }
+            };
+            req.result = new DrawableTileSource(a, defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
+            a.onLoadRequestComplete(req, true);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
@@ -348,24 +354,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     @Override
-    public void setCropViewTileSource(BitmapSource bitmapSource,
-                                      boolean touchEnabled,
-                                      boolean moveToLeft,
-                                      final Runnable postExecute) {
-        // we also want to show our own wallpaper instead of the one in the background
-        Runnable showPostExecuteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if(postExecute != null) {
-                    postExecute.run();
-                }
-                setSystemWallpaperVisiblity(false);
-            }
-        };
-        super.setCropViewTileSource(bitmapSource,
-                touchEnabled,
-                moveToLeft,
-                showPostExecuteRunnable);
+    protected void onLoadRequestComplete(LoadRequest req, boolean success) {
+        super.onLoadRequestComplete(req, success);
+        if (success) {
+            setSystemWallpaperVisiblity(false);
+        }
     }
 
     // called by onCreate; this is subclassed to overwrite WallpaperCropActivity
@@ -374,6 +367,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
         mCropView = (CropView) findViewById(R.id.cropView);
         mCropView.setVisibility(View.INVISIBLE);
+
+        mProgressView = findViewById(R.id.loading);
+
 
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
         mCropView.setTouchCallback(new CropView.TouchCallback() {

@@ -696,6 +696,7 @@ public class GLES20Canvas implements GLCanvas {
     }
 
     private void prepareTexture(BasicTexture texture, int program, ShaderParameter[] params) {
+        deleteRecycledResources();
         GLES20.glUseProgram(program);
         checkError();
         enableBlending(!texture.isOpaque() || getAlpha() < OPAQUE_ALPHA);

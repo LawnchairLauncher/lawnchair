@@ -125,6 +125,10 @@ public class TiledImageView extends FrameLayout {
         invalidate();
     }
 
+    public TileSource getTileSource() {
+        return mRenderer.source;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right,
             int bottom) {
