@@ -170,54 +170,68 @@ public class FocusHelper {
         // Initialize the variables.
         final ShortcutAndWidgetContainer hotseatParent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout hotseatLayout = (CellLayout) hotseatParent.getParent();
+        Hotseat hotseat = (Hotseat) hotseatLayout.getParent();
+
         Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);
         int pageIndex = workspace.getCurrentPage();
         int pageCount = workspace.getChildCount();
-        int countX, countY;
+        int countX = -1;
+        int countY = -1;
         int iconIndex = findIndexOfView(hotseatParent, v);
 
         final CellLayout iconLayout = (CellLayout) workspace.getChildAt(pageIndex);
         final ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
         ViewGroup parent = null;
-        int[][] matrix;
+        int[][] matrix = null;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP &&
                 orientation == Configuration.ORIENTATION_PORTRAIT) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation);
-            // TODO: hotseat indexing should be symmetric.
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
+                    hotseat.getAllAppsButtonRank(), true /* include all apps icon */);
             iconIndex += iconParent.getChildCount();
             countX = iconLayout.getCountX();
             countY = iconLayout.getCountY() + hotseatLayout.getCountY();
             parent = iconParent;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
                 orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation);
-            // TODO: hotseat indexing should be symmetric.
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
+                    hotseat.getAllAppsButtonRank(), true /* include all apps icon */);
             iconIndex += iconParent.getChildCount();
             countX = iconLayout.getCountX() + hotseatLayout.getCountX();
             countY = iconLayout.getCountY();
             parent = iconParent;
-        } else {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
+                orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            keyCode = KeyEvent.KEYCODE_PAGE_DOWN;
+        }else {
             // For other KEYCODE_DPAD_LEFT and KEYCODE_DPAD_RIGHT navigation, do not use the
             // matrix extended with hotseat.
             matrix = FocusLogic.createSparseMatrix(hotseatLayout);
-            parent = hotseatParent;
             countX = hotseatLayout.getCountX();
             countY = hotseatLayout.getCountY();
-
+            parent = hotseatParent;
         }
 
         // Process the focus.
         int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX, countY, matrix,
                 iconIndex, pageIndex, pageCount);
 
-        if (iconParent.getChildCount() <= newIconIndex &&
-                newIconIndex < iconParent.getChildCount() + hotseatParent.getChildCount()) {
+        View newIcon = null;
+        if (newIconIndex == FocusLogic.NEXT_PAGE_FIRST_ITEM) {
+            parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
+            newIcon = parent.getChildAt(0);
+            // TODO(hyunyoungs): handle cases where the child is not an icon but
+            // a folder or a widget.
+            workspace.snapToPage(pageIndex + 1);
+        }
+        if (parent == iconParent && newIconIndex >= iconParent.getChildCount()) {
             newIconIndex -= iconParent.getChildCount();
         }
         if (parent != null) {
-            View newIcon = parent.getChildAt(newIconIndex);
+            if (newIcon == null && newIconIndex >=0) {
+                newIcon = parent.getChildAt(newIconIndex);
+            }
             if (newIcon != null) {
                 newIcon.requestFocus();
                 playSoundEffect(keyCode, v);
@@ -242,34 +256,39 @@ public class FocusHelper {
 
         // Initialize the variables.
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
-        final CellLayout layout = (CellLayout) parent.getParent();
-        final Workspace workspace = (Workspace) layout.getParent();
+        final CellLayout iconLayout = (CellLayout) parent.getParent();
+        final Workspace workspace = (Workspace) iconLayout.getParent();
         final ViewGroup launcher = (ViewGroup) workspace.getParent();
         final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.search_drop_target_bar);
-        final ViewGroup hotseat = (ViewGroup) launcher.findViewById(R.id.hotseat);
-        int pageIndex = workspace.indexOfChild(layout);
+        final Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);
+        int pageIndex = workspace.indexOfChild(iconLayout);
         int pageCount = workspace.getChildCount();
-        final int countX = layout.getCountX();
-        int countY = layout.getCountY();
+        int countX = iconLayout.getCountX();
+        int countY = iconLayout.getCountY();
         final int iconIndex = findIndexOfView(parent, v);
 
         CellLayout hotseatLayout = (CellLayout) hotseat.getChildAt(0);
         ShortcutAndWidgetContainer hotseatParent = hotseatLayout.getShortcutsAndWidgets();
         int[][] matrix;
 
-        // KEYCODE_DPAD_DOWN in portrait (KEYCODE_DPAD_LEFT in landscape) is the only key allowed
+        // KEYCODE_DPAD_DOWN in portrait (KEYCODE_DPAD_RIGHT in landscape) is the only key allowed
         // to take a user to the hotseat. For other dpad navigation, do not use the matrix extended
         // with the hotseat.
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN &&
                 orientation == Configuration.ORIENTATION_PORTRAIT) {
-            matrix = FocusLogic.createSparseMatrix(layout, hotseatLayout, orientation);
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
+                    hotseat.getAllAppsButtonRank(), false /* all apps icon is ignored */);
             countY = countY + 1;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            matrix = FocusLogic.createSparseMatrix(layout, hotseatLayout, orientation);
-            countY = countY + 1;
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
+                    hotseat.getAllAppsButtonRank(), false /* all apps icon is ignored */);
+            countX = countX + 1;
+        } else if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
+            workspace.removeWorkspaceItem(v);
+            return consume;
         } else {
-            matrix = FocusLogic.createSparseMatrix(layout);
+            matrix = FocusLogic.createSparseMatrix(iconLayout);
         }
 
         // Process the focus.
@@ -294,7 +313,7 @@ public class FocusHelper {
             case FocusLogic.NEXT_PAGE_FIRST_ITEM:
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
                 newIcon = parent.getChildAt(0);
-                workspace.snapToPage(pageIndex - 1);
+                workspace.snapToPage(pageIndex + 1);
                 break;
             case FocusLogic.CURRENT_PAGE_FIRST_ITEM:
                 newIcon = parent.getChildAt(0);
@@ -344,8 +363,7 @@ public class FocusHelper {
         final int iconIndex = findIndexOfView(parent, v);
         int pageIndex = workspace.indexOfChild(layout);
         int pageCount = workspace.getChildCount();
-        int[][] map = FocusLogic.createFullMatrix(countX, countY, true /* incremental order index */
-                );
+        int[][] map = FocusLogic.createFullMatrix(countX, countY, true /* incremental order */);
 
         // Process the focus.
         int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX, countY, map, iconIndex,

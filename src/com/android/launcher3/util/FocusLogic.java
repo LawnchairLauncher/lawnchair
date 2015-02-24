@@ -47,10 +47,13 @@ public class FocusLogic {
 
     // Item and page index related constant used by {@link #handleKeyEvent}.
     public static final int NOOP = -1;
+
     public static final int PREVIOUS_PAGE_FIRST_ITEM    = -2;
     public static final int PREVIOUS_PAGE_LAST_ITEM     = -3;
+
     public static final int CURRENT_PAGE_FIRST_ITEM     = -4;
     public static final int CURRENT_PAGE_LAST_ITEM      = -5;
+
     public static final int NEXT_PAGE_FIRST_ITEM        = -6;
 
     // Matrix related constant.
@@ -63,7 +66,8 @@ public class FocusLogic {
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
                 keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
                 keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END ||
-                keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
+                keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
+                keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
             return true;
         }
         return false;
@@ -175,9 +179,9 @@ public class FocusLogic {
      * The size of the returning matrix is [icon column count x (icon + hotseat row count)]
      * in portrait orientation. In landscape, [(icon + hotseat) column count x (icon row count)]
      */
- // TODO: get rid of the dynamic matrix creation
+    // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrix(CellLayout iconLayout, CellLayout hotseatLayout,
-            int orientation) {
+            int orientation, int allappsiconRank, boolean includeAllappsicon) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
@@ -203,22 +207,27 @@ public class FocusLogic {
         }
 
         // Iterate thru the children of the bottom parent
-        for(int i = 0; i < hotseatParent.getChildCount(); i++) {
-            // If the hotseat view group contains more items than topColumnCnt, then just
-            // discard them.
-            // TODO: make this more elegant. (look at DynamicGrid)
+        // The hotseat view group contains one more item than iconLayout column count.
+        // If {@param allappsiconRank} not negative, then the last icon in the hotseat
+        // is truncated. If it is negative, then all apps icon index is not inserted.
+        for(int i = hotseatParent.getChildCount() - 1; i >= (includeAllappsicon ? 0 : 1); i--) {
+            int delta = 0;
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 int cx = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellX;
-                if (cx < iconLayout.getCountX()) {
-                    matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
+                if ((includeAllappsicon && cx >= allappsiconRank) ||
+                        (!includeAllappsicon && cx > allappsiconRank)) {
+                        delta = -1;
                 }
+                matrix[cx + delta][iconLayout.getCountY()] = iconParent.getChildCount() + i;
             } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 int cy = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellY;
-                if (cy < iconLayout.getCountY()) {
-                    matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
+                if ((includeAllappsicon && cy >= allappsiconRank) ||
+                        (!includeAllappsicon && cy > allappsiconRank)) {
+                        delta = -1;
                 }
+                matrix[iconLayout.getCountX()][cy + delta] = iconParent.getChildCount() + i;
             }
         }
         if (DEBUG) {
@@ -266,12 +275,7 @@ public class FocusLogic {
 
         // Rule1: check first in the horizontal direction
         for (int i = xPos + increment; 0 <= i && i < cntX; i = i + increment) {
-            if (DEBUG) {
-                Log.v(TAG, String.format("\t\tsearch: \t[x, y]=[%d, %d] iconIndex=%d",
-                        i, yPos, matrix[i][yPos]));
-            }
-            if (matrix[i][yPos] != -1) {
-                newIconIndex = matrix[i][yPos];
+            if ((newIconIndex = inspectMatrix(i, yPos, cntX, cntY, matrix)) != NOOP) {
                 return newIconIndex;
             }
         }
@@ -332,12 +336,7 @@ public class FocusLogic {
 
         // Rule1: check first in the dpad direction
         for (int j = yPos + increment; 0 <= j && j <cntY && 0 <= j; j = j + increment) {
-            if (DEBUG) {
-                Log.v(TAG, String.format("\t\tsearch: \t[x, y]=[%d, %d] iconIndex=%d",
-                        xPos, j, matrix[xPos][j]));
-            }
-            if (matrix[xPos][j] != -1) {
-                newIconIndex = matrix[xPos][j];
+            if ((newIconIndex = inspectMatrix(xPos, j, cntX, cntY, matrix)) != NOOP) {
                 return newIconIndex;
             }
         }
