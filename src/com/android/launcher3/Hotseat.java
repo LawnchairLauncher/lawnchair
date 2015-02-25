@@ -83,13 +83,24 @@ public class Hotseat extends FrameLayout {
     int getOrderInHotseat(int x, int y) {
         return hasVerticalHotseat() ? (mContent.getCountY() - y - 1) : x;
     }
+
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
         return hasVerticalHotseat() ? 0 : rank;
     }
+
     int getCellYFromOrder(int rank) {
         return hasVerticalHotseat() ? (mContent.getCountY() - (rank + 1)) : 0;
     }
+
+    public int getAllAppsButtonRank() {
+        if (LauncherAppState.isDisableAllApps()) {
+            return -1;
+        } else {
+            return mAllAppsButtonRank;
+        }
+    }
+
     public boolean isAllAppsButtonRank(int rank) {
         if (LauncherAppState.isDisableAllApps()) {
             return false;

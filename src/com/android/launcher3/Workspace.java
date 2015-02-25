@@ -4231,6 +4231,9 @@ public class Workspace extends SmoothPagedView
         mDragInfo = null;
     }
 
+    /**
+     * For opposite operation. See {@link #addInScreen}.
+     */
     public void removeWorkspaceItem(View v) {
         CellLayout parentCell = getParentCellLayoutForView(v);
         if (parentCell != null) {
