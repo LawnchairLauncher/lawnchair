@@ -57,7 +57,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -233,7 +233,7 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
-    private void addModifiedTime(ContentValues values) {
+    private static void addModifiedTime(ContentValues values) {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
 
@@ -426,7 +426,7 @@ public class LauncherProvider extends ContentProvider {
 
         private void addWorkspacesTable(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + TABLE_WORKSPACE_SCREENS + " (" +
-                    LauncherSettings.WorkspaceScreens._ID + " INTEGER," +
+                    LauncherSettings.WorkspaceScreens._ID + " INTEGER PRIMARY KEY," +
                     LauncherSettings.WorkspaceScreens.SCREEN_RANK + " INTEGER," +
                     LauncherSettings.ChangeLogColumns.MODIFIED + " INTEGER NOT NULL DEFAULT 0" +
                     ");");
@@ -563,7 +563,12 @@ public class LauncherProvider extends ContentProvider {
                     if (!updateFolderItemsRank(db, true)) {
                         break;
                     }
-                case 21: {
+                case 21:
+                    // Recreate workspace table with screen id a primary key
+                    if (!recreateWorkspaceTable(db)) {
+                        break;
+                    }
+                case 22: {
                     // DB Upgraded successfully
                     return;
                 }
@@ -590,6 +595,54 @@ public class LauncherProvider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
             onCreate(db);
+        }
+
+        /**
+         * Recreates workspace table and migrates data to the new table.
+         */
+        public boolean recreateWorkspaceTable(SQLiteDatabase db) {
+            db.beginTransaction();
+            try {
+                Cursor c = db.query(TABLE_WORKSPACE_SCREENS,
+                        new String[] {LauncherSettings.WorkspaceScreens._ID},
+                        null, null, null, null,
+                        LauncherSettings.WorkspaceScreens.SCREEN_RANK);
+                ArrayList<Long> sortedIDs = new ArrayList<Long>();
+                long maxId = 0;
+                try {
+                    while (c.moveToNext()) {
+                        Long id = c.getLong(0);
+                        if (!sortedIDs.contains(id)) {
+                            sortedIDs.add(id);
+                            maxId = Math.max(maxId, id);
+                        }
+                    }
+                } finally {
+                    c.close();
+                }
+
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
+                addWorkspacesTable(db);
+
+                // Add all screen ids back
+                int total = sortedIDs.size();
+                for (int i = 0; i < total; i++) {
+                    ContentValues values = new ContentValues();
+                    values.put(LauncherSettings.WorkspaceScreens._ID, sortedIDs.get(i));
+                    values.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                    addModifiedTime(values);
+                    db.insertOrThrow(TABLE_WORKSPACE_SCREENS, null, values);
+                }
+                db.setTransactionSuccessful();
+                mMaxScreenId = maxId;
+            } catch (SQLException ex) {
+                // Old version remains, which means we wipe old data
+                Log.e(TAG, ex.getMessage(), ex);
+                return false;
+            } finally {
+                db.endTransaction();
+            }
+            return true;
         }
 
         private boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
