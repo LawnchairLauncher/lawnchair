@@ -70,8 +70,6 @@ public class DragView extends View {
         mInitialScale = initialScale;
 
         final Resources res = getResources();
-        final float offsetX = res.getDimensionPixelSize(R.dimen.dragViewOffsetX);
-        final float offsetY = res.getDimensionPixelSize(R.dimen.dragViewOffsetY);
         final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
         final float scale = (width + scaleDps) / width;
 
@@ -87,8 +85,8 @@ public class DragView extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 final float value = (Float) animation.getAnimatedValue();
 
-                final int deltaX = (int) ((value * offsetX) - mOffsetX);
-                final int deltaY = (int) ((value * offsetY) - mOffsetY);
+                final int deltaX = (int) (-mOffsetX);
+                final int deltaY = (int) (-mOffsetY);
 
                 mOffsetX += deltaX;
                 mOffsetY += deltaY;
