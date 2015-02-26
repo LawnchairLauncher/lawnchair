@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -42,7 +40,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -450,18 +447,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
             Toast.LENGTH_SHORT);
         mWidgetInstructionToast.show();
-
-        // Create a little animation to show that the widget can move
-        float offsetY = getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
-        final ImageView p = (ImageView) v.findViewById(R.id.widget_preview);
-        AnimatorSet bounce = LauncherAnimUtils.createAnimatorSet();
-        ValueAnimator tyuAnim = LauncherAnimUtils.ofFloat(p, "translationY", offsetY);
-        tyuAnim.setDuration(125);
-        ValueAnimator tydAnim = LauncherAnimUtils.ofFloat(p, "translationY", 0f);
-        tydAnim.setDuration(100);
-        bounce.play(tyuAnim).before(tydAnim);
-        bounce.setInterpolator(new AccelerateInterpolator());
-        bounce.start();
     }
 
     public boolean onKey(View v, int keyCode, KeyEvent event) {
