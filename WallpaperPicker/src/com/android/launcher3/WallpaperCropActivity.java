@@ -50,7 +50,6 @@ import com.android.photos.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
 import com.android.photos.views.TiledImageRenderer.TileSource;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -170,17 +169,23 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
                     @Override
                     public Bitmap forPixelCount(int count) {
+                        Bitmap bitmapToReuse = null;
+                        // Find the smallest bitmap that satisfies the pixel count limit
                         synchronized (mReusableBitmaps) {
-                            Iterator<Bitmap> itr = mReusableBitmaps.iterator();
-                            while (itr.hasNext()) {
-                                Bitmap b = itr.next();
-                                if (b.getWidth() * b.getHeight() >= count) {
-                                    itr.remove();
-                                    return b;
+                            int currentBitmapSize = Integer.MAX_VALUE;
+                            for (Bitmap b : mReusableBitmaps) {
+                                int bitmapSize = b.getWidth() * b.getHeight();
+                                if ((bitmapSize >= count) && (bitmapSize < currentBitmapSize)) {
+                                    bitmapToReuse = b;
+                                    currentBitmapSize = bitmapSize;
                                 }
                             }
+
+                            if (bitmapToReuse != null) {
+                                mReusableBitmaps.remove(bitmapToReuse);
+                            }
                         }
-                        return null;
+                        return bitmapToReuse;
                     }
                 });
             } catch (SecurityException securityException) {
