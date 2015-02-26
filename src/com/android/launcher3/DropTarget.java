@@ -65,6 +65,29 @@ public interface DropTarget {
 
         public DragObject() {
         }
+
+        /**
+         * This is used to compute the visual center of the dragView. This point is then
+         * used to visualize drop locations and determine where to drop an item. The idea is that
+         * the visual center represents the user's interpretation of where the item is, and hence
+         * is the appropriate point to use when determining drop location.
+         */
+        public final float[] getVisualCenter(float[] recycle) {
+            final float res[] = (recycle == null) ? new float[2] : recycle;
+
+            // These represent the visual top and left of drag view if a dragRect was provided.
+            // If a dragRect was not provided, then they correspond to the actual view left and
+            // top, as the dragRect is in that case taken to be the entire dragView.
+            // R.dimen.dragViewOffsetY.
+            int left = x - xOffset;
+            int top = y - yOffset;
+
+            // In order to find the visual center, we shift by half the dragRect
+            res[0] = left + dragView.getDragRegion().width() / 2;
+            res[1] = top + dragView.getDragRegion().height() / 2;
+
+            return res;
+        }
     }
 
     public static class DragEnforcer implements DragController.DragListener {

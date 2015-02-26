@@ -68,10 +68,6 @@
          or right while you're dragging. -->
     <dimen name="scroll_zone">20dp</dimen>
 
-    <!-- When dragging items on the workspace, the number of dps by which the position of
-     the drag view should be offset from the position of the original view. -->
-    <dimen name="dragViewOffsetX">0dp</dimen>
-    <dimen name="dragViewOffsetY">0dp</dimen>
     <!--  When dragging an item, how much bigger (fixed dps) the dragged view
           should be. If 0, it will not be scaled at all. -->
     <dimen name="dragViewScale">12dp</dimen>
