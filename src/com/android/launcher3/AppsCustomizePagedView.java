@@ -358,7 +358,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         super.onLayout(changed, l, t, r, b);
 
         if (!isDataReady()) {
-            if ((LauncherAppState.isDisableAllApps() || !mApps.isEmpty()) && !mWidgets.isEmpty()) {
+            if ((!mApps.isEmpty()) && !mWidgets.isEmpty()) {
                 post(new Runnable() {
                     // This code triggers requestLayout so must be posted outside of the
                     // layout pass.
@@ -1402,11 +1402,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void setApps(ArrayList<AppInfo> list) {
-        if (!LauncherAppState.isDisableAllApps()) {
-            mApps = list;
-            Collections.sort(mApps, LauncherModel.getAppNameComparator());
-            updatePageCountsAndInvalidateData();
-        }
+        mApps = list;
+        Collections.sort(mApps, LauncherModel.getAppNameComparator());
+        updatePageCountsAndInvalidateData();
     }
 
     public ArrayList<AppInfo> getApps() {
@@ -1425,10 +1423,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
     public void addApps(ArrayList<AppInfo> list) {
-        if (!LauncherAppState.isDisableAllApps()) {
-            addAppsWithoutInvalidate(list);
-            updatePageCountsAndInvalidateData();
-        }
+        addAppsWithoutInvalidate(list);
+        updatePageCountsAndInvalidateData();
     }
     private int findAppByComponent(List<AppInfo> list, AppInfo item) {
         ComponentName removeComponent = item.intent.getComponent();
@@ -1454,20 +1450,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
     public void removeApps(ArrayList<AppInfo> appInfos) {
-        if (!LauncherAppState.isDisableAllApps()) {
-            removeAppsWithoutInvalidate(appInfos);
-            updatePageCountsAndInvalidateData();
-        }
+        removeAppsWithoutInvalidate(appInfos);
+        updatePageCountsAndInvalidateData();
     }
     public void updateApps(ArrayList<AppInfo> list) {
         // We remove and re-add the updated applications list because it's properties may have
         // changed (ie. the title), and this will ensure that the items will be in their proper
         // place in the list.
-        if (!LauncherAppState.isDisableAllApps()) {
-            removeAppsWithoutInvalidate(list);
-            addAppsWithoutInvalidate(list);
-            updatePageCountsAndInvalidateData();
-        }
+        removeAppsWithoutInvalidate(list);
+        addAppsWithoutInvalidate(list);
+        updatePageCountsAndInvalidateData();
     }
 
     public void reset() {

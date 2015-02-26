@@ -186,11 +186,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 final PendingInstallShortcutInfo pendingInfo = iter.next();
                 final Intent intent = pendingInfo.launchIntent;
 
-                if (LauncherAppState.isDisableAllApps() && !isValidShortcutLaunchIntent(intent)) {
-                    if (DBG) Log.d(TAG, "Ignoring shortcut with launchIntent:" + intent);
-                    continue;
-                }
-
                 // If the intent specifies a package, make sure the package exists
                 String packageName = pendingInfo.getTargetPackage();
                 if (!TextUtils.isEmpty(packageName)) {
