@@ -613,11 +613,7 @@ public class CellLayout extends ViewGroup {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
-            if (inLayout) {
-                mShortcutsAndWidgets.addView(child, index, lp, true);
-            } else {
-                mShortcutsAndWidgets.addView(child, index, lp, false);
-            }
+            mShortcutsAndWidgets.addView(child, index, lp, inLayout);
 
             if (markCells) markCellsAsOccupiedForView(child);
 
