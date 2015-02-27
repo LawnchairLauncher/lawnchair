@@ -25,6 +25,7 @@ public class LauncherFiles {
             WallpaperCropActivity.class.getName();
     public static final String WALLPAPER_IMAGES_DB = "saved_wallpaper_images.db";
     public static final String WIDGET_PREVIEWS_DB = "widgetpreviews.db";
+    public static final String APP_ICONS_DB = "app_icons.db";
 
     public static final List<String> ALL_FILES = Collections.unmodifiableList(Arrays.asList(
             DEFAULT_WALLPAPER_THUMBNAIL,
@@ -36,5 +37,6 @@ public class LauncherFiles {
             STATS_LOG,
             WALLPAPER_CROP_PREFERENCES_KEY + XML,
             WALLPAPER_IMAGES_DB,
-            WIDGET_PREVIEWS_DB));
+            WIDGET_PREVIEWS_DB,
+            APP_ICONS_DB));
 }

@@ -18,15 +18,19 @@ package com.android.launcher3;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -37,15 +41,10 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 /**
@@ -56,7 +55,6 @@ public class IconCache {
     private static final String TAG = "Launcher.IconCache";
 
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
-    private static final String RESOURCE_FILE_PREFIX = "icon_";
 
     // Empty class name is used for storing package default entry.
     private static final String EMPTY_CLASS_NAME = ".";
@@ -98,7 +96,8 @@ public class IconCache {
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<CacheKey, CacheEntry> mCache =
             new HashMap<CacheKey, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
-    private int mIconDpi;
+    private final int mIconDpi;
+    private final IconDB mIconDb;
 
     public IconCache(Context context) {
         ActivityManager activityManager =
@@ -109,13 +108,10 @@ public class IconCache {
         mUserManager = UserManagerCompat.getInstance(mContext);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mIconDpi = activityManager.getLauncherLargeIconDensity();
-
-        // need to set mIconDpi before getting default icon
-        UserHandleCompat myUser = UserHandleCompat.myUserHandle();
-        mDefaultIcons.put(myUser, makeDefaultIcon(myUser));
+        mIconDb = new IconDB(context);
     }
 
-    public Drawable getFullResDefaultActivityIcon() {
+    private Drawable getFullResDefaultActivityIcon() {
         return getFullResIcon(Resources.getSystem(), android.R.mipmap.sym_def_app_icon);
     }
 
@@ -188,9 +184,9 @@ public class IconCache {
     }
 
     /**
-     * Remove any records for the supplied package name.
+     * Remove any records for the supplied package name from memory.
      */
-    public synchronized void remove(String packageName, UserHandleCompat user) {
+    private void removeFromMemCacheLocked(String packageName, UserHandleCompat user) {
         HashSet<CacheKey> forDeletion = new HashSet<CacheKey>();
         for (CacheKey key: mCache.keySet()) {
             if (key.componentName.getPackageName().equals(packageName)
@@ -202,6 +198,140 @@ public class IconCache {
             mCache.remove(condemned);
         }
     }
+
+    /**
+     * Updates the entries related to the given package in memory and persistent DB.
+     */
+    public synchronized void updateIconsForPkg(String packageName, UserHandleCompat user) {
+        removeIconsForPkg(packageName, user);
+        try {
+            PackageInfo info = mPackageManager.getPackageInfo(packageName,
+                    PackageManager.GET_UNINSTALLED_PACKAGES);
+            long userSerial = mUserManager.getSerialNumberForUser(user);
+            for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(packageName, user)) {
+                addIconToDB(app, info, userSerial);
+            }
+        } catch (NameNotFoundException e) {
+            Log.d(TAG, "Package not found", e);
+            return;
+        }
+    }
+
+    /**
+     * Removes the entries related to the given package in memory and persistent DB.
+     */
+    public synchronized void removeIconsForPkg(String packageName, UserHandleCompat user) {
+        removeFromMemCacheLocked(packageName, user);
+        long userSerial = mUserManager.getSerialNumberForUser(user);
+        mIconDb.getWritableDatabase().delete(IconDB.TABLE_NAME,
+                IconDB.COLUMN_COMPONENT + " LIKE ? AND " + IconDB.COLUMN_USER + " = ?",
+                new String[] {packageName + "/%", Long.toString(userSerial)});
+    }
+
+    /**
+     * Updates the persistent DB, such that only entries corresponding to {@param apps} remain in
+     * the DB and are updated.
+     * @return The set of packages for which icons have updated.
+     */
+    public HashSet<String> updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps) {
+        long userSerial = mUserManager.getSerialNumberForUser(user);
+        PackageManager pm = mContext.getPackageManager();
+        HashMap<String, PackageInfo> pkgInfoMap = new HashMap<String, PackageInfo>();
+        for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
+            pkgInfoMap.put(info.packageName, info);
+        }
+
+        HashMap<ComponentName, LauncherActivityInfoCompat> componentMap = new HashMap<>();
+        for (LauncherActivityInfoCompat app : apps) {
+            componentMap.put(app.getComponentName(), app);
+        }
+
+        Cursor c = mIconDb.getReadableDatabase().query(IconDB.TABLE_NAME,
+                new String[] {IconDB.COLUMN_ROWID, IconDB.COLUMN_COMPONENT,
+                    IconDB.COLUMN_LAST_UPDATED, IconDB.COLUMN_VERSION},
+                IconDB.COLUMN_USER + " = ? ",
+                new String[] {Long.toString(userSerial)},
+                null, null, null);
+
+        final int indexComponent = c.getColumnIndex(IconDB.COLUMN_COMPONENT);
+        final int indexLastUpdate = c.getColumnIndex(IconDB.COLUMN_LAST_UPDATED);
+        final int indexVersion = c.getColumnIndex(IconDB.COLUMN_VERSION);
+        final int rowIndex = c.getColumnIndex(IconDB.COLUMN_ROWID);
+
+        HashSet<Integer> itemsToRemove = new HashSet<Integer>();
+        HashSet<String> updatedPackages = new HashSet<String>();
+
+        while (c.moveToNext()) {
+            String cn = c.getString(indexComponent);
+            ComponentName component = ComponentName.unflattenFromString(cn);
+            PackageInfo info = pkgInfoMap.get(component.getPackageName());
+            if (info == null) {
+                itemsToRemove.add(c.getInt(rowIndex));
+                continue;
+            }
+            if ((info.applicationInfo.flags & ApplicationInfo.FLAG_IS_DATA_ONLY) != 0) {
+                // Application is not present
+                continue;
+            }
+
+            long updateTime = c.getLong(indexLastUpdate);
+            int version = c.getInt(indexVersion);
+            LauncherActivityInfoCompat app = componentMap.remove(component);
+            if (version == info.versionCode && updateTime == info.lastUpdateTime) {
+                continue;
+            }
+            if (app == null) {
+                itemsToRemove.add(c.getInt(rowIndex));
+                continue;
+            }
+            ContentValues values = updateCacheAndGetContentValues(app);
+            mIconDb.getWritableDatabase().update(IconDB.TABLE_NAME, values,
+                    IconDB.COLUMN_COMPONENT + " = ?",
+                    new String[] { cn });
+
+            updatedPackages.add(component.getPackageName());
+        }
+        c.close();
+        if (!itemsToRemove.isEmpty()) {
+            mIconDb.getWritableDatabase().delete(IconDB.TABLE_NAME,
+                    IconDB.COLUMN_ROWID + " IN ( " + TextUtils.join(", ", itemsToRemove) +" )",
+                    null);
+        }
+
+        // Insert remaining apps.
+        for (LauncherActivityInfoCompat app : componentMap.values()) {
+            PackageInfo info = pkgInfoMap.get(app.getComponentName().getPackageName());
+            if (info == null) {
+                continue;
+            }
+            addIconToDB(app, info, userSerial);
+        }
+        return updatedPackages;
+    }
+
+    private void addIconToDB(LauncherActivityInfoCompat app, PackageInfo info, long userSerial) {
+        ContentValues values = updateCacheAndGetContentValues(app);
+        values.put(IconDB.COLUMN_COMPONENT, app.getComponentName().flattenToString());
+        values.put(IconDB.COLUMN_USER, userSerial);
+        values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
+        values.put(IconDB.COLUMN_VERSION, info.versionCode);
+        mIconDb.getWritableDatabase().insertWithOnConflict(IconDB.TABLE_NAME, null, values,
+                SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    private ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app) {
+        CacheEntry entry = new CacheEntry();
+        entry.icon = Utilities.createIconBitmap(app.getBadgedIcon(mIconDpi), mContext);
+        entry.title = app.getLabel();
+        entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
+        mCache.put(new CacheKey(app.getComponentName(), app.getUser()), entry);
+
+        ContentValues values = new ContentValues();
+        values.put(IconDB.COLUMN_ICON, ItemInfo.flattenBitmap(entry.icon));
+        values.put(IconDB.COLUMN_LABEL, entry.title.toString());
+        return values;
+    }
+
 
     /**
      * Empty out the cache.
@@ -227,10 +357,8 @@ public class IconCache {
     /**
      * Fill in "application" with the icon and label for "info."
      */
-    public synchronized void getTitleAndIcon(AppInfo application, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache) {
-        CacheEntry entry = cacheLocked(application.componentName, info, labelCache,
-                info.getUser(), false);
+    public synchronized void getTitleAndIcon(AppInfo application, LauncherActivityInfoCompat info) {
+        CacheEntry entry = cacheLocked(application.componentName, info, info.getUser(), false);
 
         application.title = entry.title;
         application.iconBitmap = entry.icon;
@@ -246,15 +374,16 @@ public class IconCache {
         }
 
         LauncherActivityInfoCompat launcherActInfo = mLauncherApps.resolveActivity(intent, user);
-        CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, true);
+        CacheEntry entry = cacheLocked(component, launcherActInfo, user, true);
         return entry.icon;
     }
 
     /**
-     * Fill in "shortcutInfo" with the icon and label for "info."
+     * Fill in {@param shortcutInfo} with the icon and label for {@param intent}. If the
+     * corresponding activity is not found, it reverts to the package icon.
      */
     public synchronized void getTitleAndIcon(ShortcutInfo shortcutInfo, Intent intent,
-            UserHandleCompat user, boolean usePkgIcon) {
+            UserHandleCompat user) {
         ComponentName component = intent.getComponent();
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
@@ -263,32 +392,28 @@ public class IconCache {
             shortcutInfo.title = "";
             shortcutInfo.usingFallbackIcon = true;
         } else {
-            LauncherActivityInfoCompat launcherActInfo =
-                    mLauncherApps.resolveActivity(intent, user);
-            CacheEntry entry = cacheLocked(component, launcherActInfo, null, user, usePkgIcon);
-
-            shortcutInfo.setIcon(entry.icon);
-            shortcutInfo.title = entry.title;
-            shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
+            LauncherActivityInfoCompat info = mLauncherApps.resolveActivity(intent, user);
+            getTitleAndIcon(shortcutInfo, component, info, user, true);
         }
     }
 
+    /**
+     * Fill in {@param shortcutInfo} with the icon and label for {@param info}
+     */
+    public synchronized void getTitleAndIcon(
+            ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
+            UserHandleCompat user, boolean usePkgIcon) {
+        CacheEntry entry = cacheLocked(component, info, user, usePkgIcon);
+        shortcutInfo.setIcon(entry.icon);
+        shortcutInfo.title = entry.title;
+        shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
+    }
 
     public synchronized Bitmap getDefaultIcon(UserHandleCompat user) {
         if (!mDefaultIcons.containsKey(user)) {
             mDefaultIcons.put(user, makeDefaultIcon(user));
         }
         return mDefaultIcons.get(user);
-    }
-
-    public synchronized Bitmap getIcon(ComponentName component, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache) {
-        if (info == null || component == null) {
-            return null;
-        }
-
-        CacheEntry entry = cacheLocked(component, info, labelCache, info.getUser(), false);
-        return entry.icon;
     }
 
     public boolean isDefaultIcon(Bitmap icon, UserHandleCompat user) {
@@ -300,35 +425,17 @@ public class IconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
-            HashMap<Object, CharSequence> labelCache, UserHandleCompat user, boolean usePackageIcon) {
+            UserHandleCompat user, boolean usePackageIcon) {
         CacheKey cacheKey = new CacheKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null) {
             entry = new CacheEntry();
-
             mCache.put(cacheKey, entry);
 
-            if (info != null) {
-                ComponentName labelKey = info.getComponentName();
-                if (labelCache != null && labelCache.containsKey(labelKey)) {
-                    entry.title = labelCache.get(labelKey).toString();
-                } else {
-                    entry.title = info.getLabel().toString();
-                    if (labelCache != null) {
-                        labelCache.put(labelKey, entry.title);
-                    }
-                }
-
-                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
-                entry.icon = Utilities.createIconBitmap(
-                        info.getBadgedIcon(mIconDpi), mContext);
-            } else {
-                entry.title = "";
-                Bitmap preloaded = getPreloadedIcon(componentName, user);
-                if (preloaded != null) {
-                    if (DEBUG) Log.d(TAG, "using preloaded icon for " +
-                            componentName.toShortString());
-                    entry.icon = preloaded;
+            // Check the DB first.
+            if (!getEntryFromDB(componentName, user, entry)) {
+                if (info != null) {
+                    entry.icon = Utilities.createIconBitmap(info.getBadgedIcon(mIconDpi), mContext);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackage(
@@ -338,6 +445,7 @@ public class IconCache {
                                     componentName.toShortString());
                             entry.icon = packageEntry.icon;
                             entry.title = packageEntry.title;
+                            entry.contentDescription = packageEntry.contentDescription;
                         }
                     }
                     if (entry.icon == null) {
@@ -346,6 +454,11 @@ public class IconCache {
                         entry.icon = getDefaultIcon(user);
                     }
                 }
+            }
+
+            if (TextUtils.isEmpty(entry.title) && info != null) {
+                entry.title = info.getLabel().toString();
+                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
             }
         }
         return entry;
@@ -357,7 +470,7 @@ public class IconCache {
      */
     public synchronized void cachePackageInstallInfo(String packageName, UserHandleCompat user,
             Bitmap icon, CharSequence title) {
-        remove(packageName, user);
+        removeFromMemCacheLocked(packageName, user);
 
         CacheEntry entry = getEntryForPackage(packageName, user);
         if (!TextUtils.isEmpty(title)) {
@@ -379,30 +492,19 @@ public class IconCache {
         if (entry == null) {
             entry = new CacheEntry();
             entry.title = "";
+            entry.contentDescription = "";
             mCache.put(cacheKey, entry);
 
             try {
                 ApplicationInfo info = mPackageManager.getApplicationInfo(packageName, 0);
-                entry.title = info.loadLabel(mPackageManager);
                 entry.icon = Utilities.createIconBitmap(info.loadIcon(mPackageManager), mContext);
+                entry.title = info.loadLabel(mPackageManager);
+                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
             } catch (NameNotFoundException e) {
                 if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
             }
-
-            if (entry.icon == null) {
-                entry.icon = getPreloadedIcon(cn, user);
-            }
         }
         return entry;
-    }
-
-    public synchronized HashMap<ComponentName,Bitmap> getAllIcons() {
-        HashMap<ComponentName,Bitmap> set = new HashMap<ComponentName,Bitmap>();
-        for (CacheKey ck : mCache.keySet()) {
-            final CacheEntry e = mCache.get(ck);
-            set.put(ck.componentName, e.icon);
-        }
-        return set;
     }
 
     /**
@@ -411,16 +513,15 @@ public class IconCache {
      * <P>Queries for a component that does not exist in the package manager
      * will be answered by the persistent cache.
      *
-     * @param context application context
      * @param componentName the icon should be returned for this component
      * @param icon the icon to be persisted
      * @param dpi the native density of the icon
      */
-    public static void preloadIcon(Context context, ComponentName componentName, Bitmap icon,
-            int dpi) {
+    public void preloadIcon(ComponentName componentName, Bitmap icon, int dpi, String label,
+            long userSerial) {
         // TODO rescale to the correct native DPI
         try {
-            PackageManager packageManager = context.getPackageManager();
+            PackageManager packageManager = mContext.getPackageManager();
             packageManager.getActivityIcon(componentName);
             // component is present on the system already, do nothing
             return;
@@ -428,100 +529,86 @@ public class IconCache {
             // pass
         }
 
-        final String key = componentName.flattenToString();
-        FileOutputStream resourceFile = null;
+        ContentValues values = new ContentValues();
+        values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
+        values.put(IconDB.COLUMN_USER, userSerial);
+        values.put(IconDB.COLUMN_ICON, ItemInfo.flattenBitmap(icon));
+        values.put(IconDB.COLUMN_LABEL, label);
+        mIconDb.getWritableDatabase().insertWithOnConflict(IconDB.TABLE_NAME, null, values,
+                SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    private boolean getEntryFromDB(ComponentName component, UserHandleCompat user, CacheEntry entry) {
+        Cursor c = mIconDb.getReadableDatabase().query(IconDB.TABLE_NAME,
+                new String[] {IconDB.COLUMN_ICON, IconDB.COLUMN_LABEL},
+                IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
+                new String[] {component.flattenToString(),
+                    Long.toString(mUserManager.getSerialNumberForUser(user))},
+                null, null, null);
         try {
-            resourceFile = context.openFileOutput(getResourceFilename(componentName),
-                    Context.MODE_PRIVATE);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (icon.compress(android.graphics.Bitmap.CompressFormat.PNG, 75, os)) {
-                byte[] buffer = os.toByteArray();
-                resourceFile.write(buffer, 0, buffer.length);
-            } else {
-                Log.w(TAG, "failed to encode cache for " + key);
-                return;
-            }
-        } catch (FileNotFoundException e) {
-            Log.w(TAG, "failed to pre-load cache for " + key, e);
-        } catch (IOException e) {
-            Log.w(TAG, "failed to pre-load cache for " + key, e);
-        } finally {
-            if (resourceFile != null) {
-                try {
-                    resourceFile.close();
-                } catch (IOException e) {
-                    Log.d(TAG, "failed to save restored icon for: " + key, e);
+            if (c.moveToNext()) {
+                entry.icon = Utilities.createIconBitmap(c, 0, mContext);
+                entry.title = c.getString(1);
+                if (entry.title == null) {
+                    entry.title = "";
+                    entry.contentDescription = "";
+                } else {
+                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
                 }
+                return true;
             }
-        }
-    }
-
-    /**
-     * Read a pre-loaded icon from the persistent icon cache.
-     *
-     * @param componentName the component that should own the icon
-     * @returns a bitmap if one is cached, or null.
-     */
-    private Bitmap getPreloadedIcon(ComponentName componentName, UserHandleCompat user) {
-        final String key = componentName.flattenToShortString();
-
-        // We don't keep icons for other profiles in persistent cache.
-        if (!user.equals(UserHandleCompat.myUserHandle())) {
-            return null;
-        }
-
-        if (DEBUG) Log.v(TAG, "looking for pre-load icon for " + key);
-        Bitmap icon = null;
-        FileInputStream resourceFile = null;
-        try {
-            resourceFile = mContext.openFileInput(getResourceFilename(componentName));
-            byte[] buffer = new byte[1024];
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            int bytesRead = 0;
-            while(bytesRead >= 0) {
-                bytes.write(buffer, 0, bytesRead);
-                bytesRead = resourceFile.read(buffer, 0, buffer.length);
-            }
-            if (DEBUG) Log.d(TAG, "read " + bytes.size());
-            icon = BitmapFactory.decodeByteArray(bytes.toByteArray(), 0, bytes.size());
-            if (icon == null) {
-                Log.w(TAG, "failed to decode pre-load icon for " + key);
-            }
-        } catch (FileNotFoundException e) {
-            if (DEBUG) Log.d(TAG, "there is no restored icon for: " + key);
-        } catch (IOException e) {
-            Log.w(TAG, "failed to read pre-load icon for: " + key, e);
         } finally {
-            if(resourceFile != null) {
-                try {
-                    resourceFile.close();
-                } catch (IOException e) {
-                    Log.d(TAG, "failed to manage pre-load icon file: " + key, e);
-                }
+            c.close();
+        }
+        return false;
+    }
+
+    private static final class IconDB extends SQLiteOpenHelper {
+        private final static int DB_VERSION = 1;
+
+        private final static String TABLE_NAME = "icons";
+        private final static String COLUMN_ROWID = "rowid";
+        private final static String COLUMN_COMPONENT = "componentName";
+        private final static String COLUMN_USER = "profileId";
+        private final static String COLUMN_LAST_UPDATED = "lastUpdated";
+        private final static String COLUMN_VERSION = "version";
+        private final static String COLUMN_ICON = "icon";
+        private final static String COLUMN_LABEL = "label";
+
+        public IconDB(Context context) {
+            super(context, LauncherFiles.APP_ICONS_DB, null, DB_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
+                    COLUMN_COMPONENT + " TEXT NOT NULL, " +
+                    COLUMN_USER + " INTEGER NOT NULL, " +
+                    COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, " +
+                    COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, " +
+                    COLUMN_ICON + " BLOB, " +
+                    COLUMN_LABEL + " TEXT, " +
+                    "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ") " +
+                    ");");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion != newVersion) {
+                clearDB(db);
             }
         }
 
-        return icon;
-    }
-
-    /**
-     * Remove a pre-loaded icon from the persistent icon cache.
-     *
-     * @param componentName the component that should own the icon
-     */
-    public void deletePreloadedIcon(ComponentName componentName, UserHandleCompat user) {
-        // We don't keep icons for other profiles in persistent cache.
-        if (!user.equals(UserHandleCompat.myUserHandle()) || componentName == null) {
-            return;
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion != newVersion) {
+                clearDB(db);
+            }
         }
-        remove(componentName, user);
-        boolean success = mContext.deleteFile(getResourceFilename(componentName));
-        if (DEBUG && success) Log.d(TAG, "removed pre-loaded icon from persistent cache");
-    }
 
-    private static String getResourceFilename(ComponentName component) {
-        String resourceName = component.flattenToShortString();
-        String filename = resourceName.replace(File.separatorChar, '_');
-        return RESOURCE_FILE_PREFIX + filename;
+        private void clearDB(SQLiteDatabase db) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db);
+        }
     }
 }
