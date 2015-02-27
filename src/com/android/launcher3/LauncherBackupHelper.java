@@ -144,6 +144,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private final HashSet<String> mExistingKeys;
     private final ArrayList<Key> mKeys;
     private final ItemTypeMatcher[] mItemTypeMatchers;
+    private final long mUserSerial;
 
     private IconCache mIconCache;
     private BackupManager mBackupManager;
@@ -161,6 +162,9 @@ public class LauncherBackupHelper implements BackupHelper {
         mKeys = new ArrayList<Key>();
         restoreSuccessful = true;
         mItemTypeMatchers = new ItemTypeMatcher[CommonAppTypeParser.SUPPORTED_TYPE_COUNT];
+
+        UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+        mUserSerial = userManager.getSerialNumberForUser(UserHandleCompat.myUserHandle());
     }
 
     private void dataChanged() {
@@ -296,6 +300,12 @@ public class LauncherBackupHelper implements BackupHelper {
     public void restoreEntity(BackupDataInputStream data) {
         if (!restoreSuccessful) {
             return;
+        }
+        if (!initializeIconCache()) {
+            // During restore we do not need an initialized instance of IconCache. We can create
+            // a temporary icon cache here, as the process will be rebooted after restore
+            // is complete.
+            mIconCache = new IconCache(mContext);
         }
 
         int dataSize = data.size();
@@ -601,7 +611,8 @@ public class LauncherBackupHelper implements BackupHelper {
             Log.w(TAG, "failed to unpack icon for " + key.name);
         }
         if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
-        IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(key.name), icon, res.dpi);
+        mIconCache.preloadIcon(ComponentName.unflattenFromString(key.name), icon, res.dpi,
+                "" /* label */, mUserSerial);
     }
 
     /**
@@ -693,8 +704,8 @@ public class LauncherBackupHelper implements BackupHelper {
             if (icon == null) {
                 Log.w(TAG, "failed to unpack widget icon for " + key.name);
             } else {
-                IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(widget.provider),
-                        icon, widget.icon.dpi);
+                mIconCache.preloadIcon(ComponentName.unflattenFromString(widget.provider),
+                        icon, widget.icon.dpi, widget.label, mUserSerial);
             }
         }
 
@@ -1145,9 +1156,11 @@ public class LauncherBackupHelper implements BackupHelper {
 
         final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
         if (appState == null) {
-            Throwable stackTrace = new Throwable();
-            stackTrace.fillInStackTrace();
-            Log.w(TAG, "Failed to get app state during backup/restore", stackTrace);
+            if (DEBUG) {
+                Throwable stackTrace = new Throwable();
+                stackTrace.fillInStackTrace();
+                Log.w(TAG, "Failed to get app state during backup/restore", stackTrace);
+            }
             return false;
         }
         mIconCache = appState.getIconCache();

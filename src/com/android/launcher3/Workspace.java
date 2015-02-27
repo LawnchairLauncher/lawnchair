@@ -4772,7 +4772,7 @@ public class Workspace extends SmoothPagedView
                         if (shortcutInfo.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
                             // For auto install apps update the icon as well as label.
                             mIconCache.getTitleAndIcon(shortcutInfo,
-                                    shortcutInfo.promisedIntent, user, true);
+                                    shortcutInfo.promisedIntent, user);
                         } else {
                             // Only update the icon for restored apps.
                             shortcutInfo.updateIcon(mIconCache);

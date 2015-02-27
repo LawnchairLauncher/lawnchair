@@ -31,7 +31,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -110,6 +112,15 @@ public final class Utilities {
      */
     public static boolean isLmpOrAbove() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
+        byte[] data = c.getBlob(iconIndex);
+        try {
+            return createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), context);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
