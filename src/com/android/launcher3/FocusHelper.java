@@ -22,7 +22,6 @@ import android.view.KeyEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import com.android.launcher3.util.FocusLogic;
 
@@ -354,8 +353,7 @@ public class FocusHelper {
         // Initialize the variables.
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout layout = (CellLayout) parent.getParent();
-        final ScrollView scrollView = (ScrollView) layout.getParent();
-        final Folder folder = (Folder) scrollView.getParent();
+        final Folder folder = (Folder) layout.getParent().getParent();
         View title = folder.mFolderName;
         Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);
         final int countX = layout.getCountX();

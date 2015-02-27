@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<!--
+     Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,42 +15,50 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.Folder
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.Folder xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/quantum_panel">
+    android:background="@drawable/quantum_panel"
+    android:orientation="vertical" >
 
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <FrameLayout
+        android:id="@+id/folder_content_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-      <com.android.launcher3.CellLayout
-          android:id="@+id/folder_content"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:cacheColorHint="#ff333333"
-          android:hapticFeedbackEnabled="false" />
-    </ScrollView>
+        android:layout_height="match_parent" >
+
+        <!-- Actual size of the indicator doesn't matter as it is scaled to match the view size -->
+
+        <com.android.launcher3.FocusIndicatorView
+            android:id="@+id/focus_indicator"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <com.android.launcher3.FolderCellLayout
+            android:id="@+id/folder_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#ff333333"
+            android:hapticFeedbackEnabled="false" />
+    </FrameLayout>
 
     <com.android.launcher3.FolderEditText
         android:id="@+id/folder_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:paddingTop="@dimen/folder_name_padding"
-        android:paddingBottom="@dimen/folder_name_padding"
         android:background="#00000000"
-        android:hint="@string/folder_hint_text"
-        android:textSize="14sp"
-        android:textColor="#ff777777"
-        android:textColorHint="#ff808080"
-        android:textColorHighlight="#ffCCCCCC"
-        android:textCursorDrawable="@null"
+        android:fontFamily="sans-serif-condensed"
         android:gravity="center_horizontal"
-        android:singleLine="true"
+        android:hint="@string/folder_hint_text"
         android:imeOptions="flagNoExtractUi"
-        android:fontFamily="sans-serif-condensed"/>
+        android:paddingBottom="@dimen/folder_name_padding"
+        android:paddingTop="@dimen/folder_name_padding"
+        android:singleLine="true"
+        android:textColor="#ff777777"
+        android:textColorHighlight="#ffCCCCCC"
+        android:textColorHint="#ff808080"
+        android:textCursorDrawable="@null"
+        android:textSize="14sp" />
+
 </com.android.launcher3.Folder>
