@@ -20,7 +20,6 @@
     android:layout_height="@dimen/wallpaperThumbnailHeight"
     android:focusable="true"
     android:clickable="true"
-    android:background="@drawable/wallpaper_tile_fg"
     android:foreground="@drawable/wallpaper_tile_fg">
     <ImageView
         android:id="@+id/wallpaper_image"

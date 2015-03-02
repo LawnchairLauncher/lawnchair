@@ -18,60 +18,74 @@
 */
 -->
 
-<com.android.launcher3.WallpaperRootView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wallpaper_root"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
+
     <com.android.launcher3.CropView
         android:id="@+id/cropView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <ProgressBar
         android:id="@+id/loading"
-        style="@android:style/Widget.Holo.ProgressBar.Large"
-        android:visibility="invisible"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:indeterminate="true"
         android:indeterminateOnly="true"
-        android:background="@android:color/transparent" />
+        android:visibility="invisible" />
+
     <LinearLayout
         android:id="@+id/wallpaper_strip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:fitsSystemWindows="true"
         android:orientation="vertical" >
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/tile_shadow_top" />
+
         <HorizontalScrollView
             android:id="@+id/wallpaper_scroll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-            <LinearLayout android:id="@+id/master_wallpaper_list"
+
+            <LinearLayout
+                android:id="@+id/master_wallpaper_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
-                <LinearLayout android:id="@+id/wallpaper_list"
+
+                <LinearLayout
+                    android:id="@+id/wallpaper_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" />
-                <LinearLayout android:id="@+id/live_wallpaper_list"
+
+                <LinearLayout
+                    android:id="@+id/live_wallpaper_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" />
-                <LinearLayout android:id="@+id/third_party_wallpaper_list"
+
+                <LinearLayout
+                    android:id="@+id/third_party_wallpaper_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" />
             </LinearLayout>
         </HorizontalScrollView>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/tile_shadow_bottom" />
     </LinearLayout>
-</com.android.launcher3.WallpaperRootView>
+
+</FrameLayout>

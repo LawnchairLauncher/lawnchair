@@ -90,8 +90,6 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
             view = convertView;
         }
 
-        WallpaperPickerActivity.setWallpaperItemPaddingToZero((FrameLayout) view);
-
         LiveWallpaperTile wallpaperInfo = mWallpapers.get(position);
         wallpaperInfo.setView(view);
         ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);

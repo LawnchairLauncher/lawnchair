@@ -34,11 +34,9 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LevelListDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -95,7 +93,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private OnClickListener mThumbnailOnClickListener;
 
     private LinearLayout mWallpapersView;
-    private View mWallpaperStrip;
+    private HorizontalScrollView mWallpaperScrollContainer;
 
     private ActionMode.Callback mActionModeCallback;
     private ActionMode mActionMode;
@@ -313,10 +311,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    public void setWallpaperStripYOffset(float offset) {
-        mWallpaperStrip.setPadding(0, 0, 0, (int) offset);
-    }
-
     /**
      * shows the system wallpaper behind the window and hides the {@link
      * #mCropView} if visible
@@ -369,9 +363,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         mCropView.setVisibility(View.INVISIBLE);
 
         mProgressView = findViewById(R.id.loading);
-
-
-        mWallpaperStrip = findViewById(R.id.wallpaper_strip);
+        mWallpaperScrollContainer = (HorizontalScrollView) findViewById(R.id.wallpaper_scroll_container);
         mCropView.setTouchCallback(new CropView.TouchCallback() {
             ViewPropertyAnimator mAnim;
             @Override
@@ -379,15 +371,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 if (mAnim != null) {
                     mAnim.cancel();
                 }
-                if (mWallpaperStrip.getAlpha() == 1f) {
+                if (mWallpaperScrollContainer.getAlpha() == 1f) {
                     mIgnoreNextTap = true;
                 }
-                mAnim = mWallpaperStrip.animate();
+                mAnim = mWallpaperScrollContainer.animate();
                 mAnim.alpha(0f)
                     .setDuration(150)
                     .withEndAction(new Runnable() {
                         public void run() {
-                            mWallpaperStrip.setVisibility(View.INVISIBLE);
+                            mWallpaperScrollContainer.setVisibility(View.INVISIBLE);
                         }
                     });
                 mAnim.setInterpolator(new AccelerateInterpolator(0.75f));
@@ -405,8 +397,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     if (mAnim != null) {
                         mAnim.cancel();
                     }
-                    mWallpaperStrip.setVisibility(View.VISIBLE);
-                    mAnim = mWallpaperStrip.animate();
+                    mWallpaperScrollContainer.setVisibility(View.VISIBLE);
+                    mAnim = mWallpaperScrollContainer.animate();
                     mAnim.alpha(1f)
                          .setDuration(150)
                          .setInterpolator(new DecelerateInterpolator(0.75f));
@@ -487,7 +479,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);
         FrameLayout pickImageTile = (FrameLayout) getLayoutInflater().
                 inflate(R.layout.wallpaper_picker_image_picker_item, masterWallpaperList, false);
-        setWallpaperItemPaddingToZero(pickImageTile);
         masterWallpaperList.addView(pickImageTile, 0);
 
         // Make its background the last photo taken on external storage
@@ -659,17 +650,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private void initializeScrollForRtl() {
-        final HorizontalScrollView scroll =
-                (HorizontalScrollView) findViewById(R.id.wallpaper_scroll_container);
-
-        if (scroll.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            final ViewTreeObserver observer = scroll.getViewTreeObserver();
+        if (mWallpaperScrollContainer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            final ViewTreeObserver observer = mWallpaperScrollContainer.getViewTreeObserver();
             observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
                 public void onGlobalLayout() {
                     LinearLayout masterWallpaperList =
                             (LinearLayout) findViewById(R.id.master_wallpaper_list);
-                    scroll.scrollTo(masterWallpaperList.getWidth(), 0);
-                    scroll.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    mWallpaperScrollContainer.scrollTo(masterWallpaperList.getWidth(), 0);
+                    mWallpaperScrollContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
         }
@@ -696,10 +684,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     protected void onStop() {
         super.onStop();
-        mWallpaperStrip = findViewById(R.id.wallpaper_strip);
-        if (mWallpaperStrip.getAlpha() < 1f) {
-            mWallpaperStrip.setAlpha(1f);
-            mWallpaperStrip.setVisibility(View.VISIBLE);
+        mWallpaperScrollContainer = (HorizontalScrollView) findViewById(R.id.wallpaper_scroll_container);
+        if (mWallpaperScrollContainer.getAlpha() < 1f) {
+            mWallpaperScrollContainer.setAlpha(1f);
+            mWallpaperScrollContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -823,7 +811,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         final FrameLayout pickedImageThumbnail = (FrameLayout) getLayoutInflater().
                 inflate(R.layout.wallpaper_picker_item, mWallpapersView, false);
         pickedImageThumbnail.setVisibility(View.GONE);
-        setWallpaperItemPaddingToZero(pickedImageThumbnail);
         mWallpapersView.addView(pickedImageThumbnail, 0);
 
         // Load the thumbnail
@@ -884,11 +871,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             setResult(RESULT_OK);
             finish();
         }
-    }
-
-    static void setWallpaperItemPaddingToZero(FrameLayout frameLayout) {
-        frameLayout.setPadding(0, 0, 0, 0);
-        frameLayout.setForeground(new ZeroPaddingDrawable(frameLayout.getForeground()));
     }
 
     private void addLongPressHandler(View v) {
@@ -1089,20 +1071,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         return mSavedImages;
     }
 
-    static class ZeroPaddingDrawable extends LevelListDrawable {
-        public ZeroPaddingDrawable(Drawable d) {
-            super();
-            addLevel(0, 0, d);
-            setLevel(0);
-        }
-
-        @Override
-        public boolean getPadding(Rect padding) {
-            padding.set(0, 0, 0, 0);
-            return true;
-        }
-    }
-
     private static class SimpleWallpapersAdapter extends ArrayAdapter<WallpaperTileInfo> {
         private final LayoutInflater mLayoutInflater;
 
@@ -1129,8 +1097,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         } else {
             view = convertView;
         }
-
-        setWallpaperItemPaddingToZero((FrameLayout) view);
 
         ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);
 
