@@ -4169,23 +4169,18 @@ public class Workspace extends SmoothPagedView
         boolean beingCalledAfterUninstall = mDeferredAction != null;
 
         if (success && !(beingCalledAfterUninstall && !mUninstallSuccessful)) {
-            if (target != this && mDragInfo != null) {
+            if (mDragInfo != null) {
                 removeWorkspaceItem(mDragInfo.cell);
             }
         } else if (mDragInfo != null) {
-            CellLayout cellLayout;
-            if (mLauncher.isHotseatLayout(target)) {
-                cellLayout = mLauncher.getHotseat().getLayout();
-            } else {
-                cellLayout = getScreenWithId(mDragInfo.screenId);
-            }
-            if (cellLayout == null && LauncherAppState.isDogfoodBuild()) {
-                throw new RuntimeException("Invalid state: cellLayout == null in "
-                        + "Workspace#onDropCompleted. Please file a bug. ");
-            }
+            final CellLayout cellLayout = mLauncher.getCellLayout(
+                    mDragInfo.container, mDragInfo.screenId);
             if (cellLayout != null) {
                 cellLayout.onDropChild(mDragInfo.cell);
-            }
+            } else if (LauncherAppState.isDogfoodBuild()) {
+                throw new RuntimeException("Invalid state: cellLayout == null in "
+                        + "Workspace#onDropCompleted. Please file a bug. ");
+            };
         }
         if ((d.cancelled || (beingCalledAfterUninstall && !mUninstallSuccessful))
                 && mDragInfo.cell != null) {
