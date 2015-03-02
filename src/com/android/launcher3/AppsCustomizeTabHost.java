@@ -27,7 +27,6 @@ import android.widget.FrameLayout;
 public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransitionable, Insettable  {
     static final String LOG_TAG = "AppsCustomizeTabHost";
 
-    private static final String APPS_TAB_TAG = "APPS";
     private static final String WIDGETS_TAB_TAG = "WIDGETS";
 
     private AppsCustomizePagedView mPagedView;
@@ -48,10 +47,6 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
      */
     void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
         mPagedView.setContentType(type);
-    }
-
-    public void setCurrentTabFromContent(AppsCustomizePagedView.ContentType type) {
-        setContentTypeImmediate(type);
     }
 
     @Override
@@ -79,27 +74,38 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
     }
 
     /**
+     * Returns the content view used for the launcher transitions.
+     */
+    public View getContentView() {
+        return findViewById(R.id.apps_customize_pane_content);
+    }
+
+    /**
+     * Returns the reveal view used for the launcher transitions.
+     */
+    public View getRevealView() {
+        return findViewById(R.id.fake_page);
+    }
+
+    /**
+     * Returns the page indicators view.
+     */
+    public View getPageIndicators() {
+        return findViewById(R.id.apps_customize_page_indicator);
+    }
+
+    /**
      * Returns the content type for the specified tab tag.
      */
     public AppsCustomizePagedView.ContentType getContentTypeForTabTag(String tag) {
-        if (tag.equals(APPS_TAB_TAG)) {
-            return AppsCustomizePagedView.ContentType.Applications;
-        } else if (tag.equals(WIDGETS_TAB_TAG)) {
-            return AppsCustomizePagedView.ContentType.Widgets;
-        }
-        return AppsCustomizePagedView.ContentType.Applications;
+        return AppsCustomizePagedView.ContentType.Widgets;
     }
 
     /**
      * Returns the tab tag for a given content type.
      */
     public String getTabTagForContentType(AppsCustomizePagedView.ContentType type) {
-        if (type == AppsCustomizePagedView.ContentType.Applications) {
-            return APPS_TAB_TAG;
-        } else if (type == AppsCustomizePagedView.ContentType.Widgets) {
-            return WIDGETS_TAB_TAG;
-        }
-        return APPS_TAB_TAG;
+        return WIDGETS_TAB_TAG;
     }
 
     /**
@@ -199,6 +205,7 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
         ViewGroup parent = (ViewGroup) getParent();
         if (parent == null) return;
 
+        View appsView = ((Launcher) getContext()).getAppsView();
         View overviewPanel = ((Launcher) getContext()).getOverviewPanel();
         final int count = parent.getChildCount();
         if (!isChildrenDrawingOrderEnabled()) {
@@ -207,7 +214,8 @@ public class AppsCustomizeTabHost extends FrameLayout implements LauncherTransit
                 if (child == this) {
                     break;
                 } else {
-                    if (child.getVisibility() == GONE || child == overviewPanel) {
+                    if (child.getVisibility() == GONE || child == overviewPanel ||
+                            child == appsView) {
                         continue;
                     }
                     child.setVisibility(visibility);

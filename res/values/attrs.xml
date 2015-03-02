@@ -18,6 +18,14 @@
 
 <resources>
 
+    <!-- BubbleTextView specific attributes. -->
+    <declare-styleable name="BubbleTextView">
+        <attr name="layoutHorizontal" format="boolean" />
+        <attr name="iconSizeOverride" format="dimension" />
+        <attr name="iconPaddingOverride" format="dimension" />
+        <attr name="textSizeOverride" format="dimension" />
+    </declare-styleable>
+
     <!-- Page Indicator specific attributes. -->
     <declare-styleable name="PageIndicator">
         <attr name="windowSize" format="integer"  />

@@ -1528,7 +1528,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public void announceForAccessibility(CharSequence text) {
         // Don't announce if apps is on top of us.
-        if (!mLauncher.isAllAppsVisible()) {
+        if (!mLauncher.isAppsViewVisible()) {
             super.announceForAccessibility(text);
         }
     }
@@ -1816,7 +1816,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        if (!mLauncher.isAllAppsVisible()) {
+        if (!mLauncher.isAppsViewVisible()) {
             final Folder openFolder = getOpenFolder();
             if (openFolder != null) {
                 return openFolder.requestFocus(direction, previouslyFocusedRect);
@@ -1837,7 +1837,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if (!mLauncher.isAllAppsVisible()) {
+        if (!mLauncher.isAppsViewVisible()) {
             final Folder openFolder = getOpenFolder();
             if (openFolder != null) {
                 openFolder.addFocusables(views, direction);
@@ -2046,8 +2046,7 @@ public class Workspace extends SmoothPagedView
 
         // If this is a text view, use its drawable instead
         if (v instanceof TextView) {
-            TextView tv = (TextView) v;
-            Drawable d = tv.getCompoundDrawables()[1];
+            Drawable d = getTextViewIcon((TextView) v);
             Rect bounds = getDrawableBounds(d);
             bmpWidth = bounds.width();
             bmpHeight = bounds.height();
@@ -2348,7 +2347,7 @@ public class Workspace extends SmoothPagedView
                     cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
                 } else {
                     if (layerViews != null) {
-                        layerViews.put(cl, Launcher.BUILD_LAYER);
+                        layerViews.put(cl, LauncherStateTransitionAnimation.BUILD_LAYER);
                     }
                     if (mOldAlphas[i] != mNewAlphas[i] || currentAlpha != mNewAlphas[i]) {
                         LauncherViewPropertyAnimator alphaAnim =
@@ -2400,8 +2399,8 @@ public class Workspace extends SmoothPagedView
             if (layerViews != null) {
                 // If layerViews is not null, we add these views, and indicate that
                 // the caller can manage layer state.
-                layerViews.put(hotseat, Launcher.BUILD_AND_SET_LAYER);
-                layerViews.put(overviewPanel, Launcher.BUILD_AND_SET_LAYER);
+                layerViews.put(hotseat, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+                layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
             } else {
                 // Otherwise let the animator handle layer management.
                 hotseatAlpha.withLayer();
@@ -2430,7 +2429,7 @@ public class Workspace extends SmoothPagedView
                 if (layerViews != null) {
                     // If layerViews is not null, we add these views, and indicate that
                     // the caller can manage layer state.
-                    layerViews.put(searchBar, Launcher.BUILD_AND_SET_LAYER);
+                    layerViews.put(searchBar, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
                 } else {
                     // Otherwise let the animator handle layer management.
                     searchBarAlpha.withLayer();
@@ -2584,6 +2583,19 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
+     * Returns the drawable for the given text view.
+     */
+    public static Drawable getTextViewIcon(TextView tv) {
+        final Drawable[] drawables = tv.getCompoundDrawables();
+        for (int i = 0; i < drawables.length; i++) {
+            if (drawables[i] != null) {
+                return drawables[i];
+            }
+        }
+        return null;
+    }
+
+    /**
      * Draw the View v into the given Canvas.
      *
      * @param v the view to draw
@@ -2598,7 +2610,7 @@ public class Workspace extends SmoothPagedView
 
         destCanvas.save();
         if (v instanceof TextView) {
-            Drawable d = ((TextView) v).getCompoundDrawables()[1];
+            Drawable d = getTextViewIcon((TextView) v);
             Rect bounds = getDrawableBounds(d);
             clipRect.set(0, 0, bounds.width() + padding, bounds.height() + padding);
             destCanvas.translate(padding / 2 - bounds.left, padding / 2 - bounds.top);
@@ -2635,7 +2647,7 @@ public class Workspace extends SmoothPagedView
 
         int padding = expectedPadding.get();
         if (v instanceof TextView) {
-            Drawable d = ((TextView) v).getCompoundDrawables()[1];
+            Drawable d = getTextViewIcon((TextView) v);
             Rect bounds = getDrawableBounds(d);
             b = Bitmap.createBitmap(bounds.width() + padding,
                     bounds.height() + padding, Bitmap.Config.ARGB_8888);
@@ -2716,11 +2728,12 @@ public class Workspace extends SmoothPagedView
         beginDragShared(child, this, accessible);
     }
 
-    public void beginDragShared(View child, DragSource source) {
-        beginDragShared(child, source, false);
+    public void beginDragShared(View child, DragSource source, boolean accessible) {
+        beginDragShared(child, new Point(), source, accessible);
     }
 
-    public void beginDragShared(View child, DragSource source, boolean accessible) {
+    public void beginDragShared(View child, Point relativeTouchPos, DragSource source,
+            boolean accessible) {
         child.clearFocus();
         child.setPressed(false);
 
@@ -2745,11 +2758,23 @@ public class Workspace extends SmoothPagedView
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) child;
             int iconSize = grid.iconSizePx;
             int top = child.getPaddingTop();
             int left = (bmpWidth - iconSize) / 2;
             int right = left + iconSize;
             int bottom = top + iconSize;
+            if (icon.isLayoutHorizontal()) {
+                // If the layout is horizontal, then if we are just picking up the icon, then just
+                // use the child position since the icon is top-left aligned.  Otherwise, offset
+                // the drag layer position horizontally so that the icon is under the current
+                // touch position.
+                if (icon.getIcon().getBounds().contains(relativeTouchPos.x, relativeTouchPos.y)) {
+                    dragLayerX = Math.round(mTempXY[0]);
+                } else {
+                    dragLayerX = Math.round(mTempXY[0] + relativeTouchPos.x - (bmpWidth / 2));
+                }
+            }
             dragLayerY += top;
             // Note: The drag region is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
@@ -2829,18 +2854,6 @@ public class Workspace extends SmoothPagedView
 
         // Recycle temporary bitmaps
         tmpB.recycle();
-    }
-
-    void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, long screenId,
-            int cellX, int cellY, boolean insertAtFirst, int intersectX, int intersectY) {
-        View view = mLauncher.createShortcut(R.layout.application, target, (ShortcutInfo) info);
-
-        final int[] cellXY = new int[2];
-        target.findCellForSpanThatIntersects(cellXY, 1, 1, intersectX, intersectY);
-        addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1, insertAtFirst);
-
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId, cellXY[0],
-                cellXY[1]);
     }
 
     public boolean transitionStateShouldAllowDrop() {
@@ -4769,7 +4782,7 @@ public class Workspace extends SmoothPagedView
                         updates.contains(info)) {
                     ShortcutInfo si = (ShortcutInfo) info;
                     BubbleTextView shortcut = (BubbleTextView) v;
-                    boolean oldPromiseState = shortcut.getCompoundDrawables()[1]
+                    boolean oldPromiseState = getTextViewIcon(shortcut)
                             instanceof PreloadIconDrawable;
                     shortcut.applyFromShortcutInfo(si, mIconCache, true,
                             si.isPromise() != oldPromiseState);

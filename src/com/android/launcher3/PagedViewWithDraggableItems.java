@@ -109,7 +109,7 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         // Return early if we are still animating the pages
         if (mNextPage != INVALID_PAGE) return false;
         // When we have exited all apps or are in transition, disregard long clicks
-        if (!mLauncher.isAllAppsVisible() ||
+        if (!mLauncher.isWidgetsViewVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return false;

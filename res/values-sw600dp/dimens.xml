@@ -17,6 +17,9 @@
 <resources>
     <dimen name="app_icon_size">64dp</dimen>
 
+<!-- Apps view -->
+    <dimen name="apps_view_row_height">76dp</dimen>
+
 <!-- AppsCustomize -->
     <dimen name="apps_customize_tab_bar_height">60dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
