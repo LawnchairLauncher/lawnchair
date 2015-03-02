@@ -153,7 +153,7 @@ public class LauncherProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         addModifiedTime(initialValues);
         final long rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
-        if (rowId <= 0) return null;
+        if (rowId < 0) return null;
 
         uri = ContentUris.withAppendedId(uri, rowId);
         sendNotify(uri);
