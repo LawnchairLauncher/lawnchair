@@ -56,23 +56,22 @@ public class DynamicGrid {
         DisplayMetrics dm = resources.getDisplayMetrics();
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
-        boolean hasAA = !LauncherAppState.isDisableAllApps();
         DEFAULT_ICON_SIZE_PX = pxFromDp(DEFAULT_ICON_SIZE_DP, dm);
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
-                255, 300,  2, 3,  48, 13, (hasAA ? 3 : 5), 48, R.xml.default_workspace_4x4));
+                255, 300,  2, 3,  48, 13, 3, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Shorter Stubby",
-                255, 400,  3, 3,  48, 13, (hasAA ? 3 : 5), 48, R.xml.default_workspace_4x4));
+                255, 400,  3, 3,  48, 13, 3, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Short Stubby",
-                275, 420,  3, 4,  48, 13, (hasAA ? 5 : 5), 48, R.xml.default_workspace_4x4));
+                275, 420,  3, 4,  48, 13, 5, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Stubby",
-                255, 450,  3, 4,  48, 13, (hasAA ? 5 : 5), 48, R.xml.default_workspace_4x4));
+                255, 450,  3, 4,  48, 13, 5, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Nexus S",
-                296, 491.33f,  4, 4,  48, 13, (hasAA ? 5 : 5), 48, R.xml.default_workspace_4x4));
+                296, 491.33f,  4, 4,  48, 13, 5, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
-                335, 567,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, (hasAA ? 5 : 5), 56, R.xml.default_workspace_4x4));
+                335, 567,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Nexus 5",
-                359, 567,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, (hasAA ? 5 : 5), 56, R.xml.default_workspace_4x4));
+                359, 567,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Large Phone",
                 406, 694,  5, 5,  64, 14.4f,  5, 56, R.xml.default_workspace_5x5));
         // The tablet profile is odd in that the landscape orientation

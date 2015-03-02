@@ -43,9 +43,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
-    private static final String TAG = "LauncherAppState";
-
-    private static final boolean DEBUG = false;
 
     private final AppFilter mAppFilter;
     private final BuildInfo mBuildInfo;
@@ -281,12 +278,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     @Override
     public void onAvailableSizeChanged(DeviceProfile grid) {
         Utilities.setIconSize(grid.iconSizePx);
-    }
-
-    public static boolean isDisableAllApps() {
-        // Returns false on non-dogfood builds.
-        return getInstance().mBuildInfo.isDogfoodBuild() &&
-                Utilities.isPropertyEnabled(Launcher.DISABLE_ALL_APPS_PROPERTY);
     }
 
     public static boolean isDogfoodBuild() {

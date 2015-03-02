@@ -167,7 +167,6 @@ public class Launcher extends Activity
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
-    static final String DISABLE_ALL_APPS_PROPERTY = "launcher_noallapps";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -3344,8 +3343,7 @@ public class Launcher extends Activity
                 Workspace.State.OVERVIEW_HIDDEN : Workspace.State.NORMAL_HIDDEN;
         Animator workspaceAnim =
                 mWorkspace.getChangeStateAnimation(workspaceState, animated, layerViews);
-        if (!LauncherAppState.isDisableAllApps()
-                || contentType == AppsCustomizePagedView.ContentType.Widgets) {
+        if (contentType == AppsCustomizePagedView.ContentType.Widgets) {
             // Set the content type for the all apps/widgets space
             mAppsCustomizeTabHost.setContentTypeImmediate(contentType);
         }
@@ -4238,8 +4236,7 @@ public class Launcher extends Activity
         // Remove the extra empty screen
         mWorkspace.removeExtraEmptyScreen(false, false);
 
-        if (!LauncherAppState.isDisableAllApps() &&
-                addedApps != null && mAppsCustomizeContent != null) {
+        if (addedApps != null && mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(addedApps);
         }
     }
@@ -4614,17 +4611,10 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
-        if (LauncherAppState.isDisableAllApps()) {
-            if (mAppsCustomizeContent != null) {
-                mAppsCustomizeContent.onPackagesUpdated(
-                        LauncherModel.getSortedWidgetsAndShortcuts(this));
-            }
-        } else {
-            if (mAppsCustomizeContent != null) {
-                mAppsCustomizeContent.setApps(apps);
-                mAppsCustomizeContent.onPackagesUpdated(
-                        LauncherModel.getSortedWidgetsAndShortcuts(this));
-            }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.setApps(apps);
+            mAppsCustomizeContent.onPackagesUpdated(
+                    LauncherModel.getSortedWidgetsAndShortcuts(this));
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
@@ -4646,8 +4636,7 @@ public class Launcher extends Activity
             return;
         }
 
-        if (!LauncherAppState.isDisableAllApps() &&
-                mAppsCustomizeContent != null) {
+        if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.updateApps(apps);
         }
     }
@@ -4762,8 +4751,7 @@ public class Launcher extends Activity
         }
 
         // Update AllApps
-        if (!LauncherAppState.isDisableAllApps() &&
-                mAppsCustomizeContent != null) {
+        if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.removeApps(appInfos);
         }
     }
