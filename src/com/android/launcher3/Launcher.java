@@ -3206,7 +3206,7 @@ public class Launcher extends Activity
     /**
      * Returns the CellLayout of the specified container at the specified screen.
      */
-    CellLayout getCellLayout(long container, long screenId) {
+    public CellLayout getCellLayout(long container, long screenId) {
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             if (mHotseat != null) {
                 return mHotseat.getLayout();
