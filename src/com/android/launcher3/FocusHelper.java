@@ -23,6 +23,7 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.FocusHelper.PagedViewKeyListener;
 import com.android.launcher3.util.FocusLogic;
 
 /**
@@ -65,9 +66,32 @@ public class FocusHelper {
     //
 
     /**
+     * A keyboard listener for scrollable folders
+     */
+    public static class PagedFolderKeyEventListener extends PagedViewKeyListener {
+
+        private final Folder mFolder;
+
+        public PagedFolderKeyEventListener(Folder folder) {
+            mFolder = folder;
+        }
+
+        @Override
+        public void handleNoopKey(int keyCode, View v) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                mFolder.mFolderName.requestFocus();
+                playSoundEffect(keyCode, v);
+            }
+        }
+    }
+
+    /**
      * Handles key events in the all apps screen.
      */
-    static boolean handleAppsCustomizeKeyEvent(View v, int keyCode, KeyEvent e) {
+    public static class PagedViewKeyListener implements View.OnKeyListener {
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent e) {
         boolean consume = FocusLogic.shouldConsume(keyCode);
         if (e.getAction() == KeyEvent.ACTION_UP) {
             return consume;
@@ -87,15 +111,14 @@ public class FocusHelper {
             parentLayout = (ViewGroup) itemContainer.getParent();
             countX = ((CellLayout) parentLayout).getCountX();
             countY = ((CellLayout) parentLayout).getCountY();
-        } else if (v.getParent() instanceof ViewGroup) {
-            //TODO(hyunyoungs): figure out when this needs to be called.
-            itemContainer = parentLayout = (ViewGroup) v.getParent();
-            countX = ((PagedViewGridLayout) parentLayout).getCellCountX();
-            countY = ((PagedViewGridLayout) parentLayout).getCellCountY();
         } else {
-            throw new IllegalStateException(
-                    "Parent of the focused item inside all apps screen is not a supported type.");
+            if (LauncherAppState.isDogfoodBuild()) {
+                throw new IllegalStateException("Parent of the focused item is not supported.");
+            } else {
+                return false;
+            }
         }
+
         final int iconIndex = itemContainer.indexOfChild(v);
         final PagedView container = (PagedView) parentLayout.getParent();
         final int pageIndex = container.indexToPage(container.indexOfChild(parentLayout));
@@ -109,6 +132,7 @@ public class FocusHelper {
         int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX, countY, matrix,
                 iconIndex, pageIndex, pageCount);
         if (newIconIndex == FocusLogic.NOOP) {
+            handleNoopKey(keyCode, v);
             return consume;
         }
         switch (newIconIndex) {
@@ -163,8 +187,13 @@ public class FocusHelper {
         if (child != null) {
             child.requestFocus();
             playSoundEffect(keyCode, v);
+        } else {
+            handleNoopKey(keyCode, v);
         }
         return consume;
+    }
+
+    public void handleNoopKey(int keyCode, View v) { }
     }
 
     /**
