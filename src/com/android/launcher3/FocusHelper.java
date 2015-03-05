@@ -89,6 +89,7 @@ public class FocusHelper {
             countX = ((CellLayout) parentLayout).getCountX();
             countY = ((CellLayout) parentLayout).getCountY();
         } else if (v.getParent() instanceof ViewGroup) {
+            //TODO(hyunyoungs): figure out when this needs to be called.
             itemContainer = parentLayout = (ViewGroup) v.getParent();
             countX = ((PagedViewGridLayout) parentLayout).getCellCountX();
             countY = ((PagedViewGridLayout) parentLayout).getCellCountY();
@@ -102,6 +103,7 @@ public class FocusHelper {
         final int pageCount = container.getChildCount();
         ViewGroup newParent = null;
         View child = null;
+        // TODO(hyunyoungs): this matrix is not applicable on the last page.
         int[][] matrix = FocusLogic.createFullMatrix(countX, countY, true);
 
         // Process focus.
@@ -111,12 +113,22 @@ public class FocusHelper {
             return consume;
         }
         switch (newIconIndex) {
+            case FocusLogic.PREVIOUS_PAGE_RIGHT_COLUMN:
+                newParent = getAppsCustomizePage(container, pageIndex -1);
+                if (newParent != null) {
+                    int row = FocusLogic.findRow(matrix, iconIndex);
+                    container.snapToPage(pageIndex - 1);
+                    // no need to create a new matrix.
+                    child = newParent.getChildAt(matrix[countX-1][row]);
+                }
+                break;
             case FocusLogic.PREVIOUS_PAGE_FIRST_ITEM:
                 newParent = getAppsCustomizePage(container, pageIndex - 1);
                 if (newParent != null) {
                     container.snapToPage(pageIndex - 1);
                     child = newParent.getChildAt(0);
                 }
+                break;
             case FocusLogic.PREVIOUS_PAGE_LAST_ITEM:
                 newParent = getAppsCustomizePage(container, pageIndex - 1);
                 if (newParent != null) {
@@ -129,6 +141,14 @@ public class FocusHelper {
                 if (newParent != null) {
                     container.snapToPage(pageIndex + 1);
                     child = newParent.getChildAt(0);
+                }
+                break;
+            case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
+                newParent = getAppsCustomizePage(container, pageIndex + 1);
+                if (newParent != null) {
+                    container.snapToPage(pageIndex + 1);
+                    int row = FocusLogic.findRow(matrix, iconIndex);
+                    child = newParent.getChildAt(matrix[0][row]);
                 }
                 break;
             case FocusLogic.CURRENT_PAGE_FIRST_ITEM:
@@ -256,7 +276,7 @@ public class FocusHelper {
 
         // Initialize the variables.
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
-        final CellLayout iconLayout = (CellLayout) parent.getParent();
+        CellLayout iconLayout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) iconLayout.getParent();
         final ViewGroup launcher = (ViewGroup) workspace.getParent();
         final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.search_drop_target_bar);
@@ -301,10 +321,23 @@ public class FocusHelper {
                     newIcon = tabs;
                 }
                 break;
+            case FocusLogic.PREVIOUS_PAGE_RIGHT_COLUMN:
+                int row = FocusLogic.findRow(matrix, iconIndex);
+                parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
+                if (parent != null) {
+                    iconLayout = (CellLayout) parent.getParent();
+                    matrix = FocusLogic.createSparseMatrix(iconLayout, orientation,
+                        iconLayout.getCountX(), row);
+                    newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY, matrix,
+                        FocusLogic.PIVOT, pageIndex - 1, pageCount);
+                    newIcon = parent.getChildAt(newIconIndex);
+                }
+                break;
             case FocusLogic.PREVIOUS_PAGE_FIRST_ITEM:
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
                 newIcon = parent.getChildAt(0);
                 workspace.snapToPage(pageIndex - 1);
+                break;
             case FocusLogic.PREVIOUS_PAGE_LAST_ITEM:
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
                 newIcon = parent.getChildAt(parent.getChildCount() - 1);
@@ -314,6 +347,17 @@ public class FocusHelper {
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
                 newIcon = parent.getChildAt(0);
                 workspace.snapToPage(pageIndex + 1);
+                break;
+            case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
+                row = FocusLogic.findRow(matrix, iconIndex);
+                parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
+                if (parent != null) {
+                    iconLayout = (CellLayout) parent.getParent();
+                    matrix = FocusLogic.createSparseMatrix(iconLayout, orientation, -1, row);
+                    newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY, matrix,
+                        FocusLogic.PIVOT, pageIndex, pageCount);
+                    newIcon = parent.getChildAt(newIconIndex);
+                }
                 break;
             case FocusLogic.CURRENT_PAGE_FIRST_ITEM:
                 newIcon = parent.getChildAt(0);

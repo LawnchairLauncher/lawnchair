@@ -48,16 +48,19 @@ public class FocusLogic {
     // Item and page index related constant used by {@link #handleKeyEvent}.
     public static final int NOOP = -1;
 
-    public static final int PREVIOUS_PAGE_FIRST_ITEM    = -2;
-    public static final int PREVIOUS_PAGE_LAST_ITEM     = -3;
+    public static final int PREVIOUS_PAGE_RIGHT_COLUMN  = -2;
+    public static final int PREVIOUS_PAGE_FIRST_ITEM    = -3;
+    public static final int PREVIOUS_PAGE_LAST_ITEM     = -4;
 
-    public static final int CURRENT_PAGE_FIRST_ITEM     = -4;
-    public static final int CURRENT_PAGE_LAST_ITEM      = -5;
+    public static final int CURRENT_PAGE_FIRST_ITEM     = -5;
+    public static final int CURRENT_PAGE_LAST_ITEM      = -6;
 
-    public static final int NEXT_PAGE_FIRST_ITEM        = -6;
+    public static final int NEXT_PAGE_FIRST_ITEM        = -7;
+    public static final int NEXT_PAGE_LEFT_COLUMN       = -8;
 
     // Matrix related constant.
     public static final int EMPTY = -1;
+    public static final int PIVOT = 100;
 
     /**
      * Returns true only if this utility class handles the key code.
@@ -87,13 +90,13 @@ public class FocusLogic {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/);
                 if (newIndex == NOOP && pageIndex > 0) {
-                    return PREVIOUS_PAGE_LAST_ITEM;
+                    newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/);
                 if (newIndex == NOOP && pageIndex < pageCount - 1) {
-                    return NEXT_PAGE_FIRST_ITEM;
+                    newIndex = NEXT_PAGE_LEFT_COLUMN;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -169,7 +172,7 @@ public class FocusLogic {
             matrix[cx][cy] = i;
         }
         if (DEBUG) {
-            printMatrix(matrix, m, n);
+            printMatrix(matrix);
         }
         return matrix;
     }
@@ -231,7 +234,47 @@ public class FocusLogic {
             }
         }
         if (DEBUG) {
-            printMatrix(matrix, m, n);
+            printMatrix(matrix);
+        }
+        return matrix;
+    }
+
+    /**
+     * Creates a sparse matrix that merges the icon of previous/next page and last column of
+     * current page. When left key is triggered on the leftmost column, sparse matrix is created
+     * that combines previous page matrix and an extra column on the right. Likewise, when right
+     * key is triggered on the rightmost column, sparse matrix is created that combines this column
+     * on the 0th column and the next page matrix.
+     *
+     * @param pivotX    x coordinate of the focused item in the current page
+     * @param pivotY    y coordinate of the focused item in the current page
+     */
+    // TODO: get rid of the dynamic matrix creation
+    public static int[][] createSparseMatrix(CellLayout iconLayout, int pivotX, int pivotY) {
+
+        ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
+
+        int[][] matrix = createFullMatrix(iconLayout.getCountX() + 1, iconLayout.getCountY(),
+                false /* set all cell to empty */);
+
+        // Iterate thru the children of the top parent.
+        for (int i = 0; i < iconParent.getChildCount(); i++) {
+            int cx = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellY;
+            if (pivotX < 0) {
+                matrix[cx - pivotX][cy] = i;
+            } else {
+                matrix[cx][cy] = i;
+            }
+        }
+
+        if (pivotX < 0) {
+            matrix[0][pivotY] = PIVOT;
+        } else {
+            matrix[pivotX][pivotY] = PIVOT;
+        }
+        if (DEBUG) {
+            printMatrix(matrix);
         }
         return matrix;
     }
@@ -407,21 +450,32 @@ public class FocusLogic {
         return newIconIndex;
     }
 
+    /**
+     * Only used for debugging.
+     */
     private static String getStringIndex(int index) {
         switch(index) {
             case NOOP: return "NOOP";
             case PREVIOUS_PAGE_FIRST_ITEM:  return "PREVIOUS_PAGE_FIRST";
             case PREVIOUS_PAGE_LAST_ITEM:   return "PREVIOUS_PAGE_LAST";
+            case PREVIOUS_PAGE_RIGHT_COLUMN:return "PREVIOUS_PAGE_RIGHT_COLUMN";
             case CURRENT_PAGE_FIRST_ITEM:   return "CURRENT_PAGE_FIRST";
             case CURRENT_PAGE_LAST_ITEM:    return "CURRENT_PAGE_LAST";
             case NEXT_PAGE_FIRST_ITEM:      return "NEXT_PAGE_FIRST";
+            case NEXT_PAGE_LEFT_COLUMN:     return "NEXT_PAGE_LEFT_COLUMN";
             default:
                 return Integer.toString(index);
         }
     }
 
-    private static void printMatrix(int[][] matrix, int m, int n) {
+    /**
+     * Only used for debugging.
+     */
+    private static void printMatrix(int[][] matrix) {
         Log.v(TAG, "\tprintMap:");
+        int m = matrix.length;
+        int n = matrix[0].length;
+
         for (int j=0; j < n; j++) {
             String colY = "\t\t";
             for (int i=0; i < m; i++) {
@@ -429,5 +483,25 @@ public class FocusLogic {
             }
             Log.v(TAG, colY);
         }
+    }
+
+    /**
+     * Figure out the location of the icon.
+     *
+     */
+    //TODO(hyunyoungs): this helper method should move to CellLayout class while removing the
+    // dynamic matrix creation all together.
+    public static int findRow(int[][] matrix, int iconIndex) {
+        int cntX = matrix.length;
+        int cntY = matrix[0].length;
+
+        for (int i = 0; i < cntX; i++) {
+            for (int j = 0; j < cntY; j++) {
+                if (matrix[i][j] == iconIndex) {
+                    return j;
+                }
+            }
+        }
+        return -1;
     }
 }

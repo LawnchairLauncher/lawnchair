@@ -18,6 +18,9 @@ package com.android.launcher3;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.view.KeyEvent;
+
+import com.android.launcher3.util.FocusLogic;
 
 /**
  * Tests the {@link FocusLogic} class that handles key event based focus handling.
@@ -37,6 +40,21 @@ public final class FocusLogicTest extends AndroidTestCase {
     }
 
     public void testShouldConsume() {
-        // write tests.
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DPAD_LEFT));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DPAD_RIGHT));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DPAD_UP));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DPAD_DOWN));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_MOVE_HOME));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_MOVE_END));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_PAGE_UP));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_PAGE_DOWN));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DEL));
+         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_FORWARD_DEL));
+    }
+
+    public void testCreateSparseMatrix() {
+         // Either, 1) create a helper method to generate/instantiate all possible cell layout that
+         // may get created in real world to test this method. OR 2) Move all the matrix
+         // management routine to celllayout and write tests for them.
     }
 }
