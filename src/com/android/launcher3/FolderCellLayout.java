@@ -135,7 +135,7 @@ public class FolderCellLayout extends CellLayout implements Folder.FolderContent
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
-        addViewToCellLayout(view, -1, (int) item.id, lp, true);
+        addViewToCellLayout(view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
     }
 
     /**
@@ -159,7 +159,7 @@ public class FolderCellLayout extends CellLayout implements Folder.FolderContent
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(
                 item.cellX, item.cellY, item.spanX, item.spanY);
-        addViewToCellLayout(textView, -1, (int)item.id, lp, true);
+        addViewToCellLayout(textView, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
         return textView;
     }
 
@@ -211,7 +211,7 @@ public class FolderCellLayout extends CellLayout implements Folder.FolderContent
             lp.cellX = info.cellX;
             lp.cellY = info.cellY;
             rank ++;
-            addViewToCellLayout(v, -1, (int)info.id, lp, true);
+            addViewToCellLayout(v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
         }
     }
 
@@ -244,8 +244,8 @@ public class FolderCellLayout extends CellLayout implements Folder.FolderContent
 
     @Override
     public View getLastItem() {
-        int total = getShortcutsAndWidgets().getChildCount();
-        return getShortcutsAndWidgets().getChildAt(total % getCountX(), total / getCountX());
+        int lastRank = getShortcutsAndWidgets().getChildCount() - 1;
+        return getShortcutsAndWidgets().getChildAt(lastRank % getCountX(), lastRank / getCountX());
     }
 
     @Override
