@@ -4169,7 +4169,7 @@ public class Workspace extends SmoothPagedView
         boolean beingCalledAfterUninstall = mDeferredAction != null;
 
         if (success && !(beingCalledAfterUninstall && !mUninstallSuccessful)) {
-            if (mDragInfo != null) {
+            if (target != this && mDragInfo != null) {
                 removeWorkspaceItem(mDragInfo.cell);
             }
         } else if (mDragInfo != null) {
