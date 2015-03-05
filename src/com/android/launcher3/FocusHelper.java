@@ -326,7 +326,7 @@ public class FocusHelper {
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
                 if (parent != null) {
                     iconLayout = (CellLayout) parent.getParent();
-                    matrix = FocusLogic.createSparseMatrix(iconLayout, orientation,
+                    matrix = FocusLogic.createSparseMatrix(iconLayout,
                         iconLayout.getCountX(), row);
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY, matrix,
                         FocusLogic.PIVOT, pageIndex - 1, pageCount);
@@ -353,7 +353,7 @@ public class FocusHelper {
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
                 if (parent != null) {
                     iconLayout = (CellLayout) parent.getParent();
-                    matrix = FocusLogic.createSparseMatrix(iconLayout, orientation, -1, row);
+                    matrix = FocusLogic.createSparseMatrix(iconLayout, -1, row);
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY, matrix,
                         FocusLogic.PIVOT, pageIndex, pageCount);
                     newIcon = parent.getChildAt(newIconIndex);
