@@ -5,9 +5,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.android.launcher3.Workspace.ItemOperator;
+
 import java.util.ArrayList;
 
-public class FolderCellLayout extends CellLayout {
+public class FolderCellLayout extends CellLayout implements Folder.FolderContent {
 
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int START_VIEW_REORDER_DELAY = 30;
@@ -48,8 +50,13 @@ public class FolderCellLayout extends CellLayout {
 
         mInflater = LayoutInflater.from(context);
         mIconCache = app.getIconCache();
+
+        setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
+        setInvertIfRtl(true);
     }
 
+    @Override
     public void setFolder(Folder folder) {
         mFolder = folder;
         mFocusIndicatorView = (FocusIndicatorView) folder.findViewById(R.id.focus_indicator);
@@ -87,10 +94,7 @@ public class FolderCellLayout extends CellLayout {
         setGridSize(countX, countY);
     }
 
-    /**
-     * Binds items to the layout.
-     * @return list of items that could not be bound, probably because we hit the max size limit.
-     */
+    @Override
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
         ArrayList<ShortcutInfo> extra = new ArrayList<ShortcutInfo>();
         setupContentDimensions(Math.min(items.size(), mMaxNumItems));
@@ -112,33 +116,20 @@ public class FolderCellLayout extends CellLayout {
         return extra;
     }
 
-    /**
-     * Create space for a new item at the end, and returns the rank for that item.
-     * Resizes the content if necessary.
-     */
+    @Override
     public int allocateNewLastItemRank() {
         int rank = getItemCount();
         mFolder.rearrangeChildren(rank + 1);
         return rank;
     }
 
-    /**
-     * Adds the new item to the end of the grid. Resizes the content if necessary.
-     */
-    public View createAndAddShortcutToEnd(ShortcutInfo item) {
-        int rank = allocateNewLastItemRank();
-        return createAndAddViewForRank(item, rank);
-    }
-
+    @Override
     public View createAndAddViewForRank(ShortcutInfo item, int rank) {
         updateItemXY(item, rank);
         return addNewView(item);
     }
 
-    /**
-     * Adds the {@param view} to the layout based on {@param rank} and updated the position
-     * related attributes. It assumes that {@param item} is already attached to the view.
-     */
+    @Override
     public void addViewForRank(View view, ShortcutInfo item, int rank) {
         updateItemXY(item, rank);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
@@ -174,12 +165,10 @@ public class FolderCellLayout extends CellLayout {
 
     /**
      * Refer {@link #findNearestArea(int, int, int, int, View, boolean, int[])}
-     *
-     * @return The rank of a vacant area that can contain this object,
-     *         nearest the requested location.
      */
-    public int findNearestArea(int pixelX, int pixelY, int spanX, int spanY) {
-        findNearestArea(pixelX, pixelY, spanX, spanY, null, false, sTempPosArray);
+    @Override
+    public int findNearestArea(int pixelX, int pixelY) {
+        findNearestArea(pixelX, pixelY, 1, 1, null, false, sTempPosArray);
         if (mFolder.isLayoutRtl()) {
             sTempPosArray[0] = getCountX() - sTempPosArray[0] - 1;
         }
@@ -189,19 +178,17 @@ public class FolderCellLayout extends CellLayout {
                 sTempPosArray[1] * getCountX() + sTempPosArray[0]);
     }
 
+    @Override
     public boolean isFull() {
         return getItemCount() >= mMaxNumItems;
     }
 
+    @Override
     public int getItemCount() {
         return getShortcutsAndWidgets().getChildCount();
     }
 
-    /**
-     * Updates position and rank of all the children in the view based.
-     * @param list the ordered list of children.
-     * @param itemCount if greater than the total children count, empty spaces are left at the end.
-     */
+    @Override
     public void arrangeChildren(ArrayList<View> list, int itemCount) {
         setupContentDimensions(itemCount);
         removeAllViews();
@@ -228,9 +215,40 @@ public class FolderCellLayout extends CellLayout {
         }
     }
 
-    /**
-     * Reorders the items such that the {@param empty} spot moves to {@param target}
-     */
+    @Override
+    public View iterateOverItems(ItemOperator op) {
+        for (int j = 0; j < getCountY(); j++) {
+            for (int i = 0; i < getCountX(); i++) {
+                View v = getChildAt(i, j);
+                if ((v != null) && op.evaluate((ItemInfo) v.getTag(), v, this)) {
+                    return v;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String getAccessibilityDescription() {
+        return String.format(getContext().getString(R.string.folder_opened),
+                getCountX(), getCountY());
+    }
+
+    @Override
+    public void setFocusOnFirstChild() {
+        View firstChild = getChildAt(0, 0);
+        if (firstChild != null) {
+            firstChild.requestFocus();
+        }
+    }
+
+    @Override
+    public View getLastItem() {
+        int total = getShortcutsAndWidgets().getChildCount();
+        return getShortcutsAndWidgets().getChildAt(total % getCountX(), total / getCountX());
+    }
+
+    @Override
     public void realTimeReorder(int empty, int target) {
         boolean wrap;
         int startX;
