@@ -48,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.Workspace.ItemOperator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,7 +96,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private FolderIcon mFolderIcon;
 
-    private FolderCellLayout mContent;
+    private FolderContent mContent;
     private View mContentWrapper;
     FolderEditText mFolderName;
 
@@ -160,16 +161,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContentWrapper = findViewById(R.id.folder_content_wrapper);
-        mContent = (FolderCellLayout) findViewById(R.id.folder_content);
+        mContent = (FolderContent) findViewById(R.id.folder_content);
         mContent.setFolder(this);
-
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-
-        mContent.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
-        mContent.setGridSize(0, 0);
-        mContent.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
-        mContent.setInvertIfRtl(true);
 
         mFolderName = (FolderEditText) findViewById(R.id.folder_name);
         mFolderName.setFolder(this);
@@ -435,8 +428,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             reveal.setDuration(mMaterialExpandDuration);
             reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
-            mContent.setAlpha(0f);
-            Animator iconsAlpha = LauncherAnimUtils.ofFloat(mContent, "alpha", 0f, 1f);
+            mContentWrapper.setAlpha(0f);
+            Animator iconsAlpha = LauncherAnimUtils.ofFloat(mContentWrapper, "alpha", 0f, 1f);
             iconsAlpha.setDuration(mMaterialExpandDuration);
             iconsAlpha.setStartDelay(mMaterialExpandStagger);
             iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
@@ -459,11 +452,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             openFolderAnim = anim;
 
-            mContent.setLayerType(LAYER_TYPE_HARDWARE, null);
+            mContentWrapper.setLayerType(LAYER_TYPE_HARDWARE, null);
             onCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    mContent.setLayerType(LAYER_TYPE_NONE, null);
+                    mContentWrapper.setLayerType(LAYER_TYPE_NONE, null);
                 }
             };
         }
@@ -471,8 +464,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationStart(Animator animation) {
                 sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                        String.format(getContext().getString(R.string.folder_opened),
-                        mContent.getCountX(), mContent.getCountY()));
+                        mContent.getAccessibilityDescription());
                 mState = STATE_ANIMATING;
             }
             @Override
@@ -483,7 +475,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     onCompleteRunnable.run();
                 }
 
-                setFocusOnFirstChild();
+                mContent.setFocusOnFirstChild();
             }
         });
         openFolderAnim.start();
@@ -509,13 +501,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             onInitializeAccessibilityEvent(event);
             event.getText().add(text);
             accessibilityManager.sendAccessibilityEvent(event);
-        }
-    }
-
-    private void setFocusOnFirstChild() {
-        View firstChild = mContent.getChildAt(0, 0);
-        if (firstChild != null) {
-            firstChild.requestFocus();
         }
     }
 
@@ -576,7 +561,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         r[0] -= getPaddingLeft();
         r[1] -= getPaddingTop();
 
-        mTargetRank = mContent.findNearestArea((int) r[0], (int) r[1], 1, 1);
+        mTargetRank = mContent.findNearestArea((int) r[0], (int) r[1]);
         if (mTargetRank != mPrevTargetRank) {
             mReorderAlarm.cancelAlarm();
             mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
@@ -869,10 +854,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mContent.getItemCount();
     }
 
-    public View getItemAt(int index) {
-        return mContent.getShortcutsAndWidgets().getChildAt(index);
-    }
-
     private void onCloseComplete() {
         DragLayer parent = (DragLayer) getParent();
         if (parent != null) {
@@ -933,7 +914,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 }
             }
         };
-        View finalChild = getItemAt(0);
+        View finalChild = mContent.getLastItem();
         if (finalChild != null) {
             mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
         } else {
@@ -949,8 +930,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     // This method keeps track of the last item in the folder for the purposes
     // of keyboard focus
     private void updateTextViewFocus() {
-        View lastChild = getItemAt(getItemCount() - 1);
-        getItemAt(getItemCount() - 1);
+        View lastChild = mContent.getLastItem();
         if (lastChild != null) {
             mFolderName.setNextFocusDownId(lastChild.getId());
             mFolderName.setNextFocusRightId(lastChild.getId());
@@ -1037,7 +1017,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // If the item was dropped onto this open folder, we have done the work associated
         // with adding the item to the folder, as indicated by mSuppressOnAdd being set
         if (mSuppressOnAdd) return;
-        mContent.createAndAddShortcutToEnd(item);
+        mContent.createAndAddViewForRank(item, mContent.allocateNewLastItemRank());
         LauncherModel.addOrMoveItemInDatabase(
                 mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
@@ -1059,16 +1039,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     }
 
-    private View getViewForInfo(ShortcutInfo item) {
-        for (int j = 0; j < mContent.getCountY(); j++) {
-            for (int i = 0; i < mContent.getCountX(); i++) {
-                View v = mContent.getChildAt(i, j);
-                if (v.getTag() == item) {
-                    return v;
-                }
+    private View getViewForInfo(final ShortcutInfo item) {
+        return mContent.iterateOverItems(new ItemOperator() {
+
+            @Override
+            public boolean evaluate(ItemInfo info, View view, View parent) {
+                return info == item;
             }
-        }
-        return null;
+        });
     }
 
     public void onItemsChanged() {
@@ -1081,14 +1059,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public ArrayList<View> getItemsInReadingOrder() {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
-            for (int j = 0; j < mContent.getCountY(); j++) {
-                for (int i = 0; i < mContent.getCountX(); i++) {
-                    View v = mContent.getChildAt(i, j);
-                    if (v != null) {
-                        mItemsInReadingOrder.add(v);
-                    }
+            mContent.iterateOverItems(new ItemOperator() {
+
+                @Override
+                public boolean evaluate(ItemInfo info, View view, View parent) {
+                    mItemsInReadingOrder.add(view);
+                    return false;
                 }
-            }
+            });
             mItemsInvalidated = false;
         }
         return mItemsInReadingOrder;
@@ -1107,5 +1085,70 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Override
     public void getHitRectRelativeToDragLayer(Rect outRect) {
         getHitRect(outRect);
+    }
+
+    public static interface FolderContent {
+        void setFolder(Folder f);
+
+        void removeView(View v);
+
+        boolean isFull();
+        int getItemCount();
+
+        int getDesiredWidth();
+        int getDesiredHeight();
+        void setFixedSize(int width, int height);
+
+        /**
+         * Iterates over all its items in a reading order.
+         * @return the view for which the operator returned true.
+         */
+        View iterateOverItems(ItemOperator op);
+        View getLastItem();
+
+        String getAccessibilityDescription();
+
+        /**
+         * Binds items to the layout.
+         * @return list of items that could not be bound, probably because we hit the max size limit.
+         */
+        ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> children);
+
+        /**
+         * Create space for a new item at the end, and returns the rank for that item.
+         * Resizes the content if necessary.
+         */
+        int allocateNewLastItemRank();
+
+        View createAndAddViewForRank(ShortcutInfo item, int rank);
+
+        /**
+         * Adds the {@param view} to the layout based on {@param rank} and updated the position
+         * related attributes. It assumes that {@param item} is already attached to the view.
+         */
+        void addViewForRank(View view, ShortcutInfo item, int rank);
+
+        /**
+         * Reorders the items such that the {@param empty} spot moves to {@param target}
+         */
+        void realTimeReorder(int empty, int target);
+
+        /**
+         * @return the rank of the cell nearest to the provided pixel position.
+         */
+        int findNearestArea(int pixelX, int pixelY);
+
+        /**
+         * Updates position and rank of all the children in the view based.
+         * @param list the ordered list of children.
+         * @param itemCount if greater than the total children count, empty spaces are left
+         * at the end.
+         */
+        void arrangeChildren(ArrayList<View> list, int itemCount);
+
+        /**
+         * Sets the focus on the first visible child.
+         */
+        void setFocusOnFirstChild();
     }
 }
