@@ -297,6 +297,10 @@ public class LauncherProvider extends ContentProvider {
             if (loader == null) {
                 loader = getDefaultLayoutParser();
             }
+
+            // There might be some partially restored DB items, due to buggy restore logic in
+            // previous versions of launcher.
+            createEmptyDB();
             // Populate favorites table with initial favorites
             if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
                     && usingExternallyProvidedLayout) {
