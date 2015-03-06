@@ -245,7 +245,13 @@ public class FolderCellLayout extends CellLayout implements Folder.FolderContent
     @Override
     public View getLastItem() {
         int lastRank = getShortcutsAndWidgets().getChildCount() - 1;
-        return getShortcutsAndWidgets().getChildAt(lastRank % getCountX(), lastRank / getCountX());
+        // count can be zero if the folder is not yet laid out.
+        int count = getCountX();
+        if (count > 0) {
+            return getShortcutsAndWidgets().getChildAt(lastRank % count, lastRank / count);
+        } else {
+            return getShortcutsAndWidgets().getChildAt(lastRank);
+        }
     }
 
     @Override
