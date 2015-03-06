@@ -40,8 +40,6 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     private View mLastFocusedView;
     private boolean mInitiated;
 
-    private View mCommonParent;
-
     private Pair<View, Boolean> mPendingCall;
 
     public FocusIndicatorView(Context context) {
@@ -79,8 +77,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
 
         if (!mInitiated) {
             // The parent view should always the a parent of the target view.
-            mCommonParent = (View) this.getParent();
-            computeLocationRelativeToParent(this, mCommonParent, mIndicatorPos);
+            computeLocationRelativeToParent(this, (View) getParent(), mIndicatorPos);
             mInitiated = true;
         }
 
@@ -93,7 +90,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
             nextState.scaleX = v.getScaleX() * v.getWidth() / indicatorWidth;
             nextState.scaleY = v.getScaleY() * v.getHeight() / indicatorHeight;
 
-            computeLocationRelativeToParent(v, mCommonParent, mTargetViewPos);
+            computeLocationRelativeToParent(v, (View) getParent(), mTargetViewPos);
             nextState.x = mTargetViewPos[0] - mIndicatorPos[0] - (1 - nextState.scaleX) * indicatorWidth / 2;
             nextState.y = mTargetViewPos[1] - mIndicatorPos[1] - (1 - nextState.scaleY) * indicatorHeight / 2;
 
