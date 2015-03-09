@@ -737,23 +737,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private long initializeMaxItemId(SQLiteDatabase db) {
-            Cursor c = db.rawQuery("SELECT MAX(_id) FROM favorites", null);
-
-            // get the result
-            final int maxIdIndex = 0;
-            long id = -1;
-            if (c != null && c.moveToNext()) {
-                id = c.getLong(maxIdIndex);
-            }
-            if (c != null) {
-                c.close();
-            }
-
-            if (id == -1) {
-                throw new RuntimeException("Error: could not query max item id");
-            }
-
-            return id;
+            return getMaxId(db, TABLE_FAVORITES);
         }
 
         // Generates a new ID to use for an workspace screen in your database. This method
@@ -772,25 +756,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private long initializeMaxScreenId(SQLiteDatabase db) {
-            Cursor c = db.rawQuery("SELECT MAX(" + LauncherSettings.WorkspaceScreens._ID + ") FROM " + TABLE_WORKSPACE_SCREENS, null);
-
-            // get the result
-            final int maxIdIndex = 0;
-            long id = -1;
-            if (c != null && c.moveToNext()) {
-                id = c.getLong(maxIdIndex);
-            }
-            if (c != null) {
-                c.close();
-            }
-
-            if (id == -1) {
-                throw new RuntimeException("Error: could not query max screen id");
-            }
-
-            // Log to disk
-            Launcher.addDumpLog(TAG, "11683562 - initializeMaxScreenId(): " + id, true);
-            return id;
+            return getMaxId(db, TABLE_WORKSPACE_SCREENS);
         }
 
         private boolean initializeExternalAdd(ContentValues values) {
@@ -1201,6 +1167,27 @@ public class LauncherProvider extends ContentProvider {
             mMaxScreenId = initializeMaxScreenId(db);
             if (LOGD) Log.d(TAG, "mMaxItemId: " + mMaxItemId + " mMaxScreenId: " + mMaxScreenId);
         }
+    }
+
+    /**
+     * @return the max _id in the provided table.
+     */
+    private static long getMaxId(SQLiteDatabase db, String table) {
+        Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
+        // get the result
+        long id = -1;
+        if (c != null && c.moveToNext()) {
+            id = c.getLong(0);
+        }
+        if (c != null) {
+            c.close();
+        }
+
+        if (id == -1) {
+            throw new RuntimeException("Error: could not query max id in " + table);
+        }
+
+        return id;
     }
 
     static class SqlArguments {
