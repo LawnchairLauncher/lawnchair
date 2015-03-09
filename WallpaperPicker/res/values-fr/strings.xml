@@ -32,5 +32,5 @@
     <string name="wallpaper_delete" msgid="1459353972739215344">"Supprimer"</string>
     <string name="pick_image" msgid="6704438906027442697">"Sélectionner une image"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Fonds d\'écran"</string>
-    <string name="crop_wallpaper" msgid="4882870800623585836">"Rogner le fond d\'écran"</string>
+    <string name="crop_wallpaper" msgid="4882870800623585836">"Recadrer le fond d\'écran"</string>
 </resources>
