@@ -305,4 +305,32 @@ s -->
 <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
     <string name="action_add_to_workspace">Add To Workspace</string>
+
+    <!-- Accessibility confirmation for item added to workspace -->
+    <string name="item_added_to_workspace">Item added to workspace</string>
+
+    <!-- Accessibility confirmation for item removed-->
+    <string name="item_removed_from_workspace">Item removed from workspace</string>
+
+    <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+    <string name="action_move">Move Item</string>
+
+    <!-- Accessibility description to move item to empty cell. -->
+    <string name="move_to_empty_cell">Move to empty cell <xliff:g id="number" example="1">%1$s</xliff:g>, <xliff:g id="number" example="1">%2$s</xliff:g></string>
+
+    <!-- Accessibility confirmation for item move -->
+    <string name="item_moved">Item moved</string>
+
+    <!-- Accessibility description to move item into an existing folder. -->
+    <string name="add_to_folder">Add to folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+
+    <!-- Accessibility confirmation for item added to folder-->
+    <string name="added_to_folder">Item added to folder</string>
+
+    <!-- Accessibility description to create folder with another item. -->
+    <string name="create_folder_with">Create folder with: <xliff:g id="name" example="Game">%1$s</xliff:g></string>
+
+    <!-- Accessibility confirmation for folder created -->
+    <string name="folder_created">Folder created</string>
+
 </resources>

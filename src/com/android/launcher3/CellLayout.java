@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -33,25 +34,34 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.support.v4.widget.ExploreByTouchHelper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
+import com.android.launcher3.LauncherAccessibilityDelegate.DragType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup {
@@ -168,6 +178,14 @@ public class CellLayout extends ViewGroup {
     private Rect mTempRect = new Rect();
 
     private final static Paint sPaint = new Paint();
+
+    // Related to accessible drag and drop
+    DragAndDropAccessibilityDelegate mTouchHelper = new DragAndDropAccessibilityDelegate(this);
+    private boolean mUseTouchHelper = false;
+    OnClickListener mOldClickListener = null;
+    OnClickListener mOldWorkspaceListener = null;
+    private int mDownX = 0;
+    private int mDownY = 0;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -292,6 +310,282 @@ public class CellLayout extends ViewGroup {
         // Make the feedback view large enough to hold the blur bitmap.
         addView(mTouchFeedbackView, (int) (grid.cellWidthPx * 1.5), (int) (grid.cellHeightPx * 1.5));
         addView(mShortcutsAndWidgets);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void enableAccessibleDrag(boolean enable) {
+        mUseTouchHelper = enable;
+        if (!enable) {
+            ViewCompat.setAccessibilityDelegate(this, null);
+            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+            getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+            setOnClickListener(mLauncher);
+        } else {
+            ViewCompat.setAccessibilityDelegate(this, mTouchHelper);
+            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            setOnClickListener(mTouchHelper);
+        }
+
+        // Invalidate the accessibility hierarchy
+        if (getParent() != null) {
+            getParent().notifySubtreeAccessibilityStateChanged(
+                    this, this, AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE);
+        }
+    }
+
+    @Override
+    public boolean dispatchHoverEvent(MotionEvent event) {
+        // Always attempt to dispatch hover events to accessibility first.
+        if (mUseTouchHelper && mTouchHelper.dispatchHoverEvent(event)) {
+            return true;
+        }
+        return super.dispatchHoverEvent(event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            mDownX = (int) event.getX();
+            mDownY = (int) event.getY();
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mUseTouchHelper ||
+                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
+            return true;
+        }
+        return false;
+    }
+
+    class DragAndDropAccessibilityDelegate extends ExploreByTouchHelper implements OnClickListener {
+        private final Rect mTempRect = new Rect();
+
+        public DragAndDropAccessibilityDelegate(View forView) {
+            super(forView);
+        }
+
+        private int getViewIdAt(float x, float y) {
+            if (x < 0 || y < 0 || x > getMeasuredWidth() || y > getMeasuredHeight()) {
+                return ExploreByTouchHelper.INVALID_ID;
+            }
+
+            // Map coords to cell
+            int cellX = (int) Math.floor(x / (mCellWidth + mWidthGap));
+            int cellY = (int) Math.floor(y / (mCellHeight + mHeightGap));
+
+            // Map cell to id
+            int id = cellX * mCountY + cellY;
+            return id;
+        }
+
+        @Override
+        protected int getVirtualViewAt(float x, float y) {
+            return nearestDropLocation(getViewIdAt(x, y));
+        }
+
+        protected int nearestDropLocation(int id) {
+            int count = mCountX * mCountY;
+            for (int delta = 0; delta < count; delta++) {
+                if (id + delta <= (count - 1)) {
+                    int target = intersectsValidDropTarget(id + delta);
+                    if (target >= 0) {
+                        return target;
+                    }
+                } else if (id - delta >= 0) {
+                    int target = intersectsValidDropTarget(id - delta);
+                    if (target >= 0) {
+                        return target;
+                    }
+                }
+            }
+            return ExploreByTouchHelper.INVALID_ID;
+        }
+
+        /**
+         * Find the virtual view id corresponding to the top left corner of any drop region by which
+         * the passed id is contained. For an icon, this is simply
+         *
+         * @param id the id we're interested examining (ie. does it fit there?)
+         * @return the view id of the top left corner of a valid drop region or -1 if there is no
+         *         such valid region. For the icon, this can just be -1 or id.
+         */
+        protected int intersectsValidDropTarget(int id) {
+            LauncherAccessibilityDelegate delegate =
+                    LauncherAppState.getInstance().getAccessibilityDelegate();
+            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
+
+            int y = id % mCountY;
+            int x = id / mCountY;
+
+            if (dragInfo.dragType == DragType.WIDGET) {
+                // For a widget, every cell must be vacant. In addition, we will return any valid
+                // drop target by which the passed id is contained.
+                boolean fits = false;
+
+                // These represent the amount that we can back off if we hit a problem. They
+                // get consumed as we move up and to the right, trying new regions.
+                int spanX = dragInfo.info.spanX;
+                int spanY = dragInfo.info.spanY;
+
+                for (int m = 0; m < spanX; m++) {
+                    for (int n = 0; n < spanY; n++) {
+
+                        fits = true;
+                        int x0 = x - m;
+                        int y0 = y - n;
+
+                        if (x0 < 0 || y0 < 0) continue;
+
+                        for (int i = x0; i < x0 + spanX; i++) {
+                            if (!fits) break;
+                            for (int j = y0; j < y0 + spanY; j++) {
+                                if (i >= mCountX || j >= mCountY || mOccupied[i][j]) {
+                                    fits = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (fits) {
+                            return x0 * mCountY + y0;
+                        }
+                    }
+                }
+                return -1;
+            } else {
+                // For an icon, we simply check the view directly below
+                View child = getChildAt(x, y);
+                if (child == null || child == dragInfo.item) {
+                    // Empty cell. Good for an icon or folder.
+                    return id;
+                } else if (dragInfo.dragType != DragType.FOLDER) {
+                    // For icons, we can consider cells that have another icon or a folder.
+                    ItemInfo info = (ItemInfo) child.getTag();
+                    if (info instanceof AppInfo || info instanceof FolderInfo ||
+                            info instanceof ShortcutInfo) {
+                        return id;
+                    }
+                }
+                return -1;
+            }
+        }
+
+        @Override
+        protected void getVisibleVirtualViews(List<Integer> virtualViews) {
+            // We create a virtual view for each cell of the grid
+            // The cell ids correspond to cells in reading order.
+            int nCells = mCountX * mCountY;
+
+            for (int i = 0; i < nCells; i++) {
+                if (intersectsValidDropTarget(i) >= 0) {
+                    virtualViews.add(i);
+                }
+            }
+        }
+
+        @Override
+        protected boolean onPerformActionForVirtualView(int viewId, int action, Bundle args) {
+            if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+                String confirmation = getConfirmationForIconDrop(viewId);
+                LauncherAppState.getInstance().getAccessibilityDelegate()
+                        .handleAccessibleDrop(CellLayout.this, getItemBounds(viewId), confirmation);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onClick(View arg0) {
+            int viewId = getViewIdAt(mDownX, mDownY);
+
+            String confirmation = getConfirmationForIconDrop(viewId);
+            LauncherAppState.getInstance().getAccessibilityDelegate()
+                    .handleAccessibleDrop(CellLayout.this, getItemBounds(viewId), confirmation);
+        }
+
+        @Override
+        protected void onPopulateEventForVirtualView(int id, AccessibilityEvent event) {
+            if (id == ExploreByTouchHelper.INVALID_ID) {
+                throw new IllegalArgumentException("Invalid virtual view id");
+            }
+            // We're required to set something here.
+            event.setContentDescription("");
+        }
+
+        @Override
+        protected void onPopulateNodeForVirtualView(int id, AccessibilityNodeInfoCompat node) {
+            if (id == ExploreByTouchHelper.INVALID_ID) {
+                throw new IllegalArgumentException("Invalid virtual view id");
+            }
+
+            node.setContentDescription(getLocationDescriptionForIconDrop(id));
+            node.setBoundsInParent(getItemBounds(id));
+
+            node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+            node.setClickable(true);
+            node.setFocusable(true);
+        }
+
+        private String getLocationDescriptionForIconDrop(int id) {
+            LauncherAccessibilityDelegate delegate =
+                    LauncherAppState.getInstance().getAccessibilityDelegate();
+            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
+
+            int y = id % mCountY;
+            int x = id / mCountY;
+
+            Resources res = getContext().getResources();
+            View child = getChildAt(x, y);
+            if (child == null || child == dragInfo.item) {
+                return res.getString(R.string.move_to_empty_cell, x, y);
+            } else {
+                ItemInfo info = (ItemInfo) child.getTag();
+                if (info instanceof AppInfo || info instanceof ShortcutInfo) {
+                    return res.getString(R.string.create_folder_with, info.title);
+                } else if (info instanceof FolderInfo) {
+                    return res.getString(R.string.add_to_folder, info.title);
+                }
+            }
+            return "";
+        }
+
+        private String getConfirmationForIconDrop(int id) {
+            LauncherAccessibilityDelegate delegate =
+                    LauncherAppState.getInstance().getAccessibilityDelegate();
+            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
+
+            int y = id % mCountY;
+            int x = id / mCountY;
+
+            Resources res = getContext().getResources();
+            View child = getChildAt(x, y);
+            if (child == null || child == dragInfo.item) {
+                return res.getString(R.string.item_moved);
+            } else {
+                ItemInfo info = (ItemInfo) child.getTag();
+                if (info instanceof AppInfo || info instanceof ShortcutInfo) {
+                    return res.getString(R.string.folder_created);
+
+                } else if (info instanceof FolderInfo) {
+                    return res.getString(R.string.added_to_folder);
+                }
+            }
+            return "";
+        }
+
+        private Rect getItemBounds(int id) {
+            int cellY = id % mCountY;
+            int cellX = id / mCountY;
+            int x = getPaddingLeft() + (int) (cellX * (mCellWidth + mWidthGap));
+            int y = getPaddingTop() + (int) (cellY * (mCellHeight + mHeightGap));
+
+            Rect bounds = mTempRect;
+            bounds.set(x, y, x + mCellWidth, y + mCellHeight);
+            return bounds;
+        }
     }
 
     public void enableHardwareLayer(boolean hasLayer) {
@@ -677,18 +971,6 @@ public class CellLayout extends ViewGroup {
             markCellsAsUnoccupiedForView(mShortcutsAndWidgets.getChildAt(i));
         }
         mShortcutsAndWidgets.removeViewsInLayout(start, count);
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // First we clear the tag to ensure that on every touch down we start with a fresh slate,
-        // even in the case where we return early. Not clearing here was causing bugs whereby on
-        // long-press we'd end up picking up an item from a previous drag operation.
-        if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

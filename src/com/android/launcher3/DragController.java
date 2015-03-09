@@ -73,6 +73,9 @@ public class DragController {
     /** Whether or not we're dragging. */
     private boolean mDragging;
 
+    /** Whether or not this is an accessible drag operation */
+    private boolean mIsAccessibleDrag;
+
     /** X coordinate of the down event. */
     private int mMotionDownX;
 
@@ -182,7 +185,7 @@ public class DragController {
                 (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
 
         startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null,
-                null, initialDragViewScale);
+                null, initialDragViewScale, false);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
@@ -202,10 +205,11 @@ public class DragController {
      *        {@link #DRAG_ACTION_COPY}
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     * @param accessible whether this drag should occur in accessibility mode
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale) {
+            float initialDragViewScale, boolean accessible) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -228,12 +232,21 @@ public class DragController {
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
         mDragging = true;
+        mIsAccessibleDrag = accessible;
 
         mDragObject = new DropTarget.DragObject();
 
         mDragObject.dragComplete = false;
-        mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
-        mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+        if (mIsAccessibleDrag) {
+            // For an accessible drag, we assume the view is being dragged from the center.
+            mDragObject.xOffset = b.getWidth() / 2;
+            mDragObject.yOffset = b.getHeight() / 2;
+            mDragObject.accessibleDrag = true;
+        } else {
+            mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
+            mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+        }
+
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
 
@@ -349,6 +362,7 @@ public class DragController {
     private void endDrag() {
         if (mDragging) {
             mDragging = false;
+            mIsAccessibleDrag = false;
             clearScrollRunnable();
             boolean isDeferred = false;
             if (mDragObject.dragView != null) {
@@ -419,6 +433,10 @@ public class DragController {
         if (debug) {
             Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
                     + mDragging);
+        }
+
+        if (mIsAccessibleDrag) {
+            return false;
         }
 
         // Update the velocity tracker
@@ -560,7 +578,7 @@ public class DragController {
      * Call this from a drag source view.
      */
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mDragging) {
+        if (!mDragging || mIsAccessibleDrag) {
             return false;
         }
 
@@ -614,6 +632,34 @@ public class DragController {
         }
 
         return true;
+    }
+
+    /**
+     * Since accessible drag and drop won't cause the same sequence of touch events, we manually
+     * inject the appropriate state.
+     */
+    public void prepareAccessibleDrag(int x, int y) {
+        mMotionDownX = x;
+        mMotionDownY = y;
+        mLastDropTarget = null;
+    }
+
+    /**
+     * As above, since accessible drag and drop won't cause the same sequence of touch events,
+     * we manually ensure appropriate drag and drop events get emulated for accessible drag.
+     */
+    public void completeAccessibleDrag(int[] location) {
+        final int[] coordinates = mCoordinatesTemp;
+
+        // We make sure that we prime the target for drop.
+        DropTarget dropTarget = findDropTarget(location[0], location[1], coordinates);
+        mDragObject.x = coordinates[0];
+        mDragObject.y = coordinates[1];
+        checkTouchMove(dropTarget);
+
+        // Perform the drop
+        drop(location[0], location[1]);
+        endDrag();
     }
 
     /**

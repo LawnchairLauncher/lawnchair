@@ -54,6 +54,9 @@ public interface DropTarget {
         /** Where the drag originated */
         public DragSource dragSource = null;
 
+        /** The object is part of an accessible drag operation */
+        public boolean accessibleDrag;
+
         /** Post drag animation runnable */
         public Runnable postAnimationRunnable = null;
 
