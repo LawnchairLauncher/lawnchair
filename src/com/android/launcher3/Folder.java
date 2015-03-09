@@ -66,6 +66,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      * results in CellLayout being measured as UNSPECIFIED, which it does not support.
      */
     private static final int MIN_CONTENT_DIMEN = 5;
+    private static final boolean ALLOW_FOLDER_SCROLL = true;
 
     static final int STATE_NONE = -1;
     static final int STATE_SMALL = 0;
@@ -100,8 +101,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private View mContentWrapper;
     FolderEditText mFolderName;
 
-    private View mBottomContent;
-    private int mBottomContentHeight;
+    private View mFooter;
+    private int mFooterHeight;
 
     // Cell ranks used for drag and drop
     private int mTargetRank, mPrevTargetRank, mEmptyCellRank;
@@ -175,13 +176,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
-        // We only have the folder name at the bottom for now
-        mBottomContent = mFolderName;
-        // We find out how tall the bottom content wants to be (it is set to wrap_content), so that
+        mFooter = ALLOW_FOLDER_SCROLL ? findViewById(R.id.folder_footer) : mFolderName;
+        // We find out how tall footer wants to be (it is set to wrap_content), so that
         // we can allocate the appropriate amount of space for it.
         int measureSpec = MeasureSpec.UNSPECIFIED;
-        mBottomContent.measure(measureSpec, measureSpec);
-        mBottomContentHeight = mBottomContent.getMeasuredHeight();
+        mFooter.measure(measureSpec, measureSpec);
+        mFooterHeight = mFooter.getMeasuredHeight();
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -225,7 +225,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mEmptyCellRank = item.rank;
             mCurrentDragView = v;
 
-            mContent.removeView(mCurrentDragView);
+            mContent.removeItem(mCurrentDragView);
             mInfo.remove(mCurrentDragInfo);
             mDragInProgress = true;
             mItemAddedBackToSelfViaIcon = false;
@@ -359,7 +359,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      * @return A new UserFolder.
      */
     static Folder fromXml(Context context) {
-        return (Folder) LayoutInflater.from(context).inflate(R.layout.user_folder, null);
+        return (Folder) LayoutInflater.from(context).inflate(
+                ALLOW_FOLDER_SCROLL ? R.layout.user_folder_scroll : R.layout.user_folder, null);
     }
 
     /**
@@ -434,8 +435,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             iconsAlpha.setStartDelay(mMaterialExpandStagger);
             iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
 
-            mBottomContent.setAlpha(0f);
-            Animator textAlpha = LauncherAnimUtils.ofFloat(mBottomContent, "alpha", 0f, 1f);
+            mFooter.setAlpha(0f);
+            Animator textAlpha = LauncherAnimUtils.ofFloat(mFooter, "alpha", 0f, 1f);
             textAlpha.setDuration(mMaterialExpandDuration);
             textAlpha.setStartDelay(mMaterialExpandStagger);
             textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
@@ -795,7 +796,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
         int maxContentAreaHeight = grid.availableHeightPx -
                 workspacePadding.top - workspacePadding.bottom -
-                mBottomContentHeight;
+                mFooterHeight;
         int height = Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());
         return Math.max(height, MIN_CONTENT_DIMEN);
@@ -810,7 +811,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private int getFolderHeight(int contentAreaHeight) {
-        return getPaddingTop() + getPaddingBottom() + contentAreaHeight + mBottomContentHeight;
+        return getPaddingTop() + getPaddingBottom() + contentAreaHeight + mFooterHeight;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -822,10 +823,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         mContent.setFixedSize(contentWidth, contentHeight);
         mContentWrapper.measure(contentAreaWidthSpec, contentAreaHeightSpec);
-
-        // Move the bottom content below mContent
-        mBottomContent.measure(contentAreaWidthSpec,
-                MeasureSpec.makeMeasureSpec(mBottomContentHeight, MeasureSpec.EXACTLY));
+        mFooter.measure(contentAreaWidthSpec,
+                MeasureSpec.makeMeasureSpec(mFooterHeight, MeasureSpec.EXACTLY));
 
         int folderWidth = getPaddingLeft() + getPaddingRight() + contentWidth;
         int folderHeight = getFolderHeight(contentHeight);
@@ -929,7 +928,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     // This method keeps track of the last item in the folder for the purposes
     // of keyboard focus
-    private void updateTextViewFocus() {
+    public void updateTextViewFocus() {
         View lastChild = mContent.getLastItem();
         if (lastChild != null) {
             mFolderName.setNextFocusDownId(lastChild.getId());
@@ -1028,7 +1027,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // the work associated with removing the item, so we don't have to do anything here.
         if (item == mCurrentDragInfo) return;
         View v = getViewForInfo(item);
-        mContent.removeView(v);
+        mContent.removeItem(v);
         if (mState == STATE_ANIMATING) {
             mRearrangeOnClose = true;
         } else {
@@ -1090,7 +1089,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public static interface FolderContent {
         void setFolder(Folder f);
 
-        void removeView(View v);
+        void removeItem(View v);
 
         boolean isFull();
         int getItemCount();

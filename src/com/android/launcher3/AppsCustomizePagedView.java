@@ -36,7 +36,6 @@ import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.FocusHelper.PagedViewKeyListener;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 import java.util.ArrayList;
@@ -139,7 +139,7 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
  * The Apps/Customize page that displays all the applications, widgets, and shortcuts.
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
-        View.OnClickListener, View.OnKeyListener, DragSource,
+        View.OnClickListener, DragSource,
         PagedViewWidget.ShortPressListener, LauncherTransitionable {
     static final String TAG = "AppsCustomizePagedView";
 
@@ -181,6 +181,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private static final int sPageSleepDelay = 200;
+
+    private final PagedViewKeyListener mKeyListener = new PagedViewKeyListener();
 
     private Runnable mInflateWidgetRunnable = null;
     private Runnable mBindWidgetRunnable = null;
@@ -447,10 +449,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
             Toast.LENGTH_SHORT);
         mWidgetInstructionToast.show();
-    }
-
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleAppsCustomizeKeyEvent(v,  keyCode, event);
     }
 
     /*
@@ -959,7 +957,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             icon.setOnClickListener(mLauncher);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
-            icon.setOnKeyListener(this);
+            icon.setOnKeyListener(mKeyListener);
             icon.setOnFocusChangeListener(layout.mFocusHandlerView);
 
             int index = i - startIndex;
@@ -1141,7 +1139,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             widget.setOnClickListener(this);
             widget.setOnLongClickListener(this);
             widget.setOnTouchListener(this);
-            widget.setOnKeyListener(this);
+            widget.setOnKeyListener(mKeyListener);
 
             // Layout each widget
             int ix = i % mWidgetCountX;
