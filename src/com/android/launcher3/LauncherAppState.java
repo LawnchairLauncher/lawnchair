@@ -62,7 +62,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private static LauncherAppState INSTANCE;
 
     private DynamicGrid mDynamicGrid;
-    private AccessibilityDelegate mAccessibilityDelegate;
+    private LauncherAccessibilityDelegate mAccessibilityDelegate;
 
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
@@ -168,7 +168,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return mModel;
     }
 
-    AccessibilityDelegate getAccessibilityDelegate() {
+    LauncherAccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
     }
 
