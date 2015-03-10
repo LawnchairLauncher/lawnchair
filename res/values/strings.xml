@@ -71,6 +71,10 @@
          drop if there are multiple choices. [CHAR_LIMIT=35] -->
     <string name="external_drop_widget_pick_title">Choose widget to create</string>
 
+    <!-- Apps view -->
+    <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
+    <string name="apps_view_search_bar_hint">Search Apps</string>
+
     <!-- Folders -->
     <skip />
     <!-- Label of Folder name field in Rename folder dialog box -->

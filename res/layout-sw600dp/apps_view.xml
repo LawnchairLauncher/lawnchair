@@ -23,12 +23,12 @@
     android:descendantFocusability="afterDescendants">
     <include
         layout="@layout/apps_list_reveal_view"
-        android:layout_width="420dp"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/apps_container_width"
+        android:layout_height="540dp"
         android:layout_gravity="center" />
     <include
         layout="@layout/apps_list_view"
-        android:layout_width="420dp"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/apps_container_width"
+        android:layout_height="540dp"
         android:layout_gravity="center" />
 </com.android.launcher3.AppsContainerView>

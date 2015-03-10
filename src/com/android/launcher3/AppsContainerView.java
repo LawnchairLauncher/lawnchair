@@ -1,409 +1,64 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SectionIndexer;
 import android.widget.TextView;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-
-/**
- * Represents a row in the apps list view.
- */
-class AppsRow {
-    int sectionId;
-    String sectionDescription;
-    List<AppInfo> apps;
-
-    public AppsRow(int sId, String sc, List<AppInfo> ai) {
-        sectionId = sId;
-        sectionDescription = sc;
-        apps = ai;
-    }
-
-    public AppsRow(int sId, List<AppInfo> ai) {
-        sectionId = sId;
-        apps = ai;
-    }
-}
-
-/**
- * An interface to an algorithm that generates app rows.
- */
-interface AppRowAlgorithm {
-    public List<AppsRow> computeAppRows(List<AppInfo> sortedApps, int appsPerRow);
-    public int getIconViewLayoutId();
-    public int getRowViewLayoutId();
-    public void bindRowViewIconToInfo(BubbleTextView icon, AppInfo info);
-}
-
-/**
- * Computes the rows in the apps list view.
- */
-class SectionedAppsAlgorithm implements AppRowAlgorithm {
-
-    @Override
-    public List<AppsRow> computeAppRows(List<AppInfo> sortedApps, int appsPerRow) {
-        List<AppsRow> rows = new ArrayList<>();
-        LinkedHashMap<String, List<AppInfo>> sections = computeSectionedApps(sortedApps);
-        int sectionId = 0;
-        for (Map.Entry<String, List<AppInfo>> sectionEntry : sections.entrySet()) {
-            String section = sectionEntry.getKey();
-            List<AppInfo> apps = sectionEntry.getValue();
-            int numRows = (int) Math.ceil((float) apps.size() / appsPerRow);
-            for (int i = 0; i < numRows; i++) {
-                List<AppInfo> appsInRow = new ArrayList<>();
-                int offset = i * appsPerRow;
-                for (int j = 0; j < appsPerRow; j++) {
-                    if (offset + j < apps.size()) {
-                        appsInRow.add(apps.get(offset + j));
-                    }
-                }
-                if (i == 0) {
-                    rows.add(new AppsRow(sectionId, section, appsInRow));
-                } else {
-                    rows.add(new AppsRow(sectionId, appsInRow));
-                }
-            }
-            sectionId++;
-        }
-        return rows;
-    }
-
-    @Override
-    public int getIconViewLayoutId() {
-        return R.layout.apps_grid_row_icon_view;
-    }
-
-    @Override
-    public int getRowViewLayoutId() {
-        return R.layout.apps_grid_row_view;
-    }
-
-    private LinkedHashMap<String, List<AppInfo>> computeSectionedApps(List<AppInfo> sortedApps) {
-        LinkedHashMap<String, List<AppInfo>> sections = new LinkedHashMap<>();
-        for (AppInfo info : sortedApps) {
-            String section = getSection(info);
-            List<AppInfo> sectionApps = sections.get(section);
-            if (sectionApps == null) {
-                sectionApps = new ArrayList<>();
-                sections.put(section, sectionApps);
-            }
-            sectionApps.add(info);
-        }
-        return sections;
-    }
-
-    @Override
-    public void bindRowViewIconToInfo(BubbleTextView icon, AppInfo info) {
-        icon.applyFromApplicationInfo(info);
-    }
-
-    private String getSection(AppInfo app) {
-        return app.title.toString().substring(0, 1).toLowerCase();
-    }
-}
-
-/**
- * Computes the rows in the apps grid view.
- */
-class ListedAppsAlgorithm implements AppRowAlgorithm {
-
-    @Override
-    public List<AppsRow> computeAppRows(List<AppInfo> sortedApps, int appsPerRow) {
-        List<AppsRow> rows = new ArrayList<>();
-        int sectionId = -1;
-        String prevSection = "";
-        for (AppInfo info : sortedApps) {
-            List<AppInfo> appsInRow = new ArrayList<>();
-            appsInRow.add(info);
-            String section = getSection(info);
-            if (!prevSection.equals(section)) {
-                prevSection = section;
-                sectionId++;
-                rows.add(new AppsRow(sectionId, section, appsInRow));
-            } else {
-                rows.add(new AppsRow(sectionId, appsInRow));
-            }
-        }
-        return rows;
-    }
-
-    @Override
-    public int getIconViewLayoutId() {
-        return R.layout.apps_list_row_icon_view;
-    }
-
-    @Override
-    public int getRowViewLayoutId() {
-        return R.layout.apps_list_row_view;
-    }
-
-    @Override
-    public void bindRowViewIconToInfo(BubbleTextView icon, AppInfo info) {
-        icon.applyFromApplicationInfo(info);
-    }
-
-    private String getSection(AppInfo app) {
-        return app.title.toString().substring(0, 1).toLowerCase();
-    }
-}
-
-/**
- * The adapter of all the apps
- */
-class AppsListAdapter extends BaseAdapter implements SectionIndexer {
-
-    private LayoutInflater mLayoutInflater;
-    private List<AppsRow> mAppRows = new ArrayList<>();
-    private View.OnTouchListener mTouchListener;
-    private View.OnClickListener mIconClickListener;
-    private View.OnLongClickListener mIconLongClickListener;
-    private AppRowAlgorithm mRowAlgorithm;
-    private int mAppsPerRow;
-
-    public AppsListAdapter(Context context, View.OnTouchListener touchListener,
-            View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
-        mLayoutInflater = LayoutInflater.from(context);
-        mTouchListener = touchListener;
-        mIconClickListener = iconClickListener;
-        mIconLongClickListener = iconLongClickListener;
-    }
-
-    void setApps(List<AppsRow> apps, int appsPerRow, AppRowAlgorithm algo) {
-        mAppsPerRow = appsPerRow;
-        mRowAlgorithm = algo;
-        mAppRows.clear();
-        mAppRows.addAll(apps);
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public int getCount() {
-        return mAppRows.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mAppRows.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        AppsRow info = mAppRows.get(position);
-        ViewGroup row = (ViewGroup) convertView;
-        if (row == null) {
-            // Inflate the row and all the icon children necessary
-            row = (ViewGroup) mLayoutInflater.inflate(mRowAlgorithm.getRowViewLayoutId(),
-                    parent, false);
-            for (int i = 0; i < mAppsPerRow; i++) {
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        mRowAlgorithm.getIconViewLayoutId(), row, false);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-                lp.gravity = Gravity.CENTER_VERTICAL;
-                icon.setLayoutParams(lp);
-                icon.setOnTouchListener(mTouchListener);
-                icon.setOnClickListener(mIconClickListener);
-                icon.setOnLongClickListener(mIconLongClickListener);
-                icon.setFocusable(true);
-                row.addView(icon);
-            }
-        }
-        // Bind the section header
-        TextView tv = (TextView) row.findViewById(R.id.section);
-        if (info.sectionDescription != null) {
-            tv.setText(info.sectionDescription);
-            tv.setVisibility(View.VISIBLE);
-        } else {
-            tv.setVisibility(View.INVISIBLE);
-        }
-        // Bind the icons
-        for (int i = 0; i < mAppsPerRow; i++) {
-            BubbleTextView icon = (BubbleTextView) row.getChildAt(i + 1);
-            if (i < info.apps.size()) {
-                mRowAlgorithm.bindRowViewIconToInfo(icon, info.apps.get(i));
-                icon.setVisibility(View.VISIBLE);
-            } else {
-                icon.setVisibility(View.INVISIBLE);
-            }
-        }
-        return row;
-    }
-
-    @Override
-    public Object[] getSections() {
-        ArrayList<Object> sections = new ArrayList<>();
-        int prevSectionId = -1;
-        for (AppsRow row : mAppRows) {
-            if (row.sectionId != prevSectionId) {
-                sections.add(row.sectionDescription.toUpperCase());
-                prevSectionId = row.sectionId;
-            }
-        }
-        return sections.toArray();
-    }
-
-    @Override
-    public int getPositionForSection(int sectionIndex) {
-        for (int i = 0; i < mAppRows.size(); i++) {
-            AppsRow row = mAppRows.get(i);
-            if (row.sectionId == sectionIndex) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    @Override
-    public int getSectionForPosition(int position) {
-        return mAppRows.get(position).sectionId;
-    }
-}
-
-/**
- * The alphabetically sorted list of applications.
- */
-class AlphabeticalAppList {
-
-    /**
-     * Callbacks for when this list is modified.
-     */
-    public interface Callbacks {
-        public void onAppsUpdated();
-    }
-
-    private List<AppInfo> mApps;
-    private Callbacks mCb;
-
-    public AlphabeticalAppList(Callbacks cb) {
-        mCb = cb;
-    }
-
-    /**
-     * Returns the list of applications.
-     */
-    public List<AppInfo> getApps() {
-        return mApps;
-    }
-
-    /**
-     * Sets the current set of apps.
-     */
-    public void setApps(List<AppInfo> apps) {
-        Collections.sort(apps, LauncherModel.getAppNameComparator());
-        mApps = apps;
-        mCb.onAppsUpdated();
-    }
-
-    /**
-     * Adds new apps to the list.
-     */
-    public void addApps(List<AppInfo> apps) {
-        // We add it in place, in alphabetical order
-        Comparator<AppInfo> appNameComparator = LauncherModel.getAppNameComparator();
-        for (AppInfo info : apps) {
-            // This call will return the exact index of where the item is if >= 0, or the index
-            // where it should be inserted if < 0.
-            int index = Collections.binarySearch(mApps, info, appNameComparator);
-            if (index < 0) {
-                mApps.add(-(index + 1), info);
-            }
-        }
-        mCb.onAppsUpdated();
-    }
-
-    /**
-     * Updates existing apps in the list
-     */
-    public void updateApps(List<AppInfo> apps) {
-        Comparator<AppInfo> appNameComparator = LauncherModel.getAppNameComparator();
-        for (AppInfo info : apps) {
-            int index = mApps.indexOf(info);
-            if (index != -1) {
-                mApps.set(index, info);
-            } else {
-                index = Collections.binarySearch(mApps, info, appNameComparator);
-                if (index < 0) {
-                    mApps.add(-(index + 1), info);
-                }
-            }
-        }
-        mCb.onAppsUpdated();
-    }
-
-    /**
-     * Removes some apps from the list.
-     */
-    public void removeApps(List<AppInfo> apps) {
-        for (AppInfo info : apps) {
-            int removeIndex = findAppByComponent(mApps, info);
-            if (removeIndex != -1) {
-                mApps.remove(removeIndex);
-            }
-        }
-        mCb.onAppsUpdated();
-    }
-
-    /**
-     * Finds the index of an app given a target AppInfo.
-     */
-    private int findAppByComponent(List<AppInfo> apps, AppInfo targetInfo) {
-        ComponentName targetComponent = targetInfo.intent.getComponent();
-        int length = apps.size();
-        for (int i = 0; i < length; ++i) {
-            AppInfo info = apps.get(i);
-            if (info.user.equals(info.user)
-                    && info.intent.getComponent().equals(targetComponent)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-}
 
 /**
  * The all apps list view container.
  */
 public class AppsContainerView extends FrameLayout implements DragSource, View.OnTouchListener,
-        View.OnLongClickListener, Insettable, AlphabeticalAppList.Callbacks {
+        View.OnLongClickListener, Insettable, TextWatcher, TextView.OnEditorActionListener,
+        LauncherTransitionable {
 
-    static final int GRID_LAYOUT = 0;
-    static final int LIST_LAYOUT = 1;
-    static final int USE_LAYOUT = LIST_LAYOUT;
+    private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
+
+    private static final int GRID_LAYOUT = 0;
+    private static final int LIST_LAYOUT = 1;
+    private static final int USE_LAYOUT = GRID_LAYOUT;
 
     private Launcher mLauncher;
-    private AppRowAlgorithm mAppRowsAlgorithm;
-    private AppsListAdapter mAdapter;
-    private AlphabeticalAppList mApps;
-    private ListView mList;
-    private int mAppsRowSize;
+    private AlphabeticalAppsList mApps;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.ItemDecoration mItemDecoration;
+    private AppsContainerRecyclerView mAppsListView;
+    private EditText mSearchBar;
+    private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point();
     private Rect mPadding = new Rect();
+    private int mContentMarginStart;
 
     public AppsContainerView(Context context) {
         this(context, null);
@@ -423,15 +78,22 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
         mLauncher = (Launcher) context;
+        mApps = new AlphabeticalAppsList(context);
         if (USE_LAYOUT == GRID_LAYOUT) {
-            mAppRowsAlgorithm = new SectionedAppsAlgorithm();
-            mAppsRowSize = grid.allAppsRowsSize;
+            mNumAppsPerRow = grid.appsViewNumCols;
+            AppsGridAdapter adapter = new AppsGridAdapter(context, mApps, mNumAppsPerRow, this,
+                    mLauncher, this);
+            mLayoutManager = adapter.getLayoutManager(context);
+            mItemDecoration = adapter.getItemDecoration();
+            mAdapter = adapter;
+            mContentMarginStart = adapter.getContentMarginStart();
         } else if (USE_LAYOUT == LIST_LAYOUT) {
-            mAppRowsAlgorithm = new ListedAppsAlgorithm();
-            mAppsRowSize = 1;
+            mNumAppsPerRow = 1;
+            AppsListAdapter adapter = new AppsListAdapter(context, mApps, this, mLauncher, this);
+            mLayoutManager = adapter.getLayoutManager(context);
+            mAdapter = adapter;
         }
-        mAdapter = new AppsListAdapter(context, this, mLauncher, this);
-        mApps = new AlphabeticalAppList(this);
+        mApps.setAdapter(mAdapter);
     }
 
     /**
@@ -466,7 +128,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
      * Scrolls this list view to the top.
      */
     public void scrollToTop() {
-        mList.scrollTo(0, 0);
+        mAppsListView.scrollToPosition(0);
     }
 
     /**
@@ -480,23 +142,37 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
      * Returns the reveal view used for the launcher transitions.
      */
     public View getRevealView() {
-        return findViewById(R.id.all_apps_transition_overlay);
-    }
-
-    @Override
-    public void onAppsUpdated() {
-        List<AppsRow> rows = mAppRowsAlgorithm.computeAppRows(mApps.getApps(), mAppsRowSize);
-        mAdapter.setApps(rows, mAppsRowSize, mAppRowsAlgorithm);
+        return findViewById(R.id.apps_view_transition_overlay);
     }
 
     @Override
     protected void onFinishInflate() {
-        mList = (ListView) findViewById(R.id.apps_list);
-        mList.setFastScrollEnabled(true);
-        mList.setFastScrollAlwaysVisible(true);
-        mList.setItemsCanFocus(true);
-        mList.setAdapter(mAdapter);
-        mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                LAYOUT_DIRECTION_RTL);
+        if (USE_LAYOUT == GRID_LAYOUT) {
+            ((AppsGridAdapter) mAdapter).setRtl(isRtl);
+        }
+        mSearchBar = (EditText) findViewById(R.id.app_search_box);
+        mSearchBar.addTextChangedListener(this);
+        mSearchBar.setOnEditorActionListener(this);
+        mAppsListView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
+        mAppsListView.setApps(mApps);
+        mAppsListView.setNumAppsPerRow(mNumAppsPerRow);
+        mAppsListView.setLayoutManager(mLayoutManager);
+        mAppsListView.setAdapter(mAdapter);
+        mAppsListView.setHasFixedSize(true);
+        if (isRtl) {
+            mAppsListView.setPadding(mAppsListView.getPaddingLeft(), mAppsListView.getPaddingTop(),
+                    mAppsListView.getPaddingRight() + mContentMarginStart, mAppsListView.getPaddingBottom());
+        } else {
+            mAppsListView.setPadding(mAppsListView.getPaddingLeft() + mContentMarginStart, mAppsListView.getPaddingTop(),
+                    mAppsListView.getPaddingRight(), mAppsListView.getPaddingBottom());
+        }
+        if (mItemDecoration != null) {
+            mAppsListView.addItemDecoration(mItemDecoration);
+        }
+        mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
+                getPaddingBottom());
     }
 
     @Override
@@ -574,7 +250,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
     }
 
     @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete, boolean success) {
+    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
+            boolean success) {
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
@@ -604,6 +281,85 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
             }
 
             d.deferDragViewCleanupPostAnimation = false;
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // Do nothing
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterTextChanged(final Editable s) {
+        if (s.toString().isEmpty()) {
+            mApps.setFilter(null);
+        } else {
+            final AlphabeticIndexCompat indexer = mApps.getIndexer();
+            final String filterText = s.toString().toLowerCase().replaceAll("\\s+", "");
+            mApps.setFilter(new AlphabeticalAppsList.Filter() {
+                @Override
+                public boolean retainApp(AppInfo info) {
+                    String title = info.title.toString();
+                    String sectionName = mApps.getSectionNameForApp(info);
+                    return sectionName.toLowerCase().contains(filterText) ||
+                            title.toLowerCase().replaceAll("\\s+", "").contains(filterText);
+                }
+            });
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (ALLOW_SINGLE_APP_LAUNCH && actionId == EditorInfo.IME_ACTION_DONE) {
+            List<AppInfo> appsWithoutSections = mApps.getAppsWithoutSectionBreaks();
+            List<AppInfo> apps = mApps.getApps();
+            if (appsWithoutSections.size() == 1) {
+                mSearchBar.clearFocus();
+                mAppsListView.getChildAt(apps.indexOf(appsWithoutSections.get(0))).performClick();
+                InputMethodManager imm = (InputMethodManager)
+                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindowToken(), 0);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public View getContent() {
+        return null;
+    }
+
+    @Override
+    public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
+        if (!toWorkspace) {
+            // Disable the focus so that the search bar doesn't get focus
+            mSearchBar.setFocusableInTouchMode(false);
+        }
+    }
+
+    @Override
+    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+        // Do nothing
+    }
+
+    @Override
+    public void onLauncherTransitionStep(Launcher l, float t) {
+        // Do nothing
+    }
+
+    @Override
+    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+        if (toWorkspace) {
+            // Clear the search bar
+            mSearchBar.setText("");
+        } else {
+            mSearchBar.setFocusableInTouchMode(true);
         }
     }
 }

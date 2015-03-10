@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    android:background="#22000000"
+    android:background="@drawable/apps_customize_bg"
     android:descendantFocusability="afterDescendants">
     <include
         layout="@layout/apps_list_reveal_view" />

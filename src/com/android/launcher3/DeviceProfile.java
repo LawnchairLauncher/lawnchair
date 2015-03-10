@@ -122,8 +122,7 @@ public class DeviceProfile {
     int hotseatAllAppsRank;
     int allAppsNumRows;
     int allAppsNumCols;
-    // TODO(winsonc): to be used with the grid layout
-    int allAppsRowsSize;
+    int appsViewNumCols;
     int searchBarSpaceWidthPx;
     int searchBarSpaceHeightPx;
     int pageIndicatorHeightPx;
@@ -365,7 +364,7 @@ public class DeviceProfile {
         }
     }
 
-    private void updateIconSize(float scale, int drawablePadding, Resources resources,
+    private void updateIconSize(float scale, int drawablePadding, Resources res,
                                 DisplayMetrics dm) {
         iconSizePx = (int) (DynamicGrid.pxFromDp(iconSize, dm) * scale);
         iconTextSizePx = (int) (DynamicGrid.pxFromSp(iconTextSize, dm) * scale);
@@ -374,9 +373,9 @@ public class DeviceProfile {
 
         // Search Bar
         searchBarSpaceWidthPx = Math.min(widthPx,
-                resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width));
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width));
         searchBarSpaceHeightPx = getSearchBarTopOffset()
-                + resources.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
+                + res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
 
         // Calculate the actual text height
         Paint textPaint = new Paint();
@@ -384,7 +383,7 @@ public class DeviceProfile {
         FontMetrics fm = textPaint.getFontMetrics();
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + (int) Math.ceil(fm.bottom - fm.top);
-        final float scaleDps = resources.getDimensionPixelSize(R.dimen.dragViewScale);
+        final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
         dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
 
         // Hotseat
@@ -402,11 +401,11 @@ public class DeviceProfile {
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx + drawablePadding + iconTextSizePx;
         int maxLongEdgeCellCount =
-                resources.getInteger(R.integer.config_dynamic_grid_max_long_edge_cell_count);
+                res.getInteger(R.integer.config_dynamic_grid_max_long_edge_cell_count);
         int maxShortEdgeCellCount =
-                resources.getInteger(R.integer.config_dynamic_grid_max_short_edge_cell_count);
+                res.getInteger(R.integer.config_dynamic_grid_max_short_edge_cell_count);
         int minEdgeCellCount =
-                resources.getInteger(R.integer.config_dynamic_grid_min_edge_cell_count);
+                res.getInteger(R.integer.config_dynamic_grid_min_edge_cell_count);
         int maxRows = (isLandscape ? maxShortEdgeCellCount : maxLongEdgeCellCount);
         int maxCols = (isLandscape ? maxLongEdgeCellCount : maxShortEdgeCellCount);
 
@@ -417,10 +416,17 @@ public class DeviceProfile {
             allAppsNumRows = (availableHeightPx - pageIndicatorHeightPx) /
                     (allAppsCellHeightPx + allAppsCellPaddingPx);
             allAppsNumRows = Math.max(minEdgeCellCount, Math.min(maxRows, allAppsNumRows));
-            allAppsNumCols = (availableWidthPx) /
-                    (allAppsCellWidthPx + allAppsCellPaddingPx);
+            allAppsNumCols = (availableWidthPx) / (allAppsCellWidthPx + allAppsCellPaddingPx);
             allAppsNumCols = Math.max(minEdgeCellCount, Math.min(maxCols, allAppsNumCols));
         }
+
+        int appsContainerViewPx = res.getDimensionPixelSize(R.dimen.apps_container_width);
+        int appsViewLeftMarginPx =
+                res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
+        int availableAppsWidthPx = (appsContainerViewPx > 0) ? appsContainerViewPx :
+                availableWidthPx;
+        appsViewNumCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
+                (allAppsCellWidthPx + allAppsCellPaddingPx);
     }
 
     void updateFromConfiguration(Context context, Resources resources, int wPx, int hPx,

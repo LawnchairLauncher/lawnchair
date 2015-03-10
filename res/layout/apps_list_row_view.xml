@@ -26,9 +26,8 @@
         android:layout_width="64dp"
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
-        android:gravity="left|center_vertical"
-        android:textColor="#009688"
-        android:textSize="24sp"
-        android:textAllCaps="true"
+        android:gravity="start|center_vertical"
+        android:textColor="@color/apps_view_section_text_color"
+        android:textSize="@dimen/apps_view_section_text_size"
         android:focusable="false" />
 </LinearLayout>
