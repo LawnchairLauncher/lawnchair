@@ -2327,7 +2327,7 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        final View searchBar = mLauncher.getQsbBar();
+        final View searchBar = mLauncher.getOrCreateQsbBar();
         final View overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
         final View pageIndicator = getPageIndicator();

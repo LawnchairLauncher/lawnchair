@@ -116,7 +116,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -147,7 +146,6 @@ public class Launcher extends Activity
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
-    private static final int REQUEST_PICK_SHORTCUT = 7;
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
@@ -1444,7 +1442,10 @@ public class Launcher extends Activity
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
-            mSearchDropTargetBar.setQsbSearchBar(getQsbBar());
+            if (getOrCreateQsbBar() == null) {
+                // Explicitly set it to null during initialization.
+                mSearchDropTargetBar.setQsbSearchBar(null);
+            }
         }
 
         if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
@@ -3956,7 +3957,7 @@ public class Launcher extends Activity
         // NO-OP
     }
 
-    public View getQsbBar() {
+    public View getOrCreateQsbBar() {
         if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
             return mLauncherCallbacks.getQsbBar();
         }
@@ -4005,6 +4006,7 @@ public class Launcher extends Activity
                 mQsb.updateAppWidgetOptions(opts);
                 mQsb.setPadding(0, 0, 0, 0);
                 mSearchDropTargetBar.addView(mQsb);
+                mSearchDropTargetBar.setQsbSearchBar(mQsb);
             }
         }
         return mQsb;
@@ -4606,7 +4608,7 @@ public class Launcher extends Activity
             mSearchDropTargetBar.removeView(mQsb);
             mQsb = null;
         }
-        mSearchDropTargetBar.setQsbSearchBar(getQsbBar());
+        getOrCreateQsbBar();
     }
 
     /**
