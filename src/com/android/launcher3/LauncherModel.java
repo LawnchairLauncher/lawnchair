@@ -961,6 +961,7 @@ public class LauncherModel extends BroadcastReceiver
                 final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
                 final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
                 final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+                final int optionsIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.OPTIONS);
 
                 FolderInfo folderInfo = null;
                 switch (c.getInt(itemTypeIndex)) {
@@ -975,6 +976,7 @@ public class LauncherModel extends BroadcastReceiver
                 folderInfo.screenId = c.getInt(screenIndex);
                 folderInfo.cellX = c.getInt(cellXIndex);
                 folderInfo.cellY = c.getInt(cellYIndex);
+                folderInfo.options = c.getInt(optionsIndex);
 
                 return folderInfo;
             }
@@ -1862,9 +1864,8 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.RESTORED);
                     final int profileIdIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.PROFILE_ID);
-                    //final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
-                    //final int displayModeIndex = c.getColumnIndexOrThrow(
-                    //        LauncherSettings.Favorites.DISPLAY_MODE);
+                    final int optionsIndex = c.getColumnIndexOrThrow(
+                            LauncherSettings.Favorites.OPTIONS);
 
                     ShortcutInfo info;
                     String intentDescription;
@@ -2114,6 +2115,7 @@ public class LauncherModel extends BroadcastReceiver
                                 folderInfo.cellY = c.getInt(cellYIndex);
                                 folderInfo.spanX = 1;
                                 folderInfo.spanY = 1;
+                                folderInfo.options = c.getInt(optionsIndex);
 
                                 // check & update map of what's occupied
                                 if (!checkItemPlacement(occupied, folderInfo)) {

@@ -89,6 +89,8 @@
     <string name="rename_action">OK</string>
     <!-- Buttons in Rename folder dialog box -->
     <string name="cancel_action">Cancel</string>
+    <!-- Label for button to sort folder contents. [CHAR_LIMIT=10] -->
+    <string name="sort_alphabetical">A-Z</string>
 
     <!-- Shortcuts -->
     <skip />
