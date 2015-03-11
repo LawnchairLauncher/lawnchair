@@ -3308,7 +3308,7 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    // Returns a list of ResolveInfos/AppWindowInfos in sorted order
+    // Returns a list of ResolveInfos/AppWidgetInfos in sorted order
     public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
