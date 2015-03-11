@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
@@ -847,6 +848,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         ArrayList<View> views = getItemsInReadingOrder();
         mContent.arrangeChildren(views, Math.max(itemCount, views.size()));
         mItemsInvalidated = true;
+    }
+
+    // TODO remove this once GSA code fix is submitted
+    public ViewGroup getContent() {
+        return (ViewGroup) mContent;
     }
 
     public int getItemCount() {
