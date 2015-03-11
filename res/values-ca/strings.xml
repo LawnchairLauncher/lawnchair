@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aquesta aplicació no està instal·lada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'aplicació d\'aquesta icona no està instal·lada. Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Afegeix a l\'espai de treball"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Element afegit a l\'espai de treball"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Element suprimit de l\'espai de treball"</string>
+    <string name="action_move" msgid="6768694438207239815">"Desplaça l\'element"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Desplaça-ho a la cel·la buida <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Element desplaçat"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Afegeix l\'element a la carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Element afegit a la carpeta"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Crea una carpeta amb: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Carpeta creada"</string>
 </resources>

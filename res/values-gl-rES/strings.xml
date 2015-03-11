@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Esta aplicación non está instalada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"A aplicación para esta icona non está instalada. Podes eliminala ou buscar a aplicación e instalala manualmente."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Engadir a espazo de traballo"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Engadiuse o elemento ao espazo de traballo"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Eliminouse o elemento do espazo de traballo"</string>
+    <string name="action_move" msgid="6768694438207239815">"Mover elemento"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Mover para baleirar a cela <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Moveuse o elemento"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Engadir ao cartafol: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Engadiuse o elemento ao cartafol"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Crear cartafol con: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Creouse o cartafol"</string>
 </resources>

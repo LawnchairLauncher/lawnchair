@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"App မတပ်ဆင်ရသေးပါ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ဤအိုင်ကွန်အတွက် app အားမထည့်သွင်းထားပါ။ You can remove it, or search for the app and install it manually."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"အလုပ်နေရာသို့ ပေါင်းထည့်မည်"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"အလုပ်နေရာသို့ ၎င်းအားထည့်ပြီး"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"၎င်းအား အလုပ်နေရာမှ ရွှေ့ပြီး"</string>
+    <string name="action_move" msgid="6768694438207239815">"၎င်းအား ရွှေ့ရန်"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"ဆဲလ်အလွတ် <xliff:g id="NUMBER_0">%1$s</xliff:g>၊ <xliff:g id="NUMBER_1">%2$s</xliff:g> သို့ ရွှေ့ပြီး"</string>
+    <string name="item_moved" msgid="4606538322571412879">"၎င်းအားရွှေ့ပြီး"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ဖိုလ်ဒါသို့ ထည့်ရန်- <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"ဖိုလ်ဒါသို့ ထည့်ပြီး"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"ဖိုလ်ဒါ ပြုလုပ်ရန်- <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ဖိုလ်ဒါ ပြုလုပ်ပြီး"</string>
 </resources>

@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aplikazio hau ez dago instalatuta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Ikono honen aplikazioa ez dago instalatuta. Ikonoa ken dezakezu, edo aplikazioa bilatu eta eskuz instalatu."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Gehitu lan-eremuan"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Elementua laneko eremuan gehitu da"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Elementua laneko eremutik kendu da"</string>
+    <string name="action_move" msgid="6768694438207239815">"Mugitu elementua"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Eraman <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g> gelaxka hutsera"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Elementua mugitu da"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Gehitu <xliff:g id="NAME">%1$s</xliff:g> karpetan"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Elementua karpetan gehitu da"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Sortu karpeta <xliff:g id="NAME">%1$s</xliff:g> elementuarekin"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Karpeta sortu da"</string>
 </resources>

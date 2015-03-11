@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Ta aplikacija ni nameščena."</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikacija za to ikono ni nameščena. Lahko jo odstranite ali poiščete aplikacijo in to namestite ročno."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Dodajanje v delovni prostor"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Element je dodan v delovni prostor"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Element je odstranjen iz delovnega prostora"</string>
+    <string name="action_move" msgid="6768694438207239815">"Premik elementa"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Premik v prazno celico <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Element je premaknjen"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Dodajanje v mapo: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Element je dodan v mapo"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Ustvarjanje mape s tem: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Mapa je ustvarjena"</string>
 </resources>

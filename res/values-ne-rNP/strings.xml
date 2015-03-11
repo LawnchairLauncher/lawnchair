@@ -123,4 +123,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"यो अनुप्रयोग स्थापित छैन"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईँ यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"कार्यक्षेत्रमा थप्नुहोस्"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"कार्यक्षेत्रमा वस्तु थपियो"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"कार्यक्षेत्रबाट वस्तु हटाइयो"</string>
+    <string name="action_move" msgid="6768694438207239815">"वस्तु सार्नुहोस्"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"खाली सेल <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>मा सार्नुहोस्"</string>
+    <string name="item_moved" msgid="4606538322571412879">"वस्तु सारियो"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g> मा थप्नुहोस्"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"वस्तु फोल्डरमा थपियो"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"<xliff:g id="NAME">%1$s</xliff:g>: मार्फत फोल्डर सिर्जना गर्नुहोस्"</string>
+    <string name="folder_created" msgid="6409794597405184510">"फोल्डर सिर्जना गरियो"</string>
 </resources>

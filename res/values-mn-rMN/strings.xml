@@ -121,4 +121,22 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Энэ апп-г суулгаагүй байна"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Энэ дүрсний апп-г суулгаагүй байна. Та үүнийг устгах буюу апп-г хайж суулгах боломжтой."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Ажлын талбар нэмэх"</string>
+    <!-- no translation found for item_added_to_workspace (3144273143205811094) -->
+    <skip />
+    <!-- no translation found for item_removed_from_workspace (3046819836864411670) -->
+    <skip />
+    <!-- no translation found for action_move (6768694438207239815) -->
+    <skip />
+    <!-- no translation found for move_to_empty_cell (5701704023760440306) -->
+    <skip />
+    <!-- no translation found for item_moved (4606538322571412879) -->
+    <skip />
+    <!-- no translation found for add_to_folder (9040534766770853243) -->
+    <skip />
+    <!-- no translation found for added_to_folder (4793259502305558003) -->
+    <skip />
+    <!-- no translation found for create_folder_with (4050141361160214248) -->
+    <skip />
+    <!-- no translation found for folder_created (6409794597405184510) -->
+    <skip />
 </resources>

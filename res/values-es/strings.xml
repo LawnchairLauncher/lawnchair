@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Esta aplicación no está instalada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"La aplicación de este icono no está instalada. Puedes eliminar el icono o buscar la aplicación e instalarla manualmente."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Añadir a espacio de trabajo"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Elemento añadido al espacio de trabajo"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Elemento eliminado del espacio de trabajo"</string>
+    <string name="action_move" msgid="6768694438207239815">"Mover elemento"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Mover a celda vacía (<xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>)"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Elemento movido"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Añadir a carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Elemento añadido a carpeta"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Crear carpeta con: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Carpeta creada"</string>
 </resources>

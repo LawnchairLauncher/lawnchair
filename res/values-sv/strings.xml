@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Appen är inte installerad"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Appen för den här ikonen har inte installerats. Du kan ta bort den eller söka efter appen och installera den manuellt."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Lägg till på arbetsyta"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Objektet har lagts till i arbetsutrymmet"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Objektet har tagits bort från arbetsutrymmet"</string>
+    <string name="action_move" msgid="6768694438207239815">"Flytta objekt"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Flytta till en tom cell <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Objektet har flyttats"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Lägg till i mapp: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Objektet har lagts till i mappen"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Skapa mapp med: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Mappen har skapats"</string>
 </resources>

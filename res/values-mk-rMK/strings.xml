@@ -121,4 +121,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Апликацијата не е инсталирана"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Апликацијата за оваа икона не е инсталирана. Може да ја отстраните или да се обидете да ја најдете апликацијата и да ја инсталирате рачно."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Додај на работна површина"</string>
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Ставкате е додадена во работниот простор"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Ставката е отстранета од работниот простор"</string>
+    <string name="action_move" msgid="6768694438207239815">"Премести ставка"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Премести во празна ќелија <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Ставката е преместена"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Додај во папката: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Ставката е додадена во папката"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Создај папка со: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Папката е создадена"</string>
 </resources>
