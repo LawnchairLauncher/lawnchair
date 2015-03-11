@@ -28,6 +28,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -49,7 +50,7 @@ public class BubbleTextView extends TextView {
     private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
     static final float PADDING_V = 3.0f;
 
-
+    private Drawable mIcon;
     private final Drawable mBackground;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
@@ -62,9 +63,12 @@ public class BubbleTextView extends TextView {
 
     private float mSlop;
 
-    private int mTextColor;
     private final boolean mCustomShadowsEnabled;
-    private boolean mIsTextVisible;
+    private final boolean mLayoutHorizontal;
+    private final int mIconSize;
+    private final int mIconPaddingSize;
+    private final int mTextSize;
+    private int mTextColor;
 
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
@@ -79,10 +83,19 @@ public class BubbleTextView extends TextView {
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
+        mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
+        mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
+                grid.allAppsIconSizePx);
+        mIconPaddingSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconPaddingOverride,
+                grid.iconDrawablePaddingPx);
+        mTextSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_textSizeOverride,
+                grid.allAppsIconTextSizePx);
         a.recycle();
 
         if (mCustomShadowsEnabled) {
@@ -92,6 +105,12 @@ public class BubbleTextView extends TextView {
         } else {
             mBackground = null;
         }
+
+        // If we are laying out horizontal, then center the text vertically
+        if (mLayoutHorizontal) {
+            setGravity(Gravity.CENTER_VERTICAL);
+        }
+
         mLongPressHelper = new CheckLongPressHelper(this);
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
@@ -106,9 +125,7 @@ public class BubbleTextView extends TextView {
         super.onFinishInflate();
 
         // Ensure we are using the right text size
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
@@ -119,16 +136,11 @@ public class BubbleTextView extends TextView {
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
             boolean setDefaultPadding, boolean promiseStateChanged) {
         Bitmap b = info.getIcon(iconCache);
-        LauncherAppState app = LauncherAppState.getInstance();
 
         FastBitmapDrawable iconDrawable = Utilities.createIconDrawable(b);
         iconDrawable.setGhostModeEnabled(info.isDisabled != 0);
 
-        setCompoundDrawables(null, iconDrawable, null, null);
-        if (setDefaultPadding) {
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
-        }
+        setIcon(iconDrawable, mIconSize, setDefaultPadding ? mIconPaddingSize : -1);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
         }
@@ -141,20 +153,13 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-
-        Drawable topDrawable = Utilities.createIconDrawable(info.iconBitmap);
-        topDrawable.setBounds(0, 0, grid.allAppsIconSizePx, grid.allAppsIconSizePx);
-        setCompoundDrawables(null, topDrawable, null, null);
-        setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+        setIcon(Utilities.createIconDrawable(info.iconBitmap), mIconSize, mIconPaddingSize);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
         }
         setTag(info);
     }
-
 
     @Override
     protected boolean setFrame(int left, int top, int right, int bottom) {
@@ -186,10 +191,19 @@ public class BubbleTextView extends TextView {
         }
     }
 
+    /** Returns the icon for this view. */
+    public Drawable getIcon() {
+        return mIcon;
+    }
+
+    /** Returns whether the layout is horizontal. */
+    public boolean isLayoutHorizontal() {
+        return mLayoutHorizontal;
+    }
+
     private void updateIconState() {
-        Drawable top = getCompoundDrawables()[1];
-        if (top instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) top).setPressed(isPressed() || mStayPressed);
+        if (mIcon instanceof FastBitmapDrawable) {
+            ((FastBitmapDrawable) mIcon).setPressed(isPressed() || mStayPressed);
         }
     }
 
@@ -325,10 +339,9 @@ public class BubbleTextView extends TextView {
         super.onAttachedToWindow();
 
         if (mBackground != null) mBackground.setCallback(this);
-        Drawable top = getCompoundDrawables()[1];
 
-        if (top instanceof PreloadIconDrawable) {
-            ((PreloadIconDrawable) top).applyPreloaderTheme(getPreloaderTheme());
+        if (mIcon instanceof PreloadIconDrawable) {
+            ((PreloadIconDrawable) mIcon).applyPreloaderTheme(getPreloaderTheme());
         }
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
@@ -358,11 +371,6 @@ public class BubbleTextView extends TextView {
         } else {
             super.setTextColor(res.getColor(android.R.color.transparent));
         }
-        mIsTextVisible = visible;
-    }
-
-    public boolean isTextVisible() {
-        return mIsTextVisible;
     }
 
     @Override
@@ -385,15 +393,13 @@ public class BubbleTextView extends TextView {
                     ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
                             info.getInstallProgress() : 0)) : 100;
 
-            Drawable[] drawables = getCompoundDrawables();
-            Drawable top = drawables[1];
-            if (top != null) {
+            if (mIcon != null) {
                 final PreloadIconDrawable preloadDrawable;
-                if (top instanceof PreloadIconDrawable) {
-                    preloadDrawable = (PreloadIconDrawable) top;
+                if (mIcon instanceof PreloadIconDrawable) {
+                    preloadDrawable = (PreloadIconDrawable) mIcon;
                 } else {
-                    preloadDrawable = new PreloadIconDrawable(top, getPreloaderTheme());
-                    setCompoundDrawables(drawables[0], preloadDrawable, drawables[2], drawables[3]);
+                    preloadDrawable = new PreloadIconDrawable(mIcon, getPreloaderTheme());
+                    setIcon(preloadDrawable, mIconSize, -1);
                 }
 
                 preloadDrawable.setLevel(progressLevel);
@@ -416,5 +422,24 @@ public class BubbleTextView extends TextView {
             sPreloaderThemes.put(style, theme);
         }
         return theme;
+    }
+
+    /**
+     * Sets the icon for this view based on the layout direction.
+     */
+    private Drawable setIcon(Drawable icon, int iconSize, int drawablePadding) {
+        mIcon = icon;
+        if (iconSize != -1) {
+            mIcon.setBounds(0, 0, iconSize, iconSize);
+        }
+        if (mLayoutHorizontal) {
+            setCompoundDrawablesRelative(mIcon, null, null, null);
+        } else {
+            setCompoundDrawablesRelative(null, mIcon, null, null);
+        }
+        if (drawablePadding != -1) {
+            setCompoundDrawablePadding(drawablePadding);
+        }
+        return icon;
     }
 }

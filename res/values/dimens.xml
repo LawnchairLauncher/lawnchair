@@ -46,6 +46,9 @@
     <dimen name="toolbar_button_vertical_padding">4dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
+<!-- Apps view -->
+    <dimen name="apps_view_row_height">64dp</dimen>
+
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The height of the tab bar - if this changes, we should update the
          external icon width/height above to compensate -->

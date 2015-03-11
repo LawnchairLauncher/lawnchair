@@ -62,6 +62,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <include layout="@layout/apps_view"
+            android:id="@+id/apps_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
     </com.android.launcher3.DragLayer>
 
     <ViewStub

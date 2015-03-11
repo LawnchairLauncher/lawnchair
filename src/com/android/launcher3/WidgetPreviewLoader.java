@@ -131,8 +131,8 @@ public class WidgetPreviewLoader {
     private final PaintCache mDefaultAppWidgetPreviewPaint = new PaintCache();
     private final BitmapFactoryOptionsCache mCachedBitmapFactoryOptions = new BitmapFactoryOptionsCache();
 
-    private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<String, WeakReference<Bitmap>>();
-    private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps = new ArrayList<SoftReference<Bitmap>>();
+    private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<>();
+    private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps = new ArrayList<>();
 
     private final Context mContext;
     private final int mAppIconSize;

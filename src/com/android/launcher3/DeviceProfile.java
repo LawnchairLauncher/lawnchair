@@ -122,6 +122,8 @@ public class DeviceProfile {
     int hotseatAllAppsRank;
     int allAppsNumRows;
     int allAppsNumCols;
+    // TODO(winsonc): to be used with the grid layout
+    int allAppsRowsSize;
     int searchBarSpaceWidthPx;
     int searchBarSpaceHeightPx;
     int pageIndicatorHeightPx;

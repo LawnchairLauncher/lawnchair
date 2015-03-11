@@ -24,6 +24,7 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
@@ -47,7 +48,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.Workspace.ItemOperator;
 
@@ -220,7 +220,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.getWorkspace().beginDragShared(v, this);
+            mLauncher.getWorkspace().beginDragShared(v, new Point(), this, false);
 
             mCurrentDragInfo = item;
             mEmptyCellRank = item.rank;
