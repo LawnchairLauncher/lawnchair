@@ -4608,13 +4608,13 @@ public class Launcher extends Activity
             }
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.onPackagesUpdated(
-                        LauncherModel.getSortedWidgetsAndShortcuts(this));
+                        LauncherModel.getSortedWidgetsAndShortcuts(this, false /* refresh */));
             }
         } else {
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.setApps(apps);
                 mAppsCustomizeContent.onPackagesUpdated(
-                        LauncherModel.getSortedWidgetsAndShortcuts(this));
+                        LauncherModel.getSortedWidgetsAndShortcuts(this, false /* refresh */));
             }
         }
         if (mLauncherCallbacks != null) {
