@@ -117,7 +117,7 @@ public class LauncherModel extends BroadcastReceiver
 
     private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
-    private static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     static {
         sWorkerThread.start();
     }
@@ -2018,10 +2018,14 @@ public class LauncherModel extends BroadcastReceiver
                                     continue;
                                 }
 
+                                container = c.getInt(containerIndex);
+                                boolean useLowResIcon = container >= 0 &&
+                                        c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
+
                                 if (itemReplaced) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
                                         info = getAppShortcutInfo(manager, intent, user, context, null,
-                                                iconIndex, titleIndex, false);
+                                                iconIndex, titleIndex, false, useLowResIcon);
                                     } else {
                                         // Don't replace items for other profiles.
                                         itemsToRemove.add(id);
@@ -2032,7 +2036,8 @@ public class LauncherModel extends BroadcastReceiver
                                         Launcher.addDumpLog(TAG,
                                                 "constructing info for partially restored package",
                                                 true);
-                                        info = getRestoredItemInfo(c, titleIndex, intent, promiseType);
+                                        info = getRestoredItemInfo(c, titleIndex, intent,
+                                                promiseType, useLowResIcon);
                                         intent = getRestoredItemIntent(c, context, intent);
                                     } else {
                                         // Don't restore items for other profiles.
@@ -2042,7 +2047,7 @@ public class LauncherModel extends BroadcastReceiver
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                     info = getAppShortcutInfo(manager, intent, user, context, c,
-                                            iconIndex, titleIndex, allowMissingTarget);
+                                            iconIndex, titleIndex, allowMissingTarget, useLowResIcon);
                                 } else {
                                     info = getShortcutInfo(c, context, iconTypeIndex,
                                             iconPackageIndex, iconResourceIndex, iconIndex,
@@ -2064,7 +2069,6 @@ public class LauncherModel extends BroadcastReceiver
                                 if (info != null) {
                                     info.id = id;
                                     info.intent = intent;
-                                    container = c.getInt(containerIndex);
                                     info.container = container;
                                     info.screenId = c.getInt(screenIndex);
                                     info.cellX = c.getInt(cellXIndex);
@@ -3352,10 +3356,10 @@ public class LauncherModel extends BroadcastReceiver
      * to a package that is not yet installed on the system.
      */
     public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent,
-            int promiseType) {
+            int promiseType, boolean useLowResIcon) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
-        mIconCache.getTitleAndIcon(info, intent, info.user);
+        mIconCache.getTitleAndIcon(info, intent, info.user, useLowResIcon);
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
             String title = (cursor != null) ? cursor.getString(titleIndex) : null;
@@ -3404,7 +3408,7 @@ public class LauncherModel extends BroadcastReceiver
      */
     public ShortcutInfo getAppShortcutInfo(PackageManager manager, Intent intent,
             UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
-            boolean allowMissingTarget) {
+            boolean allowMissingTarget, boolean useLowResIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
             return null;
@@ -3426,7 +3430,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         final ShortcutInfo info = new ShortcutInfo();
-        mIconCache.getTitleAndIcon(info, componentName, lai, user, false);
+        mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
         if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
             Bitmap icon = Utilities.createIconBitmap(c, iconIndex, context);
             info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);

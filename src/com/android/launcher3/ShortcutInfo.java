@@ -84,6 +84,11 @@ public class ShortcutInfo extends ItemInfo {
     boolean usingFallbackIcon;
 
     /**
+     * Indicates whether we're using a low res icon
+     */
+    boolean usingLowResIcon;
+
+    /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
@@ -192,7 +197,8 @@ public class ShortcutInfo extends ItemInfo {
 
     public void updateIcon(IconCache iconCache) {
         if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
-            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user);
+            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user,
+                    shouldUseLowResIcon());
         }
     }
 
@@ -263,6 +269,10 @@ public class ShortcutInfo extends ItemInfo {
     public void setInstallProgress(int progress) {
         mInstallProgress = progress;
         status |= FLAG_INSTALL_SESSION_ACTIVE;
+    }
+
+    public boolean shouldUseLowResIcon() {
+        return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
     }
 }
 

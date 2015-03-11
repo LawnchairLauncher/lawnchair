@@ -46,6 +46,11 @@ public class AppInfo extends ItemInfo {
     Bitmap iconBitmap;
 
     /**
+     * Indicates whether we're using a low res icon
+     */
+    boolean usingLowResIcon;
+
+    /**
      * The time at which the app was first installed.
      */
     long firstInstallTime;
@@ -79,7 +84,7 @@ public class AppInfo extends ItemInfo {
 
         flags = initFlags(info);
         firstInstallTime = info.getFirstInstallTime();
-        iconCache.getTitleAndIcon(this, info);
+        iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
         intent = makeLaunchIntent(context, info, user);
         this.user = user;
     }

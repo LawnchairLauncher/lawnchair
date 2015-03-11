@@ -536,6 +536,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (mDragController.isDragging()) {
             mDragController.forceTouchMove();
         }
+
+        if (ALLOW_FOLDER_SCROLL) {
+            FolderPagedView pages = (FolderPagedView) mContent;
+            pages.verifyVisibleHighResIcons(pages.getNextPage());
+        }
     }
 
     public void beginExternalDrag(ShortcutInfo item) {
