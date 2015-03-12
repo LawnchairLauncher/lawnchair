@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -44,11 +45,9 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     private final IconCache mIconCache;
     private final HashMap<View, Runnable> mPageChangingViews = new HashMap<>();
 
-    private final CellLayout mFirstPage;
-
-    final int mMaxCountX;
-    final int mMaxCountY;
-    final int mMaxItemsPerPage;
+    private final int mMaxCountX;
+    private final int mMaxCountY;
+    private final int mMaxItemsPerPage;
 
     private int mAllocatedContentSize;
     private int mGridCountX;
@@ -61,10 +60,6 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LauncherAppState app = LauncherAppState.getInstance();
-
-        mFirstPage = newCellLayout();
-        addFullScreenPage(mFirstPage);
-        setCurrentPage(0);
         setDataIsReady();
 
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -96,8 +91,6 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
             mGridCountY = mMaxCountY;
             done = true;
         } else {
-            mGridCountX = mFirstPage.getCountX();
-            mGridCountY = mFirstPage.getCountY();
             done = false;
         }
 
@@ -120,50 +113,19 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
             done = mGridCountX == oldCountX && mGridCountY == oldCountY;
         }
 
-        setGridSize(mGridCountX, mGridCountY);
-    }
-
-    public void setGridSize(int countX, int countY) {
-        mGridCountX = countX;
-        mGridCountY = countY;
-        mFirstPage.setGridSize(mGridCountX, mGridCountY);
-        for (int i = getPageCount() - 1; i > 0; i--) {
+        // Update grid size
+        for (int i = getPageCount() - 1; i >= 0; i--) {
             getPageAt(i).setGridSize(mGridCountX, mGridCountY);
         }
     }
 
     @Override
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
-        final int count = items.size();
-
-        if (getPageCount() > 1) {
-            Log.d(TAG, "Binding items to an non-empty view");
-            removeAllViews();
-            addView(mFirstPage);
-            mFirstPage.removeAllViews();
-        }
-
-        setupContentDimensions(count);
-        CellLayout page = mFirstPage;
-        int pagePosition = 0;
-        int rank = 0;
-
+        ArrayList<View> icons = new ArrayList<View>();
         for (ShortcutInfo item : items) {
-            if (pagePosition >= mMaxItemsPerPage) {
-                // This page is full, add a new page.
-                pagePosition = 0;
-                page = newCellLayout();
-                addFullScreenPage(page);
-            }
-
-            item.cellX = pagePosition % mGridCountX;
-            item.cellY = pagePosition / mGridCountX;
-            item.rank = rank;
-            addNewView(item, page);
-
-            rank++;
-            pagePosition++;
+            icons.add(createNewView(item));
         }
+        arrangeChildren(icons, icons.size(), false);
         return new ArrayList<ShortcutInfo>();
     }
 
@@ -185,7 +147,7 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         // Add a new page if last page is full
         if (getPageAt(getChildCount() - 1).getShortcutsAndWidgets().getChildCount()
                 >= mMaxItemsPerPage) {
-            addFullScreenPage(newCellLayout());
+            createAndAddNewPage();
         }
         setCurrentPage(getChildCount() - 1);
         return rank;
@@ -193,14 +155,20 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
     @Override
     public View createAndAddViewForRank(ShortcutInfo item, int rank) {
-        int pageNo = updateItemXY(item, rank);
-        CellLayout page = getPageAt(pageNo);
-        return addNewView(item, page);
+        View icon = createNewView(item);
+        addViewForRank(createNewView(item), item, rank);
+        return icon;
     }
 
     @Override
     public void addViewForRank(View view, ShortcutInfo item, int rank) {
-        int pageNo = updateItemXY(item, rank);
+        int pagePos = rank % mMaxItemsPerPage;
+        int pageNo = rank / mMaxItemsPerPage;
+
+        item.rank = rank;
+        item.cellX = pagePos % mGridCountX;
+        item.cellY = pagePos / mGridCountX;
+
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
@@ -208,32 +176,18 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                 view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
     }
 
-    /**
-     * Updates the item cellX and cellY position and return the page number for that item.
-     */
-    private int updateItemXY(ShortcutInfo item, int rank) {
-        item.rank = rank;
-
-        int pagePos = item.rank % mMaxItemsPerPage;
-        item.cellX = pagePos % mGridCountX;
-        item.cellY = pagePos / mGridCountX;
-
-        return item.rank / mMaxItemsPerPage;
-    }
-
-    private View addNewView(ShortcutInfo item, CellLayout target) {
+    @SuppressLint("InflateParams")
+    private View createNewView(ShortcutInfo item) {
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
-                R.layout.folder_application, target.getShortcutsAndWidgets(), false);
+                R.layout.folder_application, null, false);
         textView.applyFromShortcutInfo(item, mIconCache, false);
         textView.setOnClickListener(mFolder);
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorView);
         textView.setOnKeyListener(mKeyListener);
 
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(
-                item.cellX, item.cellY, item.spanX, item.spanY);
-        target.addViewToCellLayout(
-                textView, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
+        textView.setLayoutParams(new CellLayout.LayoutParams(
+                item.cellX, item.cellY, item.spanX, item.spanY));
         return textView;
     }
 
@@ -252,26 +206,18 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         return getPageAt(getNextPage());
     }
 
-    @Override
-    public void addFullScreenPage(View page) {
+    private CellLayout createAndAddNewPage() {
+        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        CellLayout page = new CellLayout(getContext());
+        page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
+        page.setInvertIfRtl(true);
+        page.setGridSize(mGridCountX, mGridCountY);
+
         LayoutParams lp = generateDefaultLayoutParams();
         lp.isFullScreenPage = true;
-        super.addView(page, -1, lp);
-    }
-
-    private CellLayout newCellLayout() {
-        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
-
-        CellLayout layout = new CellLayout(getContext());
-        layout.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
-        layout.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
-        layout.setInvertIfRtl(true);
-
-        if (mFirstPage != null) {
-            layout.setGridSize(mFirstPage.getCountX(), mFirstPage.getCountY());
-        }
-
-        return layout;
+        addView(page, -1, lp);
+        return page;
     }
 
     @Override
@@ -300,6 +246,10 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
      */
     @Override
     public void arrangeChildren(ArrayList<View> list, int itemCount) {
+        arrangeChildren(list, itemCount, true);
+    }
+
+    private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
         ArrayList<CellLayout> pages = new ArrayList<CellLayout>();
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout page = (CellLayout) getChildAt(i);
@@ -321,8 +271,7 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                 if (pageItr.hasNext()) {
                     currentPage = pageItr.next();
                 } else {
-                    currentPage = newCellLayout();
-                    addFullScreenPage(currentPage);
+                    currentPage = createAndAddNewPage();
                 }
                 position = 0;
             }
@@ -335,8 +284,10 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                 info.cellX = newX;
                 info.cellY = newY;
                 info.rank = rank;
-                LauncherModel.addOrMoveItemInDatabase(getContext(), info,
-                        mFolder.mInfo.id, 0, info.cellX, info.cellY);
+                if (saveChanges) {
+                    LauncherModel.addOrMoveItemInDatabase(getContext(), info,
+                            mFolder.mInfo.id, 0, info.cellX, info.cellY);
+                }
             }
             lp.cellX = info.cellX;
             lp.cellY = info.cellY;
@@ -346,13 +297,11 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                     v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
         }
 
+        // Remove extra views.
         boolean removed = false;
         while (pageItr.hasNext()) {
-            CellLayout layout = pageItr.next();
-            if (layout != mFirstPage) {
-                removeView(layout);
-                removed = true;
-            }
+            removeView(pageItr.next());
+            removed = true;
         }
         if (removed) {
             setCurrentPage(0);
@@ -369,11 +318,11 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     public void syncPageItems(int page, boolean immediate) { }
 
     public int getDesiredWidth() {
-        return mFirstPage.getDesiredWidth();
+        return getPageCount() > 0 ? getPageAt(0).getDesiredWidth() : 0;
     }
 
     public int getDesiredHeight()  {
-        return mFirstPage.getDesiredHeight();
+        return  getPageCount() > 0 ? getPageAt(0).getDesiredHeight() : 0;
     }
 
     @Override
