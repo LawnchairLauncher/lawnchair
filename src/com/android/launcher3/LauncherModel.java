@@ -167,7 +167,6 @@ public class LauncherModel extends BroadcastReceiver
 
     // sBgWidgetProviders is the set of widget providers including custom internal widgets
     public static HashMap<ComponentName, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
-    public static boolean sWidgetProvidersDirty;
 
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
@@ -3252,7 +3251,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             final ArrayList<Object> widgetsAndShortcuts =
-                    getSortedWidgetsAndShortcuts(context);
+                    getSortedWidgetsAndShortcuts(context, true /* refresh */);
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -3275,9 +3274,10 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context) {
+    public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context,
+            boolean refresh) {
         synchronized (sBgLock) {
-            if (sBgWidgetProviders != null && !sWidgetProvidersDirty) {
+            if (sBgWidgetProviders != null && !refresh) {
                 return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
             }
             sBgWidgetProviders = new HashMap<ComponentName, LauncherAppWidgetProviderInfo>();
@@ -3294,7 +3294,6 @@ public class LauncherModel extends BroadcastReceiver
                 info = new LauncherAppWidgetProviderInfo(context, widget);
                 sBgWidgetProviders.put(info.provider, info);
             }
-            sWidgetProvidersDirty = false;
             return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
         }
     }
@@ -3302,17 +3301,17 @@ public class LauncherModel extends BroadcastReceiver
     public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name) {
         synchronized (sBgLock) {
             if (sBgWidgetProviders == null) {
-                getWidgetProviders(ctx);
+                getWidgetProviders(ctx, false /* refresh */);
             }
             return sBgWidgetProviders.get(name);
         }
     }
 
     // Returns a list of ResolveInfos/AppWidgetInfos in sorted order
-    public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context) {
+    public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context, boolean refresh) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
-        widgetsAndShortcuts.addAll(getWidgetProviders(context));
+        widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
         Collections.sort(widgetsAndShortcuts, new WidgetAndShortcutNameComparator(context));

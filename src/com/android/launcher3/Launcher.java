@@ -4103,7 +4103,7 @@ public class Launcher extends Activity
         }
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated(
-                    LauncherModel.getSortedWidgetsAndShortcuts(this));
+                    LauncherModel.getSortedWidgetsAndShortcuts(this, false /* refresh */));
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
