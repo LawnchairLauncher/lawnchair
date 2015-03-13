@@ -22,7 +22,7 @@
     android:background="#22000000"
     android:descendantFocusability="afterDescendants">
     <include
-        layout="@layout/apps_list_reveal_view"
+        layout="@layout/apps_reveal_view"
         android:layout_width="@dimen/apps_container_width"
         android:layout_height="540dp"
         android:layout_gravity="center" />

@@ -27,7 +27,7 @@ class BaseAlphabeticIndex {
     /**
      * Returns the index of the bucket in which the given string should appear.
      */
-    public int getBucketIndex(String s) {
+    protected int getBucketIndex(String s) {
         if (s.isEmpty()) {
             return UNKNOWN_BUCKET_INDEX;
         }
@@ -41,7 +41,7 @@ class BaseAlphabeticIndex {
     /**
      * Returns the label for the bucket at the given index (as returned by getBucketIndex).
      */
-    public String getBucketLabel(int index) {
+    protected String getBucketLabel(int index) {
         return BUCKETS.substring(index, index + 1);
     }
 }
@@ -100,11 +100,29 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
     }
 
     /**
+     * Computes the section name for an given string {@param s}.
+     */
+    public String computeSectionName(String s) {
+        String sectionName = getBucketLabel(getBucketIndex(s));
+        if (sectionName.trim().isEmpty() && s.length() > 0) {
+            boolean startsWithDigit = Character.isDigit(s.charAt(0));
+            if (startsWithDigit) {
+                // Digit section
+                return "#";
+            } else {
+                // Unknown section
+                return "\u2022";
+            }
+        }
+        return sectionName;
+    }
+
+    /**
      * Returns the index of the bucket in which {@param s} should appear.
      * Function is synchronized because underlying routine walks an iterator
      * whose state is maintained inside the index object.
      */
-    public int getBucketIndex(String s) {
+    protected int getBucketIndex(String s) {
         if (mHasValidAlphabeticIndex) {
             try {
                 return (Integer) mGetBucketIndexMethod.invoke(mAlphabeticIndex, s);
@@ -118,7 +136,7 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
     /**
      * Returns the label for the bucket at the given index (as returned by getBucketIndex).
      */
-    public String getBucketLabel(int index) {
+    protected String getBucketLabel(int index) {
         if (mHasValidAlphabeticIndex) {
             try {
                 return (String) mGetBucketLabelMethod.invoke(mAlphabeticIndex, index);

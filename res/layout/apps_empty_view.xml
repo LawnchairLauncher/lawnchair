@@ -13,16 +13,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.AppsContainerView
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/apps_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="8dp"
-    android:background="@drawable/apps_customize_bg"
-    android:descendantFocusability="afterDescendants">
-    <include
-        layout="@layout/apps_reveal_view" />
-    <include
-        layout="@layout/apps_list_view" />
-</com.android.launcher3.AppsContainerView>
+    android:id="@+id/empty_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:paddingTop="24dp"
+    android:paddingBottom="24dp"
+    android:paddingRight="@dimen/apps_grid_view_start_margin"
+    android:textSize="16sp"
+    android:textColor="#4c4c4c"
+    android:focusable="false" />
+
