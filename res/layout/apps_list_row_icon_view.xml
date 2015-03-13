@@ -20,9 +20,10 @@
     style="@style/WorkspaceIcon.AppsCustomize"
     android:id="@+id/application_icon"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:focusable="true"
     android:background="@drawable/focusable_view_bg"
     launcher:iconPaddingOverride="24dp"
     launcher:textSizeOverride="16dp"
-    launcher:layoutHorizontal="true" />
+    launcher:layoutHorizontal="true"
+    launcher:deferShadowGeneration="true" />

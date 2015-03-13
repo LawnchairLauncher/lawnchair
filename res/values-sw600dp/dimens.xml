@@ -18,6 +18,7 @@
     <dimen name="app_icon_size">64dp</dimen>
 
 <!-- Apps view -->
+    <dimen name="apps_container_width">480dp</dimen>
     <dimen name="apps_view_row_height">76dp</dimen>
 
 <!-- AppsCustomize -->

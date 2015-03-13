@@ -24,6 +24,7 @@
         <attr name="iconSizeOverride" format="dimension" />
         <attr name="iconPaddingOverride" format="dimension" />
         <attr name="textSizeOverride" format="dimension" />
+        <attr name="deferShadowGeneration" format="boolean" />
     </declare-styleable>
 
     <!-- Page Indicator specific attributes. -->

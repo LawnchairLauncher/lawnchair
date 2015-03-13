@@ -47,7 +47,13 @@
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
 <!-- Apps view -->
+    <dimen name="apps_container_width">0dp</dimen>
+    <dimen name="apps_grid_view_start_margin">52dp</dimen>
     <dimen name="apps_view_row_height">64dp</dimen>
+    <dimen name="apps_view_section_text_size">24sp</dimen>
+    <dimen name="apps_view_fast_scroll_gutter_size">48dp</dimen>
+    <dimen name="apps_view_fast_scroll_popup_size">64dp</dimen>
+    <dimen name="apps_view_fast_scroll_text_size">48dp</dimen>
 
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The height of the tab bar - if this changes, we should update the

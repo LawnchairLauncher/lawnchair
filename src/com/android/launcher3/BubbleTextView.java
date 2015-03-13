@@ -63,6 +63,7 @@ public class BubbleTextView extends TextView {
 
     private float mSlop;
 
+    private final boolean mDeferShadowGenerationOnTouch;
     private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
@@ -96,6 +97,8 @@ public class BubbleTextView extends TextView {
                 grid.iconDrawablePaddingPx);
         mTextSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_textSizeOverride,
                 grid.allAppsIconTextSizePx);
+        mDeferShadowGenerationOnTouch =
+                a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
         a.recycle();
 
         if (mCustomShadowsEnabled) {
@@ -218,7 +221,7 @@ public class BubbleTextView extends TextView {
                 // So that the pressed outline is visible immediately on setStayPressed(),
                 // we pre-create it on ACTION_DOWN (it takes a small but perceptible amount of time
                 // to create it)
-                if (mPressedBackground == null) {
+                if (!mDeferShadowGenerationOnTouch && mPressedBackground == null) {
                     mPressedBackground = mOutlineHelper.createMediumDropShadow(this);
                 }
 
@@ -247,6 +250,10 @@ public class BubbleTextView extends TextView {
         mStayPressed = stayPressed;
         if (!stayPressed) {
             mPressedBackground = null;
+        } else {
+            if (mPressedBackground == null) {
+                mPressedBackground = mOutlineHelper.createMediumDropShadow(this);
+            }
         }
 
         // Only show the shadow effect when persistent pressed state is set.
