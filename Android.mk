@@ -47,8 +47,6 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 include $(BUILD_PACKAGE)
 
-include $(call all-makefiles-under,$(LOCAL_PATH))
-
 #
 # Protocol Buffer Debug Utility in Java
 #
@@ -86,3 +84,6 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/util/etc/launcher_protoutil | $(ACP)
 	$(hide) chmod 755 $@
 
 INTERNAL_DALVIK_MODULES += $(LOCAL_INSTALLED_MODULE)
+
+# ==================================================
+include $(call all-makefiles-under,$(LOCAL_PATH))
