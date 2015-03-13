@@ -30,12 +30,14 @@ class AppsListAdapter extends RecyclerView.Adapter<AppsListAdapter.ViewHolder> {
 
     private static final int SECTION_BREAK_VIEW_TYPE = 0;
     private static final int ICON_VIEW_TYPE = 1;
+    private static final int EMPTY_VIEW_TYPE = 2;
 
     private LayoutInflater mLayoutInflater;
     private AlphabeticalAppsList mApps;
     private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
+    private String mEmptySearchText;
 
     public AppsListAdapter(Context context, AlphabeticalAppsList apps,
             View.OnTouchListener touchListener, View.OnClickListener iconClickListener,
@@ -51,9 +53,19 @@ class AppsListAdapter extends RecyclerView.Adapter<AppsListAdapter.ViewHolder> {
         return new LinearLayoutManager(context);
     }
 
+    /**
+     * Sets the text to show when there are no apps.
+     */
+    public void setEmptySearchText(String query) {
+        mEmptySearchText = query;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
+            case EMPTY_VIEW_TYPE:
+                return new ViewHolder(mLayoutInflater.inflate(R.layout.apps_empty_view, parent,
+                        false));
             case SECTION_BREAK_VIEW_TYPE:
                 return new ViewHolder(new View(parent.getContext()));
             case ICON_VIEW_TYPE:
@@ -79,39 +91,51 @@ class AppsListAdapter extends RecyclerView.Adapter<AppsListAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        AppInfo info = mApps.getApps().get(position);
-        if (info != AlphabeticalAppsList.SECTION_BREAK_INFO) {
-            ViewGroup content = (ViewGroup) holder.mContent;
-            String sectionDescription = mApps.getSectionNameForApp(info);
+        switch (holder.getItemViewType()) {
+            case ICON_VIEW_TYPE:
+                AppInfo info = mApps.getApps().get(position);
+                ViewGroup content = (ViewGroup) holder.mContent;
+                String sectionDescription = mApps.getSectionNameForApp(info);
 
-            // Bind the section header
-            boolean showSectionHeader = true;
-            if (position > 0) {
-                AppInfo prevInfo = mApps.getApps().get(position - 1);
-                showSectionHeader = (prevInfo == AlphabeticalAppsList.SECTION_BREAK_INFO);
-            }
-            TextView tv = (TextView) content.findViewById(R.id.section);
-            if (showSectionHeader) {
-                tv.setText(sectionDescription);
-                tv.setVisibility(View.VISIBLE);
-            } else {
-                tv.setVisibility(View.INVISIBLE);
-            }
+                // Bind the section header
+                boolean showSectionHeader = true;
+                if (position > 0) {
+                    AppInfo prevInfo = mApps.getApps().get(position - 1);
+                    showSectionHeader = (prevInfo == AlphabeticalAppsList.SECTION_BREAK_INFO);
+                }
+                TextView tv = (TextView) content.findViewById(R.id.section);
+                if (showSectionHeader) {
+                    tv.setText(sectionDescription);
+                    tv.setVisibility(View.VISIBLE);
+                } else {
+                    tv.setVisibility(View.INVISIBLE);
+                }
 
-            // Bind the icon
-            BubbleTextView icon = (BubbleTextView) content.getChildAt(1);
-            icon.applyFromApplicationInfo(info);
+                // Bind the icon
+                BubbleTextView icon = (BubbleTextView) content.getChildAt(1);
+                icon.applyFromApplicationInfo(info);
+                break;
+            case EMPTY_VIEW_TYPE:
+                TextView emptyViewText = (TextView) holder.mContent.findViewById(R.id.empty_text);
+                emptyViewText.setText(mEmptySearchText);
+                break;
         }
     }
 
     @Override
     public int getItemCount() {
+        if (mApps.hasNoFilteredResults()) {
+            // For the empty view
+            return 1;
+        }
         return mApps.getApps().size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (mApps.getApps().get(position) == AlphabeticalAppsList.SECTION_BREAK_INFO) {
+        if (mApps.hasNoFilteredResults()) {
+            return EMPTY_VIEW_TYPE;
+        } else if (mApps.getApps().get(position) == AlphabeticalAppsList.SECTION_BREAK_INFO) {
             return SECTION_BREAK_VIEW_TYPE;
         }
         return ICON_VIEW_TYPE;

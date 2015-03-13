@@ -16,10 +16,12 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -30,7 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
 
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
         super(context, attrs, defStyleAttr, defStyleRes);
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Resources res = context.getResources();
 
         mLauncher = (Launcher) context;
         mApps = new AlphabeticalAppsList(context);
@@ -83,6 +85,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
             mNumAppsPerRow = grid.appsViewNumCols;
             AppsGridAdapter adapter = new AppsGridAdapter(context, mApps, mNumAppsPerRow, this,
                     mLauncher, this);
+            adapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
             mLayoutManager = adapter.getLayoutManager(context);
             mItemDecoration = adapter.getItemDecoration();
             mAdapter = adapter;
@@ -90,6 +93,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
         } else if (USE_LAYOUT == LIST_LAYOUT) {
             mNumAppsPerRow = 1;
             AppsListAdapter adapter = new AppsListAdapter(context, mApps, this, mLauncher, this);
+            adapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
             mLayoutManager = adapter.getLayoutManager(context);
             mAdapter = adapter;
         }
@@ -163,10 +167,12 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
         mAppsListView.setHasFixedSize(true);
         if (isRtl) {
             mAppsListView.setPadding(mAppsListView.getPaddingLeft(), mAppsListView.getPaddingTop(),
-                    mAppsListView.getPaddingRight() + mContentMarginStart, mAppsListView.getPaddingBottom());
+                    mAppsListView.getPaddingRight() + mContentMarginStart,
+                    mAppsListView.getPaddingBottom());
         } else {
-            mAppsListView.setPadding(mAppsListView.getPaddingLeft() + mContentMarginStart, mAppsListView.getPaddingTop(),
-                    mAppsListView.getPaddingRight(), mAppsListView.getPaddingBottom());
+            mAppsListView.setPadding(mAppsListView.getPaddingLeft() + mContentMarginStart,
+                    mAppsListView.getPaddingTop(), mAppsListView.getPaddingRight(),
+                    mAppsListView.getPaddingBottom());
         }
         if (mItemDecoration != null) {
             mAppsListView.addItemDecoration(mItemDecoration);
@@ -299,7 +305,15 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
         if (s.toString().isEmpty()) {
             mApps.setFilter(null);
         } else {
-            final AlphabeticIndexCompat indexer = mApps.getIndexer();
+            String formatStr = getResources().getString(R.string.apps_view_no_search_results);
+            if (USE_LAYOUT == GRID_LAYOUT) {
+                ((AppsGridAdapter) mAdapter).setEmptySearchText(String.format(formatStr,
+                        s.toString()));
+            } else {
+                ((AppsListAdapter) mAdapter).setEmptySearchText(String.format(formatStr,
+                        s.toString()));
+            }
+
             final String filterText = s.toString().toLowerCase().replaceAll("\\s+", "");
             mApps.setFilter(new AlphabeticalAppsList.Filter() {
                 @Override

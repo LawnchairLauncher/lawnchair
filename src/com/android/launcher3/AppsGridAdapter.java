@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 
 
@@ -22,6 +23,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
     private static final int SECTION_BREAK_VIEW_TYPE = 0;
     private static final int ICON_VIEW_TYPE = 1;
+    private static final int EMPTY_VIEW_TYPE = 2;
 
     /**
      * ViewHolder for each icon.
@@ -29,11 +31,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View mContent;
         public boolean mIsSectionRow;
+        public boolean mIsEmptyRow;
 
-        public ViewHolder(View v, boolean isSectionRow) {
+        public ViewHolder(View v, boolean isSectionRow, boolean isEmptyRow) {
             super(v);
             mContent = v;
             mIsSectionRow = isSectionRow;
+            mIsEmptyRow = isEmptyRow;
         }
     }
 
@@ -43,8 +47,14 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     public class GridSpanSizer extends GridLayoutManager.SpanSizeLookup {
         @Override
         public int getSpanSize(int position) {
+            if (mApps.hasNoFilteredResults()) {
+                // Empty view spans full width
+                return mAppsPerRow;
+            }
+
             AppInfo info = mApps.getApps().get(position);
             if (info == AlphabeticalAppsList.SECTION_BREAK_INFO) {
+                // Section break spans full width
                 return mAppsPerRow;
             } else {
                 return 1;
@@ -59,14 +69,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-            AlphabeticIndexCompat indexer = mApps.getIndexer();
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
                 if (holder != null) {
                     GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
                             child.getLayoutParams();
-                    if (!holder.mIsSectionRow && !lp.isItemRemoved()) {
+                    if (!holder.mIsSectionRow && !holder.mIsEmptyRow && !lp.isItemRemoved()) {
                         if (mApps.getApps().get(holder.getPosition() - 1) ==
                                 AlphabeticalAppsList.SECTION_BREAK_INFO) {
                             // Draw at the parent
@@ -106,6 +115,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     private View.OnLongClickListener mIconLongClickListener;
     private int mAppsPerRow;
     private boolean mIsRtl;
+    private String mEmptySearchText;
 
     // Section drawing
     private int mStartMargin;
@@ -141,6 +151,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     }
 
     /**
+     * Sets the text to show when there are no apps.
+     */
+    public void setEmptySearchText(String query) {
+        mEmptySearchText = query;
+    }
+
+    /**
      * Returns the grid layout manager.
      */
     public GridLayoutManager getLayoutManager(Context context) {
@@ -167,8 +184,12 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
+            case EMPTY_VIEW_TYPE:
+                return new ViewHolder(mLayoutInflater.inflate(R.layout.apps_empty_view, parent,
+                        false), false /* isSectionRow */, true /* isEmptyRow */);
             case SECTION_BREAK_VIEW_TYPE:
-                return new ViewHolder(new View(parent.getContext()), true);
+                return new ViewHolder(new View(parent.getContext()), true /* isSectionRow */,
+                        false /* isEmptyRow */);
             case ICON_VIEW_TYPE:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.apps_grid_row_icon_view, parent, false);
@@ -176,7 +197,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setFocusable(true);
-                return new ViewHolder(icon, false);
+                return new ViewHolder(icon, false /* isSectionRow */, false /* isEmptyRow */);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -184,21 +205,33 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        AppInfo info = mApps.getApps().get(position);
-        if (info != AlphabeticalAppsList.SECTION_BREAK_INFO) {
-            BubbleTextView icon = (BubbleTextView) holder.mContent;
-            icon.applyFromApplicationInfo(info);
+        switch (holder.getItemViewType()) {
+            case ICON_VIEW_TYPE:
+                AppInfo info = mApps.getApps().get(position);
+                BubbleTextView icon = (BubbleTextView) holder.mContent;
+                icon.applyFromApplicationInfo(info);
+                break;
+            case EMPTY_VIEW_TYPE:
+                TextView emptyViewText = (TextView) holder.mContent.findViewById(R.id.empty_text);
+                emptyViewText.setText(mEmptySearchText);
+                break;
         }
     }
 
     @Override
     public int getItemCount() {
+        if (mApps.hasNoFilteredResults()) {
+            // For the empty view
+            return 1;
+        }
         return mApps.getApps().size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (mApps.getApps().get(position) == AlphabeticalAppsList.SECTION_BREAK_INFO) {
+        if (mApps.hasNoFilteredResults()) {
+            return EMPTY_VIEW_TYPE;
+        } else if (mApps.getApps().get(position) == AlphabeticalAppsList.SECTION_BREAK_INFO) {
             return SECTION_BREAK_VIEW_TYPE;
         }
         return ICON_VIEW_TYPE;

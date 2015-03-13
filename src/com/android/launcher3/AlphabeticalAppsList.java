@@ -78,9 +78,7 @@ public class AlphabeticalAppsList {
      * Returns the section name for the application.
      */
     public String getSectionNameForApp(AppInfo info) {
-        String title = info.title.toString();
-        String sectionName = mIndexer.getBucketLabel(mIndexer.getBucketIndex(title));
-        return sectionName;
+        return mIndexer.computeSectionName(info.title.toString().trim());
     }
 
     /**
@@ -88,6 +86,13 @@ public class AlphabeticalAppsList {
      */
     public AlphabeticIndexCompat getIndexer() {
         return mIndexer;
+    }
+
+    /**
+     * Returns whether there are no filtered results.
+     */
+    public boolean hasNoFilteredResults() {
+        return (mFilter != null) && mFilteredApps.isEmpty();
     }
 
     /**
