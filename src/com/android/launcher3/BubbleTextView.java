@@ -161,7 +161,8 @@ public class BubbleTextView extends TextView {
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
         }
-        setTag(info);
+        // We don't need to check the info since it's not a ShortcutInfo
+        super.setTag(info);
     }
 
     @Override
