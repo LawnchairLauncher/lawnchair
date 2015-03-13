@@ -48,6 +48,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.Workspace.ItemOperator;
 
@@ -73,6 +74,21 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     static final int STATE_SMALL = 0;
     static final int STATE_ANIMATING = 1;
     static final int STATE_OPEN = 2;
+
+    /**
+     * Fraction of the width to scroll when showing the next page hint.
+     */
+    private static final float SCROLL_HINT_FRACTION = 0.07f;
+
+    /**
+     * Time for which the scroll hint is shown before automatically changing page.
+     */
+    public static final int SCROLL_HINT_DURATION = DragController.SCROLL_DELAY;
+
+    /**
+     * Fraction of icon width which behave as scroll region.
+     */
+    private static final float ICON_OVERSCROLL_WIDTH_FACTOR = 0.45f;
 
     private static final int REORDER_DELAY = 250;
     private static final int ON_EXIT_CLOSE_DELAY = 400;
@@ -129,6 +145,17 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mDeferDropAfterUninstall;
     private boolean mUninstallSuccessful;
 
+    // Folder scrolling
+    private int mScrollAreaOffset;
+    private Alarm mOnScrollHintAlarm;
+    private Alarm mScrollPauseAlarm;
+
+    // TODO: Use {@link #mContent} once {@link #ALLOW_FOLDER_SCROLL} is removed.
+    private FolderPagedView mPagedView;
+
+    private int mScrollHintDir = DragController.SCROLL_NONE;
+    private int mCurrentScrollDir = DragController.SCROLL_NONE;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -157,6 +184,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
+
+        if (ALLOW_FOLDER_SCROLL) {
+            mOnScrollHintAlarm = new Alarm();
+            mScrollPauseAlarm = new Alarm();
+        }
     }
 
     @Override
@@ -183,6 +215,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
+
+        if (ALLOW_FOLDER_SCROLL) {
+            mPagedView = (FolderPagedView) mContent;
+        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -386,6 +422,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void animateOpen() {
         if (!(getParent() instanceof DragLayer)) return;
 
+        if (ALLOW_FOLDER_SCROLL) {
+            // Always open on the first page.
+            mPagedView.snapToPageImmediately(0);
+        }
+
         Animator openFolderAnim = null;
         final Runnable onCompleteRunnable;
         if (!Utilities.isLmpOrAbove()) {
@@ -544,6 +585,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onDragEnter(DragObject d) {
         mPrevTargetRank = -1;
         mOnExitAlarm.cancelAlarm();
+        if (ALLOW_FOLDER_SCROLL) {
+            // Get the area offset such that the folder only closes if half the drag icon width
+            // is outside the folder area
+            mScrollAreaOffset = d.dragView.getDragRegionWidth() / 2 - d.xOffset;
+        }
     }
 
     OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
@@ -558,17 +604,79 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
+    @Override
     public void onDragOver(DragObject d) {
-        final float[] r = d.getVisualCenter(null);
-        r[0] -= getPaddingLeft();
-        r[1] -= getPaddingTop();
+        onDragOver(d, REORDER_DELAY);
+    }
 
-        mTargetRank = mContent.findNearestArea((int) r[0], (int) r[1]);
+    private int getTargetRank(DragObject d, float[] recycle) {
+        recycle = d.getVisualCenter(recycle);
+        return mContent.findNearestArea(
+                (int) recycle[0] - getPaddingLeft(), (int) recycle[1] - getPaddingTop());
+    }
+
+    private void onDragOver(DragObject d, int reorderDelay) {
+        if (ALLOW_FOLDER_SCROLL && mScrollPauseAlarm.alarmPending()) {
+            return;
+        }
+        final float[] r = new float[2];
+        mTargetRank = getTargetRank(d, r);
+
         if (mTargetRank != mPrevTargetRank) {
             mReorderAlarm.cancelAlarm();
             mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
             mReorderAlarm.setAlarm(REORDER_DELAY);
             mPrevTargetRank = mTargetRank;
+        }
+
+        if (!ALLOW_FOLDER_SCROLL) {
+            return;
+        }
+
+        float x = r[0];
+        int currentPage = mPagedView.getNextPage();
+        int cellWidth = mPagedView.getCurrentCellLayout().getCellWidth();
+        if (currentPage > 0 && x < cellWidth * ICON_OVERSCROLL_WIDTH_FACTOR) {
+            // Show scroll hint on the left
+            if (mScrollHintDir != DragController.SCROLL_LEFT) {
+                mPagedView.showScrollHint(-SCROLL_HINT_FRACTION);
+                mScrollHintDir = DragController.SCROLL_LEFT;
+            }
+
+            // Set alarm for when the hint is complete
+            if (!mOnScrollHintAlarm.alarmPending() || mCurrentScrollDir != DragController.SCROLL_LEFT) {
+                mCurrentScrollDir = DragController.SCROLL_LEFT;
+                mOnScrollHintAlarm.cancelAlarm();
+                mOnScrollHintAlarm.setOnAlarmListener(new OnScrollHintListener(d));
+                mOnScrollHintAlarm.setAlarm(SCROLL_HINT_DURATION);
+
+                mReorderAlarm.cancelAlarm();
+                mTargetRank = mEmptyCellRank;
+            }
+        } else if (currentPage < (mPagedView.getPageCount() - 1) &&
+                (x > (getWidth() - cellWidth * ICON_OVERSCROLL_WIDTH_FACTOR))) {
+            // Show scroll hint on the right
+            if (mScrollHintDir != DragController.SCROLL_RIGHT) {
+                mPagedView.showScrollHint(SCROLL_HINT_FRACTION);
+                mScrollHintDir = DragController.SCROLL_RIGHT;
+            }
+
+            // Set alarm for when the hint is complete
+            if (!mOnScrollHintAlarm.alarmPending() || mCurrentScrollDir != DragController.SCROLL_RIGHT) {
+                mCurrentScrollDir = DragController.SCROLL_RIGHT;
+                mOnScrollHintAlarm.cancelAlarm();
+                mOnScrollHintAlarm.setOnAlarmListener(new OnScrollHintListener(d));
+                mOnScrollHintAlarm.setAlarm(SCROLL_HINT_DURATION);
+
+                mReorderAlarm.cancelAlarm();
+                mTargetRank = mEmptyCellRank;
+            }
+        } else {
+            mOnScrollHintAlarm.cancelAlarm();
+            if (mScrollHintDir != DragController.SCROLL_NONE) {
+                mPagedView.clearScrollHint();
+                mScrollHintDir = DragController.SCROLL_NONE;
+            }
         }
     }
 
@@ -595,6 +703,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mOnExitAlarm.setAlarm(ON_EXIT_CLOSE_DELAY);
         }
         mReorderAlarm.cancelAlarm();
+
+        if (ALLOW_FOLDER_SCROLL) {
+            mOnScrollHintAlarm.cancelAlarm();
+            mScrollPauseAlarm.cancelAlarm();
+            if (mScrollHintDir != DragController.SCROLL_NONE) {
+                mPagedView.clearScrollHint();
+                mScrollHintDir = DragController.SCROLL_NONE;
+            }
+        }
     }
 
     public void onDropCompleted(final View target, final DragObject d,
@@ -960,6 +1077,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             };
         }
 
+        if (ALLOW_FOLDER_SCROLL) {
+            // If the icon was dropped while the page was being scrolled, we need to compute
+            // the target location again such that the icon is placed of the final page.
+            if (!mPagedView.rankOnCurrentPage(mEmptyCellRank)) {
+                // Reorder again.
+                mTargetRank = getTargetRank(d, null);
+
+                // Rearrange items immediately.
+                mReorderAlarmListener.onAlarm(mReorderAlarm);
+
+                mOnScrollHintAlarm.cancelAlarm();
+                mScrollPauseAlarm.cancelAlarm();
+            }
+            mPagedView.completePendingPageChanges();
+        }
+
         View currentDragView;
         ShortcutInfo si = mCurrentDragInfo;
         if (mIsExternalDrag) {
@@ -1090,6 +1223,57 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Override
     public void getHitRectRelativeToDragLayer(Rect outRect) {
         getHitRect(outRect);
+        outRect.left -= mScrollAreaOffset;
+        outRect.right += mScrollAreaOffset;
+    }
+
+    private class OnScrollHintListener implements OnAlarmListener {
+
+        private final DragObject mDragObject;
+
+        OnScrollHintListener(DragObject object) {
+            mDragObject = object;
+        }
+
+        /**
+         * Scroll hint has been shown long enough. Now scroll to appropriate page.
+         */
+        @Override
+        public void onAlarm(Alarm alarm) {
+            if (mCurrentScrollDir == DragController.SCROLL_LEFT) {
+                mPagedView.scrollLeft();
+                mScrollHintDir = DragController.SCROLL_NONE;
+            } else if (mCurrentScrollDir == DragController.SCROLL_RIGHT) {
+                mPagedView.scrollRight();
+                mScrollHintDir = DragController.SCROLL_NONE;
+            } else {
+                // This should not happen
+                return;
+            }
+            mCurrentScrollDir = DragController.SCROLL_NONE;
+
+            // Pause drag event until the scrolling is finished
+            mScrollPauseAlarm.setOnAlarmListener(new OnScrollFinishedListener(mDragObject));
+            mScrollPauseAlarm.setAlarm(DragController.RESCROLL_DELAY);
+        }
+    }
+
+    private class OnScrollFinishedListener implements OnAlarmListener {
+
+        private final DragObject mDragObject;
+
+        OnScrollFinishedListener(DragObject object) {
+            mDragObject = object;
+        }
+
+        /**
+         * Page scroll is complete.
+         */
+        @Override
+        public void onAlarm(Alarm alarm) {
+            // Reorder immediately on page change.
+            onDragOver(mDragObject, 1);
+        }
     }
 
     public static interface FolderContent {
