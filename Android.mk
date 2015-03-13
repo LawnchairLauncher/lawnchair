@@ -37,6 +37,9 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 
 LOCAL_SDK_VERSION := 21
+LOCAL_STATIC_JAVA_LIBRARIES := \
+        android-support-v4 \
+        android-support-v7-recyclerview
 
 LOCAL_PACKAGE_NAME := Launcher3
 #LOCAL_CERTIFICATE := shared
