@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.PageIndicator.PageMarkerResources;
@@ -30,12 +31,15 @@ import com.android.launcher3.Workspace.ItemOperator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
     private static final String TAG = "FolderPagedView";
 
     private static final int REORDER_ANIMATION_DURATION = 230;
+    private static final int START_VIEW_REORDER_DELAY = 30;
+    private static final float VIEW_REORDER_DELAY_FACTOR = 0.9f;
     private static final int[] sTempPosArray = new int[2];
 
     // TODO: Remove this restriction
@@ -137,18 +141,9 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     public int allocateNewLastItemRank() {
         int rank = getItemCount();
         int total = rank + 1;
-        if (rank < mMaxItemsPerPage) {
-            // Rearrange the items as the grid size might change.
-            mFolder.rearrangeChildren(total);
-        } else {
-            setupContentDimensions(total);
-        }
+        // Rearrange the items as the grid size might change.
+        mFolder.rearrangeChildren(total);
 
-        // Add a new page if last page is full
-        if (getPageAt(getChildCount() - 1).getShortcutsAndWidgets().getChildCount()
-                >= mMaxItemsPerPage) {
-            createAndAddNewPage();
-        }
         setCurrentPage(getChildCount() - 1);
         return rank;
     }
@@ -265,7 +260,8 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         int newX, newY, rank;
 
         rank = 0;
-        for (View v : list) {
+        for (int i = 0; i < itemCount; i++) {
+            View v = list.size() > i ? list.get(i) : null;
             if (currentPage == null || position >= mMaxItemsPerPage) {
                 // Next page
                 if (pageItr.hasNext()) {
@@ -276,25 +272,28 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                 position = 0;
             }
 
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
-            newX = position % mGridCountX;
-            newY = position / mGridCountX;
-            ItemInfo info = (ItemInfo) v.getTag();
-            if (info.cellX != newX || info.cellY != newY || info.rank != rank) {
-                info.cellX = newX;
-                info.cellY = newY;
-                info.rank = rank;
-                if (saveChanges) {
-                    LauncherModel.addOrMoveItemInDatabase(getContext(), info,
-                            mFolder.mInfo.id, 0, info.cellX, info.cellY);
+            if (v != null) {
+                CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
+                newX = position % mGridCountX;
+                newY = position / mGridCountX;
+                ItemInfo info = (ItemInfo) v.getTag();
+                if (info.cellX != newX || info.cellY != newY || info.rank != rank) {
+                    info.cellX = newX;
+                    info.cellY = newY;
+                    info.rank = rank;
+                    if (saveChanges) {
+                        LauncherModel.addOrMoveItemInDatabase(getContext(), info,
+                                mFolder.mInfo.id, 0, info.cellX, info.cellY);
+                    }
                 }
+                lp.cellX = info.cellX;
+                lp.cellY = info.cellY;
+                currentPage.addViewToCellLayout(
+                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
             }
-            lp.cellX = info.cellX;
-            lp.cellY = info.cellY;
+
             rank ++;
             position++;
-            currentPage.addViewToCellLayout(
-                    v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
         }
 
         // Remove extra views.
@@ -328,6 +327,10 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     @Override
     public int getItemCount() {
         int lastPage = getChildCount() - 1;
+        if (lastPage < 0) {
+            // If there are no pages, there must be only one icon in the folder.
+            return 1;
+        }
         return getPageAt(lastPage).getShortcutsAndWidgets().getChildCount()
                 + lastPage * mMaxItemsPerPage;
     }
@@ -406,10 +409,49 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         }
     }
 
+    /**
+     * Scrolls the current view by a fraction
+     */
+    public void showScrollHint(float fraction) {
+        int hint = (int) (fraction * getWidth());
+        int scroll = getScrollForPage(getNextPage()) + hint;
+        int delta = scroll - mUnboundedScrollX;
+        if (delta != 0) {
+            mScroller.setInterpolator(new DecelerateInterpolator());
+            mScroller.startScroll(mUnboundedScrollX, 0, delta, 0, Folder.SCROLL_HINT_DURATION);
+            invalidate();
+        }
+    }
+
+    public void clearScrollHint() {
+        if (mUnboundedScrollX != getScrollForPage(getNextPage())) {
+            snapToPage(getNextPage());
+        }
+    }
+
+    /**
+     * Finish animation all the views which are animating across pages
+     */
+    public void completePendingPageChanges() {
+        if (!mPageChangingViews.isEmpty()) {
+            HashMap<View, Runnable> pendingViews = new HashMap<>(mPageChangingViews);
+            for (Map.Entry<View, Runnable> e : pendingViews.entrySet()) {
+                e.getKey().animate().cancel();
+                e.getValue().run();
+            }
+        }
+    }
+
+    public boolean rankOnCurrentPage(int rank) {
+        int p = rank / mMaxItemsPerPage;
+        return p == getNextPage();
+    }
+
     @Override
     public void realTimeReorder(int empty, int target) {
+        completePendingPageChanges();
         int delay = 0;
-        float delayAmount = 30;
+        float delayAmount = START_VIEW_REORDER_DELAY;
 
         // Animation only happens on the current page.
         int pageToAnimate = getNextPage();
@@ -523,7 +565,7 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
             if (page.animateChildToPosition(v, i % mGridCountX, i / mGridCountX,
                     REORDER_ANIMATION_DURATION, delay, true, true)) {
                 delay += delayAmount;
-                delayAmount *= 0.9;
+                delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }
         }
     }
