@@ -20,12 +20,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:elevation="15dp"
-    android:background="@drawable/apps_list_bg"
     android:visibility="gone">
     <EditText
         android:id="@+id/app_search_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/apps_container_inset"
+        android:layout_marginRight="@dimen/apps_container_inset"
         android:padding="16dp"
         android:hint="@string/apps_view_search_bar_hint"
         android:maxLines="1"
@@ -46,8 +47,10 @@
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:clipToPadding="false"
+        android:fadeScrollbars="false"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@drawable/apps_list_scrollbar_thumb"
         android:focusable="true"
-        android:descendantFocusability="afterDescendants" />
+        android:descendantFocusability="afterDescendants"
+        android:background="@drawable/apps_list_bg" />
 </LinearLayout>

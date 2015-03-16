@@ -39,9 +39,9 @@ import java.util.List;
 /**
  * The all apps list view container.
  */
-public class AppsContainerView extends FrameLayout implements DragSource, View.OnTouchListener,
-        View.OnLongClickListener, Insettable, TextWatcher, TextView.OnEditorActionListener,
-        LauncherTransitionable {
+public class AppsContainerView extends FrameLayout implements DragSource, Insettable, TextWatcher,
+        TextView.OnEditorActionListener, LauncherTransitionable, View.OnTouchListener,
+        View.OnLongClickListener {
 
     private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
 
@@ -188,10 +188,10 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN ||
-                event.getAction() == MotionEvent.ACTION_MOVE) {
-            mLastTouchDownPos.set((int) event.getX(), (int) event.getY());
+    public boolean onTouch(View v, MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN ||
+                ev.getAction() == MotionEvent.ACTION_MOVE) {
+            mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
         }
         return false;
     }
@@ -333,7 +333,6 @@ public class AppsContainerView extends FrameLayout implements DragSource, View.O
             List<AppInfo> appsWithoutSections = mApps.getAppsWithoutSectionBreaks();
             List<AppInfo> apps = mApps.getApps();
             if (appsWithoutSections.size() == 1) {
-                mSearchBar.clearFocus();
                 mAppsListView.getChildAt(apps.indexOf(appsWithoutSections.get(0))).performClick();
                 InputMethodManager imm = (InputMethodManager)
                         getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

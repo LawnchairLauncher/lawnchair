@@ -14,8 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="rectangle">
-    <solid android:color="@color/apps_view_scrollbar_thumb_color" />
-    <size android:width="@dimen/apps_view_fast_scroll_bar_size" />
-</shape>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+       android:drawable="@drawable/apps_reveal_bg_inset"
+       android:insetLeft="@dimen/apps_container_inset"
+       android:insetRight="@dimen/apps_container_inset" />
