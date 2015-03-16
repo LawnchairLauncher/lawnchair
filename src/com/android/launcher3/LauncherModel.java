@@ -59,6 +59,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ComponentKey;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -174,7 +175,7 @@ public class LauncherModel extends BroadcastReceiver
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
 
     // sBgWidgetProviders is the set of widget providers including custom internal widgets
-    public static HashMap<ComponentName, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
+    public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
 
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
@@ -1958,6 +1959,7 @@ public class LauncherModel extends BroadcastReceiver
                     LauncherAppWidgetInfo appWidgetInfo;
                     int container;
                     long id;
+                    long serialNumber;
                     Intent intent;
                     UserHandleCompat user;
 
@@ -1972,7 +1974,7 @@ public class LauncherModel extends BroadcastReceiver
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                                 id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
-                                long serialNumber = c.getInt(profileIdIndex);
+                                serialNumber = c.getInt(profileIdIndex);
                                 user = mUserManager.getUserForSerialNumber(serialNumber);
                                 int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
@@ -2210,6 +2212,7 @@ public class LauncherModel extends BroadcastReceiver
                                     LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
 
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
+                                serialNumber= c.getLong(profileIdIndex);
                                 String savedProvider = c.getString(appWidgetProviderIndex);
                                 id = c.getLong(idIndex);
                                 final ComponentName component =
@@ -2224,7 +2227,8 @@ public class LauncherModel extends BroadcastReceiver
 
                                 final LauncherAppWidgetProviderInfo provider =
                                         LauncherModel.getProviderInfo(context,
-                                                ComponentName.unflattenFromString(savedProvider));
+                                                ComponentName.unflattenFromString(savedProvider),
+                                                mUserManager.getUserForSerialNumber(serialNumber));
 
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
@@ -3344,33 +3348,36 @@ public class LauncherModel extends BroadcastReceiver
     public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context,
             boolean refresh) {
         synchronized (sBgLock) {
-            if (sBgWidgetProviders != null && !refresh) {
-                return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
-            }
-            sBgWidgetProviders = new HashMap<ComponentName, LauncherAppWidgetProviderInfo>();
-            List<AppWidgetProviderInfo> widgets =
-                    AppWidgetManagerCompat.getInstance(context).getAllProviders();
-            LauncherAppWidgetProviderInfo info;
-            for (AppWidgetProviderInfo pInfo : widgets) {
-                info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
-                sBgWidgetProviders.put(info.provider, info);
-            }
+            if (sBgWidgetProviders == null || refresh) {
+                sBgWidgetProviders = new HashMap<>();
+                AppWidgetManagerCompat wm = AppWidgetManagerCompat.getInstance(context);
+                LauncherAppWidgetProviderInfo info;
 
-            Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
-            for (CustomAppWidget widget : customWidgets) {
-                info = new LauncherAppWidgetProviderInfo(context, widget);
-                sBgWidgetProviders.put(info.provider, info);
+                List<AppWidgetProviderInfo> widgets = wm.getAllProviders();
+                for (AppWidgetProviderInfo pInfo : widgets) {
+                    info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
+                    UserHandleCompat user = wm.getUser(info);
+                    sBgWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                }
+
+                Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
+                for (CustomAppWidget widget : customWidgets) {
+                    info = new LauncherAppWidgetProviderInfo(context, widget);
+                    UserHandleCompat user = wm.getUser(info);
+                    sBgWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                }
             }
             return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
         }
     }
 
-    public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name) {
+    public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name,
+            UserHandleCompat user) {
         synchronized (sBgLock) {
             if (sBgWidgetProviders == null) {
                 getWidgetProviders(ctx, false /* refresh */);
             }
-            return sBgWidgetProviders.get(name);
+            return sBgWidgetProviders.get(new ComponentKey(name, user));
         }
     }
 

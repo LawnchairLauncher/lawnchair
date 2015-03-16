@@ -4974,7 +4974,8 @@ public class Workspace extends SmoothPagedView
             DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
                     mLauncher.getAppWidgetHost());
             if (LauncherModel.getProviderInfo(getContext(),
-                    changedInfo.get(0).providerName) != null) {
+                    changedInfo.get(0).providerName,
+                    changedInfo.get(0).user) != null) {
                 // Re-inflate the widgets which have changed status
                 widgetRefresh.run();
             } else {
