@@ -34,6 +34,12 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"ഹോം സ്‌ക്രീനിൽ ഇനം വലിച്ചിടാനായില്ല."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"സൃഷ്‌ടിക്കുന്നതിന് വിജറ്റ് തിരഞ്ഞെടുക്കുക"</string>
+    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
+    <skip />
+    <!-- no translation found for loading_apps_message (1914259869238053553) -->
+    <skip />
+    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
+    <skip />
     <string name="rename_folder_label" msgid="3727762225964550653">"ഫോൾഡറിന്റെ പേര്"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"ഫോൾഡറിന്റെ പേരുമാറ്റുക"</string>
     <string name="rename_action" msgid="5559600076028658757">"ശരി"</string>
@@ -121,22 +127,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ഈ അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ഈ ഐക്കണുവേണ്ടി അപ്ലിക്കേഷൻ ഇൻസ്റ്റാളുചെയ്‌തിട്ടില്ല. നിങ്ങൾക്കത് നീക്കംചെയ്യാനാകും അല്ലെങ്കിൽ അപ്ലിക്കേഷനുവേണ്ടി തിരഞ്ഞുകൊണ്ട് അത് സ്വമേധയാ ഇൻസ്റ്റാളുചെയ്യുക."</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"വർക്ക്‌സ്‌പെയ്‌സിൽ ചേർക്കുക"</string>
-    <!-- no translation found for item_added_to_workspace (3144273143205811094) -->
-    <skip />
-    <!-- no translation found for item_removed_from_workspace (3046819836864411670) -->
-    <skip />
-    <!-- no translation found for action_move (6768694438207239815) -->
-    <skip />
-    <!-- no translation found for move_to_empty_cell (5701704023760440306) -->
-    <skip />
-    <!-- no translation found for item_moved (4606538322571412879) -->
-    <skip />
-    <!-- no translation found for add_to_folder (9040534766770853243) -->
-    <skip />
-    <!-- no translation found for added_to_folder (4793259502305558003) -->
-    <skip />
-    <!-- no translation found for create_folder_with (4050141361160214248) -->
-    <skip />
-    <!-- no translation found for folder_created (6409794597405184510) -->
-    <skip />
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"വർക്ക്‌സ്‌പെയ്‌സിൽ ഇനം ചേർത്തു"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"വർക്ക്‌സ്‌പെയ്‌സിൽ നിന്ന് ഇനം നീക്കംചെയ്‌തു"</string>
+    <string name="action_move" msgid="6768694438207239815">"ഇനം നീക്കുക"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"<xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g> എന്ന ശൂന്യമായ സെല്ലിലേക്ക് നീക്കുക"</string>
+    <string name="item_moved" msgid="4606538322571412879">"ഇനം നീക്കി"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ഫോൾഡറിൽ ചേർക്കുക: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"ഫോൾഡറിൽ ഇനം ചേർത്തു"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"ഇതുപയോഗിച്ച് ഫോൾഡർ സൃഷ്‌ടിക്കുക: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ഫോൾഡർ സൃഷ്‌ടിച്ചു"</string>
 </resources>

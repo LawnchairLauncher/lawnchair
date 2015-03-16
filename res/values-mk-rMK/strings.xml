@@ -34,6 +34,12 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Не можеше да се спушти елемент на овој екран на почетната страница."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Избери виџет за да се создаде"</string>
+    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
+    <skip />
+    <!-- no translation found for loading_apps_message (1914259869238053553) -->
+    <skip />
+    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
+    <skip />
     <string name="rename_folder_label" msgid="3727762225964550653">"Име на папка"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Преименувај папка"</string>
     <string name="rename_action" msgid="5559600076028658757">"Во ред"</string>

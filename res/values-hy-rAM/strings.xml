@@ -34,8 +34,14 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Հնարավոր չէ տեղադրել տարրն այս հիմնական էկրանին:"</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Ստեղծելու համար ընտրեք վիջեթը"</string>
+    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
+    <skip />
+    <!-- no translation found for loading_apps_message (1914259869238053553) -->
+    <skip />
+    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
+    <skip />
     <string name="rename_folder_label" msgid="3727762225964550653">"Թղթապանակի անունը"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"Վերանվանել թղթապանակը"</string>
+    <string name="rename_folder_title" msgid="3771389277707820891">"Վերանվանել պանակը"</string>
     <string name="rename_action" msgid="5559600076028658757">"Լավ"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Չեղարկել"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Ավելացնել հիմնական էկրանին"</string>
@@ -64,7 +70,7 @@
     <string name="cab_menu_app_info" msgid="8593722221450362342">"Ծրագրի մանրամասներ"</string>
     <string name="cab_app_selection_text" msgid="374688303047985416">"1 ընտրված ծրագիր"</string>
     <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 ընտրված վիջեթ"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 ընտրված թղթապանակ"</string>
+    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 ընտրված պանակ"</string>
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 ընտրված դյուրանցում"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"տեղադրել դյուրանցումներ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Ծրագրին թույլ է տալիս ավելացնել դյուրանցումներ՝ առանց օգտագործողի միջամտության:"</string>
@@ -78,7 +84,7 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Կարգավորում"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Սա համակարգային ծրագիր է և չի կարող ապատեղադրվել:"</string>
     <string name="dream_name" msgid="1530253749244328964">"Հրթիռային թողարկիչ"</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Անանուն թղթապանակ"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Անանուն պանակ"</string>
     <string name="workspace_description_format" msgid="2950174241104043327">"Հիմնական էկրան %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Էջ %1$d՝ %2$d-ից"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Հիմնական էկրան %1$d` %2$d-ից"</string>
@@ -88,9 +94,9 @@
     <string name="first_run_cling_description" msgid="6447072552696253358">"Զգացեք ձեզ ինչպես տանը:"</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Ստեղծեք նոր էկրաններ ծրագրերի և թղթապանակների համար"</string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Ստեղծեք նոր էկրաններ ծրագրերի և պանակների համար"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Պատճենել ձեր ծրագրի պատկերակները"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Ներմուծե՞լ պատկերակները և թղթապանակները ձեր նախկին Հիմնական էկրանից"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Ներմուծե՞լ պատկերակները և պանակները ձեր նախկին Հիմնական էկրանից"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ՊԱՏՃԵՆԵԼ ՊԱՏԿԵՐԱԿՆԵՐԸ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ՄԵԿՆԱՐԿԵԼ ԸՍՏ ԿԱՆԽԱԴՐՎԱԾԻ"</string>
     <string name="workspace_cling_title" msgid="5626202359865825661">"Կառավարեք ձեր տարածությունը"</string>
@@ -98,11 +104,11 @@
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Պաստառներ, վիջեթներ և կարգավորումներ"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Հարմարեցնելու համար հպեք և պահեք հետնաշերտի վրա"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ՀԱՍԿԱՆԱԼԻ Է"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"Ահա մի թղթապանակ"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Նման թղթապանակ ստեղծելու համար հպեք և պահեք որևէ ծրագրի վրա, ապա տեղաշարժեք այն մեկ ուրիշ ծրագրի վրա:"</string>
+    <string name="folder_cling_title" msgid="3894908818693254164">"Ահա մի պանակ"</string>
+    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Նման պանակ ստեղծելու համար հպեք և պահեք որևէ ծրագրի վրա, ապա տեղաշարժեք այն մեկ ուրիշ ծրագրի վրա:"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Լավ"</string>
     <string name="folder_opened" msgid="94695026776264709">"Թղթապանակը բաց է, <xliff:g id="WIDTH">%1$d</xliff:g>-ից <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="1884479294466410023">"Հպեք՝ թղթապանակը փակելու համար"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Հպեք՝ պանակը փակելու համար"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Հպեք՝ վերանվանումը պահելու համար"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Թղթապանակը փակ է"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Թղթապանակը վերանվանվեց <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -121,22 +127,13 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Այս ծրագիրը տեղադրված չէ:"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Այս պատկերակի ծրագիրը տեղադրված չէ: Դուք կարող եք հեռացնել այն կամ գտնել ծրագիրը և տեղադրել այն ձեռքով:"</string>
     <string name="action_add_to_workspace" msgid="989613635294321898">"Ավելացնել աշխատատարածքին"</string>
-    <!-- no translation found for item_added_to_workspace (3144273143205811094) -->
-    <skip />
-    <!-- no translation found for item_removed_from_workspace (3046819836864411670) -->
-    <skip />
-    <!-- no translation found for action_move (6768694438207239815) -->
-    <skip />
-    <!-- no translation found for move_to_empty_cell (5701704023760440306) -->
-    <skip />
-    <!-- no translation found for item_moved (4606538322571412879) -->
-    <skip />
-    <!-- no translation found for add_to_folder (9040534766770853243) -->
-    <skip />
-    <!-- no translation found for added_to_folder (4793259502305558003) -->
-    <skip />
-    <!-- no translation found for create_folder_with (4050141361160214248) -->
-    <skip />
-    <!-- no translation found for folder_created (6409794597405184510) -->
-    <skip />
+    <string name="item_added_to_workspace" msgid="3144273143205811094">"Տարրն ավելացվեց աշխատանքային տարածքում"</string>
+    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Տարրը հեռացվեց աշխատանքային տարածքից"</string>
+    <string name="action_move" msgid="6768694438207239815">"Տեղափոխել տարրը"</string>
+    <string name="move_to_empty_cell" msgid="5701704023760440306">"Տեղափոխել դատարկ վանդակ <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Տարրը տեղափոխվեց"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Ավելացնել թղթապանակում՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Տարրն ավելացվեց թղթապանակում"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Ստեղծել թղթապանակ, օգտագործելով՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Թղթապանակը ստեղծվեց"</string>
 </resources>
