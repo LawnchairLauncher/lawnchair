@@ -668,7 +668,10 @@ public class LauncherBackupHelper implements BackupHelper {
                         previewLoader.setPreviewSize(
                                 spanX * profile.cellWidthPx,
                                 spanY * profile.cellHeightPx);
-                        writeRowToBackup(key, packWidget(dpi, previewLoader, mIconCache, provider), data);
+                        UserHandleCompat user = UserHandleCompat.myUserHandle();
+                        writeRowToBackup(key,
+                                packWidget(dpi, previewLoader, mIconCache, provider, user),
+                                data);
                         mKeys.add(key);
                         backupWidgetCount ++;
                     } else {
@@ -978,9 +981,9 @@ public class LauncherBackupHelper implements BackupHelper {
 
     /** Serialize a widget for persistence, including a checksum wrapper. */
     private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
-            ComponentName provider) {
+            ComponentName provider, UserHandleCompat user) {
         final LauncherAppWidgetProviderInfo info =
-                LauncherModel.getProviderInfo(mContext, provider);
+                LauncherModel.getProviderInfo(mContext, provider, user);
         Widget widget = new Widget();
         widget.provider = provider.flattenToShortString();
         widget.label = info.label;

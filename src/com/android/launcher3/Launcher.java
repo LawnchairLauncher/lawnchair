@@ -3872,7 +3872,7 @@ public class Launcher extends Activity
         final Workspace workspace = mWorkspace;
 
         LauncherAppWidgetProviderInfo appWidgetInfo =
-                LauncherModel.getProviderInfo(this, item.providerName);
+                LauncherModel.getProviderInfo(this, item.providerName, item.user);
 
         if (!mIsSafeModeEnabled
                 && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0)
