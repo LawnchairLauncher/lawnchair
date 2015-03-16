@@ -311,34 +311,34 @@ s -->
     </string>
 
 <!-- Strings for accessibility actions -->
-    <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+    <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
     <string name="action_add_to_workspace">Add To Workspace</string>
 
-    <!-- Accessibility confirmation for item added to workspace -->
+    <!-- Accessibility confirmation for item added to workspace [DO NOT TRANSLATE] -->
     <string name="item_added_to_workspace">Item added to workspace</string>
 
-    <!-- Accessibility confirmation for item removed-->
+    <!-- Accessibility confirmation for item removed [DO NOT TRANSLATE] -->
     <string name="item_removed_from_workspace">Item removed from workspace</string>
 
-    <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+    <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
     <string name="action_move">Move Item</string>
 
-    <!-- Accessibility description to move item to empty cell. -->
+    <!-- Accessibility description to move item to empty cell. [DO NOT TRANSLATE] -->
     <string name="move_to_empty_cell">Move to empty cell <xliff:g id="number" example="1">%1$s</xliff:g>, <xliff:g id="number" example="1">%2$s</xliff:g></string>
 
-    <!-- Accessibility confirmation for item move -->
+    <!-- Accessibility confirmation for item move [DO NOT TRANSLATE]-->
     <string name="item_moved">Item moved</string>
 
-    <!-- Accessibility description to move item into an existing folder. -->
+    <!-- Accessibility description to move item into an existing folder. [DO NOT TRANSLATE]-->
     <string name="add_to_folder">Add to folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
 
-    <!-- Accessibility confirmation for item added to folder-->
+    <!-- Accessibility confirmation for item added to folder [DO NOT TRANSLATE] -->
     <string name="added_to_folder">Item added to folder</string>
 
-    <!-- Accessibility description to create folder with another item. -->
+    <!-- Accessibility description to create folder with another item. [DO NOT TRANSLATE] -->
     <string name="create_folder_with">Create folder with: <xliff:g id="name" example="Game">%1$s</xliff:g></string>
 
-    <!-- Accessibility confirmation for folder created -->
+    <!-- Accessibility confirmation for folder created [DO NOT TRANSLATE] -->
     <string name="folder_created">Folder created</string>
 
 </resources>
