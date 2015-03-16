@@ -37,6 +37,8 @@ import java.util.List;
 public class AppsContainerRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
+    private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
+
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
 
@@ -130,7 +132,7 @@ public class AppsContainerRecyclerView extends RecyclerView
             } else {
                 x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
             }
-            int y = mLastY - bgBounds.height() / 2;
+            int y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
             y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -
                     bgBounds.height()));
             canvas.translate(x, y);

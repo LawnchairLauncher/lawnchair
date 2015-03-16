@@ -84,12 +84,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                             mSectionTextPaint.getTextBounds(section, 0, section.length(),
                                     mTmpBounds);
                             if (mIsRtl) {
-                                c.drawText(section, parent.getWidth() - mStartMargin +
-                                                (mStartMargin - mTmpBounds.width()) / 2,
+                                int left = parent.getWidth() - mPaddingStart - mStartMargin;
+                                c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
                                         child.getTop() + (2 * child.getPaddingTop()) +
                                                 mTmpBounds.height(), mSectionTextPaint);
                             } else {
-                                c.drawText(section, (mStartMargin - mTmpBounds.width()) / 2,
+                                int left = mPaddingStart;
+                                c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
                                     child.getTop() + (2 * child.getPaddingTop()) +
                                             mTmpBounds.height(), mSectionTextPaint);
                             }
@@ -118,6 +119,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     private String mEmptySearchText;
 
     // Section drawing
+    private int mPaddingStart;
     private int mStartMargin;
     private Paint mSectionTextPaint;
     private Rect mTmpBounds = new Rect();
@@ -136,6 +138,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mStartMargin = res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
+        mPaddingStart = res.getDimensionPixelSize(R.dimen.apps_container_inset);
         mSectionTextPaint = new Paint();
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.apps_view_section_text_size));

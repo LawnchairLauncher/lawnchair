@@ -16,6 +16,8 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
-    <solid android:color="@color/apps_view_scrollbar_thumb_color" />
-    <size android:width="@dimen/apps_view_fast_scroll_bar_size" />
+    <solid android:color="#ffffff" />
+    <corners
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp" />
 </shape>
