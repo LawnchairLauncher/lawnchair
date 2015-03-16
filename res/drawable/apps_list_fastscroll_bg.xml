@@ -18,7 +18,10 @@
        android:shape="rectangle">
     <solid android:color="@color/apps_view_scrollbar_thumb_color" />
     <size
-        android:width="48dp"
-        android:height="48dp" />
-    <corners android:radius="4dp" />
+        android:width="64dp"
+        android:height="64dp" />
+    <corners
+        android:topLeftRadius="64dp"
+        android:topRightRadius="64dp"
+        android:bottomLeftRadius="64dp" />
 </shape>
