@@ -40,6 +40,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,35 +68,14 @@ public class IconCache {
         public CharSequence contentDescription;
     }
 
-    private static class CacheKey {
-        public ComponentName componentName;
-        public UserHandleCompat user;
-
-        CacheKey(ComponentName componentName, UserHandleCompat user) {
-            this.componentName = componentName;
-            this.user = user;
-        }
-
-        @Override
-        public int hashCode() {
-            return componentName.hashCode() + user.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            CacheKey other = (CacheKey) o;
-            return other.componentName.equals(componentName) && other.user.equals(user);
-        }
-    }
-
     private final HashMap<UserHandleCompat, Bitmap> mDefaultIcons =
             new HashMap<UserHandleCompat, Bitmap>();
     private final Context mContext;
     private final PackageManager mPackageManager;
     private final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
-    private final HashMap<CacheKey, CacheEntry> mCache =
-            new HashMap<CacheKey, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
+    private final HashMap<ComponentKey, CacheEntry> mCache =
+            new HashMap<ComponentKey, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
     private final int mIconDpi;
     private final IconDB mIconDb;
 
@@ -180,21 +160,21 @@ public class IconCache {
      * Remove any records for the supplied ComponentName.
      */
     public synchronized void remove(ComponentName componentName, UserHandleCompat user) {
-        mCache.remove(new CacheKey(componentName, user));
+        mCache.remove(new ComponentKey(componentName, user));
     }
 
     /**
      * Remove any records for the supplied package name from memory.
      */
     private void removeFromMemCacheLocked(String packageName, UserHandleCompat user) {
-        HashSet<CacheKey> forDeletion = new HashSet<CacheKey>();
-        for (CacheKey key: mCache.keySet()) {
+        HashSet<ComponentKey> forDeletion = new HashSet<ComponentKey>();
+        for (ComponentKey key: mCache.keySet()) {
             if (key.componentName.getPackageName().equals(packageName)
                     && key.user.equals(user)) {
                 forDeletion.add(key);
             }
         }
-        for (CacheKey condemned: forDeletion) {
+        for (ComponentKey condemned: forDeletion) {
             mCache.remove(condemned);
         }
     }
@@ -324,7 +304,7 @@ public class IconCache {
         entry.icon = Utilities.createIconBitmap(app.getBadgedIcon(mIconDpi), mContext);
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
-        mCache.put(new CacheKey(app.getComponentName(), app.getUser()), entry);
+        mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, ItemInfo.flattenBitmap(entry.icon));
@@ -344,7 +324,7 @@ public class IconCache {
      * Empty out the cache that aren't of the correct grid size
      */
     public synchronized void flushInvalidIcons(DeviceProfile grid) {
-        Iterator<Entry<CacheKey, CacheEntry>> it = mCache.entrySet().iterator();
+        Iterator<Entry<ComponentKey, CacheEntry>> it = mCache.entrySet().iterator();
         while (it.hasNext()) {
             final CacheEntry e = it.next().getValue();
             if ((e.icon != null) && (e.icon.getWidth() < grid.iconSizePx
@@ -426,7 +406,7 @@ public class IconCache {
      */
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
             UserHandleCompat user, boolean usePackageIcon) {
-        CacheKey cacheKey = new CacheKey(componentName, user);
+        ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null) {
             entry = new CacheEntry();
@@ -487,7 +467,7 @@ public class IconCache {
      */
     private CacheEntry getEntryForPackage(String packageName, UserHandleCompat user) {
         ComponentName cn = new ComponentName(packageName, EMPTY_CLASS_NAME);;
-        CacheKey cacheKey = new CacheKey(cn, user);
+        ComponentKey cacheKey = new ComponentKey(cn, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null) {
             entry = new CacheEntry();
