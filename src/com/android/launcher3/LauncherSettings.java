@@ -309,5 +309,11 @@ class LauncherSettings {
          * <p>Type: INTEGER</p>
          */
         static final String RANK = "rank";
+
+        /**
+         * Stores general flag based options for {@link ItemInfo}s.
+         * <p>Type: INTEGER</p>
+         */
+        static final String OPTIONS = "options";
     }
 }

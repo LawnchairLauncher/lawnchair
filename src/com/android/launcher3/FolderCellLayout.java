@@ -133,7 +133,7 @@ public class FolderCellLayout extends CellLayout implements Folder.FolderContent
     }
 
     @Override
-    public int allocateNewLastItemRank() {
+    public int allocateRankForNewItem(ShortcutInfo info) {
         int rank = getItemCount();
         mFolder.rearrangeChildren(rank + 1);
         return rank;

@@ -57,7 +57,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 23;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -413,7 +413,8 @@ public class LauncherProvider extends ContentProvider {
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
                     "profileId INTEGER DEFAULT " + userSerialNumber + "," +
-                    "rank INTEGER NOT NULL DEFAULT 0" +
+                    "rank INTEGER NOT NULL DEFAULT 0," +
+                    "options INTEGER NOT NULL DEFAULT 0" +
                     ");");
             addWorkspacesTable(db);
 
@@ -524,18 +525,9 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 15: {
-                    db.beginTransaction();
-                    try {
-                        // Insert new column for holding restore status
-                        db.execSQL("ALTER TABLE favorites " +
-                                "ADD COLUMN restored INTEGER NOT NULL DEFAULT 0;");
-                        db.setTransactionSuccessful();
-                    } catch (SQLException ex) {
-                        Log.e(TAG, ex.getMessage(), ex);
+                    if (!addIntegerColumn(db, Favorites.RESTORED, 0)) {
                         // Old version remains, which means we wipe old data
                         break;
-                    } finally {
-                        db.endTransaction();
                     }
                 }
                 case 16: {
@@ -573,6 +565,12 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     }
                 case 22: {
+                    if (!addIntegerColumn(db, Favorites.OPTIONS, 0)) {
+                        // Old version remains, which means we wipe old data
+                        break;
+                    }
+                }
+                case 23: {
                     // DB Upgraded successfully
                     return;
                 }
@@ -682,20 +680,21 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean addProfileColumn(SQLiteDatabase db) {
+            UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+            // Default to the serial number of this user, for older
+            // shortcuts.
+            long userSerialNumber = userManager.getSerialNumberForUser(
+                    UserHandleCompat.myUserHandle());
+            return addIntegerColumn(db, Favorites.PROFILE_ID, userSerialNumber);
+        }
+
+        private boolean addIntegerColumn(SQLiteDatabase db, String columnName, long defaultValue) {
             db.beginTransaction();
             try {
-                UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
-                // Default to the serial number of this user, for older
-                // shortcuts.
-                long userSerialNumber = userManager.getSerialNumberForUser(
-                        UserHandleCompat.myUserHandle());
-                // Insert new column for holding user serial number
-                db.execSQL("ALTER TABLE favorites " +
-                        "ADD COLUMN profileId INTEGER DEFAULT "
-                                        + userSerialNumber + ";");
+                db.execSQL("ALTER TABLE favorites ADD COLUMN "
+                        + columnName + " INTEGER NOT NULL DEFAULT " + defaultValue + ";");
                 db.setTransactionSuccessful();
             } catch (SQLException ex) {
-                // Old version remains, which means we wipe old data
                 Log.e(TAG, ex.getMessage(), ex);
                 return false;
             } finally {

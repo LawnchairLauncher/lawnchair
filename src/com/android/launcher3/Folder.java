@@ -86,6 +86,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public static final int SCROLL_HINT_DURATION = DragController.SCROLL_DELAY;
 
     /**
+     * Time in milliseconds for which an icon sticks to the target position
+     * in case of a sorted folder.
+     */
+    private static final int SORTED_STICKY_REORDER_DELAY = 1500;
+
+    /**
      * Fraction of icon width which behave as scroll region.
      */
     private static final float ICON_OVERSCROLL_WIDTH_FACTOR = 0.45f;
@@ -423,8 +429,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (!(getParent() instanceof DragLayer)) return;
 
         if (ALLOW_FOLDER_SCROLL) {
-            // Always open on the first page.
-            mPagedView.snapToPageImmediately(0);
+            mPagedView.completePendingPageChanges();
+            if (!(mDragInProgress && mPagedView.mIsSorted)) {
+                // Open on the first page.
+                mPagedView.snapToPageImmediately(0);
+            }
         }
 
         Animator openFolderAnim = null;
@@ -531,9 +540,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void beginExternalDrag(ShortcutInfo item) {
         mCurrentDragInfo = item;
-        mEmptyCellRank = mContent.allocateNewLastItemRank();
+        mEmptyCellRank = mContent.allocateRankForNewItem(item);
         mIsExternalDrag = true;
         mDragInProgress = true;
+        if (ALLOW_FOLDER_SCROLL && mPagedView.mIsSorted) {
+            mScrollPauseAlarm.setOnAlarmListener(null);
+            mScrollPauseAlarm.cancelAlarm();
+            mScrollPauseAlarm.setAlarm(SORTED_STICKY_REORDER_DELAY);
+        }
+
     }
 
     private void sendCustomAccessibilityEvent(int type, String text) {
@@ -747,6 +762,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 if (!successfulDrop) {
                     mSuppressFolderDeletion = true;
                 }
+                mScrollPauseAlarm.cancelAlarm();
                 completeDragExit();
             }
         }
@@ -1155,7 +1171,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // If the item was dropped onto this open folder, we have done the work associated
         // with adding the item to the folder, as indicated by mSuppressOnAdd being set
         if (mSuppressOnAdd) return;
-        mContent.createAndAddViewForRank(item, mContent.allocateNewLastItemRank());
+        mContent.createAndAddViewForRank(item, mContent.allocateRankForNewItem(item));
         LauncherModel.addOrMoveItemInDatabase(
                 mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
@@ -1304,10 +1320,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> children);
 
         /**
-         * Create space for a new item at the end, and returns the rank for that item.
+         * Create space for a new item, and returns the rank for that item.
          * Resizes the content if necessary.
          */
-        int allocateNewLastItemRank();
+        int allocateRankForNewItem(ShortcutInfo info);
 
         View createAndAddViewForRank(ShortcutInfo item, int rank);
 
