@@ -207,12 +207,13 @@ public class FocusHelper {
         if (e.getAction() == KeyEvent.ACTION_UP || !consume) {
             return consume;
         }
-        int orientation = v.getResources().getConfiguration().orientation;
 
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile profile = app.getDynamicGrid().getDeviceProfile();
         if (DEBUG) {
             Log.v(TAG, String.format(
-                    "Handle HOTSEAT BUTTONS keyevent=[%s] on hotseat buttons, orientation=%d",
-                    KeyEvent.keyCodeToString(keyCode), orientation));
+                    "Handle HOTSEAT BUTTONS keyevent=[%s] on hotseat buttons, isVertical=%s",
+                    KeyEvent.keyCodeToString(keyCode), profile.isVerticalBarLayout()));
         }
 
         // Initialize the variables.
@@ -226,6 +227,8 @@ public class FocusHelper {
         int countX = -1;
         int countY = -1;
         int iconIndex = findIndexOfView(hotseatParent, v);
+        int iconRank = ((CellLayout.LayoutParams) hotseatLayout.getShortcutsAndWidgets()
+                .getChildAt(iconIndex).getLayoutParams()).cellX;
 
         final CellLayout iconLayout = (CellLayout) workspace.getChildAt(pageIndex);
         final ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
@@ -234,23 +237,25 @@ public class FocusHelper {
         int[][] matrix = null;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP &&
-                orientation == Configuration.ORIENTATION_PORTRAIT) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
-                    hotseat.getAllAppsButtonRank(), true /* include all apps icon */);
+                !profile.isVerticalBarLayout()) {
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout,
+                    true /* hotseat horizontal */, hotseat.getAllAppsButtonRank(),
+                    iconRank == hotseat.getAllAppsButtonRank() /* include all apps icon */);
             iconIndex += iconParent.getChildCount();
             countX = iconLayout.getCountX();
             countY = iconLayout.getCountY() + hotseatLayout.getCountY();
             parent = iconParent;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
-                orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
-                    hotseat.getAllAppsButtonRank(), true /* include all apps icon */);
+                profile.isVerticalBarLayout()) {
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout,
+                    false /* hotseat horizontal */, hotseat.getAllAppsButtonRank(),
+                    iconRank == hotseat.getAllAppsButtonRank() /* include all apps icon */);
             iconIndex += iconParent.getChildCount();
             countX = iconLayout.getCountX() + hotseatLayout.getCountX();
             countY = iconLayout.getCountY();
             parent = iconParent;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                profile.isVerticalBarLayout()) {
             keyCode = KeyEvent.KEYCODE_PAGE_DOWN;
         }else {
             // For other KEYCODE_DPAD_LEFT and KEYCODE_DPAD_RIGHT navigation, do not use the
@@ -296,10 +301,13 @@ public class FocusHelper {
         if (e.getAction() == KeyEvent.ACTION_UP || !consume) {
             return consume;
         }
-        int orientation = v.getResources().getConfiguration().orientation;
+
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile profile = app.getDynamicGrid().getDeviceProfile();
+
         if (DEBUG) {
-            Log.v(TAG, String.format("Handle WORKSPACE ICONS keyevent=[%s] orientation=%d",
-                    KeyEvent.keyCodeToString(keyCode), orientation));
+            Log.v(TAG, String.format("Handle WORKSPACE ICONS keyevent=[%s] isVerticalBar=%s",
+                    KeyEvent.keyCodeToString(keyCode), profile.isVerticalBarLayout()));
         }
 
         // Initialize the variables.
@@ -322,14 +330,13 @@ public class FocusHelper {
         // KEYCODE_DPAD_DOWN in portrait (KEYCODE_DPAD_RIGHT in landscape) is the only key allowed
         // to take a user to the hotseat. For other dpad navigation, do not use the matrix extended
         // with the hotseat.
-        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN &&
-                orientation == Configuration.ORIENTATION_PORTRAIT) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
+        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !profile.isVerticalBarLayout()) {
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, true /* horizontal */,
                     hotseat.getAllAppsButtonRank(), false /* all apps icon is ignored */);
             countY = countY + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, orientation,
+                profile.isVerticalBarLayout()) {
+            matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, false /* horizontal */,
                     hotseat.getAllAppsButtonRank(), false /* all apps icon is ignored */);
             countX = countX + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
