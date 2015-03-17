@@ -184,21 +184,18 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrix(CellLayout iconLayout, CellLayout hotseatLayout,
-            int orientation, int allappsiconRank, boolean includeAllappsicon) {
+            boolean isHorizontal, int allappsiconRank, boolean includeAllappsicon) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
         int m, n;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (isHorizontal) {
             m = iconLayout.getCountX();
             n = iconLayout.getCountY() + hotseatLayout.getCountY();
-        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        } else {
             m = iconLayout.getCountX() + hotseatLayout.getCountX();
             n = iconLayout.getCountY();
-        } else {
-            throw new IllegalStateException(String.format(
-                    "orientation type=%d is not supported for key board events.", orientation));
         }
         int[][] matrix = createFullMatrix(m, n, false /* set all cell to empty */);
 
@@ -215,7 +212,7 @@ public class FocusLogic {
         // is truncated. If it is negative, then all apps icon index is not inserted.
         for(int i = hotseatParent.getChildCount() - 1; i >= (includeAllappsicon ? 0 : 1); i--) {
             int delta = 0;
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (isHorizontal) {
                 int cx = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellX;
                 if ((includeAllappsicon && cx >= allappsiconRank) ||
@@ -223,7 +220,7 @@ public class FocusLogic {
                         delta = -1;
                 }
                 matrix[cx + delta][iconLayout.getCountY()] = iconParent.getChildCount() + i;
-            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            } else {
                 int cy = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellY;
                 if ((includeAllappsicon && cy >= allappsiconRank) ||
