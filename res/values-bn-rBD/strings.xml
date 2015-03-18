@@ -34,16 +34,15 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"এই হোম স্ক্রীনে আইটেম রাখা যায়নি৷"</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"তৈরি করেতে উইজেট চয়ন করুন"</string>
-    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
-    <skip />
-    <!-- no translation found for loading_apps_message (1914259869238053553) -->
-    <skip />
-    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
-    <skip />
+    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
+    <string name="loading_apps_message" msgid="1914259869238053553">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
+    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান নেই"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"ফোল্ডারের নাম"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"ফোল্ডার পুনঃনামকরণ করুন"</string>
     <string name="rename_action" msgid="5559600076028658757">"ঠিক আছে"</string>
     <string name="cancel_action" msgid="7009134900002915310">"বাতিল করুন"</string>
+    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
+    <skip />
     <string name="menu_item_add_item" msgid="1264911265836810421">"হোম স্ক্রীনে যোগ করুন"</string>
     <string name="group_applications" msgid="3797214114206693605">"অ্যাপ্লিকেশানগুলি"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"শর্টকাটগুলি"</string>
@@ -126,14 +125,4 @@
     <string name="abandoned_search" msgid="891119232568284442">"অনুসন্ধান"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"এই অ্যাপ্লিকেশানটি ইন্সটল করা নাই"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি অনুসন্ধান করে এটি নিজে ইন্সটল করতে পারেন।"</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"ওয়ার্কস্পেস যোগ করুন"</string>
-    <string name="item_added_to_workspace" msgid="3144273143205811094">"কর্মক্ষেত্রে আইটেম যোগ করা হয়েছে"</string>
-    <string name="item_removed_from_workspace" msgid="3046819836864411670">"কর্মক্ষেত্র থেকে আইটেম সরানো হয়েছে"</string>
-    <string name="action_move" msgid="6768694438207239815">"আইটেম সরান"</string>
-    <string name="move_to_empty_cell" msgid="5701704023760440306">"ফাঁকা কক্ষ <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g> এ সরান"</string>
-    <string name="item_moved" msgid="4606538322571412879">"আইটেম সরানো হয়েছে"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"ফোল্ডারে যোগ করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"আইটেম ফোল্ডারে যোগ করা হয়েছে"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"এর সাথে ফোল্ডার তৈরি করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"ফোল্ডার তৈরি করা হয়েছে"</string>
 </resources>

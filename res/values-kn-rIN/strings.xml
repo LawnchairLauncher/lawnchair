@@ -34,16 +34,15 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಐಟಂ ಅನ್ನು ಬಿಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"ರಚಿಸಲು ವಿಜೆಟ್‌ ಆಯ್ಕೆಮಾಡಿ"</string>
-    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
-    <skip />
-    <!-- no translation found for loading_apps_message (1914259869238053553) -->
-    <skip />
-    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
-    <skip />
+    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"ಅಪ್ಲಿಕೇಷನ್‌ನಲ್ಲಿ ಹುಡುಕಿ"</string>
+    <string name="loading_apps_message" msgid="1914259869238053553">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
+    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"ಫೋಲ್ಡರ್ ಹೆಸರು"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"ಫೋಲ್ಡರ್ ಅನ್ನು ಮರುಹೆಸರಿಸಿ"</string>
     <string name="rename_action" msgid="5559600076028658757">"ಸರಿ"</string>
     <string name="cancel_action" msgid="7009134900002915310">"ರದ್ದುಮಾಡು"</string>
+    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
+    <skip />
     <string name="menu_item_add_item" msgid="1264911265836810421">"ಮುಖಪುಟಕ್ಕೆ ಸೇರಿಸು"</string>
     <string name="group_applications" msgid="3797214114206693605">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
@@ -126,14 +125,4 @@
     <string name="abandoned_search" msgid="891119232568284442">"ಹುಡುಕು"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ಈ ಐಕಾನ್ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ. ನೀವು ಅದನ್ನು ತೆಗೆದುಹಾಕಬಹುದು ಅಥವಾ ಅಪ್ಲಿಕೇಶನ್ ಹುಡುಕಬಹುದು ಮತ್ತು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅದನ್ನು ಸ್ಥಾಪಿಸಬಹುದು."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ ಸೇರಿಸಿ"</string>
-    <string name="item_added_to_workspace" msgid="3144273143205811094">"ಕಾರ್ಯಸ್ಥಳಕ್ಕೆ ಐಟಂ ಸೇರಿಸಲಾಗಿದೆ"</string>
-    <string name="item_removed_from_workspace" msgid="3046819836864411670">"ಐಟಂ ಕಾರ್ಯಸ್ಥಳದಿಂದ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"</string>
-    <string name="action_move" msgid="6768694438207239815">"ಐಟಂ ಸರಿಸಿ"</string>
-    <string name="move_to_empty_cell" msgid="5701704023760440306">"<xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g> ಖಾಲಿ ಸೆಲ್‌ಗೆ ಸರಿಸಿ"</string>
-    <string name="item_moved" msgid="4606538322571412879">"ಐಟಂ ಸರಿಸಲಾಗಿದೆ"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"ಫೋಲ್ಡರ್‌ಗೆ ಸೇರಿಸಿ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"ಐಟಂ ಅನ್ನು ಫೋಲ್ಡರ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"ಇದನ್ನು ಬಳಸಿಕೊಂಡು ಫೋಲ್ಡರ್ ರಚಿಸಿ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"ಫೋಲ್ಡರ್ ರಚಿಸಲಾಗಿದೆ"</string>
 </resources>

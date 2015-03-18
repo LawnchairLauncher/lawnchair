@@ -34,16 +34,15 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Impossible de déposer élément sur écran d\'accueil."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Sélectionner le widget à créer"</string>
-    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
-    <skip />
-    <!-- no translation found for loading_apps_message (1914259869238053553) -->
-    <skip />
-    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
-    <skip />
+    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Rechercher dans les applications"</string>
+    <string name="loading_apps_message" msgid="1914259869238053553">"Chargement des applications en cours…"</string>
+    <string name="apps_view_no_search_results" msgid="1390726981225924916">"Aucune application ne correspond à la requête \"<xliff:g id="QUERY">%1$s</xliff:g>\"."</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Nom du dossier"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Renommer le dossier"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Annuler"</string>
+    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
+    <skip />
     <string name="menu_item_add_item" msgid="1264911265836810421">"Ajouter à l\'écran d\'accueil"</string>
     <string name="group_applications" msgid="3797214114206693605">"Applications"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Raccourcis"</string>
@@ -126,14 +125,4 @@
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Cette application n\'est pas installée"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'application correspondant à cette icône n\'est pas installée. Vous pouvez supprimer cette dernière, ou essayer de rechercher l\'application et de l\'installer manuellement."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Ajouter à l\'espace de travail"</string>
-    <string name="item_added_to_workspace" msgid="3144273143205811094">"Élément ajouté à l\'espace de travail"</string>
-    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Élément supprimé de l\'espace de travail"</string>
-    <string name="action_move" msgid="6768694438207239815">"Déplacer l\'élément"</string>
-    <string name="move_to_empty_cell" msgid="5701704023760440306">"Déplacer vers la cellule vide <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <string name="item_moved" msgid="4606538322571412879">"Élément déplacé"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"Ajouter au dossier \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"Élément ajouté au dossier"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"Créer un dossier avec \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
-    <string name="folder_created" msgid="6409794597405184510">"Dossier créé"</string>
 </resources>

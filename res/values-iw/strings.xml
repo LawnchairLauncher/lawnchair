@@ -41,6 +41,8 @@
     <string name="rename_folder_title" msgid="3771389277707820891">"שנה את שם התיקיה"</string>
     <string name="rename_action" msgid="5559600076028658757">"אישור"</string>
     <string name="cancel_action" msgid="7009134900002915310">"בטל"</string>
+    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
+    <skip />
     <string name="menu_item_add_item" msgid="1264911265836810421">"הוסף למסך דף הבית"</string>
     <string name="group_applications" msgid="3797214114206693605">"אפליקציות"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"קיצורי דרך"</string>
@@ -123,14 +125,4 @@
     <string name="abandoned_search" msgid="891119232568284442">"חפש"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"אפליקציה זו אינה מותקנת"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"האפליקציה של סמל זה אינה מותקנת. ניתן להסיר אותו, או לחפש את האפליקציה ולהתקין אותה ידנית."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"הוסף לסביבת העבודה"</string>
-    <string name="item_added_to_workspace" msgid="3144273143205811094">"הפריט נוסף אל שטח העבודה"</string>
-    <string name="item_removed_from_workspace" msgid="3046819836864411670">"הפריט הוסר משטח העבודה"</string>
-    <string name="action_move" msgid="6768694438207239815">"העבר את הפריט"</string>
-    <string name="move_to_empty_cell" msgid="5701704023760440306">"העבר אל התא הריק <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <string name="item_moved" msgid="4606538322571412879">"הפריט הועבר"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"הוסף לתיקייה: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"הפריט נוסף לתיקייה"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"צור תיקייה עם: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"התיקייה נוצרה"</string>
 </resources>

@@ -34,16 +34,15 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Муну бул Үй экранына ыргытуу мүмкүн эмес."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Түзүлүүчү виджетти тандаңыз"</string>
-    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
-    <skip />
-    <!-- no translation found for loading_apps_message (1914259869238053553) -->
-    <skip />
-    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
-    <skip />
+    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Колдонмолорду издөө"</string>
+    <string name="loading_apps_message" msgid="1914259869238053553">"Колдонмолор жүктөлүүдө…"</string>
+    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" талабына дал келген эч колдонмо табылган жок"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Фолдердин аты"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Фолдердин атын өзгөртүү"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Жокко чыгаруу"</string>
+    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
+    <skip />
     <string name="menu_item_add_item" msgid="1264911265836810421">"Үй экранына кошуу"</string>
     <string name="group_applications" msgid="3797214114206693605">"Колдонмолор"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Тез чакырмалар"</string>
@@ -126,14 +125,4 @@
     <string name="abandoned_search" msgid="891119232568284442">"Издөө"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Бул колдонмо орнотулган эмес"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Бул сүрөтчөнүн колдонмосу орнотулган эмес. Аны алып салсаңыз же колдонмону издеп, кол менен орнотсоңуз болот."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Жумуш ордуна кошуу"</string>
-    <string name="item_added_to_workspace" msgid="3144273143205811094">"Нерсе жумуш аймагына кошулду"</string>
-    <string name="item_removed_from_workspace" msgid="3046819836864411670">"Нерсе жумуш аймагынан алынып салынды"</string>
-    <string name="action_move" msgid="6768694438207239815">"Нерсени жылдыруу"</string>
-    <string name="move_to_empty_cell" msgid="5701704023760440306">"Бош уячага жылдыруу <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <string name="item_moved" msgid="4606538322571412879">"Нерсе жылдырылды"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"Куржунга кошуу: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"Нерсе куржунга кошулду"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"Төмөнкү менен куржун түзүү: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"Куржун түзүлдү"</string>
 </resources>

@@ -34,16 +34,15 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"ఈ హోమ్ స్క్రీన్‌లో అంశాన్ని వదలడం సాధ్యపడలేదు."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"సృష్టించాల్సిన విడ్జెట్ ఎంచుకోండి"</string>
-    <!-- no translation found for apps_view_search_bar_hint (5257064110425662340) -->
-    <skip />
-    <!-- no translation found for loading_apps_message (1914259869238053553) -->
-    <skip />
-    <!-- no translation found for apps_view_no_search_results (1390726981225924916) -->
-    <skip />
+    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"అనువర్తనాలను శోధించండి"</string>
+    <string name="loading_apps_message" msgid="1914259869238053553">"అనువర్తనాలను లోడ్ చేస్తోంది..."</string>
+    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలు ఏవీ కనుగొనబడలేదు"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"ఫోల్డర్ పేరు"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"ఫోల్డర్‌ పేరు మార్చండి"</string>
     <string name="rename_action" msgid="5559600076028658757">"సరే"</string>
     <string name="cancel_action" msgid="7009134900002915310">"రద్దు చేయి"</string>
+    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
+    <skip />
     <string name="menu_item_add_item" msgid="1264911265836810421">"హోమ్ స్క్రీన్‌కు జోడించు"</string>
     <string name="group_applications" msgid="3797214114206693605">"అనువర్తనాలు"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"సత్వరమార్గాలు"</string>
@@ -126,14 +125,4 @@
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ అనువర్తనం కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"వర్క్‌స్పేస్‌కు జోడించు"</string>
-    <string name="item_added_to_workspace" msgid="3144273143205811094">"అంశం వర్క్‌స్పేస్‌కు జోడించబడింది"</string>
-    <string name="item_removed_from_workspace" msgid="3046819836864411670">"అంశం వర్క్‌స్పేస్ నుండి తరలించబడింది"</string>
-    <string name="action_move" msgid="6768694438207239815">"అంశాన్ని తరలించు"</string>
-    <string name="move_to_empty_cell" msgid="5701704023760440306">"ఖాళీ గడి <xliff:g id="NUMBER_0">%1$s</xliff:g>, <xliff:g id="NUMBER_1">%2$s</xliff:g>కి తరలించండి"</string>
-    <string name="item_moved" msgid="4606538322571412879">"అంశం తరలించబడింది"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"ఈ ఫోల్డర్‌కి జోడించండి: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"అంశం ఫోల్డర్‌కు జోడించబడింది"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"ఈ పేరుతో ఫోల్డర్‌ను సృష్టించండి: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"ఫోల్డర్ సృష్టించబడింది"</string>
 </resources>
