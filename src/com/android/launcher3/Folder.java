@@ -1172,11 +1172,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onAdd(ShortcutInfo item) {
-        mItemsInvalidated = true;
         // If the item was dropped onto this open folder, we have done the work associated
         // with adding the item to the folder, as indicated by mSuppressOnAdd being set
         if (mSuppressOnAdd) return;
         mContent.createAndAddViewForRank(item, mContent.allocateRankForNewItem(item));
+        mItemsInvalidated = true;
         LauncherModel.addOrMoveItemInDatabase(
                 mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
