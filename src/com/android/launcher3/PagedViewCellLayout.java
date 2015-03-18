@@ -348,22 +348,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         requestLayout();
     }
 
-    /**
-     * Estimates the width that the number of hSpan cells will take up.
-     */
-    public int estimateCellWidth(int hSpan) {
-        // TODO: we need to take widthGap into effect
-        return hSpan * mCellWidth;
-    }
-
-    /**
-     * Estimates the height that the number of vSpan cells will take up.
-     */
-    public int estimateCellHeight(int vSpan) {
-        // TODO: we need to take heightGap into effect
-        return vSpan * mCellHeight;
-    }
-
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new PagedViewCellLayout.LayoutParams(getContext(), attrs);
