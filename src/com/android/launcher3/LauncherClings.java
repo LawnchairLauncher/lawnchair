@@ -35,6 +35,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.launcher3.util.Thunk;
+
 class LauncherClings implements OnClickListener {
     private static final String MIGRATION_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
     private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
@@ -49,7 +51,7 @@ class LauncherClings implements OnClickListener {
     // New Secure Setting in L
     private static final String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
 
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private LayoutInflater mInflater;
 
     /** Ctor */
@@ -174,7 +176,7 @@ class LauncherClings implements OnClickListener {
         });
     }
 
-    private void dismissLongPressCling() {
+    @Thunk void dismissLongPressCling() {
         Runnable dismissCb = new Runnable() {
             public void run() {
                 dismissCling(mLauncher.findViewById(R.id.longpress_cling), null,
@@ -185,7 +187,7 @@ class LauncherClings implements OnClickListener {
     }
 
     /** Hides the specified Cling */
-    private void dismissCling(final View cling, final Runnable postAnimationCb,
+    @Thunk void dismissCling(final View cling, final Runnable postAnimationCb,
                               final String flag, int duration) {
         // To catch cases where siblings of top-level views are made invisible, just check whether
         // the cling is directly set to GONE before dismissing it.

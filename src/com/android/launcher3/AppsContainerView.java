@@ -33,6 +33,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.List;
 
 
@@ -49,12 +51,12 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private static final int LIST_LAYOUT = 1;
     private static final int USE_LAYOUT = GRID_LAYOUT;
 
-    private Launcher mLauncher;
-    private AlphabeticalAppsList mApps;
+    @Thunk Launcher mLauncher;
+    @Thunk AlphabeticalAppsList mApps;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
-    private AppsContainerRecyclerView mAppsListView;
+    @Thunk AppsContainerRecyclerView mAppsListView;
     private EditText mSearchBar;
     private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point();

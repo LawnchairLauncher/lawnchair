@@ -30,6 +30,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.util.Thunk;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,7 +51,7 @@ public class WidgetPreviewLoader {
     private static final String ANDROID_INCREMENTAL_VERSION_NAME_KEY = "android.incremental.version";
 
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
-    private static final HashSet<String> sInvalidPackages = new HashSet<String>();
+    @Thunk static final HashSet<String> sInvalidPackages = new HashSet<String>();
 
     private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<>();
     private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps = new ArrayList<>();
@@ -275,7 +276,7 @@ public class WidgetPreviewLoader {
         }
     }
 
-    private void writeToDb(Object o, Bitmap preview) {
+    @Thunk void writeToDb(Object o, Bitmap preview) {
         String name = getObjectName(o);
         SQLiteDatabase db = mDb.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -590,7 +591,7 @@ public class WidgetPreviewLoader {
     /**
      * Dumps all files that are open in this process without allocating a file descriptor.
      */
-    private static void dumpOpenFiles() {
+    @Thunk static void dumpOpenFiles() {
         try {
             Log.i(TAG, "DUMP OF OPEN FILES (sample rate: 1 every " + SAMPLE_RATE + "):");
             final String TYPE_APK = "apk";

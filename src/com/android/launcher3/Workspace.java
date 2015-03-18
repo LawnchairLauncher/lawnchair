@@ -69,6 +69,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,24 +118,24 @@ public class Workspace extends SmoothPagedView
     private long mCustomContentShowTime = -1;
 
     private LayoutTransition mLayoutTransition;
-    private final WallpaperManager mWallpaperManager;
-    private IBinder mWindowToken;
+    @Thunk final WallpaperManager mWallpaperManager;
+    @Thunk IBinder mWindowToken;
 
     private int mOriginalDefaultPage;
     private int mDefaultPage;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
-    private static boolean sAccessibilityEnabled;
+    @Thunk static boolean sAccessibilityEnabled;
 
     // The screen id used for the empty screen always present to the right.
     final static long EXTRA_EMPTY_SCREEN_ID = -201;
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
-    private HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
-    private ArrayList<Long> mScreenOrder = new ArrayList<Long>();
+    @Thunk HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
+    @Thunk ArrayList<Long> mScreenOrder = new ArrayList<Long>();
 
-    private Runnable mRemoveEmptyScreenRunnable;
-    private boolean mDeferRemoveExtraEmptyScreen = false;
+    @Thunk Runnable mRemoveEmptyScreenRunnable;
+    @Thunk boolean mDeferRemoveExtraEmptyScreen = false;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -144,7 +145,7 @@ public class Workspace extends SmoothPagedView
     /**
      * Target drop area calculated during last acceptDrop call.
      */
-    private int[] mTargetCell = new int[2];
+    @Thunk int[] mTargetCell = new int[2];
     private int mDragOverX = -1;
     private int mDragOverY = -1;
 
@@ -159,7 +160,7 @@ public class Workspace extends SmoothPagedView
     /**
      * The CellLayout that is currently being dragged over
      */
-    private CellLayout mDragTargetLayout = null;
+    @Thunk CellLayout mDragTargetLayout = null;
     /**
      * The CellLayout that we will show as glowing
      */
@@ -170,16 +171,16 @@ public class Workspace extends SmoothPagedView
      */
     private CellLayout mDropToLayout = null;
 
-    private Launcher mLauncher;
-    private IconCache mIconCache;
-    private DragController mDragController;
+    @Thunk Launcher mLauncher;
+    @Thunk IconCache mIconCache;
+    @Thunk DragController mDragController;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private int[] mTempCell = new int[2];
     private int[] mTempPt = new int[2];
     private int[] mTempEstimate = new int[2];
-    private float[] mDragViewVisualCenter = new float[2];
+    @Thunk float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
 
@@ -204,7 +205,7 @@ public class Workspace extends SmoothPagedView
     private boolean mInScrollArea = false;
 
     private HolographicOutlineHelper mOutlineHelper;
-    private Bitmap mDragOutline = null;
+    @Thunk Bitmap mDragOutline = null;
     private static final Rect sTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int[] mTempVisiblePagesRange = new int[2];
@@ -213,11 +214,11 @@ public class Workspace extends SmoothPagedView
     private boolean mWorkspaceFadeInAdjacentScreens;
 
     WallpaperOffsetInterpolator mWallpaperOffset;
-    private boolean mWallpaperIsLiveWallpaper;
-    private int mNumPagesForWallpaperParallax;
-    private float mLastSetWallpaperOffsetSteps = 0;
+    @Thunk boolean mWallpaperIsLiveWallpaper;
+    @Thunk int mNumPagesForWallpaperParallax;
+    @Thunk float mLastSetWallpaperOffsetSteps = 0;
 
-    private Runnable mDelayedResizeRunnable;
+    @Thunk Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
     private Point mDisplaySize = new Point();
 
@@ -226,7 +227,7 @@ public class Workspace extends SmoothPagedView
     public static final int REORDER_TIMEOUT = 350;
     private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
-    private FolderRingAnimator mDragFolderRingAnimator = null;
+    @Thunk FolderRingAnimator mDragFolderRingAnimator = null;
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
@@ -255,8 +256,8 @@ public class Workspace extends SmoothPagedView
     private static final int DRAG_MODE_ADD_TO_FOLDER = 2;
     private static final int DRAG_MODE_REORDER = 3;
     private int mDragMode = DRAG_MODE_NONE;
-    private int mLastReorderX = -1;
-    private int mLastReorderY = -1;
+    @Thunk int mLastReorderX = -1;
+    @Thunk int mLastReorderY = -1;
 
     private SparseArray<Parcelable> mSavedStates;
     private final ArrayList<Integer> mRestoredPages = new ArrayList<Integer>();
@@ -268,17 +269,17 @@ public class Workspace extends SmoothPagedView
 
     private float mCurrentScale;
     private float mNewScale;
-    private float[] mOldBackgroundAlphas;
+    @Thunk float[] mOldBackgroundAlphas;
     private float[] mOldAlphas;
-    private float[] mNewBackgroundAlphas;
+    @Thunk float[] mNewBackgroundAlphas;
     private float[] mNewAlphas;
     private int mLastChildCount = -1;
     private float mTransitionProgress;
-    private Animator mStateAnimator = null;
+    @Thunk Animator mStateAnimator = null;
 
     float mOverScrollEffect = 0f;
 
-    private Runnable mDeferredAction;
+    @Thunk Runnable mDeferredAction;
     private boolean mDeferDropAfterUninstall;
     private boolean mUninstallSuccessful;
 
@@ -1882,7 +1883,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private void updateChildrenLayersEnabled(boolean force) {
+    @Thunk void updateChildrenLayersEnabled(boolean force) {
         boolean small = mState == State.OVERVIEW || mIsSwitchingState;
         boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageMoving();
 
@@ -2571,7 +2572,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private void onTransitionEnd() {
+    @Thunk void onTransitionEnd() {
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
         showCustomContentIfNecessary();
@@ -4186,7 +4187,7 @@ public class Workspace extends SmoothPagedView
      *
      * pixelX and pixelY should be in the coordinate system of layout
      */
-    private int[] findNearestArea(int pixelX, int pixelY,
+    @Thunk int[] findNearestArea(int pixelX, int pixelY,
             int spanX, int spanY, CellLayout layout, int[] recycle) {
         return layout.findNearestArea(
                 pixelX, pixelY, spanX, spanY, recycle);

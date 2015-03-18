@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -57,7 +58,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         return getFolderElementsMap(mSourceRes);
     }
 
-    private HashMap<String, TagParser> getFolderElementsMap(Resources res) {
+    @Thunk HashMap<String, TagParser> getFolderElementsMap(Resources res) {
         HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(res));
@@ -89,7 +90,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * AppShortcutParser which also supports adding URI based intents
      */
-    private class AppShortcutWithUriParser extends AppShortcutParser {
+    @Thunk class AppShortcutWithUriParser extends AppShortcutParser {
 
         @Override
         protected long invalidPackageOrClass(XmlResourceParser parser) {
@@ -231,7 +232,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * A parser which adds a folder whose contents come from partner apk.
      */
-    private class PartnerFolderParser implements TagParser {
+    @Thunk class PartnerFolderParser implements TagParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
@@ -257,7 +258,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * An extension of FolderParser which allows adding items from a different xml.
      */
-    private class MyFolderParser extends FolderParser {
+    @Thunk class MyFolderParser extends FolderParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,

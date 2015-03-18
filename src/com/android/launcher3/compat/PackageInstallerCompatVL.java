@@ -26,6 +26,7 @@ import android.util.SparseArray;
 
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,10 +37,10 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat implements 
     private static final boolean DEBUG = false;
 
     // All updates to these sets must happen on the {@link #mWorker} thread.
-    private final SparseArray<SessionInfo> mPendingReplays = new SparseArray<SessionInfo>();
-    private final HashSet<String> mPendingBadgeUpdates = new HashSet<String>();
+    @Thunk final SparseArray<SessionInfo> mPendingReplays = new SparseArray<SessionInfo>();
+    @Thunk final HashSet<String> mPendingBadgeUpdates = new HashSet<String>();
 
-    private final PackageInstaller mInstaller;
+    @Thunk final PackageInstaller mInstaller;
     private final IconCache mCache;
     private final Handler mWorker;
 
@@ -82,7 +83,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat implements 
         return activePackages;
     }
 
-    private void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
+    @Thunk void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
@@ -123,7 +124,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat implements 
         replayUpdates(null);
     }
 
-    private void replayUpdates(PackageInstallInfo newInfo) {
+    @Thunk void replayUpdates(PackageInstallInfo newInfo) {
         if (DEBUG) Log.d(TAG, "updates resumed");
         if (!mResumed || !mBound) {
             // Not yet ready

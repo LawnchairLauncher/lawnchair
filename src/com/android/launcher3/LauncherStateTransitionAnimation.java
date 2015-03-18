@@ -29,6 +29,8 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.HashMap;
 
 /**
@@ -112,9 +114,9 @@ public class LauncherStateTransitionAnimation {
     public static final int BUILD_AND_SET_LAYER = 1;
     public static final int SINGLE_FRAME_DELAY = 16;
 
-    private Launcher mLauncher;
-    private Callbacks mCb;
-    private AnimatorSet mStateAnimation;
+    @Thunk Launcher mLauncher;
+    @Thunk Callbacks mCb;
+    @Thunk AnimatorSet mStateAnimation;
 
     public LauncherStateTransitionAnimation(Launcher l, Callbacks cb) {
         mLauncher = l;

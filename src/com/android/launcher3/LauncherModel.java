@@ -59,6 +59,7 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -97,14 +98,14 @@ public class LauncherModel extends BroadcastReceiver
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
 
-    private final boolean mAppsCanBeOnRemoveableStorage;
+    @Thunk final boolean mAppsCanBeOnRemoveableStorage;
     private final boolean mOldContentProviderExists;
 
-    private final LauncherAppState mApp;
-    private final Object mLock = new Object();
-    private DeferredHandler mHandler = new DeferredHandler();
-    private LoaderTask mLoaderTask;
-    private boolean mIsLoaderTaskRunning;
+    @Thunk final LauncherAppState mApp;
+    @Thunk final Object mLock = new Object();
+    @Thunk DeferredHandler mHandler = new DeferredHandler();
+    @Thunk LoaderTask mLoaderTask;
+    @Thunk boolean mIsLoaderTaskRunning;
 
     /**
      * Maintain a set of packages per user, for which we added a shortcut on the workspace.
@@ -118,17 +119,17 @@ public class LauncherModel extends BroadcastReceiver
 
     private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
-    static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     static {
         sWorkerThread.start();
     }
-    private static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+    @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
 
     // We start off with everything not loaded.  After that, we assume that
     // our monitoring of the package manager provides all updates and we never
     // need to do a requery.  These are only ever touched from the loader thread.
-    private boolean mWorkspaceLoaded;
-    private boolean mAllAppsLoaded;
+    @Thunk boolean mWorkspaceLoaded;
+    @Thunk boolean mAllAppsLoaded;
 
     // When we are loading pages synchronously, we can't just post the binding of items on the side
     // pages as this delays the rotation process.  Instead, we wait for a callback from the first
@@ -136,7 +137,7 @@ public class LauncherModel extends BroadcastReceiver
     // a normal load, we also clear this set of Runnables.
     static final ArrayList<Runnable> mDeferredBindRunnables = new ArrayList<Runnable>();
 
-    private WeakReference<Callbacks> mCallbacks;
+    @Thunk WeakReference<Callbacks> mCallbacks;
 
     // < only access in worker thread >
     AllAppsList mBgAllAppsList;
@@ -175,12 +176,12 @@ public class LauncherModel extends BroadcastReceiver
 
     // </ only access in worker thread >
 
-    private IconCache mIconCache;
+    @Thunk IconCache mIconCache;
 
     protected int mPreviousConfigMcc;
 
-    private final LauncherAppsCompat mLauncherApps;
-    private final UserManagerCompat mUserManager;
+    @Thunk final LauncherAppsCompat mLauncherApps;
+    @Thunk final UserManagerCompat mUserManager;
 
     public interface Callbacks {
         public boolean setLoadOnResume();
@@ -258,10 +259,10 @@ public class LauncherModel extends BroadcastReceiver
 
     /** Runs the specified runnable immediately if called from the main thread, otherwise it is
      * posted on the main thread handler. */
-    private void runOnMainThread(Runnable r) {
+    @Thunk void runOnMainThread(Runnable r) {
         runOnMainThread(r, 0);
     }
-    private void runOnMainThread(Runnable r, int type) {
+    @Thunk void runOnMainThread(Runnable r, int type) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             // If we are on the worker thread, post onto the main handler
             mHandler.post(r);
@@ -372,7 +373,7 @@ public class LauncherModel extends BroadcastReceiver
      * Find a position on the screen for the given size or adds a new screen.
      * @return screenId and the coordinates for the item.
      */
-    private static Pair<Long, int[]> findSpaceForItem(
+    @Thunk static Pair<Long, int[]> findSpaceForItem(
             Context context,
             ScreenPosProvider preferredScreen,
             int fallbackStartScreen,
@@ -1425,7 +1426,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Loads the workspace screen ids in an ordered list.
      */
-    private static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
+    @Thunk static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
         final ContentResolver contentResolver = context.getContentResolver();
         final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
@@ -1471,9 +1472,9 @@ public class LauncherModel extends BroadcastReceiver
     private class LoaderTask implements Runnable {
         private Context mContext;
         private boolean mIsLaunching;
-        private boolean mIsLoadingAndBindingWorkspace;
+        @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
-        private boolean mLoadAndBindStepFinished;
+        @Thunk boolean mLoadAndBindStepFinished;
         private int mFlags;
 
         LoaderTask(Context context, boolean isLaunching, int flags) {
@@ -2904,7 +2905,7 @@ public class LauncherModel extends BroadcastReceiver
         sWorker.post(task);
     }
 
-    private class AppsAvailabilityCheck extends BroadcastReceiver {
+    @Thunk class AppsAvailabilityCheck extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -3331,7 +3332,7 @@ public class LauncherModel extends BroadcastReceiver
         return widgetsAndShortcuts;
     }
 
-    private static boolean isPackageDisabled(Context context, String packageName,
+    @Thunk static boolean isPackageDisabled(Context context, String packageName,
             UserHandleCompat user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
         return !launcherApps.isPackageEnabledForProfile(packageName, user);
@@ -3394,7 +3395,7 @@ public class LauncherModel extends BroadcastReceiver
      * Make an Intent object for a restored application or shortcut item that points
      * to the market page for the item.
      */
-    private Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
+    @Thunk Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
         ComponentName componentName = intent.getComponent();
         return getMarketIntent(componentName.getPackageName());
     }
@@ -3489,7 +3490,7 @@ public class LauncherModel extends BroadcastReceiver
         return new ArrayList<ItemInfo>(filtered);
     }
 
-    private ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
+    @Thunk ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
             final UserHandleCompat user) {
         ItemInfoFilter filter  = new ItemInfoFilter() {
             @Override
@@ -3507,7 +3508,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Make an ShortcutInfo object for a shortcut that isn't an application.
      */
-    private ShortcutInfo getShortcutInfo(Cursor c, Context context,
+    @Thunk ShortcutInfo getShortcutInfo(Cursor c, Context context,
             int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex,
             int titleIndex) {
 
@@ -3611,7 +3612,7 @@ public class LauncherModel extends BroadcastReceiver
      * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    private static FolderInfo findOrMakeFolder(HashMap<Long, FolderInfo> folders, long id) {
+    @Thunk static FolderInfo findOrMakeFolder(HashMap<Long, FolderInfo> folders, long id) {
         // See if a placeholder was created for us already
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {

@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 
 import com.android.gallery3d.glrenderer.BasicTexture;
 import com.android.gallery3d.glrenderer.GLES20Canvas;
+import com.android.launcher3.util.Thunk;
 import com.android.photos.views.TiledImageRenderer.TileSource;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -43,8 +44,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class TiledImageView extends FrameLayout {
 
-    private GLSurfaceView mGLSurfaceView;
-    private boolean mInvalPending = false;
+    @Thunk GLSurfaceView mGLSurfaceView;
+    @Thunk boolean mInvalPending = false;
     private FrameCallback mFrameCallback;
 
     protected static class ImageRendererWrapper {
@@ -203,7 +204,7 @@ public class TiledImageView extends FrameLayout {
         }
     }
 
-    private class TileRenderer implements Renderer {
+    @Thunk class TileRenderer implements Renderer {
 
         private GLES20Canvas mCanvas;
 

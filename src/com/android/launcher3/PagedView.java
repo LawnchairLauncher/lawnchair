@@ -51,6 +51,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 
 interface Page {
@@ -124,7 +126,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected LauncherScroller mScroller;
     private Interpolator mDefaultInterpolator;
     private VelocityTracker mVelocityTracker;
-    private int mPageSpacing = 0;
+    @Thunk int mPageSpacing = 0;
 
     private float mParentDownMotionX;
     private float mParentDownMotionY;
@@ -207,8 +209,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private boolean mWasInOverscroll = false;
 
     // Page Indicator
-    private int mPageIndicatorViewId;
-    private PageIndicator mPageIndicator;
+    @Thunk int mPageIndicatorViewId;
+    @Thunk PageIndicator mPageIndicator;
     private boolean mAllowPagedViewAnimations = true;
 
     // The viewport whether the pages are to be contained (the actual view may be larger than the
@@ -227,7 +229,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected View mDragView;
     protected AnimatorSet mZoomInOutAnim;
     private Runnable mSidePageHoverRunnable;
-    private int mSidePageHoverIndex = -1;
+    @Thunk int mSidePageHoverIndex = -1;
     // This variable's scope is only for the duration of startReordering() and endReordering()
     private boolean mReorderingStarted = false;
     // This variable's scope is for the duration of startReordering() and after the zoomIn()
@@ -246,14 +248,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private Rect mAltTmpRect = new Rect();
 
     // Fling to delete
-    private int FLING_TO_DELETE_FADE_OUT_DURATION = 350;
+    @Thunk int FLING_TO_DELETE_FADE_OUT_DURATION = 350;
     private float FLING_TO_DELETE_FRICTION = 0.035f;
     // The degrees specifies how much deviation from the up vector to still consider a fling "up"
     private float FLING_TO_DELETE_MAX_FLING_DEGREES = 65f;
     protected int mFlingToDeleteThresholdVelocity = -1400;
     // Drag to delete
-    private boolean mDeferringForDelete = false;
-    private int DELETE_SLIDE_IN_SIDE_PAGE_DURATION = 250;
+    @Thunk boolean mDeferringForDelete = false;
+    @Thunk int DELETE_SLIDE_IN_SIDE_PAGE_DURATION = 250;
     private int DRAG_TO_DELETE_FADE_OUT_DURATION = 350;
 
     // Drop to delete
@@ -2356,7 +2358,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             super(superState);
         }
 
-        private SavedState(Parcel in) {
+        @Thunk SavedState(Parcel in) {
             super(in);
             currentPage = in.readInt();
         }
@@ -2514,7 +2516,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         invalidate();
     }
 
-    private void onPostReorderingAnimationCompleted() {
+    @Thunk void onPostReorderingAnimationCompleted() {
         // Trigger the callback when reordering has settled
         --mPostReorderingPreZoomInRemainingAnimationCount;
         if (mPostReorderingPreZoomInRunnable != null &&

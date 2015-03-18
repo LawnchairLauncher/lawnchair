@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.util.Thunk;
 
 
 /**
@@ -108,21 +110,21 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     }
 
     private LayoutInflater mLayoutInflater;
-    private AlphabeticalAppsList mApps;
+    @Thunk AlphabeticalAppsList mApps;
     private GridSpanSizer mGridSizer;
     private GridItemDecoration mItemDecoration;
     private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
-    private int mAppsPerRow;
-    private boolean mIsRtl;
+    @Thunk int mAppsPerRow;
+    @Thunk boolean mIsRtl;
     private String mEmptySearchText;
 
     // Section drawing
-    private int mPaddingStart;
-    private int mStartMargin;
-    private Paint mSectionTextPaint;
-    private Rect mTmpBounds = new Rect();
+    @Thunk int mPaddingStart;
+    @Thunk int mStartMargin;
+    @Thunk Paint mSectionTextPaint;
+    @Thunk Rect mTmpBounds = new Rect();
 
 
     public AppsGridAdapter(Context context, AlphabeticalAppsList apps, int appsPerRow,

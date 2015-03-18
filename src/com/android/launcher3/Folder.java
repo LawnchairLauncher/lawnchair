@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +107,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private final Alarm mReorderAlarm = new Alarm();
     private final Alarm mOnExitAlarm = new Alarm();
 
-    private final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
+    @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
 
     private final int mExpandDuration;
     private final int mMaterialExpandDuration;
@@ -118,19 +119,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     protected DragController mDragController;
     protected FolderInfo mInfo;
 
-    private FolderIcon mFolderIcon;
+    @Thunk FolderIcon mFolderIcon;
 
-    private FolderContent mContent;
-    private View mContentWrapper;
+    @Thunk FolderContent mContent;
+    @Thunk View mContentWrapper;
     FolderEditText mFolderName;
 
     private View mFooter;
     private int mFooterHeight;
 
     // Cell ranks used for drag and drop
-    private int mTargetRank, mPrevTargetRank, mEmptyCellRank;
+    @Thunk int mTargetRank, mPrevTargetRank, mEmptyCellRank;
 
-    private int mState = STATE_NONE;
+    @Thunk int mState = STATE_NONE;
     private boolean mRearrangeOnClose = false;
     boolean mItemsInvalidated = false;
     private ShortcutInfo mCurrentDragInfo;
@@ -141,26 +142,26 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
     private boolean mItemAddedBackToSelfViaIcon = false;
-    private float mFolderIconPivotX;
-    private float mFolderIconPivotY;
+    @Thunk float mFolderIconPivotX;
+    @Thunk float mFolderIconPivotY;
     private boolean mIsEditingName = false;
 
     private boolean mDestroyed;
 
-    private Runnable mDeferredAction;
+    @Thunk Runnable mDeferredAction;
     private boolean mDeferDropAfterUninstall;
     private boolean mUninstallSuccessful;
 
     // Folder scrolling
     private int mScrollAreaOffset;
     private Alarm mOnScrollHintAlarm;
-    private Alarm mScrollPauseAlarm;
+    @Thunk Alarm mScrollPauseAlarm;
 
     // TODO: Use {@link #mContent} once {@link #ALLOW_FOLDER_SCROLL} is removed.
-    private FolderPagedView mPagedView;
+    @Thunk FolderPagedView mPagedView;
 
-    private int mScrollHintDir = DragController.SCROLL_NONE;
-    private int mCurrentScrollDir = DragController.SCROLL_NONE;
+    @Thunk int mScrollHintDir = DragController.SCROLL_NONE;
+    @Thunk int mCurrentScrollDir = DragController.SCROLL_NONE;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -556,7 +557,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     }
 
-    private void sendCustomAccessibilityEvent(int type, String text) {
+    @Thunk void sendCustomAccessibilityEvent(int type, String text) {
         AccessibilityManager accessibilityManager = (AccessibilityManager)
                 getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
         if (accessibilityManager.isEnabled()) {
@@ -635,7 +636,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 (int) recycle[0] - getPaddingLeft(), (int) recycle[1] - getPaddingTop());
     }
 
-    private void onDragOver(DragObject d, int reorderDelay) {
+    @Thunk void onDragOver(DragObject d, int reorderDelay) {
         if (ALLOW_FOLDER_SCROLL && mScrollPauseAlarm.alarmPending()) {
             return;
         }
@@ -997,7 +998,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mContent.getItemCount();
     }
 
-    private void onCloseComplete() {
+    @Thunk void onCloseComplete() {
         DragLayer parent = (DragLayer) getParent();
         if (parent != null) {
             parent.removeView(this);
@@ -1020,7 +1021,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mSuppressFolderDeletion = false;
     }
 
-    private void replaceFolderWithFinalItem() {
+    @Thunk void replaceFolderWithFinalItem() {
         // Add the last remaining child to the workspace in place of the folder
         Runnable onCompleteRunnable = new Runnable() {
             @Override

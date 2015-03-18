@@ -30,6 +30,7 @@ import com.android.gallery3d.common.Utils;
 import com.android.gallery3d.glrenderer.BasicTexture;
 import com.android.gallery3d.glrenderer.GLCanvas;
 import com.android.gallery3d.glrenderer.UploadedTexture;
+import com.android.launcher3.util.Thunk;
 import com.android.photos.views.Pools.Pool;
 import com.android.photos.views.Pools.SynchronizedPool;
 
@@ -67,12 +68,12 @@ public class TiledImageRenderer {
     private static final int STATE_RECYCLING = 0x20;
     private static final int STATE_RECYCLED = 0x40;
 
-    private static Pool<Bitmap> sTilePool = new SynchronizedPool<Bitmap>(64);
+    @Thunk static Pool<Bitmap> sTilePool = new SynchronizedPool<Bitmap>(64);
 
     // TILE_SIZE must be 2^N
-    private int mTileSize;
+    @Thunk int mTileSize;
 
-    private TileSource mModel;
+    @Thunk TileSource mModel;
     private BasicTexture mPreview;
     protected int mLevelCount;  // cache the value of mScaledBitmaps.length
 
@@ -82,7 +83,7 @@ public class TiledImageRenderer {
     // half size of the previous one). If the value is in [0, mLevelCount), we
     // use the bitmap in mScaledBitmaps[mLevel] for display, otherwise the value
     // is mLevelCount
-    private int mLevel = 0;
+    @Thunk int mLevel = 0;
 
     private int mOffsetX;
     private int mOffsetY;
@@ -96,10 +97,10 @@ public class TiledImageRenderer {
     private final LongSparseArray<Tile> mActiveTiles = new LongSparseArray<Tile>();
 
     // The following three queue are guarded by mQueueLock
-    private final Object mQueueLock = new Object();
+    @Thunk final Object mQueueLock = new Object();
     private final TileQueue mRecycledQueue = new TileQueue();
     private final TileQueue mUploadQueue = new TileQueue();
-    private final TileQueue mDecodeQueue = new TileQueue();
+    @Thunk final TileQueue mDecodeQueue = new TileQueue();
 
     // The width and height of the full-sized bitmap
     protected int mImageWidth = SIZE_UNKNOWN;
@@ -489,7 +490,7 @@ public class TiledImageRenderer {
        }
     }
 
-    private void decodeTile(Tile tile) {
+    @Thunk void decodeTile(Tile tile) {
         synchronized (mQueueLock) {
             if (tile.mTileState != STATE_IN_QUEUE) {
                 return;
@@ -556,7 +557,7 @@ public class TiledImageRenderer {
         mActiveTiles.put(key, tile);
     }
 
-    private Tile getTile(int x, int y, int level) {
+    @Thunk Tile getTile(int x, int y, int level) {
         return mActiveTiles.get(makeTileKey(x, y, level));
     }
 
@@ -748,7 +749,7 @@ public class TiledImageRenderer {
         }
     }
 
-    private static class TileQueue {
+    @Thunk static class TileQueue {
         private Tile mHead;
 
         public Tile pop() {
@@ -786,7 +787,7 @@ public class TiledImageRenderer {
         }
     }
 
-    private class TileDecoder extends Thread {
+    @Thunk class TileDecoder extends Thread {
 
         public void finishAndWait() {
             interrupt();

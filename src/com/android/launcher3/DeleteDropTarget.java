@@ -41,6 +41,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.Thunk;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
@@ -56,7 +57,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private TransitionDrawable mRemoveDrawable;
     private TransitionDrawable mCurrentDrawable;
 
-    private boolean mWaitingForUninstall = false;
+    @Thunk boolean mWaitingForUninstall = false;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -272,7 +273,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         return false;
     }
 
-    private void completeDrop(DragObject d) {
+    @Thunk void completeDrop(DragObject d) {
         ItemInfo item = (ItemInfo) d.dragInfo;
         boolean wasWaitingForUninstall = mWaitingForUninstall;
         mWaitingForUninstall = false;

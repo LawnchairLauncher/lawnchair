@@ -29,8 +29,10 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.util.Thunk;
+
 public class DragView extends View {
-    private static float sDragAlpha = 1f;
+    @Thunk static float sDragAlpha = 1f;
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
@@ -42,11 +44,11 @@ public class DragView extends View {
     private Rect mDragRegion = null;
     private DragLayer mDragLayer = null;
     private boolean mHasDrawn = false;
-    private float mCrossFadeProgress = 0f;
+    @Thunk float mCrossFadeProgress = 0f;
 
     ValueAnimator mAnim;
-    private float mOffsetX = 0.0f;
-    private float mOffsetY = 0.0f;
+    @Thunk float mOffsetX = 0.0f;
+    @Thunk float mOffsetY = 0.0f;
     private float mInitialScale = 1f;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.

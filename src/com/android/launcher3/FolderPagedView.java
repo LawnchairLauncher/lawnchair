@@ -31,6 +31,7 @@ import android.widget.Switch;
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.PageIndicator.PageMarkerResources;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.util.Thunk;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -59,7 +60,8 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
-    private final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
+
+    @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
 
     private final int mMaxCountX;
     private final int mMaxCountY;

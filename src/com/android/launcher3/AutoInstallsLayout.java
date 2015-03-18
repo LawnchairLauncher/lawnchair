@@ -37,6 +37,7 @@ import android.util.Patterns;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -114,8 +115,8 @@ public class AutoInstallsLayout {
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
-    private final Context mContext;
-    private final AppWidgetHost mAppWidgetHost;
+    @Thunk final Context mContext;
+    @Thunk final AppWidgetHost mAppWidgetHost;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -125,7 +126,7 @@ public class AutoInstallsLayout {
     private final int mHotseatAllAppsRank;
 
     private final long[] mTemp = new long[2];
-    private final ContentValues mValues;
+    @Thunk final ContentValues mValues;
     protected final String mRootTag;
 
     protected SQLiteDatabase mDb;
@@ -648,7 +649,7 @@ public class AutoInstallsLayout {
         long insertAndCheck(SQLiteDatabase db, ContentValues values);
     }
 
-    private static void copyInteger(ContentValues from, ContentValues to, String key) {
+    @Thunk static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
     }
 }

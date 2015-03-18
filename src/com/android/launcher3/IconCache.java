@@ -43,6 +43,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,7 +67,7 @@ public class IconCache {
 
     private static final int LOW_RES_SCALE_FACTOR = 8;
 
-    private static class CacheEntry {
+    @Thunk static class CacheEntry {
         public Bitmap icon;
         public CharSequence title;
         public CharSequence contentDescription;

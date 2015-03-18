@@ -91,8 +91,8 @@ public class CommonAppTypeParser implements LayoutParserCallback {
     private class MyLayoutParser extends DefaultLayoutParser {
 
         public MyLayoutParser() {
-            super(mContext, null, CommonAppTypeParser.this,
-                    mContext.getResources(), mResId, TAG_RESOLVE, 0);
+            super(CommonAppTypeParser.this.mContext, null, CommonAppTypeParser.this,
+                    CommonAppTypeParser.this.mContext.getResources(), mResId, TAG_RESOLVE, 0);
         }
 
         @Override

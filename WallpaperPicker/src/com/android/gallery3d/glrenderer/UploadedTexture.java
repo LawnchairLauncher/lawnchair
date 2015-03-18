@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.opengl.GLUtils;
 
+import com.android.launcher3.util.Thunk;
+
 import junit.framework.Assert;
 
 import java.util.HashMap;
@@ -82,7 +84,7 @@ public abstract class UploadedTexture extends BasicTexture {
         return mIsUploading;
     }
 
-    private static class BorderKey implements Cloneable {
+    @Thunk static class BorderKey implements Cloneable {
         public boolean vertical;
         public Config config;
         public int length;
