@@ -73,8 +73,9 @@ public class IconCache {
         public boolean isLowResIcon;
     }
 
-    private final HashMap<UserHandleCompat, Bitmap> mDefaultIcons =
-            new HashMap<UserHandleCompat, Bitmap>();
+    private final HashMap<UserHandleCompat, Bitmap> mDefaultIcons = new HashMap<>();
+    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+
     private final Context mContext;
     private final PackageManager mPackageManager;
     private final UserManagerCompat mUserManager;
@@ -357,7 +358,7 @@ public class IconCache {
                             st.promisedIntent != null ? st.promisedIntent : st.intent,
                             st.user, false);
                 }
-                caller.post(new Runnable() {
+                mMainThreadExecutor.execute(new Runnable() {
 
                     @Override
                     public void run() {
