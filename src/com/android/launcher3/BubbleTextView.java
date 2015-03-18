@@ -34,6 +34,8 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.android.launcher3.IconCache.IconLoadRequest;
+
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
  * because we want to make the bubble taller than the text and TextView's clip is
@@ -73,6 +75,8 @@ public class BubbleTextView extends TextView {
 
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
+
+    private IconLoadRequest mIconLoadRequest;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -163,6 +167,9 @@ public class BubbleTextView extends TextView {
         }
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
+
+        // Verify high res immediately
+        verifyHighRes();
     }
 
     @Override
@@ -449,5 +456,43 @@ public class BubbleTextView extends TextView {
             setCompoundDrawablePadding(drawablePadding);
         }
         return icon;
+    }
+
+    /**
+     * Applies the item info if it is same as what the view is pointing to currently.
+     */
+    public void reapplyItemInfo(final ItemInfo info) {
+        if (getTag() == info) {
+            mIconLoadRequest = null;
+            if (info instanceof AppInfo) {
+                applyFromApplicationInfo((AppInfo) info);
+            } else if (info instanceof ShortcutInfo) {
+                applyFromShortcutInfo((ShortcutInfo) info,
+                        LauncherAppState.getInstance().getIconCache(), false);
+            }
+        }
+    }
+
+    /**
+     * Verifies that the current icon is high-res otherwise posts a request to load the icon.
+     */
+    public void verifyHighRes() {
+        if (mIconLoadRequest != null) {
+            mIconLoadRequest.cancel();
+            mIconLoadRequest = null;
+        }
+        if (getTag() instanceof AppInfo) {
+            AppInfo info = (AppInfo) getTag();
+            if (info.usingLowResIcon) {
+                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
+                        .updateIconInBackground(BubbleTextView.this, info);
+            }
+        } else if (getTag() instanceof ShortcutInfo) {
+            ShortcutInfo info = (ShortcutInfo) getTag();
+            if (info.usingLowResIcon) {
+                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
+                        .updateIconInBackground(BubbleTextView.this, info);
+            }
+        }
     }
 }

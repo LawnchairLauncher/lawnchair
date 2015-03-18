@@ -642,6 +642,28 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     }
 
     @Override
+    protected void onPageBeginMoving() {
+        super.onPageBeginMoving();
+        getVisiblePages(sTempPosArray);
+        for (int i = sTempPosArray[0]; i <= sTempPosArray[1]; i++) {
+            verifyVisibleHighResIcons(i);
+        }
+    }
+
+    /**
+     * Ensures that all the icons on the given page are of high-res
+     */
+    public void verifyVisibleHighResIcons(int pageNo) {
+        CellLayout page = getPageAt(pageNo);
+        if (page != null) {
+            ShortcutAndWidgetContainer parent = page.getShortcutsAndWidgets();
+            for (int i = parent.getChildCount() - 1; i >= 0; i--) {
+                ((BubbleTextView) parent.getChildAt(i)).verifyHighRes();
+            }
+        }
+    }
+
+    @Override
     public void realTimeReorder(int empty, int target) {
         completePendingPageChanges();
         int delay = 0;

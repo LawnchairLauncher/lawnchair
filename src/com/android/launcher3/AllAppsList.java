@@ -148,7 +148,7 @@ class AllAppsList {
                 if (applicationInfo == null) {
                     add(new AppInfo(context, info, user, mIconCache));
                 } else {
-                    mIconCache.getTitleAndIcon(applicationInfo, info);
+                    mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
                     modified.add(applicationInfo);
                 }
             }
