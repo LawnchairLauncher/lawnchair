@@ -631,7 +631,6 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         final ContentResolver cr = mContext.getContentResolver();
         final WidgetPreviewLoader previewLoader = new WidgetPreviewLoader(mContext);
-        final PagedViewCellLayout widgetSpacingLayout = new PagedViewCellLayout(mContext);
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
         final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
         if (DEBUG) Log.d(TAG, "cellWidthPx: " + profile.cellWidthPx);
@@ -666,8 +665,9 @@ public class LauncherBackupHelper implements BackupHelper {
                     if (DEBUG) Log.d(TAG, "I can count this high: " + backupWidgetCount);
                     if (backupWidgetCount < MAX_WIDGETS_PER_PASS) {
                         if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
-                        previewLoader.setPreviewSize(spanX * profile.cellWidthPx,
-                                spanY * profile.cellHeightPx, widgetSpacingLayout);
+                        previewLoader.setPreviewSize(
+                                spanX * profile.cellWidthPx,
+                                spanY * profile.cellHeightPx);
                         writeRowToBackup(key, packWidget(dpi, previewLoader, mIconCache, provider), data);
                         mKeys.add(key);
                         backupWidgetCount ++;
