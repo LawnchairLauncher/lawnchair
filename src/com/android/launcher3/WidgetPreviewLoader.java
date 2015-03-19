@@ -16,19 +16,19 @@ import android.database.sqlite.SQLiteReadOnlyDatabaseException;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Shader;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 import java.io.ByteArrayOutputStream;
@@ -46,107 +46,27 @@ import java.util.concurrent.ExecutionException;
 
 public class WidgetPreviewLoader {
 
-    private static abstract class SoftReferenceThreadLocal<T> {
-        private ThreadLocal<SoftReference<T>> mThreadLocal;
-        public SoftReferenceThreadLocal() {
-            mThreadLocal = new ThreadLocal<SoftReference<T>>();
-        }
-
-        abstract T initialValue();
-
-        public void set(T t) {
-            mThreadLocal.set(new SoftReference<T>(t));
-        }
-
-        public T get() {
-            SoftReference<T> reference = mThreadLocal.get();
-            T obj;
-            if (reference == null) {
-                obj = initialValue();
-                mThreadLocal.set(new SoftReference<T>(obj));
-                return obj;
-            } else {
-                obj = reference.get();
-                if (obj == null) {
-                    obj = initialValue();
-                    mThreadLocal.set(new SoftReference<T>(obj));
-                }
-                return obj;
-            }
-        }
-    }
-
-    private static class CanvasCache extends SoftReferenceThreadLocal<Canvas> {
-        @Override
-        protected Canvas initialValue() {
-            return new Canvas();
-        }
-    }
-
-    private static class PaintCache extends SoftReferenceThreadLocal<Paint> {
-        @Override
-        protected Paint initialValue() {
-            return null;
-        }
-    }
-
-    private static class BitmapCache extends SoftReferenceThreadLocal<Bitmap> {
-        @Override
-        protected Bitmap initialValue() {
-            return null;
-        }
-    }
-
-    private static class RectCache extends SoftReferenceThreadLocal<Rect> {
-        @Override
-        protected Rect initialValue() {
-            return new Rect();
-        }
-    }
-
-    private static class BitmapFactoryOptionsCache extends
-            SoftReferenceThreadLocal<BitmapFactory.Options> {
-        @Override
-        protected BitmapFactory.Options initialValue() {
-            return new BitmapFactory.Options();
-        }
-    }
-
     private static final String TAG = "WidgetPreviewLoader";
     private static final String ANDROID_INCREMENTAL_VERSION_NAME_KEY = "android.incremental.version";
 
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
     private static final HashSet<String> sInvalidPackages = new HashSet<String>();
 
-    // Used for drawing shortcut previews
-    private final BitmapCache mCachedShortcutPreviewBitmap = new BitmapCache();
-    private final PaintCache mCachedShortcutPreviewPaint = new PaintCache();
-    private final CanvasCache mCachedShortcutPreviewCanvas = new CanvasCache();
-
-    // Used for drawing widget previews
-    private final CanvasCache mCachedAppWidgetPreviewCanvas = new CanvasCache();
-    private final RectCache mCachedAppWidgetPreviewSrcRect = new RectCache();
-    private final RectCache mCachedAppWidgetPreviewDestRect = new RectCache();
-    private final PaintCache mCachedAppWidgetPreviewPaint = new PaintCache();
-    private final PaintCache mDefaultAppWidgetPreviewPaint = new PaintCache();
-    private final BitmapFactoryOptionsCache mCachedBitmapFactoryOptions = new BitmapFactoryOptionsCache();
-
     private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<>();
     private final ArrayList<SoftReference<Bitmap>> mUnusedBitmaps = new ArrayList<>();
 
-    private final Context mContext;
     private final int mAppIconSize;
+    private final int mCellWidth;
+
+    private final Context mContext;
     private final IconCache mIconCache;
     private final AppWidgetManagerCompat mManager;
 
     private int mPreviewBitmapWidth;
     private int mPreviewBitmapHeight;
     private String mSize;
-    private PagedViewCellLayout mWidgetSpacingLayout;
 
     private String mCachedSelectQuery;
-
-
     private CacheDb mDb;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -157,9 +77,10 @@ public class WidgetPreviewLoader {
 
         mContext = context;
         mAppIconSize = grid.iconSizePx;
+        mCellWidth = grid.cellWidthPx;
+
         mIconCache = app.getIconCache();
         mManager = AppWidgetManagerCompat.getInstance(context);
-
         mDb = app.getWidgetPreviewCacheDb();
 
         SharedPreferences sp = context.getSharedPreferences(
@@ -193,12 +114,10 @@ public class WidgetPreviewLoader {
         mDb = app.getWidgetPreviewCacheDb();
     }
 
-    public void setPreviewSize(int previewWidth, int previewHeight,
-            PagedViewCellLayout widgetSpacingLayout) {
+    public void setPreviewSize(int previewWidth, int previewHeight) {
         mPreviewBitmapWidth = previewWidth;
         mPreviewBitmapHeight = previewHeight;
         mSize = previewWidth + "x" + previewHeight;
-        mWidgetSpacingLayout = widgetSpacingLayout;
     }
 
     public Bitmap getPreview(final Object o) {
@@ -232,12 +151,6 @@ public class WidgetPreviewLoader {
                         candidate.getHeight() == mPreviewBitmapHeight) {
                     unusedBitmap = candidate;
                 }
-            }
-            if (unusedBitmap != null) {
-                final Canvas c = mCachedAppWidgetPreviewCanvas.get();
-                c.setBitmap(unusedBitmap);
-                c.drawColor(0, PorterDuff.Mode.CLEAR);
-                c.setBitmap(null);
             }
         }
 
@@ -468,7 +381,7 @@ public class WidgetPreviewLoader {
             result.moveToFirst();
             byte[] blob = result.getBlob(0);
             result.close();
-            final BitmapFactory.Options opts = mCachedBitmapFactoryOptions.get();
+            final BitmapFactory.Options opts = new BitmapFactory.Options();
             opts.inBitmap = b;
             opts.inSampleSize = 1;
             try {
@@ -499,26 +412,17 @@ public class WidgetPreviewLoader {
 
     public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info, Bitmap preview) {
         int maxWidth = maxWidthForWidgetPreview(info.spanX);
-        int maxHeight = maxHeightForWidgetPreview(info.spanY);
-        return generateWidgetPreview(info, info.spanX, info.spanY, maxWidth,
-                maxHeight, preview, null);
+        return generateWidgetPreview(info, maxWidth, preview, null);
     }
 
     public int maxWidthForWidgetPreview(int spanX) {
-        return Math.min(mPreviewBitmapWidth,
-                mWidgetSpacingLayout.estimateCellWidth(spanX));
+        return Math.min(mPreviewBitmapWidth, spanX * mCellWidth);
     }
 
-    public int maxHeightForWidgetPreview(int spanY) {
-        return Math.min(mPreviewBitmapHeight,
-                mWidgetSpacingLayout.estimateCellHeight(spanY));
-    }
-
-    public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info, int cellHSpan, int cellVSpan,
-            int maxPreviewWidth, int maxPreviewHeight, Bitmap preview, int[] preScaledWidthOut) {
+    public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info,
+            int maxPreviewWidth, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
         if (maxPreviewWidth < 0) maxPreviewWidth = Integer.MAX_VALUE;
-        if (maxPreviewHeight < 0) maxPreviewHeight = Integer.MAX_VALUE;
 
         Drawable drawable = null;
         if (info.previewImage != 0) {
@@ -531,61 +435,23 @@ public class WidgetPreviewLoader {
             }
         }
 
+        final boolean widgetPreviewExists = (drawable != null);
+        final int spanX = info.spanX < 1 ? 1 : info.spanX;
+        final int spanY = info.spanY < 1 ? 1 : info.spanY;
+
         int previewWidth;
         int previewHeight;
-        Bitmap defaultPreview = null;
-        boolean widgetPreviewExists = (drawable != null);
+        Bitmap tileBitmap = null;
+
         if (widgetPreviewExists) {
             previewWidth = drawable.getIntrinsicWidth();
             previewHeight = drawable.getIntrinsicHeight();
         } else {
             // Generate a preview image if we couldn't load one
-            if (cellHSpan < 1) cellHSpan = 1;
-            if (cellVSpan < 1) cellVSpan = 1;
-
-            // This Drawable is not directly drawn, so there's no need to mutate it.
-            BitmapDrawable previewDrawable = (BitmapDrawable) mContext.getResources()
-                    .getDrawable(R.drawable.widget_tile);
-            final int previewDrawableWidth = previewDrawable
-                    .getIntrinsicWidth();
-            final int previewDrawableHeight = previewDrawable
-                    .getIntrinsicHeight();
-            previewWidth = previewDrawableWidth * cellHSpan;
-            previewHeight = previewDrawableHeight * cellVSpan;
-
-            defaultPreview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
-            final Canvas c = mCachedAppWidgetPreviewCanvas.get();
-            c.setBitmap(defaultPreview);
-            Paint p = mDefaultAppWidgetPreviewPaint.get();
-            if (p == null) {
-                p = new Paint();
-                p.setShader(new BitmapShader(previewDrawable.getBitmap(),
-                        Shader.TileMode.REPEAT, Shader.TileMode.REPEAT));
-                mDefaultAppWidgetPreviewPaint.set(p);
-            }
-            final Rect dest = mCachedAppWidgetPreviewDestRect.get();
-            dest.set(0, 0, previewWidth, previewHeight);
-            c.drawRect(dest, p);
-            c.setBitmap(null);
-
-            // Draw the icon in the top left corner
-            int minOffset = (int) (mAppIconSize * WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE);
-            int smallestSide = Math.min(previewWidth, previewHeight);
-            float iconScale = Math.min((float) smallestSide
-                    / (mAppIconSize + 2 * minOffset), 1f);
-
-            try {
-                Drawable icon = mManager.loadIcon(info, mIconCache);
-                if (icon != null) {
-                    int hoffset = (int) ((previewDrawableWidth - mAppIconSize * iconScale) / 2);
-                    int yoffset = (int) ((previewDrawableHeight - mAppIconSize * iconScale) / 2);
-                    icon = mutateOnMainThread(icon);
-                    renderDrawableToBitmap(icon, defaultPreview, hoffset,
-                            yoffset, (int) (mAppIconSize * iconScale),
-                            (int) (mAppIconSize * iconScale));
-                }
-            } catch (Resources.NotFoundException e) {
-            }
+            tileBitmap = ((BitmapDrawable) mContext.getResources().getDrawable(
+                    R.drawable.widget_tile)).getBitmap();
+            previewWidth = tileBitmap.getWidth() * spanX;
+            previewHeight = tileBitmap.getHeight() * spanY;
         }
 
         // Scale to fit width only - let the widget preview be clipped in the
@@ -603,30 +469,58 @@ public class WidgetPreviewLoader {
         }
 
         // If a bitmap is passed in, we use it; otherwise, we create a bitmap of the right size
+        final Canvas c = new Canvas();
         if (preview == null) {
             preview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
+            c.setBitmap(preview);
+        } else {
+            // Reusing bitmap. Clear it.
+            c.setBitmap(preview);
+            c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
 
         // Draw the scaled preview into the final bitmap
         int x = (preview.getWidth() - previewWidth) / 2;
         if (widgetPreviewExists) {
-            renderDrawableToBitmap(drawable, preview, x, 0, previewWidth,
-                    previewHeight);
+            drawable.setBounds(x, 0, x + previewWidth, previewHeight);
+            drawable.draw(c);
         } else {
-            final Canvas c = mCachedAppWidgetPreviewCanvas.get();
-            final Rect src = mCachedAppWidgetPreviewSrcRect.get();
-            final Rect dest = mCachedAppWidgetPreviewDestRect.get();
-            c.setBitmap(preview);
-            src.set(0, 0, defaultPreview.getWidth(), defaultPreview.getHeight());
-            dest.set(x, 0, x + previewWidth, previewHeight);
+            final Paint p = new Paint();
+            p.setFilterBitmap(true);
 
-            Paint p = mCachedAppWidgetPreviewPaint.get();
-            if (p == null) {
-                p = new Paint();
-                p.setFilterBitmap(true);
-                mCachedAppWidgetPreviewPaint.set(p);
+            // draw the spanX x spanY tiles
+            final Rect src = new Rect(0, 0, tileBitmap.getWidth(), tileBitmap.getHeight());
+
+            float tileW = scale * tileBitmap.getWidth();
+            float tileH = scale * tileBitmap.getHeight();
+            final RectF dst = new RectF(0, 0, tileW, tileH);
+
+            float tx = x;
+            for (int i = 0; i < spanX; i++, tx += tileW) {
+                float ty = 0;
+                for (int j = 0; j < spanY; j++, ty += tileH) {
+                    dst.offsetTo(tx, ty);
+                    c.drawBitmap(tileBitmap, src, dst, p);
+                }
             }
-            c.drawBitmap(defaultPreview, src, dest, p);
+
+            // Draw the icon in the top left corner
+            // TODO: use top right for RTL
+            int minOffset = (int) (mAppIconSize * WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE);
+            int smallestSide = Math.min(previewWidth, previewHeight);
+            float iconScale = Math.min((float) smallestSide / (mAppIconSize + 2 * minOffset), scale);
+
+            try {
+                Drawable icon = mutateOnMainThread(mManager.loadIcon(info, mIconCache));
+                if (icon != null) {
+                    int hoffset = (int) ((tileW - mAppIconSize * iconScale) / 2) + x;
+                    int yoffset = (int) ((tileH - mAppIconSize * iconScale) / 2);
+                    icon.setBounds(hoffset, yoffset,
+                            hoffset + (int) (mAppIconSize * iconScale),
+                            yoffset + (int) (mAppIconSize * iconScale));
+                    icon.draw(c);
+                }
+            } catch (Resources.NotFoundException e) { }
             c.setBitmap(null);
         }
         return mManager.getBadgeBitmap(info, preview);
@@ -634,69 +528,45 @@ public class WidgetPreviewLoader {
 
     private Bitmap generateShortcutPreview(
             ResolveInfo info, int maxWidth, int maxHeight, Bitmap preview) {
-        Bitmap tempBitmap = mCachedShortcutPreviewBitmap.get();
-        final Canvas c = mCachedShortcutPreviewCanvas.get();
-        if (tempBitmap == null ||
-                tempBitmap.getWidth() != maxWidth ||
-                tempBitmap.getHeight() != maxHeight) {
-            tempBitmap = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
-            mCachedShortcutPreviewBitmap.set(tempBitmap);
-        } else {
-            c.setBitmap(tempBitmap);
-            c.drawColor(0, PorterDuff.Mode.CLEAR);
-            c.setBitmap(null);
-        }
-        // Render the icon
-        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info.activityInfo));
-
-        int paddingTop = mContext.
-                getResources().getDimensionPixelOffset(R.dimen.shortcut_preview_padding_top);
-        int paddingLeft = mContext.
-                getResources().getDimensionPixelOffset(R.dimen.shortcut_preview_padding_left);
-        int paddingRight = mContext.
-                getResources().getDimensionPixelOffset(R.dimen.shortcut_preview_padding_right);
-
-        int scaledIconWidth = (maxWidth - paddingLeft - paddingRight);
-
-        renderDrawableToBitmap(
-                icon, tempBitmap, paddingLeft, paddingTop, scaledIconWidth, scaledIconWidth);
-
-        if (preview != null &&
-                (preview.getWidth() != maxWidth || preview.getHeight() != maxHeight)) {
-            throw new RuntimeException("Improperly sized bitmap passed as argument");
-        } else if (preview == null) {
+        final Canvas c = new Canvas();
+        if (preview == null) {
             preview = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
+            c.setBitmap(preview);
+        } else if (preview.getWidth() != maxWidth || preview.getHeight() != maxHeight) {
+            throw new RuntimeException("Improperly sized bitmap passed as argument");
+        } else {
+            // Reusing bitmap. Clear it.
+            c.setBitmap(preview);
+            c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
 
-        c.setBitmap(preview);
+        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info.activityInfo));
+        icon.setFilterBitmap(true);
+
         // Draw a desaturated/scaled version of the icon in the background as a watermark
-        Paint p = mCachedShortcutPreviewPaint.get();
-        if (p == null) {
-            p = new Paint();
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.setSaturation(0);
-            p.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
-            p.setAlpha((int) (255 * 0.06f));
-            mCachedShortcutPreviewPaint.set(p);
-        }
-        c.drawBitmap(tempBitmap, 0, 0, p);
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        icon.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
+        icon.setAlpha((int) (255 * 0.06f));
+
+        Resources res = mContext.getResources();
+        int paddingTop = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_top);
+        int paddingLeft = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_left);
+        int paddingRight = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_right);
+        int scaledIconWidth = (maxWidth - paddingLeft - paddingRight);
+        icon.setBounds(paddingLeft, paddingTop,
+                paddingLeft + scaledIconWidth, paddingTop + scaledIconWidth);
+        icon.draw(c);
+
+        // Draw the final icon at top left corner.
+        // TODO: use top right for RTL
+        icon.setAlpha(255);
+        icon.setColorFilter(null);
+        icon.setBounds(0, 0, mAppIconSize, mAppIconSize);
+        icon.draw(c);
+
         c.setBitmap(null);
-
-        renderDrawableToBitmap(icon, preview, 0, 0, mAppIconSize, mAppIconSize);
-
         return preview;
-    }
-
-    private static void renderDrawableToBitmap(
-            Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
-        if (bitmap != null) {
-            Canvas c = new Canvas(bitmap);
-            Rect oldBounds = d.copyBounds();
-            d.setBounds(x, y, x + w, y + h);
-            d.draw(c);
-            d.setBounds(oldBounds); // Restore the bounds
-            c.setBitmap(null);
-        }
     }
 
     private Drawable mutateOnMainThread(final Drawable drawable) {

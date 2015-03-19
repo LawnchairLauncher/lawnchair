@@ -38,7 +38,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -48,9 +47,7 @@ import com.android.launcher3.FocusHelper.PagedViewKeyListener;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * A simple callback interface which also provides the results of the task.
@@ -171,7 +168,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Dimens
     private int mContentWidth, mContentHeight;
     private int mWidgetCountX, mWidgetCountY;
-    private PagedViewCellLayout mWidgetSpacingLayout;
     private int mNumWidgetPages;
 
     // Previews & outlines
@@ -219,7 +215,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetCountX = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountX, 2);
         mWidgetCountY = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountY, 2);
         a.recycle();
-        mWidgetSpacingLayout = new PagedViewCellLayout(getContext());
 
         // The padding on the non-matched dimension for the default widget preview icons
         // (top + bottom)
@@ -316,9 +311,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Force a measure to update recalculate the gaps
         mContentWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         mContentHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-        int widthSpec = MeasureSpec.makeMeasureSpec(mContentWidth, MeasureSpec.AT_MOST);
-        int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
-        mWidgetSpacingLayout.measure(widthSpec, heightSpec);
 
         final boolean hostIsTransitioning = getTabHost().isInTransition();
         int page = getPageForComponent(mSaveInstanceStateItemIndex);
@@ -596,13 +588,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
             FastBitmapDrawable previewDrawable = (FastBitmapDrawable) image.getDrawable();
             float minScale = 1.25f;
-            int maxWidth, maxHeight;
-            maxWidth = Math.min((int) (previewDrawable.getIntrinsicWidth() * minScale), size[0]);
-            maxHeight = Math.min((int) (previewDrawable.getIntrinsicHeight() * minScale), size[1]);
+            int maxWidth = Math.min((int) (previewDrawable.getIntrinsicWidth() * minScale), size[0]);
 
             int[] previewSizeBeforeScale = new int[1];
             preview = getWidgetPreviewLoader().generateWidgetPreview(createWidgetInfo.info,
-                    spanX, spanY, maxWidth, maxHeight, null, previewSizeBeforeScale);
+                    maxWidth, null, previewSizeBeforeScale);
 
             // Compare the size of the drag preview to the preview in the AppsCustomize tray
             int previewWidthInAppsCustomize = Math.min(previewSizeBeforeScale[0],
@@ -1075,8 +1065,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     maxPreviewHeight = maxSize[1];
                 }
 
-                getWidgetPreviewLoader().setPreviewSize(
-                        maxPreviewWidth, maxPreviewHeight, mWidgetSpacingLayout);
+                getWidgetPreviewLoader().setPreviewSize(maxPreviewWidth, maxPreviewHeight);
                 if (immediate) {
                     AsyncTaskPageData data = new AsyncTaskPageData(page, items,
                             maxPreviewWidth, maxPreviewHeight, null, null, getWidgetPreviewLoader());
