@@ -1441,10 +1441,7 @@ public class Launcher extends Activity
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
-            if (getOrCreateQsbBar() == null) {
-                // Explicitly set it to null during initialization.
-                mSearchDropTargetBar.setQsbSearchBar(null);
-            }
+            mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
         }
 
         if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
@@ -4089,7 +4086,7 @@ public class Launcher extends Activity
             mSearchDropTargetBar.removeView(mQsb);
             mQsb = null;
         }
-        getOrCreateQsbBar();
+        mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
     }
 
     /**
