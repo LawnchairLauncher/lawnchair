@@ -1622,6 +1622,9 @@ public class LauncherModel extends BroadcastReceiver
                 if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
                 loadAndBindAllApps();
 
+                // Remove entries for packages which changed while the launcher was dead.
+                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews();
+
                 // Restore the default thread priority after we are done loading items
                 synchronized (mLock) {
                     android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
@@ -3007,8 +3010,7 @@ public class LauncherModel extends BroadcastReceiver
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         mIconCache.updateIconsForPkg(packages[i], mUser);
                         mBgAllAppsList.updatePackage(context, packages[i], mUser);
-                        WidgetPreviewLoader.removePackageFromDb(
-                                mApp.getWidgetPreviewCacheDb(), packages[i]);
+                        mApp.getWidgetCache().removePackage(packages[i], mUser);
                     }
                     break;
                 case OP_REMOVE:
@@ -3034,8 +3036,7 @@ public class LauncherModel extends BroadcastReceiver
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mBgAllAppsList.removePackage(packages[i], mUser);
-                        WidgetPreviewLoader.removePackageFromDb(
-                                mApp.getWidgetPreviewCacheDb(), packages[i]);
+                        mApp.getWidgetCache().removePackage(packages[i], mUser);
                     }
                     break;
             }
