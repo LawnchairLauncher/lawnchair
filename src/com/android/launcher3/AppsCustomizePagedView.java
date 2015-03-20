@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FocusHelper.PagedViewKeyListener;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -151,7 +152,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private ContentType mContentType = ContentType.Widgets;
 
     // Refs
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private DragController mDragController;
     private final LayoutInflater mLayoutInflater;
     private final PackageManager mPackageManager;
@@ -167,7 +168,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Dimens
     private int mContentWidth, mContentHeight;
-    private int mWidgetCountX, mWidgetCountY;
+    @Thunk int mWidgetCountX, mWidgetCountY;
     private int mNumWidgetPages;
 
     // Previews & outlines
@@ -191,10 +192,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private Toast mWidgetInstructionToast;
 
     // Deferral of loading widget previews during launcher transitions
-    private boolean mInTransition;
+    @Thunk boolean mInTransition;
     private ArrayList<AsyncTaskPageData> mDeferredSyncWidgetPageItems =
         new ArrayList<AsyncTaskPageData>();
-    private ArrayList<Runnable> mDeferredPrepareLoadWidgetPreviewsTasks =
+    @Thunk ArrayList<Runnable> mDeferredPrepareLoadWidgetPreviewsTasks =
         new ArrayList<Runnable>();
 
     WidgetPreviewLoader mWidgetPreviewLoader;
@@ -907,7 +908,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     /**
      * Creates and executes a new AsyncTask to load a page of widget previews.
      */
-    private void prepareLoadWidgetPreviewsTask(int page, ArrayList<Object> widgets,
+    @Thunk void prepareLoadWidgetPreviewsTask(int page, ArrayList<Object> widgets,
             int cellWidth, int cellHeight, int cellCountX) {
 
         // Prune all tasks that are no longer needed
@@ -1083,7 +1084,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         });
     }
-    private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
+    @Thunk void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
             AsyncTaskPageData data) {
         // loadWidgetPreviewsInBackground can be called without a task to load a set of widget
         // previews synchronously
@@ -1109,7 +1110,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    private void onSyncWidgetPageItems(AsyncTaskPageData data, boolean immediatelySyncItems) {
+    @Thunk void onSyncWidgetPageItems(AsyncTaskPageData data, boolean immediatelySyncItems) {
         if (!immediatelySyncItems && mInTransition) {
             mDeferredSyncWidgetPageItems.add(data);
             return;

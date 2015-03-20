@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,7 @@ import java.util.ArrayList;
  * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends InsettableFrameLayout {
-    private DragController mDragController;
+    @Thunk DragController mDragController;
     private int[] mTmpXY = new int[2];
 
     private int mXDown, mYDown;
@@ -61,9 +62,9 @@ public class DragLayer extends InsettableFrameLayout {
     private ValueAnimator mDropAnim = null;
     private ValueAnimator mFadeOutAnim = null;
     private TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
-    private DragView mDropView = null;
-    private int mAnchorViewInitialScrollX = 0;
-    private View mAnchorView = null;
+    @Thunk DragView mDropView = null;
+    @Thunk int mAnchorViewInitialScrollX = 0;
+    @Thunk View mAnchorView = null;
 
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
@@ -779,7 +780,7 @@ public class DragLayer extends InsettableFrameLayout {
         return mDropView;
     }
 
-    private void fadeOutDragView() {
+    @Thunk void fadeOutDragView() {
         mFadeOutAnim = new ValueAnimator();
         mFadeOutAnim.setDuration(150);
         mFadeOutAnim.setFloatValues(0f, 1f);

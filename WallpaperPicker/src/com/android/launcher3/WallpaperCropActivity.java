@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
+import com.android.launcher3.util.Thunk;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
@@ -78,10 +79,10 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
     private HandlerThread mLoaderThread;
     private Handler mLoaderHandler;
-    private LoadRequest mCurrentLoadRequest;
+    @Thunk LoadRequest mCurrentLoadRequest;
     private byte[] mTempStorageForDecoding = new byte[16 * 1024];
     // A weak-set of reusable bitmaps
-    private Set<Bitmap> mReusableBitmaps =
+    @Thunk Set<Bitmap> mReusableBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     @Override
@@ -220,7 +221,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         return false;
     }
 
-    private void addReusableBitmap(TileSource src) {
+    @Thunk void addReusableBitmap(TileSource src) {
         synchronized (mReusableBitmaps) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                     && src instanceof BitmapRegionTileSource) {

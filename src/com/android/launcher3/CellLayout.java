@@ -55,6 +55,7 @@ import android.view.animation.LayoutAnimationController;
 
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.LauncherAccessibilityDelegate.DragType;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,18 +69,18 @@ public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
 
     private Launcher mLauncher;
-    private int mCellWidth;
-    private int mCellHeight;
+    @Thunk int mCellWidth;
+    @Thunk int mCellHeight;
     private int mFixedCellWidth;
     private int mFixedCellHeight;
 
-    private int mCountX;
-    private int mCountY;
+    @Thunk int mCountX;
+    @Thunk int mCountY;
 
     private int mOriginalWidthGap;
     private int mOriginalHeightGap;
-    private int mWidthGap;
-    private int mHeightGap;
+    @Thunk int mWidthGap;
+    @Thunk int mHeightGap;
     private int mMaxGap;
     private boolean mDropPending = false;
     private boolean mIsDragTarget = true;
@@ -87,7 +88,7 @@ public class CellLayout extends ViewGroup {
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpXY = new int[2];
-    private final int[] mTmpPoint = new int[2];
+    @Thunk final int[] mTmpPoint = new int[2];
     int[] mTempLocation = new int[2];
 
     boolean[][] mOccupied;
@@ -124,8 +125,8 @@ public class CellLayout extends ViewGroup {
 
     // These arrays are used to implement the drag visualization on x-large screens.
     // They are used as circular arrays, indexed by mDragOutlineCurrent.
-    private Rect[] mDragOutlines = new Rect[4];
-    private float[] mDragOutlineAlphas = new float[mDragOutlines.length];
+    @Thunk Rect[] mDragOutlines = new Rect[4];
+    @Thunk float[] mDragOutlineAlphas = new float[mDragOutlines.length];
     private InterruptibleInOutAnimator[] mDragOutlineAnims =
             new InterruptibleInOutAnimator[mDragOutlines.length];
 
@@ -135,7 +136,7 @@ public class CellLayout extends ViewGroup {
 
     private final FastBitmapView mTouchFeedbackView;
 
-    private HashMap<CellLayout.LayoutParams, Animator> mReorderAnimators = new
+    @Thunk HashMap<CellLayout.LayoutParams, Animator> mReorderAnimators = new
             HashMap<CellLayout.LayoutParams, Animator>();
     private HashMap<View, ReorderPreviewAnimation>
             mShakeAnimators = new HashMap<View, ReorderPreviewAnimation>();
@@ -166,7 +167,7 @@ public class CellLayout extends ViewGroup {
 
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
-    private float mReorderPreviewAnimationMagnitude;
+    @Thunk float mReorderPreviewAnimationMagnitude;
 
     private ArrayList<View> mIntersectingViews = new ArrayList<View>();
     private Rect mOccupiedRect = new Rect();
@@ -184,8 +185,8 @@ public class CellLayout extends ViewGroup {
     private boolean mUseTouchHelper = false;
     OnClickListener mOldClickListener = null;
     OnClickListener mOldWorkspaceListener = null;
-    private int mDownX = 0;
-    private int mDownY = 0;
+    @Thunk int mDownX = 0;
+    @Thunk int mDownY = 0;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -2550,7 +2551,7 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        private void completeAnimationImmediately() {
+        @Thunk void completeAnimationImmediately() {
             if (a != null) {
                 a.cancel();
             }
@@ -2871,7 +2872,7 @@ public class CellLayout extends ViewGroup {
         return mItemPlacementDirty;
     }
 
-    private class ItemConfiguration {
+    @Thunk class ItemConfiguration {
         HashMap<View, CellAndSpan> map = new HashMap<View, CellAndSpan>();
         private HashMap<View, CellAndSpan> savedMap = new HashMap<View, CellAndSpan>();
         ArrayList<View> sortedViews = new ArrayList<View>();

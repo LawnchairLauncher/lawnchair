@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
@@ -50,10 +51,10 @@ import java.util.ArrayList;
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener {
-    private Launcher mLauncher;
-    private Folder mFolder;
+    @Thunk Launcher mLauncher;
+    @Thunk Folder mFolder;
     private FolderInfo mInfo;
-    private static boolean sStaticValuesDirty = true;
+    @Thunk static boolean sStaticValuesDirty = true;
 
     private CheckLongPressHelper mLongPressHelper;
 
@@ -88,8 +89,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public static Drawable sSharedFolderLeaveBehind = null;
 
-    private ImageView mPreviewBackground;
-    private BubbleTextView mFolderName;
+    @Thunk ImageView mPreviewBackground;
+    @Thunk BubbleTextView mFolderName;
 
     FolderRingAnimator mFolderRingAnimator = null;
 
@@ -109,11 +110,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private float mSlop;
 
     private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private ArrayList<ShortcutInfo> mHiddenItems = new ArrayList<ShortcutInfo>();
+    @Thunk PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    @Thunk ArrayList<ShortcutInfo> mHiddenItems = new ArrayList<ShortcutInfo>();
 
     private Alarm mOpenAlarm = new Alarm();
-    private ItemInfo mDragInfo;
+    @Thunk ItemInfo mDragInfo;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -192,7 +193,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public static class FolderRingAnimator {
         public int mCellX;
         public int mCellY;
-        private CellLayout mCellLayout;
+        @Thunk CellLayout mCellLayout;
         public float mOuterRingSize;
         public float mInnerRingSize;
         public FolderIcon mFolderIcon = null;

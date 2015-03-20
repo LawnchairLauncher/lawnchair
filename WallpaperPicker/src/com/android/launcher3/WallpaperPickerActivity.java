@@ -70,6 +70,7 @@ import android.widget.Toast;
 import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
+import com.android.launcher3.util.Thunk;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
 import com.android.photos.views.TiledImageRenderer.TileSource;
@@ -88,21 +89,21 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private static final String SELECTED_INDEX = "SELECTED_INDEX";
     private static final int FLAG_POST_DELAY_MILLIS = 200;
 
-    private View mSelectedTile;
-    private boolean mIgnoreNextTap;
-    private OnClickListener mThumbnailOnClickListener;
+    @Thunk View mSelectedTile;
+    @Thunk boolean mIgnoreNextTap;
+    @Thunk OnClickListener mThumbnailOnClickListener;
 
-    private LinearLayout mWallpapersView;
-    private HorizontalScrollView mWallpaperScrollContainer;
+    @Thunk LinearLayout mWallpapersView;
+    @Thunk HorizontalScrollView mWallpaperScrollContainer;
 
-    private ActionMode.Callback mActionModeCallback;
-    private ActionMode mActionMode;
+    @Thunk ActionMode.Callback mActionModeCallback;
+    @Thunk ActionMode mActionMode;
 
-    private View.OnLongClickListener mLongClickListener;
+    @Thunk View.OnLongClickListener mLongClickListener;
 
     ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
     private SavedWallpaperImages mSavedImages;
-    private int mSelectedIndex = -1;
+    @Thunk int mSelectedIndex = -1;
 
     public static abstract class WallpaperTileInfo {
         protected View mView;
@@ -135,7 +136,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     public static class UriWallpaperInfo extends WallpaperTileInfo {
         private Uri mUri;
         private boolean mFirstClick = true;
-        private BitmapRegionTileSource.UriBitmapSource mBitmapSource;
+        @Thunk BitmapRegionTileSource.UriBitmapSource mBitmapSource;
         public UriWallpaperInfo(Uri uri) {
             mUri = uri;
         }
@@ -337,7 +338,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }, FLAG_POST_DELAY_MILLIS);
     }
 
-    private void changeWallpaperFlags(boolean visible) {
+    @Thunk void changeWallpaperFlags(boolean visible) {
         int desiredWallpaperFlag = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int currentWallpaperFlag = getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
@@ -635,7 +636,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         };
     }
 
-    private void selectTile(View v) {
+    @Thunk void selectTile(View v) {
         if (mSelectedTile != null) {
             mSelectedTile.setSelected(false);
             mSelectedTile = null;
@@ -649,7 +650,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 getString(R.string.announce_selection, v.getContentDescription()));
     }
 
-    private void initializeScrollForRtl() {
+    @Thunk void initializeScrollForRtl() {
         if (mWallpaperScrollContainer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             final ViewTreeObserver observer = mWallpaperScrollContainer.getViewTreeObserver();
             observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
@@ -704,7 +705,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         mSelectedIndex = savedInstanceState.getInt(SELECTED_INDEX, -1);
     }
 
-    private void populateWallpapersFromAdapter(ViewGroup parent, BaseAdapter adapter,
+    @Thunk void populateWallpapersFromAdapter(ViewGroup parent, BaseAdapter adapter,
             boolean addLongPressHandler) {
         for (int i = 0; i < adapter.getCount(); i++) {
             FrameLayout thumbnail = (FrameLayout) adapter.getView(i, null, parent);
@@ -719,7 +720,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    private void updateTileIndices() {
+    @Thunk void updateTileIndices() {
         LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);
         final int childCount = masterWallpaperList.getChildCount();
         final Resources res = getResources();
@@ -760,13 +761,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    private static Point getDefaultThumbnailSize(Resources res) {
+    @Thunk static Point getDefaultThumbnailSize(Resources res) {
         return new Point(res.getDimensionPixelSize(R.dimen.wallpaperThumbnailWidth),
                 res.getDimensionPixelSize(R.dimen.wallpaperThumbnailHeight));
 
     }
 
-    private static Bitmap createThumbnail(Point size, Context context, Uri uri, byte[] imageBytes,
+    @Thunk static Bitmap createThumbnail(Point size, Context context, Uri uri, byte[] imageBytes,
             Resources res, int resId, int rotation, boolean leftAligned) {
         int width = size.x;
         int height = size.y;

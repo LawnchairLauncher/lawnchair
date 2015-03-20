@@ -46,6 +46,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.util.Thunk;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -124,7 +125,7 @@ public class LauncherProvider extends ContentProvider {
         return result;
     }
 
-    private static long dbInsertAndCheck(DatabaseHelper helper,
+    @Thunk static long dbInsertAndCheck(DatabaseHelper helper,
             SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
@@ -233,7 +234,7 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
-    private static void addModifiedTime(ContentValues values) {
+    @Thunk static void addModifiedTime(ContentValues values) {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
 
@@ -342,7 +343,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
         private final Context mContext;
-        private final AppWidgetHost mAppWidgetHost;
+        @Thunk final AppWidgetHost mAppWidgetHost;
         private long mMaxItemId = -1;
         private long mMaxScreenId = -1;
 
@@ -647,7 +648,7 @@ public class LauncherProvider extends ContentProvider {
             return true;
         }
 
-        private boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
+        @Thunk boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
             db.beginTransaction();
             try {
                 if (addRankColumn) {
@@ -758,7 +759,7 @@ public class LauncherProvider extends ContentProvider {
             return getMaxId(db, TABLE_WORKSPACE_SCREENS);
         }
 
-        private boolean initializeExternalAdd(ContentValues values) {
+        @Thunk boolean initializeExternalAdd(ContentValues values) {
             // 1. Ensure that externally added items have a valid item id
             long id = generateNewItemId();
             values.put(LauncherSettings.Favorites._ID, id);
@@ -845,7 +846,7 @@ public class LauncherProvider extends ContentProvider {
             return rank;
         }
 
-        private int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
+        @Thunk int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
             ArrayList<Long> screenIds = new ArrayList<Long>();
             // TODO: Use multiple loaders with fall-back and transaction.
             int count = loader.loadLayout(db, screenIds);
@@ -872,7 +873,7 @@ public class LauncherProvider extends ContentProvider {
             return count;
         }
 
-        private void migrateLauncher2Shortcuts(SQLiteDatabase db, Uri uri) {
+        @Thunk void migrateLauncher2Shortcuts(SQLiteDatabase db, Uri uri) {
             final ContentResolver resolver = mContext.getContentResolver();
             Cursor c = null;
             int count = 0;
@@ -1171,7 +1172,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * @return the max _id in the provided table.
      */
-    private static long getMaxId(SQLiteDatabase db, String table) {
+    @Thunk static long getMaxId(SQLiteDatabase db, String table) {
         Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
         // get the result
         long id = -1;

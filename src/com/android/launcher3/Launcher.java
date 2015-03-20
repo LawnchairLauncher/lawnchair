@@ -101,6 +101,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.Thunk;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -209,9 +210,9 @@ public class Launcher extends Activity
 
     /** The different states that Launcher can be in. */
     enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED };
-    private State mState = State.WORKSPACE;
-    private AnimatorSet mStateAnimation;
-    private LauncherStateTransitionAnimation mStateTransitionAnimation;
+    @Thunk State mState = State.WORKSPACE;
+    @Thunk AnimatorSet mStateAnimation;
+    @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
 
     private boolean mIsSafeModeEnabled;
 
@@ -230,7 +231,7 @@ public class Launcher extends Activity
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
     private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
-    private static int NEW_APPS_ANIMATION_DELAY = 500;
+    @Thunk static int NEW_APPS_ANIMATION_DELAY = 500;
 
     private final BroadcastReceiver mCloseSystemDialogsReceiver
             = new CloseSystemDialogsIntentReceiver();
@@ -238,17 +239,17 @@ public class Launcher extends Activity
 
     private LayoutInflater mInflater;
 
-    private Workspace mWorkspace;
+    @Thunk Workspace mWorkspace;
     private View mLauncherView;
     private View mPageIndicators;
-    private DragLayer mDragLayer;
+    @Thunk DragLayer mDragLayer;
     private DragController mDragController;
     private View mWeightWatcher;
 
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
-    private ItemInfo mPendingAddInfo = new ItemInfo();
+    @Thunk ItemInfo mPendingAddInfo = new ItemInfo();
     private LauncherAppWidgetProviderInfo mPendingAddWidgetInfo;
     private int mPendingAddWidgetId = -1;
 
@@ -262,8 +263,8 @@ public class Launcher extends Activity
     private View mAllAppsButton;
 
     private SearchDropTargetBar mSearchDropTargetBar;
-    private AppsContainerView mAppsView;
-    private AppsCustomizeTabHost mAppsCustomizeTabHost;
+    @Thunk AppsContainerView mAppsView;
+    @Thunk AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
     private boolean mAutoAdvanceRunning = false;
     private AppWidgetHostView mQsb;
@@ -276,7 +277,7 @@ public class Launcher extends Activity
 
     private SpannableStringBuilder mDefaultKeySsb = null;
 
-    private boolean mWorkspaceLoading = true;
+    @Thunk boolean mWorkspaceLoading = true;
 
     private boolean mPaused = true;
     private boolean mRestoring;
@@ -290,12 +291,12 @@ public class Launcher extends Activity
 
     private LauncherModel mModel;
     private IconCache mIconCache;
-    private boolean mUserPresent = true;
+    @Thunk boolean mUserPresent = true;
     private boolean mVisible = false;
     private boolean mHasFocus = false;
     private boolean mAttached = false;
 
-    private static LocaleConfiguration sLocaleConfiguration = null;
+    @Thunk static LocaleConfiguration sLocaleConfiguration = null;
 
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
@@ -307,14 +308,14 @@ public class Launcher extends Activity
     private final int mAdvanceStagger = 250;
     private long mAutoAdvanceSentTime;
     private long mAutoAdvanceTimeLeft = -1;
-    private HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
+    @Thunk HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
         new HashMap<View, AppWidgetProviderInfo>();
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
     private final int mRestoreScreenOrientationDelay = 500;
 
-    private Drawable mWorkspaceBackgroundDrawable;
+    @Thunk Drawable mWorkspaceBackgroundDrawable;
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
     private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
@@ -332,7 +333,7 @@ public class Launcher extends Activity
 
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
-    private ImageView mFolderIconImageView;
+    @Thunk ImageView mFolderIconImageView;
     private Bitmap mFolderIconBitmap;
     private Canvas mFolderIconCanvas;
     private Rect mRectForFolderAnimation = new Rect();
@@ -361,7 +362,7 @@ public class Launcher extends Activity
         }
     }
 
-    private Runnable mBuildLayersRunnable = new Runnable() {
+    @Thunk Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
                 mWorkspace.buildPageHardwareLayers();
@@ -371,7 +372,7 @@ public class Launcher extends Activity
 
     private static PendingAddArguments sPendingAddItem;
 
-    private static class PendingAddArguments {
+    @Thunk static class PendingAddArguments {
         int requestCode;
         Intent intent;
         long container;
@@ -560,7 +561,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void checkForLocaleChange() {
+    @Thunk void checkForLocaleChange() {
         if (sLocaleConfiguration == null) {
             new AsyncTask<Void, Void, LocaleConfiguration>() {
                 @Override
@@ -609,13 +610,13 @@ public class Launcher extends Activity
         }
     }
 
-    private static class LocaleConfiguration {
+    @Thunk static class LocaleConfiguration {
         public String locale;
         public int mcc = -1;
         public int mnc = -1;
     }
 
-    private static void readConfiguration(Context context, LocaleConfiguration configuration) {
+    @Thunk static void readConfiguration(Context context, LocaleConfiguration configuration) {
         DataInputStream in = null;
         try {
             in = new DataInputStream(context.openFileInput(LauncherFiles.LAUNCHER_PREFERENCES));
@@ -637,7 +638,7 @@ public class Launcher extends Activity
         }
     }
 
-    private static void writeConfiguration(Context context, LocaleConfiguration configuration) {
+    @Thunk static void writeConfiguration(Context context, LocaleConfiguration configuration) {
         DataOutputStream out = null;
         try {
             out = new DataOutputStream(context.openFileOutput(
@@ -914,7 +915,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
+    @Thunk void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
         CellLayout cellLayout =
                 (CellLayout) mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
         Runnable onCompleteRunnable = null;
@@ -1590,7 +1591,7 @@ public class Launcher extends Activity
      *
      * @param appWidgetId The app widget id
      */
-    private void completeAddAppWidget(int appWidgetId, long container, long screenId,
+    @Thunk void completeAddAppWidget(int appWidgetId, long container, long screenId,
             AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
 
         ItemInfo info = mPendingAddInfo;
@@ -1765,14 +1766,14 @@ public class Launcher extends Activity
         }
     }
 
-    private void sendAdvanceMessage(long delay) {
+    @Thunk void sendAdvanceMessage(long delay) {
         mHandler.removeMessages(ADVANCE_MSG);
         Message msg = mHandler.obtainMessage(ADVANCE_MSG);
         mHandler.sendMessageDelayed(msg, delay);
         mAutoAdvanceSentTime = System.currentTimeMillis();
     }
 
-    private void updateAutoAdvanceState() {
+    @Thunk void updateAutoAdvanceState() {
         boolean autoAdvanceRunning = mVisible && mUserPresent && !mWidgetsToAdvance.isEmpty();
         if (autoAdvanceRunning != mAutoAdvanceRunning) {
             mAutoAdvanceRunning = autoAdvanceRunning;
@@ -2482,7 +2483,7 @@ public class Launcher extends Activity
     /**
      * Re-listen when widgets are reset.
      */
-    private void onAppWidgetReset() {
+    @Thunk void onAppWidgetReset() {
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
         }
@@ -2680,7 +2681,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void startAppShortcutOrInfoActivity(View v) {
+    @Thunk void startAppShortcutOrInfoActivity(View v) {
         Object tag = v.getTag();
         final ShortcutInfo shortcut;
         final Intent intent;
@@ -3507,7 +3508,7 @@ public class Launcher extends Activity
     /**
      * Receives notifications when system dialogs are to be closed.
      */
-    private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
+    @Thunk class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             closeSystemDialogs();
@@ -4245,7 +4246,7 @@ public class Launcher extends Activity
     /**
      * A number of packages were updated.
      */
-    private ArrayList<Object> mWidgetsAndShortcuts;
+    @Thunk ArrayList<Object> mWidgetsAndShortcuts;
     private Runnable mBindPackagesUpdatedRunnable = new Runnable() {
             public void run() {
                 bindPackagesUpdated(mWidgetsAndShortcuts);
@@ -4470,7 +4471,7 @@ public class Launcher extends Activity
         editor.apply();
     }
 
-    private void showFirstRunClings() {
+    @Thunk void showFirstRunClings() {
         // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
         // on the device, then we always show the first run cling experience (or if there is no
         // launcher2). Otherwise, we prompt the user upon started for migration

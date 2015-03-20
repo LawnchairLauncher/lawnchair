@@ -18,9 +18,11 @@ package com.android.launcher3;
 
 import android.view.View;
 
+import com.android.launcher3.util.Thunk;
+
 public class CheckLongPressHelper {
-    private View mView;
-    private boolean mHasPerformedLongPress;
+    @Thunk View mView;
+    @Thunk boolean mHasPerformedLongPress;
     private CheckForLongPress mPendingCheckForLongPress;
 
     class CheckForLongPress implements Runnable {

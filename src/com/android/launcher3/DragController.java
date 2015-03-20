@@ -34,6 +34,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -63,7 +65,7 @@ public class DragController {
 
     private static final float MAX_FLING_DEGREES = 35f;
 
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private Handler mHandler;
 
     // temporaries to avoid gc thrash
@@ -102,17 +104,17 @@ public class DragController {
 
     private View mMoveTarget;
 
-    private DragScroller mDragScroller;
-    private int mScrollState = SCROLL_OUTSIDE_ZONE;
+    @Thunk DragScroller mDragScroller;
+    @Thunk int mScrollState = SCROLL_OUTSIDE_ZONE;
     private ScrollRunnable mScrollRunnable = new ScrollRunnable();
 
     private DropTarget mLastDropTarget;
 
     private InputMethodManager mInputMethodManager;
 
-    private int mLastTouch[] = new int[2];
-    private long mLastTouchUpTime = -1;
-    private int mDistanceSinceScroll = 0;
+    @Thunk int mLastTouch[] = new int[2];
+    @Thunk long mLastTouchUpTime = -1;
+    @Thunk int mDistanceSinceScroll = 0;
 
     private int mTmpPoint[] = new int[2];
     private Rect mDragLayerRect = new Rect();
@@ -543,7 +545,7 @@ public class DragController {
         mLastDropTarget = dropTarget;
     }
 
-    private void checkScrollState(int x, int y) {
+    @Thunk void checkScrollState(int x, int y) {
         final int slop = ViewConfiguration.get(mLauncher).getScaledWindowTouchSlop();
         final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
         final DragLayer dragLayer = mLauncher.getDragLayer();

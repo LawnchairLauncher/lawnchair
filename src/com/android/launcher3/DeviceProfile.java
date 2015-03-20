@@ -38,6 +38,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -449,7 +451,7 @@ public class DeviceProfile {
         updateAvailableDimensions(context);
     }
 
-    private float dist(PointF p0, PointF p1) {
+    @Thunk float dist(PointF p0, PointF p1) {
         return (float) Math.sqrt((p1.x - p0.x)*(p1.x-p0.x) +
                 (p1.y-p0.y)*(p1.y-p0.y));
     }

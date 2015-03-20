@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import com.android.launcher3.LauncherModel.ScreenPosProvider;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
@@ -43,7 +44,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
 
     private final SparseArray<AccessibilityAction> mActions =
             new SparseArray<AccessibilityAction>();
-    private final Launcher mLauncher;
+    @Thunk final Launcher mLauncher;
 
     public LauncherAccessibilityDelegate(Launcher launcher) {
         mLauncher = launcher;
@@ -139,11 +140,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         return false;
     }
 
-    private void announceConfirmation(int resId) {
+    @Thunk void announceConfirmation(int resId) {
         announceConfirmation(mLauncher.getResources().getString(resId));
     }
 
-    private void announceConfirmation(String confirmation) {
+    @Thunk void announceConfirmation(String confirmation) {
         mLauncher.getDragLayer().announceForAccessibility(confirmation);
 
     }

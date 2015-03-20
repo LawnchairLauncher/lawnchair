@@ -32,6 +32,8 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
             new ArrayList<ThirdPartyWallpaperTile>();
 
     public static class ThirdPartyWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
-        private ResolveInfo mResolveInfo;
+        @Thunk ResolveInfo mResolveInfo;
         public ThirdPartyWallpaperTile(ResolveInfo resolveInfo) {
             mResolveInfo = resolveInfo;
         }

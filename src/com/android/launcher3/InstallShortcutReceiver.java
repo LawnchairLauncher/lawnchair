@@ -32,6 +32,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.Thunk;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -240,7 +241,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
      * Ensures that we have a valid, non-null name.  If the provided name is null, we will return
      * the application name instead.
      */
-    private static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
+    @Thunk static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
         if (name == null) {
             try {
                 PackageManager pm = context.getPackageManager();

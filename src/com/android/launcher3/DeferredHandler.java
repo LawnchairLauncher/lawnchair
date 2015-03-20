@@ -22,6 +22,8 @@ import android.os.Message;
 import android.os.MessageQueue;
 import android.util.Pair;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -33,11 +35,11 @@ import java.util.ListIterator;
  * This class is fifo.
  */
 public class DeferredHandler {
-    private LinkedList<Pair<Runnable, Integer>> mQueue = new LinkedList<Pair<Runnable, Integer>>();
+    @Thunk LinkedList<Pair<Runnable, Integer>> mQueue = new LinkedList<Pair<Runnable, Integer>>();
     private MessageQueue mMessageQueue = Looper.myQueue();
     private Impl mHandler = new Impl();
 
-    private class Impl extends Handler implements MessageQueue.IdleHandler {
+    @Thunk class Impl extends Handler implements MessageQueue.IdleHandler {
         public void handleMessage(Message msg) {
             Pair<Runnable, Integer> p;
             Runnable r;

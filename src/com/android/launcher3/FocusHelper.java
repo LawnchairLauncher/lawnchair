@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.FocusHelper.PagedViewKeyListener;
 import com.android.launcher3.util.FocusLogic;
+import com.android.launcher3.util.Thunk;
 
 /**
  * A keyboard listener we set on all the workspace icons.
@@ -480,7 +481,7 @@ public class FocusHelper {
     /**
      * Returns the Viewgroup containing page contents for the page at the index specified.
      */
-    private static ViewGroup getAppsCustomizePage(ViewGroup container, int index) {
+    @Thunk static ViewGroup getAppsCustomizePage(ViewGroup container, int index) {
         ViewGroup page = (ViewGroup) ((PagedView) container).getPageAt(index);
         if (page instanceof CellLayout) {
             // There are two layers, a PagedViewCellLayout and PagedViewCellLayoutChildren
@@ -510,7 +511,7 @@ public class FocusHelper {
     /**
      * Helper method to be used for playing sound effects.
      */
-    private static void playSoundEffect(int keyCode, View v) {
+    @Thunk static void playSoundEffect(int keyCode, View v) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 v.playSoundEffect(SoundEffectConstants.NAVIGATION_LEFT);

@@ -35,6 +35,8 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.android.launcher3.util.Thunk;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -50,7 +52,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
 
-    private List<LiveWallpaperTile> mWallpapers;
+    @Thunk List<LiveWallpaperTile> mWallpapers;
 
     @SuppressWarnings("unchecked")
     public LiveWallpaperListAdapter(Context context) {
@@ -109,8 +111,8 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
     }
 
     public static class LiveWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
-        private Drawable mThumbnail;
-        private WallpaperInfo mInfo;
+        @Thunk Drawable mThumbnail;
+        @Thunk WallpaperInfo mInfo;
         public LiveWallpaperTile(Drawable thumbnail, WallpaperInfo info, Intent intent) {
             mThumbnail = thumbnail;
             mInfo = info;
