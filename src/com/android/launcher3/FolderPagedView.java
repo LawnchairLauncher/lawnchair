@@ -511,13 +511,13 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
     @Override
     public int getItemCount() {
-        int lastPage = getChildCount() - 1;
-        if (lastPage < 0) {
-            // If there are no pages, there must be only one icon in the folder.
-            return 1;
+        int lastPageIndex = getChildCount() - 1;
+        if (lastPageIndex < 0) {
+            // If there are no pages, nothing has yet been added to the folder.
+            return 0;
         }
-        return getPageAt(lastPage).getShortcutsAndWidgets().getChildCount()
-                + lastPage * mMaxItemsPerPage;
+        return getPageAt(lastPageIndex).getShortcutsAndWidgets().getChildCount()
+                + lastPageIndex * mMaxItemsPerPage;
     }
 
     @Override
