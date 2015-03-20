@@ -108,18 +108,14 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
         mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
-        launcherApps.addOnAppsChangedCallback(mModel);
+
+        LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
-        sContext.registerReceiver(mModel, filter);
-        filter = new IntentFilter();
         filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
-        sContext.registerReceiver(mModel, filter);
-        filter = new IntentFilter();
         filter.addAction(SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED);
         sContext.registerReceiver(mModel, filter);
 
