@@ -38,13 +38,13 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
@@ -57,8 +57,8 @@ import java.util.WeakHashMap;
 public class WallpaperCropActivity extends Activity implements Handler.Callback {
     private static final String LOGTAG = "Launcher3.CropActivity";
 
-    protected static final String WALLPAPER_WIDTH_KEY = "wallpaper.width";
-    protected static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
+    protected static final String WALLPAPER_WIDTH_KEY = WallpaperUtils.WALLPAPER_WIDTH_KEY;
+    protected static final String WALLPAPER_HEIGHT_KEY = WallpaperUtils.WALLPAPER_HEIGHT_KEY;
 
     /**
      * The maximum bitmap size we allow to be returned through the intent.
@@ -68,7 +68,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
      * array instead of a Bitmap instance to avoid overhead.
      */
     public static final int MAX_BMAP_IN_INTENT = 750000;
-    public static final float WALLPAPER_SCREENS_SPAN = 2f;
+    public static final float WALLPAPER_SCREENS_SPAN = WallpaperUtils.WALLPAPER_SCREENS_SPAN;
 
     private static final int MSG_LOAD_IMAGE = 1;
 
@@ -290,10 +290,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         return getResources().getBoolean(R.bool.allow_rotation);
     }
 
-    public static String getSharedPreferencesKey() {
-        return LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
-    }
-
     protected void setWallpaper(Uri uri, final boolean finishActivityWhenDone) {
         int rotation = BitmapUtils.getRotationFromExif(this, uri);
         BitmapCropTask cropTask = new BitmapCropTask(
@@ -319,7 +315,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         // this device
         int rotation = BitmapUtils.getRotationFromExif(res, resId);
         Point inSize = mCropView.getSourceDimensions();
-        Point outSize = BitmapUtils.getDefaultWallpaperSize(getResources(),
+        Point outSize = WallpaperUtils.getDefaultWallpaperSize(getResources(),
                 getWindowManager());
         RectF crop = Utils.getMaxCropRect(
                 inSize.x, inSize.y, outSize.x, outSize.y, false);
@@ -352,7 +348,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         d.getSize(displaySize);
         boolean isPortrait = displaySize.x < displaySize.y;
 
-        Point defaultWallpaperSize = BitmapUtils.getDefaultWallpaperSize(getResources(),
+        Point defaultWallpaperSize = WallpaperUtils.getDefaultWallpaperSize(getResources(),
                 getWindowManager());
         // Get the crop
         RectF cropRect = mCropView.getCrop();
@@ -435,7 +431,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     protected void updateWallpaperDimensions(int width, int height) {
-        String spKey = getSharedPreferencesKey();
+        String spKey = LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
         SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = sp.edit();
         if (width != 0 && height != 0) {
@@ -446,34 +442,8 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
             editor.remove(WALLPAPER_HEIGHT_KEY);
         }
         editor.commit();
-
-        suggestWallpaperDimension(getResources(),
+        WallpaperUtils.suggestWallpaperDimension(getResources(),
                 sp, getWindowManager(), WallpaperManager.getInstance(this), true);
-    }
-
-    public static void suggestWallpaperDimension(Resources res,
-            final SharedPreferences sharedPrefs,
-            WindowManager windowManager,
-            final WallpaperManager wallpaperManager, boolean fallBackToDefaults) {
-        final Point defaultWallpaperSize = BitmapUtils.getDefaultWallpaperSize(res, windowManager);
-        // If we have saved a wallpaper width/height, use that instead
-
-        int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, -1);
-        int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, -1);
-
-        if (savedWidth == -1 || savedHeight == -1) {
-            if (!fallBackToDefaults) {
-                return;
-            } else {
-                savedWidth = defaultWallpaperSize.x;
-                savedHeight = defaultWallpaperSize.y;
-            }
-        }
-
-        if (savedWidth != wallpaperManager.getDesiredMinimumWidth() ||
-                savedHeight != wallpaperManager.getDesiredMinimumHeight()) {
-            wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
-        }
     }
 
     static class LoadRequest {
