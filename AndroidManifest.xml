@@ -128,7 +128,7 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.LauncherWallpaperPickerActivity"
+            android:name="com.android.launcher3.WallpaperPickerActivity"
             android:theme="@style/Theme.WallpaperPicker"
             android:label="@string/pick_wallpaper"
             android:icon="@mipmap/ic_launcher_wallpaper"

@@ -71,6 +71,7 @@ import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
 import com.android.photos.views.TiledImageRenderer.TileSource;
@@ -239,7 +240,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
                 @Override
                 public float getScale(TileSource src) {
-                    Point wallpaperSize = BitmapUtils.getDefaultWallpaperSize(
+                    Point wallpaperSize = WallpaperUtils.getDefaultWallpaperSize(
                             a.getResources(), a.getWindowManager());
                     RectF crop = Utils.getMaxCropRect(
                             src.getImageWidth(), src.getImageHeight(),
@@ -1109,9 +1110,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         return view;
     }
 
-    // In Launcher3, we override this with a method that catches exceptions
-    // from starting activities; didn't want to copy and paste code into here
     public void startActivityForResultSafely(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
+        Utilities.startActivityForResultSafely(this, intent, requestCode);
+    }
+
+    @Override
+    public boolean enableRotation() {
+        return Utilities.isRotationEnabled(this);
     }
 }

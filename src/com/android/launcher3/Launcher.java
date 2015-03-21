@@ -2409,13 +2409,6 @@ public class Launcher extends Activity
         sFolders.remove(folder.id);
     }
 
-    protected ComponentName getWallpaperPickerComponent() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.getWallpaperPickerComponent();
-        }
-        return new ComponentName(getPackageName(), LauncherWallpaperPickerActivity.class.getName());
-    }
-
     /**
      * Registers various content observers. The current implementation registers
      * only a favorites observer to keep track of the favorites applications.
@@ -2780,9 +2773,8 @@ public class Launcher extends Activity
      */
     protected void onClickWallpaperPicker(View v) {
         if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
-        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-        pickWallpaper.setComponent(getWallpaperPickerComponent());
-        startActivityForResult(pickWallpaper, REQUEST_PICK_WALLPAPER);
+        startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER).setPackage(getPackageName()),
+                REQUEST_PICK_WALLPAPER);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onClickWallpaperPicker(v);

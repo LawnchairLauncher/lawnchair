@@ -16,15 +16,6 @@
 
 package com.android.launcher3;
 
-import android.content.Intent;
-
+// TODO: Remove this class
 public class LauncherWallpaperPickerActivity extends WallpaperPickerActivity {
-    @Override
-    public void startActivityForResultSafely(Intent intent, int requestCode) {
-        Utilities.startActivityForResultSafely(this, intent, requestCode);
-    }
-    @Override
-    public boolean enableRotation() {
-        return Utilities.isRotationEnabled(this);
-    }
 }
