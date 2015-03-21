@@ -25,6 +25,7 @@
         <attr name="iconPaddingOverride" format="dimension" />
         <attr name="textSizeOverride" format="dimension" />
         <attr name="deferShadowGeneration" format="boolean" />
+        <attr name="customShadows" format="boolean" />
     </declare-styleable>
 
     <!-- Page Indicator specific attributes. -->
@@ -87,11 +88,6 @@
 
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
-    </declare-styleable>
-
-    <declare-styleable name="BubbleTextView">
-        <!-- A spacing override for the icons within a page -->
-        <attr name="customShadows" format="boolean" />
     </declare-styleable>
 
     <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
