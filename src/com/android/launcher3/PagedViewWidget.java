@@ -20,35 +20,38 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLayoutChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 /**
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
-public class PagedViewWidget extends LinearLayout {
-    static final String TAG = "PagedViewWidgetLayout";
+public class PagedViewWidget extends LinearLayout implements OnLayoutChangeListener {
 
-    private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
-    private static boolean sRecyclePreviewsWhenDetachedFromWindow = true;
+    private static PagedViewWidget sShortpressTarget = null;
+
+    private final Rect mOriginalImagePadding = new Rect();
 
     private String mDimensionsFormatString;
-    CheckForShortPress mPendingCheckForShortPress = null;
-    ShortPressListener mShortPressListener = null;
-    boolean mShortPressTriggered = false;
-    static PagedViewWidget sShortpressTarget = null;
-    boolean mIsAppWidget;
-    private final Rect mOriginalImagePadding = new Rect();
+    private CheckForShortPress mPendingCheckForShortPress = null;
+    private ShortPressListener mShortPressListener = null;
+    private boolean mShortPressTriggered = false;
+    private boolean mIsAppWidget;
     private Object mInfo;
+
     private WidgetPreviewLoader mWidgetPreviewLoader;
+    private PreviewLoadRequest mActiveRequest;
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -92,28 +95,23 @@ public class PagedViewWidget extends LinearLayout {
         }
     }
 
-    public static void setDeletePreviewsWhenDetachedFromWindow(boolean value) {
-        sDeletePreviewsWhenDetachedFromWindow = value;
-    }
-
-    public static void setRecyclePreviewsWhenDetachedFromWindow(boolean value) {
-        sRecyclePreviewsWhenDetachedFromWindow = value;
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        deletePreview(true);
+    }
 
-        if (sDeletePreviewsWhenDetachedFromWindow) {
+    public void deletePreview(boolean recycleImage) {
+        if (recycleImage) {
             final ImageView image = (ImageView) findViewById(R.id.widget_preview);
             if (image != null) {
-                FastBitmapDrawable preview = (FastBitmapDrawable) image.getDrawable();
-                if (sRecyclePreviewsWhenDetachedFromWindow &&
-                        mInfo != null && preview != null && preview.getBitmap() != null) {
-                    mWidgetPreviewLoader.recycleBitmap(mInfo, preview.getBitmap());
-                }
                 image.setImageDrawable(null);
             }
+        }
+
+        if (mActiveRequest != null) {
+            mActiveRequest.cancel(recycleImage);
+            mActiveRequest = null;
         }
     }
 
@@ -161,7 +159,8 @@ public class PagedViewWidget extends LinearLayout {
         return maxSize;
     }
 
-    void applyPreview(FastBitmapDrawable preview, int index) {
+    public void applyPreview(Bitmap bitmap) {
+        FastBitmapDrawable preview = new FastBitmapDrawable(bitmap);
         final PagedViewWidgetImageView image =
             (PagedViewWidgetImageView) findViewById(R.id.widget_preview);
         if (preview != null) {
@@ -258,5 +257,39 @@ public class PagedViewWidget extends LinearLayout {
         // (it's the same view in that case).  This is not ideal, but to prevent more changes,
         // we just always mark the touch event as handled.
         return true;
+    }
+
+    public void ensurePreview() {
+        if (mActiveRequest != null) {
+            return;
+        }
+        int[] size = getPreviewSize();
+
+        if (size[0] <= 0 || size[1] <= 0) {
+            addOnLayoutChangeListener(this);
+            return;
+        }
+        Bitmap[] immediateResult = new Bitmap[1];
+        mActiveRequest = mWidgetPreviewLoader.getPreview(mInfo, size[0], size[1], this,
+                immediateResult);
+        if (immediateResult[0] != null) {
+            applyPreview(immediateResult[0]);
+        }
+    }
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
+            int oldTop, int oldRight, int oldBottom) {
+        removeOnLayoutChangeListener(this);
+        ensurePreview();
+    }
+
+    public int getActualItemWidth() {
+        ItemInfo info = (ItemInfo) getTag();
+        int[] size = getPreviewSize();
+        int cellWidth = LauncherAppState.getInstance()
+                .getDynamicGrid().getDeviceProfile().cellWidthPx;
+
+        return Math.min(size[0], info.spanX * cellWidth);
     }
 }
