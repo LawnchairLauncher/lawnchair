@@ -34,7 +34,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Kunne ikke slippe elementet på denne startsiden."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Velg modul for oppretting"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Søk etter apper"</string>
+    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Søk i apper"</string>
     <string name="loading_apps_message" msgid="1914259869238053553">"Laster inn apper …"</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"Fant ingen apper som samsvarer med «<xliff:g id="QUERY">%1$s</xliff:g>»"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Mappenavn"</string>

@@ -36,7 +36,7 @@
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Kies legstuk om te skep"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Deursoek Apps"</string>
     <string name="loading_apps_message" msgid="1914259869238053553">"Laai tans Apps …"</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"Geen Apps gevind wat met \"<xliff:g id="QUERY">%1$s</xliff:g>\" ooreenstem nie"</string>
+    <string name="apps_view_no_search_results" msgid="1390726981225924916">"Geen programme gevind wat met \"<xliff:g id="QUERY">%1$s</xliff:g>\" ooreenstem nie"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Vouernaam"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Hernoem vouer"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
