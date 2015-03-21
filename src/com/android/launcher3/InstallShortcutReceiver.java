@@ -331,7 +331,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name);
                 if (icon != null) {
-                    byte[] iconByteArray = ItemInfo.flattenBitmap(icon);
+                    byte[] iconByteArray = Utilities.flattenBitmap(icon);
                     json = json.key(ICON_KEY).value(
                             Base64.encodeToString(
                                     iconByteArray, 0, iconByteArray.length, Base64.DEFAULT));

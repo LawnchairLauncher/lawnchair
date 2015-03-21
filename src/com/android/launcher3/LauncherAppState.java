@@ -32,7 +32,6 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.View.AccessibilityDelegate;
 import android.view.WindowManager;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -49,12 +48,12 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     private final BuildInfo mBuildInfo;
     @Thunk final LauncherModel mModel;
     private final IconCache mIconCache;
+    private final WidgetPreviewLoader mWidgetCache;
 
     private final boolean mIsScreenLarge;
     private final float mScreenDensity;
     private final int mLongPressTimeout = 300;
 
-    private WidgetPreviewLoader.CacheDb mWidgetPreviewCacheDb;
     private boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
@@ -101,9 +100,8 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
         mIsScreenLarge = isScreenLarge(sContext.getResources());
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
-
-        recreateWidgetPreviewDb();
         mIconCache = new IconCache(sContext);
+        mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
         mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
@@ -123,13 +121,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         ContentResolver resolver = sContext.getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
                 mFavoritesObserver);
-    }
-
-    public void recreateWidgetPreviewDb() {
-        if (mWidgetPreviewCacheDb != null) {
-            mWidgetPreviewCacheDb.close();
-        }
-        mWidgetPreviewCacheDb = new WidgetPreviewLoader.CacheDb(sContext);
     }
 
     /**
@@ -179,10 +170,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     boolean shouldShowAppOrWidgetProvider(ComponentName componentName) {
         return mAppFilter == null || mAppFilter.shouldShowApp(componentName);
-    }
-
-    WidgetPreviewLoader.CacheDb getWidgetPreviewCacheDb() {
-        return mWidgetPreviewCacheDb;
     }
 
     static void setLauncherProvider(LauncherProvider provider) {
@@ -238,6 +225,10 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public DynamicGrid getDynamicGrid() {
         return mDynamicGrid;
+    }
+
+    public WidgetPreviewLoader getWidgetCache() {
+        return mWidgetCache;
     }
 
     public boolean isScreenLarge() {

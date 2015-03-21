@@ -630,7 +630,7 @@ public class LauncherBackupHelper implements BackupHelper {
             return;
         }
         final ContentResolver cr = mContext.getContentResolver();
-        final WidgetPreviewLoader previewLoader = new WidgetPreviewLoader(mContext);
+        final WidgetPreviewLoader previewLoader = appState.getWidgetCache();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
         final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
         if (DEBUG) Log.d(TAG, "cellWidthPx: " + profile.cellWidthPx);
@@ -646,7 +646,6 @@ public class LauncherBackupHelper implements BackupHelper {
                 final long id = cursor.getLong(ID_INDEX);
                 final String providerName = cursor.getString(APPWIDGET_PROVIDER_INDEX);
                 final int spanX = cursor.getInt(SPANX_INDEX);
-                final int spanY = cursor.getInt(SPANY_INDEX);
                 final ComponentName provider = ComponentName.unflattenFromString(providerName);
                 Key key = null;
                 String backupKey = null;
@@ -665,12 +664,10 @@ public class LauncherBackupHelper implements BackupHelper {
                     if (DEBUG) Log.d(TAG, "I can count this high: " + backupWidgetCount);
                     if (backupWidgetCount < MAX_WIDGETS_PER_PASS) {
                         if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
-                        previewLoader.setPreviewSize(
-                                spanX * profile.cellWidthPx,
-                                spanY * profile.cellHeightPx);
                         UserHandleCompat user = UserHandleCompat.myUserHandle();
                         writeRowToBackup(key,
-                                packWidget(dpi, previewLoader, mIconCache, provider, user),
+                                packWidget(dpi, previewLoader,spanX * profile.cellWidthPx,
+                                        mIconCache, provider, user),
                                 data);
                         mKeys.add(key);
                         backupWidgetCount ++;
@@ -980,7 +977,8 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Serialize a widget for persistence, including a checksum wrapper. */
-    private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
+    private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader,
+            int previewWidth, IconCache iconCache,
             ComponentName provider, UserHandleCompat user) {
         final LauncherAppWidgetProviderInfo info =
                 LauncherModel.getProviderInfo(mContext, provider, user);
@@ -1000,7 +998,7 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         if (info.previewImage != 0) {
             widget.preview = new Resource();
-            Bitmap preview = previewLoader.generateWidgetPreview(info, null);
+            Bitmap preview = previewLoader.generateWidgetPreview(info, previewWidth, null);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             if (preview.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
                 widget.preview.data = os.toByteArray();

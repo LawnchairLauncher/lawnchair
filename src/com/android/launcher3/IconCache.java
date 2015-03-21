@@ -656,8 +656,8 @@ public class IconCache {
 
         public ContentValues newContentValues(Bitmap icon, String label) {
             ContentValues values = new ContentValues();
-            values.put(IconDB.COLUMN_ICON, ItemInfo.flattenBitmap(icon));
-            values.put(IconDB.COLUMN_ICON_LOW_RES, ItemInfo.flattenBitmap(
+            values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
+            values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
                     Bitmap.createScaledBitmap(icon,
                             icon.getWidth() / LOW_RES_SCALE_FACTOR,
                             icon.getHeight() / LOW_RES_SCALE_FACTOR, true)));
