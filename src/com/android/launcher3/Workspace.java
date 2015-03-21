@@ -70,6 +70,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.WallpaperUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1314,10 +1315,10 @@ public class Workspace extends SmoothPagedView
     protected void setWallpaperDimension() {
         new AsyncTask<Void, Void, Void>() {
             public Void doInBackground(Void ... args) {
-                String spKey = WallpaperCropActivity.getSharedPreferencesKey();
+                String spKey = LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
                 SharedPreferences sp =
                         mLauncher.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
-                LauncherWallpaperPickerActivity.suggestWallpaperDimension(mLauncher.getResources(),
+                WallpaperUtils.suggestWallpaperDimension(mLauncher.getResources(),
                         sp, mLauncher.getWindowManager(), mWallpaperManager,
                         mLauncher.overrideWallpaperDimensions());
                 return null;
