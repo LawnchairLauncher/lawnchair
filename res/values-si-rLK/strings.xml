@@ -41,8 +41,7 @@
     <string name="rename_folder_title" msgid="3771389277707820891">"ෆෝල්ඩරය නැවත නම් කරන්න"</string>
     <string name="rename_action" msgid="5559600076028658757">"හරි"</string>
     <string name="cancel_action" msgid="7009134900002915310">"අවලංගු කරන්න"</string>
-    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
-    <skip />
+    <string name="sort_alphabetical" msgid="2990433272205140971">"A-Z"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"මුල් පිටු තිරය වෙත එක් කරන්න"</string>
     <string name="group_applications" msgid="3797214114206693605">"යෙදුම්"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"කෙටිමං"</string>
