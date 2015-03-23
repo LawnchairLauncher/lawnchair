@@ -21,6 +21,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.WallpaperManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -159,8 +160,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                             ViewGroup parent = (ViewGroup) mView.getParent();
                             if (parent != null) {
                                 parent.removeView(mView);
-                                Toast.makeText(a,
-                                        a.getString(R.string.image_load_fail),
+                                Toast.makeText(a.getContext(), R.string.image_load_fail,
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -168,7 +168,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 };
             }
             mBitmapSource = new BitmapRegionTileSource.UriBitmapSource(
-                    a, mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
+                    a.getContext(), mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
             a.setCropViewTileSource(mBitmapSource, true, false, null, onLoad);
         }
         @Override
@@ -205,7 +205,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(WallpaperPickerActivity a) {
             BitmapRegionTileSource.UriBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.UriBitmapSource(a, Uri.fromFile(mFile), 1024);
+                    new BitmapRegionTileSource.UriBitmapSource(a.getContext(),
+                            Uri.fromFile(mFile), 1024);
             a.setCropViewTileSource(bitmapSource, false, true, null, null);
         }
         @Override
@@ -272,8 +273,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(WallpaperPickerActivity a) {
             CropView c = a.getCropView();
-            Drawable defaultWallpaper = WallpaperManager.getInstance(a).getBuiltInDrawable(
-                    c.getWidth(), c.getHeight(), false, 0.5f, 0.5f);
+            Drawable defaultWallpaper = WallpaperManager.getInstance(a.getContext())
+                    .getBuiltInDrawable(c.getWidth(), c.getHeight(), false, 0.5f, 0.5f);
             if (defaultWallpaper == null) {
                 Log.w(TAG, "Null default wallpaper encountered.");
                 c.setTileSource(null, null);
@@ -290,14 +291,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     return 1f;
                 }
             };
-            req.result = new DrawableTileSource(a, defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
+            req.result = new DrawableTileSource(a.getContext(),
+                    defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
             a.onLoadRequestComplete(req, true);
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
             try {
-                WallpaperManager.getInstance(a).clear();
-                a.setResult(RESULT_OK);
+                WallpaperManager.getInstance(a.getContext()).clear();
+                a.setResult(Activity.RESULT_OK);
             } catch (IOException e) {
                 Log.w("Setting wallpaper to default threw exception", e);
             }
@@ -449,18 +451,18 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // Populate the built-in wallpapers
         ArrayList<WallpaperTileInfo> wallpapers = findBundledWallpapers();
         mWallpapersView = (LinearLayout) findViewById(R.id.wallpaper_list);
-        SimpleWallpapersAdapter ia = new SimpleWallpapersAdapter(this, wallpapers);
+        SimpleWallpapersAdapter ia = new SimpleWallpapersAdapter(getContext(), wallpapers);
         populateWallpapersFromAdapter(mWallpapersView, ia, false);
 
         // Populate the saved wallpapers
-        mSavedImages = new SavedWallpaperImages(this);
+        mSavedImages = new SavedWallpaperImages(getContext());
         mSavedImages.loadThumbnailsAndImageIdList();
         populateWallpapersFromAdapter(mWallpapersView, mSavedImages, true);
 
         // Populate the live wallpapers
         final LinearLayout liveWallpapersView =
                 (LinearLayout) findViewById(R.id.live_wallpaper_list);
-        final LiveWallpaperListAdapter a = new LiveWallpaperListAdapter(this);
+        final LiveWallpaperListAdapter a = new LiveWallpaperListAdapter(getContext());
         a.registerDataSetObserver(new DataSetObserver() {
             public void onChanged() {
                 liveWallpapersView.removeAllViews();
@@ -474,7 +476,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         final LinearLayout thirdPartyWallpapersView =
                 (LinearLayout) findViewById(R.id.third_party_wallpaper_list);
         final ThirdPartyWallpaperPickerListAdapter ta =
-                new ThirdPartyWallpaperPickerListAdapter(this);
+                new ThirdPartyWallpaperPickerListAdapter(getContext());
         populateWallpapersFromAdapter(thirdPartyWallpapersView, ta, false);
 
         // Add a tile for the Gallery
@@ -648,7 +650,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // TODO: Remove this once the accessibility framework and
         // services have better support for selection state.
         v.announceForAccessibility(
-                getString(R.string.announce_selection, v.getContentDescription()));
+                getContext().getString(R.string.announce_selection, v.getContentDescription()));
     }
 
     @Thunk void initializeScrollForRtl() {
@@ -666,7 +668,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     protected Bitmap getThumbnailOfLastPhoto() {
-        Cursor cursor = MediaStore.Images.Media.query(getContentResolver(),
+        Cursor cursor = MediaStore.Images.Media.query(getContext().getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[] { MediaStore.Images.ImageColumns._ID,
                     MediaStore.Images.ImageColumns.DATE_TAKEN},
@@ -676,7 +678,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         if (cursor != null) {
             if (cursor.moveToNext()) {
                 int id = cursor.getInt(0);
-                thumb = MediaStore.Images.Thumbnails.getThumbnail(getContentResolver(),
+                thumb = MediaStore.Images.Thumbnails.getThumbnail(getContext().getContentResolver(),
                         id, MediaStore.Images.Thumbnails.MINI_KIND, null);
             }
             cursor.close();
@@ -684,7 +686,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         return thumb;
     }
 
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         mWallpaperScrollContainer = (HorizontalScrollView) findViewById(R.id.wallpaper_scroll_container);
         if (mWallpaperScrollContainer.getAlpha() < 1f) {
@@ -693,7 +695,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(TEMP_WALLPAPER_TILES, mTempWallpaperTiles);
         outState.putInt(SELECTED_INDEX, mSelectedIndex);
     }
@@ -818,7 +820,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // Load the thumbnail
         final ImageView image = (ImageView) pickedImageThumbnail.findViewById(R.id.wallpaper_image);
         final Point defaultSize = getDefaultThumbnailSize(this.getResources());
-        final Context context = this;
+        final Context context = getContext();
         new AsyncTask<Void, Bitmap, Bitmap>() {
             protected Bitmap doInBackground(Void...args) {
                 try {
@@ -862,15 +864,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == IMAGE_PICK && resultCode == Activity.RESULT_OK) {
             if (data != null && data.getData() != null) {
                 Uri uri = data.getData();
                 addTemporaryWallpaperTile(uri, false);
             }
-        } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY && resultCode == RESULT_OK) {
+        } else if (requestCode == PICK_WALLPAPER_THIRD_PARTY_ACTIVITY
+                && resultCode == Activity.RESULT_OK) {
             // Something was set on the third-party activity.
-            setResult(RESULT_OK);
+            setResult(Activity.RESULT_OK);
             finish();
         }
     }
@@ -880,7 +883,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private ArrayList<WallpaperTileInfo> findBundledWallpapers() {
-        final PackageManager pm = getPackageManager();
+        final PackageManager pm = getContext().getPackageManager();
         final ArrayList<WallpaperTileInfo> bundled = new ArrayList<WallpaperTileInfo>(24);
 
         Partner partner = Partner.get(pm);
@@ -924,7 +927,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         Pair<ApplicationInfo, Integer> r = getWallpaperArrayResourceId();
         if (r != null) {
             try {
-                Resources wallpaperRes = getPackageManager().getResourcesForApplication(r.first);
+                Resources wallpaperRes = getContext().getPackageManager()
+                        .getResourcesForApplication(r.first);
                 addWallpapers(bundled, wallpaperRes, r.first.packageName, r.second);
             } catch (PackageManager.NameNotFoundException e) {
             }
@@ -947,7 +951,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         try {
             f.createNewFile();
             FileOutputStream thumbFileStream =
-                    openFileOutput(f.getName(), Context.MODE_PRIVATE);
+                    getContext().openFileOutput(f.getName(), Context.MODE_PRIVATE);
             b.compress(Bitmap.CompressFormat.JPEG, 95, thumbFileStream);
             thumbFileStream.close();
             return true;
@@ -959,17 +963,18 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private File getDefaultThumbFile() {
-        return new File(getFilesDir(), Build.VERSION.SDK_INT
+        return new File(getContext().getFilesDir(), Build.VERSION.SDK_INT
                 + "_" + LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL);
     }
 
     private boolean saveDefaultWallpaperThumb(Bitmap b) {
         // Delete old thumbnails.
-        new File(getFilesDir(), LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL_OLD).delete();
-        new File(getFilesDir(), LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL).delete();
+        new File(getContext().getFilesDir(), LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL_OLD).delete();
+        new File(getContext().getFilesDir(), LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL).delete();
 
         for (int i = Build.VERSION_CODES.JELLY_BEAN; i < Build.VERSION.SDK_INT; i++) {
-            new File(getFilesDir(), i + "_" + LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL).delete();
+            new File(getContext().getFilesDir(), i + "_"
+                    + LauncherFiles.DEFAULT_WALLPAPER_THUMBNAIL).delete();
         }
         return writeImageToFileAsJpeg(getDefaultThumbFile(), b);
     }
@@ -989,7 +994,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             Point defaultThumbSize = getDefaultThumbnailSize(res);
             int rotation = BitmapUtils.getRotationFromExif(res, resId);
             thumb = createThumbnail(
-                    defaultThumbSize, this, null, null, sysRes, resId, rotation, false);
+                    defaultThumbSize, getContext(), null, null, sysRes, resId, rotation, false);
             if (thumb != null) {
                 defaultWallpaperExists = saveDefaultWallpaperThumb(thumb);
             }
@@ -1011,7 +1016,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         } else {
             Resources res = getResources();
             Point defaultThumbSize = getDefaultThumbnailSize(res);
-            Drawable wallpaperDrawable = WallpaperManager.getInstance(this).getBuiltInDrawable(
+            Drawable wallpaperDrawable = WallpaperManager.getInstance(getContext()).getBuiltInDrawable(
                     defaultThumbSize.x, defaultThumbSize.y, true, 0.5f, 0.5f);
             if (wallpaperDrawable != null) {
                 thumb = Bitmap.createBitmap(
@@ -1038,7 +1043,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         // package name should be.
         final String packageName = getResources().getResourcePackageName(R.array.wallpapers);
         try {
-            ApplicationInfo info = getPackageManager().getApplicationInfo(packageName, 0);
+            ApplicationInfo info = getContext().getPackageManager().getApplicationInfo(packageName, 0);
             return new Pair<ApplicationInfo, Integer>(info, R.array.wallpapers);
         } catch (PackageManager.NameNotFoundException e) {
             return null;
@@ -1076,9 +1081,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     private static class SimpleWallpapersAdapter extends ArrayAdapter<WallpaperTileInfo> {
         private final LayoutInflater mLayoutInflater;
 
-        SimpleWallpapersAdapter(Activity activity, ArrayList<WallpaperTileInfo> wallpapers) {
-            super(activity, R.layout.wallpaper_picker_item, wallpapers);
-            mLayoutInflater = activity.getLayoutInflater();
+        SimpleWallpapersAdapter(Context context, ArrayList<WallpaperTileInfo> wallpapers) {
+            super(context, R.layout.wallpaper_picker_item, wallpapers);
+            mLayoutInflater = LayoutInflater.from(context);
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -1111,11 +1116,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     public void startActivityForResultSafely(Intent intent, int requestCode) {
-        Utilities.startActivityForResultSafely(this, intent, requestCode);
+        Utilities.startActivityForResultSafely(getActivity(), intent, requestCode);
     }
 
     @Override
     public boolean enableRotation() {
-        return Utilities.isRotationEnabled(this);
+        return Utilities.isRotationEnabled(getContext());
     }
 }
