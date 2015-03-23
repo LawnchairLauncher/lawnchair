@@ -28,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -38,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements ListAdapter {
-    private static final String LOG_TAG = "LiveWallpaperListAdapter";
-
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
     private final int mIconSize;
@@ -64,7 +61,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
     }
 
     public ThirdPartyWallpaperPickerListAdapter(Context context) {
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = LayoutInflater.from(context);
         mPackageManager = context.getPackageManager();
         mIconSize = context.getResources().getDimensionPixelSize(R.dimen.wallpaperItemIconSize);
         final PackageManager pm = mPackageManager;

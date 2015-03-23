@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
+import com.android.launcher3.base.BaseActivity;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
@@ -54,7 +55,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-public class WallpaperCropActivity extends Activity implements Handler.Callback {
+public class WallpaperCropActivity extends BaseActivity implements Handler.Callback {
     private static final String LOGTAG = "Launcher3.CropActivity";
 
     protected static final String WALLPAPER_WIDTH_KEY = WallpaperUtils.WALLPAPER_WIDTH_KEY;
@@ -86,7 +87,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mLoaderThread = new HandlerThread("wallpaper_loader");
@@ -130,13 +131,12 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
         // Load image in background
         final BitmapRegionTileSource.UriBitmapSource bitmapSource =
-                new BitmapRegionTileSource.UriBitmapSource(this, imageUri, 1024);
+                new BitmapRegionTileSource.UriBitmapSource(getContext(), imageUri, 1024);
         mSetWallpaperButton.setEnabled(false);
         Runnable onLoad = new Runnable() {
             public void run() {
                 if (bitmapSource.getLoadingState() != BitmapSource.State.LOADED) {
-                    Toast.makeText(WallpaperCropActivity.this,
-                            getString(R.string.wallpaper_load_fail),
+                    Toast.makeText(getContext(), R.string.wallpaper_load_fail,
                             Toast.LENGTH_LONG).show();
                     finish();
                 } else {
@@ -148,7 +148,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if (mCropView != null) {
             mCropView.destroy();
         }
@@ -203,7 +203,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 }
             }
 
-            req.result = new BitmapRegionTileSource(this, req.src, mTempStorageForDecoding);
+            req.result = new BitmapRegionTileSource(getContext(), req.src, mTempStorageForDecoding);
             runOnUiThread(new Runnable() {
 
                 @Override
@@ -291,9 +291,9 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     protected void setWallpaper(Uri uri, final boolean finishActivityWhenDone) {
-        int rotation = BitmapUtils.getRotationFromExif(this, uri);
+        int rotation = BitmapUtils.getRotationFromExif(getContext(), uri);
         BitmapCropTask cropTask = new BitmapCropTask(
-                this, uri, null, rotation, 0, 0, true, false, null);
+                getContext(), uri, null, rotation, 0, 0, true, false, null);
         final Point bounds = cropTask.getImageBounds();
         Runnable onEndCrop = new Runnable() {
             public void run() {
@@ -330,7 +330,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 }
             }
         };
-        BitmapCropTask cropTask = new BitmapCropTask(this, res, resId,
+        BitmapCropTask cropTask = new BitmapCropTask(getContext(), res, resId,
                 crop, rotation, outSize.x, outSize.y, true, false, onEndCrop);
         cropTask.execute();
     }
@@ -422,7 +422,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 }
             }
         };
-        BitmapCropTask cropTask = new BitmapCropTask(this, uri,
+        BitmapCropTask cropTask = new BitmapCropTask(getContext(), uri,
                 cropRect, cropRotation, outWidth, outHeight, true, false, onEndCrop);
         if (onBitmapCroppedHandler != null) {
             cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
@@ -432,7 +432,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
     protected void updateWallpaperDimensions(int width, int height) {
         String spKey = LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
-        SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
+        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = sp.edit();
         if (width != 0 && height != 0) {
             editor.putInt(WALLPAPER_WIDTH_KEY, width);
@@ -443,7 +443,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         }
         editor.commit();
         WallpaperUtils.suggestWallpaperDimension(getResources(),
-                sp, getWindowManager(), WallpaperManager.getInstance(this), true);
+                sp, getWindowManager(), WallpaperManager.getInstance(getContext()), true);
     }
 
     static class LoadRequest {
