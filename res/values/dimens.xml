@@ -52,8 +52,9 @@
     <dimen name="apps_grid_view_start_margin">52dp</dimen>
     <dimen name="apps_view_row_height">64dp</dimen>
     <dimen name="apps_view_section_text_size">24sp</dimen>
-    <dimen name="apps_view_fast_scroll_bar_size">6dp</dimen>
-    <dimen name="apps_view_fast_scroll_gutter_size">40dp</dimen>
+    <dimen name="apps_view_fast_scroll_bar_width">6dp</dimen>
+    <dimen name="apps_view_fast_scroll_bar_min_height">64dp</dimen>
+    <dimen name="apps_view_fast_scroll_scrubber_touch_inset">-16dp</dimen>
     <dimen name="apps_view_fast_scroll_popup_size">64dp</dimen>
     <dimen name="apps_view_fast_scroll_text_size">40dp</dimen>
 

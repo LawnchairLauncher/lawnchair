@@ -36,7 +36,7 @@
         android:textSize="16sp"
         android:textColor="#4c4c4c"
         android:textColorHint="#9c9c9c"
-        android:imeOptions="flagNoExtractUi"
+        android:imeOptions="actionDone|flagNoExtractUi"
         android:background="@drawable/apps_list_search_bg"
         android:elevation="4dp" />
     <com.android.launcher3.AppsContainerRecyclerView
@@ -47,9 +47,6 @@
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:clipToPadding="false"
-        android:fadeScrollbars="false"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@drawable/apps_list_scrollbar_thumb"
         android:focusable="true"
         android:descendantFocusability="afterDescendants"
         android:background="@drawable/apps_list_bg" />
