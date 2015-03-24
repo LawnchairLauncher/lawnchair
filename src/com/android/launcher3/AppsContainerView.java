@@ -168,12 +168,16 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         mAppsListView.setAdapter(mAdapter);
         mAppsListView.setHasFixedSize(true);
         if (isRtl) {
-            mAppsListView.setPadding(mAppsListView.getPaddingLeft(), mAppsListView.getPaddingTop(),
+            mAppsListView.setPadding(
+                    mAppsListView.getPaddingLeft(),
+                    mAppsListView.getPaddingTop(),
                     mAppsListView.getPaddingRight() + mContentMarginStart,
                     mAppsListView.getPaddingBottom());
         } else {
-            mAppsListView.setPadding(mAppsListView.getPaddingLeft() + mContentMarginStart,
-                    mAppsListView.getPaddingTop(), mAppsListView.getPaddingRight(),
+            mAppsListView.setPadding(
+                    mAppsListView.getPaddingLeft() + mContentMarginStart,
+                    mAppsListView.getPaddingTop(),
+                    mAppsListView.getPaddingRight(),
                     mAppsListView.getPaddingBottom());
         }
         if (mItemDecoration != null) {

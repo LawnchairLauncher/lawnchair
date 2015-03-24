@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 
 import java.util.List;
@@ -42,7 +43,9 @@ public class AppsContainerRecyclerView extends RecyclerView
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
 
+    private Drawable mScrollbar;
     private Drawable mFastScrollerBg;
+    private Rect mVerticalScrollbarBounds = new Rect();
     private boolean mDraggingFastScroller;
     private String mFastScrollSectionName;
     private Paint mFastScrollTextPaint;
@@ -52,7 +55,9 @@ public class AppsContainerRecyclerView extends RecyclerView
     private int mDownY;
     private int mLastX;
     private int mLastY;
-    private int mGutterSize;
+    private int mScrollbarWidth;
+    private int mScrollbarMinHeight;
+    private int mScrollbarInset;
 
     public AppsContainerRecyclerView(Context context) {
         this(context, null);
@@ -72,14 +77,19 @@ public class AppsContainerRecyclerView extends RecyclerView
 
         Resources res = context.getResources();
         int fastScrollerSize = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_popup_size);
-        mFastScrollerBg = res.getDrawable(R.drawable.apps_list_fastscroll_bg);
+        mScrollbar = context.getDrawable(R.drawable.apps_list_scrollbar_thumb);
+        mFastScrollerBg = context.getDrawable(R.drawable.apps_list_fastscroll_bg);
         mFastScrollerBg.setBounds(0, 0, fastScrollerSize, fastScrollerSize);
         mFastScrollTextPaint = new Paint();
         mFastScrollTextPaint.setColor(Color.WHITE);
         mFastScrollTextPaint.setAntiAlias(true);
         mFastScrollTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.apps_view_fast_scroll_text_size));
-        mGutterSize = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_gutter_size);
+        mScrollbarWidth = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_bar_width);
+        mScrollbarMinHeight =
+                res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_bar_min_height);
+        mScrollbarInset =
+                res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(getFastScrollerAlpha());
     }
 
@@ -112,6 +122,13 @@ public class AppsContainerRecyclerView extends RecyclerView
         return mFastScrollAlpha;
     }
 
+    /**
+     * Returns the scroll bar width.
+     */
+    public int getScrollbarWidth() {
+        return mScrollbarWidth;
+    }
+
     @Override
     protected void onFinishInflate() {
         addOnItemTouchListener(this);
@@ -120,38 +137,13 @@ public class AppsContainerRecyclerView extends RecyclerView
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-
-        if (mFastScrollAlpha > 0f) {
-            boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                    LAYOUT_DIRECTION_RTL);
-            Rect bgBounds = mFastScrollerBg.getBounds();
-            int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            int x;
-            if (isRtl) {
-                x = getPaddingLeft() + getScrollBarSize();
-            } else {
-                x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
-            }
-            int y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
-            y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -
-                    bgBounds.height()));
-            canvas.translate(x, y);
-            mFastScrollerBg.setAlpha((int) (mFastScrollAlpha * 255));
-            mFastScrollerBg.draw(canvas);
-            mFastScrollTextPaint.setAlpha((int) (mFastScrollAlpha * 255));
-            mFastScrollTextPaint.getTextBounds(mFastScrollSectionName, 0,
-                    mFastScrollSectionName.length(), mFastScrollTextBounds);
-            canvas.drawText(mFastScrollSectionName,
-                    (bgBounds.width() - mFastScrollTextBounds.width()) / 2,
-                    bgBounds.height() -  (bgBounds.height() - mFastScrollTextBounds.height()) / 2,
-                    mFastScrollTextPaint);
-            canvas.restoreToCount(restoreCount);
-        }
+        drawVerticalScrubber(canvas);
+        drawFastScrollerPopup(canvas);
     }
 
     /**
      * We intercept the touch handling only to support fast scrolling when initiated from the
-     * gutter.  Otherwise, we fall back to the default RecyclerView touch handling.
+     * scroll bar.  Otherwise, we fall back to the default RecyclerView touch handling.
      */
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent ev) {
@@ -182,15 +174,7 @@ public class AppsContainerRecyclerView extends RecyclerView
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Check if we are scrolling
-                boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                        LAYOUT_DIRECTION_RTL);
-                boolean isInGutter;
-                if (isRtl) {
-                    isInGutter = mDownX < mGutterSize;
-                } else {
-                    isInGutter = mDownX >= (getWidth() - mGutterSize);
-                }
-                if (!mDraggingFastScroller && isInGutter &&
+                if (!mDraggingFastScroller && isPointNearScrollbar(mDownX, mDownY) &&
                         Math.abs(y - mDownY) > config.getScaledTouchSlop()) {
                     getParent().requestDisallowInterceptTouchEvent(true);
                     mDraggingFastScroller = true;
@@ -230,6 +214,67 @@ public class AppsContainerRecyclerView extends RecyclerView
     }
 
     /**
+     * Returns whether a given point is near the scrollbar.
+     */
+    private boolean isPointNearScrollbar(int x, int y) {
+        // Check if we are scrolling
+        updateVerticalScrollbarBounds();
+        mVerticalScrollbarBounds.inset(mScrollbarInset, mScrollbarInset);
+        return mVerticalScrollbarBounds.contains(x, y);
+    }
+
+    /**
+     * Draws the fast scroller popup.
+     */
+    private void drawFastScrollerPopup(Canvas canvas) {
+        int x;
+        int y;
+        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                LAYOUT_DIRECTION_RTL);
+
+        if (mFastScrollAlpha > 0f) {
+            // Calculate the position for the fast scroller popup
+            Rect bgBounds = mFastScrollerBg.getBounds();
+            if (isRtl) {
+                x = getPaddingLeft() + getScrollBarSize();
+            } else {
+                x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
+            }
+            y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
+            y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -
+                    bgBounds.height()));
+
+            // Draw the fast scroller popup
+            int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.translate(x, y);
+            mFastScrollerBg.setAlpha((int) (mFastScrollAlpha * 255));
+            mFastScrollerBg.draw(canvas);
+            mFastScrollTextPaint.setAlpha((int) (mFastScrollAlpha * 255));
+            mFastScrollTextPaint.getTextBounds(mFastScrollSectionName, 0,
+                    mFastScrollSectionName.length(), mFastScrollTextBounds);
+            canvas.drawText(mFastScrollSectionName,
+                    (bgBounds.width() - mFastScrollTextBounds.width()) / 2,
+                    bgBounds.height() - (bgBounds.height() - mFastScrollTextBounds.height()) / 2,
+                    mFastScrollTextPaint);
+            canvas.restoreToCount(restoreCount);
+        }
+    }
+
+    /**
+     * Draws the vertical scrollbar.
+     */
+    private void drawVerticalScrubber(Canvas canvas) {
+        updateVerticalScrollbarBounds();
+
+        // Draw the scroll bar
+        int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.translate(mVerticalScrollbarBounds.left, mVerticalScrollbarBounds.top);
+        mScrollbar.setBounds(0, 0, mScrollbarWidth, mVerticalScrollbarBounds.height());
+        mScrollbar.draw(canvas);
+        canvas.restoreToCount(restoreCount);
+    }
+
+    /**
      * Invalidates the fast scroller popup.
      */
     private void invalidateFastScroller() {
@@ -243,11 +288,7 @@ public class AppsContainerRecyclerView extends RecyclerView
     private String scrollToPositionAtProgress(float progress) {
         List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
         // Get the total number of rows
-        int rowCount = 0;
-        for (AlphabeticalAppsList.SectionInfo info : sections) {
-            int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
-            rowCount += numRowsInSection;
-        }
+        int rowCount = getNumRows();
 
         // Find the index of the first app in that row and scroll to that position
         int rowAtProgress = (int) (progress * rowCount);
@@ -269,5 +310,101 @@ public class AppsContainerRecyclerView extends RecyclerView
 
         // Returns the section name of the row
         return mApps.getSectionNameForApp(appInfo);
+    }
+
+    /**
+     * Returns the bounds for the scrollbar.
+     */
+    private void updateVerticalScrollbarBounds() {
+        int x;
+        int y;
+        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                LAYOUT_DIRECTION_RTL);
+
+        // Skip early if there are no items
+        if (mApps.getApps().isEmpty()) {
+            mVerticalScrollbarBounds.setEmpty();
+            return;
+        }
+
+        // Find the index and height of the first visible row (all rows have the same height)
+        int rowIndex = -1;
+        int rowTopOffset = -1;
+        int rowHeight = -1;
+        int rowCount = getNumRows();
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            int position = getChildPosition(child);
+            if (position != NO_POSITION) {
+                AppInfo info = mApps.getApps().get(position);
+                if (info != AlphabeticalAppsList.SECTION_BREAK_INFO) {
+                    int appIndex = mApps.getAppsWithoutSectionBreaks().indexOf(info);
+                    rowIndex = findRowForAppIndex(appIndex);
+                    rowTopOffset = getLayoutManager().getDecoratedTop(child);
+                    rowHeight = child.getHeight();
+                    break;
+                }
+            }
+        }
+
+        if (rowIndex != -1) {
+            int height = getHeight() - getPaddingTop() - getPaddingBottom();
+            int totalScrollHeight = rowCount * rowHeight;
+            if (totalScrollHeight > height) {
+                int scrollbarHeight = Math.max(mScrollbarMinHeight,
+                        (int) (height / ((float) totalScrollHeight / height)));
+
+                // Calculate the position and size of the scroll bar
+                if (isRtl) {
+                    x = getPaddingLeft();
+                } else {
+                    x = getWidth() - getPaddingRight() - mScrollbarWidth;
+                }
+
+                // To calculate the offset, we compute the percentage of the total scrollable height
+                // that the user has already scrolled and then map that to the scroll bar bounds
+                int availableY = totalScrollHeight - height;
+                int availableScrollY = height - scrollbarHeight;
+                y = (rowIndex * rowHeight) - rowTopOffset;
+                y = getPaddingTop() +
+                        (int) (((float) (getPaddingTop() + y) / availableY) * availableScrollY);
+
+                mVerticalScrollbarBounds.set(x, y, x + mScrollbarWidth, y + scrollbarHeight);
+                return;
+            }
+        }
+        mVerticalScrollbarBounds.setEmpty();
+    }
+
+    /**
+     * Returns the row index for a given position in the list.
+     */
+    private int findRowForAppIndex(int position) {
+        List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
+        int appIndex = 0;
+        int rowCount = 0;
+        for (AlphabeticalAppsList.SectionInfo info : sections) {
+            int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
+            if (appIndex + info.numAppsInSection > position) {
+                return rowCount + ((position - appIndex) / mNumAppsPerRow);
+            }
+            appIndex += info.numAppsInSection;
+            rowCount += numRowsInSection;
+        }
+        return appIndex;
+    }
+
+    /**
+     * Returns the total number of rows in the list.
+     */
+    private int getNumRows() {
+        List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
+        int rowCount = 0;
+        for (AlphabeticalAppsList.SectionInfo info : sections) {
+            int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
+            rowCount += numRowsInSection;
+        }
+        return rowCount;
     }
 }
