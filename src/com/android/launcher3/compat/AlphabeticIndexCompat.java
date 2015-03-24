@@ -105,7 +105,7 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
     public String computeSectionName(String s) {
         String sectionName = getBucketLabel(getBucketIndex(s));
         if (sectionName.trim().isEmpty() && s.length() > 0) {
-            boolean startsWithDigit = Character.isDigit(s.charAt(0));
+            boolean startsWithDigit = Character.isDigit(Character.codePointAt(s.trim(), 0));
             if (startsWithDigit) {
                 // Digit section
                 return "#";
