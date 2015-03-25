@@ -186,7 +186,8 @@ public class LauncherStateTransitionAnimation {
                     View allAppsButtonView) {
                 // Hide the real page background, and swap in the fake one
                 ((AppsCustomizePagedView) contentView).setPageBackgroundsVisible(false);
-                revealView.setBackground(mLauncher.getDrawable(R.drawable.quantum_panel_dark));
+                revealView.setBackground(
+                        mLauncher.getResources().getDrawable(R.drawable.quantum_panel_dark));
             }
             @Override
             public void onAnimationComplete(View revealView, View contentView, View allAppsButtonView) {
@@ -508,7 +509,8 @@ public class LauncherStateTransitionAnimation {
                 // Hide the real page background, and swap in the fake one
                 pagedView.stopScrolling();
                 pagedView.setPageBackgroundsVisible(false);
-                revealView.setBackground(mLauncher.getDrawable(R.drawable.quantum_panel_dark));
+                revealView.setBackground(
+                        mLauncher.getResources().getDrawable(R.drawable.quantum_panel_dark));
 
                 // Hide the side pages of the Widget tray to avoid some ugly edge cases
                 final View currentPage = pagedView.getPageAt(pagedView.getNextPage());
