@@ -40,9 +40,8 @@
     <string name="rename_folder_label" msgid="3727762225964550653">"फ़ोल्‍डर का नाम"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"फ़ोल्‍डर का नाम बदलें"</string>
     <string name="rename_action" msgid="5559600076028658757">"ठीक"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"रहने दें"</string>
-    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
-    <skip />
+    <string name="cancel_action" msgid="7009134900002915310">"अभी नहीं"</string>
+    <string name="sort_alphabetical" msgid="2990433272205140971">"अ-ज्ञ"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"होम स्‍क्रीन में जोड़ें"</string>
     <string name="group_applications" msgid="3797214114206693605">"ऐप्लिकेशन"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"शॉर्टकट"</string>

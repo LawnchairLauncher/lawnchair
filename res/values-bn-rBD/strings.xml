@@ -41,8 +41,7 @@
     <string name="rename_folder_title" msgid="3771389277707820891">"ফোল্ডার পুনঃনামকরণ করুন"</string>
     <string name="rename_action" msgid="5559600076028658757">"ঠিক আছে"</string>
     <string name="cancel_action" msgid="7009134900002915310">"বাতিল করুন"</string>
-    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
-    <skip />
+    <string name="sort_alphabetical" msgid="2990433272205140971">"শুরু থেকে শেষ"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"হোম স্ক্রীনে যোগ করুন"</string>
     <string name="group_applications" msgid="3797214114206693605">"অ্যাপ্লিকেশানগুলি"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"শর্টকাটগুলি"</string>

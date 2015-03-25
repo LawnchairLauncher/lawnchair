@@ -41,8 +41,7 @@
     <string name="rename_folder_title" msgid="3771389277707820891">"ប្ដូរ​ឈ្មោះ​ថត"</string>
     <string name="rename_action" msgid="5559600076028658757">"យល់ព្រម"</string>
     <string name="cancel_action" msgid="7009134900002915310">"បោះបង់"</string>
-    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
-    <skip />
+    <string name="sort_alphabetical" msgid="2990433272205140971">"A-Z"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"បន្ថែម​ទៅ​អេក្រង់​ដើម"</string>
     <string name="group_applications" msgid="3797214114206693605">"កម្មវិធី"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"ផ្លូវកាត់"</string>

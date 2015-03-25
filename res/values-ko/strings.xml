@@ -41,8 +41,7 @@
     <string name="rename_folder_title" msgid="3771389277707820891">"폴더 이름 바꾸기"</string>
     <string name="rename_action" msgid="5559600076028658757">"확인"</string>
     <string name="cancel_action" msgid="7009134900002915310">"취소"</string>
-    <!-- no translation found for sort_alphabetical (2990433272205140971) -->
-    <skip />
+    <string name="sort_alphabetical" msgid="2990433272205140971">"가나다순"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"홈 화면에 추가"</string>
     <string name="group_applications" msgid="3797214114206693605">"앱"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"바로가기"</string>
