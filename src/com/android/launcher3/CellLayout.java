@@ -417,10 +417,13 @@ public class CellLayout extends ViewGroup {
         protected int intersectsValidDropTarget(int id) {
             LauncherAccessibilityDelegate delegate =
                     LauncherAppState.getInstance().getAccessibilityDelegate();
-            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
+            if (delegate == null) {
+                return -1;
+            }
 
             int y = id % mCountY;
             int x = id / mCountY;
+            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
 
             if (dragInfo.dragType == DragType.WIDGET) {
                 // For a widget, every cell must be vacant. In addition, we will return any valid
@@ -489,10 +492,15 @@ public class CellLayout extends ViewGroup {
 
         @Override
         protected boolean onPerformActionForVirtualView(int viewId, int action, Bundle args) {
+            LauncherAccessibilityDelegate delegate =
+                    LauncherAppState.getInstance().getAccessibilityDelegate();
+            if (delegate == null) {
+                return false;
+            }
+
             if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
                 String confirmation = getConfirmationForIconDrop(viewId);
-                LauncherAppState.getInstance().getAccessibilityDelegate()
-                        .handleAccessibleDrop(CellLayout.this, getItemBounds(viewId), confirmation);
+                delegate.handleAccessibleDrop(CellLayout.this, getItemBounds(viewId), confirmation);
                 return true;
             }
             return false;
@@ -500,11 +508,16 @@ public class CellLayout extends ViewGroup {
 
         @Override
         public void onClick(View arg0) {
+            LauncherAccessibilityDelegate delegate =
+                    LauncherAppState.getInstance().getAccessibilityDelegate();
+            if (delegate == null) {
+                return;
+            }
+
             int viewId = getViewIdAt(mDownX, mDownY);
 
             String confirmation = getConfirmationForIconDrop(viewId);
-            LauncherAppState.getInstance().getAccessibilityDelegate()
-                    .handleAccessibleDrop(CellLayout.this, getItemBounds(viewId), confirmation);
+            delegate.handleAccessibleDrop(CellLayout.this, getItemBounds(viewId), confirmation);
         }
 
         @Override
@@ -533,10 +546,13 @@ public class CellLayout extends ViewGroup {
         private String getLocationDescriptionForIconDrop(int id) {
             LauncherAccessibilityDelegate delegate =
                     LauncherAppState.getInstance().getAccessibilityDelegate();
-            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
+            if (delegate == null) {
+                return "";
+            }
 
             int y = id % mCountY;
             int x = id / mCountY;
+            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
 
             Resources res = getContext().getResources();
             View child = getChildAt(x, y);
@@ -555,11 +571,14 @@ public class CellLayout extends ViewGroup {
 
         private String getConfirmationForIconDrop(int id) {
             LauncherAccessibilityDelegate delegate =
-                    LauncherAppState.getInstance().getAccessibilityDelegate();
-            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
+                LauncherAppState.getInstance().getAccessibilityDelegate();
+            if (delegate == null) {
+                return "";
+            }
 
             int y = id % mCountY;
             int x = id / mCountY;
+            LauncherAccessibilityDelegate.DragInfo dragInfo = delegate.getDragInfo();
 
             Resources res = getContext().getResources();
             View child = getChildAt(x, y);

@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 
-import java.lang.reflect.Field;
-
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
  * a common object for describing both framework provided AppWidgets as well as custom widgets

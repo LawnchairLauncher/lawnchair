@@ -77,8 +77,8 @@ public class AppsContainerRecyclerView extends RecyclerView
 
         Resources res = context.getResources();
         int fastScrollerSize = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_popup_size);
-        mScrollbar = context.getDrawable(R.drawable.apps_list_scrollbar_thumb);
-        mFastScrollerBg = context.getDrawable(R.drawable.apps_list_fastscroll_bg);
+        mScrollbar = res.getDrawable(R.drawable.apps_list_scrollbar_thumb);
+        mFastScrollerBg = res.getDrawable(R.drawable.apps_list_fastscroll_bg);
         mFastScrollerBg.setBounds(0, 0, fastScrollerSize, fastScrollerSize);
         mFastScrollTextPaint = new Paint();
         mFastScrollTextPaint.setColor(Color.WHITE);
