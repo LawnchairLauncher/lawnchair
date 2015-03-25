@@ -2448,7 +2448,9 @@ public class Launcher extends Activity
             return;
         }
 
-        if (LauncherAppState.getInstance().getAccessibilityDelegate().onBackPressed()) {
+        LauncherAccessibilityDelegate delegate =
+                LauncherAppState.getInstance().getAccessibilityDelegate();
+        if (delegate != null && delegate.onBackPressed()) {
             return;
         }
 

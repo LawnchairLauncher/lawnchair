@@ -576,7 +576,9 @@ public class Workspace extends SmoothPagedView
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
 
-        if (LauncherAppState.getInstance().getAccessibilityDelegate().isInAccessibleDrag()) {
+        LauncherAccessibilityDelegate delegate =
+                LauncherAppState.getInstance().getAccessibilityDelegate();
+        if (delegate != null && delegate.isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true);
         }
         return screenId;
