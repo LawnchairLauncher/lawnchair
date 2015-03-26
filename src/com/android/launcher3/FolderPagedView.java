@@ -485,10 +485,12 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
             mPageIndicator.setVisibility(View.VISIBLE);
             mSortButton.setVisibility(View.VISIBLE);
             mFolder.mFolderName.setGravity(Gravity.START);
+            setEnableOverscroll(true);
         } else {
             mPageIndicator.setVisibility(View.GONE);
             mSortButton.setVisibility(View.GONE);
             mFolder.mFolderName.setGravity(Gravity.CENTER_HORIZONTAL);
+            setEnableOverscroll(false);
         }
     }
 
