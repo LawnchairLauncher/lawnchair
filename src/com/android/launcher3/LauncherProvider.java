@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -41,9 +40,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -82,9 +78,6 @@ public class LauncherProvider extends ContentProvider {
             "EMPTY_DATABASE_CREATED";
 
     private static final String URI_PARAM_IS_EXTERNAL_ADD = "isExternalAdd";
-
-    private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
-    private static final String RESTRICTION_XML_RES_ID = "workspace.configuration.xml.resource.id";
 
     private LauncherProviderChangeListener mListener;
 
@@ -308,10 +301,9 @@ public class LauncherProvider extends ContentProvider {
 
     /**
      * Loads the default workspace based on the following priority scheme:
-     *   1) From the app restrictions
-     *   2) From a package provided by play store
-     *   3) From a partner configuration APK, already in the system image
-     *   4) The default configuration for the particular device
+     *   1) From a package provided by play store
+     *   2) From a partner configuration APK, already in the system image
+     *   3) The default configuration for the particular device
      */
     synchronized public void loadDefaultFavoritesIfNecessary() {
         String spKey = LauncherAppState.getSharedPreferencesKey();
@@ -320,16 +312,9 @@ public class LauncherProvider extends ContentProvider {
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
 
-            // Application restrictions
-            AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction();
+            AutoInstallsLayout loader = AutoInstallsLayout.get(getContext(),
+                    mOpenHelper.mAppWidgetHost, mOpenHelper);
 
-            // Play Store
-            if (loader == null) {
-                loader = AutoInstallsLayout.get(getContext(), mOpenHelper.mAppWidgetHost,
-                        mOpenHelper);
-            }
-
-            // Partner APK
             if (loader == null) {
                 final Partner partner = Partner.get(getContext().getPackageManager());
                 if (partner != null && partner.hasDefaultLayout()) {
@@ -344,7 +329,6 @@ public class LauncherProvider extends ContentProvider {
             }
 
             final boolean usingExternallyProvidedLayout = loader != null;
-            // Default configuration
             if (loader == null) {
                 loader = getDefaultLayoutParser();
             }
@@ -358,39 +342,6 @@ public class LauncherProvider extends ContentProvider {
             }
             clearFlagEmptyDbCreated();
         }
-    }
-
-    /**
-     * Creates workspace loader from an XML resource listed in the app restrictions.
-     *
-     * @return the loader if the restrictions are set and the resource exists; null otherwise.
-     */
-    @TargetApi(18)
-    private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction() {
-
-        // UserManager.getApplicationRestrictions() requires minSdkVersion >= 18
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return null;
-        }
-
-        Context ctx = getContext();
-        UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
-        Bundle bundle = um.getApplicationRestrictions(ctx.getPackageName());
-        String packageName = bundle.getString(RESTRICTION_PACKAGE_NAME);
-        int xmlResourceId = bundle.getInt(RESTRICTION_XML_RES_ID);
-
-        AutoInstallsLayout loader = null;
-        if (packageName != null && xmlResourceId != 0) {
-            loader = AutoInstallsLayout.get(packageName, xmlResourceId, getContext(),
-                    mOpenHelper.mAppWidgetHost, mOpenHelper);
-
-        }
-
-        if (loader != null) {
-            Log.d(TAG, "Will load workspace configuration from " + packageName);
-        }
-
-        return loader;
     }
 
     private DefaultLayoutParser getDefaultLayoutParser() {

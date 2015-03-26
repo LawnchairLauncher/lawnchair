@@ -77,28 +77,6 @@ public class AutoInstallsLayout {
                 TAG_WORKSPACE);
     }
 
-    static AutoInstallsLayout get(String packageName, int xmlResourceId, Context context,
-            AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
-
-        Resources resources;
-        try {
-            resources = context.getPackageManager().getResourcesForApplication(packageName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Package not found: " + packageName);
-            return null;
-        }
-
-        // Verify that the XML resource exists
-        String resourceName = resources.getResourceName(xmlResourceId);
-        if (resourceName == null || !resourceName.startsWith(packageName)) {
-            Log.e(TAG, "Cannot find resource id:" + xmlResourceId + " in package " + packageName);
-            return null;
-        }
-
-        return new AutoInstallsLayout(context, appWidgetHost, callback, resources, xmlResourceId,
-                TAG_WORKSPACE);
-    }
-
     // Object Tags
     private static final String TAG_WORKSPACE = "workspace";
     private static final String TAG_APP_ICON = "appicon";
