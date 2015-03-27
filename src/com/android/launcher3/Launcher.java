@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -2079,10 +2080,26 @@ public class Launcher extends Activity
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
+        onStartForResult(requestCode);
+        super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void startIntentSenderForResult (IntentSender intent, int requestCode,
+            Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags, Bundle options) {
+        onStartForResult(requestCode);
+        try {
+            super.startIntentSenderForResult(intent, requestCode,
+                fillInIntent, flagsMask, flagsValues, extraFlags, options);
+        } catch (IntentSender.SendIntentException e) {
+            throw new ActivityNotFoundException();
+        }
+    }
+
+    private void onStartForResult(int requestCode) {
         if (requestCode >= 0) {
             setWaitingForResult(true);
         }
-        super.startActivityForResult(intent, requestCode);
     }
 
     /**
