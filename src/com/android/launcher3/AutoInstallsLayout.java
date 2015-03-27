@@ -45,6 +45,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Layout parsing code for auto installs layout
@@ -57,6 +58,11 @@ public class AutoInstallsLayout {
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
             "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
 
+    /**
+     * Layout resource which also includes grid size and hotseat count, e.g., default_layout_6x6_h5
+     */
+    private static final String FORMATTED_LAYOUT_RES_WITH_HOSTEAT = "default_layout_%dx%d_h%s";
+    private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
@@ -66,15 +72,39 @@ public class AutoInstallsLayout {
         if (customizationApkInfo == null) {
             return null;
         }
+        return get(context, customizationApkInfo.first, customizationApkInfo.second,
+                appWidgetHost, callback);
+    }
 
-        String pkg = customizationApkInfo.first;
-        Resources res = customizationApkInfo.second;
-        int layoutId = res.getIdentifier(LAYOUT_RES, "xml", pkg);
+    static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
+            AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
+        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+
+        // Try with grid size and hotseat count
+        String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
+                (int) grid.numColumns, (int) grid.numRows, (int) grid.numHotseatIcons);
+        int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+
+        // Try with only grid size
+        if (layoutId == 0) {
+            Log.d(TAG, "Formatted layout: " + layoutName
+                    + " not found. Trying layout without hosteat");
+            layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
+                    (int) grid.numColumns, (int) grid.numRows);
+            layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+        }
+
+        // Try the default layout
+        if (layoutId == 0) {
+            Log.d(TAG, "Formatted layout: " + layoutName + " not found. Trying the default layout");
+            layoutId = targetRes.getIdentifier(LAYOUT_RES, "xml", pkg);
+        }
+
         if (layoutId == 0) {
             Log.e(TAG, "Layout definition not found in package: " + pkg);
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHost, callback, res, layoutId,
+        return new AutoInstallsLayout(context, appWidgetHost, callback, targetRes, layoutId,
                 TAG_WORKSPACE);
     }
 
