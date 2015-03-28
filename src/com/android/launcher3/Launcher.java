@@ -1317,7 +1317,9 @@ public class Launcher extends Activity
             mPendingAddInfo.cellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
             mPendingAddInfo.spanX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_X);
             mPendingAddInfo.spanY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y);
-            mPendingAddWidgetInfo = savedState.getParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
+            AppWidgetProviderInfo info = savedState.getParcelable(
+                    RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
+            mPendingAddWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(this, info);
             mPendingAddWidgetId = savedState.getInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID);
             setWaitingForResult(true);
             mRestoring = true;
