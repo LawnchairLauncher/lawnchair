@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -290,14 +291,14 @@ public class AppsContainerRecyclerView extends RecyclerView
         // Get the total number of rows
         int rowCount = getNumRows();
 
-        // Find the index of the first app in that row and scroll to that position
+        // Find the position of the first application in the section that contains the row at the
+        // current progress
         int rowAtProgress = (int) (progress * rowCount);
         int appIndex = 0;
         rowCount = 0;
         for (AlphabeticalAppsList.SectionInfo info : sections) {
             int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
             if (rowCount + numRowsInSection > rowAtProgress) {
-                appIndex += (rowAtProgress - rowCount) * mNumAppsPerRow;
                 break;
             }
             rowCount += numRowsInSection;
@@ -306,9 +307,14 @@ public class AppsContainerRecyclerView extends RecyclerView
         appIndex = Math.max(0, Math.min(mApps.getAppsWithoutSectionBreaks().size() - 1, appIndex));
         AppInfo appInfo = mApps.getAppsWithoutSectionBreaks().get(appIndex);
         int sectionedAppIndex = mApps.getApps().indexOf(appInfo);
-        scrollToPosition(sectionedAppIndex);
 
-        // Returns the section name of the row
+        // Scroll the position into view, anchored at the top of the screen if possible. We call the
+        // scroll method on the LayoutManager directly since it is not exposed by RecyclerView.
+        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
+        stopScroll();
+        layoutManager.scrollToPositionWithOffset(sectionedAppIndex, 0);
+
+        // Return the section name of the row
         return mApps.getSectionNameForApp(appInfo);
     }
 
