@@ -3823,6 +3823,9 @@ public class Launcher extends Activity
                 mAppsCustomizeTabHost.trimMemory();
             }
         }
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onTrimMemory(level);
+        }
     }
 
     protected void showWorkspace(boolean animated) {
