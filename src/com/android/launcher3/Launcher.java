@@ -1554,7 +1554,7 @@ public class Launcher extends Activity
             return;
         }
 
-        LauncherModel.addItemToDatabase(this, info, container, screenId, cellXY[0], cellXY[1], false);
+        LauncherModel.addItemToDatabase(this, info, container, screenId, cellXY[0], cellXY[1]);
 
         if (!mRestoring) {
             mWorkspace.addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1,
@@ -1616,7 +1616,7 @@ public class Launcher extends Activity
         launcherInfo.user = mAppWidgetManager.getUser(appWidgetInfo);
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
-                container, screenId, info.cellX, info.cellY, false);
+                container, screenId, info.cellX, info.cellY);
 
         if (!mRestoring) {
             if (hostView == null) {
@@ -2409,8 +2409,8 @@ public class Launcher extends Activity
         folderInfo.title = getText(R.string.folder_name);
 
         // Update the model
-        LauncherModel.addItemToDatabase(Launcher.this, folderInfo, container, screenId, cellX, cellY,
-                false);
+        LauncherModel.addItemToDatabase(Launcher.this, folderInfo, container, screenId,
+                cellX, cellY);
         sFolders.put(folderInfo.id, folderInfo);
 
         // Create the view

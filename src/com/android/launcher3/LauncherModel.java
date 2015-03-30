@@ -566,7 +566,7 @@ public class LauncherModel extends BroadcastReceiver
                         // Add the shortcut to the db
                         addItemToDatabase(context, shortcutInfo,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                                screenId, cordinates[0], cordinates[1], false);
+                                screenId, cordinates[0], cordinates[1]);
                         // Save the ShortcutInfo for binding in the workspace
                         addedShortcutsFinal.add(shortcutInfo);
                     }
@@ -652,7 +652,7 @@ public class LauncherModel extends BroadcastReceiver
             long screenId, int cellX, int cellY) {
         if (item.container == ItemInfo.NO_ID) {
             // From all apps
-            addItemToDatabase(context, item, container, screenId, cellX, cellY, false);
+            addItemToDatabase(context, item, container, screenId, cellX, cellY);
         } else {
             // From somewhere else
             moveItemInDatabase(context, item, container, screenId, cellX, cellY);
@@ -718,7 +718,7 @@ public class LauncherModel extends BroadcastReceiver
     static void updateItemInDatabaseHelper(Context context, final ContentValues values,
             final ItemInfo item, final String callingFunction) {
         final long itemId = item.id;
-        final Uri uri = LauncherSettings.Favorites.getContentUri(itemId, false);
+        final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
         final ContentResolver cr = context.getContentResolver();
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
@@ -744,7 +744,7 @@ public class LauncherModel extends BroadcastReceiver
                 for (int i = 0; i < count; i++) {
                     ItemInfo item = items.get(i);
                     final long itemId = item.id;
-                    final Uri uri = LauncherSettings.Favorites.getContentUri(itemId, false);
+                    final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
                     ContentValues values = valuesList.get(i);
 
                     ops.add(ContentProviderOperation.newUpdate(uri).withValues(values).build());
@@ -994,7 +994,7 @@ public class LauncherModel extends BroadcastReceiver
      * cellY fields of the item. Also assigns an ID to the item.
      */
     static void addItemToDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY, final boolean notify) {
+            final long screenId, final int cellX, final int cellY) {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
@@ -1017,8 +1017,7 @@ public class LauncherModel extends BroadcastReceiver
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
             public void run() {
-                cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
-                        LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
+                cr.insert(LauncherSettings.Favorites.CONTENT_URI, values);
 
                 // Lock on mBgLock *after* the db operation
                 synchronized (sBgLock) {
@@ -1102,7 +1101,7 @@ public class LauncherModel extends BroadcastReceiver
         Runnable r = new Runnable() {
             public void run() {
                 for (ItemInfo item : items) {
-                    final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
+                    final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
                     cr.delete(uri, null, null);
 
                     // Lock on mBgLock *after* the db operation
@@ -1197,7 +1196,7 @@ public class LauncherModel extends BroadcastReceiver
 
         Runnable r = new Runnable() {
             public void run() {
-                cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
+                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
                 // Lock on mBgLock *after* the db operation
                 synchronized (sBgLock) {
                     sBgItemsIdMap.remove(info.id);
@@ -1205,7 +1204,7 @@ public class LauncherModel extends BroadcastReceiver
                     sBgWorkspaceItems.remove(info);
                 }
 
-                cr.delete(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                         LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
                 // Lock on mBgLock *after* the db operation
                 synchronized (sBgLock) {
@@ -1823,7 +1822,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final ArrayList<Long> restoredRows = new ArrayList<Long>();
-                final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION;
+                final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
                 if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
 
@@ -2304,8 +2303,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                         // Don't notify content observers
                         try {
-                            client.delete(LauncherSettings.Favorites.getContentUri(id, false),
-                                    null, null);
+                            client.delete(LauncherSettings.Favorites.getContentUri(id), null, null);
                         } catch (RemoteException e) {
                             Log.w(TAG, "Could not remove id = " + id);
                         }
@@ -2324,7 +2322,7 @@ public class LauncherModel extends BroadcastReceiver
                         selectionBuilder.append(")");
                         ContentValues values = new ContentValues();
                         values.put(LauncherSettings.Favorites.RESTORED, 0);
-                        updater.update(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                        updater.update(LauncherSettings.Favorites.CONTENT_URI,
                                 values, selectionBuilder.toString(), null);
                     } catch (RemoteException e) {
                         Log.w(TAG, "Could not update restored rows");
@@ -2395,7 +2393,7 @@ public class LauncherModel extends BroadcastReceiver
          */
         private void updateItem(long itemId, ContentValues update) {
             mContext.getContentResolver().update(
-                    LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                    LauncherSettings.Favorites.CONTENT_URI,
                     update,
                     BaseColumns._ID + "= ?",
                     new String[]{Long.toString(itemId)});
