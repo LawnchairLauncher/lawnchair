@@ -402,7 +402,6 @@ public class Workspace extends SmoothPagedView
         setChildrenBackgroundAlphaMultipliers(1f);
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
-        UninstallShortcutReceiver.enableUninstallQueue();
         post(new Runnable() {
             @Override
             public void run() {
@@ -430,7 +429,6 @@ public class Workspace extends SmoothPagedView
 
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
-        UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
 
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();

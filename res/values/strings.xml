@@ -113,8 +113,6 @@ s -->
     <string name="invalid_hotseat_item">This widget is too large for the Favorites tray</string>
     <!-- Message displayed when a shortcut is created by an external application -->
     <string name="shortcut_installed">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" created.</string>
-    <!-- Message displayed when a shortcut is uninstalled by an external application -->
-    <string name="shortcut_uninstalled">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" was removed.</string>
     <!-- Message displayed when an external application attemps to create a shortcut that already exists -->
     <string name="shortcut_duplicate">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" already exists.</string>
 
