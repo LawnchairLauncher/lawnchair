@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 /**
@@ -225,6 +226,7 @@ public class IconCache {
      * @return The set of packages for which icons have updated.
      */
     public HashSet<String> updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps) {
+        mIconDb.updateSystemStateString(mContext);
         long userSerial = mUserManager.getSerialNumberForUser(user);
         PackageManager pm = mContext.getPackageManager();
         HashMap<String, PackageInfo> pkgInfoMap = new HashMap<String, PackageInfo>();
@@ -239,7 +241,8 @@ public class IconCache {
 
         Cursor c = mIconDb.getReadableDatabase().query(IconDB.TABLE_NAME,
                 new String[] {IconDB.COLUMN_ROWID, IconDB.COLUMN_COMPONENT,
-                    IconDB.COLUMN_LAST_UPDATED, IconDB.COLUMN_VERSION},
+                    IconDB.COLUMN_LAST_UPDATED, IconDB.COLUMN_VERSION,
+                    IconDB.COLUMN_SYSTEM_STATE},
                 IconDB.COLUMN_USER + " = ? ",
                 new String[] {Long.toString(userSerial)},
                 null, null, null);
@@ -248,6 +251,7 @@ public class IconCache {
         final int indexLastUpdate = c.getColumnIndex(IconDB.COLUMN_LAST_UPDATED);
         final int indexVersion = c.getColumnIndex(IconDB.COLUMN_VERSION);
         final int rowIndex = c.getColumnIndex(IconDB.COLUMN_ROWID);
+        final int systemStateIndex = c.getColumnIndex(IconDB.COLUMN_SYSTEM_STATE);
 
         HashSet<Integer> itemsToRemove = new HashSet<Integer>();
         HashSet<String> updatedPackages = new HashSet<String>();
@@ -268,7 +272,8 @@ public class IconCache {
             long updateTime = c.getLong(indexLastUpdate);
             int version = c.getInt(indexVersion);
             LauncherActivityInfoCompat app = componentMap.remove(component);
-            if (version == info.versionCode && updateTime == info.lastUpdateTime) {
+            if (version == info.versionCode && updateTime == info.lastUpdateTime &&
+                    TextUtils.equals(mIconDb.mSystemState, c.getString(systemStateIndex))) {
                 continue;
             }
             if (app == null) {
@@ -605,7 +610,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 2;
+        private final static int DB_VERSION = 3;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
@@ -616,10 +621,20 @@ public class IconCache {
         private final static String COLUMN_ICON = "icon";
         private final static String COLUMN_ICON_LOW_RES = "icon_low_res";
         private final static String COLUMN_LABEL = "label";
+        private final static String COLUMN_SYSTEM_STATE = "system_state";
+
+        public String mSystemState;
 
         public IconDB(Context context) {
             super(context, LauncherFiles.APP_ICONS_DB, null, DB_VERSION);
+            updateSystemStateString(context);
         }
+
+        public void updateSystemStateString(Context c) {
+            mSystemState = Locale.getDefault().toString() + ","
+                    + c.getResources().getConfiguration().mcc;
+        }
+
 
         @Override
         public void onCreate(SQLiteDatabase db) {
@@ -631,6 +646,7 @@ public class IconCache {
                     COLUMN_ICON + " BLOB, " +
                     COLUMN_ICON_LOW_RES + " BLOB, " +
                     COLUMN_LABEL + " TEXT, " +
+                    COLUMN_SYSTEM_STATE + " TEXT, " +
                     "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ") " +
                     ");");
         }
@@ -656,12 +672,13 @@ public class IconCache {
 
         public ContentValues newContentValues(Bitmap icon, String label) {
             ContentValues values = new ContentValues();
-            values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
-            values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
+            values.put(COLUMN_ICON, Utilities.flattenBitmap(icon));
+            values.put(COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
                     Bitmap.createScaledBitmap(icon,
                             icon.getWidth() / LOW_RES_SCALE_FACTOR,
                             icon.getHeight() / LOW_RES_SCALE_FACTOR, true)));
-            values.put(IconDB.COLUMN_LABEL, label);
+            values.put(COLUMN_LABEL, label);
+            values.put(COLUMN_SYSTEM_STATE, mSystemState);
             return values;
         }
     }
