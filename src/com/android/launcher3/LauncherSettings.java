@@ -109,8 +109,7 @@ class LauncherSettings {
          * The content:// style URL for this table
          */
         static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_WORKSPACE_SCREENS +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_WORKSPACE_SCREENS);
 
         /**
          * The rank of this screen -- ie. how it is ordered relative to the other screens.
@@ -127,36 +126,18 @@ class LauncherSettings {
          * The content:// style URL for this table
          */
         static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
-
-        /**
-         * The content:// style URL for this table
-         */
-        static final Uri OLD_CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.OLD_AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
-
-        /**
-         * The content:// style URL for this table. When this Uri is used, no notification is
-         * sent if the content changes.
-         */
-        static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=false");
+                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES);
 
         /**
          * The content:// style URL for a given row, identified by its id.
          *
          * @param id The row id.
-         * @param notify True to send a notification is the content changes.
          *
          * @return The unique content URL for the specified row.
          */
-        static Uri getContentUri(long id, boolean notify) {
+        static Uri getContentUri(long id) {
             return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + LauncherProvider.TABLE_FAVORITES + "/" + id + "?" +
-                    LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
+                    "/" + LauncherProvider.TABLE_FAVORITES + "/" + id);
         }
 
         /**

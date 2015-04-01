@@ -462,7 +462,7 @@ public class LauncherBackupHelper implements BackupHelper {
 
         ContentResolver cr = mContext.getContentResolver();
         ContentValues values = unpackFavorite(buffer, dataSize);
-        cr.insert(Favorites.CONTENT_URI_NO_NOTIFICATION, values);
+        cr.insert(Favorites.CONTENT_URI, values);
     }
 
     /**

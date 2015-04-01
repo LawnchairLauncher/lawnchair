@@ -845,7 +845,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
             LauncherModel.addItemToDatabase(mLauncher, info, mInfo.id, 0,
-                        info.cellX, info.cellY, false);
+                        info.cellX, info.cellY);
         }
     }
 

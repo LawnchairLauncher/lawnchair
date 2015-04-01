@@ -70,7 +70,6 @@ public class LauncherProvider extends ContentProvider {
 
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
-    static final String PARAMETER_NOTIFY = "notify";
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     private static final String URI_PARAM_IS_EXTERNAL_ADD = "isExternalAdd";
@@ -150,7 +149,8 @@ public class LauncherProvider extends ContentProvider {
 
         // In very limited cases, we support system|signature permission apps to add to the db
         String externalAdd = uri.getQueryParameter(URI_PARAM_IS_EXTERNAL_ADD);
-        if (externalAdd != null && "true".equals(externalAdd)) {
+        final boolean isExternalAll = externalAdd != null && "true".equals(externalAdd);
+        if (isExternalAll) {
             if (!mOpenHelper.initializeExternalAdd(initialValues)) {
                 return null;
             }
@@ -162,7 +162,14 @@ public class LauncherProvider extends ContentProvider {
         if (rowId < 0) return null;
 
         uri = ContentUris.withAppendedId(uri, rowId);
-        sendNotify(uri);
+        notifyListeners();
+
+        if (isExternalAll) {
+            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+            if (app != null) {
+                app.reloadWorkspace();
+            }
+        }
 
         return uri;
     }
@@ -187,7 +194,7 @@ public class LauncherProvider extends ContentProvider {
             db.endTransaction();
         }
 
-        sendNotify(uri);
+        notifyListeners();
         return values.length;
     }
 
@@ -211,7 +218,7 @@ public class LauncherProvider extends ContentProvider {
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.delete(args.table, args.where, args.args);
-        if (count > 0) sendNotify(uri);
+        if (count > 0) notifyListeners();
 
         return count;
     }
@@ -223,17 +230,12 @@ public class LauncherProvider extends ContentProvider {
         addModifiedTime(values);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = db.update(args.table, values, args.where, args.args);
-        if (count > 0) sendNotify(uri);
+        if (count > 0) notifyListeners();
 
         return count;
     }
 
-    private void sendNotify(Uri uri) {
-        String notify = uri.getQueryParameter(PARAMETER_NOTIFY);
-        if (notify == null || "true".equals(notify)) {
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
-
+    private void notifyListeners() {
         // always notify the backup agent
         LauncherBackupAgentHelper.dataChanged(getContext());
         if (mListener != null) {

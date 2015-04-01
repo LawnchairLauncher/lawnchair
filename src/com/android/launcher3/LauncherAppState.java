@@ -19,16 +19,13 @@ package com.android.launcher3;
 import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Point;
 import android.os.Build;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -116,11 +113,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
         filter.addAction(SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED);
         sContext.registerReceiver(mModel, filter);
-
-        // Register for changes to the favorites
-        ContentResolver resolver = sContext.getContentResolver();
-        resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
-                mFavoritesObserver);
     }
 
     /**
@@ -131,23 +123,16 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
         launcherApps.removeOnAppsChangedCallback(mModel);
         PackageInstallerCompat.getInstance(sContext).onStop();
-
-        ContentResolver resolver = sContext.getContentResolver();
-        resolver.unregisterContentObserver(mFavoritesObserver);
     }
 
     /**
-     * Receives notifications whenever the user favorites have changed.
+     * Reloads the workspace items from the DB and re-binds the workspace. This should generally
+     * not be called as DB updates are automatically followed by UI update
      */
-    private final ContentObserver mFavoritesObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            // If the database has ever changed, then we really need to force a reload of the
-            // workspace on the next load
-            mModel.resetLoadedState(false, true);
-            mModel.startLoaderFromBackground();
-        }
-    };
+    public void reloadWorkspace() {
+        mModel.resetLoadedState(false, true);
+        mModel.startLoaderFromBackground();
+    }
 
     LauncherModel setLauncher(Launcher launcher) {
         mModel.initialize(launcher);

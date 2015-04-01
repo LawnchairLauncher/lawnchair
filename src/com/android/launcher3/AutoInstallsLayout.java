@@ -606,7 +606,7 @@ public class AutoInstallsLayout {
             // failed to add, and less than 2 were actually added
             if (folderItems.size() < 2) {
                 // Delete the folder
-                Uri uri = Favorites.getContentUri(folderId, false);
+                Uri uri = Favorites.getContentUri(folderId);
                 SqlArguments args = new SqlArguments(uri, null, null);
                 mDb.delete(args.table, args.where, args.args);
                 addedId = -1;

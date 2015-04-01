@@ -4323,8 +4323,7 @@ public class Workspace extends SmoothPagedView
                     cellX = hotseat.getCellXFromOrder((int) info.screenId);
                     cellY = hotseat.getCellYFromOrder((int) info.screenId);
                 }
-                LauncherModel.addItemToDatabase(mLauncher, info, container, screenId, cellX,
-                        cellY, false);
+                LauncherModel.addItemToDatabase(mLauncher, info, container, screenId, cellX, cellY);
             }
             if (v instanceof FolderIcon) {
                 FolderIcon fi = (FolderIcon) v;
