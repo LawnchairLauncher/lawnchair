@@ -2939,9 +2939,10 @@ public class Launcher extends Activity
             }
 
             Bundle optsBundle = null;
-            if (useLaunchAnimation) {
-                ActivityOptions opts = Utilities.isLmpOrAbove() ?
-                        ActivityOptions.makeCustomAnimation(this, R.anim.task_open_enter, R.anim.no_anim) :
+            if (useLaunchAnimation && !Utilities.isLmpOrAbove()) {
+                // On pre-L devices, we use the scale up transition.
+                // Otherwise we use system default.
+                ActivityOptions opts =
                         ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
                 optsBundle = opts.toBundle();
             }
