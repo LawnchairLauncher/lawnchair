@@ -37,6 +37,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,7 +64,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 24;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -617,7 +618,9 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     }
                 }
-                case 23: {
+                case 23:
+                    convertShortcutsToLauncherActivities(db);
+                case 24: {
                     // DB Upgraded successfully
                     return;
                 }
@@ -636,7 +639,6 @@ public class LauncherProvider extends ContentProvider {
             createEmptyDB(db);
         }
 
-
         /**
          * Clears all the data for a fresh start.
          */
@@ -644,6 +646,63 @@ public class LauncherProvider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
             onCreate(db);
+        }
+
+        /**
+         * Replaces all shortcuts of type {@link Favorites#ITEM_TYPE_SHORTCUT} which have a valid
+         * launcher activity target with {@link Favorites#ITEM_TYPE_APPLICATION}.
+         */
+        private void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
+            db.beginTransaction();
+            Cursor c = null;
+            SQLiteStatement updateStmt = null;
+
+            try {
+                // Only consider the primary user as other users can't have a shortcut.
+                long userSerial = UserManagerCompat.getInstance(mContext)
+                        .getSerialNumberForUser(UserHandleCompat.myUserHandle());
+                c = db.query(TABLE_FAVORITES, new String[] {
+                        Favorites._ID,
+                        Favorites.INTENT,
+                    }, "itemType=" + Favorites.ITEM_TYPE_SHORTCUT + " AND profileId=" + userSerial,
+                    null, null, null, null);
+
+                updateStmt = db.compileStatement("UPDATE favorites SET itemType="
+                        + Favorites.ITEM_TYPE_APPLICATION + " WHERE _id=?");
+
+                final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
+                final int intentIndex = c.getColumnIndexOrThrow(Favorites.INTENT);
+
+                while (c.moveToNext()) {
+                    String intentDescription = c.getString(intentIndex);
+                    Intent intent;
+                    try {
+                        intent = Intent.parseUri(intentDescription, 0);
+                    } catch (URISyntaxException e) {
+                        Log.e(TAG, "Unable to parse intent", e);
+                        continue;
+                    }
+
+                    if (!InstallShortcutReceiver.isLauncherActivity(intent, mContext)) {
+                        continue;
+                    }
+
+                    long id = c.getLong(idIndex);
+                    updateStmt.bindLong(1, id);
+                    updateStmt.execute();
+                }
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                Log.w(TAG, "Error deduping shortcuts", ex);
+            } finally {
+                db.endTransaction();
+                if (c != null) {
+                    c.close();
+                }
+                if (updateStmt != null) {
+                    updateStmt.close();
+                }
+            }
         }
 
         /**
