@@ -536,7 +536,8 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
     @Override
     protected PageMarkerResources getPageIndicatorMarker(int pageIndex) {
-        return new PageMarkerResources(R.drawable.ic_pageindicator_current_dark, R.drawable.ic_pageindicator_default_dark);
+        return new PageMarkerResources(R.drawable.ic_pageindicator_current_folder,
+                R.drawable.ic_pageindicator_default_folder);
     }
 
     @Override
