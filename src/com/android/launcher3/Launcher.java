@@ -1047,6 +1047,7 @@ public class Launcher extends Activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
         getWorkspace().reinflateWidgetsIfNecessary();
+        reinflateQSBIfNecessary();
 
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
@@ -3503,6 +3504,15 @@ public class Launcher extends Activity
             }
         }
         return mQsb;
+    }
+
+    private void reinflateQSBIfNecessary() {
+        if (mQsb instanceof LauncherAppWidgetHostView &&
+                ((LauncherAppWidgetHostView) mQsb).isReinflateRequired()) {
+            mSearchDropTargetBar.removeView(mQsb);
+            mQsb = null;
+            mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
+        }
     }
 
     @Override
