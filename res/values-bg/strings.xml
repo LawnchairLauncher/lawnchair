@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Няма повече място в областта с любимите"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Това приспособление е твърде голямо за областта с любимите"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Прекият път към <xliff:g id="NAME">%s</xliff:g> е създаден."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Прекият път към <xliff:g id="NAME">%s</xliff:g> бе премахнат."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Прекият път към <xliff:g id="NAME">%s</xliff:g> вече съществува."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Избор на пряк път"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Избор на приложение"</string>

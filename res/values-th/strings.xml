@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ไม่มีพื้นที่เหลือในถาดรายการโปรด"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"วิดเจ็ตนี้มีขนาดใหญ่เกินไปสำหรับถาดรายการโปรด"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"สร้างทางลัด \"<xliff:g id="NAME">%s</xliff:g>\" แล้ว"</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"นำทางลัด \"<xliff:g id="NAME">%s</xliff:g>\" ออกแล้ว"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"มีทางลัด \"<xliff:g id="NAME">%s</xliff:g>\" อยู่แล้ว"</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"เลือกทางลัด"</string>
     <string name="title_select_application" msgid="3280812711670683644">"เลือกแอป"</string>

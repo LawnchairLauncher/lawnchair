@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"\"Дуртай\" трей дээр өөр зай байхгүй байна"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Энэ виджет трей дээр хэт томдож байна"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"\"<xliff:g id="NAME">%s</xliff:g>\" товчлол үүсэв."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"\"<xliff:g id="NAME">%s</xliff:g>\" товчлол устгагдав."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"\"<xliff:g id="NAME">%s</xliff:g>\" товчлол өмнө үүссэн байна."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Товчлол сонгох"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Апп сонгох"</string>

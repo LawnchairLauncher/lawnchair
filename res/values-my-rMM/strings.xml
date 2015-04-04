@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"ဤဝဒ်ဂျက်မှာ အနှစ်သက်ဆုံးအရာများထားရာနေရာ အတွက် ကြီးလွန်းနေပါသည်"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"အတိုကောက်မှတ်သားမှု \"<xliff:g id="NAME">%s</xliff:g>\" ကို ပြုလုပ်ပြီးပါပြီ"</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"အတိုကောက်မှတ်သားမှု \"<xliff:g id="NAME">%s</xliff:g>\" ကို ဖယ်ရှားပြီးပါပြီ"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"အတိုကောက်မှတ်သားမှု \"<xliff:g id="NAME">%s</xliff:g>\" ရှိပြီးသား ဖြစ်နေပါသည်"</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"အတိုကောက်မှတ်သားမှုကို ရွေးရန်"</string>
     <string name="title_select_application" msgid="3280812711670683644">"အပလီကေးရှင်း တစ်ခုခုကို ရွေးချယ်ပါ"</string>

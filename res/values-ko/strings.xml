@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"위젯이 너무 커서 즐겨찾기 트레이에 들어갈 수 없습니다."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 생성되었습니다."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"바로가기 선택"</string>
     <string name="title_select_application" msgid="3280812711670683644">"앱 선택"</string>

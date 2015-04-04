@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Mėgstamiausių dėkle nebėra vietos"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Mėgstamiausių dėklui šis valdiklis per didelis."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ sukurtas."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ pašalintas."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ jau yra."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Pasirinkite spartųjį klavišą"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Pasirinkite programą"</string>

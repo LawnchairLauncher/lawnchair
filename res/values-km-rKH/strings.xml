@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"ធាតុ​ក្រាហ្វិក​នេះ​ធំ​ពេក​សម្រាប់​ថាស​និយម​ប្រើ"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"បាន​បង្កើត​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"បាន​លុប​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" ។"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"មាន​ផ្លូវកាត់ \"<xliff:g id="NAME">%s</xliff:g>\" រួច​ហើយ។"</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"ជ្រើស​ផ្លូវកាត់"</string>
     <string name="title_select_application" msgid="3280812711670683644">"ជ្រើស​កម្មវិធី"</string>

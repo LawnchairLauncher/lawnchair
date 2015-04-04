@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ajratilganlar uchun ushbu vidjet juda katta"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"\"<xliff:g id="NAME">%s</xliff:g>\" yorlig‘i yaratildi."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"\"<xliff:g id="NAME">%s</xliff:g>\" yorlig‘i o‘chirildi."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"\"<xliff:g id="NAME">%s</xliff:g>\" yorlig‘i allaqachon mavjud."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Yorliqni tanlash"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Ilovani tanlash"</string>

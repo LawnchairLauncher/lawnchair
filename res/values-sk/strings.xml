@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Na paneli Obľúbené položky už nie je miesto"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Táto miniaplikácia je príliš veľká pre panel Obľúbené položky"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Odkaz <xliff:g id="NAME">%s</xliff:g> bol vytvorený."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Odkaz <xliff:g id="NAME">%s</xliff:g> bol odstránený."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Odkaz <xliff:g id="NAME">%s</xliff:g> už existuje."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Vybrať odkaz"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Vybrať aplikáciu"</string>

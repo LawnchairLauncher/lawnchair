@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В області \"Вибране\" немає місця"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Цей віджет завеликий для області \"Вибране\""</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" створено."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" вилучено."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" уже існує."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Вибрати ярлик"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Вибрати програму"</string>

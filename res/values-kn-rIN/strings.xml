@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇನಲ್ಲಿ ಹೆಚ್ಚಿನ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇಗೆ ಈ ವಿಜೆಟ್‌ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"ಶಾರ್ಟ್‌ಕಟ್‌ \"<xliff:g id="NAME">%s</xliff:g>\" ಅನ್ನು ರಚಿಸಲಾಗಿದೆ."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"ಶಾರ್ಟ್‌ಕಟ್‌ \"<xliff:g id="NAME">%s</xliff:g>\" ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"ಶಾರ್ಟ್‌ಕಟ್‌ \"<xliff:g id="NAME">%s</xliff:g>\" ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"ಶಾರ್ಟ್‌ಕಟ್‌ ಆರಿಸಿ"</string>
     <string name="title_select_application" msgid="3280812711670683644">"ಅಪ್ಲಿಕೇಶನ್ ಆಯ್ಕೆಮಾಡಿ"</string>

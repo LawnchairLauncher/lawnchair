@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В разделе \"Избранное\" больше нет места"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Виджет слишком велик для раздела \"Избранное\""</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" создан"</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" удален"</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" уже существует"</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Выбор ярлыка"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Выбор приложения"</string>

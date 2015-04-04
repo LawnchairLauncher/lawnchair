@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"La bandeja de favoritos está llena."</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Este widget es demasiado grande para la bandeja de favoritos."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Se creó el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Se eliminó el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Elegir acceso directo"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Elegir aplicación"</string>

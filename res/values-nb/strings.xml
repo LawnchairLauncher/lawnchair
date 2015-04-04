@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritter-skuffen er full"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Denne modulen er for stor for Favoritter-skuffen."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» er opprettet."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» er fjernet."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Valg av snarvei"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Velg app"</string>

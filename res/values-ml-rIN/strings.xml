@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"പ്രിയപ്പെട്ടവയുടെ ട്രേയിൽ ഒഴിവൊന്നുമില്ല"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"ഈ വിജറ്റ് പ്രിയപ്പെട്ടവയുടെ ട്രേയിൽ ഉൾക്കൊള്ളിക്കാവുന്നതിലും വളരെ വലുതാണ്"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"കുറുക്കുവഴി \"<xliff:g id="NAME">%s</xliff:g>\" സൃഷ്‌ടിച്ചു."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"കുറുക്കുവഴി \"<xliff:g id="NAME">%s</xliff:g>\" നീക്കംചെയ്‌തു."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"കുറുക്കുവഴി \"<xliff:g id="NAME">%s</xliff:g>\" ഇതിനകം നിലവിലുണ്ട്."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"കുറുക്കുവഴി തിരഞ്ഞെടുക്കുക"</string>
     <string name="title_select_application" msgid="3280812711670683644">"അപ്ലിക്കേഷൻ തിരഞ്ഞെടുക്കുക"</string>

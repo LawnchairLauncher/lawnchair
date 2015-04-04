@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tiada ruang dalam dulang Kegemaran lagi"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Widget ini terlalu besar untuk dulang Kegemaran"</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" telah dibuat."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" telah dialih keluar."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" sudah wujud."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Pilih jalan pintas"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Pilih apl"</string>

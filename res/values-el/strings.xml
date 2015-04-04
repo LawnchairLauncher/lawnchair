@@ -51,7 +51,6 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="invalid_hotseat_item" msgid="5779907847267573691">"Αυτό το γραφικό στοιχείο είναι πολύ μεγάλο για την περιοχή Αγαπημένα."</string>
     <string name="shortcut_installed" msgid="1701742129426969556">"Δημιουργήθηκε η συντόμευση \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Η συντόμευση \"<xliff:g id="NAME">%s</xliff:g>\" καταργήθηκε."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Η συντόμευση \"<xliff:g id="NAME">%s</xliff:g>\" υπάρχει ήδη."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Επιλογή συντόμευσης"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Επιλογή εφαρμογής"</string>
