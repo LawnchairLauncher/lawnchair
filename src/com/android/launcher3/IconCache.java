@@ -200,7 +200,7 @@ public class IconCache {
                     PackageManager.GET_UNINSTALLED_PACKAGES);
             long userSerial = mUserManager.getSerialNumberForUser(user);
             for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(packageName, user)) {
-                addIconToDB(app, info, userSerial);
+                addIconToDBAndMemCache(app, info, userSerial);
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
@@ -295,14 +295,25 @@ public class IconCache {
             if (info == null) {
                 continue;
             }
-            addIconToDB(app, info, userSerial);
+            addIconToDBAndMemCache(app, info, userSerial);
         }
         return updatedPackages;
     }
 
-    private void addIconToDB(LauncherActivityInfoCompat app, PackageInfo info, long userSerial) {
+    private void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
+            long userSerial) {
         ContentValues values = updateCacheAndGetContentValues(app);
+        addIconToDB(values, app.getComponentName(), info, userSerial);
         values.put(IconDB.COLUMN_COMPONENT, app.getComponentName().flattenToString());
+    }
+
+    /**
+     * Updates {@param values} to contain versoning information and adds it to the DB.
+     * @param values {@link ContentValues} containing icon & title
+     */
+    private void addIconToDB(ContentValues values, ComponentName key,
+            PackageInfo info, long userSerial) {
+        values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
         values.put(IconDB.COLUMN_VERSION, info.versionCode);
@@ -319,7 +330,6 @@ public class IconCache {
 
         return mIconDb.newContentValues(entry.icon, entry.title.toString());
     }
-
 
     /**
      * Empty out the cache.
@@ -435,6 +445,18 @@ public class IconCache {
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
     }
 
+    /**
+     * Fill in {@param appInfo} with the icon and label for {@param packageName}
+     */
+    public synchronized void getTitleAndIconForApp(
+            String packageName, UserHandleCompat user, boolean useLowResIcon, AppInfo appInfoOut) {
+        CacheEntry entry = getEntryForPackageLocked(packageName, user, useLowResIcon);
+        appInfoOut.iconBitmap = entry.icon;
+        appInfoOut.title = entry.title;
+        appInfoOut.usingLowResIcon = entry.isLowResIcon;
+        appInfoOut.contentDescription = entry.contentDescription;
+    }
+
     public synchronized Bitmap getDefaultIcon(UserHandleCompat user) {
         if (!mDefaultIcons.containsKey(user)) {
             mDefaultIcons.put(user, makeDefaultIcon(user));
@@ -464,8 +486,8 @@ public class IconCache {
                     entry.icon = Utilities.createIconBitmap(info.getBadgedIcon(mIconDpi), mContext);
                 } else {
                     if (usePackageIcon) {
-                        CacheEntry packageEntry = getEntryForPackage(
-                                componentName.getPackageName(), user);
+                        CacheEntry packageEntry = getEntryForPackageLocked(
+                                componentName.getPackageName(), user, false);
                         if (packageEntry != null) {
                             if (DEBUG) Log.d(TAG, "using package default icon for " +
                                     componentName.toShortString());
@@ -498,7 +520,7 @@ public class IconCache {
             Bitmap icon, CharSequence title) {
         removeFromMemCacheLocked(packageName, user);
 
-        CacheEntry entry = getEntryForPackage(packageName, user);
+        CacheEntry entry = getEntryForPackageLocked(packageName, user, false);
         if (!TextUtils.isEmpty(title)) {
             entry.title = title;
         }
@@ -510,24 +532,41 @@ public class IconCache {
     /**
      * Gets an entry for the package, which can be used as a fallback entry for various components.
      * This method is not thread safe, it must be called from a synchronized method.
+     *
      */
-    private CacheEntry getEntryForPackage(String packageName, UserHandleCompat user) {
-        ComponentName cn = new ComponentName(packageName, EMPTY_CLASS_NAME);;
+    private CacheEntry getEntryForPackageLocked(String packageName, UserHandleCompat user,
+            boolean useLowResIcon) {
+        ComponentName cn = new ComponentName(packageName, EMPTY_CLASS_NAME);
         ComponentKey cacheKey = new ComponentKey(cn, user);
         CacheEntry entry = mCache.get(cacheKey);
-        if (entry == null) {
+        if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
             entry = new CacheEntry();
-            entry.title = "";
-            entry.contentDescription = "";
             mCache.put(cacheKey, entry);
 
-            try {
-                ApplicationInfo info = mPackageManager.getApplicationInfo(packageName, 0);
-                entry.icon = Utilities.createIconBitmap(info.loadIcon(mPackageManager), mContext);
-                entry.title = info.loadLabel(mPackageManager);
-                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
-            } catch (NameNotFoundException e) {
-                if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
+            // Check the DB first.
+            if (!getEntryFromDB(cn, user, entry, useLowResIcon)) {
+                try {
+                    PackageInfo info = mPackageManager.getPackageInfo(packageName, 0);
+                    ApplicationInfo appInfo = info.applicationInfo;
+                    if (appInfo == null) {
+                        throw new NameNotFoundException("ApplicationInfo is null");
+                    }
+                    Drawable drawable = mUserManager.getBadgedDrawableForUser(
+                            appInfo.loadIcon(mPackageManager), user);
+                    entry.icon = Utilities.createIconBitmap(drawable, mContext);
+                    entry.title = appInfo.loadLabel(mPackageManager);
+                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                    entry.isLowResIcon = false;
+
+                    // Add the icon in the DB here, since these do not get written during
+                    // package updates.
+                    ContentValues values =
+                            mIconDb.newContentValues(entry.icon, entry.title.toString());
+                    addIconToDB(values, cn, info, mUserManager.getSerialNumberForUser(user));
+
+                } catch (NameNotFoundException e) {
+                    if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
+                }
             }
         }
         return entry;
