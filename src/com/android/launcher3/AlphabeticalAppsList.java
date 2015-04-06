@@ -4,12 +4,74 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
+
+/**
+ * A private class to manage access to an app name comparator.
+ */
+class AppNameComparator {
+    private UserManagerCompat mUserManager;
+    private Comparator<AppInfo> mAppNameComparator;
+    private HashMap<UserHandleCompat, Long> mUserSerialCache = new HashMap<>();
+
+    public AppNameComparator(Context context) {
+        final Collator collator = Collator.getInstance();
+        mUserManager = UserManagerCompat.getInstance(context);
+        mAppNameComparator = new Comparator<AppInfo>() {
+            public final int compare(AppInfo a, AppInfo b) {
+                // Order by the title
+                int result = collator.compare(a.title.toString().trim(),
+                        b.title.toString().trim());
+                if (result == 0) {
+                    // If two apps have the same title, then order by the component name
+                    result = a.componentName.compareTo(b.componentName);
+                    if (result == 0) {
+                        // If the two apps are the same component, then prioritize by the order that
+                        // the app user was created (prioritizing the main user's apps)
+                        if (UserHandleCompat.myUserHandle().equals(a.user)) {
+                            return -1;
+                        } else {
+                            Long aUserSerial = getAndCacheUserSerial(a.user);
+                            Long bUserSerial = getAndCacheUserSerial(b.user);
+                            return aUserSerial.compareTo(bUserSerial);
+                        }
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    /**
+     * Returns a locale-aware comparator that will alphabetically order a list of applications.
+     */
+    public Comparator<AppInfo> getComparator() {
+        // Clear the user serial cache so that we get serials as needed in the comparator
+        mUserSerialCache.clear();
+        return mAppNameComparator;
+    }
+
+    /**
+     * Returns the user serial for this user, using a cached serial if possible.
+     */
+    private Long getAndCacheUserSerial(UserHandleCompat user) {
+        Long userSerial = mUserSerialCache.get(user);
+        if (userSerial == null) {
+            userSerial = mUserManager.getSerialNumberForUser(user);
+            mUserSerialCache.put(user, userSerial);
+        }
+        return userSerial;
+    }
+}
 
 /**
  * The alphabetically sorted list of applications.
@@ -41,9 +103,11 @@ public class AlphabeticalAppsList {
     private RecyclerView.Adapter mAdapter;
     private Filter mFilter;
     private AlphabeticIndexCompat mIndexer;
+    private AppNameComparator mAppNameComparator;
 
     public AlphabeticalAppsList(Context context) {
         mIndexer = new AlphabeticIndexCompat(context);
+        mAppNameComparator = new AppNameComparator(context);
     }
 
     /**
@@ -82,13 +146,6 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * Returns the indexer for this locale.
-     */
-    public AlphabeticIndexCompat getIndexer() {
-        return mIndexer;
-    }
-
-    /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
@@ -108,7 +165,7 @@ public class AlphabeticalAppsList {
      * Sets the current set of apps.
      */
     public void setApps(List<AppInfo> apps) {
-        Collections.sort(apps, LauncherModel.getAppNameComparator());
+        Collections.sort(apps, mAppNameComparator.getComparator());
         mApps.clear();
         mApps.addAll(apps);
         onAppsUpdated();
@@ -183,8 +240,7 @@ public class AlphabeticalAppsList {
      * Implementation to actually add an app to the alphabetic list
      */
     private void addApp(AppInfo info) {
-        Comparator<AppInfo> appNameComparator = LauncherModel.getAppNameComparator();
-        int index = Collections.binarySearch(mApps, info, appNameComparator);
+        int index = Collections.binarySearch(mApps, info, mAppNameComparator.getComparator());
         if (index < 0) {
             mApps.add(-(index + 1), info);
             onAppsUpdated();
