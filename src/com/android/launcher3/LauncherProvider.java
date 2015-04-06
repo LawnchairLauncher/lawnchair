@@ -341,8 +341,11 @@ public class LauncherProvider extends ContentProvider {
         Context ctx = getContext();
         UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
         Bundle bundle = um.getApplicationRestrictions(ctx.getPackageName());
-        String packageName = bundle.getString(RESTRICTION_PACKAGE_NAME);
+        if (bundle == null) {
+            return null;
+        }
 
+        String packageName = bundle.getString(RESTRICTION_PACKAGE_NAME);
         if (packageName != null) {
             try {
                 Resources targetResources = ctx.getPackageManager()
