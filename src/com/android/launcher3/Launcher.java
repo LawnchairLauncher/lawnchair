@@ -2958,14 +2958,11 @@ public class Launcher extends Activity
                         sClipRevealMethod = null;
                     }
                 }
-                if (opts == null) {
-                    opts = Utilities.isLmpOrAbove() ?
-                            ActivityOptions.makeCustomAnimation(this,
-                                    R.anim.task_open_enter, R.anim.no_anim) :
-                            ActivityOptions.makeScaleUpAnimation(v, 0, 0,
+                if (opts == null && !Utilities.isLmpOrAbove()) {
+                    opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
                                     v.getMeasuredWidth(), v.getMeasuredHeight());
                 }
-                optsBundle = opts.toBundle();
+                optsBundle = opts != null ? opts.toBundle() : null;
             }
 
             if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
