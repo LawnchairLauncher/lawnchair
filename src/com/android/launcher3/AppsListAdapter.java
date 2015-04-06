@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
 
 /**
  * The linear list view adapter for all the apps.
@@ -93,15 +92,16 @@ class AppsListAdapter extends RecyclerView.Adapter<AppsListAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case ICON_VIEW_TYPE:
-                AppInfo info = mApps.getApps().get(position);
+                AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
                 ViewGroup content = (ViewGroup) holder.mContent;
-                String sectionDescription = mApps.getSectionNameForApp(info);
+                String sectionDescription = item.sectionName;
 
                 // Bind the section header
                 boolean showSectionHeader = true;
                 if (position > 0) {
-                    AppInfo prevInfo = mApps.getApps().get(position - 1);
-                    showSectionHeader = (prevInfo == AlphabeticalAppsList.SECTION_BREAK_INFO);
+                    AlphabeticalAppsList.AdapterItem prevItem =
+                            mApps.getAdapterItems().get(position - 1);
+                    showSectionHeader = prevItem.isSectionHeader;
                 }
                 TextView tv = (TextView) content.findViewById(R.id.section);
                 if (showSectionHeader) {
@@ -113,7 +113,7 @@ class AppsListAdapter extends RecyclerView.Adapter<AppsListAdapter.ViewHolder> {
 
                 // Bind the icon
                 BubbleTextView icon = (BubbleTextView) content.getChildAt(1);
-                icon.applyFromApplicationInfo(info);
+                icon.applyFromApplicationInfo(item.appInfo);
                 break;
             case EMPTY_VIEW_TYPE:
                 TextView emptyViewText = (TextView) holder.mContent.findViewById(R.id.empty_text);
@@ -128,14 +128,14 @@ class AppsListAdapter extends RecyclerView.Adapter<AppsListAdapter.ViewHolder> {
             // For the empty view
             return 1;
         }
-        return mApps.getApps().size();
+        return mApps.getAdapterItems().size();
     }
 
     @Override
     public int getItemViewType(int position) {
         if (mApps.hasNoFilteredResults()) {
             return EMPTY_VIEW_TYPE;
-        } else if (mApps.getApps().get(position) == AlphabeticalAppsList.SECTION_BREAK_INFO) {
+        } else if (mApps.getAdapterItems().get(position).isSectionHeader) {
             return SECTION_BREAK_VIEW_TYPE;
         }
         return ICON_VIEW_TYPE;

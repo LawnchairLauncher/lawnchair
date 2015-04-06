@@ -389,11 +389,6 @@ public class BubbleTextView extends TextView {
     }
 
     @Override
-    protected boolean onSetAlpha(int alpha) {
-        return true;
-    }
-
-    @Override
     public void cancelLongPress() {
         super.cancelLongPress();
 

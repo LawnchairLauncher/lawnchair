@@ -21,7 +21,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -319,9 +318,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             final String filterText = s.toString().toLowerCase().replaceAll("\\s+", "");
             mApps.setFilter(new AlphabeticalAppsList.Filter() {
                 @Override
-                public boolean retainApp(AppInfo info) {
+                public boolean retainApp(AppInfo info, String sectionName) {
                     String title = info.title.toString();
-                    String sectionName = mApps.getSectionNameForApp(info);
                     return sectionName.toLowerCase().contains(filterText) ||
                             title.toLowerCase().replaceAll("\\s+", "").contains(filterText);
                 }
@@ -332,15 +330,22 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (ALLOW_SINGLE_APP_LAUNCH && actionId == EditorInfo.IME_ACTION_DONE) {
-            List<AppInfo> appsWithoutSections = mApps.getAppsWithoutSectionBreaks();
-            List<AppInfo> apps = mApps.getApps();
-            if (appsWithoutSections.size() == 1) {
-                mAppsListView.getChildAt(apps.indexOf(appsWithoutSections.get(0))).performClick();
-                InputMethodManager imm = (InputMethodManager)
-                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getWindowToken(), 0);
+            // Skip the quick-launch if there isn't exactly one item
+            if (mApps.getSize() != 1) {
+                return false;
             }
-            return true;
+
+            List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+            for (int i = 0; i < items.size(); i++) {
+                AlphabeticalAppsList.AdapterItem item = items.get(i);
+                if (!item.isSectionHeader) {
+                    mAppsListView.getChildAt(i).performClick();
+                    InputMethodManager imm = (InputMethodManager)
+                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getWindowToken(), 0);
+                    return true;
+                }
+            }
         }
         return false;
     }

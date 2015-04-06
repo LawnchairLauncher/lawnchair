@@ -12,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.util.Thunk;
+
+import java.util.List;
 
 
 /**
@@ -54,8 +55,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 return mAppsPerRow;
             }
 
-            AppInfo info = mApps.getApps().get(position);
-            if (info == AlphabeticalAppsList.SECTION_BREAK_INFO) {
+            if (mApps.getAdapterItems().get(position).isSectionHeader) {
                 // Section break spans full width
                 return mAppsPerRow;
             } else {
@@ -71,6 +71,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
@@ -78,11 +79,11 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                     GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
                             child.getLayoutParams();
                     if (!holder.mIsSectionRow && !holder.mIsEmptyRow && !lp.isItemRemoved()) {
-                        if (mApps.getApps().get(holder.getPosition() - 1) ==
-                                AlphabeticalAppsList.SECTION_BREAK_INFO) {
+                        if (items.get(holder.getAdapterPosition() - 1).isSectionHeader) {
                             // Draw at the parent
-                            AppInfo info = mApps.getApps().get(holder.getPosition());
-                            String section = mApps.getSectionNameForApp(info);
+                            AlphabeticalAppsList.AdapterItem item =
+                                    items.get(holder.getAdapterPosition());
+                            String section = item.sectionName;
                             mSectionTextPaint.getTextBounds(section, 0, section.length(),
                                     mTmpBounds);
                             if (mIsRtl) {
@@ -212,7 +213,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case ICON_VIEW_TYPE:
-                AppInfo info = mApps.getApps().get(position);
+                AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
                 break;
@@ -229,14 +230,14 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             // For the empty view
             return 1;
         }
-        return mApps.getApps().size();
+        return mApps.getAdapterItems().size();
     }
 
     @Override
     public int getItemViewType(int position) {
         if (mApps.hasNoFilteredResults()) {
             return EMPTY_VIEW_TYPE;
-        } else if (mApps.getApps().get(position) == AlphabeticalAppsList.SECTION_BREAK_INFO) {
+        } else if (mApps.getAdapterItems().get(position).isSectionHeader) {
             return SECTION_BREAK_VIEW_TYPE;
         }
         return ICON_VIEW_TYPE;

@@ -228,12 +228,12 @@ public class AppsContainerRecyclerView extends RecyclerView
      * Draws the fast scroller popup.
      */
     private void drawFastScrollerPopup(Canvas canvas) {
-        int x;
-        int y;
-        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                LAYOUT_DIRECTION_RTL);
-
         if (mFastScrollAlpha > 0f) {
+            int x;
+            int y;
+            boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                    LAYOUT_DIRECTION_RTL);
+
             // Calculate the position for the fast scroller popup
             Rect bgBounds = mFastScrollerBg.getBounds();
             if (isRtl) {
@@ -288,52 +288,50 @@ public class AppsContainerRecyclerView extends RecyclerView
      */
     private String scrollToPositionAtProgress(float progress) {
         List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
-        // Get the total number of rows
-        int rowCount = getNumRows();
+        if (sections.isEmpty()) {
+            return "";
+        }
 
         // Find the position of the first application in the section that contains the row at the
         // current progress
-        int rowAtProgress = (int) (progress * rowCount);
-        int appIndex = 0;
-        rowCount = 0;
-        for (AlphabeticalAppsList.SectionInfo info : sections) {
-            int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
-            if (rowCount + numRowsInSection > rowAtProgress) {
+        int rowAtProgress = (int) (progress * getNumRows());
+        int rowCount = 0;
+        AlphabeticalAppsList.SectionInfo lastSectionInfo = null;
+        for (AlphabeticalAppsList.SectionInfo section : sections) {
+            int numRowsInSection = (int) Math.ceil((float) section.numAppsInSection / mNumAppsPerRow);
+            if (rowCount + numRowsInSection >= rowAtProgress) {
+                lastSectionInfo = section;
                 break;
             }
             rowCount += numRowsInSection;
-            appIndex += info.numAppsInSection;
         }
-        appIndex = Math.max(0, Math.min(mApps.getAppsWithoutSectionBreaks().size() - 1, appIndex));
-        AppInfo appInfo = mApps.getAppsWithoutSectionBreaks().get(appIndex);
-        int sectionedAppIndex = mApps.getApps().indexOf(appInfo);
+        int position = mApps.getAdapterItems().indexOf(lastSectionInfo.firstAppItem);
 
         // Scroll the position into view, anchored at the top of the screen if possible. We call the
         // scroll method on the LayoutManager directly since it is not exposed by RecyclerView.
         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
         stopScroll();
-        layoutManager.scrollToPositionWithOffset(sectionedAppIndex, 0);
+        layoutManager.scrollToPositionWithOffset(position, 0);
 
         // Return the section name of the row
-        return mApps.getSectionNameForApp(appInfo);
+        return mApps.getAdapterItems().get(position).sectionName;
     }
 
     /**
      * Returns the bounds for the scrollbar.
      */
     private void updateVerticalScrollbarBounds() {
-        int x;
-        int y;
-        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                LAYOUT_DIRECTION_RTL);
-
         // Skip early if there are no items
-        if (mApps.getApps().isEmpty()) {
+        if (mApps.getAdapterItems().isEmpty()) {
             mVerticalScrollbarBounds.setEmpty();
             return;
         }
 
         // Find the index and height of the first visible row (all rows have the same height)
+        int x;
+        int y;
+        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                LAYOUT_DIRECTION_RTL);
         int rowIndex = -1;
         int rowTopOffset = -1;
         int rowHeight = -1;
@@ -341,12 +339,11 @@ public class AppsContainerRecyclerView extends RecyclerView
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            int position = getChildPosition(child);
+            int position = getChildAdapterPosition(child);
             if (position != NO_POSITION) {
-                AppInfo info = mApps.getApps().get(position);
-                if (info != AlphabeticalAppsList.SECTION_BREAK_INFO) {
-                    int appIndex = mApps.getAppsWithoutSectionBreaks().indexOf(info);
-                    rowIndex = findRowForAppIndex(appIndex);
+                AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
+                if (!item.isSectionHeader) {
+                    rowIndex = findRowForAppIndex(item.appIndex);
                     rowTopOffset = getLayoutManager().getDecoratedTop(child);
                     rowHeight = child.getHeight();
                     break;
