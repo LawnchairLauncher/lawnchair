@@ -766,7 +766,8 @@ public class DeviceProfile {
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx;
-            hotseat.setPadding(2 * edgeMarginPx, 0, 2 * edgeMarginPx, 0);
+            hotseat.findViewById(R.id.layout).setPadding(2 * edgeMarginPx, 0,
+                    2 * edgeMarginPx, 0);
         }
         hotseat.setLayoutParams(lp);
 
