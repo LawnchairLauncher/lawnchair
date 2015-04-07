@@ -149,7 +149,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     }
 
     /**
-     * Computes the location of a view relative to {@link #mCommonParent}, off-setting
+     * Computes the location of a view relative to {@param parent}, off-setting
      * any shift due to page view scroll.
      * @param pos an array of two integers in which to hold the coordinates
      */
@@ -166,12 +166,12 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     private static void computeLocationRelativeToParentHelper(View child,
             View commonParent, int[] shift) {
         View parent = (View) child.getParent();
-        if (parent instanceof PagedView) {
-            child = ((PagedView) parent).getPageAt(0);
-        }
-
         shift[0] += child.getLeft();
         shift[1] += child.getTop();
+        if (parent instanceof PagedView) {
+            PagedView page = (PagedView) parent;
+            shift[0] -= page.getScrollForPage(page.indexOfChild(child));
+        }
 
         if (parent != commonParent) {
             computeLocationRelativeToParentHelper(parent, commonParent, shift);
