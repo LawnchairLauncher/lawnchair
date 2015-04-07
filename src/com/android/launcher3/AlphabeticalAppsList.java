@@ -81,24 +81,65 @@ public class AlphabeticalAppsList {
     /**
      * Info about a section in the alphabetic list
      */
-    public class SectionInfo {
+    public static class SectionInfo {
+        // The name of this section
         public String sectionName;
+        // The number of applications in this section
         public int numAppsInSection;
+        // The first app AdapterItem for this section
+        public AdapterItem firstAppItem;
+
+        public SectionInfo(String name) {
+            sectionName = name;
+        }
+    }
+
+    /**
+     * Info about a particular adapter item (can be either section or app)
+     */
+    public static class AdapterItem {
+        // The index of this adapter item in the list
+        public int position;
+        // Whether or not the item at this adapter position is a section or not
+        public boolean isSectionHeader;
+        // The name of this section, or the section that this app is contained in
+        public String sectionName;
+        // The associated AppInfo, or null if this adapter item is a section
+        public AppInfo appInfo;
+        // The index of this app (not including sections), or -1 if this adapter item is a section
+        public int appIndex;
+
+        public static AdapterItem asSection(int pos, String name) {
+            AdapterItem item = new AdapterItem();
+            item.position = pos;
+            item.isSectionHeader = true;
+            item.sectionName = name;
+            item.appInfo = null;
+            item.appIndex = -1;
+            return item;
+        }
+
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo, int appIndex) {
+            AdapterItem item = new AdapterItem();
+            item.position = pos;
+            item.isSectionHeader = false;
+            item.sectionName = sectionName;
+            item.appInfo = appInfo;
+            item.appIndex = appIndex;
+            return item;
+        }
     }
 
     /**
      * A filter interface to limit the set of applications in the apps list.
      */
     public interface Filter {
-        public boolean retainApp(AppInfo info);
+        public boolean retainApp(AppInfo info, String sectionName);
     }
-
-    // Hack to force RecyclerView to break sections
-    public static final AppInfo SECTION_BREAK_INFO = null;
 
     private List<AppInfo> mApps = new ArrayList<>();
     private List<AppInfo> mFilteredApps = new ArrayList<>();
-    private List<AppInfo> mSectionedFilteredApps = new ArrayList<>();
+    private List<AdapterItem> mSectionedFilteredApps = new ArrayList<>();
     private List<SectionInfo> mSections = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
     private Filter mFilter;
@@ -127,22 +168,15 @@ public class AlphabeticalAppsList {
     /**
      * Returns the current filtered list of applications broken down into their sections.
      */
-    public List<AppInfo> getApps() {
+    public List<AdapterItem> getAdapterItems() {
         return mSectionedFilteredApps;
     }
 
     /**
-     * Returns the current filtered list of applications.
+     * Returns the number of applications in this list.
      */
-    public List<AppInfo> getAppsWithoutSectionBreaks() {
-        return mFilteredApps;
-    }
-
-    /**
-     * Returns the section name for the application.
-     */
-    public String getSectionNameForApp(AppInfo info) {
-        return mIndexer.computeSectionName(info.title.toString().trim());
+    public int getSize() {
+        return mFilteredApps.size();
     }
 
     /**
@@ -276,28 +310,39 @@ public class AlphabeticalAppsList {
      * Updates internals when the set of apps are updated.
      */
     private void onAppsUpdated() {
-        // Recreate the filtered apps
+        // Recreate the filtered and sectioned apps (for convenience for the grid layout)
         mFilteredApps.clear();
-        for (AppInfo info : mApps) {
-            if (mFilter == null || mFilter.retainApp(info)) {
-                mFilteredApps.add(info);
-            }
-        }
-
-        // Section the apps (for convenience for the grid layout)
         mSections.clear();
         mSectionedFilteredApps.clear();
         SectionInfo lastSectionInfo = null;
-        for (AppInfo info : mFilteredApps) {
-            String sectionName = getSectionNameForApp(info);
-            if (lastSectionInfo == null || !lastSectionInfo.sectionName.equals(sectionName)) {
-                lastSectionInfo = new SectionInfo();
-                lastSectionInfo.sectionName = sectionName;
-                mSectionedFilteredApps.add(SECTION_BREAK_INFO);
-                mSections.add(lastSectionInfo);
+        int position = 0;
+        int appIndex = 0;
+        for (AppInfo info : mApps) {
+            String sectionName = mIndexer.computeSectionName(info.title.toString().trim());
+
+            // Check if we want to retain this app
+            if (mFilter != null && !mFilter.retainApp(info, sectionName)) {
+                continue;
             }
+
+            // Create a new section if necessary
+            if (lastSectionInfo == null || !lastSectionInfo.sectionName.equals(sectionName)) {
+                lastSectionInfo = new SectionInfo(sectionName);
+                mSections.add(lastSectionInfo);
+
+                // Create a new section item
+                AdapterItem sectionItem = AdapterItem.asSection(position++, sectionName);
+                mSectionedFilteredApps.add(sectionItem);
+            }
+
+            // Create an app item
+            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
             lastSectionInfo.numAppsInSection++;
-            mSectionedFilteredApps.add(info);
+            if (lastSectionInfo.firstAppItem == null) {
+                lastSectionInfo.firstAppItem = appItem;
+            }
+            mSectionedFilteredApps.add(appItem);
+            mFilteredApps.add(info);
         }
     }
 }
