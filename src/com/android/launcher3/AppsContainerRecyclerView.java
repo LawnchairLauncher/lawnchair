@@ -339,7 +339,7 @@ public class AppsContainerRecyclerView extends RecyclerView
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            int position = getChildAdapterPosition(child);
+            int position = getChildPosition(child);
             if (position != NO_POSITION) {
                 AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
                 if (!item.isSectionHeader) {
