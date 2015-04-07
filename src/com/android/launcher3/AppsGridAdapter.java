@@ -79,10 +79,10 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                     GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
                             child.getLayoutParams();
                     if (!holder.mIsSectionRow && !holder.mIsEmptyRow && !lp.isItemRemoved()) {
-                        if (items.get(holder.getAdapterPosition() - 1).isSectionHeader) {
+                        if (items.get(holder.getPosition() - 1).isSectionHeader) {
                             // Draw at the parent
                             AlphabeticalAppsList.AdapterItem item =
-                                    items.get(holder.getAdapterPosition());
+                                    items.get(holder.getPosition());
                             String section = item.sectionName;
                             mSectionTextPaint.getTextBounds(section, 0, section.length(),
                                     mTmpBounds);
