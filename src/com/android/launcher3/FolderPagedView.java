@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.LayoutDirection;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -53,10 +54,17 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     private static final int SORT_ANIM_HIDE_DURATION = 130;
     private static final int SORT_ANIM_SHOW_DURATION = 160;
 
+    /**
+     * Fraction of the width to scroll when showing the next page hint.
+     */
+    private static final float SCROLL_HINT_FRACTION = 0.07f;
+
     private static final int[] sTempPosArray = new int[2];
 
     // TODO: Remove this restriction
     private static final int MAX_ITEMS_PER_PAGE = 4;
+
+    public final boolean rtlLayout;
 
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
@@ -94,6 +102,8 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
         mInflater = LayoutInflater.from(context);
         mIconCache = app.getIconCache();
+
+        rtlLayout = getResources().getConfiguration().getLayoutDirection() == LayoutDirection.RTL;
     }
 
     @Override
@@ -484,7 +494,7 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         if (getPageCount() > 1) {
             mPageIndicator.setVisibility(View.VISIBLE);
             mSortButton.setVisibility(View.VISIBLE);
-            mFolder.mFolderName.setGravity(Gravity.START);
+            mFolder.mFolderName.setGravity(rtlLayout ? Gravity.RIGHT : Gravity.LEFT);
             setEnableOverscroll(true);
         } else {
             mPageIndicator.setVisibility(View.GONE);
@@ -611,7 +621,9 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
     /**
      * Scrolls the current view by a fraction
      */
-    public void showScrollHint(float fraction) {
+    public void showScrollHint(int direction) {
+        float fraction = (direction == DragController.SCROLL_LEFT) ^ rtlLayout
+                ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
         int scroll = getScrollForPage(getNextPage()) + hint;
         int delta = scroll - mUnboundedScrollX;
@@ -761,7 +773,7 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                         }
                     };
                     v.animate()
-                        .translationXBy(direction > 0 ? -v.getWidth() : v.getWidth())
+                        .translationXBy((direction > 0 ^ rtlLayout) ? -v.getWidth() : v.getWidth())
                         .setDuration(REORDER_ANIMATION_DURATION)
                         .setStartDelay(0)
                         .withEndAction(endAction);
