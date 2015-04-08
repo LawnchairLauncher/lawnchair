@@ -174,11 +174,6 @@ s -->
     <string name="permdesc_install_shortcut">Allows an app to add
         shortcuts without user intervention.</string>
     <!-- Permission short label -->
-    <string name="permlab_uninstall_shortcut">uninstall shortcuts</string>
-    <!-- Permission description -->
-    <string name="permdesc_uninstall_shortcut">Allows the app to remove
-        shortcuts without user intervention.</string>
-    <!-- Permission short label -->
     <string name="permlab_read_settings">read Home settings and shortcuts</string>
     <!-- Permission description -->
     <string name="permdesc_read_settings">Allows the app to read the settings and
