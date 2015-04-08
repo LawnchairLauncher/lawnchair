@@ -429,7 +429,7 @@ public class DeviceProfile {
         int availableAppsWidthPx = (appsContainerViewPx > 0) ? appsContainerViewPx :
                 availableWidthPx;
         appsViewNumCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
-                (allAppsCellWidthPx + allAppsCellPaddingPx);
+                (allAppsCellWidthPx + 2 * allAppsCellPaddingPx);
     }
 
     void updateFromConfiguration(Context context, Resources resources, int wPx, int hPx,

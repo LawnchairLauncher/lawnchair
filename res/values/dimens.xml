@@ -48,6 +48,7 @@
 
 <!-- Apps view -->
     <dimen name="apps_container_width">0dp</dimen>
+    <dimen name="apps_container_height">0dp</dimen>
     <dimen name="apps_container_inset">8dp</dimen>
     <dimen name="apps_grid_view_start_margin">52dp</dimen>
     <dimen name="apps_view_row_height">64dp</dimen>
