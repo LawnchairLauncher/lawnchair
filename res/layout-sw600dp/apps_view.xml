@@ -18,16 +18,17 @@
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#22000000"
+    android:padding="@dimen/apps_container_inset"
+    android:background="@drawable/apps_customize_bg"
     android:descendantFocusability="afterDescendants">
     <include
         layout="@layout/apps_reveal_view"
-        android:layout_width="@dimen/apps_container_width"
-        android:layout_height="540dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center" />
     <include
         layout="@layout/apps_list_view"
-        android:layout_width="@dimen/apps_container_width"
-        android:layout_height="540dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center" />
 </com.android.launcher3.AppsContainerView>
