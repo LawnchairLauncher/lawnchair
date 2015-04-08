@@ -77,11 +77,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     static final int STATE_OPEN = 2;
 
     /**
-     * Fraction of the width to scroll when showing the next page hint.
-     */
-    private static final float SCROLL_HINT_FRACTION = 0.07f;
-
-    /**
      * Time for which the scroll hint is shown before automatically changing page.
      */
     public static final int SCROLL_HINT_DURATION = DragController.SCROLL_DELAY;
@@ -656,48 +651,42 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         float x = r[0];
         int currentPage = mPagedView.getNextPage();
-        int cellWidth = mPagedView.getCurrentCellLayout().getCellWidth();
-        if (currentPage > 0 && x < cellWidth * ICON_OVERSCROLL_WIDTH_FACTOR) {
-            // Show scroll hint on the left
-            if (mScrollHintDir != DragController.SCROLL_LEFT) {
-                mPagedView.showScrollHint(-SCROLL_HINT_FRACTION);
-                mScrollHintDir = DragController.SCROLL_LEFT;
-            }
 
-            // Set alarm for when the hint is complete
-            if (!mOnScrollHintAlarm.alarmPending() || mCurrentScrollDir != DragController.SCROLL_LEFT) {
-                mCurrentScrollDir = DragController.SCROLL_LEFT;
-                mOnScrollHintAlarm.cancelAlarm();
-                mOnScrollHintAlarm.setOnAlarmListener(new OnScrollHintListener(d));
-                mOnScrollHintAlarm.setAlarm(SCROLL_HINT_DURATION);
+        float cellOverlap = mPagedView.getCurrentCellLayout().getCellWidth()
+                * ICON_OVERSCROLL_WIDTH_FACTOR;
+        boolean isOutsideLeftEdge = x < cellOverlap;
+        boolean isOutsideRightEdge = x > (getWidth() - cellOverlap);
 
-                mReorderAlarm.cancelAlarm();
-                mTargetRank = mEmptyCellRank;
-            }
-        } else if (currentPage < (mPagedView.getPageCount() - 1) &&
-                (x > (getWidth() - cellWidth * ICON_OVERSCROLL_WIDTH_FACTOR))) {
-            // Show scroll hint on the right
-            if (mScrollHintDir != DragController.SCROLL_RIGHT) {
-                mPagedView.showScrollHint(SCROLL_HINT_FRACTION);
-                mScrollHintDir = DragController.SCROLL_RIGHT;
-            }
-
-            // Set alarm for when the hint is complete
-            if (!mOnScrollHintAlarm.alarmPending() || mCurrentScrollDir != DragController.SCROLL_RIGHT) {
-                mCurrentScrollDir = DragController.SCROLL_RIGHT;
-                mOnScrollHintAlarm.cancelAlarm();
-                mOnScrollHintAlarm.setOnAlarmListener(new OnScrollHintListener(d));
-                mOnScrollHintAlarm.setAlarm(SCROLL_HINT_DURATION);
-
-                mReorderAlarm.cancelAlarm();
-                mTargetRank = mEmptyCellRank;
-            }
+        if (currentPage > 0 && (mPagedView.rtlLayout ? isOutsideRightEdge : isOutsideLeftEdge)) {
+            showScrollHint(DragController.SCROLL_LEFT, d);
+        } else if (currentPage < (mPagedView.getPageCount() - 1)
+                && (mPagedView.rtlLayout ? isOutsideLeftEdge : isOutsideRightEdge)) {
+            showScrollHint(DragController.SCROLL_RIGHT, d);
         } else {
             mOnScrollHintAlarm.cancelAlarm();
             if (mScrollHintDir != DragController.SCROLL_NONE) {
                 mPagedView.clearScrollHint();
                 mScrollHintDir = DragController.SCROLL_NONE;
             }
+        }
+    }
+
+    private void showScrollHint(int direction, DragObject d) {
+        // Show scroll hint on the right
+        if (mScrollHintDir != direction) {
+            mPagedView.showScrollHint(direction);
+            mScrollHintDir = direction;
+        }
+
+        // Set alarm for when the hint is complete
+        if (!mOnScrollHintAlarm.alarmPending() || mCurrentScrollDir != direction) {
+            mCurrentScrollDir = direction;
+            mOnScrollHintAlarm.cancelAlarm();
+            mOnScrollHintAlarm.setOnAlarmListener(new OnScrollHintListener(d));
+            mOnScrollHintAlarm.setAlarm(SCROLL_HINT_DURATION);
+
+            mReorderAlarm.cancelAlarm();
+            mTargetRank = mEmptyCellRank;
         }
     }
 
