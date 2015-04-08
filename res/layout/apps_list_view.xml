@@ -25,8 +25,6 @@
         android:id="@+id/app_search_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/apps_container_inset"
-        android:layout_marginRight="@dimen/apps_container_inset"
         android:padding="16dp"
         android:hint="@string/apps_view_search_bar_hint"
         android:maxLines="1"
@@ -37,7 +35,7 @@
         android:textColor="#4c4c4c"
         android:textColorHint="#9c9c9c"
         android:imeOptions="actionDone|flagNoExtractUi"
-        android:background="@drawable/apps_list_search_bg"
+        android:background="@drawable/apps_search_bg"
         android:elevation="4dp" />
     <com.android.launcher3.AppsContainerRecyclerView
         android:id="@+id/apps_list_view"
@@ -48,6 +46,5 @@
         android:paddingBottom="12dp"
         android:clipToPadding="false"
         android:focusable="true"
-        android:descendantFocusability="afterDescendants"
-        android:background="@drawable/apps_list_bg" />
+        android:descendantFocusability="afterDescendants" />
 </LinearLayout>

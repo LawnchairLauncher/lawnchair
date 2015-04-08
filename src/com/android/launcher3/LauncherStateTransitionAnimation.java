@@ -174,7 +174,7 @@ public class LauncherStateTransitionAnimation {
             }
         };
         startAnimationToOverlay(Workspace.State.NORMAL_HIDDEN, toView, toView.getContentView(),
-                toView.getRevealView(), null, animated, cb);
+                toView.getRevealView(), animated, false /* hideSearchBar */, cb);
     }
 
     /**
@@ -198,7 +198,7 @@ public class LauncherStateTransitionAnimation {
             }
         };
         startAnimationToOverlay(Workspace.State.OVERVIEW_HIDDEN, toView, toView.getContentView(),
-                toView.getRevealView(), null, animated, cb);
+                toView.getRevealView(), animated, true /* hideSearchBar */, cb);
     }
 
     /**
@@ -226,8 +226,8 @@ public class LauncherStateTransitionAnimation {
      * Creates and starts a new animation to a particular overlay view.
      */
     private void startAnimationToOverlay(final Workspace.State toWorkspaceState, final View toView,
-             final View contentView, final View revealView, final View pageIndicatorsView,
-             final boolean animated, final PrivateTransitionCallbacks pCb) {
+             final View contentView, final View revealView, final boolean animated,
+             final boolean hideSearchBar, final PrivateTransitionCallbacks pCb) {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.isLmpOrAbove();
         final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
@@ -293,15 +293,6 @@ public class LauncherStateTransitionAnimation {
             layerViews.put(revealView, BUILD_AND_SET_LAYER);
             mStateAnimation.play(panelAlphaAndDrift);
 
-            // Setup the animation for the page indicators
-            if (pageIndicatorsView != null) {
-                pageIndicatorsView.setAlpha(0.01f);
-                ObjectAnimator indicatorsAlpha =
-                        ObjectAnimator.ofFloat(pageIndicatorsView, "alpha", 1f);
-                indicatorsAlpha.setDuration(revealDuration);
-                mStateAnimation.play(indicatorsAlpha);
-            }
-
             // Setup the animation for the content view
             contentView.setVisibility(View.VISIBLE);
             contentView.setAlpha(0f);
@@ -354,8 +345,9 @@ public class LauncherStateTransitionAnimation {
                         }
                     }
 
-                    // Hide the search bar
-                    mCb.onStateTransitionHideSearchBar();
+                    if (hideSearchBar) {
+                        mCb.onStateTransitionHideSearchBar();
+                    }
 
                     // This can hold unnecessary references to views.
                     mStateAnimation = null;
@@ -414,8 +406,9 @@ public class LauncherStateTransitionAnimation {
             // Show the content view
             contentView.setVisibility(View.VISIBLE);
 
-            // Hide the search bar
-            mCb.onStateTransitionHideSearchBar();
+            if (hideSearchBar) {
+                mCb.onStateTransitionHideSearchBar();
+            }
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionStart(fromView, animated, false);
@@ -484,8 +477,7 @@ public class LauncherStateTransitionAnimation {
             }
         };
         startAnimationToWorkspaceFromOverlay(toWorkspaceState, appsView, appsView.getContentView(),
-                appsView.getRevealView(), null /* pageIndicatorsView */, animated,
-                onCompleteRunnable, cb);
+                appsView.getRevealView(), animated, onCompleteRunnable, cb);
     }
 
     /**
@@ -516,8 +508,8 @@ public class LauncherStateTransitionAnimation {
             }
         };
         startAnimationToWorkspaceFromOverlay(toWorkspaceState, widgetsView,
-                widgetsView.getContentView(), widgetsView.getRevealView(),
-                null, animated, onCompleteRunnable, cb);
+                widgetsView.getContentView(), widgetsView.getRevealView(), animated,
+                onCompleteRunnable, cb);
     }
 
     /**
@@ -525,8 +517,8 @@ public class LauncherStateTransitionAnimation {
      */
     private void startAnimationToWorkspaceFromOverlay(final Workspace.State toWorkspaceState,
               final View fromView, final View contentView, final View revealView,
-              final View pageIndicatorsView, final boolean animated,
-              final Runnable onCompleteRunnable, final PrivateTransitionCallbacks pCb) {
+              final boolean animated, final Runnable onCompleteRunnable,
+              final PrivateTransitionCallbacks pCb) {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.isLmpOrAbove();
         final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
@@ -630,16 +622,6 @@ public class LauncherStateTransitionAnimation {
                 itemsAlpha.setDuration(100);
                 itemsAlpha.setInterpolator(decelerateInterpolator);
                 mStateAnimation.play(itemsAlpha);
-
-                // Setup the page indicators animation
-                if (pageIndicatorsView != null) {
-                    pageIndicatorsView.setAlpha(1f);
-                    ObjectAnimator indicatorsAlpha =
-                            LauncherAnimUtils.ofFloat(pageIndicatorsView, "alpha", 0f);
-                    indicatorsAlpha.setDuration(revealDuration);
-                    indicatorsAlpha.setInterpolator(new DecelerateInterpolator(1.5f));
-                    mStateAnimation.play(indicatorsAlpha);
-                }
 
                 if (material) {
                     // Animate the all apps button

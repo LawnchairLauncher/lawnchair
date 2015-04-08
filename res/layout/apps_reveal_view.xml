@@ -21,5 +21,4 @@
     android:layout_gravity="center"
     android:elevation="15dp"
     android:visibility="invisible"
-    android:background="@drawable/apps_reveal_bg"
     android:focusable="false" />

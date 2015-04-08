@@ -50,6 +50,7 @@ public interface LauncherCallbacks {
     public void onLauncherProviderChange();
     public void finishBindingItems(final boolean upgradePath);
     public void onClickAllAppsButton(View v);
+    public void onAllAppsShown();
     public void bindAllApplications(ArrayList<AppInfo> apps);
     public void onClickFolderIcon(View v);
     public void onClickAppShortcut(View v);
@@ -87,6 +88,7 @@ public interface LauncherCallbacks {
     public ComponentName getWallpaperPickerComponent();
     public boolean overrideWallpaperDimensions();
     public boolean isLauncherPreinstalled();
+    public boolean overrideAllAppsSearch();
 
     /**
      * Returning true will immediately result in a call to {@link #setLauncherOverlayView(ViewGroup,
@@ -105,5 +107,13 @@ public interface LauncherCallbacks {
      */
     public Launcher.LauncherOverlay setLauncherOverlayView(InsettableFrameLayout container,
             Launcher.LauncherOverlayCallbacks callbacks);
+
+    /**
+     * Sets the callbacks to allow any extensions to callback to the launcher.
+     *
+     * @param callbacks A set of callbacks to the Launcher, is actually a LauncherAppsCallback, but
+     *                  for implementation purposes is passed around as an object.
+     */
+    public void setLauncherAppsCallback(Object callbacks);
 
 }
