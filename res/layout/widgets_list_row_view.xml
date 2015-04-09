@@ -52,6 +52,8 @@
             android:paddingTop="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:gravity="start|center_vertical"
             android:textColor="@color/widgets_view_section_text_color"
             android:background="@color/widget_text_panel"

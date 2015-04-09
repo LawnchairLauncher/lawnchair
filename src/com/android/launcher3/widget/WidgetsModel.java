@@ -133,4 +133,8 @@ public class WidgetsModel {
             }
         });
     }
+
+    public void setPackageItemInfo(String packageName, PackageItemInfo infoOut) {
+        mPackageItemInfoList.put(packageName, infoOut);
+    }
 }
