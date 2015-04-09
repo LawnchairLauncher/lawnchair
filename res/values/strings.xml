@@ -38,6 +38,8 @@
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
+    <!-- Work folder name -->
+    <string name="work_folder_name">Work</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
     <string name="activity_not_found">App isn\'t installed.</string>
     <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->

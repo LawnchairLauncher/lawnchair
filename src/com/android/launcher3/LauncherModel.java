@@ -59,6 +59,7 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
@@ -87,7 +88,6 @@ public class LauncherModel extends BroadcastReceiver
     static final boolean DEBUG_LOADERS = false;
     private static final boolean DEBUG_RECEIVER = false;
     private static final boolean REMOVE_UNRESTORED_ICONS = true;
-    private static final boolean ADD_MANAGED_PROFILE_SHORTCUTS = false;
 
     static final String TAG = "Launcher.Model";
 
@@ -106,11 +106,6 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk DeferredHandler mHandler = new DeferredHandler();
     @Thunk LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
-
-    /**
-     * Maintain a set of packages per user, for which we added a shortcut on the workspace.
-     */
-    private static final String INSTALLED_SHORTCUTS_SET_PREFIX = "installed_shortcuts_set_for_user_";
 
     // Specific runnable types that are run on the main thread deferred handler, this allows us to
     // clear all queued binding runnables when the Launcher activity is destroyed.
@@ -338,9 +333,9 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(r);
     }
 
-    public void addAndBindAddedWorkspaceApps(final Context context,
+    public void addAndBindAddedWorkspaceItems(final Context context,
             final ArrayList<ItemInfo> workspaceApps) {
-        addAndBindAddedWorkspaceApps(context, workspaceApps,
+        addAndBindAddedWorkspaceItems(context, workspaceApps,
                 new ScreenPosProvider() {
 
                     @Override
@@ -518,7 +513,7 @@ public class LauncherModel extends BroadcastReceiver
      * @param fallbackStartScreen the screen to start search for empty space if
      * preferredScreen is not available.
      */
-    public void addAndBindAddedWorkspaceApps(final Context context,
+    public void addAndBindAddedWorkspaceItems(final Context context,
             final ArrayList<ItemInfo> workspaceApps,
             final ScreenPosProvider preferredScreen,
             final int fallbackStartScreen,
@@ -539,7 +534,7 @@ public class LauncherModel extends BroadcastReceiver
                 ArrayList<Long> workspaceScreens = loadWorkspaceScreensDb(context);
                 synchronized(sBgLock) {
                     for (ItemInfo item : workspaceApps) {
-                        if (!allowDuplicate) {
+                        if (!allowDuplicate && item instanceof ShortcutInfo) {
                             // Short-circuit this logic if the icon exists somewhere on the workspace
                             if (shortcutExists(context, item.title.toString(),
                                     item.getIntent(), item.user)) {
@@ -554,21 +549,21 @@ public class LauncherModel extends BroadcastReceiver
                         long screenId = coords.first;
                         int[] cordinates = coords.second;
 
-                        ShortcutInfo shortcutInfo;
-                        if (item instanceof ShortcutInfo) {
-                            shortcutInfo = (ShortcutInfo) item;
+                        ItemInfo itemInfo;
+                        if (item instanceof ShortcutInfo || item instanceof FolderInfo) {
+                            itemInfo = item;
                         } else if (item instanceof AppInfo) {
-                            shortcutInfo = ((AppInfo) item).makeShortcut();
+                            itemInfo = ((AppInfo) item).makeShortcut();
                         } else {
                             throw new RuntimeException("Unexpected info type");
                         }
 
                         // Add the shortcut to the db
-                        addItemToDatabase(context, shortcutInfo,
+                        addItemToDatabase(context, itemInfo,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                                 screenId, cordinates[0], cordinates[1]);
                         // Save the ShortcutInfo for binding in the workspace
-                        addedShortcutsFinal.add(shortcutInfo);
+                        addedShortcutsFinal.add(itemInfo);
                     }
                 }
 
@@ -993,7 +988,7 @@ public class LauncherModel extends BroadcastReceiver
      * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.
      */
-    static void addItemToDatabase(Context context, final ItemInfo item, final long container,
+    public static void addItemToDatabase(Context context, final ItemInfo item, final long container,
             final long screenId, final int cellX, final int cellY) {
         item.container = container;
         item.cellX = cellX;
@@ -1097,7 +1092,6 @@ public class LauncherModel extends BroadcastReceiver
      */
     static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
-
         Runnable r = new Runnable() {
             public void run() {
                 for (ItemInfo item : items) {
@@ -2845,23 +2839,11 @@ public class LauncherModel extends BroadcastReceiver
                     mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache));
                 }
 
-                if (ADD_MANAGED_PROFILE_SHORTCUTS && !user.equals(UserHandleCompat.myUserHandle())) {
-                    // Add shortcuts for packages which were installed while launcher was dead.
-                    String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
-                            + mUserManager.getSerialNumberForUser(user);
-                    Set<String> packagesAdded = prefs.getStringSet(shortcutsSetKey, Collections.EMPTY_SET);
-                    HashSet<String> newPackageSet = new HashSet<String>();
-
-                    for (LauncherActivityInfoCompat info : apps) {
-                        String packageName = info.getComponentName().getPackageName();
-                        if (!packagesAdded.contains(packageName)
-                                && !newPackageSet.contains(packageName)) {
-                            InstallShortcutReceiver.queueInstallShortcut(info, mContext);
-                        }
-                        newPackageSet.add(packageName);
+                if (!user.equals(UserHandleCompat.myUserHandle())) {
+                    ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
+                    if (heuristic != null) {
+                        heuristic.processUserApps(apps);
                     }
-
-                    prefs.edit().putStringSet(shortcutsSetKey, newPackageSet).commit();
                 }
             }
             // Huh? Shouldn't this be inside the Runnable below?
@@ -2884,6 +2866,8 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             });
+            // Cleanup any data stored for a deleted user.
+            ManagedProfileHeuristic.processAllUsers(profiles, mContext);
 
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "Icons processed in "
@@ -2971,38 +2955,19 @@ public class LauncherModel extends BroadcastReceiver
             final String[] packages = mPackages;
             final int N = packages.length;
             switch (mOp) {
-                case OP_ADD:
+                case OP_ADD: {
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                         mIconCache.updateIconsForPkg(packages[i], mUser);
                         mBgAllAppsList.addPackage(context, packages[i], mUser);
                     }
 
-                    // Auto add shortcuts for added packages.
-                    if (ADD_MANAGED_PROFILE_SHORTCUTS
-                            && !UserHandleCompat.myUserHandle().equals(mUser)) {
-                        SharedPreferences prefs = context.getSharedPreferences(
-                                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
-                        String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
-                                + mUserManager.getSerialNumberForUser(mUser);
-                        Set<String> shortcutSet = new HashSet<String>(
-                                prefs.getStringSet(shortcutsSetKey,Collections.EMPTY_SET));
-
-                        for (int i=0; i<N; i++) {
-                            if (!shortcutSet.contains(packages[i])) {
-                                shortcutSet.add(packages[i]);
-                                List<LauncherActivityInfoCompat> activities =
-                                        mLauncherApps.getActivityList(packages[i], mUser);
-                                if (activities != null && !activities.isEmpty()) {
-                                    InstallShortcutReceiver.queueInstallShortcut(
-                                            activities.get(0), context);
-                                }
-                            }
-                        }
-
-                        prefs.edit().putStringSet(shortcutsSetKey, shortcutSet).commit();
+                    ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
+                    if (heuristic != null) {
+                        heuristic.processPackageAdd(mPackages);
                     }
                     break;
+                }
                 case OP_UPDATE:
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
@@ -3011,25 +2976,17 @@ public class LauncherModel extends BroadcastReceiver
                         mApp.getWidgetCache().removePackage(packages[i], mUser);
                     }
                     break;
-                case OP_REMOVE:
-                    // Remove the packageName for the set of auto-installed shortcuts. This
-                    // will ensure that the shortcut when the app is installed again.
-                    if (ADD_MANAGED_PROFILE_SHORTCUTS
-                            && !UserHandleCompat.myUserHandle().equals(mUser)) {
-                        SharedPreferences prefs = context.getSharedPreferences(
-                                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
-                        String shortcutsSetKey = INSTALLED_SHORTCUTS_SET_PREFIX
-                                + mUserManager.getSerialNumberForUser(mUser);
-                        HashSet<String> shortcutSet = new HashSet<String>(
-                                prefs.getStringSet(shortcutsSetKey, Collections.EMPTY_SET));
-                        shortcutSet.removeAll(Arrays.asList(mPackages));
-                        prefs.edit().putStringSet(shortcutsSetKey, shortcutSet).commit();
+                case OP_REMOVE: {
+                    ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
+                    if (heuristic != null) {
+                        heuristic.processPackageRemoved(mPackages);
                     }
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                         mIconCache.removeIconsForPkg(packages[i], mUser);
                     }
                     // Fall through
+                }
                 case OP_UNAVAILABLE:
                     for (int i=0; i<N; i++) {
                         if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
@@ -3676,5 +3633,14 @@ public class LauncherModel extends BroadcastReceiver
 
     public Callbacks getCallback() {
         return mCallbacks != null ? mCallbacks.get() : null;
+    }
+
+    /**
+     * @return {@link FolderInfo} if its already loaded.
+     */
+    public FolderInfo findFolderById(Long folderId) {
+        synchronized (sBgLock) {
+            return sBgFolders.get(folderId);
+        }
     }
 }

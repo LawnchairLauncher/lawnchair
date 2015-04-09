@@ -124,7 +124,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
                 mLauncher.showWorkspace(true, new Runnable() {
                     @Override
                     public void run() {
-                        mLauncher.getModel().addAndBindAddedWorkspaceApps(
+                        mLauncher.getModel().addAndBindAddedWorkspaceItems(
                                 mLauncher, addShortcuts, screenProvider, 0, true);
                         announceConfirmation(R.string.item_added_to_workspace);
                     }
