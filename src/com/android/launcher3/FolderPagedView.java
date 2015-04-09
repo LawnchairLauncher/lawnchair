@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.LayoutDirection;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,9 +41,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class FolderPagedView extends PagedView implements Folder.FolderContent {
+public class FolderPagedView extends PagedView {
 
     private static final String TAG = "FolderPagedView";
+
+    private static final boolean ALLOW_FOLDER_SCROLL = true;
+
+    // To enable this flag, user_folder.xml needs to be modified to add sort button.
+    private static final boolean ALLOW_ITEM_SORTING = false;
 
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int START_VIEW_REORDER_DELAY = 30;
@@ -96,32 +100,38 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         setDataIsReady();
 
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        mMaxCountX = Math.min((int) grid.numColumns, MAX_ITEMS_PER_PAGE);
-        mMaxCountY = Math.min((int) grid.numRows, MAX_ITEMS_PER_PAGE);
+        if (ALLOW_FOLDER_SCROLL) {
+            mMaxCountX = Math.min((int) grid.numColumns, MAX_ITEMS_PER_PAGE);
+            mMaxCountY = Math.min((int) grid.numRows, MAX_ITEMS_PER_PAGE);
+        } else {
+            mMaxCountX = (int) grid.numColumns;
+            mMaxCountY = (int) grid.numRows;
+        }
+
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
         mInflater = LayoutInflater.from(context);
         mIconCache = app.getIconCache();
 
-        rtlLayout = getResources().getConfiguration().getLayoutDirection() == LayoutDirection.RTL;
+        rtlLayout = getResources().getConfiguration().getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
-    @Override
     public void setFolder(Folder folder) {
         mFolder = folder;
         mFocusIndicatorView = (FocusIndicatorView) folder.findViewById(R.id.focus_indicator);
         mKeyListener = new PagedFolderKeyEventListener(folder);
-
-        mSortButton = folder.findViewById(R.id.folder_sort);
-        mSortButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                onSortClicked();
-            }
-        });
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
-        mSortSwitch = (Switch) folder.findViewById(R.id.folder_sort_switch);
+
+        if (ALLOW_ITEM_SORTING) {
+            // Initialize {@link #mSortSwitch} and {@link #mSortButton}.
+            mSortButton.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    onSortClicked();
+                }
+            });
+        }
     }
 
     private void onSortClicked() {
@@ -138,9 +148,11 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
 
     private void setIsSorted(boolean isSorted, boolean saveChanges) {
         mIsSorted = isSorted;
-        mSortSwitch.setChecked(isSorted);
-        mFolder.mInfo.setOption(FolderInfo.FLAG_ITEMS_SORTED, isSorted,
-                saveChanges ? mFolder.mLauncher : null);
+        if (ALLOW_ITEM_SORTING) {
+            mSortSwitch.setChecked(isSorted);
+            mFolder.mInfo.setOption(FolderInfo.FLAG_ITEMS_SORTED, isSorted,
+                    saveChanges ? mFolder.mLauncher : null);
+        }
     }
 
     /**
@@ -282,26 +294,34 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         }
     }
 
-    @Override
+    /**
+     * Binds items to the layout.
+     * @return list of items that could not be bound, probably because we hit the max size limit.
+     */
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
-        mIsSorted = mFolder.mInfo.hasOption(FolderInfo.FLAG_ITEMS_SORTED);
+        mIsSorted = ALLOW_ITEM_SORTING && mFolder.mInfo.hasOption(FolderInfo.FLAG_ITEMS_SORTED);
         ArrayList<View> icons = new ArrayList<View>();
+        ArrayList<ShortcutInfo> extra = new ArrayList<ShortcutInfo>();
+
         for (ShortcutInfo item : items) {
-            icons.add(createNewView(item));
+            if (!ALLOW_FOLDER_SCROLL && icons.size() >= mMaxItemsPerPage) {
+                extra.add(item);
+            } else {
+                icons.add(createNewView(item));
+            }
         }
         arrangeChildren(icons, icons.size(), false);
-        return new ArrayList<ShortcutInfo>();
+        return extra;
     }
 
     /**
      * Create space for a new item at the end, and returns the rank for that item.
      * Also sets the current page to the last page.
      */
-    @Override
     public int allocateRankForNewItem(ShortcutInfo info) {
         int rank = getItemCount();
         ArrayList<View> views = new ArrayList<View>(mFolder.getItemsInReadingOrder());
-        if (mIsSorted) {
+        if (ALLOW_ITEM_SORTING && mIsSorted) {
             View tmp = new View(getContext());
             tmp.setTag(info);
             int index = Collections.binarySearch(views, tmp, new ViewComparator());
@@ -321,14 +341,16 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         return rank;
     }
 
-    @Override
     public View createAndAddViewForRank(ShortcutInfo item, int rank) {
         View icon = createNewView(item);
         addViewForRank(icon, item, rank);
         return icon;
     }
 
-    @Override
+    /**
+     * Adds the {@param view} to the layout based on {@param rank} and updated the position
+     * related attributes. It assumes that {@param item} is already attached to the view.
+     */
     public void addViewForRank(View view, ShortcutInfo item, int rank) {
         int pagePos = rank % mMaxItemsPerPage;
         int pageNo = rank / mMaxItemsPerPage;
@@ -388,14 +410,12 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         return page;
     }
 
-    @Override
     public void setFixedSize(int width, int height) {
         for (int i = getChildCount() - 1; i >= 0; i --) {
             ((CellLayout) getChildAt(i)).setFixedSize(width, height);
         }
     }
 
-    @Override
     public void removeItem(View v) {
         for (int i = getChildCount() - 1; i >= 0; i --) {
             getPageAt(i).removeView(v);
@@ -412,7 +432,6 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
      * at the end, otherwise it is ignored.
      *
      */
-    @Override
     public void arrangeChildren(ArrayList<View> list, int itemCount) {
         arrangeChildren(list, itemCount, true);
     }
@@ -488,19 +507,26 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
             setCurrentPage(0);
         }
 
-        setIsSorted(isSorted, saveChanges);
+        setEnableOverscroll(getPageCount() > 1);
 
         // Update footer
-        if (getPageCount() > 1) {
-            mPageIndicator.setVisibility(View.VISIBLE);
-            mSortButton.setVisibility(View.VISIBLE);
-            mFolder.mFolderName.setGravity(rtlLayout ? Gravity.RIGHT : Gravity.LEFT);
-            setEnableOverscroll(true);
+        if (ALLOW_ITEM_SORTING) {
+            setIsSorted(isSorted, saveChanges);
+            if (getPageCount() > 1) {
+                mPageIndicator.setVisibility(View.VISIBLE);
+                mSortButton.setVisibility(View.VISIBLE);
+                mFolder.mFolderName.setGravity(rtlLayout ? Gravity.RIGHT : Gravity.LEFT);
+            } else {
+                mPageIndicator.setVisibility(View.GONE);
+                mSortButton.setVisibility(View.GONE);
+                mFolder.mFolderName.setGravity(Gravity.CENTER_HORIZONTAL);
+            }
         } else {
-            mPageIndicator.setVisibility(View.GONE);
-            mSortButton.setVisibility(View.GONE);
-            mFolder.mFolderName.setGravity(Gravity.CENTER_HORIZONTAL);
-            setEnableOverscroll(false);
+            int indicatorVisibility = mPageIndicator.getVisibility();
+            mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
+            if (indicatorVisibility != mPageIndicator.getVisibility()) {
+                mFolder.updateFooterHeight();
+            }
         }
     }
 
@@ -521,7 +547,6 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         return  getPageCount() > 0 ? getPageAt(0).getDesiredHeight() : 0;
     }
 
-    @Override
     public int getItemCount() {
         int lastPageIndex = getChildCount() - 1;
         if (lastPageIndex < 0) {
@@ -532,7 +557,9 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                 + lastPageIndex * mMaxItemsPerPage;
     }
 
-    @Override
+    /**
+     * @return the rank of the cell nearest to the provided pixel position.
+     */
     public int findNearestArea(int pixelX, int pixelY) {
         int pageIndex = getNextPage();
         CellLayout page = getPageAt(pageIndex);
@@ -550,12 +577,10 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
                 R.drawable.ic_pageindicator_default_folder);
     }
 
-    @Override
     public boolean isFull() {
-        return false;
+        return !ALLOW_FOLDER_SCROLL && getItemCount() >= mMaxItemsPerPage;
     }
 
-    @Override
     public View getLastItem() {
         if (getChildCount() < 1) {
             return null;
@@ -569,7 +594,10 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         }
     }
 
-    @Override
+    /**
+     * Iterates over all its items in a reading order.
+     * @return the view for which the operator returned true.
+     */
     public View iterateOverItems(ItemOperator op) {
         for (int k = 0 ; k < getChildCount(); k++) {
             CellLayout page = getPageAt(k);
@@ -585,13 +613,14 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         return null;
     }
 
-    @Override
     public String getAccessibilityDescription() {
         return String.format(getContext().getString(R.string.folder_opened),
                 mGridCountX, mGridCountY);
     }
 
-    @Override
+    /**
+     * Sets the focus on the first visible child.
+     */
     public void setFocusOnFirstChild() {
         View firstChild = getCurrentCellLayout().getChildAt(0, 0);
         if (firstChild != null) {
@@ -605,7 +634,7 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         if (mFolder != null) {
             mFolder.updateTextViewFocus();
         }
-        if (mSortOperationPending && getNextPage() == 0) {
+        if (ALLOW_ITEM_SORTING && mSortOperationPending && getNextPage() == 0) {
             post(new Runnable() {
 
                 @Override
@@ -680,7 +709,9 @@ public class FolderPagedView extends PagedView implements Folder.FolderContent {
         }
     }
 
-    @Override
+    /**
+     * Reorders the items such that the {@param empty} spot moves to {@param target}
+     */
     public void realTimeReorder(int empty, int target) {
         completePendingPageChanges();
         int delay = 0;
