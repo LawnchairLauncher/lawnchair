@@ -32,6 +32,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.WidgetCell;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -45,6 +46,7 @@ import java.util.concurrent.ExecutionException;
 public class WidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
+    private static final boolean DEBUG = false;
 
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
 
@@ -78,7 +80,7 @@ public class WidgetPreviewLoader {
      * @return a request id which can be used to cancel the request.
      */
     public PreviewLoadRequest getPreview(final Object o, int previewWidth, int previewHeight,
-            PagedViewWidget caller, Bitmap[] immediateResult) {
+            WidgetCell caller, Bitmap[] immediateResult) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = getObjectKey(o, size);
 
@@ -576,21 +578,26 @@ public class WidgetPreviewLoader {
         private final Object mInfo;
         private final int mPreviewHeight;
         private final int mPreviewWidth;
-        private final PagedViewWidget mCaller;
+        private final WidgetCell mCaller;
 
         PreviewLoadTask(WidgetCacheKey key, Object info, int previewWidth,
-                int previewHeight, PagedViewWidget caller) {
+                int previewHeight, WidgetCell caller) {
             mKey = key;
             mInfo = info;
             mPreviewHeight = previewHeight;
             mPreviewWidth = previewWidth;
             mCaller = caller;
+            if (DEBUG) {
+                Log.d(TAG, String.format("%s, %s, %d, %d",
+                        mKey, mInfo, mPreviewHeight, mPreviewWidth));
+            }
         }
-
 
         @Override
         protected Bitmap doInBackground(Void... params) {
             Bitmap unusedBitmap = null;
+
+            // TODO(hyunyoungs): Figure out why this path causes concurrency issue.
             synchronized (mUnusedBitmaps) {
                 // Check if we can use a bitmap
                 for (Bitmap candidate : mUnusedBitmaps) {
@@ -608,7 +615,6 @@ public class WidgetPreviewLoader {
                     mUnusedBitmaps.remove(unusedBitmap);
                 }
             }
-
             if (isCancelled()) {
                 return null;
             }

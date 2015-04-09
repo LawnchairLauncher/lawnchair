@@ -43,7 +43,7 @@ public class AppInfo extends ItemInfo {
     /**
      * A bitmap version of the application icon.
      */
-    Bitmap iconBitmap;
+    public Bitmap iconBitmap;
 
     /**
      * Indicates whether we're using a low res icon
@@ -55,7 +55,7 @@ public class AppInfo extends ItemInfo {
      */
     long firstInstallTime;
 
-    ComponentName componentName;
+    public ComponentName componentName;
 
     static final int DOWNLOADED_FLAG = 1;
     static final int UPDATED_SYSTEM_APP_FLAG = 2;
@@ -121,12 +121,15 @@ public class AppInfo extends ItemInfo {
                 + " user=" + user + ")";
     }
 
+    /**
+     * Helper method used for debugging.
+     */
     public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
         Log.d(tag, label + " size=" + list.size());
         for (AppInfo info: list) {
-            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap="
-                    + info.iconBitmap + " firstInstallTime="
-                    + info.firstInstallTime);
+            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap 
+                    + " firstInstallTime=" + info.firstInstallTime
+                    + " componentName=" + info.componentName.getPackageName());
         }
     }
 

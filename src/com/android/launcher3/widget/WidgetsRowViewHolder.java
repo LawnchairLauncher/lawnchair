@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.launcher3.widget;
 
-package com.android.launcher3;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import android.content.ComponentName;
+public class WidgetsRowViewHolder extends ViewHolder {
 
-/**
- * Meta data that is used for deferred binding.
- * e.g., this object is used to pass information on dragable targets when they are dropped onto
- * the workspace from another container.
- */
-public class PendingAddItemInfo extends ItemInfo {
+    ViewGroup mContent;
 
-    /**
-     * The component that will be created.
-     */
-    public ComponentName componentName;
+   public WidgetsRowViewHolder(ViewGroup v) {
+        super(v);
+        mContent = v;
+    }
+
+    ViewGroup getContent() {
+        return mContent;
+    }
 }

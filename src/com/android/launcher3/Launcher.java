@@ -103,6 +103,8 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -130,11 +132,11 @@ public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
                    View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener,
                    LauncherStateTransitionAnimation.Callbacks {
-    static final String TAG = "Launcher";
-    static final boolean LOGD = false;
+    static final String TAG = "Launcher - MERONG";
+    static final boolean LOGD = true;
 
     static final boolean PROFILE_STARTUP = false;
-    static final boolean DEBUG_WIDGETS = false;
+    static final boolean DEBUG_WIDGETS = true;
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
     static final boolean DEBUG_DUMP_LOG = false;
@@ -264,9 +266,13 @@ public class Launcher extends Activity
     private View mAllAppsButton;
 
     private SearchDropTargetBar mSearchDropTargetBar;
+
+    // Main container view for the all apps screen.
     @Thunk AppsContainerView mAppsView;
-    @Thunk AppsCustomizeTabHost mAppsCustomizeTabHost;
-    private AppsCustomizePagedView mAppsCustomizeContent;
+
+    // Main container view for the widget tray screen.
+    private WidgetsContainerView mWidgetsView;
+
     private boolean mAutoAdvanceRunning = false;
     private AppWidgetHostView mQsb;
 
@@ -672,7 +678,7 @@ public class Launcher extends Activity
         return mInflater;
     }
 
-    boolean isDraggingEnabled() {
+    public boolean isDraggingEnabled() {
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view
         // that is subsequently removed from the workspace in startBinding().
         return !mModel.isLoadingWorkspace();
@@ -1013,14 +1019,8 @@ public class Launcher extends Activity
                 startTimeCallbacks = System.currentTimeMillis();
             }
 
-            if (mAppsCustomizeContent != null) {
-                mAppsCustomizeContent.setBulkBind(true);
-            }
             for (int i = 0; i < mBindOnResumeCallbacks.size(); i++) {
                 mBindOnResumeCallbacks.get(i).run();
-            }
-            if (mAppsCustomizeContent != null) {
-                mAppsCustomizeContent.setBulkBind(false);
             }
             mBindOnResumeCallbacks.clear();
             if (DEBUG_RESUME_TIME) {
@@ -1213,9 +1213,8 @@ public class Launcher extends Activity
         if (mModel.isCurrentCallbacks(this)) {
             mModel.stopLoader();
         }
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.surrender();
-        }
+        //TODO(hyunyoungs): stop the widgets loader when there is a rotation.
+
         return Boolean.TRUE;
     }
 
@@ -1336,19 +1335,6 @@ public class Launcher extends Activity
             mRestoring = true;
         }
 
-        // Restore the AppsCustomize tab
-        if (mAppsCustomizeTabHost != null) {
-            String curTab = savedState.getString("apps_customize_currentTab");
-            if (curTab != null) {
-                mAppsCustomizeTabHost.setContentTypeImmediate(
-                        mAppsCustomizeTabHost.getContentTypeForTabTag(curTab));
-                mAppsCustomizeContent.loadAssociatedPages(
-                        mAppsCustomizeContent.getCurrentPage());
-            }
-
-            int currentIndex = savedState.getInt("apps_customize_currentIndex");
-            mAppsCustomizeContent.restorePageForIndex(currentIndex);
-        }
         mItemIdToViewId = (HashMap<Integer, Integer>)
                 savedState.getSerializable(RUNTIME_STATE_VIEW_IDS);
     }
@@ -1434,10 +1420,7 @@ public class Launcher extends Activity
         mAppsView = (AppsContainerView) findViewById(R.id.apps_view);
 
         // Setup AppsCustomize
-        mAppsCustomizeTabHost = (AppsCustomizeTabHost) findViewById(R.id.apps_customize_pane);
-        mAppsCustomizeContent = (AppsCustomizePagedView)
-                mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
-        mAppsCustomizeContent.setup(this, dragController);
+        mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
@@ -1651,7 +1634,7 @@ public class Launcher extends Activity
 
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
-                if (mAppsView != null && mAppsCustomizeTabHost != null &&
+                if (mAppsView != null && mWidgetsView != null &&
                         mPendingAddInfo.container == ItemInfo.NO_ID) {
                     showWorkspace(false);
                 }
@@ -1735,7 +1718,6 @@ public class Launcher extends Activity
         // you're in All Apps and click home to go to the workspace. onWindowVisibilityChanged
         // is a more appropriate event to handle
         if (mVisible) {
-            mAppsCustomizeTabHost.onWindowVisible();
             if (!mWorkspaceLoading) {
                 final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
                 // We want to let Launcher draw itself at least once before we force it to build
@@ -1839,7 +1821,7 @@ public class Launcher extends Activity
         launcherInfo.hostView = null;
     }
 
-    void showOutOfSpaceMessage(boolean isHotseatLayout) {
+    public void showOutOfSpaceMessage(boolean isHotseatLayout) {
         int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
         Toast.makeText(this, getString(strId), Toast.LENGTH_SHORT).show();
     }
@@ -1852,8 +1834,8 @@ public class Launcher extends Activity
         return mAppsView;
     }
 
-    public AppsCustomizeTabHost getWidgetsView() {
-        return mAppsCustomizeTabHost;
+    public WidgetsContainerView getWidgetsView() {
+        return mWidgetsView;
     }
 
     public Workspace getWorkspace() {
@@ -1946,9 +1928,9 @@ public class Launcher extends Activity
                 mAppsView.scrollToTop();
             }
 
-            // Reset the apps customize page
-            if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
-                mAppsCustomizeTabHost.reset();
+            // Reset the widgets view
+            if (!alreadyOnHome && mWidgetsView != null) {
+                mWidgetsView.scrollToTop();
             }
 
             if (mLauncherCallbacks != null) {
@@ -2003,16 +1985,8 @@ public class Launcher extends Activity
             outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
         }
 
-        // Save the current AppsCustomize tab
-        if (mAppsCustomizeTabHost != null) {
-            AppsCustomizePagedView.ContentType type = mAppsCustomizeContent.getContentType();
-            String currentTabTag = mAppsCustomizeTabHost.getTabTagForContentType(type);
-            if (currentTabTag != null) {
-                outState.putString("apps_customize_currentTab", currentTabTag);
-            }
-            int currentIndex = mAppsCustomizeContent.getSaveInstanceStateIndex();
-            outState.putInt("apps_customize_currentIndex", currentIndex);
-        }
+        // Save the current widgets tray?
+        // TODO(hyunyoungs)
         outState.putSerializable(RUNTIME_STATE_VIEW_IDS, mItemIdToViewId);
 
         if (mLauncherCallbacks != null) {
@@ -3276,9 +3250,7 @@ public class Launcher extends Activity
             SQLiteDatabase.releaseMemory();
 
             // This clears all widget bitmaps from the widget tray
-            if (mAppsCustomizeTabHost != null) {
-                mAppsCustomizeTabHost.trimMemory();
-            }
+            // TODO(hyunyoungs)
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onTrimMemory(level);
@@ -3355,15 +3327,16 @@ public class Launcher extends Activity
      * Shows the widgets view.
      */
     void showWidgetsView(boolean animated, boolean resetPageToZero) {
+        Log.d(TAG, "showWidgetsView:" + animated + " resetPageToZero:" + resetPageToZero);
         if (resetPageToZero) {
-            mAppsCustomizeTabHost.reset();
+            mWidgetsView.scrollToTop();
         }
         showAppsOrWidgets(animated, State.WIDGETS);
-        mAppsCustomizeTabHost.post(new Runnable() {
+
+        mWidgetsView.post(new Runnable() {
             @Override
             public void run() {
-                // We post this in-case the all apps view isn't yet constructed.
-                mAppsCustomizeTabHost.requestFocus();
+                mWidgetsView.requestFocus();
             }
         });
     }
@@ -3394,7 +3367,9 @@ public class Launcher extends Activity
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
-    void enterSpringLoadedDragMode() {
+    public void enterSpringLoadedDragMode() {
+        Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s",
+                mState.name()));
         if (mState == State.WORKSPACE || mState == State.APPS_SPRING_LOADED ||
                 mState == State.WIDGETS_SPRING_LOADED) {
             return;
@@ -3405,7 +3380,7 @@ public class Launcher extends Activity
         mState = isAppsViewVisible() ? State.APPS_SPRING_LOADED : State.WIDGETS_SPRING_LOADED;
     }
 
-    void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
+    public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
             final Runnable onCompleteRunnable) {
         if (mState != State.APPS_SPRING_LOADED && mState != State.WIDGETS_SPRING_LOADED) return;
 
@@ -3413,10 +3388,12 @@ public class Launcher extends Activity
             @Override
             public void run() {
                 if (successfulDrop) {
+                    // TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
+                    //
                     // Before we show workspace, hide all apps again because
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
-                    mAppsCustomizeTabHost.setVisibility(View.GONE);
+                    mWidgetsView.setVisibility(View.GONE);
                     showWorkspace(true, onCompleteRunnable);
                 } else {
                     exitSpringLoadedDragMode();
@@ -3918,8 +3895,8 @@ public class Launcher extends Activity
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;
             pendingInfo.minSpanY = item.minSpanY;
-            Bundle options =
-                    AppsCustomizePagedView.getDefaultOptionsForWidget(this, pendingInfo);
+            Bundle options = null;
+            //        AppsCustomizePagedView.getDefaultOptionsForWidget(this, pendingInfo);
 
             int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
             boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
@@ -4122,9 +4099,9 @@ public class Launcher extends Activity
         if (mAppsView != null) {
             mAppsView.setApps(apps);
         }
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated(
-                    LauncherModel.getSortedWidgetsAndShortcuts(this, false /* refresh */));
+        if (mWidgetsView != null) {
+            mWidgetsView.addWidgets(LauncherModel.getSortedWidgetsAndShortcuts(this, false),
+                    getPackageManager());
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
@@ -4276,15 +4253,16 @@ public class Launcher extends Activity
                 mWidgetsAndShortcuts = null;
             }
         };
+
     public void bindPackagesUpdated(final ArrayList<Object> widgetsAndShortcuts) {
         if (waitUntilResume(mBindPackagesUpdatedRunnable, true)) {
             mWidgetsAndShortcuts = widgetsAndShortcuts;
             return;
         }
 
-        // Update the widgets pane
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.onPackagesUpdated(widgetsAndShortcuts);
+        if (mWidgetsView != null) {
+            mWidgetsView.addWidgets(LauncherModel.getSortedWidgetsAndShortcuts(this, false),
+                    getPackageManager());
         }
     }
 
@@ -4577,10 +4555,8 @@ public class Launcher extends Activity
         Log.d(TAG, "mSavedInstanceState=" + mSavedInstanceState);
         Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
+        // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();
 
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.dumpState();
-        }
         Log.d(TAG, "END launcher3 dump state");
     }
 

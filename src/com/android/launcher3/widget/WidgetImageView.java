@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class PagedViewWidgetImageView extends ImageView {
+public class WidgetImageView extends ImageView {
     public boolean mAllowRequestLayout = true;
 
-    public PagedViewWidgetImageView(Context context, AttributeSet attrs) {
+    public WidgetImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -44,6 +44,5 @@ public class PagedViewWidgetImageView extends ImageView {
 
         super.onDraw(canvas);
         canvas.restore();
-
     }
 }

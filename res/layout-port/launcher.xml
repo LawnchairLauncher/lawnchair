@@ -66,8 +66,8 @@
             android:id="@+id/search_drop_target_bar"
             layout="@layout/search_drop_target_bar" />
 
-        <include layout="@layout/apps_customize_pane"
-            android:id="@+id/apps_customize_pane"
+        <include layout="@layout/widgets_view"
+            android:id="@+id/widgets_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />

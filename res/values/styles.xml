@@ -91,8 +91,8 @@
     </style>
 
     <!-- Overridden in device overlays -->
-    <style name="PagedViewWidgetImageView">
-        <item name="android:paddingLeft">@dimen/app_widget_preview_padding_left</item>
+    <style name="WidgetImageView">
+        <item name="android:paddingLeft">@dimen/widget_preview_padding_left</item>
     </style>
 
 </resources>

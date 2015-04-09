@@ -22,9 +22,9 @@ import com.android.launcher3.DropTarget.DragObject;
 
 /**
  * Interface defining an object that can originate a drag.
- *
  */
 public interface DragSource {
+
     /**
      * @return whether items dragged from this source supports
      */

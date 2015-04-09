@@ -44,6 +44,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.PackageItemInfo;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -454,12 +455,13 @@ public class IconCache {
      * Fill in {@param appInfo} with the icon and label for {@param packageName}
      */
     public synchronized void getTitleAndIconForApp(
-            String packageName, UserHandleCompat user, boolean useLowResIcon, AppInfo appInfoOut) {
+            String packageName, UserHandleCompat user, boolean useLowResIcon,
+            PackageItemInfo infoOut) {
         CacheEntry entry = getEntryForPackageLocked(packageName, user, useLowResIcon);
-        appInfoOut.iconBitmap = entry.icon;
-        appInfoOut.title = entry.title;
-        appInfoOut.usingLowResIcon = entry.isLowResIcon;
-        appInfoOut.contentDescription = entry.contentDescription;
+        infoOut.iconBitmap = entry.icon;
+        infoOut.title = entry.title;
+        infoOut.usingLowResIcon = entry.isLowResIcon;
+        infoOut.contentDescription = entry.contentDescription;
     }
 
     public synchronized Bitmap getDefaultIcon(UserHandleCompat user) {

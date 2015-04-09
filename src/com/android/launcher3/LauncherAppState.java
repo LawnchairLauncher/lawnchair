@@ -141,7 +141,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return mModel;
     }
 
-    LauncherAccessibilityDelegate getAccessibilityDelegate() {
+    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
     }
 

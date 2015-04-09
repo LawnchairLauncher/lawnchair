@@ -45,7 +45,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -56,6 +55,7 @@ import android.view.animation.LayoutAnimationController;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.LauncherAccessibilityDelegate.DragType;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -3025,7 +3025,7 @@ public class CellLayout extends ViewGroup {
      *
      * @return True if a vacant cell of the specified dimension was found, false otherwise.
      */
-    boolean findCellForSpan(int[] cellXY, int spanX, int spanY) {
+    public boolean findCellForSpan(int[] cellXY, int spanX, int spanY) {
         return findCellForSpanThatIntersectsIgnoring(cellXY, spanX, spanY, -1, -1, null, mOccupied);
     }
 

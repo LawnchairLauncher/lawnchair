@@ -22,7 +22,7 @@ import android.provider.BaseColumns;
 /**
  * Settings related utilities.
  */
-class LauncherSettings {
+public class LauncherSettings {
     /** Columns required on table staht will be subject to backup and restore. */
     static interface ChangeLogColumns extends BaseColumns {
         /**
@@ -121,7 +121,7 @@ class LauncherSettings {
     /**
      * Favorites.
      */
-    static final class Favorites implements BaseLauncherColumns {
+    public static final class Favorites implements BaseLauncherColumns {
         /**
          * The content:// style URL for this table
          */
@@ -217,12 +217,12 @@ class LauncherSettings {
         /**
          * The favorite is a widget
          */
-        static final int ITEM_TYPE_APPWIDGET = 4;
+        public static final int ITEM_TYPE_APPWIDGET = 4;
 
         /**
          * The favorite is a custom widget provided by the launcher
          */
-        static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
 
         /**
          * The favorite is a clock

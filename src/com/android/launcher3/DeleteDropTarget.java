@@ -42,6 +42,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.WidgetsContainerView;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
@@ -100,8 +101,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private boolean isAllAppsApplication(DragSource source, Object info) {
         return source.supportsAppInfoDropTarget() && (info instanceof AppInfo);
     }
-    private boolean isAllAppsWidget(DragSource source, Object info) {
-        if (source instanceof AppsCustomizePagedView) {
+
+    private boolean isWidget(DragSource source, Object info) {
+        if (source instanceof WidgetsContainerView) {
             if (info instanceof PendingAddItemInfo) {
                 PendingAddItemInfo addInfo = (PendingAddItemInfo) info;
                 switch (addInfo.itemType) {
@@ -173,7 +175,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // If we are dragging an application from AppsCustomize, only show the control if we can
         // delete the app (it was downloaded), and rename the string to "uninstall" in such a case.
         // Hide the delete target if it is a widget from AppsCustomize.
-        if (!willAcceptDrop(info) || isAllAppsWidget(source, info)) {
+        if (!willAcceptDrop(info) || isWidget(source, info)) {
             isVisible = false;
         }
         if (useUninstallLabel) {
@@ -489,13 +491,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     public void onFlingToDelete(final DragObject d, int x, int y, PointF vel) {
-        final boolean isAllApps = d.dragSource instanceof AppsCustomizePagedView;
+        final boolean isWidgets = d.dragSource instanceof WidgetsContainerView;
+        final boolean isAllapps = d.dragSource instanceof AppsContainerView;
 
         // Don't highlight the icon as it's animating
         d.dragView.setColor(0);
         d.dragView.updateInitialScaleToCurrentScale();
         // Don't highlight the target if we are flinging from AllApps
-        if (isAllApps) {
+        if (isWidgets || isAllapps) {
             resetHoverColor();
         }
 
@@ -545,7 +548,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
             public void run() {
                 // If we are dragging from AllApps, then we allow AppsCustomizePagedView to clean up
                 // itself, otherwise, complete the drop to initiate the deletion process
-                if (!isAllApps) {
+                if (!isWidgets || !isAllapps) {
                     mLauncher.exitSpringLoadedDragMode();
                     completeDrop(d);
                 }
