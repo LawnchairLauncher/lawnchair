@@ -16,10 +16,10 @@ import android.os.Parcel;
 public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public boolean isCustomWidget = false;
-    int spanX = -1;
-    int spanY = -1;
-    int minSpanX = -1;
-    int minSpanY = -1;
+    public int spanX = -1;
+    public int spanY = -1;
+    public int minSpanX = -1;
+    public int minSpanY = -1;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
@@ -78,10 +78,11 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return super.loadIcon(context, cache.getFullResIconDpi());
     }
 
-    public String toString() {
+    public String toString(PackageManager pm) {
         if (isCustomWidget) {
-            return "LauncherAppWidgetProviderInfo(" + provider + ")";
+            return "WidgetProviderInfo(" + provider + ")";
         }
-        return super.toString();
+        return String.format("WidgetProviderInfo provider:%s package:%s short:%s label:%s span(%d, %d) minSpan(%d, %d)",
+                provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm), spanX, spanY, minSpanX, minSpanY);
     }
  }

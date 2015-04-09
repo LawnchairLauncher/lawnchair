@@ -36,7 +36,7 @@ public class ItemInfo {
      */
     static final String EXTRA_PROFILE = "profile";
     
-    static final int NO_ID = -1;
+    public static final int NO_ID = -1;
     
     /**
      * The id in the settings database for this item
@@ -82,7 +82,7 @@ public class ItemInfo {
     /**
      * Indicates the Y cell span.
      */
-    int spanY = 1;
+    public int spanY = 1;
 
     /**
      * Indicates the minimum X cell span.
@@ -107,21 +107,21 @@ public class ItemInfo {
     /**
      * Title of the item
      */
-    CharSequence title;
+    public CharSequence title;
 
     /**
      * Content description of the item.
      */
-    CharSequence contentDescription;
+    public CharSequence contentDescription;
 
     /**
      * The position of the item in a drag-and-drop operation.
      */
-    int[] dropPos = null;
+    public int[] dropPos = null;
 
-    UserHandleCompat user;
+    public UserHandleCompat user;
 
-    ItemInfo() {
+    public ItemInfo() {
         user = UserHandleCompat.myUserHandle();
     }
 

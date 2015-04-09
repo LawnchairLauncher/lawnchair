@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,31 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.TextView;
+
+import com.android.launcher3.R;
 
 /**
- * The grid based layout used strictly for the widget/wallpaper tab of the AppsCustomize pane
+ * Layout used for widget tray rows for each app. For performance, this view can be replaced with
+ * a {@link RecyclerView} in the future if we settle on scrollable single row for the widgets.
+ * If we decide on collapsable grid, then HorizontalScrollView can be replaced with a
+ * {@link GridLayout}.
  */
-public class PagedViewGridLayout extends GridLayout implements Page {
-    static final String TAG = "PagedViewGridLayout";
+public class WidgetsRowView extends HorizontalScrollView {
+    static final String TAG = "WidgetsRow";
 
-    private int mCellCountX;
-    private int mCellCountY;
     private Runnable mOnLayoutListener;
+    private String mAppName;
 
-    public PagedViewGridLayout(Context context, int cellCountX, int cellCountY) {
+    public WidgetsRowView(Context context, String appName) {
         super(context, null, 0);
-        mCellCountX = cellCountX;
-        mCellCountY = cellCountY;
-    }
-
-    int getCellCountX() {
-        return mCellCountX;
-    }
-
-    int getCellCountY() {
-        return mCellCountY;
+        mAppName = appName;
     }
 
     /**
@@ -57,6 +52,13 @@ public class PagedViewGridLayout extends GridLayout implements Page {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        TextView tv = (TextView) findViewById(R.id.widget_name);
+        tv.setText(mAppName);
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mOnLayoutListener = null;
@@ -66,6 +68,7 @@ public class PagedViewGridLayout extends GridLayout implements Page {
         mOnLayoutListener = r;
     }
 
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (mOnLayoutListener != null) {
@@ -76,41 +79,7 @@ public class PagedViewGridLayout extends GridLayout implements Page {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean result = super.onTouchEvent(event);
-        int count = getPageChildCount();
-        if (count > 0) {
-            // We only intercept the touch if we are tapping in empty space after the final row
-            View child = getChildOnPageAt(count - 1);
-            int bottom = child.getBottom();
-            result = result || (event.getY() < bottom);
-        }
         return result;
-    }
-
-    @Override
-    public void removeAllViewsOnPage() {
-        removeAllViews();
-        mOnLayoutListener = null;
-        setLayerType(LAYER_TYPE_NONE, null);
-    }
-
-    @Override
-    public void removeViewOnPageAt(int index) {
-        removeViewAt(index);
-    }
-
-    @Override
-    public int getPageChildCount() {
-        return getChildCount();
-    }
-
-    @Override
-    public View getChildOnPageAt(int i) {
-        return getChildAt(i);
-    }
-
-    @Override
-    public int indexOfChildOnPage(View v) {
-        return indexOfChild(v);
     }
 
     public static class LayoutParams extends FrameLayout.LayoutParams {

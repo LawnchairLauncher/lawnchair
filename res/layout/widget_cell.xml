@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!-- Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,58 +13,26 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.PagedViewWidget
+<com.android.launcher3.widget.WidgetCell
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="vertical"
-
     android:background="@drawable/focusable_view_bg"
     android:focusable="true">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
-        <FrameLayout
-            android:id="@+id/left_border"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/widget_text_panel"
-            android:visibility="gone" />
-
-        <!-- The preview of the widget or shortcut. -->
-        <com.android.launcher3.PagedViewWidgetImageView
-            android:id="@+id/widget_preview"
-            style="@style/PagedViewWidgetImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingTop="@dimen/app_widget_preview_padding_top"
-            android:paddingEnd="@dimen/app_widget_preview_padding_right"
-            android:paddingRight="@dimen/app_widget_preview_padding_right"
-            android:scaleType="matrix" />
-        <FrameLayout
-            android:id="@+id/right_border"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/widget_text_panel"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/app_widget_preview_label_vertical_padding"
-        android:paddingBottom="@dimen/app_widget_preview_label_vertical_padding"
-        android:paddingLeft="@dimen/app_widget_preview_label_horizontal_padding"
-        android:paddingRight="@dimen/app_widget_preview_label_horizontal_padding"
-        android:background="@color/widget_text_panel"
+        android:paddingTop="@dimen/widget_preview_label_vertical_padding"
+        android:paddingBottom="@dimen/widget_preview_label_vertical_padding"
+        android:paddingLeft="@dimen/widget_preview_label_horizontal_padding"
+        android:paddingRight="@dimen/widget_preview_label_horizontal_padding"
         android:orientation="horizontal">
+
         <!-- The name of the widget. -->
         <TextView
             android:id="@+id/widget_name"
@@ -91,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="0"
             android:gravity="start"
 
@@ -101,5 +70,16 @@
             android:shadowColor="#B0000000" />
     </LinearLayout>
 
+    <!-- The image of the widget. -->
+    <com.android.launcher3.widget.WidgetImageView
+        android:id="@+id/widget_preview"
+        style="@style/WidgetImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingTop="@dimen/widget_preview_padding_top"
+        android:paddingEnd="@dimen/widget_preview_padding_right"
+        android:paddingRight="@dimen/widget_preview_padding_right"
+        android:scaleType="matrix" />
 
-</com.android.launcher3.PagedViewWidget>
+</com.android.launcher3.widget.WidgetCell>

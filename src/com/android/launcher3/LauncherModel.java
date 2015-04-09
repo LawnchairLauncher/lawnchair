@@ -3628,7 +3628,7 @@ public class LauncherModel extends BroadcastReceiver
         private final HashMap<Object, String> mLabelCache;
         private final Collator mCollator;
 
-        WidgetAndShortcutNameComparator(Context context) {
+        public WidgetAndShortcutNameComparator(Context context) {
             mManager = AppWidgetManagerCompat.getInstance(context);
             mPackageManager = context.getPackageManager();
             mLabelCache = new HashMap<Object, String>();

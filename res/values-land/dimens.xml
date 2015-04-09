@@ -18,9 +18,4 @@
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">0dip</dimen>
-
-<!-- AppsCustomize -->
-    <dimen name="apps_customize_tab_bar_height">42dp</dimen>
-    <integer name="apps_customize_widget_cell_count_x">3</integer>
-    <integer name="apps_customize_widget_cell_count_y">2</integer>
 </resources>

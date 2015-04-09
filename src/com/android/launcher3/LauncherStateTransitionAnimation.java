@@ -23,6 +23,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.content.res.Resources;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -30,6 +31,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.util.HashMap;
 
@@ -179,20 +181,12 @@ public class LauncherStateTransitionAnimation {
      * Starts an animation to the widgets view.
      */
     public void startAnimationToWidgets(final boolean animated) {
-        final AppsCustomizeTabHost toView = mLauncher.getWidgetsView();
+        final WidgetsContainerView toView = mLauncher.getWidgetsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             @Override
             public void onRevealViewVisible(View revealView, View contentView,
                     View allAppsButtonView) {
-                // Hide the real page background, and swap in the fake one
-                ((AppsCustomizePagedView) contentView).setPageBackgroundsVisible(false);
-                revealView.setBackground(
-                        mLauncher.getResources().getDrawable(R.drawable.quantum_panel_dark));
-            }
-            @Override
-            public void onAnimationComplete(View revealView, View contentView, View allAppsButtonView) {
-                // Show the real page background
-                ((AppsCustomizePagedView) contentView).setPageBackgroundsVisible(true);
+                revealView.setBackground(mLauncher.getDrawable(R.drawable.quantum_panel_dark));
             }
             @Override
             public float getMaterialRevealViewFinalAlpha(View revealView) {
@@ -204,7 +198,7 @@ public class LauncherStateTransitionAnimation {
             }
         };
         startAnimationToOverlay(Workspace.State.OVERVIEW_HIDDEN, toView, toView.getContentView(),
-                toView.getRevealView(), toView.getPageIndicators(), animated, cb);
+                toView.getRevealView(), null, animated, cb);
     }
 
     /**
@@ -500,44 +494,8 @@ public class LauncherStateTransitionAnimation {
     private void startAnimationToWorkspaceFromWidgets(final Launcher.State fromState,
               final Workspace.State toWorkspaceState, final boolean animated,
               final Runnable onCompleteRunnable) {
-        AppsCustomizeTabHost widgetsView = mLauncher.getWidgetsView();
+        WidgetsContainerView widgetsView = mLauncher.getWidgetsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
-            @Override
-            public void onRevealViewVisible(View revealView, View contentView, View allAppsButtonView) {
-                AppsCustomizePagedView pagedView = ((AppsCustomizePagedView) contentView);
-
-                // Hide the real page background, and swap in the fake one
-                pagedView.stopScrolling();
-                pagedView.setPageBackgroundsVisible(false);
-                revealView.setBackground(
-                        mLauncher.getResources().getDrawable(R.drawable.quantum_panel_dark));
-
-                // Hide the side pages of the Widget tray to avoid some ugly edge cases
-                final View currentPage = pagedView.getPageAt(pagedView.getNextPage());
-                int count = pagedView.getChildCount();
-                for (int i = 0; i < count; i++) {
-                    View child = pagedView.getChildAt(i);
-                    if (child != currentPage) {
-                        child.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-            @Override
-            public void onAnimationComplete(View revealView, View contentView, View allAppsButtonView) {
-                AppsCustomizePagedView pagedView = ((AppsCustomizePagedView) contentView);
-
-                // Show the real page background and force-update the page
-                pagedView.setPageBackgroundsVisible(true);
-                pagedView.setCurrentPage(pagedView.getNextPage());
-                pagedView.updateCurrentPageScroll();
-
-                // Unhide the side pages
-                int count = pagedView.getChildCount();
-                for (int i = 0; i < count; i++) {
-                    View child = pagedView.getChildAt(i);
-                    child.setVisibility(View.VISIBLE);
-                }
-            }
             @Override
             public float getMaterialRevealViewFinalYDrift(View revealView) {
                 return revealView.getMeasuredHeight() / 2;
@@ -559,7 +517,7 @@ public class LauncherStateTransitionAnimation {
         };
         startAnimationToWorkspaceFromOverlay(toWorkspaceState, widgetsView,
                 widgetsView.getContentView(), widgetsView.getRevealView(),
-                widgetsView.getPageIndicators(), animated, onCompleteRunnable, cb);
+                null, animated, onCompleteRunnable, cb);
     }
 
     /**

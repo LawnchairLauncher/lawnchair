@@ -24,11 +24,9 @@
     <dimen name="apps_view_row_height">76dp</dimen>
 
 <!-- AppsCustomize -->
-    <dimen name="apps_customize_tab_bar_height">60dp</dimen>
-    <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
-    <dimen name="app_widget_preview_label_margin_top">8dp</dimen>
-    <dimen name="app_widget_preview_label_margin_left">@dimen/app_widget_preview_padding_left</dimen>
-    <dimen name="app_widget_preview_label_margin_right">@dimen/app_widget_preview_padding_right</dimen>
+    <dimen name="widget_preview_label_margin_top">8dp</dimen>
+    <dimen name="widget_preview_label_margin_left">@dimen/widget_preview_padding_left</dimen>
+    <dimen name="widget_preview_label_margin_right">@dimen/widget_preview_padding_right</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">400dp</dimen>
