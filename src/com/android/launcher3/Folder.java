@@ -69,7 +69,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      * results in CellLayout being measured as UNSPECIFIED, which it does not support.
      */
     private static final int MIN_CONTENT_DIMEN = 5;
-    private static final boolean ALLOW_FOLDER_SCROLL = true;
 
     static final int STATE_NONE = -1;
     static final int STATE_SMALL = 0;
@@ -101,6 +100,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private final Alarm mReorderAlarm = new Alarm();
     private final Alarm mOnExitAlarm = new Alarm();
+    private final Alarm mOnScrollHintAlarm = new Alarm();
+    @Thunk final Alarm mScrollPauseAlarm = new Alarm();
 
     @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
 
@@ -116,7 +117,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Thunk FolderIcon mFolderIcon;
 
-    @Thunk FolderContent mContent;
+    @Thunk FolderPagedView mContent;
     @Thunk View mContentWrapper;
     FolderEditText mFolderName;
 
@@ -149,11 +150,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     // Folder scrolling
     private int mScrollAreaOffset;
-    private Alarm mOnScrollHintAlarm;
-    @Thunk Alarm mScrollPauseAlarm;
-
-    // TODO: Use {@link #mContent} once {@link #ALLOW_FOLDER_SCROLL} is removed.
-    @Thunk FolderPagedView mPagedView;
 
     @Thunk int mScrollHintDir = DragController.SCROLL_NONE;
     @Thunk int mCurrentScrollDir = DragController.SCROLL_NONE;
@@ -186,18 +182,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
-
-        if (ALLOW_FOLDER_SCROLL) {
-            mOnScrollHintAlarm = new Alarm();
-            mScrollPauseAlarm = new Alarm();
-        }
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContentWrapper = findViewById(R.id.folder_content_wrapper);
-        mContent = (FolderContent) findViewById(R.id.folder_content);
+        mContent = (FolderPagedView) findViewById(R.id.folder_content);
         mContent.setFolder(this);
 
         mFolderName = (FolderEditText) findViewById(R.id.folder_name);
@@ -211,16 +202,16 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
-        mFooter = ALLOW_FOLDER_SCROLL ? findViewById(R.id.folder_footer) : mFolderName;
+        mFooter = findViewById(R.id.folder_footer);
+        updateFooterHeight();
+    }
+
+    public void updateFooterHeight() {
         // We find out how tall footer wants to be (it is set to wrap_content), so that
         // we can allocate the appropriate amount of space for it.
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
-
-        if (ALLOW_FOLDER_SCROLL) {
-            mPagedView = (FolderPagedView) mContent;
-        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -398,8 +389,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      * @return A new UserFolder.
      */
     static Folder fromXml(Context context) {
-        return (Folder) LayoutInflater.from(context).inflate(
-                ALLOW_FOLDER_SCROLL ? R.layout.user_folder_scroll : R.layout.user_folder, null);
+        return (Folder) LayoutInflater.from(context).inflate(R.layout.user_folder, null);
     }
 
     /**
@@ -424,12 +414,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void animateOpen() {
         if (!(getParent() instanceof DragLayer)) return;
 
-        if (ALLOW_FOLDER_SCROLL) {
-            mPagedView.completePendingPageChanges();
-            if (!(mDragInProgress && mPagedView.mIsSorted)) {
-                // Open on the first page.
-                mPagedView.snapToPageImmediately(0);
-            }
+        mContent.completePendingPageChanges();
+        if (!(mDragInProgress && mContent.mIsSorted)) {
+            // Open on the first page.
+            mContent.snapToPageImmediately(0);
         }
 
         Animator openFolderAnim = null;
@@ -533,10 +521,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mDragController.forceTouchMove();
         }
 
-        if (ALLOW_FOLDER_SCROLL) {
-            FolderPagedView pages = (FolderPagedView) mContent;
-            pages.verifyVisibleHighResIcons(pages.getNextPage());
-        }
+        FolderPagedView pages = (FolderPagedView) mContent;
+        pages.verifyVisibleHighResIcons(pages.getNextPage());
     }
 
     public void beginExternalDrag(ShortcutInfo item) {
@@ -544,7 +530,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mEmptyCellRank = mContent.allocateRankForNewItem(item);
         mIsExternalDrag = true;
         mDragInProgress = true;
-        if (ALLOW_FOLDER_SCROLL && mPagedView.mIsSorted) {
+
+        if (mContent.mIsSorted) {
             mScrollPauseAlarm.setOnAlarmListener(null);
             mScrollPauseAlarm.cancelAlarm();
             mScrollPauseAlarm.setAlarm(SORTED_STICKY_REORDER_DELAY);
@@ -601,11 +588,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onDragEnter(DragObject d) {
         mPrevTargetRank = -1;
         mOnExitAlarm.cancelAlarm();
-        if (ALLOW_FOLDER_SCROLL) {
-            // Get the area offset such that the folder only closes if half the drag icon width
-            // is outside the folder area
-            mScrollAreaOffset = d.dragView.getDragRegionWidth() / 2 - d.xOffset;
-        }
+        // Get the area offset such that the folder only closes if half the drag icon width
+        // is outside the folder area
+        mScrollAreaOffset = d.dragView.getDragRegionWidth() / 2 - d.xOffset;
     }
 
     OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
@@ -632,7 +617,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Thunk void onDragOver(DragObject d, int reorderDelay) {
-        if (ALLOW_FOLDER_SCROLL && mScrollPauseAlarm.alarmPending()) {
+        if (mScrollPauseAlarm.alarmPending()) {
             return;
         }
         final float[] r = new float[2];
@@ -645,27 +630,23 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mPrevTargetRank = mTargetRank;
         }
 
-        if (!ALLOW_FOLDER_SCROLL) {
-            return;
-        }
-
         float x = r[0];
-        int currentPage = mPagedView.getNextPage();
+        int currentPage = mContent.getNextPage();
 
-        float cellOverlap = mPagedView.getCurrentCellLayout().getCellWidth()
+        float cellOverlap = mContent.getCurrentCellLayout().getCellWidth()
                 * ICON_OVERSCROLL_WIDTH_FACTOR;
         boolean isOutsideLeftEdge = x < cellOverlap;
         boolean isOutsideRightEdge = x > (getWidth() - cellOverlap);
 
-        if (currentPage > 0 && (mPagedView.rtlLayout ? isOutsideRightEdge : isOutsideLeftEdge)) {
+        if (currentPage > 0 && (mContent.rtlLayout ? isOutsideRightEdge : isOutsideLeftEdge)) {
             showScrollHint(DragController.SCROLL_LEFT, d);
-        } else if (currentPage < (mPagedView.getPageCount() - 1)
-                && (mPagedView.rtlLayout ? isOutsideLeftEdge : isOutsideRightEdge)) {
+        } else if (currentPage < (mContent.getPageCount() - 1)
+                && (mContent.rtlLayout ? isOutsideLeftEdge : isOutsideRightEdge)) {
             showScrollHint(DragController.SCROLL_RIGHT, d);
         } else {
             mOnScrollHintAlarm.cancelAlarm();
             if (mScrollHintDir != DragController.SCROLL_NONE) {
-                mPagedView.clearScrollHint();
+                mContent.clearScrollHint();
                 mScrollHintDir = DragController.SCROLL_NONE;
             }
         }
@@ -674,7 +655,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private void showScrollHint(int direction, DragObject d) {
         // Show scroll hint on the right
         if (mScrollHintDir != direction) {
-            mPagedView.showScrollHint(direction);
+            mContent.showScrollHint(direction);
             mScrollHintDir = direction;
         }
 
@@ -714,13 +695,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
         mReorderAlarm.cancelAlarm();
 
-        if (ALLOW_FOLDER_SCROLL) {
-            mOnScrollHintAlarm.cancelAlarm();
-            mScrollPauseAlarm.cancelAlarm();
-            if (mScrollHintDir != DragController.SCROLL_NONE) {
-                mPagedView.clearScrollHint();
-                mScrollHintDir = DragController.SCROLL_NONE;
-            }
+        mOnScrollHintAlarm.cancelAlarm();
+        mScrollPauseAlarm.cancelAlarm();
+        if (mScrollHintDir != DragController.SCROLL_NONE) {
+            mContent.clearScrollHint();
+            mScrollHintDir = DragController.SCROLL_NONE;
         }
     }
 
@@ -1088,21 +1067,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             };
         }
 
-        if (ALLOW_FOLDER_SCROLL) {
-            // If the icon was dropped while the page was being scrolled, we need to compute
-            // the target location again such that the icon is placed of the final page.
-            if (!mPagedView.rankOnCurrentPage(mEmptyCellRank)) {
-                // Reorder again.
-                mTargetRank = getTargetRank(d, null);
+        // If the icon was dropped while the page was being scrolled, we need to compute
+        // the target location again such that the icon is placed of the final page.
+        if (!mContent.rankOnCurrentPage(mEmptyCellRank)) {
+            // Reorder again.
+            mTargetRank = getTargetRank(d, null);
 
-                // Rearrange items immediately.
-                mReorderAlarmListener.onAlarm(mReorderAlarm);
+            // Rearrange items immediately.
+            mReorderAlarmListener.onAlarm(mReorderAlarm);
 
-                mOnScrollHintAlarm.cancelAlarm();
-                mScrollPauseAlarm.cancelAlarm();
-            }
-            mPagedView.completePendingPageChanges();
+            mOnScrollHintAlarm.cancelAlarm();
+            mScrollPauseAlarm.cancelAlarm();
         }
+        mContent.completePendingPageChanges();
 
         View currentDragView;
         ShortcutInfo si = mCurrentDragInfo;
@@ -1252,10 +1229,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         @Override
         public void onAlarm(Alarm alarm) {
             if (mCurrentScrollDir == DragController.SCROLL_LEFT) {
-                mPagedView.scrollLeft();
+                mContent.scrollLeft();
                 mScrollHintDir = DragController.SCROLL_NONE;
             } else if (mCurrentScrollDir == DragController.SCROLL_RIGHT) {
-                mPagedView.scrollRight();
+                mContent.scrollRight();
                 mScrollHintDir = DragController.SCROLL_NONE;
             } else {
                 // This should not happen
@@ -1285,70 +1262,5 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             // Reorder immediately on page change.
             onDragOver(mDragObject, 1);
         }
-    }
-
-    public static interface FolderContent {
-        void setFolder(Folder f);
-
-        void removeItem(View v);
-
-        boolean isFull();
-        int getItemCount();
-
-        int getDesiredWidth();
-        int getDesiredHeight();
-        void setFixedSize(int width, int height);
-
-        /**
-         * Iterates over all its items in a reading order.
-         * @return the view for which the operator returned true.
-         */
-        View iterateOverItems(ItemOperator op);
-        View getLastItem();
-
-        String getAccessibilityDescription();
-
-        /**
-         * Binds items to the layout.
-         * @return list of items that could not be bound, probably because we hit the max size limit.
-         */
-        ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> children);
-
-        /**
-         * Create space for a new item, and returns the rank for that item.
-         * Resizes the content if necessary.
-         */
-        int allocateRankForNewItem(ShortcutInfo info);
-
-        View createAndAddViewForRank(ShortcutInfo item, int rank);
-
-        /**
-         * Adds the {@param view} to the layout based on {@param rank} and updated the position
-         * related attributes. It assumes that {@param item} is already attached to the view.
-         */
-        void addViewForRank(View view, ShortcutInfo item, int rank);
-
-        /**
-         * Reorders the items such that the {@param empty} spot moves to {@param target}
-         */
-        void realTimeReorder(int empty, int target);
-
-        /**
-         * @return the rank of the cell nearest to the provided pixel position.
-         */
-        int findNearestArea(int pixelX, int pixelY);
-
-        /**
-         * Updates position and rank of all the children in the view based.
-         * @param list the ordered list of children.
-         * @param itemCount if greater than the total children count, empty spaces are left
-         * at the end.
-         */
-        void arrangeChildren(ArrayList<View> list, int itemCount);
-
-        /**
-         * Sets the focus on the first visible child.
-         */
-        void setFocusOnFirstChild();
     }
 }
