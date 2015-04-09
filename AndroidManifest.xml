@@ -192,15 +192,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- New user initialization; set up initial wallpaper -->
-        <receiver
-            android:name="com.android.launcher3.UserInitializeReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.USER_INITIALIZE" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name="com.android.launcher3.StartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
