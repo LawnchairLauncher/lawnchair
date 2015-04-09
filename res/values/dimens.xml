@@ -50,6 +50,8 @@
     <dimen name="apps_container_width">0dp</dimen>
     <dimen name="apps_container_height">0dp</dimen>
     <dimen name="apps_container_inset">8dp</dimen>
+    <!-- Note: This needs to match the fixed insets for the search box -->
+    <dimen name="apps_container_fixed_bounds_inset">8dp</dimen>
     <dimen name="apps_grid_view_start_margin">52dp</dimen>
     <dimen name="apps_view_row_height">64dp</dimen>
     <dimen name="apps_view_section_text_size">24sp</dimen>

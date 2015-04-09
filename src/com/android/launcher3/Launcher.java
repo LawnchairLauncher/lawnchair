@@ -520,6 +520,17 @@ public class Launcher extends Activity
 
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
+        mLauncherCallbacks.setLauncherAppsCallback(new Launcher.LauncherAppsCallbacks() {
+            @Override
+            public void onAllAppsBoundsChanged(Rect bounds) {
+                mAppsView.setFixedBounds(Launcher.this, bounds);
+            }
+
+            @Override
+            public void dismissAllApps() {
+                showWorkspace(true);
+            }
+        });
         return true;
     }
 
@@ -1141,6 +1152,19 @@ public class Launcher extends Activity
         public void forceExitFullImmersion();
     }
 
+    public interface LauncherAppsCallbacks {
+        /**
+         * Updates launcher to the available space that AllApps can take so as not to overlap with
+         * any other views.
+         */
+        public void onAllAppsBoundsChanged(Rect bounds);
+
+        /**
+         * Called to dismiss all apps if it is showing.
+         */
+        public void dismissAllApps();
+    }
+
     public interface LauncherOverlayCallbacks {
         /**
          * This method indicates whether a call to {@link #enterFullImmersion()} will succeed,
@@ -1418,6 +1442,9 @@ public class Launcher extends Activity
 
         // Setup Apps
         mAppsView = (AppsContainerView) findViewById(R.id.apps_view);
+        if (mLauncherCallbacks != null && mLauncherCallbacks.overrideAllAppsSearch()) {
+            mAppsView.hideSearchBar();
+        }
 
         // Setup AppsCustomize
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
@@ -2587,9 +2614,6 @@ public class Launcher extends Activity
         } else {
             showAppsView(true /* animated */, false /* resetListToTop */);
         }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickAllAppsButton(v);
-        }
     }
 
     private void showBrokenAppInstallDialog(final String packageName,
@@ -3270,7 +3294,9 @@ public class Launcher extends Activity
     }
 
     void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
-        if (mState != State.WORKSPACE || mWorkspace.getState() != Workspace.State.NORMAL) {
+        boolean changed = mState != State.WORKSPACE ||
+                mWorkspace.getState() != Workspace.State.NORMAL;
+        if (changed) {
             boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
             mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.NORMAL,
@@ -3295,11 +3321,13 @@ public class Launcher extends Activity
         mUserPresent = true;
         updateAutoAdvanceState();
 
-        // Send an accessibility event to announce the context change
-        getWindow().getDecorView()
-                .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        if (changed) {
+            // Send an accessibility event to announce the context change
+            getWindow().getDecorView()
+                    .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
 
-        onWorkspaceShown(animated);
+            onWorkspaceShown(animated);
+        }
     }
 
     void showOverviewMode(boolean animated) {
@@ -3350,6 +3378,9 @@ public class Launcher extends Activity
 
         if (toState == State.APPS) {
             mStateTransitionAnimation.startAnimationToAllApps(animated);
+            if (mLauncherCallbacks != null) {
+                mLauncherCallbacks.onAllAppsShown();
+            }
         } else {
             mStateTransitionAnimation.startAnimationToWidgets(animated);
         }

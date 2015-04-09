@@ -1700,7 +1700,11 @@ public class Workspace extends SmoothPagedView
 
         mLastCustomContentScrollProgress = progress;
 
-        mLauncher.getDragLayer().setBackgroundAlpha(progress * 0.8f);
+        // We should only update the drag layer background alpha if we are not in all apps or the
+        // widgets tray
+        if (mState == State.NORMAL) {
+            mLauncher.getDragLayer().setBackgroundAlpha(progress * 0.8f);
+        }
 
         if (mLauncher.getHotseat() != null) {
             mLauncher.getHotseat().setTranslationX(translationX);
@@ -2252,7 +2256,8 @@ public class Workspace extends SmoothPagedView
         float finalBackgroundAlpha = (stateIsSpringLoaded || stateIsOverview) ? 1.0f : 0f;
         float finalHotseatAndPageIndicatorAlpha = (stateIsNormal || stateIsSpringLoaded) ? 1f : 0f;
         float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
-        float finalSearchBarAlpha = !stateIsNormal ? 0f : 1f;
+        // We keep the search bar visible on the workspace and in AllApps now
+        float finalSearchBarAlpha = (stateIsNormal || stateIsNormalHidden) ? 1f : 0f;
         float finalWorkspaceTranslationY = stateIsOverview || stateIsOverviewHidden ?
                 getOverviewModeTranslationY() : 0;
 

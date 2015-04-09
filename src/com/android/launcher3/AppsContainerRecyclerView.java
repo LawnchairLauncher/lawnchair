@@ -196,13 +196,27 @@ public class AppsContainerRecyclerView extends RecyclerView
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
+                float dx = ev.getX() - mDownX;
+                float dy = ev.getY() - mDownY;
+                float distance = (float) Math.sqrt(dx * dx + dy * dy);
+                if (distance < viewConfig.getScaledTouchSlop()) {
+                    Rect backgroundPadding = new Rect();
+                    getBackground().getPadding(backgroundPadding);
+                    boolean isOutsideBounds = ev.getX() < backgroundPadding.left ||
+                            ev.getX() > (getWidth() - backgroundPadding.right);
+                    if (isOutsideBounds) {
+                        Launcher launcher = (Launcher) getContext();
+                        launcher.showWorkspace(true);
+                    }
+                }
+                // Fall through
             case MotionEvent.ACTION_CANCEL:
                 mDraggingFastScroller = false;
                 animateFastScrollerVisibility(false);
                 break;
         }
         return mDraggingFastScroller;
-
     }
 
     /**
