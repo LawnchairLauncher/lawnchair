@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.util.Thunk;
 
@@ -62,7 +63,7 @@ import java.util.Collections;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener {
+        View.OnFocusChangeListener, DragListener, UninstallSource {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -772,10 +773,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         updateItemLocationsInDatabaseBatch();
     }
 
+    @Override
     public void deferCompleteDropAfterUninstallActivity() {
         mDeferDropAfterUninstall = true;
     }
 
+    @Override
     public void onUninstallActivityReturned(boolean success) {
         mDeferDropAfterUninstall = false;
         mUninstallSuccessful = success;

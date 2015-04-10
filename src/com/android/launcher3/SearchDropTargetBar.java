@@ -44,10 +44,13 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private boolean mIsSearchBarHidden;
     private View mQSBSearchBar;
     private View mDropTargetBar;
-    private ButtonDropTarget mInfoDropTarget;
-    private ButtonDropTarget mDeleteDropTarget;
     private int mBarHeight;
     private boolean mDeferOnDragEnd = false;
+
+    // Drop targets
+    private ButtonDropTarget mInfoDropTarget;
+    private ButtonDropTarget mDeleteDropTarget;
+    private ButtonDropTarget mUninstallDropTarget;
 
     private boolean mEnableDropDownDropTargets;
 
@@ -61,13 +64,19 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
 
     public void setup(Launcher launcher, DragController dragController) {
         dragController.addDragListener(this);
+        dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
+
         dragController.addDragListener(mInfoDropTarget);
         dragController.addDragListener(mDeleteDropTarget);
+        dragController.addDragListener(mUninstallDropTarget);
+
         dragController.addDropTarget(mInfoDropTarget);
         dragController.addDropTarget(mDeleteDropTarget);
-        dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
+        dragController.addDropTarget(mUninstallDropTarget);
+
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
+        mUninstallDropTarget.setLauncher(launcher);
     }
 
     public void setQsbSearchBar(View qsb) {
@@ -116,9 +125,11 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDropTargetBar = findViewById(R.id.drag_target_bar);
         mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target_text);
         mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target_text);
+        mUninstallDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.uninstall_target_text);
 
         mInfoDropTarget.setSearchDropTargetBar(this);
         mDeleteDropTarget.setSearchDropTargetBar(this);
+        mUninstallDropTarget.setSearchDropTargetBar(this);
 
         mEnableDropDownDropTargets =
             getResources().getBoolean(R.bool.config_useDropTargetDownTransition);

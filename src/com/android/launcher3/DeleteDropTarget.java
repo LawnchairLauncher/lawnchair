@@ -19,46 +19,28 @@ package com.android.launcher3;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 
-import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.R;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
 
 public class DeleteDropTarget extends ButtonDropTarget {
-    private static int DELETE_ANIMATION_DURATION = 285;
+
     private static int FLING_DELETE_ANIMATION_DURATION = 350;
     private static float FLING_TO_DELETE_FRICTION = 0.035f;
     private static int MODE_FLING_DELETE_TO_TRASH = 0;
     private static int MODE_FLING_DELETE_ALONG_VECTOR = 1;
 
     private final int mFlingDeleteMode = MODE_FLING_DELETE_ALONG_VECTOR;
-
-    private ColorStateList mOriginalTextColor;
-    private TransitionDrawable mUninstallDrawable;
-    private TransitionDrawable mRemoveDrawable;
-    private TransitionDrawable mCurrentDrawable;
-
-    @Thunk boolean mWaitingForUninstall = false;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -71,258 +53,27 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        // Get the drawable
-        mOriginalTextColor = getTextColors();
-
         // Get the hover color
-        Resources r = getResources();
-        mHoverColor = r.getColor(R.color.delete_target_hover_tint);
-        mUninstallDrawable = (TransitionDrawable) 
-                r.getDrawable(R.drawable.uninstall_target_selector);
-        mRemoveDrawable = (TransitionDrawable) r.getDrawable(R.drawable.remove_target_selector);
+        mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
 
-        mRemoveDrawable.setCrossFadeEnabled(true);
-        mUninstallDrawable.setCrossFadeEnabled(true);
-
-        // The current drawable is set to either the remove drawable or the uninstall drawable 
-        // and is initially set to the remove drawable, as set in the layout xml.
-        mCurrentDrawable = (TransitionDrawable) getCurrentDrawable();
-
-        // Remove the text in the Phone UI in landscape
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (!LauncherAppState.getInstance().isScreenLarge()) {
-                setText("");
-            }
-        }
+        setDrawable(R.drawable.remove_target_selector);
     }
 
-    private boolean isAllAppsApplication(DragSource source, Object info) {
-        return source.supportsAppInfoDropTarget() && (info instanceof AppInfo);
-    }
-
-    private boolean isWidget(DragSource source, Object info) {
-        if (source instanceof WidgetsContainerView) {
-            if (info instanceof PendingAddItemInfo) {
-                PendingAddItemInfo addInfo = (PendingAddItemInfo) info;
-                switch (addInfo.itemType) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                    case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
-    private boolean isDragSourceWorkspaceOrFolder(DragObject d) {
-        return (d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder);
-    }
-
-    private void setHoverColor() {
-        if (mCurrentDrawable != null) {
-            mCurrentDrawable.startTransition(mTransitionDuration);
-        }
-        setTextColor(mHoverColor);
-    }
-    private void resetHoverColor() {
-        if (mCurrentDrawable != null) {
-            mCurrentDrawable.resetTransition();
-        }
-        setTextColor(mOriginalTextColor);
+    public static boolean willAcceptDrop(DragSource source, Object info) {
+        return (info instanceof ItemInfo) && source.supportsDeleteDropTarget();
     }
 
     @Override
-    public boolean acceptDrop(DragObject d) {
-        return willAcceptDrop(d.dragInfo);
-    }
-
-    public static boolean willAcceptDrop(Object info) {
-        if (info instanceof ItemInfo) {
-            ItemInfo item = (ItemInfo) info;
-            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
-                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET ||
-                    item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                return true;
-            }
-
-            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-                return true;
-            }
-
-            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                    item instanceof AppInfo) {
-                AppInfo appInfo = (AppInfo) info;
-                return (appInfo.flags & AppInfo.DOWNLOADED_FLAG) != 0;
-            }
-
-            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                item instanceof ShortcutInfo) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    @Override
-    public void onDragStart(DragSource source, Object info, int dragAction) {
-        boolean isVisible = true;
-        boolean useUninstallLabel = isAllAppsApplication(source, info);
-        boolean useDeleteLabel = !useUninstallLabel && source.supportsDeleteDropTarget();
-
-        // If we are dragging an application from AppsCustomize, only show the control if we can
-        // delete the app (it was downloaded), and rename the string to "uninstall" in such a case.
-        // Hide the delete target if it is a widget from AppsCustomize.
-        if (!willAcceptDrop(info) || isWidget(source, info)) {
-            isVisible = false;
-        }
-        if (useUninstallLabel) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                UserManager userManager = (UserManager)
-                        getContext().getSystemService(Context.USER_SERVICE);
-                Bundle restrictions = userManager.getUserRestrictions();
-                if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
-                        || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
-                    isVisible = false;
-                }
-            }
-        }
-
-        if (useUninstallLabel) {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(mUninstallDrawable, null, null, null);
-        } else if (useDeleteLabel) {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(mRemoveDrawable, null, null, null);
-        } else {
-            isVisible = false;
-        }
-        mCurrentDrawable = (TransitionDrawable) getCurrentDrawable();
-
-        mActive = isVisible;
-        resetHoverColor();
-        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (isVisible && getText().length() > 0) {
-            setText(useUninstallLabel ? R.string.delete_target_uninstall_label
-                : R.string.delete_target_label);
-        }
+    protected boolean supportsDrop(DragSource source, Object info) {
+        return willAcceptDrop(source, info);
     }
 
     @Override
-    public void onDragEnd() {
-        super.onDragEnd();
-        mActive = false;
-    }
-
-    public void onDragEnter(DragObject d) {
-        super.onDragEnter(d);
-
-        setHoverColor();
-    }
-
-    public void onDragExit(DragObject d) {
-        super.onDragExit(d);
-
-        if (!d.dragComplete) {
-            resetHoverColor();
-        } else {
-            // Restore the hover color if we are deleting
-            d.dragView.setColor(mHoverColor);
-        }
-    }
-
-    private void animateToTrashAndCompleteDrop(final DragObject d) {
-        final DragLayer dragLayer = mLauncher.getDragLayer();
-        final Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-
-        int width = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicWidth();
-        int height = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicHeight();
-        final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
-                width, height);
-        final float scale = (float) to.width() / from.width();
-
-        mSearchDropTargetBar.deferOnDragEnd();
-        deferCompleteDropIfUninstalling(d);
-
-        Runnable onAnimationEndRunnable = new Runnable() {
-            @Override
-            public void run() {
-                completeDrop(d);
-                mSearchDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
-            }
-        };
-        dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
-                DELETE_ANIMATION_DURATION, new DecelerateInterpolator(2),
-                new LinearInterpolator(), onAnimationEndRunnable,
-                DragLayer.ANIMATION_END_DISAPPEAR, null);
-    }
-
-    private void deferCompleteDropIfUninstalling(DragObject d) {
-        mWaitingForUninstall = false;
-        if (isUninstallFromWorkspace(d)) {
-            if (d.dragSource instanceof Folder) {
-                ((Folder) d.dragSource).deferCompleteDropAfterUninstallActivity();
-            } else if (d.dragSource instanceof Workspace) {
-                ((Workspace) d.dragSource).deferCompleteDropAfterUninstallActivity();
-            }
-            mWaitingForUninstall = true;
-        }
-    }
-
-    private boolean isUninstallFromWorkspace(DragObject d) {
-        return false;
-    }
-
     @Thunk void completeDrop(DragObject d) {
         ItemInfo item = (ItemInfo) d.dragInfo;
-        boolean wasWaitingForUninstall = mWaitingForUninstall;
-        mWaitingForUninstall = false;
-        if (isAllAppsApplication(d.dragSource, item)) {
-            uninstallApp(mLauncher, (AppInfo) item);
-        } else if (isUninstallFromWorkspace(d)) {
-            ShortcutInfo shortcut = (ShortcutInfo) item;
-            if (shortcut.intent != null && shortcut.intent.getComponent() != null) {
-                final ComponentName componentName = shortcut.intent.getComponent();
-                final DragSource dragSource = d.dragSource;
-                final UserHandleCompat user = shortcut.user;
-                mWaitingForUninstall = mLauncher.startApplicationUninstallActivity(
-                        componentName, shortcut.flags, user);
-                if (mWaitingForUninstall) {
-                    final Runnable checkIfUninstallWasSuccess = new Runnable() {
-                        @Override
-                        public void run() {
-                            mWaitingForUninstall = false;
-                            String packageName = componentName.getPackageName();
-                            boolean uninstallSuccessful = !AllAppsList.packageHasActivities(
-                                    getContext(), packageName, user);
-                            if (dragSource instanceof Folder) {
-                                ((Folder) dragSource).
-                                    onUninstallActivityReturned(uninstallSuccessful);
-                            } else if (dragSource instanceof Workspace) {
-                                ((Workspace) dragSource).
-                                    onUninstallActivityReturned(uninstallSuccessful);
-                            }
-                        }
-                    };
-                    mLauncher.addOnResumeCallback(checkIfUninstallWasSuccess);
-                }
-            }
-        } else if (isDragSourceWorkspaceOrFolder(d)) {
+        if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
             removeWorkspaceOrFolderItem(mLauncher, item, null);
         }
-        if (wasWaitingForUninstall && !mWaitingForUninstall) {
-            if (d.dragSource instanceof Folder) {
-                ((Folder) d.dragSource).onUninstallActivityReturned(false);
-            } else if (d.dragSource instanceof Workspace) {
-                ((Workspace) d.dragSource).onUninstallActivityReturned(false);
-            }
-        }
-    }
-
-    public static void uninstallApp(Launcher launcher, AppInfo info) {
-        launcher.startApplicationUninstallActivity(info.componentName, info.flags, info.user);
     }
 
     /**
@@ -354,7 +105,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                         appWidgetHost.deleteAppWidgetId(widget.appWidgetId);
                         return null;
                     }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         } else {
             return false;
@@ -367,18 +118,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         return true;
     }
 
-    public void onDrop(DragObject d) {
-        animateToTrashAndCompleteDrop(d);
-    }
-
     /**
      * Creates an animation from the current drag view to the delete trash icon.
      */
     private AnimatorUpdateListener createFlingToTrashAnimatorListener(final DragLayer dragLayer,
             DragObject d, PointF vel, ViewConfiguration config) {
 
-        int width = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicWidth();
-        int height = mCurrentDrawable == null ? 0 : mCurrentDrawable.getIntrinsicHeight();
+        int width = mDrawable.getIntrinsicWidth();
+        int height = mDrawable.getIntrinsicHeight();
         final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
                 width, height);
         final Rect from = new Rect();
@@ -541,7 +288,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
             updateCb = createFlingAlongVectorAnimatorListener(dragLayer, d, vel, startTime,
                     duration, config);
         }
-        deferCompleteDropIfUninstalling(d);
 
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override

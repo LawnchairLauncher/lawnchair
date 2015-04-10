@@ -34,6 +34,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
@@ -286,7 +287,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
     @Override
     public boolean supportsDeleteDropTarget() {
-        return true;
+        return false;
     }
 
     @Override
