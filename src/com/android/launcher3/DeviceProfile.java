@@ -82,7 +82,7 @@ public class DeviceProfile {
     boolean isLandscape;
     boolean isTablet;
     boolean isLargeTablet;
-    boolean isLayoutRtl;
+    public boolean isLayoutRtl;
 
     boolean transposeLayoutWithOrientation;
 
