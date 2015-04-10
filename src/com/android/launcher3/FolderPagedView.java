@@ -124,16 +124,12 @@ public class FolderPagedView extends PagedView {
 
         if (ALLOW_ITEM_SORTING) {
             // Initialize {@link #mSortSwitch} and {@link #mSortButton}.
-            mSortButton.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    onSortClicked();
-                }
-            });
         }
     }
 
+    /**
+     * Called when sort button is clicked.
+     */
     private void onSortClicked() {
         if (mSortOperationPending) {
             return;
