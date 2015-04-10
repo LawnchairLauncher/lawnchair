@@ -120,7 +120,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, String.format("[tag=%s] onDetachedFromWindow", getTagToString()));
         }
         super.onDetachedFromWindow();
-        deletePreview(false);
+        deletePreview(true);
     }
 
     public void deletePreview(boolean recycleImage) {

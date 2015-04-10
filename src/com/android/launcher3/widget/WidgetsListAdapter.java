@@ -124,6 +124,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         if (infoOut.usingLowResIcon) {
             mIconCache.getTitleAndIconForApp(packageName, UserHandleCompat.myUserHandle(),
                 false /* useLowResIcon */, infoOut);
+            mWidgetsModel.setPackageItemInfo(packageName, infoOut);
         }
         ((TextView) holder.getContent().findViewById(R.id.section)).setText(infoOut.title);
         ImageView iv = (ImageView) holder.getContent().findViewById(R.id.section_image);

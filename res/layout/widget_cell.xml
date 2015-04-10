@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:gravity="start"
             android:singleLine="true"
-            android:ellipsize="marquee"
+            android:ellipsize="end"
             android:fadingEdge="horizontal"
 
             android:textColor="#FFFFFFFF"
