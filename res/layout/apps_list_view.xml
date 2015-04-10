@@ -20,7 +20,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:elevation="15dp"
-    android:visibility="gone">
+    android:visibility="gone"
+    android:focusableInTouchMode="true">
     <EditText
         android:id="@+id/app_search_box"
         android:layout_width="match_parent"

@@ -57,8 +57,11 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
-    @Thunk AppsContainerRecyclerView mAppsListView;
-    private EditText mSearchBar;
+
+    private LinearLayout mContentView;
+    @Thunk AppsContainerRecyclerView mAppsRecyclerView;
+    private EditText mSearchBarView;
+    
     private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point();
     private Rect mInsets = new Rect();
@@ -140,7 +143,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
      * Hides the search bar
      */
     public void hideSearchBar() {
-        mSearchBar.setVisibility(View.GONE);
+        mSearchBarView.setVisibility(View.GONE);
         updateBackgrounds();
         updatePaddings();
     }
@@ -149,14 +152,14 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
      * Scrolls this list view to the top.
      */
     public void scrollToTop() {
-        mAppsListView.scrollToPosition(0);
+        mAppsRecyclerView.scrollToPosition(0);
     }
 
     /**
      * Returns the content view used for the launcher transitions.
      */
     public View getContentView() {
-        return findViewById(R.id.apps_list);
+        return mContentView;
     }
 
     /**
@@ -173,19 +176,31 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         if (USE_LAYOUT == GRID_LAYOUT) {
             ((AppsGridAdapter) mAdapter).setRtl(isRtl);
         }
-        mSearchBar = (EditText) findViewById(R.id.app_search_box);
-        if (mSearchBar != null) {
-            mSearchBar.addTextChangedListener(this);
-            mSearchBar.setOnEditorActionListener(this);
+
+        // Work around the search box getting first focus and showing the cursor by
+        // proxying the focus from the content view to the recycler view directly
+        mContentView = (LinearLayout) findViewById(R.id.apps_list);
+        mContentView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (v == mContentView && hasFocus) {
+                    mAppsRecyclerView.requestFocus();
+                }
+            }
+        });
+        mSearchBarView = (EditText) findViewById(R.id.app_search_box);
+        if (mSearchBarView != null) {
+            mSearchBarView.addTextChangedListener(this);
+            mSearchBarView.setOnEditorActionListener(this);
         }
-        mAppsListView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
-        mAppsListView.setApps(mApps);
-        mAppsListView.setNumAppsPerRow(mNumAppsPerRow);
-        mAppsListView.setLayoutManager(mLayoutManager);
-        mAppsListView.setAdapter(mAdapter);
-        mAppsListView.setHasFixedSize(true);
+        mAppsRecyclerView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
+        mAppsRecyclerView.setApps(mApps);
+        mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
+        mAppsRecyclerView.setLayoutManager(mLayoutManager);
+        mAppsRecyclerView.setAdapter(mAdapter);
+        mAppsRecyclerView.setHasFixedSize(true);
         if (mItemDecoration != null) {
-            mAppsListView.addItemDecoration(mItemDecoration);
+            mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
         updateBackgrounds();
         updatePaddings();
@@ -207,7 +222,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             if (grid.updateAppsViewNumCols(context.getResources(), fixedBounds.width())) {
                 mNumAppsPerRow = grid.appsViewNumCols;
-                mAppsListView.setNumAppsPerRow(mNumAppsPerRow);
+                mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
                 if (USE_LAYOUT == GRID_LAYOUT) {
                     ((AppsGridAdapter) mAdapter).setNumAppsPerRow(mNumAppsPerRow);
                 }
@@ -372,7 +387,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             for (int i = 0; i < items.size(); i++) {
                 AlphabeticalAppsList.AdapterItem item = items.get(i);
                 if (!item.isSectionHeader) {
-                    mAppsListView.getChildAt(i).performClick();
+                    mAppsRecyclerView.getChildAt(i).performClick();
                     InputMethodManager imm = (InputMethodManager)
                             getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getWindowToken(), 0);
@@ -390,12 +405,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
-        if (!toWorkspace) {
-            // Disable the focus so that the search bar doesn't get focus
-            if (mSearchBar != null) {
-                mSearchBar.setFocusableInTouchMode(false);
-            }
-        }
+        // Do nothing
     }
 
     @Override
@@ -410,12 +420,10 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        if (mSearchBar != null) {
+        if (mSearchBarView != null) {
             if (toWorkspace) {
                 // Clear the search bar
-                mSearchBar.setText("");
-            } else {
-                mSearchBar.setFocusableInTouchMode(true);
+                mSearchBarView.setText("");
             }
         }
     }
@@ -430,7 +438,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private void updatePaddings() {
         boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
                 LAYOUT_DIRECTION_RTL);
-        boolean hasSearchBar = (mSearchBar != null) && (mSearchBar.getVisibility() == View.VISIBLE);
+        boolean hasSearchBar = (mSearchBarView != null) &&
+                (mSearchBarView.getVisibility() == View.VISIBLE);
 
         if (mFixedBounds.isEmpty()) {
             // If there are no fixed bounds, then use the default padding and insets
@@ -446,14 +455,15 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         // Update the apps recycler view
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
         if (isRtl) {
-            mAppsListView.setPadding(inset, inset, inset + mContentMarginStart, inset);
+            mAppsRecyclerView.setPadding(inset, inset, inset + mContentMarginStart, inset);
         } else {
-            mAppsListView.setPadding(inset + mContentMarginStart, inset, inset, inset);
+            mAppsRecyclerView.setPadding(inset + mContentMarginStart, inset, inset, inset);
         }
 
         // Update the search bar
         if (hasSearchBar) {
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSearchBar.getLayoutParams();
+            LinearLayout.LayoutParams lp =
+                    (LinearLayout.LayoutParams) mSearchBarView.getLayoutParams();
             lp.leftMargin = lp.rightMargin = inset;
         }
     }
@@ -463,11 +473,12 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
      */
     private void updateBackgrounds() {
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-        boolean hasSearchBar = (mSearchBar != null) && (mSearchBar.getVisibility() == View.VISIBLE);
+        boolean hasSearchBar = (mSearchBarView != null) &&
+                (mSearchBarView.getVisibility() == View.VISIBLE);
 
         // Update the background of the reveal view and list to be inset with the fixed bound
         // insets instead of the default insets
-        mAppsListView.setBackground(new InsetDrawable(
+        mAppsRecyclerView.setBackground(new InsetDrawable(
                 getContext().getResources().getDrawable(
                         hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.apps_list_bg),
                 inset, 0, inset, 0));
