@@ -92,10 +92,6 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
     }
 
     public WidgetsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    public WidgetsContainerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr);
         mLauncher = (Launcher) context;
         mDragController = mLauncher.getDragController();
