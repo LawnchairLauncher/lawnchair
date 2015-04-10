@@ -112,6 +112,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
     private LayoutInflater mLayoutInflater;
     @Thunk AlphabeticalAppsList mApps;
+    private GridLayoutManager mGridLayoutMgr;
     private GridSpanSizer mGridSizer;
     private GridItemDecoration mItemDecoration;
     private View.OnTouchListener mTouchListener;
@@ -135,6 +136,9 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mApps = apps;
         mAppsPerRow = appsPerRow;
         mGridSizer = new GridSpanSizer();
+        mGridLayoutMgr = new GridLayoutManager(context, appsPerRow, GridLayoutManager.VERTICAL,
+                false);
+        mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mItemDecoration = new GridItemDecoration();
         mLayoutInflater = LayoutInflater.from(context);
         mTouchListener = touchListener;
@@ -147,6 +151,14 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 R.dimen.apps_view_section_text_size));
         mSectionTextPaint.setColor(res.getColor(R.color.apps_view_section_text_color));
         mSectionTextPaint.setAntiAlias(true);
+    }
+
+    /**
+     * Sets the number of apps per row.
+     */
+    public void setNumAppsPerRow(int appsPerRow) {
+        mAppsPerRow = appsPerRow;
+        mGridLayoutMgr.setSpanCount(appsPerRow);
     }
 
     /**
@@ -167,10 +179,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      * Returns the grid layout manager.
      */
     public GridLayoutManager getLayoutManager(Context context) {
-        GridLayoutManager layoutMgr = new GridLayoutManager(context, mAppsPerRow,
-                GridLayoutManager.VERTICAL, false);
-        layoutMgr.setSpanSizeLookup(mGridSizer);
-        return layoutMgr;
+        return mGridLayoutMgr;
     }
 
     /**

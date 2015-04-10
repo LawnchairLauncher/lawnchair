@@ -124,6 +124,10 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
+        public void onAllAppsShown() {
+        }
+
+        @Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
         }
 
@@ -246,6 +250,11 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
+        public boolean overrideAllAppsSearch() {
+            return false;
+        }
+
+        @Override
         public boolean isLauncherPreinstalled() {
             return false;
         }
@@ -263,6 +272,11 @@ public class LauncherExtension extends Launcher {
             mLauncherOverlay.setOverlayContainer(container);
 
             return mLauncherOverlay;
+        }
+
+        @Override
+        public void setLauncherAppsCallback(Object callbacks) {
+            // Do nothing
         }
 
         class LauncherExtensionOverlay implements LauncherOverlay {

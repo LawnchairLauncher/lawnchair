@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,12 +27,13 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
@@ -59,8 +61,13 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private EditText mSearchBar;
     private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point();
-    private Rect mPadding = new Rect();
+    private Rect mInsets = new Rect();
+    private Rect mFixedBounds = new Rect();
     private int mContentMarginStart;
+    // Normal container insets
+    private int mContainerInset;
+    // Fixed bounds container insets
+    private int mFixedBoundsContainerInset;
 
     public AppsContainerView(Context context) {
         this(context, null);
@@ -76,6 +83,10 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         Resources res = context.getResources();
 
+        mContainerInset = context.getResources().getDimensionPixelSize(
+                R.dimen.apps_container_inset);
+        mFixedBoundsContainerInset = context.getResources().getDimensionPixelSize(
+                R.dimen.apps_container_fixed_bounds_inset);
         mLauncher = (Launcher) context;
         mApps = new AlphabeticalAppsList(context);
         if (USE_LAYOUT == GRID_LAYOUT) {
@@ -126,6 +137,15 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     }
 
     /**
+     * Hides the search bar
+     */
+    public void hideSearchBar() {
+        mSearchBar.setVisibility(View.GONE);
+        updateBackgrounds();
+        updatePaddings();
+    }
+
+    /**
      * Scrolls this list view to the top.
      */
     public void scrollToTop() {
@@ -154,45 +174,58 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             ((AppsGridAdapter) mAdapter).setRtl(isRtl);
         }
         mSearchBar = (EditText) findViewById(R.id.app_search_box);
-        mSearchBar.addTextChangedListener(this);
-        mSearchBar.setOnEditorActionListener(this);
+        if (mSearchBar != null) {
+            mSearchBar.addTextChangedListener(this);
+            mSearchBar.setOnEditorActionListener(this);
+        }
         mAppsListView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
         mAppsListView.setApps(mApps);
         mAppsListView.setNumAppsPerRow(mNumAppsPerRow);
         mAppsListView.setLayoutManager(mLayoutManager);
         mAppsListView.setAdapter(mAdapter);
         mAppsListView.setHasFixedSize(true);
-        if (isRtl) {
-            mAppsListView.setPadding(
-                    mAppsListView.getPaddingLeft(),
-                    mAppsListView.getPaddingTop(),
-                    mAppsListView.getPaddingRight() + mContentMarginStart,
-                    mAppsListView.getPaddingBottom());
-        } else {
-            mAppsListView.setPadding(
-                    mAppsListView.getPaddingLeft() + mContentMarginStart,
-                    mAppsListView.getPaddingTop(),
-                    mAppsListView.getPaddingRight(),
-                    mAppsListView.getPaddingBottom());
-        }
         if (mItemDecoration != null) {
             mAppsListView.addItemDecoration(mItemDecoration);
         }
-        mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
-                getPaddingBottom());
+        updateBackgrounds();
+        updatePaddings();
     }
 
     @Override
     public void setInsets(Rect insets) {
-        setPadding(mPadding.left + insets.left, mPadding.top + insets.top,
-                mPadding.right + insets.right, mPadding.bottom + insets.bottom);
+        mInsets.set(insets);
+        updatePaddings();
+    }
+
+    /**
+     * Sets the fixed bounds for this Apps view.
+     */
+    public void setFixedBounds(Context context, Rect fixedBounds) {
+        if (!fixedBounds.isEmpty() && !fixedBounds.equals(mFixedBounds)) {
+            // Update the number of items in the grid
+            LauncherAppState app = LauncherAppState.getInstance();
+            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            if (grid.updateAppsViewNumCols(context.getResources(), fixedBounds.width())) {
+                mNumAppsPerRow = grid.appsViewNumCols;
+                mAppsListView.setNumAppsPerRow(mNumAppsPerRow);
+                if (USE_LAYOUT == GRID_LAYOUT) {
+                    ((AppsGridAdapter) mAdapter).setNumAppsPerRow(mNumAppsPerRow);
+                }
+            }
+
+            mFixedBounds.set(fixedBounds);
+        }
+        updateBackgrounds();
+        updatePaddings();
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN ||
-                ev.getAction() == MotionEvent.ACTION_MOVE) {
-            mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+                break;
         }
         return false;
     }
@@ -359,7 +392,9 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
         if (!toWorkspace) {
             // Disable the focus so that the search bar doesn't get focus
-            mSearchBar.setFocusableInTouchMode(false);
+            if (mSearchBar != null) {
+                mSearchBar.setFocusableInTouchMode(false);
+            }
         }
     }
 
@@ -375,11 +410,69 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        if (toWorkspace) {
-            // Clear the search bar
-            mSearchBar.setText("");
-        } else {
-            mSearchBar.setFocusableInTouchMode(true);
+        if (mSearchBar != null) {
+            if (toWorkspace) {
+                // Clear the search bar
+                mSearchBar.setText("");
+            } else {
+                mSearchBar.setFocusableInTouchMode(true);
+            }
         }
+    }
+
+    /**
+     * Update the padding of the Apps view and children.  To ensure that the RecyclerView has the
+     * full width to handle touches right to the edge of the screen, we only apply the top and
+     * bottom padding to the AppsContainerView and then the left/right padding on the RecyclerView
+     * itself.  In particular, the left/right padding is applied to the background of the view,
+     * and then additionally inset by the start margin.
+     */
+    private void updatePaddings() {
+        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                LAYOUT_DIRECTION_RTL);
+        boolean hasSearchBar = (mSearchBar != null) && (mSearchBar.getVisibility() == View.VISIBLE);
+
+        if (mFixedBounds.isEmpty()) {
+            // If there are no fixed bounds, then use the default padding and insets
+            setPadding(mInsets.left, mContainerInset + mInsets.top, mInsets.right,
+                    mContainerInset + mInsets.bottom);
+        } else {
+            // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
+            setPadding(mFixedBounds.left, mFixedBounds.top + mFixedBoundsContainerInset,
+                    getMeasuredWidth() - mFixedBounds.right,
+                    mInsets.bottom + mFixedBoundsContainerInset);
+        }
+
+        // Update the apps recycler view
+        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
+        if (isRtl) {
+            mAppsListView.setPadding(inset, inset, inset + mContentMarginStart, inset);
+        } else {
+            mAppsListView.setPadding(inset + mContentMarginStart, inset, inset, inset);
+        }
+
+        // Update the search bar
+        if (hasSearchBar) {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSearchBar.getLayoutParams();
+            lp.leftMargin = lp.rightMargin = inset;
+        }
+    }
+
+    /**
+     * Update the background of the Apps view and children.
+     */
+    private void updateBackgrounds() {
+        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
+        boolean hasSearchBar = (mSearchBar != null) && (mSearchBar.getVisibility() == View.VISIBLE);
+
+        // Update the background of the reveal view and list to be inset with the fixed bound
+        // insets instead of the default insets
+        mAppsListView.setBackground(new InsetDrawable(
+                getContext().getResources().getDrawable(
+                        hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.apps_list_bg),
+                inset, 0, inset, 0));
+        getRevealView().setBackground(new InsetDrawable(
+                getContext().getResources().getDrawable(R.drawable.apps_reveal_bg),
+                inset, 0, inset, 0));
     }
 }

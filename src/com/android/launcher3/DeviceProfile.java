@@ -423,13 +423,21 @@ public class DeviceProfile {
             allAppsNumCols = Math.max(minEdgeCellCount, Math.min(maxCols, allAppsNumCols));
         }
 
-        int appsContainerViewPx = res.getDimensionPixelSize(R.dimen.apps_container_width);
+        int appsContainerViewWidthPx = res.getDimensionPixelSize(R.dimen.apps_container_width);
+        updateAppsViewNumCols(res, appsContainerViewWidthPx);
+    }
+
+    public boolean updateAppsViewNumCols(Resources res, int containerWidth) {
         int appsViewLeftMarginPx =
                 res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
-        int availableAppsWidthPx = (appsContainerViewPx > 0) ? appsContainerViewPx :
-                availableWidthPx;
-        appsViewNumCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
+        int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;
+        int numCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
                 (allAppsCellWidthPx + 2 * allAppsCellPaddingPx);
+        if (numCols != appsViewNumCols) {
+            appsViewNumCols = numCols;
+            return true;
+        }
+        return false;
     }
 
     void updateFromConfiguration(Context context, Resources resources, int wPx, int hPx,

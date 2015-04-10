@@ -21,9 +21,6 @@
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/apps_container_inset"
-    android:paddingBottom="@dimen/apps_container_inset"
-    android:background="@drawable/apps_customize_bg"
     android:descendantFocusability="afterDescendants">
     <include
         layout="@layout/apps_reveal_view"

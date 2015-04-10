@@ -67,7 +67,7 @@
             android:layout_gravity="center_horizontal" />
 
         <include layout="@layout/widgets_view"
-            android:id="@+id/widget_view"
+            android:id="@+id/widgets_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
