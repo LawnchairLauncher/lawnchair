@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
@@ -147,6 +148,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         if (DBG) Log.d(TAG, "Got INSTALL_SHORTCUT: " + data.toUri(0));
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
+        info = convertToLauncherActivityIfPossible(info);
 
         queuePendingShortcutInfo(info, context);
     }
@@ -373,6 +375,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             }
             return packageName;
         }
+
+        public boolean isLuncherActivity() {
+            return activityInfo != null;
+        }
     }
 
     private static PendingInstallShortcutInfo decode(String encoded, Context context) {
@@ -419,5 +425,41 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             Log.d(TAG, "Exception reading shortcut to add: " + e);
         }
         return null;
+    }
+
+    /**
+     * Tries to create a new PendingInstallShortcutInfo which represents the same target,
+     * but is an app target and not a shortcut.
+     * @return the newly created info or the original one.
+     */
+    private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
+            PendingInstallShortcutInfo original) {
+        if (original.isLuncherActivity()) {
+            // Already an activity target
+            return original;
+        }
+        if (isValidShortcutLaunchIntent(original.launchIntent)
+                || !original.user.equals(UserHandleCompat.myUserHandle())) {
+            // We can only convert shortcuts which point to a main activity in the current user.
+            return original;
+        }
+
+        PackageManager pm = original.mContext.getPackageManager();
+        ResolveInfo info = pm.resolveActivity(original.launchIntent, 0);
+
+        if (info == null) {
+            return original;
+        }
+
+        // Ignore any conflicts in the label name, as that can change based on locale.
+        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat
+                .fromResolveInfo(info, original.mContext);
+        return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
+    }
+
+    public static boolean isLauncherActivity(Intent intent, Context context) {
+        Intent data = new Intent().putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
+        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
+        return convertToLauncherActivityIfPossible(info).isLuncherActivity();
     }
 }
