@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"바로가기 1개 선택됨"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"바로가기 설치"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"앱이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"바로가기 제거"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"앱이 사용자의 작업 없이 바로가기를 삭제할 수 있도록 합니다."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"홈 설정 및 바로가기 읽기"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"앱이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 합니다."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"홈 설정 및 바로가기 쓰기"</string>

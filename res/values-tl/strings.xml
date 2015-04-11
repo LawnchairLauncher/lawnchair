@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 shortcut ang napili"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"i-install ang mga shortcut"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Pinapayagan ang isang app na magdagdag ng mga shortcut nang walang panghihimasok ng user."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"i-uninstall ang mga shortcut"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Pinapayagan ang app na mag-alis ng mga shortcut nang walang panghihimasok ng user."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"basahin ang mga setting at shortcut ng Home"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Pinapayagan ang app na basahin ang mga setting at shortcut sa Home."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"magsulat ng mga setting at shortcut ng Home"</string>

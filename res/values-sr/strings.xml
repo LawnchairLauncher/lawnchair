@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"Изабрана је 1 пречица"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"инсталирање пречица"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Дозвољава апликацији да додаје пречице без интервенције корисника."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"деинсталирање пречица"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Дозвољава апликацији да уклања пречице без интервенције корисника."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"читање подешавања и пречица на почетном екрану"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Дозвољава апликацији да чита подешавања и пречице на почетном екрану."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"уписивање подешавања и пречица на почетном екрану"</string>

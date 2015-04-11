@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 సత్వరమార్గం ఎంచుకోబడింది"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"సత్వరమార్గాలను ఇన్‌స్టాల్ చేయడం"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"వినియోగదారు ప్రమేయం లేకుండా సత్వరమార్గాలను జోడించడానికి అనువర్తనాన్ని అనుమతిస్తుంది."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"సత్వరమార్గాలను అన్ఇన్‌స్టాల్ చేయడం"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"వినియోగదారు ప్రమేయం లేకుండా సత్వరమార్గాలను తీసివేయడానికి అనువర్తనాన్ని అనుమతిస్తుంది."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"హోమ్ సెట్టింగ్‌లు మరియు సత్వరమార్గాలను చదవడం"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"హోమ్‌లో సెట్టింగ్‌లు మరియు సత్వరమార్గాలను చదవడానికి అనువర్తనాన్ని అనుమతిస్తుంది."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు సత్వరమార్గాలను వ్రాయడం"</string>

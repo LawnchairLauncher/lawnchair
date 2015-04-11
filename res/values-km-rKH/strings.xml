@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"បាន​ជ្រើស​ផ្លូវកាត់ ១"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ដំឡើង​ផ្លូវកាត់"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​បន្ថែម​ផ្លូវកាត់​ ដោយ​មិន​ចាំបាច់​​អំពើ​ពី​អ្នក​ប្រើ។"</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"លុប​ផ្លូវកាត់"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​លុប​ផ្លូវកាត់​ដោយ​មិន​ចាំបាច់​អំពើ​ពី​អ្នក​ប្រើ។"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"អាន​ការ​កំណត់​ និង​ផ្លូវកាត់​​អេក្រង់​ដើម"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​អាន​ការ​កំណត់ និង​ផ្លូវកាត់​ក្នុង​អេក្រង់​ដើម។"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"សរសេរ​ការ​កំណត់ ​និង​ផ្លូវកាត់​​លើ​អេក្រង់​ដើម"</string>

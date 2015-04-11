@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"נבחר קיצור דרך אחד"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"התקן קיצורי דרך"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"מאפשר לאפליקציה להוסיף קיצורי דרך ללא התערבות המשתמש."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"הסר התקנה של קיצורי דרך"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"מאפשר לאפליקציה להסיר קיצורי דרך ללא התערבות המשתמש."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"קרא הגדרות וקיצורי דרך של דף הבית"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"מאפשר לאפליקציה לקרוא את ההגדרות וקיצורי הדרך בדף הבית."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"כתוב הגדרות וקיצורי דרך של דף הבית"</string>

@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 කෙටිමඟක් තෝරා ඇත"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"කෙටිමං ස්ථාපනය කරන්න"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"පරිශීලක මැදිහත්වීමෙන් තොරව කෙටිමං එක් කිරීමට යෙදුමකට අවසර දෙයි."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"කෙටිමං අස්ථාපනය කරන්න"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"පරිශීලකයාගේ මැදිහත්වීමෙන් තොරව කෙටිමං ඉවත් කිරීමට යෙදුමකට අවසර දෙයි."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"මුල් පිටු සැකසීම් සහ කෙටිමං කියවන්න"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"මුල් පිටුවේ ඇති සැකසීම් සහ කෙටිමං කියවීමට යෙදුමකට අවසර දෙයි."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"මුල් පිටු සැකසීම් සහ කෙටිමං ලියන්න"</string>

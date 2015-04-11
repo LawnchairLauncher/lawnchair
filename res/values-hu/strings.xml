@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 parancsikon kiválasztva"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"parancsikonok telepítése"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Lehetővé teszi egy alkalmazás számára, hogy felhasználói beavatkozás nélkül adjon hozzá parancsikonokat."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"parancsikonok eltávolítása"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Lehetővé teszi egy alkalmazás számára, hogy felhasználói beavatkozás nélkül távolítson el parancsikonokat."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Főoldal beállításainak és parancsikonjainak beolvasása"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Lehetővé teszi az alkalmazás számára, hogy beolvassa a kezdőképernyő beállításait és parancsikonjait."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"Főoldal beállításainak és parancsikonjainak írása"</string>

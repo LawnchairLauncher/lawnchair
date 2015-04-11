@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 शॉर्टकट चयनित"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट इंस्‍टॉल करें"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ऐप्लिकेशन को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट जोड़ने देती है."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"शॉर्टकट अनइंस्टॉल करें"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"ऐप्लिकेशन को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट निकालने देती है."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग और शॉर्टकट पढ़ें"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"ऐप्लिकेशन को होम में सेटिंग और शॉर्टकट पढ़ने देती है."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग और शॉर्टकट लिखें"</string>

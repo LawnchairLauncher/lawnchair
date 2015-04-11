@@ -71,8 +71,6 @@
     <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"Se seleccionó 1 acceso directo."</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite que una aplicación agregue accesos directos sin que el usuario intervenga."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"desinstalar accesos directos"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Permite que la aplicación elimine accesos directos sin que el usuario intervenga."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"leer configuración y accesos directos de la pantalla principal"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Permite que la aplicación lea la configuración y los accesos directos de la pantalla principal."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"escribir configuración y accesos directos de la pantalla principal"</string>
