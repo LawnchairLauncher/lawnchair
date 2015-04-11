@@ -31,12 +31,10 @@ public class WidgetsModel {
     private static final boolean DEBUG = false;
 
     /* List of packages that is tracked by this model. */
-    private List<String> mPackageNames = new ArrayList<>();
-
-    private Map<String, PackageItemInfo> mPackageItemInfoList = new HashMap<>();
+    private List<PackageItemInfo> mPackageItemInfos = new ArrayList<>();
 
     /* Map of widgets and shortcuts that are tracked per package. */
-    private Map<String, ArrayList<Object>> mWidgetsList = new HashMap<>();
+    private Map<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
 
     /* Notifies the adapter when data changes. */
     private RecyclerView.Adapter mAdapter;
@@ -53,20 +51,16 @@ public class WidgetsModel {
 
     // Access methods that may be deleted if the private fields are made package-private.
     public int getPackageSize() {
-        return mPackageNames.size();
+        return mPackageItemInfos.size();
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
-    public String getPackageName(int pos) {
-        return mPackageNames.get(pos);
+    public PackageItemInfo getPackageItemInfo(int pos) {
+        return mPackageItemInfos.get(pos);
     }
 
-    public PackageItemInfo getPackageItemInfo(String packageName) {
-        return mPackageItemInfoList.get(packageName);
-    }
-
-    public List<Object> getSortedWidgets(String packageName) {
-        return mWidgetsList.get(packageName);
+    public List<Object> getSortedWidgets(int pos) {
+        return mWidgetsList.get(mPackageItemInfos.get(pos));
     }
 
     public void addWidgetsAndShortcuts(ArrayList<Object> widgetsShortcuts, PackageManager pm) {
@@ -74,8 +68,10 @@ public class WidgetsModel {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + widgetsShortcuts.size());
         }
 
+        // Temporary list for {@link PackageItemInfos} to avoid having to go through
+        // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
+        HashMap<String, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
         // clear the lists.
-        mPackageNames.clear();
         mWidgetsList.clear();
 
         // add and update.
@@ -90,51 +86,41 @@ public class WidgetsModel {
             } else {
                 Log.e(TAG, String.format("addWidgetsAndShortcuts, nothing added for class=%s",
                         o.getClass().toString()));
-                
             }
 
-            ArrayList<Object> widgetsShortcutsList = mWidgetsList.get(packageName);
+            PackageItemInfo pInfo = tmpPackageItemInfos.get(packageName);
+            ArrayList<Object> widgetsShortcutsList = mWidgetsList.get(pInfo);
             if (widgetsShortcutsList != null) {
                 widgetsShortcutsList.add(o);
             } else {
                 widgetsShortcutsList = new ArrayList<Object>();
                 widgetsShortcutsList.add(o);
-                mWidgetsList.put(packageName, widgetsShortcutsList);
-                mPackageNames.add(packageName);
-            }
-        }
-        for (String packageName: mPackageNames) {
-            PackageItemInfo pInfo = mPackageItemInfoList.get(packageName);
-            if (pInfo == null) {
-                pInfo = new PackageItemInfo();
+
+                pInfo = new PackageItemInfo(packageName);
                 mIconCache.getTitleAndIconForApp(packageName, UserHandleCompat.myUserHandle(),
                         true /* useLowResIcon */, pInfo);
-                mPackageItemInfoList.put(packageName, pInfo);
+                mWidgetsList.put(pInfo, widgetsShortcutsList);
+                tmpPackageItemInfos.put(packageName,  pInfo);
+                mPackageItemInfos.add(pInfo);
             }
         }
 
         // sort.
-        sortPackageList();
-        for (String packageName: mPackageNames) {
-            Collections.sort(mWidgetsList.get(packageName), mWidgetAndShortcutNameComparator);
+        sortPackageItemInfos();
+        for (PackageItemInfo p: mPackageItemInfos) {
+            Collections.sort(mWidgetsList.get(p), mWidgetAndShortcutNameComparator);
         }
 
         // notify.
         mAdapter.notifyDataSetChanged();
     }
 
-    private void sortPackageList() {
-        Collections.sort(mPackageNames, new Comparator<String>() {
+    private void sortPackageItemInfos() {
+        Collections.sort(mPackageItemInfos, new Comparator<PackageItemInfo>() {
             @Override
-            public int compare(String lhs, String rhs) {
-                String lhsTitle = mPackageItemInfoList.get(lhs).title.toString();
-                String rhsTitle = mPackageItemInfoList.get(rhs).title.toString();
-                return lhsTitle.compareTo(rhsTitle);
+            public int compare(PackageItemInfo lhs, PackageItemInfo rhs) {
+                return lhs.title.toString().compareTo(rhs.title.toString());
             }
         });
-    }
-
-    public void setPackageItemInfo(String packageName, PackageItemInfo infoOut) {
-        mPackageItemInfoList.put(packageName, infoOut);
     }
 }
