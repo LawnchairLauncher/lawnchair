@@ -39,11 +39,12 @@ public class PackageItemInfo extends ItemInfo {
      */
     public boolean usingLowResIcon;
 
-    public ComponentName componentName;
+    public String packageName;
 
     int flags = 0;
 
-    PackageItemInfo() {
+    PackageItemInfo(String packageName) {
+        this.packageName = packageName;
     }
 
     @Override

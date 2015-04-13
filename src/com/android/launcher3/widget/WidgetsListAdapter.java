@@ -88,14 +88,13 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     @Override
     public void onBindViewHolder(WidgetsRowViewHolder holder, int pos) {
-        String packageName = mWidgetsModel.getPackageName(pos);
-        List<Object> infoList = mWidgetsModel.getSortedWidgets(packageName);
+        List<Object> infoList = mWidgetsModel.getSortedWidgets(pos);
 
         ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
         if (DEBUG) {
             Log.d(TAG, String.format(
-                    "onBindViewHolder [pos=%d, packageName=%s, widget#=%d, row.getChildCount=%d]",
-                    pos, packageName, infoList.size(), row.getChildCount()));
+                    "onBindViewHolder [pos=%d, widget#=%d, row.getChildCount=%d]",
+                    pos, infoList.size(), row.getChildCount()));
         }
 
         // Add more views.
@@ -120,11 +119,11 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
 
         // Bind the views in the application info section.
-        PackageItemInfo infoOut = mWidgetsModel.getPackageItemInfo(packageName);
+        PackageItemInfo infoOut = mWidgetsModel.getPackageItemInfo(pos);
         if (infoOut.usingLowResIcon) {
-            mIconCache.getTitleAndIconForApp(packageName, UserHandleCompat.myUserHandle(),
-                false /* useLowResIcon */, infoOut);
-            mWidgetsModel.setPackageItemInfo(packageName, infoOut);
+            // TODO(hyunyoungs): call this in none UI thread in the same way as BubbleTextView.
+            mIconCache.getTitleAndIconForApp(infoOut.packageName,
+                    UserHandleCompat.myUserHandle(), false /* useLowResIcon */, infoOut);
         }
         ((TextView) holder.getContent().findViewById(R.id.section)).setText(infoOut.title);
         ImageView iv = (ImageView) holder.getContent().findViewById(R.id.section_image);
@@ -133,7 +132,8 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         // Bind the view in the widget horizontal tray region.
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            if (getWidgetPreviewLoader() == null || widget == null) {
+            widget.reset();
+            if (getWidgetPreviewLoader() == null) {
                 return;
             }
             if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
@@ -150,7 +150,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             widget.setVisibility(View.VISIBLE);
             widget.ensurePreview();
         }
-        // TODO(hyunyoungs): Draw the scrollable indicator.
     }
 
     @Override
@@ -174,16 +173,5 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
         }
         return mWidgetPreviewLoader;
-    }
-
-    /**
-     * TODO(hyunyoungs): this is temporary. Figure out the width of each widget cell
-     * and then check if the total sum is longer than the parent width.
-     */
-    private void addScrollableIndicator(int contentSize, ViewGroup parent) {
-        if (contentSize > 2) {
-            ViewGroup indicator = (ViewGroup) parent.findViewById(R.id.scrollable_indicator);
-            indicator.setVisibility(View.VISIBLE);
-        }
     }
 }
