@@ -47,7 +47,7 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
  */
 public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
-    private static final String TAG = "PagedViewWidget";
+    private static final String TAG = "WidgetCell";
     private static final boolean DEBUG = false;
 
     // Temporary preset width and height of the image to keep them aligned.
@@ -120,7 +120,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, String.format("[tag=%s] onDetachedFromWindow", getTagToString()));
         }
         super.onDetachedFromWindow();
-        deletePreview(true);
+        deletePreview(false);
+    }
+
+    public void reset() {
+        ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        final TextView name = (TextView) findViewById(R.id.widget_name);
+        final TextView dims = (TextView) findViewById(R.id.widget_dims);
+        image.setImageDrawable(null);
+        name.setText(null);
+        dims.setText(null);
     }
 
     public void deletePreview(boolean recycleImage) {

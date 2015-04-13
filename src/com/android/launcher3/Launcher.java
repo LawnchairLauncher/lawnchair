@@ -132,7 +132,7 @@ public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
                    View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener,
                    LauncherStateTransitionAnimation.Callbacks {
-    static final String TAG = "Launcher - MERONG";
+    static final String TAG = "Launcher";
     static final boolean LOGD = true;
 
     static final boolean PROFILE_STARTUP = false;
