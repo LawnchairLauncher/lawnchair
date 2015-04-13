@@ -283,8 +283,8 @@ public class IconCache {
             }
             ContentValues values = updateCacheAndGetContentValues(app);
             mIconDb.getWritableDatabase().update(IconDB.TABLE_NAME, values,
-                    IconDB.COLUMN_COMPONENT + " = ?",
-                    new String[] { cn });
+                    IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
+                    new String[] {cn, Long.toString(userSerial)});
 
             updatedPackages.add(component.getPackageName());
         }
