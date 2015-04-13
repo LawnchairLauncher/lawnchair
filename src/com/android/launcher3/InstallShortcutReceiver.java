@@ -210,7 +210,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Add the new apps to the model and bind them
             if (!addShortcuts.isEmpty()) {
                 LauncherAppState app = LauncherAppState.getInstance();
-                app.getModel().addAndBindAddedWorkspaceApps(context, addShortcuts);
+                app.getModel().addAndBindAddedWorkspaceItems(context, addShortcuts);
             }
         }
     }
@@ -352,16 +352,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public ShortcutInfo getShortcutInfo() {
             if (activityInfo != null) {
-                final ShortcutInfo info = new ShortcutInfo();
-                info.user = user;
-                info.title = label;
-                info.contentDescription = label;
-                info.customIcon = false;
-                info.intent = launchIntent;
-                info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-                info.flags = AppInfo.initFlags(activityInfo);
-                info.firstInstallTime = activityInfo.getFirstInstallTime();
-                return info;
+                return ShortcutInfo.fromActivityInfo(activityInfo, mContext);
             } else {
                 return LauncherAppState.getInstance().getModel().infoFromShortcutIntent(mContext, data);
             }

@@ -149,7 +149,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return mIconCache;
     }
 
-    LauncherModel getModel() {
+    public LauncherModel getModel() {
         return mModel;
     }
 

@@ -37,6 +37,11 @@ public class FolderInfo extends ItemInfo {
     public static final int FLAG_ITEMS_SORTED = 0x00000001;
 
     /**
+     * It is a work folder
+     */
+    public static final int FLAG_WORK_FOLDER = 0x00000002;
+
+    /**
      * Whether this folder has been opened
      */
     boolean opened;
@@ -46,11 +51,11 @@ public class FolderInfo extends ItemInfo {
     /**
      * The apps and shortcuts
      */
-    ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+    public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
-    FolderInfo() {
+    public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
         user = UserHandleCompat.myUserHandle();
     }

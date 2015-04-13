@@ -24,7 +24,9 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -273,6 +275,20 @@ public class ShortcutInfo extends ItemInfo {
 
     public boolean shouldUseLowResIcon() {
         return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
+    }
+
+    public static ShortcutInfo fromActivityInfo(LauncherActivityInfoCompat info, Context context) {
+        final ShortcutInfo shortcut = new ShortcutInfo();
+        shortcut.user = info.getUser();
+        shortcut.title = info.getLabel().toString();
+        shortcut.contentDescription = UserManagerCompat.getInstance(context)
+                .getBadgedLabelForUser(info.getLabel(), info.getUser());
+        shortcut.customIcon = false;
+        shortcut.intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
+        shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        shortcut.flags = AppInfo.initFlags(info);
+        shortcut.firstInstallTime = info.getFirstInstallTime();
+        return shortcut;
     }
 }
 
