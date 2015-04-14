@@ -16,12 +16,13 @@
 
 package com.android.launcher3.util;
 
-import android.content.res.Configuration;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherAppState;
 
 /**
  * Calculates the next item that a {@link KeyEvent} should change the focus to.
@@ -42,7 +43,7 @@ import com.android.launcher3.CellLayout;
  */
 public class FocusLogic {
 
-    private static final String TAG = "Focus";
+    private static final String TAG = "FocusLogic";
     private static final boolean DEBUG = false;
 
     // Item and page index related constant used by {@link #handleKeyEvent}.
@@ -51,12 +52,14 @@ public class FocusLogic {
     public static final int PREVIOUS_PAGE_RIGHT_COLUMN  = -2;
     public static final int PREVIOUS_PAGE_FIRST_ITEM    = -3;
     public static final int PREVIOUS_PAGE_LAST_ITEM     = -4;
+    public static final int PREVIOUS_PAGE_LEFT_COLUMN   = -5;
 
-    public static final int CURRENT_PAGE_FIRST_ITEM     = -5;
-    public static final int CURRENT_PAGE_LAST_ITEM      = -6;
+    public static final int CURRENT_PAGE_FIRST_ITEM     = -6;
+    public static final int CURRENT_PAGE_LAST_ITEM      = -7;
 
-    public static final int NEXT_PAGE_FIRST_ITEM        = -7;
-    public static final int NEXT_PAGE_LEFT_COLUMN       = -8;
+    public static final int NEXT_PAGE_FIRST_ITEM        = -8;
+    public static final int NEXT_PAGE_LEFT_COLUMN       = -9;
+    public static final int NEXT_PAGE_RIGHT_COLUMN      = -10;
 
     // Matrix related constant.
     public static final int EMPTY = -1;
@@ -85,18 +88,24 @@ public class FocusLogic {
                     cntX, cntY, iconIdx, pageIndex, pageCount));
         }
 
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid()
+                .getDeviceProfile();
         int newIndex = NOOP;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/);
-                if (newIndex == NOOP && pageIndex > 0) {
+                if (!profile.isLayoutRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
+                } else if (profile.isLayoutRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                    newIndex = NEXT_PAGE_RIGHT_COLUMN;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/);
-                if (newIndex == NOOP && pageIndex < pageCount - 1) {
+                if (!profile.isLayoutRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_LEFT_COLUMN;
+                } else if (profile.isLayoutRtl && newIndex == NOOP && pageIndex > 0) {
+                    newIndex = PREVIOUS_PAGE_LEFT_COLUMN;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -140,11 +149,18 @@ public class FocusLogic {
      */
     // TODO: get rid of dynamic matrix creation.
     public static int[][] createFullMatrix(int m, int n, boolean incrementOrder) {
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid()
+                .getDeviceProfile();
         int[][] matrix = new int [m][n];
+
         for (int i=0; i < m;i++) {
             for (int j=0; j < n; j++) {
                 if (incrementOrder) {
-                    matrix[i][j] = j * m + i;
+                    if (!profile.isLayoutRtl) {
+                        matrix[i][j] = j * m + i;
+                    } else {
+                        matrix[i][j] = j * m + m - i -1;
+                    }
                 } else {
                     matrix[i][j] = EMPTY;
                 }
