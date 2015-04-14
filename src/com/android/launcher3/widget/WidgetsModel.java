@@ -71,8 +71,10 @@ public class WidgetsModel {
         // Temporary list for {@link PackageItemInfos} to avoid having to go through
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
         HashMap<String, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
+
         // clear the lists.
         mWidgetsList.clear();
+        mPackageItemInfos.clear();
 
         // add and update.
         for (Object o: widgetsShortcuts) {
