@@ -1410,7 +1410,22 @@ public class Workspace extends SmoothPagedView
         }
 
         private float wallpaperOffsetForCurrentScroll() {
+            // TODO: do different behavior if it's  a live wallpaper?
+            // Don't use up all the wallpaper parallax until you have at least
+            // MIN_PARALLAX_PAGE_SPAN pages
+            int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
+            int parallaxPageSpan;
+            if (mWallpaperIsLiveWallpaper) {
+                parallaxPageSpan = numScrollingPages - 1;
+            } else {
+                parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
+            }
+            mNumPagesForWallpaperParallax = parallaxPageSpan;
+
             if (getChildCount() <= 1) {
+                if (isLayoutRtl()) {
+                    return 1 - 1.0f/mNumPagesForWallpaperParallax;
+                }
                 return 0;
             }
 
@@ -1430,28 +1445,20 @@ public class Workspace extends SmoothPagedView
             if (scrollRange == 0) {
                 return 0;
             } else {
-                // TODO: do different behavior if it's  a live wallpaper?
                 // Sometimes the left parameter of the pages is animated during a layout transition;
                 // this parameter offsets it to keep the wallpaper from animating as well
                 int adjustedScroll =
                         getScrollX() - firstPageScrollX - getLayoutTransitionOffsetForPage(0);
                 float offset = Math.min(1, adjustedScroll / (float) scrollRange);
                 offset = Math.max(0, offset);
-                // Don't use up all the wallpaper parallax until you have at least
-                // MIN_PARALLAX_PAGE_SPAN pages
-                int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
-                int parallaxPageSpan;
-                if (mWallpaperIsLiveWallpaper) {
-                    parallaxPageSpan = numScrollingPages - 1;
-                } else {
-                    parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
-                }
-                mNumPagesForWallpaperParallax = parallaxPageSpan;
 
                 // On RTL devices, push the wallpaper offset to the right if we don't have enough
                 // pages (ie if numScrollingPages < MIN_PARALLAX_PAGE_SPAN)
-                int padding = isLayoutRtl() ? parallaxPageSpan - numScrollingPages + 1 : 0;
-                return offset * (padding + numScrollingPages - 1) / parallaxPageSpan;
+                if (!mWallpaperIsLiveWallpaper && numScrollingPages < MIN_PARALLAX_PAGE_SPAN
+                        && isLayoutRtl()) {
+                    return offset * (parallaxPageSpan - numScrollingPages + 1) / parallaxPageSpan;
+                }
+                return offset * (numScrollingPages - 1) / parallaxPageSpan;
             }
         }
 
