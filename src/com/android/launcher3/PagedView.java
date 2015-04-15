@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -961,8 +962,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         LayoutParams nextLp;
 
         int childLeft = offsetX + (lp.isFullScreenPage ? 0 : getPaddingLeft());
-        if (mPageScrolls == null || getChildCount() != mChildCountOnLastLayout) {
-            mPageScrolls = new int[getChildCount()];
+        if (mPageScrolls == null || childCount != mChildCountOnLastLayout) {
+            mPageScrolls = new int[childCount];
         }
 
         for (int i = startIndex; i != endIndex; i += delta) {
@@ -1009,19 +1010,36 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
         }
 
-        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < childCount) {
             updateCurrentPageScroll();
             mFirstLayout = false;
         }
 
-        if (childCount > 0) {
-            final int index = isLayoutRtl() ? 0 : childCount - 1;
-            mMaxScrollX = getScrollForPage(index);
+        final LayoutTransition transition = getLayoutTransition();
+        // If the transition is running defer updating max scroll, as some empty pages could
+        // still be present, and a max scroll change could cause sudden jumps in scroll.
+        if (transition != null && transition.isRunning()) {
+            transition.addTransitionListener(new LayoutTransition.TransitionListener() {
+
+                @Override
+                public void startTransition(LayoutTransition transition, ViewGroup container,
+                        View view, int transitionType) { }
+
+                @Override
+                public void endTransition(LayoutTransition transition, ViewGroup container,
+                        View view, int transitionType) {
+                    // Wait until all transitions are complete.
+                    if (!transition.isRunning()) {
+                        transition.removeTransitionListener(this);
+                        updateMaxScrollX();
+                    }
+                }
+            });
         } else {
-            mMaxScrollX = 0;
+            updateMaxScrollX();
         }
 
-        if (mScroller.isFinished() && mChildCountOnLastLayout != getChildCount() &&
+        if (mScroller.isFinished() && mChildCountOnLastLayout != childCount &&
                 !mDeferringForDelete) {
             if (mRestorePage != INVALID_RESTORE_PAGE) {
                 setCurrentPage(mRestorePage);
@@ -1030,10 +1048,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 setCurrentPage(getNextPage());
             }
         }
-        mChildCountOnLastLayout = getChildCount();
+        mChildCountOnLastLayout = childCount;
 
         if (isReordering(true)) {
             updateDragViewTranslationDuringDrag();
+        }
+    }
+
+    private void updateMaxScrollX() {
+        int childCount = getChildCount();
+        if (childCount > 0) {
+            final int index = isLayoutRtl() ? 0 : childCount - 1;
+            mMaxScrollX = getScrollForPage(index);
+        } else {
+            mMaxScrollX = 0;
         }
     }
 
