@@ -377,7 +377,7 @@ public class DragController {
 
             // Only end the drag if we are not deferred
             if (!isDeferred) {
-                for (DragListener listener : mListeners) {
+                for (DragListener listener : new ArrayList<>(mListeners)) {
                     listener.onDragEnd();
                 }
             }
@@ -394,7 +394,7 @@ public class DragController {
 
         if (mDragObject.deferDragViewCleanupPostAnimation) {
             // If we skipped calling onDragEnd() before, do it now
-            for (DragListener listener : mListeners) {
+            for (DragListener listener : new ArrayList<>(mListeners)) {
                 listener.onDragEnd();
             }
         }
