@@ -23,6 +23,8 @@
     <string name="home" msgid="7658288663002113681">"ដើម"</string>
     <string name="uid_name" msgid="7820867637514617527">"កម្មវិធី​​សំខាន់​ៗ​របស់ Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <!-- no translation found for work_folder_name (3753320833950115786) -->
+    <skip />
     <string name="activity_not_found" msgid="8071924732094499514">"មិន​បាន​ដំឡើង​កម្មវិធី។"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"មិន​មាន​កម្មវិធី"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"បាន​បិទ​កម្មវិធី​ដែល​បាន​ទាញ​យក​ក្នុង​របៀប​សុវត្ថិភាព"</string>

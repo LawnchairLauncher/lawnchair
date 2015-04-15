@@ -23,6 +23,8 @@
     <string name="home" msgid="7658288663002113681">"முகப்பு"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android முக்கியப் பயன்பாடுகள்"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <!-- no translation found for work_folder_name (3753320833950115786) -->
+    <skip />
     <string name="activity_not_found" msgid="8071924732094499514">"பயன்பாடு நிறுவப்படவில்லை."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"பயன்பாடு இல்லை"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய பயன்பாடு பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>

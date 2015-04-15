@@ -23,6 +23,8 @@
     <string name="home" msgid="7658288663002113681">"Inicio"</string>
     <string name="uid_name" msgid="7820867637514617527">"Aplicacións básicas de Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <!-- no translation found for work_folder_name (3753320833950115786) -->
+    <skip />
     <string name="activity_not_found" msgid="8071924732094499514">"A aplicación non está instalada"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"A aplicación non está dispoñible"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"A aplicación que descargaches está desactivada no modo seguro"</string>

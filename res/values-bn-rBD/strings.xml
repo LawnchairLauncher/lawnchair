@@ -23,6 +23,8 @@
     <string name="home" msgid="7658288663002113681">"হোম"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android প্রাথমিক অ্যাপ্লিকেশানগুলি"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <!-- no translation found for work_folder_name (3753320833950115786) -->
+    <skip />
     <string name="activity_not_found" msgid="8071924732094499514">"অ্যাপ্লিকেশান ইনস্টল করা নেই৷"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"অ্যাপ্লিকেশান অনুপলব্ধ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ডাউনলোড করা অ্যাপ্লিকেশান নিরাপদ মোডে অক্ষম রয়েছে"</string>
