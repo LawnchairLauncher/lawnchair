@@ -137,39 +137,32 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public static class UriWallpaperInfo extends WallpaperTileInfo {
         private Uri mUri;
-        private boolean mFirstClick = true;
-        @Thunk BitmapRegionTileSource.UriBitmapSource mBitmapSource;
         public UriWallpaperInfo(Uri uri) {
             mUri = uri;
         }
         @Override
         public void onClick(final WallpaperPickerActivity a) {
-            final Runnable onLoad;
-            if (!mFirstClick) {
-                onLoad = null;
-            } else {
-                mFirstClick = false;
-                a.mSetWallpaperButton.setEnabled(false);
-                onLoad = new Runnable() {
-                    public void run() {
-                        if (mBitmapSource != null &&
-                                mBitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
-                            a.selectTile(mView);
-                            a.mSetWallpaperButton.setEnabled(true);
-                        } else {
-                            ViewGroup parent = (ViewGroup) mView.getParent();
-                            if (parent != null) {
-                                parent.removeView(mView);
-                                Toast.makeText(a.getContext(), R.string.image_load_fail,
-                                        Toast.LENGTH_SHORT).show();
-                            }
+            a.setWallpaperButtonEnabled(false);
+            final BitmapRegionTileSource.UriBitmapSource bitmapSource =
+                    new BitmapRegionTileSource.UriBitmapSource(
+                            a.getContext(), mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
+            a.setCropViewTileSource(bitmapSource, true, false, null, new Runnable() {
+
+                @Override
+                public void run() {
+                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
+                        a.selectTile(mView);
+                        a.setWallpaperButtonEnabled(true);
+                    } else {
+                        ViewGroup parent = (ViewGroup) mView.getParent();
+                        if (parent != null) {
+                            parent.removeView(mView);
+                            Toast.makeText(a.getContext(), R.string.image_load_fail,
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
-                };
-            }
-            mBitmapSource = new BitmapRegionTileSource.UriBitmapSource(
-                    a.getContext(), mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
-            a.setCropViewTileSource(mBitmapSource, true, false, null, onLoad);
+                }
+            });
         }
         @Override
         public void onSave(final WallpaperPickerActivity a) {
@@ -203,11 +196,18 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             mThumb = thumb;
         }
         @Override
-        public void onClick(WallpaperPickerActivity a) {
+        public void onClick(final WallpaperPickerActivity a) {
+            a.setWallpaperButtonEnabled(false);
             BitmapRegionTileSource.UriBitmapSource bitmapSource =
                     new BitmapRegionTileSource.UriBitmapSource(a.getContext(),
                             Uri.fromFile(mFile), 1024);
-            a.setCropViewTileSource(bitmapSource, false, true, null, null);
+            a.setCropViewTileSource(bitmapSource, false, true, null, new Runnable() {
+
+                @Override
+                public void run() {
+                    a.setWallpaperButtonEnabled(true);
+                }
+            });
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
@@ -234,6 +234,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onClick(final WallpaperPickerActivity a) {
+            a.setWallpaperButtonEnabled(false);
             BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
                     new BitmapRegionTileSource.ResourceBitmapSource(
                             mResources, mResId, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
@@ -248,7 +249,13 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                             wallpaperSize.x, wallpaperSize.y, false);
                     return wallpaperSize.x / crop.width();
                 }
-            }, null);
+            }, new Runnable() {
+
+                @Override
+                public void run() {
+                    a.setWallpaperButtonEnabled(true);
+                }
+            });
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
@@ -420,7 +427,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     }
                     return;
                 }
-                mSetWallpaperButton.setEnabled(true);
+                setWallpaperButtonEnabled(true);
                 WallpaperTileInfo info = (WallpaperTileInfo) v.getTag();
                 if (info.isSelectable() && v.getVisibility() == View.VISIBLE) {
                     selectTile(v);
@@ -637,6 +644,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 mActionMode = null;
             }
         };
+    }
+
+    public void setWallpaperButtonEnabled(boolean enabled) {
+        mSetWallpaperButton.setEnabled(enabled);
     }
 
     @Thunk void selectTile(View v) {
