@@ -1003,7 +1003,7 @@ public class Launcher extends Activity
         super.onResume();
 
         // Restore the previous launcher state
-        if (mOnResumeState == State.WORKSPACE || mOnResumeState == State.NONE) {
+        if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS) {
             showAppsView(false /* animated */, false /* resetListToTop */);
