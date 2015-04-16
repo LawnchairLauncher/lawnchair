@@ -222,7 +222,7 @@ public class FocusHelper {
         Hotseat hotseat = (Hotseat) hotseatLayout.getParent();
 
         Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);
-        int pageIndex = workspace.getCurrentPage();
+        int pageIndex = workspace.getNextPage();
         int pageCount = workspace.getChildCount();
         int countX = -1;
         int countY = -1;
@@ -231,6 +231,12 @@ public class FocusHelper {
                 .getChildAt(iconIndex).getLayoutParams()).cellX;
 
         final CellLayout iconLayout = (CellLayout) workspace.getChildAt(pageIndex);
+        if (iconLayout == null) {
+            // This check is to guard against cases where key strokes rushes in when workspace
+            // child creation/deletion is still in flux. (e.g., during drop or fling
+            // animation.)
+            return consume;
+        }
         final ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
         ViewGroup parent = null;
@@ -364,6 +370,7 @@ public class FocusHelper {
                 }
                 int row = FocusLogic.findRow(matrix, iconIndex);
                 parent = getCellLayoutChildrenForIndex(workspace, newPageIndex);
+                workspace.snapToPage(newPageIndex);
                 if (parent != null) {
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout,
@@ -394,6 +401,7 @@ public class FocusHelper {
                 if (newIconIndex == FocusLogic.PREVIOUS_PAGE_LEFT_COLUMN) {
                     newPageIndex = pageIndex - 1;
                 }
+                workspace.snapToPage(newPageIndex);
                 row = FocusLogic.findRow(matrix, iconIndex);
                 parent = getCellLayoutChildrenForIndex(workspace, newPageIndex);
                 if (parent != null) {
