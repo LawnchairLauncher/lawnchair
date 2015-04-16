@@ -476,13 +476,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     /**
      * Returns the index of the currently displayed page.
-     *
-     * @return The index of the currently displayed page.
      */
     int getCurrentPage() {
         return mCurrentPage;
     }
 
+    /**
+     * Returns the index of page to be shown immediately afterwards.
+     */
     int getNextPage() {
         return (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
     }
