@@ -184,11 +184,6 @@ public class LauncherStateTransitionAnimation {
         final WidgetsContainerView toView = mLauncher.getWidgetsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             @Override
-            public void onRevealViewVisible(View revealView, View contentView,
-                    View allAppsButtonView) {
-                revealView.setBackground(mLauncher.getDrawable(R.drawable.quantum_panel_dark));
-            }
-            @Override
             public float getMaterialRevealViewFinalAlpha(View revealView) {
                 return 0.3f;
             }
