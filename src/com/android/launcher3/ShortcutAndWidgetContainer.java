@@ -177,7 +177,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
     }
 
-    private boolean invertLayoutHorizontally() {
+    public boolean invertLayoutHorizontally() {
         return mInvertIfRtl && isLayoutRtl();
     }
 

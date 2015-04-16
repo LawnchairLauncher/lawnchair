@@ -18,11 +18,15 @@ package com.android.launcher3.util;
 
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.ShortcutAndWidgetContainer;
+
+import java.util.Arrays;
 
 /**
  * Calculates the next item that a {@link KeyEvent} should change the focus to.
@@ -69,14 +73,11 @@ public class FocusLogic {
      * Returns true only if this utility class handles the key code.
      */
     public static boolean shouldConsume(int keyCode) {
-        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
+        return (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
                 keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
                 keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END ||
                 keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
-                keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
-            return true;
-        }
-        return false;
+                keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL);
     }
 
     public static int handleKeyEvent(int keyCode, int cntX, int cntY, int [][] map,
@@ -138,33 +139,17 @@ public class FocusLogic {
     }
 
     /**
-     * Returns a matrix of size (m x n) that has been initialized with incremental index starting
-     * with 0 or a matrix where all the values are initialized to {@link #EMPTY}.
+     * Returns a matrix of size (m x n) that has been initialized with {@link #EMPTY}.
      *
      * @param m                 number of columns in the matrix
      * @param n                 number of rows in the matrix
-     * @param incrementOrder    {@code true} if the matrix contents should increment in reading
-     *                          order with 0 indexing. {@code false} if each cell should be
-     *                          initialized to {@link #EMPTY};
      */
     // TODO: get rid of dynamic matrix creation.
-    public static int[][] createFullMatrix(int m, int n, boolean incrementOrder) {
-        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid()
-                .getDeviceProfile();
+    private static int[][] createFullMatrix(int m, int n) {
         int[][] matrix = new int [m][n];
 
         for (int i=0; i < m;i++) {
-            for (int j=0; j < n; j++) {
-                if (incrementOrder) {
-                    if (!profile.isLayoutRtl) {
-                        matrix[i][j] = j * m + i;
-                    } else {
-                        matrix[i][j] = j * m + m - i -1;
-                    }
-                } else {
-                    matrix[i][j] = EMPTY;
-                }
-            }
+            Arrays.fill(matrix[i], EMPTY);
         }
         return matrix;
     }
@@ -175,17 +160,18 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrix(CellLayout layout) {
-        ViewGroup parent = layout.getShortcutsAndWidgets();
+        ShortcutAndWidgetContainer parent = layout.getShortcutsAndWidgets();
         final int m = layout.getCountX();
         final int n = layout.getCountY();
+        final boolean invert = parent.invertLayoutHorizontally();
 
-        int[][] matrix = createFullMatrix(m, n, false /* initialize to #EMPTY */);
+        int[][] matrix = createFullMatrix(m, n);
 
         // Iterate thru the children.
         for (int i = 0; i < parent.getChildCount(); i++ ) {
             int cx = ((CellLayout.LayoutParams) parent.getChildAt(i).getLayoutParams()).cellX;
             int cy = ((CellLayout.LayoutParams) parent.getChildAt(i).getLayoutParams()).cellY;
-            matrix[cx][cy] = i;
+            matrix[invert ? (m - cx - 1) : cx][cy] = i;
         }
         if (DEBUG) {
             printMatrix(matrix);
@@ -213,7 +199,7 @@ public class FocusLogic {
             m = iconLayout.getCountX() + hotseatLayout.getCountX();
             n = iconLayout.getCountY();
         }
-        int[][] matrix = createFullMatrix(m, n, false /* set all cell to empty */);
+        int[][] matrix = createFullMatrix(m, n);
 
         // Iterate thru the children of the top parent.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
@@ -267,8 +253,7 @@ public class FocusLogic {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
-        int[][] matrix = createFullMatrix(iconLayout.getCountX() + 1, iconLayout.getCountY(),
-                false /* set all cell to empty */);
+        int[][] matrix = createFullMatrix(iconLayout.getCountX() + 1, iconLayout.getCountY());
 
         // Iterate thru the children of the top parent.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
@@ -499,22 +484,25 @@ public class FocusLogic {
     }
 
     /**
-     * Figure out the location of the icon.
-     *
+     * @param edgeColumn the column of the new icon. either {@link #NEXT_PAGE_LEFT_COLUMN} or
+     * {@link #NEXT_PAGE_RIGHT_COLUMN}
+     * @return the view adjacent to {@param oldView} in the {@param nextPage}.
      */
-    //TODO(hyunyoungs): this helper method should move to CellLayout class while removing the
-    // dynamic matrix creation all together.
-    public static int findRow(int[][] matrix, int iconIndex) {
-        int cntX = matrix.length;
-        int cntY = matrix[0].length;
+    public static View getAdjacentChildInNextPage(
+            ShortcutAndWidgetContainer nextPage, View oldView, int edgeColumn) {
+        final int newRow = ((CellLayout.LayoutParams) oldView.getLayoutParams()).cellY;
 
-        for (int i = 0; i < cntX; i++) {
-            for (int j = 0; j < cntY; j++) {
-                if (matrix[i][j] == iconIndex) {
-                    return j;
+        int column = (edgeColumn == NEXT_PAGE_LEFT_COLUMN) ^ nextPage.invertLayoutHorizontally()
+                ? 0 : (((CellLayout) nextPage.getParent()).getCountX() - 1);
+
+        for (; column >= 0; column--) {
+            for (int row = newRow; row >= 0; row--) {
+                View newView = nextPage.getChildAt(column, row);
+                if (newView != null) {
+                    return newView;
                 }
             }
         }
-        return -1;
+        return null;
     }
 }
