@@ -199,12 +199,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     }
                 }
 
-                final boolean exists = LauncherModel.shortcutExists(context, pendingInfo.label,
-                        intent, pendingInfo.user);
-                if (!exists) {
-                    // Generate a shortcut info to add into the model
-                    addShortcuts.add(pendingInfo.getShortcutInfo());
-                }
+                // Generate a shortcut info to add into the model
+                addShortcuts.add(pendingInfo.getShortcutInfo());
             }
 
             // Add the new apps to the model and bind them

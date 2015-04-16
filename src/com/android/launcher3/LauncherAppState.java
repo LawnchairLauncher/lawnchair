@@ -256,15 +256,4 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
     public static boolean isDogfoodBuild() {
         return getInstance().mBuildInfo.isDogfoodBuild();
     }
-
-    public void setPackageState(ArrayList<PackageInstallInfo> installInfo) {
-        mModel.setPackageState(installInfo);
-    }
-
-    /**
-     * Updates the icons and label of all icons for the provided package name.
-     */
-    public void updatePackageBadge(String packageName) {
-        mModel.updatePackageBadge(packageName);
-    }
 }
