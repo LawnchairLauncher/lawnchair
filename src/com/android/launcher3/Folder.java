@@ -49,6 +49,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.util.Thunk;
@@ -61,7 +62,7 @@ import java.util.Collections;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener {
+        View.OnFocusChangeListener, DragListener {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -537,6 +538,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mScrollPauseAlarm.setAlarm(SORTED_STICKY_REORDER_DELAY);
         }
 
+        // Since this folder opened by another controller, it might not get onDrop or
+        // onDropComplete. Perform cleanup once drag-n-drop ends.
+        mDragController.addDragListener(this);
+    }
+
+    @Override
+    public void onDragStart(DragSource source, Object info, int dragAction) { }
+
+    @Override
+    public void onDragEnd() {
+        if (mIsExternalDrag && mDragInProgress) {
+            completeDragExit();
+        }
+        mDragController.removeDragListener(this);
     }
 
     @Thunk void sendCustomAccessibilityEvent(int type, String text) {
@@ -678,11 +693,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     };
 
     public void completeDragExit() {
-        mLauncher.closeFolder();
+        if (mInfo.opened) {
+            mLauncher.closeFolder();
+            mRearrangeOnClose = true;
+        } else {
+            rearrangeChildren();
+        }
         mCurrentDragInfo = null;
         mCurrentDragView = null;
         mSuppressOnAdd = false;
-        mRearrangeOnClose = true;
         mIsExternalDrag = false;
     }
 
@@ -1124,6 +1143,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mSuppressOnAdd = false;
         // Clear the drag info, as it is no longer being dragged.
         mCurrentDragInfo = null;
+        mDragInProgress = false;
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case

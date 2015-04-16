@@ -3112,9 +3112,18 @@ public class Launcher extends Activity
      */
     public void openFolder(FolderIcon folderIcon) {
         Folder folder = folderIcon.getFolder();
+        Folder openFolder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
+        if (openFolder != null && openFolder != folder) {
+            // Close any open folder before opening a folder.
+            closeFolder();
+        }
+
         FolderInfo info = folder.mInfo;
 
         info.opened = true;
+
+        // While the folder is open, the position of the icon cannot change.
+        ((CellLayout.LayoutParams) folderIcon.getLayoutParams()).canReorder = false;
 
         // Just verify that the folder hasn't already been added to the DragLayer.
         // There was a one-off crash where the folder had a parent already.
@@ -3151,6 +3160,9 @@ public class Launcher extends Activity
         if (parent != null) {
             FolderIcon fi = (FolderIcon) mWorkspace.getViewForTag(folder.mInfo);
             shrinkAndFadeInFolderIcon(fi);
+            if (fi != null) {
+                ((CellLayout.LayoutParams) fi.getLayoutParams()).canReorder = true;
+            }
         }
         folder.animateClosed();
 
