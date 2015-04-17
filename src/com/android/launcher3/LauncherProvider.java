@@ -69,8 +69,8 @@ public class LauncherProvider extends ContentProvider {
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
-    static final String TABLE_FAVORITES = "favorites";
-    static final String TABLE_WORKSPACE_SCREENS = "workspaceScreens";
+    static final String TABLE_FAVORITES = LauncherSettings.Favorites.TABLE_NAME;
+    static final String TABLE_WORKSPACE_SCREENS = LauncherSettings.WorkspaceScreens.TABLE_NAME;
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     private static final String URI_PARAM_IS_EXTERNAL_ADD = "isExternalAdd";
