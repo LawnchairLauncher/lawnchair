@@ -4415,6 +4415,17 @@ public class Launcher extends Activity
         return null;
     }
 
+    /**
+     * Returns whether the launcher callbacks overrides search in all apps.
+     * @return
+     */
+    @Thunk boolean isAllAppsSearchOverridden() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.overrideAllAppsSearch();
+        }
+        return false;
+    }
+
     private boolean shouldRunFirstRunActivity() {
         return !ActivityManager.isRunningInTestHarness() &&
                 !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
