@@ -19,6 +19,8 @@ package com.android.launcher3;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.android.launcher3.config.ProviderConfig;
+
 /**
  * Settings related utilities.
  */
@@ -45,7 +47,7 @@ public class LauncherSettings {
          * an Intent that can be launched.
          * <P>Type: TEXT</P>
          */
-        static final String INTENT = "intent";
+        public static final String INTENT = "intent";
 
         /**
          * The type of the gesture
@@ -104,29 +106,35 @@ public class LauncherSettings {
      *
      * Tracks the order of workspace screens.
      */
-    static final class WorkspaceScreens implements ChangeLogColumns {
+    public static final class WorkspaceScreens implements ChangeLogColumns {
+
+        public static final String TABLE_NAME = "workspaceScreens";
+
         /**
          * The content:// style URL for this table
          */
         static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_WORKSPACE_SCREENS);
+                ProviderConfig.AUTHORITY + "/" + TABLE_NAME);
 
         /**
          * The rank of this screen -- ie. how it is ordered relative to the other screens.
          * <P>Type: INTEGER</P>
          */
-        static final String SCREEN_RANK = "screenRank";
+        public static final String SCREEN_RANK = "screenRank";
     }
 
     /**
      * Favorites.
      */
     public static final class Favorites implements BaseLauncherColumns {
+
+        public static final String TABLE_NAME = "favorites";
+
         /**
          * The content:// style URL for this table
          */
-        static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES);
+        public static final Uri CONTENT_URI = Uri.parse("content://" +
+                ProviderConfig.AUTHORITY + "/" + TABLE_NAME);
 
         /**
          * The content:// style URL for a given row, identified by its id.
@@ -136,21 +144,21 @@ public class LauncherSettings {
          * @return The unique content URL for the specified row.
          */
         static Uri getContentUri(long id) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + LauncherProvider.TABLE_FAVORITES + "/" + id);
+            return Uri.parse("content://" + ProviderConfig.AUTHORITY +
+                    "/" + TABLE_NAME + "/" + id);
         }
 
         /**
          * The container holding the favorite
          * <P>Type: INTEGER</P>
          */
-        static final String CONTAINER = "container";
+        public static final String CONTAINER = "container";
 
         /**
          * The icon is a resource identified by a package name and an integer id.
          */
-        static final int CONTAINER_DESKTOP = -100;
-        static final int CONTAINER_HOTSEAT = -101;
+        public static final int CONTAINER_DESKTOP = -100;
+        public static final int CONTAINER_HOTSEAT = -101;
 
         static final String containerToString(int container) {
             switch (container) {
@@ -164,7 +172,7 @@ public class LauncherSettings {
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
          */
-        static final String SCREEN = "screen";
+        public static final String SCREEN = "screen";
 
         /**
          * The X coordinate of the cell holding the favorite
