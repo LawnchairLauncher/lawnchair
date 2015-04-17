@@ -2264,7 +2264,9 @@ public class Workspace extends SmoothPagedView
         float finalHotseatAndPageIndicatorAlpha = (stateIsNormal || stateIsSpringLoaded) ? 1f : 0f;
         float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
         // We keep the search bar visible on the workspace and in AllApps now
-        float finalSearchBarAlpha = (stateIsNormal || stateIsNormalHidden) ? 1f : 0f;
+        boolean showSearchBar = stateIsNormal ||
+                (mLauncher.isAllAppsSearchOverridden() && stateIsNormalHidden);
+        float finalSearchBarAlpha = showSearchBar ? 1f : 0f;
         float finalWorkspaceTranslationY = stateIsOverview || stateIsOverviewHidden ?
                 getOverviewModeTranslationY() : 0;
 
