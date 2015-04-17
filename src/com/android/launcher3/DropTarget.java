@@ -139,7 +139,7 @@ public interface DropTarget {
 
     /**
      * Handle an object being dropped on the DropTarget
-     * 
+     *
      * @param source DragSource where the drag started
      * @param x X coordinate of the drop location
      * @param y Y coordinate of the drop location
@@ -169,7 +169,7 @@ public interface DropTarget {
     /**
      * Check if a drop action can occur at, or near, the requested location.
      * This will be called just before onDrop.
-     * 
+     *
      * @param source DragSource where the drag started
      * @param x X coordinate of the drop location
      * @param y Y coordinate of the drop location

@@ -1079,7 +1079,7 @@ public class LauncherModel extends BroadcastReceiver
      * @param context
      * @param item
      */
-    static void deleteItemFromDatabase(Context context, final ItemInfo item) {
+    public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
         ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
         items.add(item);
         deleteItemsFromDatabase(context, items);
@@ -1185,7 +1185,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Remove the contents of the specified folder from the database
      */
-    static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
+    public static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
 
         Runnable r = new Runnable() {
@@ -3106,6 +3106,9 @@ public class LauncherModel extends BroadcastReceiver
                                     si.status &= ~ShortcutInfo.FLAG_RESTORED_ICON
                                             & ~ShortcutInfo.FLAG_AUTOINTALL_ICON
                                             & ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                                    if (appInfo != null) {
+                                        si.flags = appInfo.flags;
+                                    }
 
                                     infoUpdated = true;
                                     si.updateIcon(mIconCache);
@@ -3414,6 +3417,9 @@ public class LauncherModel extends BroadcastReceiver
         info.user = user;
         info.contentDescription = mUserManager.getBadgedLabelForUser(
                 info.title.toString(), info.user);
+        if (lai != null) {
+            info.flags = AppInfo.initFlags(lai);
+        }
         return info;
     }
 

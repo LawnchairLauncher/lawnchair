@@ -17,19 +17,29 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
+import com.android.launcher3.R;
+import com.android.launcher3.util.Thunk;
 
 /**
  * Implements a DropTarget.
  */
-public class ButtonDropTarget extends TextView implements DropTarget, DragController.DragListener {
+public abstract class ButtonDropTarget extends TextView implements DropTarget, DragController.DragListener {
+
+    private static int DRAG_VIEW_DROP_DURATION = 285;
 
     protected final int mTransitionDuration;
 
@@ -44,6 +54,9 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     /** The paint applied to the drag view on hover */
     protected int mHoverColor = 0;
 
+    protected ColorStateList mOriginalTextColor;
+    protected TransitionDrawable mDrawable;
+
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -56,12 +69,37 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
         mBottomDragPadding = r.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
     }
 
-    void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mOriginalTextColor = getTextColors();
+
+        // Remove the text in the Phone UI in landscape
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!LauncherAppState.getInstance().isScreenLarge()) {
+                setText("");
+            }
+        }
     }
 
-    public boolean acceptDrop(DragObject d) {
-        return false;
+    protected void setDrawable(int resId) {
+        // Get the hover color
+        mDrawable = (TransitionDrawable) getCurrentDrawable();
+
+        if (mDrawable == null) {
+            // TODO: investigate why this is ever happening. Presently only on one known device.
+            mDrawable = (TransitionDrawable) getResources().getDrawable(resId);
+            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+        }
+
+        if (null != mDrawable) {
+            mDrawable.setCrossFadeEnabled(true);
+        }
+    }
+
+    public void setLauncher(Launcher launcher) {
+        mLauncher = launcher;
     }
 
     public void setSearchDropTargetBar(SearchDropTargetBar searchDropTargetBar) {
@@ -78,36 +116,93 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
         return null;
     }
 
-    public void onDrop(DragObject d) {
-    }
+    @Override
+    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) { }
 
-    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
-        // Do nothing
-    }
-
-    public void onDragEnter(DragObject d) {
+    @Override
+    public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
+        mDrawable.startTransition(mTransitionDuration);
+        setTextColor(mHoverColor);
     }
 
+    @Override
     public void onDragOver(DragObject d) {
         // Do nothing
     }
 
-    public void onDragExit(DragObject d) {
-        d.dragView.setColor(0);
+    protected void resetHoverColor() {
+        mDrawable.resetTransition();
+        setTextColor(mOriginalTextColor);
     }
 
-    public void onDragStart(DragSource source, Object info, int dragAction) {
-        // Do nothing
+    @Override
+    public final void onDragExit(DragObject d) {
+        if (!d.dragComplete) {
+            d.dragView.setColor(0);
+            resetHoverColor();
+        } else {
+            // Restore the hover color
+            d.dragView.setColor(mHoverColor);
+        }
     }
 
+    @Override
+    public final void onDragStart(DragSource source, Object info, int dragAction) {
+        mActive = supportsDrop(source, info);
+        mDrawable.resetTransition();
+        setTextColor(mOriginalTextColor);
+        ((ViewGroup) getParent()).setVisibility(mActive ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public final boolean acceptDrop(DragObject dragObject) {
+        return supportsDrop(dragObject.dragSource, dragObject.dragInfo);
+    }
+
+    protected abstract boolean supportsDrop(DragSource source, Object info);
+
+    @Override
     public boolean isDropEnabled() {
         return mActive;
     }
 
+    @Override
     public void onDragEnd() {
-        // Do nothing
+        mActive = false;
     }
+
+    /**
+     * On drop animate the dropView to the icon.
+     */
+    @Override
+    public void onDrop(final DragObject d) {
+        final DragLayer dragLayer = mLauncher.getDragLayer();
+        final Rect from = new Rect();
+        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
+
+        int width = mDrawable.getIntrinsicWidth();
+        int height = mDrawable.getIntrinsicHeight();
+        final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
+                width, height);
+        final float scale = (float) to.width() / from.width();
+        mSearchDropTargetBar.deferOnDragEnd();
+
+        Runnable onAnimationEndRunnable = new Runnable() {
+            @Override
+            public void run() {
+                completeDrop(d);
+                mSearchDropTargetBar.onDragEnd();
+                mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
+            }
+        };
+        dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
+                DRAG_VIEW_DROP_DURATION, new DecelerateInterpolator(2),
+                new LinearInterpolator(), onAnimationEndRunnable,
+                DragLayer.ANIMATION_END_DISAPPEAR, null);
+    }
+
+    @Thunk abstract void completeDrop(DragObject d);
 
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
@@ -120,10 +215,10 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     }
 
     private boolean isRtl() {
-        return (getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
-    Rect getIconRect(int viewWidth, int viewHeight, int drawableWidth, int drawableHeight) {
+    protected Rect getIconRect(int viewWidth, int viewHeight, int drawableWidth, int drawableHeight) {
         DragLayer dragLayer = mLauncher.getDragLayer();
 
         // Find the rect to animate to (the view is center aligned)
@@ -157,6 +252,7 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
         return to;
     }
 
+    @Override
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
     }
