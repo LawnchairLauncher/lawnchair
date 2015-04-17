@@ -6,7 +6,6 @@
   public void onClickVoiceButton(android.view.View);
   public void onClickConfigureButton(android.view.View);
   public void onClickAllAppsButton(android.view.View);
-  public void onClickAppMarketButton(android.view.View);
   public void dismissFirstRunCling(android.view.View);
   public void dismissMigrationClingCopyApps(android.view.View);
   public void dismissMigrationClingUseDefault(android.view.View);
