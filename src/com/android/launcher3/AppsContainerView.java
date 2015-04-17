@@ -64,7 +64,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private EditText mSearchBarView;
     
     private int mNumAppsPerRow;
-    private Point mLastTouchDownPos = new Point();
+    private Point mLastTouchDownPos = new Point(-1, -1);
+    private Point mLastTouchPos = new Point();
     private Rect mInsets = new Rect();
     private Rect mFixedBounds = new Rect();
     private int mContentMarginStart;
@@ -236,11 +237,21 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return handleTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return handleTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+                mLastTouchPos.set((int) ev.getX(), (int) ev.getY());
                 break;
         }
         return false;
@@ -257,7 +268,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         if (!mLauncher.isDraggingEnabled()) return false;
 
         // Start the drag
-        mLauncher.getWorkspace().beginDragShared(v, mLastTouchDownPos, this, false);
+        mLauncher.getWorkspace().beginDragShared(v, mLastTouchPos, this, false);
 
         // We delay entering spring-loaded mode slightly to make sure the UI
         // thready is free of any work.
@@ -427,6 +438,54 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
                 mSearchBarView.setText("");
             }
         }
+    }
+
+    /**
+     * Handles the touch events to dismiss all apps when clicking outside the bounds of the
+     * recycler view.
+     */
+    private boolean handleTouchEvent(MotionEvent ev) {
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (!mFixedBounds.isEmpty()) {
+                    // Outset the fixed bounds and check if the touch is outside all apps
+                    Rect tmpRect = new Rect(mFixedBounds);
+                    tmpRect.inset(-grid.allAppsIconSizePx / 2, 0);
+                    if (ev.getX() < tmpRect.left || ev.getX() > tmpRect.right) {
+                        mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+                        return true;
+                    }
+                } else {
+                    // Check if the touch is outside all apps
+                    if (ev.getX() < getPaddingLeft() ||
+                            ev.getX() > (getWidth() - getPaddingRight())) {
+                        mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+                        return true;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mLastTouchDownPos.x > -1) {
+                    ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
+                    float dx = ev.getX() - mLastTouchDownPos.x;
+                    float dy = ev.getY() - mLastTouchDownPos.y;
+                    float distance = (float) Math.hypot(dx, dy);
+                    if (distance < viewConfig.getScaledTouchSlop()) {
+                        // The background was clicked, so just go home
+                        Launcher launcher = (Launcher) getContext();
+                        launcher.showWorkspace(true);
+                        return true;
+                    }
+                }
+                // Fall through
+            case MotionEvent.ACTION_CANCEL:
+                mLastTouchDownPos.set(-1, -1);
+                break;
+        }
+        return false;
     }
 
     /**
