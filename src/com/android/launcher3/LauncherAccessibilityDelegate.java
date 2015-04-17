@@ -105,7 +105,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
             InfoDropTarget.startDetailsActivityForInfo(item, mLauncher);
             return true;
         } else if (action == UNINSTALL) {
-            DeleteDropTarget.uninstallApp(mLauncher, (AppInfo) item);
+            AppInfo info = (AppInfo) item;
+            mLauncher.startApplicationUninstallActivity(info.componentName, info.flags, info.user);
             return true;
         } else if (action == MOVE) {
             beginAccessibleDrag(host, item);

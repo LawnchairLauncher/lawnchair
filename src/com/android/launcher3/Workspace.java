@@ -66,6 +66,7 @@ import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
@@ -88,7 +89,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable {
+        Insettable, UninstallSource {
     private static final String TAG = "Launcher.Workspace";
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
@@ -4269,11 +4270,13 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    @Override
     public void deferCompleteDropAfterUninstallActivity() {
         mDeferDropAfterUninstall = true;
     }
 
     /// maybe move this into a smaller part
+    @Override
     public void onUninstallActivityReturned(boolean success) {
         mDeferDropAfterUninstall = false;
         mUninstallSuccessful = success;

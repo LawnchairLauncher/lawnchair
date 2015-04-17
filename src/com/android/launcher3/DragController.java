@@ -125,7 +125,7 @@ public class DragController {
     /**
      * Interface to receive notifications when a drag starts or stops
      */
-    interface DragListener {
+    public interface DragListener {
         /**
          * A drag has begun
          *
@@ -400,7 +400,7 @@ public class DragController {
         }
     }
 
-    void onDeferredEndFling(DropTarget.DragObject d) {
+    public void onDeferredEndFling(DropTarget.DragObject d) {
         d.dragSource.onFlingToDeleteCompleted();
     }
 
@@ -462,7 +462,8 @@ public class DragController {
                 mLastTouchUpTime = System.currentTimeMillis();
                 if (mDragging) {
                     PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                    if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragInfo)) {
+                    if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragSource,
+                            mDragObject.dragInfo)) {
                         vec = null;
                     }
                     if (vec != null) {
@@ -616,7 +617,7 @@ public class DragController {
 
             if (mDragging) {
                 PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragInfo)) {
+                if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragSource, mDragObject.dragInfo)) {
                     vec = null;
                 }
                 if (vec != null) {
