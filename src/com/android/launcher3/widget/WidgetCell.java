@@ -50,10 +50,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private static final String TAG = "WidgetCell";
     private static final boolean DEBUG = false;
 
-    // Temporary preset width and height of the image to keep them aligned.
-    //private static final int PRESET_PREVIEW_HEIGHT = 480;
-    //private static final int PRESET_PREVIEW_WIDTH = 480;
-
+    private static final int FADE_IN_DURATION_MS = 70;
     private int mPresetPreviewSize;
 
     private static WidgetCell sShortpressTarget = null;
@@ -210,7 +207,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                         mOriginalImagePadding.right,
                         mOriginalImagePadding.bottom);
             }
-            image.setAlpha(1f);
+            image.setAlpha(0f);
+            image.animate().alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
             image.mAllowRequestLayout = true;
             image.requestLayout();
         }

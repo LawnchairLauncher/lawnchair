@@ -25,16 +25,16 @@
     android:paddingBottom="@dimen/widget_container_inset"
     android:descendantFocusability="afterDescendants">
 
-    <!-- Temporary until finalizing on animation.  -->
-    <include
+    <FrameLayout
         android:id="@+id/widgets_reveal_view"
-        layout="@layout/apps_reveal_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:focusable="false" />
 
     <LinearLayout
-        android:id="@+id/content"
+        android:id="@+id/widgets_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"

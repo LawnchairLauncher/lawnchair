@@ -182,7 +182,13 @@ public class LauncherStateTransitionAnimation {
      */
     public void startAnimationToWidgets(final boolean animated) {
         final WidgetsContainerView toView = mLauncher.getWidgetsView();
+        final Resources res = mLauncher.getResources();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
+            @Override
+            public void onRevealViewVisible(View revealView, View contentView,
+                    View allAppsButtonView) {
+                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));
+            }
             @Override
             public float getMaterialRevealViewFinalAlpha(View revealView) {
                 return 0.3f;
@@ -192,8 +198,9 @@ public class LauncherStateTransitionAnimation {
                 return revealView.getMeasuredHeight() / 2;
             }
         };
-        startAnimationToOverlay(Workspace.State.OVERVIEW_HIDDEN, toView, toView.getContentView(),
-                toView.getRevealView(), animated, true /* hideSearchBar */, cb);
+        startAnimationToOverlay(Workspace.State.OVERVIEW_HIDDEN, toView,
+                toView.getContentView(), toView.getRevealView(), animated, true /* hideSearchBar */,
+                cb);
     }
 
     /**
@@ -386,7 +393,6 @@ public class LauncherStateTransitionAnimation {
                     mStateAnimation.start();
                 }
             };
-
             toView.bringToFront();
             toView.setVisibility(View.VISIBLE);
             toView.post(startAnimRunnable);
@@ -481,8 +487,14 @@ public class LauncherStateTransitionAnimation {
     private void startAnimationToWorkspaceFromWidgets(final Launcher.State fromState,
               final Workspace.State toWorkspaceState, final boolean animated,
               final Runnable onCompleteRunnable) {
-        WidgetsContainerView widgetsView = mLauncher.getWidgetsView();
+        final WidgetsContainerView widgetsView = mLauncher.getWidgetsView();
+        final Resources res = mLauncher.getResources();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
+            @Override
+            public void onRevealViewVisible(View revealView, View contentView,
+                                            View allAppsButtonView) {
+                revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));
+            }
             @Override
             public float getMaterialRevealViewFinalYDrift(View revealView) {
                 return revealView.getMeasuredHeight() / 2;

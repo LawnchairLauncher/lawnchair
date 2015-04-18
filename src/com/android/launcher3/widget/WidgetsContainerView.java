@@ -126,7 +126,7 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
     //
 
     public View getContentView() {
-        return findViewById(R.id.widgets_list_view);
+        return findViewById(R.id.widgets_content);
     }
 
     public View getRevealView() {
