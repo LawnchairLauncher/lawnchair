@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"Pagrindinis"</string>
     <string name="uid_name" msgid="7820867637514617527">"Pagrindinės „Android“ programos"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"Darbas"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Programa neįdiegta."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Programa nepasiekiama"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Atsisiųsta programa išjungta Saugos režimu"</string>

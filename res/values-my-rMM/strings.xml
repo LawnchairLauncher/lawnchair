@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"ပင်မစာမျက်နှာ"</string>
     <string name="uid_name" msgid="7820867637514617527">"Androidပင်မ အပ်ပလီကေးရှင်းများ"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"အလုပ်"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"အပ်ပလီကေးရှင်း မထည့်သွင်းထားပါ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"App လက်လှမ်း မမှီပါ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ဒေါင်းလုဒ် appကို လုံခြုံရေး မုဒ်ထဲမှာ ပိတ်ထား"</string>

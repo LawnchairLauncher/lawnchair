@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"ಮುಖಪುಟ"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android Core ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"ಕೆಲಸ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ಅಪ್ಲಿಕೇಶನ್‌ ಅನ್ನು ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ಅಪ್ಲಿಕೇಶನ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>

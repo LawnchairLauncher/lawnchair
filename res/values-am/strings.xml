@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"መነሻ"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android ዋና መተግበሪያዎች"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"ስራ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"መተግበሪያ አልተጫነም።"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"መተግበሪያ አይገኝም"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"የወረደው መተግበሪያ ደህንነቱ በተጠበቀ ሁኔታ ውስጥ ተሰናክሏል"</string>

@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"होम"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android के मुख्य ऐप्लिकेशन"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"कार्यस्‍थल"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"एप्‍लिकेशन इंस्‍टॉल नहीं है."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ऐप्स उपलब्ध नहीं है"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्स सुरक्षित मोड में अक्षम है"</string>

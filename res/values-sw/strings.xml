@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"Mwanzo"</string>
     <string name="uid_name" msgid="7820867637514617527">"Programu Msingi za Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"Kazini"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Programu haijasakinishwa."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Programu haipatikani"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Programu iliyopakuliwa imezimwa katika Hali Salama"</string>

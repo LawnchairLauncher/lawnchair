@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"Главный экран"</string>
     <string name="uid_name" msgid="7820867637514617527">"Основные приложения Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"Работа"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Приложение удалено"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Приложение недоступно"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Скачанное приложение отключено в безопасном режиме"</string>

@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"ഹോം"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android Core അപ്ലിക്കേഷനുകൾ"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"ഔദ്യോഗികം"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"അപ്ലിക്കേഷൻ ഇൻസ്‌റ്റാളുചെ‌യ്‌തിട്ടില്ല."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"അപ്ലിക്കേഷൻ ലഭ്യമല്ല"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ഡൗൺലോഡുചെയ്‌ത അപ്ലിക്കേഷൻ സുരക്ഷാ മോഡിൽ പ്രവർത്തനരഹിതമാക്കി"</string>

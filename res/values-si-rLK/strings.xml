@@ -23,8 +23,7 @@
     <string name="home" msgid="7658288663002113681">"මුල් පිටුව"</string>
     <string name="uid_name" msgid="7820867637514617527">"Android මධ්‍ය යෙදුම්"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
-    <!-- no translation found for work_folder_name (3753320833950115786) -->
-    <skip />
+    <string name="work_folder_name" msgid="3753320833950115786">"කාර්යාලය"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"යෙදුම ස්ථාපනය කර නැත."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"යෙදුම නොතිබේ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ආරක්ෂිත ආකාරය තුළ බාගන්න ලද යෙදුම් අබල කරන්න"</string>
