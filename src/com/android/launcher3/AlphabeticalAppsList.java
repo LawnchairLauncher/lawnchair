@@ -239,17 +239,9 @@ public class AlphabeticalAppsList {
         for (AppInfo info : apps) {
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex != -1) {
-                int sectionedIndex = mSectionedFilteredApps.indexOf(info);
-                int numAppsInSection = numAppsInSection(info);
                 mApps.remove(removeIndex);
                 onAppsUpdated();
-                if (numAppsInSection == 1) {
-                    // Remove the section and the icon
-                    mAdapter.notifyItemRemoved(sectionedIndex - 1);
-                    mAdapter.notifyItemRemoved(sectionedIndex - 1);
-                } else {
-                    mAdapter.notifyItemRemoved(sectionedIndex);
-                }
+                mAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -278,32 +270,8 @@ public class AlphabeticalAppsList {
         if (index < 0) {
             mApps.add(-(index + 1), info);
             onAppsUpdated();
-
-            int sectionedIndex = mSectionedFilteredApps.indexOf(info);
-            int numAppsInSection = numAppsInSection(info);
-            if (numAppsInSection == 1) {
-                // New section added along with icon
-                mAdapter.notifyItemInserted(sectionedIndex - 1);
-                mAdapter.notifyItemInserted(sectionedIndex - 1);
-            } else {
-                mAdapter.notifyItemInserted(sectionedIndex);
-            }
+            mAdapter.notifyDataSetChanged();
         }
-    }
-
-    /**
-     * Returns the number of apps in the section that the given info is in.
-     */
-    private int numAppsInSection(AppInfo info) {
-        int appIndex = mFilteredApps.indexOf(info);
-        int appCount = 0;
-        for (SectionInfo section : mSections) {
-            if (appCount + section.numAppsInSection > appIndex) {
-                return section.numAppsInSection;
-            }
-            appCount += section.numAppsInSection;
-        }
-        return 1;
     }
 
     /**
