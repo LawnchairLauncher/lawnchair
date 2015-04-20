@@ -92,7 +92,7 @@
 
     <!-- Overridden in device overlays -->
     <style name="WidgetImageView">
-        <item name="android:paddingLeft">@dimen/widget_preview_padding_left</item>
+        <item name="android:paddingLeft">@dimen/widget_preview_horizontal_padding</item>
     </style>
 
 </resources>
