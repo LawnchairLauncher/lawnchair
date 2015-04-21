@@ -72,6 +72,10 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+            if (items.isEmpty()) {
+                return;
+            }
+
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
