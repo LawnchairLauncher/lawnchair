@@ -84,8 +84,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         mLauncher.bindPackagesUpdated(LauncherModel.getSortedWidgetsAndShortcuts(mLauncher,
                 true /* refresh */));
 
-        for (Runnable callback : mProviderChangeListeners) {
-            callback.run();
+        if (!mProviderChangeListeners.isEmpty()) {
+            for (Runnable callback : new ArrayList<>(mProviderChangeListeners)) {
+                callback.run();
+            }
         }
     }
 
