@@ -79,11 +79,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     protected void onProvidersChanged() {
-        // Once we get the message that widget packages are updated, we need to rebind items
-        // in AppsCustomize accordingly.
-        mLauncher.bindPackagesUpdated(LauncherModel.getSortedWidgetsAndShortcuts(mLauncher,
-                true /* refresh */));
-
+        mLauncher.getModel().loadAndBindWidgetsAndShortcuts(mLauncher, mLauncher);
         if (!mProviderChangeListeners.isEmpty()) {
             for (Runnable callback : new ArrayList<>(mProviderChangeListeners)) {
                 callback.run();
