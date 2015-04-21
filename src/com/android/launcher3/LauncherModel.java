@@ -38,6 +38,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -3219,19 +3220,9 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 });
             }
-
-            final ArrayList<Object> widgetsAndShortcuts =
-                    getSortedWidgetsAndShortcuts(context, true /* refresh */);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (callbacks == cb && cb != null) {
-                        callbacks.bindPackagesUpdated(widgetsAndShortcuts);
-                    }
-                }
-            });
-
+            if (Build.VERSION.SDK_INT < 17) {
+                loadAndBindWidgetsAndShortcuts(context, callbacks);
+            }
             // Write all the logs to disk
             mHandler.post(new Runnable() {
                 public void run() {
@@ -3278,6 +3269,25 @@ public class LauncherModel extends BroadcastReceiver
             }
             return sBgWidgetProviders.get(new ComponentKey(name, user));
         }
+    }
+
+    public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks) {
+        runOnWorkerThread(new Runnable(){
+            @Override
+            public void run() {
+                final ArrayList<Object> list =
+                        getSortedWidgetsAndShortcuts(context, true /* refresh */);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Callbacks cb = getCallback();
+                        if (callbacks == cb && cb != null) {
+                            callbacks.bindPackagesUpdated(list);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     // Returns a list of ResolveInfos/AppWidgetInfos in sorted order
