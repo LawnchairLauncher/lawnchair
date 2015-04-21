@@ -1865,6 +1865,11 @@ public class LauncherModel extends BroadcastReceiver
                     final int optionsIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.OPTIONS);
 
+                    final LongSparseArray<UserHandleCompat> allUsers = new LongSparseArray<>();
+                    for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+                        allUsers.put(mUserManager.getSerialNumberForUser(user), user);
+                    }
+
                     ShortcutInfo info;
                     String intentDescription;
                     LauncherAppWidgetInfo appWidgetInfo;
@@ -1886,7 +1891,7 @@ public class LauncherModel extends BroadcastReceiver
                                 id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
                                 serialNumber = c.getInt(profileIdIndex);
-                                user = mUserManager.getUserForSerialNumber(serialNumber);
+                                user = allUsers.get(serialNumber);
                                 int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
                                 boolean itemReplaced = false;
@@ -2149,23 +2154,28 @@ public class LauncherModel extends BroadcastReceiver
                                     LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
 
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
-                                serialNumber= c.getLong(profileIdIndex);
+                                serialNumber = c.getLong(profileIdIndex);
                                 String savedProvider = c.getString(appWidgetProviderIndex);
                                 id = c.getLong(idIndex);
+                                user = allUsers.get(serialNumber);
+                                if (user == null) {
+                                    itemsToRemove.add(id);
+                                    continue;
+                                }
+
                                 final ComponentName component =
                                         ComponentName.unflattenFromString(savedProvider);
 
                                 final int restoreStatus = c.getInt(restoredIndex);
                                 final boolean isIdValid = (restoreStatus &
                                         LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) == 0;
-
                                 final boolean wasProviderReady = (restoreStatus &
                                         LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
 
                                 final LauncherAppWidgetProviderInfo provider =
                                         LauncherModel.getProviderInfo(context,
                                                 ComponentName.unflattenFromString(savedProvider),
-                                                mUserManager.getUserForSerialNumber(serialNumber));
+                                                user);
 
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
