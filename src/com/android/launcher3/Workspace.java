@@ -17,15 +17,10 @@
 package com.android.launcher3;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
@@ -99,11 +94,8 @@ public class Workspace extends SmoothPagedView
     protected static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
     protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
 
-    private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
     private static final int FLING_THRESHOLD_VELOCITY = 500;
-
-    private static final float ALPHA_CUTOFF_THRESHOLD = 0.01f;
 
     static final boolean MAP_NO_RECURSE = false;
     static final boolean MAP_RECURSE = true;
@@ -112,10 +104,6 @@ public class Workspace extends SmoothPagedView
     private ObjectAnimator mChildrenOutlineFadeInAnimation;
     private ObjectAnimator mChildrenOutlineFadeOutAnimation;
     private float mChildrenOutlineAlpha = 0;
-
-    // These properties refer to the background protection gradient used for AllApps and Customize
-    private ValueAnimator mBackgroundFadeInAnimation;
-    private ValueAnimator mBackgroundFadeOutAnimation;
 
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     private long mTouchDownTime = -1;
@@ -129,7 +117,6 @@ public class Workspace extends SmoothPagedView
     private int mDefaultPage;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
-    @Thunk static boolean sAccessibilityEnabled;
 
     // The screen id used for the empty screen always present to the right.
     final static long EXTRA_EMPTY_SCREEN_ID = -201;
@@ -272,14 +259,7 @@ public class Workspace extends SmoothPagedView
     private float mSavedTranslationX;
 
     private float mCurrentScale;
-    private float mNewScale;
-    @Thunk float[] mOldBackgroundAlphas;
-    private float[] mOldAlphas;
-    @Thunk float[] mNewBackgroundAlphas;
-    private float[] mNewAlphas;
-    private int mLastChildCount = -1;
     private float mTransitionProgress;
-    @Thunk Animator mStateAnimator = null;
 
     float mOverScrollEffect = 0f;
 
@@ -293,6 +273,9 @@ public class Workspace extends SmoothPagedView
     boolean mStartedSendingScrollEvents;
     boolean mShouldSendPageSettled;
     int mLastOverlaySroll = 0;
+
+    // Handles workspace state transitions
+    private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
 
     private final Runnable mBindPages = new Runnable() {
         @Override
@@ -329,6 +312,7 @@ public class Workspace extends SmoothPagedView
         setDataIsReady();
 
         mLauncher = (Launcher) context;
+        mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         final Resources res = getResources();
         mWorkspaceFadeInAdjacentScreens = LauncherAppState.getInstance().getDynamicGrid().
                 getDeviceProfile().shouldFadeAdjacentWorkspaceScreens();
@@ -1583,37 +1567,6 @@ public class Workspace extends SmoothPagedView
         return mChildrenOutlineAlpha;
     }
 
-    private void animateBackgroundGradient(float finalAlpha, boolean animated) {
-        final DragLayer dragLayer = mLauncher.getDragLayer();
-
-        if (mBackgroundFadeInAnimation != null) {
-            mBackgroundFadeInAnimation.cancel();
-            mBackgroundFadeInAnimation = null;
-        }
-        if (mBackgroundFadeOutAnimation != null) {
-            mBackgroundFadeOutAnimation.cancel();
-            mBackgroundFadeOutAnimation = null;
-        }
-        float startAlpha = dragLayer.getBackgroundAlpha();
-        if (finalAlpha != startAlpha) {
-            if (animated) {
-                mBackgroundFadeOutAnimation =
-                        LauncherAnimUtils.ofFloat(this, startAlpha, finalAlpha);
-                mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        dragLayer.setBackgroundAlpha(
-                                ((Float)animation.getAnimatedValue()).floatValue());
-                    }
-                });
-                mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-                mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
-                mBackgroundFadeOutAnimation.start();
-            } else {
-                dragLayer.setBackgroundAlpha(finalAlpha);
-            }
-        }
-    }
-
     float backgroundAlphaInterpolator(float r) {
         float pivotA = 0.1f;
         float pivotB = 0.4f;
@@ -1737,7 +1690,7 @@ public class Workspace extends SmoothPagedView
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                enterOverviewMode();
+                mLauncher.showOverviewMode(true);
             }
         };
         return listener;
@@ -1797,9 +1750,6 @@ public class Workspace extends SmoothPagedView
                 getPageIndicator().setOnClickListener(listener);
             }
         }
-        AccessibilityManager am = (AccessibilityManager)
-                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        sAccessibilityEnabled = am.isEnabled();
 
         // Update wallpaper dimensions if they were changed since last onResume
         // (we also always set the wallpaper dimensions in the constructor)
@@ -1970,64 +1920,6 @@ public class Workspace extends SmoothPagedView
     }
 
     /*
-     * This interpolator emulates the rate at which the perceived scale of an object changes
-     * as its distance from a camera increases. When this interpolator is applied to a scale
-     * animation on a view, it evokes the sense that the object is shrinking due to moving away
-     * from the camera.
-     */
-    static class ZInterpolator implements TimeInterpolator {
-        private float focalLength;
-
-        public ZInterpolator(float foc) {
-            focalLength = foc;
-        }
-
-        public float getInterpolation(float input) {
-            return (1.0f - focalLength / (focalLength + input)) /
-                (1.0f - focalLength / (focalLength + 1.0f));
-        }
-    }
-
-    /*
-     * The exact reverse of ZInterpolator.
-     */
-    static class InverseZInterpolator implements TimeInterpolator {
-        private ZInterpolator zInterpolator;
-        public InverseZInterpolator(float foc) {
-            zInterpolator = new ZInterpolator(foc);
-        }
-        public float getInterpolation(float input) {
-            return 1 - zInterpolator.getInterpolation(1 - input);
-        }
-    }
-
-    /*
-     * ZInterpolator compounded with an ease-out.
-     */
-    static class ZoomOutInterpolator implements TimeInterpolator {
-        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(0.75f);
-        private final ZInterpolator zInterpolator = new ZInterpolator(0.13f);
-
-        public float getInterpolation(float input) {
-            return decelerate.getInterpolation(zInterpolator.getInterpolation(input));
-        }
-    }
-
-    /*
-     * InvereZInterpolator compounded with an ease-out.
-     */
-    static class ZoomInInterpolator implements TimeInterpolator {
-        private final InverseZInterpolator inverseZInterpolator = new InverseZInterpolator(0.35f);
-        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(3.0f);
-
-        public float getInterpolation(float input) {
-            return decelerate.getInterpolation(inverseZInterpolator.getInterpolation(input));
-        }
-    }
-
-    private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
-
-    /*
     *
     * We call these methods (onDragStartedWithItemSpans/onDragStartedWithSize) whenever we
     * start a drag in Launcher, regardless of whether the drag has ever entered the Workspace
@@ -2090,21 +1982,6 @@ public class Workspace extends SmoothPagedView
         dragLayer.clearAllResizeFrames();
     }
 
-    private void initAnimationArrays() {
-        final int childCount = getChildCount();
-        if (mLastChildCount == childCount) return;
-
-        mOldBackgroundAlphas = new float[childCount];
-        mOldAlphas = new float[childCount];
-        mNewBackgroundAlphas = new float[childCount];
-        mNewAlphas = new float[childCount];
-    }
-
-    Animator getChangeStateAnimation(final State state, boolean animated,
-            HashMap<View, Integer> layerViews) {
-        return getChangeStateAnimation(state, animated, 0, -1, layerViews);
-    }
-
     @Override
     protected void getFreeScrollPageRange(int[] range) {
         getOverviewModePages(range);
@@ -2151,41 +2028,6 @@ public class Workspace extends SmoothPagedView
         return mState == State.OVERVIEW;
     }
 
-    public boolean enterOverviewMode() {
-        if (mTouchState != TOUCH_STATE_REST) {
-            return false;
-        }
-        enableOverviewMode(true, -1, true);
-        return true;
-    }
-
-    public void exitOverviewMode(boolean animated) {
-        exitOverviewMode(-1, animated);
-    }
-
-    public void exitOverviewMode(int snapPage, boolean animated) {
-        enableOverviewMode(false, snapPage, animated);
-    }
-
-    private void enableOverviewMode(boolean enable, int snapPage, boolean animated) {
-        State finalState = Workspace.State.OVERVIEW;
-        if (!enable) {
-            finalState = Workspace.State.NORMAL;
-        }
-
-        Animator workspaceAnim = getChangeStateAnimation(finalState, animated, 0, snapPage);
-        if (workspaceAnim != null) {
-            onTransitionPrepare();
-            workspaceAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator arg0) {
-                    onTransitionEnd();
-                }
-            });
-            workspaceAnim.start();
-        }
-    }
-
     int getOverviewModeTranslationY() {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
@@ -2208,10 +2050,22 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private void setState(State state) {
-        mState = state;
+    /**
+     * Sets the current workspace {@link State}, returning an animation transitioning the workspace
+     * to that new state.
+     */
+    public Animator setStateWithAnimation(State toState, int toPage, boolean animated,
+                                          HashMap<View, Integer> layerViews) {
+        // Create the animation to the new state
+        Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(getState(),
+                toState, toPage, animated, layerViews);
+
+        // Update the current state
+        mState = toState;
         updateInteractionForState();
         updateAccessibilityFlags();
+
+        return workspaceAnim;
     }
 
     State getState() {
@@ -2225,321 +2079,15 @@ public class Workspace extends SmoothPagedView
         setImportantForAccessibility(accessible);
     }
 
-    private static final int HIDE_WORKSPACE_DURATION = 100;
-
-    Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage) {
-        return getChangeStateAnimation(state, animated, delay, snapPage, null);
-    }
-
-    Animator getChangeStateAnimation(final State state, boolean animated, int delay, int snapPage,
-            HashMap<View, Integer> layerViews) {
-        if (mState == state) {
-            return null;
-        }
-
-        // Initialize animation arrays for the first time if necessary
-        initAnimationArrays();
-
-        AnimatorSet anim = animated ? LauncherAnimUtils.createAnimatorSet() : null;
-
-        // We only want a single instance of a workspace animation to be running at once, so
-        // we cancel any incomplete transition.
-        if (mStateAnimator != null) {
-            mStateAnimator.cancel();
-        }
-        mStateAnimator = anim;
-
-        final State oldState = mState;
-        final boolean oldStateIsNormal = (oldState == State.NORMAL);
-        final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
-        final boolean oldStateIsNormalHidden = (oldState == State.NORMAL_HIDDEN);
-        final boolean oldStateIsOverviewHidden = (oldState == State.OVERVIEW_HIDDEN);
-        final boolean oldStateIsOverview = (oldState == State.OVERVIEW);
-        setState(state);
-        final boolean stateIsNormal = (state == State.NORMAL);
-        final boolean stateIsSpringLoaded = (state == State.SPRING_LOADED);
-        final boolean stateIsNormalHidden = (state == State.NORMAL_HIDDEN);
-        final boolean stateIsOverviewHidden = (state == State.OVERVIEW_HIDDEN);
-        final boolean stateIsOverview = (state == State.OVERVIEW);
-        float finalBackgroundAlpha = (stateIsSpringLoaded || stateIsOverview) ? 1.0f : 0f;
-        float finalHotseatAndPageIndicatorAlpha = (stateIsNormal || stateIsSpringLoaded) ? 1f : 0f;
-        float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
-        // We keep the search bar visible on the workspace and in AllApps now
-        boolean showSearchBar = stateIsNormal ||
-                (mLauncher.isAllAppsSearchOverridden() && stateIsNormalHidden);
-        float finalSearchBarAlpha = showSearchBar ? 1f : 0f;
-        float finalWorkspaceTranslationY = stateIsOverview || stateIsOverviewHidden ?
-                getOverviewModeTranslationY() : 0;
-
-        boolean workspaceToAllApps = (oldStateIsNormal && stateIsNormalHidden);
-        boolean overviewToAllApps = (oldStateIsOverview && stateIsOverviewHidden);
-        boolean allAppsToWorkspace = (stateIsNormalHidden && stateIsNormal);
-        boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
-        boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
-
-        mNewScale = 1.0f;
-
-        if (oldStateIsOverview) {
-            disableFreeScroll();
-        } else if (stateIsOverview) {
-            enableFreeScroll();
-        }
-
-        if (state != State.NORMAL) {
-            if (stateIsSpringLoaded) {
-                mNewScale = mSpringLoadedShrinkFactor;
-            } else if (stateIsOverview || stateIsOverviewHidden) {
-                mNewScale = mOverviewModeShrinkFactor;
-            }
-        }
-
-        final int duration;
-        if (workspaceToAllApps || overviewToAllApps) {
-            duration = HIDE_WORKSPACE_DURATION; //getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
-        } else if (workspaceToOverview || overviewToWorkspace) {
-            duration = getResources().getInteger(R.integer.config_overviewTransitionTime);
-        } else {
-            duration = getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
-        }
-
-        if (snapPage == -1) {
-            snapPage = getPageNearestToCenterOfScreen();
-        }
-        snapToPage(snapPage, duration, mZoomInInterpolator);
-
-        for (int i = 0; i < getChildCount(); i++) {
-            final CellLayout cl = (CellLayout) getChildAt(i);
-            boolean isCurrentPage = (i == snapPage);
-            float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
-            float finalAlpha;
-            if (stateIsNormalHidden || stateIsOverviewHidden) {
-                finalAlpha = 0f;
-            } else if (stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
-                finalAlpha = (i == snapPage || i < numCustomPages()) ? 1f : 0f;
-            } else {
-                finalAlpha = 1f;
-            }
-
-            // If we are animating to/from the small state, then hide the side pages and fade the
-            // current page in
-            if (!mIsSwitchingState) {
-                if (workspaceToAllApps || allAppsToWorkspace) {
-                    if (allAppsToWorkspace && isCurrentPage) {
-                        initialAlpha = 0f;
-                    } else if (!isCurrentPage) {
-                        initialAlpha = finalAlpha = 0f;
-                    }
-                    cl.setShortcutAndWidgetAlpha(initialAlpha);
-                }
-            }
-
-            mOldAlphas[i] = initialAlpha;
-            mNewAlphas[i] = finalAlpha;
-            if (animated) {
-                mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                mNewBackgroundAlphas[i] = finalBackgroundAlpha;
-            } else {
-                cl.setBackgroundAlpha(finalBackgroundAlpha);
-                cl.setShortcutAndWidgetAlpha(finalAlpha);
-            }
-        }
-
-        final View searchBar = mLauncher.getOrCreateQsbBar();
-        final View overviewPanel = mLauncher.getOverviewPanel();
-        final View hotseat = mLauncher.getHotseat();
-        final View pageIndicator = getPageIndicator();
-        if (animated) {
-            LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(this);
-            scale.scaleX(mNewScale)
-                .scaleY(mNewScale)
-                .translationY(finalWorkspaceTranslationY)
-                .setDuration(duration)
-                .setInterpolator(mZoomInInterpolator);
-            anim.play(scale);
-            for (int index = 0; index < getChildCount(); index++) {
-                final int i = index;
-                final CellLayout cl = (CellLayout) getChildAt(i);
-                float currentAlpha = cl.getShortcutsAndWidgets().getAlpha();
-                if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
-                    cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
-                    cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
-                } else {
-                    if (layerViews != null) {
-                        layerViews.put(cl, LauncherStateTransitionAnimation.BUILD_LAYER);
-                    }
-                    if (mOldAlphas[i] != mNewAlphas[i] || currentAlpha != mNewAlphas[i]) {
-                        LauncherViewPropertyAnimator alphaAnim =
-                            new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
-                        alphaAnim.alpha(mNewAlphas[i])
-                            .setDuration(duration)
-                            .setInterpolator(mZoomInInterpolator);
-                        anim.play(alphaAnim);
-                    }
-                    if (mOldBackgroundAlphas[i] != 0 ||
-                        mNewBackgroundAlphas[i] != 0) {
-                        ValueAnimator bgAnim =
-                                LauncherAnimUtils.ofFloat(cl, 0f, 1f);
-                        bgAnim.setInterpolator(mZoomInInterpolator);
-                        bgAnim.setDuration(duration);
-                        bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                                public void onAnimationUpdate(float a, float b) {
-                                    cl.setBackgroundAlpha(
-                                            a * mOldBackgroundAlphas[i] +
-                                            b * mNewBackgroundAlphas[i]);
-                                }
-                            });
-                        anim.play(bgAnim);
-                    }
-                }
-            }
-            Animator pageIndicatorAlpha = null;
-            if (pageIndicator != null) {
-                pageIndicatorAlpha = new LauncherViewPropertyAnimator(pageIndicator)
-                    .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
-                pageIndicatorAlpha.addListener(new AlphaUpdateListener(pageIndicator));
-            } else {
-                // create a dummy animation so we don't need to do null checks later
-                pageIndicatorAlpha = ValueAnimator.ofFloat(0, 0);
-            }
-
-            LauncherViewPropertyAnimator hotseatAlpha = new LauncherViewPropertyAnimator(hotseat)
-                .alpha(finalHotseatAndPageIndicatorAlpha);
-            hotseatAlpha.addListener(new AlphaUpdateListener(hotseat));
-
-            LauncherViewPropertyAnimator overviewPanelAlpha =
-                    new LauncherViewPropertyAnimator(overviewPanel).alpha(finalOverviewPanelAlpha);
-            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel));
-
-            // For animation optimations, we may need to provide the Launcher transition
-            // with a set of views on which to force build layers in certain scenarios.
-            hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            overviewPanel.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            if (layerViews != null) {
-                // If layerViews is not null, we add these views, and indicate that
-                // the caller can manage layer state.
-                layerViews.put(hotseat, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-                layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            } else {
-                // Otherwise let the animator handle layer management.
-                hotseatAlpha.withLayer();
-                overviewPanelAlpha.withLayer();
-            }
-
-            if (workspaceToOverview) {
-                pageIndicatorAlpha.setInterpolator(new DecelerateInterpolator(2));
-                hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
-                overviewPanelAlpha.setInterpolator(null);
-            } else if (overviewToWorkspace) {
-                pageIndicatorAlpha.setInterpolator(null);
-                hotseatAlpha.setInterpolator(null);
-                overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
-            }
-
-            overviewPanelAlpha.setDuration(duration);
-            pageIndicatorAlpha.setDuration(duration);
-            hotseatAlpha.setDuration(duration);
-
-            if (searchBar != null) {
-                LauncherViewPropertyAnimator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
-                    .alpha(finalSearchBarAlpha);
-                searchBarAlpha.addListener(new AlphaUpdateListener(searchBar));
-                searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                if (layerViews != null) {
-                    // If layerViews is not null, we add these views, and indicate that
-                    // the caller can manage layer state.
-                    layerViews.put(searchBar, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-                } else {
-                    // Otherwise let the animator handle layer management.
-                    searchBarAlpha.withLayer();
-                }
-                searchBarAlpha.setDuration(duration);
-                anim.play(searchBarAlpha);
-            }
-
-            anim.play(overviewPanelAlpha);
-            anim.play(hotseatAlpha);
-            anim.play(pageIndicatorAlpha);
-            anim.setStartDelay(delay);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mStateAnimator = null;
-                }
-            });
-        } else {
-            overviewPanel.setAlpha(finalOverviewPanelAlpha);
-            AlphaUpdateListener.updateVisibility(overviewPanel);
-            hotseat.setAlpha(finalHotseatAndPageIndicatorAlpha);
-            AlphaUpdateListener.updateVisibility(hotseat);
-            if (pageIndicator != null) {
-                pageIndicator.setAlpha(finalHotseatAndPageIndicatorAlpha);
-                AlphaUpdateListener.updateVisibility(pageIndicator);
-            }
-            if (searchBar != null) {
-                searchBar.setAlpha(finalSearchBarAlpha);
-                AlphaUpdateListener.updateVisibility(searchBar);
-            }
-            updateCustomContentVisibility();
-            setScaleX(mNewScale);
-            setScaleY(mNewScale);
-            setTranslationY(finalWorkspaceTranslationY);
-        }
-
-        if (stateIsNormal) {
-            animateBackgroundGradient(0f, animated);
-        } else {
-            animateBackgroundGradient(getResources().getInteger(
-                    R.integer.config_workspaceScrimAlpha) / 100f, animated);
-        }
-        return anim;
-    }
-
-    static class AlphaUpdateListener implements AnimatorUpdateListener, AnimatorListener {
-        View view;
-        public AlphaUpdateListener(View v) {
-            view = v;
-        }
-
-        @Override
-        public void onAnimationUpdate(ValueAnimator arg0) {
-            updateVisibility(view);
-        }
-
-        public static void updateVisibility(View view) {
-            // We want to avoid the extra layout pass by setting the views to GONE unless
-            // accessibility is on, in which case not setting them to GONE causes a glitch.
-            int invisibleState = sAccessibilityEnabled ? GONE : INVISIBLE;
-            if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != invisibleState) {
-                view.setVisibility(invisibleState);
-            } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
-                    && view.getVisibility() != VISIBLE) {
-                view.setVisibility(VISIBLE);
-            }
-        }
-
-        @Override
-        public void onAnimationCancel(Animator arg0) {
-        }
-
-        @Override
-        public void onAnimationEnd(Animator arg0) {
-            updateVisibility(view);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator arg0) {
-        }
-
-        @Override
-        public void onAnimationStart(Animator arg0) {
-            // We want the views to be visible for animation, so fade-in/out is visible
-            view.setVisibility(VISIBLE);
-        }
-    }
-
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
-        onTransitionPrepare();
+        mIsSwitchingState = true;
+
+        // Invalidate here to ensure that the pages are rendered during the state change transition.
+        invalidate();
+
+        updateChildrenLayersEnabled(false);
+        hideCustomContentIfNecessary();
     }
 
     @Override
@@ -2553,17 +2101,9 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        onTransitionEnd();
-    }
-
-    private void onTransitionPrepare() {
-        mIsSwitchingState = true;
-
-        // Invalidate here to ensure that the pages are rendered during the state change transition.
-        invalidate();
-
+        mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
-        hideCustomContentIfNecessary();
+        showCustomContentIfNecessary();
     }
 
     void updateCustomContentVisibility() {
@@ -2587,12 +2127,6 @@ public class Workspace extends SmoothPagedView
             mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
             enableLayoutTransitions();
         }
-    }
-
-    @Thunk void onTransitionEnd() {
-        mIsSwitchingState = false;
-        updateChildrenLayersEnabled(false);
-        showCustomContentIfNecessary();
     }
 
     @Override
@@ -3106,7 +2640,7 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        int snapScreen = -1;
+        int snapScreen = WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE;
         boolean resizeOnDrop = false;
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
@@ -3267,7 +2801,9 @@ public class Workspace extends SmoothPagedView
                     animateWidgetDrop(info, parent, d.dragView,
                             onCompleteRunnable, animationType, cell, false);
                 } else {
-                    int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
+                    int duration = snapScreen < 0 ?
+                            WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE :
+                                    ADJACENT_SCREEN_DROP_DURATION;
                     mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
                             onCompleteRunnable, this);
                 }
@@ -4165,8 +3701,8 @@ public class Workspace extends SmoothPagedView
     public void setFinalTransitionTransform(CellLayout layout) {
         if (isSwitchingState()) {
             mCurrentScale = getScaleX();
-            setScaleX(mNewScale);
-            setScaleY(mNewScale);
+            setScaleX(mStateTransitionAnimation.getFinalScale());
+            setScaleY(mStateTransitionAnimation.getFinalScale());
         }
     }
     public void resetTransitionTransform(CellLayout layout) {

@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.content.res.Resources;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -174,7 +173,8 @@ public class LauncherStateTransitionAnimation {
             }
         };
         startAnimationToOverlay(Workspace.State.NORMAL_HIDDEN, toView, toView.getContentView(),
-                toView.getRevealView(), animated, false /* hideSearchBar */, cb);
+                toView.getRevealView(), animated,
+                !mLauncher.isAllAppsSearchOverridden() /* hideSearchBar */, cb);
     }
 
     /**
@@ -207,8 +207,8 @@ public class LauncherStateTransitionAnimation {
      * Starts and animation to the workspace from the current overlay view.
      */
     public void startAnimationToWorkspace(final Launcher.State fromState,
-              final Workspace.State toWorkspaceState, final boolean animated,
-              final Runnable onCompleteRunnable) {
+              final Workspace.State toWorkspaceState, final int toWorkspacePage,
+              final boolean animated, final Runnable onCompleteRunnable) {
         if (toWorkspaceState != Workspace.State.NORMAL &&
                 toWorkspaceState != Workspace.State.SPRING_LOADED &&
                 toWorkspaceState != Workspace.State.OVERVIEW) {
@@ -216,11 +216,11 @@ public class LauncherStateTransitionAnimation {
         }
 
         if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED) {
-            startAnimationToWorkspaceFromAllApps(fromState, toWorkspaceState, animated,
-                    onCompleteRunnable);
+            startAnimationToWorkspaceFromAllApps(fromState, toWorkspaceState, toWorkspacePage,
+                    animated, onCompleteRunnable);
         } else {
-            startAnimationToWorkspaceFromWidgets(fromState, toWorkspaceState, animated,
-                    onCompleteRunnable);
+            startAnimationToWorkspaceFromWidgets(fromState, toWorkspaceState, toWorkspacePage,
+                    animated, onCompleteRunnable);
         }
     }
 
@@ -249,8 +249,8 @@ public class LauncherStateTransitionAnimation {
 
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.getWorkspace().getChangeStateAnimation(
-                toWorkspaceState, animated, layerViews);
+        Animator workspaceAnim = mLauncher.getWorkspace().setStateWithAnimation(
+                toWorkspaceState, -1, animated, layerViews);
 
         if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
@@ -424,8 +424,8 @@ public class LauncherStateTransitionAnimation {
      * Starts and animation to the workspace from the apps view.
      */
     private void startAnimationToWorkspaceFromAllApps(final Launcher.State fromState,
-              final Workspace.State toWorkspaceState, final boolean animated,
-              final Runnable onCompleteRunnable) {
+              final Workspace.State toWorkspaceState, final int toWorkspacePage,
+              final boolean animated, final Runnable onCompleteRunnable) {
         AppsContainerView appsView = mLauncher.getAppsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             int[] mAllAppsToPanelDelta;
@@ -477,16 +477,17 @@ public class LauncherStateTransitionAnimation {
                 };
             }
         };
-        startAnimationToWorkspaceFromOverlay(toWorkspaceState, appsView, appsView.getContentView(),
-                appsView.getRevealView(), animated, onCompleteRunnable, cb);
+        startAnimationToWorkspaceFromOverlay(toWorkspaceState, toWorkspacePage, appsView,
+                appsView.getContentView(), appsView.getRevealView(), animated, onCompleteRunnable,
+                cb);
     }
 
     /**
      * Starts and animation to the workspace from the widgets view.
      */
     private void startAnimationToWorkspaceFromWidgets(final Launcher.State fromState,
-              final Workspace.State toWorkspaceState, final boolean animated,
-              final Runnable onCompleteRunnable) {
+              final Workspace.State toWorkspaceState, final int toWorkspacePage,
+              final boolean animated, final Runnable onCompleteRunnable) {
         final WidgetsContainerView widgetsView = mLauncher.getWidgetsView();
         final Resources res = mLauncher.getResources();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
@@ -514,7 +515,7 @@ public class LauncherStateTransitionAnimation {
                 };
             }
         };
-        startAnimationToWorkspaceFromOverlay(toWorkspaceState, widgetsView,
+        startAnimationToWorkspaceFromOverlay(toWorkspaceState, toWorkspacePage, widgetsView,
                 widgetsView.getContentView(), widgetsView.getRevealView(), animated,
                 onCompleteRunnable, cb);
     }
@@ -523,8 +524,8 @@ public class LauncherStateTransitionAnimation {
      * Creates and starts a new animation to the workspace.
      */
     private void startAnimationToWorkspaceFromOverlay(final Workspace.State toWorkspaceState,
-              final View fromView, final View contentView, final View revealView,
-              final boolean animated, final Runnable onCompleteRunnable,
+              final int toWorkspacePage, final View fromView, final View contentView,
+              final View revealView, final boolean animated, final Runnable onCompleteRunnable,
               final PrivateTransitionCallbacks pCb) {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.isLmpOrAbove();
@@ -545,8 +546,8 @@ public class LauncherStateTransitionAnimation {
 
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.getWorkspace().getChangeStateAnimation(
-                toWorkspaceState, animated, layerViews);
+        Animator workspaceAnim = mLauncher.getWorkspace().setStateWithAnimation(
+                toWorkspaceState, toWorkspacePage, animated, layerViews);
 
         if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();

@@ -6,10 +6,6 @@
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
-<!-- Workspace -->
-    <!-- Whether or not the drop targets drop down as opposed to fade in -->
-    <bool name="config_useDropTargetDownTransition">false</bool>
-
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">false</bool>
 </resources>
