@@ -21,7 +21,6 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.AttributeSet;
 
-import com.android.launcher3.R;
 import com.android.launcher3.compat.UserHandleCompat;
 
 public class InfoDropTarget extends ButtonDropTarget {
@@ -66,9 +65,13 @@ public class InfoDropTarget extends ButtonDropTarget {
 
     @Override
     protected boolean supportsDrop(DragSource source, Object info) {
-        return source.supportsAppInfoDropTarget() &&
-                Settings.Global.getInt(getContext().getContentResolver(),
-                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
+        return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
+    }
+
+    public static boolean supportsDrop(Context context, Object info) {
+        return (Settings.Global.getInt(context.getContentResolver(),
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1) &&
+                (info instanceof AppInfo || info instanceof PendingAddItemInfo);
     }
 
     @Override

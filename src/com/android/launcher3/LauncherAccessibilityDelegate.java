@@ -1,16 +1,13 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
@@ -68,18 +65,21 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
+        if (DeleteDropTarget.supportsDrop(item)) {
+            info.addAction(mActions.get(REMOVE));
+        }
+        if (UninstallDropTarget.supportsDrop(host.getContext(), item)) {
+            info.addAction(mActions.get(UNINSTALL));
+        }
+        if (InfoDropTarget.supportsDrop(host.getContext(), item)) {
+            info.addAction(mActions.get(INFO));
+        }
+
         if ((item instanceof ShortcutInfo)
                 || (item instanceof LauncherAppWidgetInfo)
                 || (item instanceof FolderInfo)) {
-            // Workspace shortcut / widget
-            info.addAction(mActions.get(REMOVE));
             info.addAction(mActions.get(MOVE));
-        } else if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
-            // App or Widget from customization tray
-            if (item instanceof AppInfo) {
-                info.addAction(mActions.get(UNINSTALL));
-            }
-            info.addAction(mActions.get(INFO));
+        } if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         }
     }
@@ -94,10 +94,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
     }
 
     public boolean performAction(View host, ItemInfo item, int action) {
-        Resources res = mLauncher.getResources();
         if (action == REMOVE) {
             if (DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host)) {
-                announceConfirmation(R.string.item_removed_from_workspace);
+                announceConfirmation(R.string.item_removed);
                 return true;
             }
             return false;
@@ -105,9 +104,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
             InfoDropTarget.startDetailsActivityForInfo(item, mLauncher);
             return true;
         } else if (action == UNINSTALL) {
-            AppInfo info = (AppInfo) item;
-            mLauncher.startApplicationUninstallActivity(info.componentName, info.flags, info.user);
-            return true;
+            return UninstallDropTarget.startUninstallActivity(mLauncher, item);
         } else if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {
@@ -158,19 +155,31 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         return mDragInfo;
     }
 
-    public void handleAccessibleDrop(CellLayout targetContainer, Rect dropLocation,
+    /**
+     * @param clickedTarget the actual view that was clicked
+     * @param dropLocation relative to {@param clickedTarget}. If provided, its center is used
+     * as the actual drop location otherwise the views center is used.
+     */
+    public void handleAccessibleDrop(View clickedTarget, Rect dropLocation,
             String confirmation) {
         if (!isInAccessibleDrag()) return;
 
         int[] loc = new int[2];
-        loc[0] = dropLocation.centerX();
-        loc[1] = dropLocation.centerY();
+        if (dropLocation == null) {
+            loc[0] = clickedTarget.getWidth() / 2;
+            loc[1] = clickedTarget.getHeight() / 2;
+        } else {
+            loc[0] = dropLocation.centerX();
+            loc[1] = dropLocation.centerY();
+        }
 
-        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(targetContainer, loc);
+        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(clickedTarget, loc);
         mLauncher.getDragController().completeAccessibleDrag(loc);
 
         endAccessibleDrag();
-        announceConfirmation(confirmation);
+        if (!TextUtils.isEmpty(confirmation)) {
+            announceConfirmation(confirmation);
+        }
     }
 
     public void beginAccessibleDrag(View item, ItemInfo info) {

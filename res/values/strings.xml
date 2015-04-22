@@ -309,13 +309,13 @@ s -->
 
 <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
-    <string name="action_add_to_workspace">Add To Workspace</string>
+    <string name="action_add_to_workspace">Add to workspace</string>
 
     <!-- Accessibility confirmation for item added to workspace [DO NOT TRANSLATE] -->
     <string name="item_added_to_workspace">Item added to workspace</string>
 
     <!-- Accessibility confirmation for item removed [DO NOT TRANSLATE] -->
-    <string name="item_removed_from_workspace">Item removed from workspace</string>
+    <string name="item_removed">Item removed</string>
 
     <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
     <string name="action_move">Move Item</string>

@@ -557,7 +557,7 @@ public class CellLayout extends ViewGroup {
             Resources res = getContext().getResources();
             View child = getChildAt(x, y);
             if (child == null || child == dragInfo.item) {
-                return res.getString(R.string.move_to_empty_cell, x, y);
+                return res.getString(R.string.move_to_empty_cell, x + 1, y + 1);
             } else {
                 ItemInfo info = (ItemInfo) child.getTag();
                 if (info instanceof AppInfo || info instanceof ShortcutInfo) {

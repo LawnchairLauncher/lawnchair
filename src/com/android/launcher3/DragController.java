@@ -462,8 +462,7 @@ public class DragController {
                 mLastTouchUpTime = System.currentTimeMillis();
                 if (mDragging) {
                     PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                    if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragSource,
-                            mDragObject.dragInfo)) {
+                    if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
                         vec = null;
                     }
                     if (vec != null) {
@@ -617,7 +616,7 @@ public class DragController {
 
             if (mDragging) {
                 PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragSource, mDragObject.dragInfo)) {
+                if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
                     vec = null;
                 }
                 if (vec != null) {

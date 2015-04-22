@@ -180,6 +180,9 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         prepareStartAnimation(mDropTargetBar);
         mShowDropTargetBarAnim.start();
         hideSearchBar(true);
+        if (mQSBSearchBar != null) {
+            mQSBSearchBar.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -190,6 +193,9 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         prepareStartAnimation(mDropTargetBar);
         mShowDropTargetBarAnim.reverse();
         showSearchBar(true);
+        if (mQSBSearchBar != null) {
+            mQSBSearchBar.setVisibility(View.VISIBLE);
+        }
     }
 
     /*
@@ -227,5 +233,14 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         } else {
             return null;
         }
+    }
+
+    public void enableAccessibleDrag(boolean enable) {
+        if (mQSBSearchBar != null) {
+            mQSBSearchBar.setVisibility(enable ? View.GONE : View.VISIBLE);
+        }
+        mInfoDropTarget.enableAccessibleDrag(enable);
+        mDeleteDropTarget.enableAccessibleDrag(enable);
+        mUninstallDropTarget.enableAccessibleDrag(enable);
     }
 }

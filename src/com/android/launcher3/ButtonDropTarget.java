@@ -26,18 +26,19 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
-import com.android.launcher3.R;
 import com.android.launcher3.util.Thunk;
 
 /**
  * Implements a DropTarget.
  */
-public abstract class ButtonDropTarget extends TextView implements DropTarget, DragController.DragListener {
+public abstract class ButtonDropTarget extends TextView
+        implements DropTarget, DragController.DragListener, OnClickListener {
 
     private static int DRAG_VIEW_DROP_DURATION = 285;
 
@@ -255,5 +256,19 @@ public abstract class ButtonDropTarget extends TextView implements DropTarget, D
     @Override
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
+    }
+
+    public void enableAccessibleDrag(boolean enable) {
+        setOnClickListener(enable ? this : null);
+    }
+
+    protected String getAccessibilityDropConfirmation() {
+        return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        LauncherAppState.getInstance().getAccessibilityDelegate()
+            .handleAccessibleDrop(this, null, getAccessibilityDropConfirmation());
     }
 }
