@@ -19,9 +19,11 @@
     android:layout_width="@dimen/widget_preview_container_width"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:paddingTop="@dimen/widget_preview_padding_top"
+    android:layout_marginTop="@dimen/widget_preview_padding_top"
+    android:layout_marginLeft="8dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical"
-    android:background="@drawable/focusable_view_bg"
+    android:background="@color/bubble_dark_background"
     android:focusable="true">
 
     <LinearLayout
@@ -61,7 +63,6 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
             android:gravity="start"
-
             android:textColor="#FFFFFFFF"
             android:textSize="12sp"
             android:textAlignment="viewStart"
