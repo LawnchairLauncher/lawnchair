@@ -101,7 +101,7 @@ public class IconCache {
         mIconDpi = activityManager.getLauncherLargeIconDensity();
         mIconDb = new IconDB(context);
 
-        mWorkerHandler = new Handler(LauncherModel.sWorkerThread.getLooper());
+        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
     }
 
     private Drawable getFullResDefaultActivityIcon() {
@@ -388,16 +388,20 @@ public class IconCache {
         return new IconLoadRequest(request, mWorkerHandler);
     }
 
+    private Bitmap getNonNullIcon(CacheEntry entry, UserHandleCompat user) {
+        return entry.icon == null ? getDefaultIcon(user) : entry.icon;
+    }
+
     /**
      * Fill in "application" with the icon and label for "info."
      */
     public synchronized void getTitleAndIcon(AppInfo application,
             LauncherActivityInfoCompat info, boolean useLowResIcon) {
-        CacheEntry entry = cacheLocked(application.componentName, info,
-                info == null ? application.user : info.getUser(),
+        UserHandleCompat user = info == null ? application.user : info.getUser();
+        CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
         application.title = entry.title;
-        application.iconBitmap = entry.icon;
+        application.iconBitmap = getNonNullIcon(entry, user);
         application.contentDescription = entry.contentDescription;
         application.usingLowResIcon = entry.isLowResIcon;
     }
@@ -445,7 +449,7 @@ public class IconCache {
             ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
             UserHandleCompat user, boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
-        shortcutInfo.setIcon(entry.icon);
+        shortcutInfo.setIcon(getNonNullIcon(entry, user));
         shortcutInfo.title = entry.title;
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
@@ -458,7 +462,7 @@ public class IconCache {
             String packageName, UserHandleCompat user, boolean useLowResIcon,
             PackageItemInfo infoOut) {
         CacheEntry entry = getEntryForPackageLocked(packageName, user, useLowResIcon);
-        infoOut.iconBitmap = entry.icon;
+        infoOut.iconBitmap = getNonNullIcon(entry, user);
         infoOut.title = entry.title;
         infoOut.usingLowResIcon = entry.isLowResIcon;
         infoOut.contentDescription = entry.contentDescription;

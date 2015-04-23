@@ -214,6 +214,7 @@ public class ShortcutInfo extends ItemInfo {
         String uri = promisedIntent != null ? promisedIntent.toUri(0)
                 : (intent != null ? intent.toUri(0) : null);
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
+        values.put(LauncherSettings.Favorites.RESTORED, status);
 
         if (customIcon) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,

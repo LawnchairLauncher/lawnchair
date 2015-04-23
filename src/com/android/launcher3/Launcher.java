@@ -98,8 +98,6 @@ import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.Thunk;
@@ -1060,9 +1058,6 @@ public class Launcher extends Activity
         getWorkspace().reinflateWidgetsIfNecessary();
         reinflateQSBIfNecessary();
 
-        // Process any items that were added while Launcher was away.
-        InstallShortcutReceiver.disableAndFlushInstallQueue(this);
-
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
@@ -1078,7 +1073,10 @@ public class Launcher extends Activity
         mWorkspace.updateInteractionForState();
         mWorkspace.onResume();
 
-        PackageInstallerCompat.getInstance(this).onResume();
+        if (!isWorkspaceLoading()) {
+            // Process any items that were added while Launcher was away.
+            InstallShortcutReceiver.disableAndFlushInstallQueue(this);
+        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
@@ -1089,7 +1087,6 @@ public class Launcher extends Activity
     protected void onPause() {
         // Ensure that items added to Launcher are queued until Launcher returns
         InstallShortcutReceiver.enableInstallQueue();
-        PackageInstallerCompat.getInstance(this).onPause();
 
         super.onPause();
         mPaused = true;
@@ -4084,7 +4081,7 @@ public class Launcher extends Activity
             sPendingAddItem = null;
         }
 
-        PackageInstallerCompat.getInstance(this).onFinishBind();
+        InstallShortcutReceiver.disableAndFlushInstallQueue(this);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.finishBindingItems(false);
@@ -4236,22 +4233,17 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void updatePackageState(ArrayList<PackageInstallInfo> installInfo) {
-        if (mWorkspace != null) {
-            mWorkspace.updatePackageState(installInfo);
+    public void bindRestoreItemsChange(final HashSet<ItemInfo> updates) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindRestoreItemsChange(updates);
+            }
+        };
+        if (waitUntilResume(r)) {
+            return;
         }
-    }
 
-    /**
-     * Update the label and icon of all the icons in a package
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
-    @Override
-    public void updatePackageBadge(String packageName) {
-        if (mWorkspace != null) {
-            mWorkspace.updatePackageBadge(packageName, UserHandleCompat.myUserHandle());
-        }
+        mWorkspace.updateRestoreItems(updates);
     }
 
     /**

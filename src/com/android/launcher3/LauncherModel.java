@@ -42,6 +42,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.RemoteException;
@@ -199,8 +200,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
                 ArrayList<ShortcutInfo> removed, UserHandleCompat user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-        public void updatePackageState(ArrayList<PackageInstallInfo> installInfo);
-        public void updatePackageBadge(String packageName);
+        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
         public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
@@ -282,30 +282,110 @@ public class LauncherModel extends BroadcastReceiver
         return mOldContentProviderExists && !launcher.isLauncherPreinstalled() ;
     }
 
-    public void setPackageState(final ArrayList<PackageInstallInfo> installInfo) {
-        // Process the updated package state
-        Runnable r = new Runnable() {
+    public void setPackageState(final PackageInstallInfo installInfo) {
+        Runnable updateRunnable = new Runnable() {
+
+            @Override
             public void run() {
-                Callbacks callbacks = getCallback();
-                if (callbacks != null) {
-                    callbacks.updatePackageState(installInfo);
+                synchronized (sBgLock) {
+                    final HashSet<ItemInfo> updates = new HashSet<>();
+
+                    if (installInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
+                        // Ignore install success events as they are handled by Package add events.
+                        return;
+                    }
+
+                    for (ItemInfo info : sBgItemsIdMap.values()) {
+                        if (info instanceof ShortcutInfo) {
+                            ShortcutInfo si = (ShortcutInfo) info;
+                            ComponentName cn = si.getTargetComponent();
+                            if (si.isPromise() && (cn != null)
+                                    && installInfo.packageName.equals(cn.getPackageName())) {
+                                si.setInstallProgress(installInfo.progress);
+
+                                if (installInfo.state == PackageInstallerCompat.STATUS_FAILED) {
+                                    // Mark this info as broken.
+                                    si.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                                }
+                                updates.add(si);
+                            }
+                        }
+                    }
+
+                    for (LauncherAppWidgetInfo widget : sBgAppWidgets) {
+                        if (widget.providerName.getPackageName().equals(installInfo.packageName)) {
+                            widget.installProgress = installInfo.progress;
+                            updates.add(widget);
+                        }
+                    }
+
+                    if (!updates.isEmpty()) {
+                        // Push changes to the callback.
+                        Runnable r = new Runnable() {
+                            public void run() {
+                                Callbacks callbacks = getCallback();
+                                if (callbacks != null) {
+                                    callbacks.bindRestoreItemsChange(updates);
+                                }
+                            }
+                        };
+                        mHandler.post(r);
+                    }
                 }
             }
         };
-        mHandler.post(r);
+        runOnWorkerThread(updateRunnable);
     }
 
-    public void updatePackageBadge(final String packageName) {
-        // Process the updated package badge
-        Runnable r = new Runnable() {
+    /**
+     * Updates the icons and label of all pending icons for the provided package name.
+     */
+    public void updateSessionDisplayInfo(final String packageName) {
+        Runnable updateRunnable = new Runnable() {
+
+            @Override
             public void run() {
-                Callbacks callbacks = getCallback();
-                if (callbacks != null) {
-                    callbacks.updatePackageBadge(packageName);
+                synchronized (sBgLock) {
+                    final ArrayList<ShortcutInfo> updates = new ArrayList<>();
+                    final UserHandleCompat user = UserHandleCompat.myUserHandle();
+
+                    for (ItemInfo info : sBgItemsIdMap.values()) {
+                        if (info instanceof ShortcutInfo) {
+                            ShortcutInfo si = (ShortcutInfo) info;
+                            ComponentName cn = si.getTargetComponent();
+                            if (si.isPromise() && (cn != null)
+                                    && packageName.equals(cn.getPackageName())) {
+                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                    // For auto install apps update the icon as well as label.
+                                    mIconCache.getTitleAndIcon(si,
+                                            si.promisedIntent, user,
+                                            si.shouldUseLowResIcon());
+                                } else {
+                                    // Only update the icon for restored apps.
+                                    si.updateIcon(mIconCache);
+                                }
+                                updates.add(si);
+                            }
+                        }
+                    }
+
+                    if (!updates.isEmpty()) {
+                        // Push changes to the callback.
+                        Runnable r = new Runnable() {
+                            public void run() {
+                                Callbacks callbacks = getCallback();
+                                if (callbacks != null) {
+                                    callbacks.bindShortcutsChanged(updates,
+                                            new ArrayList<ShortcutInfo>(), user);
+                                }
+                            }
+                        };
+                        mHandler.post(r);
+                    }
                 }
             }
         };
-        mHandler.post(r);
+        runOnWorkerThread(updateRunnable);
     }
 
     public void addAppsToAllApps(final Context ctx, final ArrayList<AppInfo> allAppsApps) {
@@ -537,8 +617,7 @@ public class LauncherModel extends BroadcastReceiver
                     for (ItemInfo item : workspaceApps) {
                         if (!allowDuplicate && item instanceof ShortcutInfo) {
                             // Short-circuit this logic if the icon exists somewhere on the workspace
-                            if (shortcutExists(context, item.title.toString(),
-                                    item.getIntent(), item.user)) {
+                            if (shortcutExists(context, item.getIntent(), item.user)) {
                                 continue;
                             }
                         }
@@ -904,41 +983,42 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Returns true if the shortcuts already exists in the database.
-     * we identify a shortcut by its title and intent.
+     * Returns true if the shortcuts already exists on the workspace. This must be called after
+     * the workspace has been loaded. We identify a shortcut by its intent.
+     * TODO: Throw exception is above condition is not met.
      */
-    static boolean shortcutExists(Context context, String title, Intent intent,
-            UserHandleCompat user) {
-        final ContentResolver cr = context.getContentResolver();
+    @Thunk static boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
         final Intent intentWithPkg, intentWithoutPkg;
-
+        final String packageName;
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
             // the same result and should also be a match.
+            packageName = intent.getComponent().getPackageName();
             if (intent.getPackage() != null) {
                 intentWithPkg = intent;
                 intentWithoutPkg = new Intent(intent).setPackage(null);
             } else {
-                intentWithPkg = new Intent(intent).setPackage(
-                        intent.getComponent().getPackageName());
+                intentWithPkg = new Intent(intent).setPackage(packageName);
                 intentWithoutPkg = intent;
             }
         } else {
             intentWithPkg = intent;
             intentWithoutPkg = intent;
+            packageName = intent.getPackage();
         }
-        String userSerial = Long.toString(UserManagerCompat.getInstance(context)
-                .getSerialNumberForUser(user));
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            new String[] { "title", "intent", "profileId" },
-            "title=? and (intent=? or intent=?) and profileId=?",
-            new String[] { title, intentWithPkg.toUri(0), intentWithoutPkg.toUri(0), userSerial },
-            null);
-        try {
-            return c.moveToFirst();
-        } finally {
-            c.close();
+
+        synchronized (sBgLock) {
+            for (ItemInfo item : sBgItemsIdMap.values()) {
+                if (item instanceof ShortcutInfo) {
+                    ShortcutInfo info = (ShortcutInfo) item;
+                    if (intentWithPkg.equals(info.getIntent())
+                            || intentWithoutPkg.equals(info.getIntent())) {
+                        return true;
+                    }
+                }
+            }
         }
+        return false;
     }
 
     /**
@@ -1366,6 +1446,8 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void startLoader(boolean isLaunching, int synchronousBindPage, int loadFlags) {
+        // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
+        InstallShortcutReceiver.enableInstallQueue();
         synchronized (mLock) {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "startLoader isLaunching=" + isLaunching);
@@ -1812,7 +1894,7 @@ public class LauncherModel extends BroadcastReceiver
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
-                final HashSet<String> installingPkgs = PackageInstallerCompat
+                final HashMap<String, Integer> installingPkgs = PackageInstallerCompat
                         .getInstance(mContext).updateAndGetActiveSessionCache();
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
@@ -1951,7 +2033,7 @@ public class LauncherModel extends BroadcastReceiver
 
                                             if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
                                                 // Restore has started once.
-                                            } else if (installingPkgs.contains(cn.getPackageName())) {
+                                            } else if (installingPkgs.containsKey(cn.getPackageName())) {
                                                 // App restore has started. Update the flag
                                                 promiseType |= ShortcutInfo.FLAG_RESTORE_STARTED;
                                                 ContentValues values = new ContentValues();
@@ -2093,6 +2175,18 @@ public class LauncherModel extends BroadcastReceiver
                                         break;
                                     }
 
+                                    if (restored) {
+                                        ComponentName cn = info.getTargetComponent();
+                                        if (cn != null) {
+                                            Integer progress = installingPkgs.get(cn.getPackageName());
+                                            if (progress != null) {
+                                                info.setInstallProgress(progress);
+                                            } else {
+                                                info.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
+                                            }
+                                        }
+                                    }
+
                                     switch (container) {
                                     case LauncherSettings.Favorites.CONTAINER_DESKTOP:
                                     case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
@@ -2220,10 +2314,11 @@ public class LauncherModel extends BroadcastReceiver
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 component);
                                         appWidgetInfo.restoreStatus = restoreStatus;
+                                        Integer installProgress = installingPkgs.get(component.getPackageName());
 
                                         if ((restoreStatus & LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) != 0) {
                                             // Restore has started once.
-                                        } else if (installingPkgs.contains(component.getPackageName())) {
+                                        } else if (installProgress != null) {
                                             // App restore has started. Update the flag
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
@@ -2233,6 +2328,9 @@ public class LauncherModel extends BroadcastReceiver
                                             itemsToRemove.add(id);
                                             continue;
                                         }
+
+                                        appWidgetInfo.installProgress =
+                                                installProgress == null ? 0 : installProgress;
                                     }
 
                                     appWidgetInfo.id = id;
@@ -3112,15 +3210,13 @@ public class LauncherModel extends BroadcastReceiver
                                     }
 
                                     // Restore the shortcut.
-                                    si.intent = si.promisedIntent;
-                                    si.promisedIntent = null;
-                                    si.status &= ~ShortcutInfo.FLAG_RESTORED_ICON
-                                            & ~ShortcutInfo.FLAG_AUTOINTALL_ICON
-                                            & ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
                                     if (appInfo != null) {
                                         si.flags = appInfo.flags;
                                     }
 
+                                    si.intent = si.promisedIntent;
+                                    si.promisedIntent = null;
+                                    si.status = ShortcutInfo.DEFAULT;
                                     infoUpdated = true;
                                     si.updateIcon(mIconCache);
                                 }
@@ -3353,12 +3449,10 @@ public class LauncherModel extends BroadcastReceiver
             if (!TextUtils.isEmpty(title)) {
                 info.title = title;
             }
-            info.status = ShortcutInfo.FLAG_RESTORED_ICON;
         } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = (cursor != null) ? cursor.getString(titleIndex) : "";
             }
-            info.status = ShortcutInfo.FLAG_AUTOINTALL_ICON;
         } else {
             throw new InvalidParameterException("Invalid restoreType " + promiseType);
         }
@@ -3367,6 +3461,7 @@ public class LauncherModel extends BroadcastReceiver
                 info.title.toString(), info.user);
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.promisedIntent = intent;
+        info.status = promiseType;
         return info;
     }
 
@@ -3668,5 +3763,12 @@ public class LauncherModel extends BroadcastReceiver
         synchronized (sBgLock) {
             return sBgFolders.get(folderId);
         }
+    }
+
+    /**
+     * @return the looper for the worker thread which can be used to start background tasks.
+     */
+    public static Looper getWorkerLooper() {
+        return sWorkerThread.getLooper();
     }
 }
