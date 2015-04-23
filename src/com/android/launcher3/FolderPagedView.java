@@ -363,7 +363,7 @@ public class FolderPagedView extends PagedView {
     }
 
     @SuppressLint("InflateParams")
-    private View createNewView(ShortcutInfo item) {
+    public View createNewView(ShortcutInfo item) {
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
                 R.layout.folder_application, null, false);
         textView.applyFromShortcutInfo(item, mIconCache, false);
