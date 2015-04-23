@@ -2047,12 +2047,6 @@ public class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
-        // Disconnect any of the callbacks and drawables associated with ItemInfos on the workspace
-        // to prevent leaking Launcher activities on orientation change.
-        if (mModel != null) {
-            mModel.unbindItemInfosAndClearQueuedBindRunnables();
-        }
-
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mCloseSystemDialogsReceiver);
 
