@@ -17,8 +17,7 @@
 <com.android.launcher3.SearchDropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="false"
-    android:orientation="horizontal" >
+    android:focusable="false" >
 
     <!-- Drag specific targets container -->
 

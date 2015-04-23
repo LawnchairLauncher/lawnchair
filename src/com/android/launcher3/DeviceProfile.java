@@ -734,7 +734,6 @@ public class DeviceProfile {
 
     public void layout(Launcher launcher) {
         FrameLayout.LayoutParams lp;
-        Resources res = launcher.getResources();
         boolean hasVerticalBarLayout = isVerticalBarLayout();
 
         // Layout the search bar space
@@ -742,17 +741,22 @@ public class DeviceProfile {
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         if (hasVerticalBarLayout) {
             // Vertical search bar space
-            lp.gravity = Gravity.TOP | Gravity.LEFT;
+            lp.gravity = Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
-            lp.height = LayoutParams.WRAP_CONTENT;
 
             LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
             targets.setOrientation(LinearLayout.VERTICAL);
+            FrameLayout.LayoutParams targetsLp = (FrameLayout.LayoutParams) targets.getLayoutParams();
+            targetsLp.gravity = Gravity.TOP;
+            targetsLp.height = LayoutParams.WRAP_CONTENT;
+
         } else {
             // Horizontal search bar space
-            lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-            lp.width = searchBarSpaceWidthPx;
+            lp.gravity = Gravity.TOP;
             lp.height = searchBarSpaceHeightPx;
+
+            LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
+            targets.getLayoutParams().width = searchBarSpaceWidthPx;
         }
         searchBar.setLayoutParams(lp);
 
