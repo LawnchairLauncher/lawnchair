@@ -62,8 +62,6 @@ import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
-import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
@@ -4358,73 +4356,22 @@ public class Workspace extends SmoothPagedView
         removeItemsByPackageName(packages, user);
     }
 
-    public void updatePackageBadge(final String packageName, final UserHandleCompat user) {
+    public void updateRestoreItems(final HashSet<ItemInfo> updates) {
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
-                    ShortcutInfo shortcutInfo = (ShortcutInfo) info;
-                    ComponentName cn = shortcutInfo.getTargetComponent();
-                    if (user.equals(shortcutInfo.user) && cn != null
-                            && shortcutInfo.isPromise()
-                            && packageName.equals(cn.getPackageName())) {
-                        if (shortcutInfo.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
-                            // For auto install apps update the icon as well as label.
-                            mIconCache.getTitleAndIcon(shortcutInfo,
-                                    shortcutInfo.promisedIntent, user,
-                                    shortcutInfo.shouldUseLowResIcon());
-                        } else {
-                            // Only update the icon for restored apps.
-                            shortcutInfo.updateIcon(mIconCache);
-                        }
-                        BubbleTextView shortcut = (BubbleTextView) v;
-                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, true, false);
-
-                        if (parent != null) {
-                            parent.invalidate();
-                        }
-                    }
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
+                        && updates.contains(info)) {
+                    ((BubbleTextView) v).applyState(false);
+                } else if (v instanceof PendingAppWidgetHostView
+                        && info instanceof LauncherAppWidgetInfo
+                        && updates.contains(info)) {
+                    ((PendingAppWidgetHostView) v).applyState();
                 }
                 // process all the shortcuts
                 return false;
             }
         });
-    }
-
-    public void updatePackageState(ArrayList<PackageInstallInfo> installInfos) {
-        for (final PackageInstallInfo installInfo : installInfos) {
-            if (installInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
-                continue;
-            }
-
-            mapOverItems(MAP_RECURSE, new ItemOperator() {
-                @Override
-                public boolean evaluate(ItemInfo info, View v, View parent) {
-                    if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
-                        ShortcutInfo si = (ShortcutInfo) info;
-                        ComponentName cn = si.getTargetComponent();
-                        if (si.isPromise() && (cn != null)
-                                && installInfo.packageName.equals(cn.getPackageName())) {
-                            si.setInstallProgress(installInfo.progress);
-                            if (installInfo.state == PackageInstallerCompat.STATUS_FAILED) {
-                                // Mark this info as broken.
-                                si.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;
-                            }
-                            ((BubbleTextView)v).applyState(false);
-                        }
-                    } else if (v instanceof PendingAppWidgetHostView
-                            && info instanceof LauncherAppWidgetInfo
-                            && ((LauncherAppWidgetInfo) info).providerName.getPackageName()
-                                .equals(installInfo.packageName)) {
-                        ((LauncherAppWidgetInfo) info).installProgress = installInfo.progress;
-                        ((PendingAppWidgetHostView) v).applyState();
-                    }
-
-                    // process all the shortcuts
-                    return false;
-                }
-            });
-        }
     }
 
     void widgetsRestored(ArrayList<LauncherAppWidgetInfo> changedInfo) {

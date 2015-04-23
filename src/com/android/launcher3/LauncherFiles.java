@@ -42,5 +42,6 @@ public class LauncherFiles {
     // TODO: Delete these files on upgrade
     public static final List<String> OBSOLETE_FILES = Collections.unmodifiableList(Arrays.asList(
             "launches.log",
-            "stats.log"));
+            "stats.log",
+            "com.android.launcher3.compat.PackageInstallerCompatV16.queue"));
 }
