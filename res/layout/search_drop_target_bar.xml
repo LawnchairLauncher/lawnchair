@@ -45,19 +45,6 @@
             style="@style/DropTargetButtonContainer"
             android:layout_weight="1" >
 
-            <!-- Uninstall target -->
-
-            <com.android.launcher3.UninstallDropTarget
-                android:id="@+id/uninstall_target_text"
-                style="@style/DropTargetButton"
-                android:drawableStart="@drawable/uninstall_target_selector"
-                android:text="@string/delete_target_uninstall_label" />
-        </FrameLayout>
-
-        <FrameLayout
-            style="@style/DropTargetButtonContainer"
-            android:layout_weight="1" >
-
             <!-- Info target -->
 
             <com.android.launcher3.InfoDropTarget
@@ -65,6 +52,19 @@
                 style="@style/DropTargetButton"
                 android:drawableStart="@drawable/info_target_selector"
                 android:text="@string/info_target_label" />
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1" >
+
+            <!-- Uninstall target -->
+
+            <com.android.launcher3.UninstallDropTarget
+                android:id="@+id/uninstall_target_text"
+                style="@style/DropTargetButton"
+                android:drawableStart="@drawable/uninstall_target_selector"
+                android:text="@string/delete_target_uninstall_label" />
         </FrameLayout>
     </LinearLayout>
 
