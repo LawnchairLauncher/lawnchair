@@ -745,9 +745,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 replaceFolderWithFinalItem();
             }
         } else {
-            rearrangeChildren();
             // The drag failed, we need to return the item to the folder
+            ShortcutInfo info = (ShortcutInfo) d.dragInfo;
+            View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
+                    ? mCurrentDragView : mContent.createNewView(info);
+            ArrayList<View> views = getItemsInReadingOrder();
+            views.add(info.rank, icon);
+            mContent.arrangeChildren(views, views.size());
+            mItemsInvalidated = true;
+
+            mSuppressOnAdd = true;
             mFolderIcon.onDrop(d);
+            mSuppressOnAdd = false;
         }
 
         if (target != this) {
