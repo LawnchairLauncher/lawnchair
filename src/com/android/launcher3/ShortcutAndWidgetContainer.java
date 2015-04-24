@@ -76,14 +76,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         return null;
     }
 
-    public void addView(View child, int index, LayoutParams params, boolean inLayout) {
-        if (!inLayout) {
-            addView(child, index, params);
-        } else {
-            addViewInLayout(child, index, params, false);
-        }
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         @SuppressWarnings("all") // suppress dead code warning

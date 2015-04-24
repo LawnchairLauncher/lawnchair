@@ -657,8 +657,7 @@ public class DragLayer extends InsettableFrameLayout {
             final Runnable onCompleteRunnable, final int animationEndStyle, View anchorView) {
 
         // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(Math.pow(to.left - from.left, 2) +
-                Math.pow(to.top - from.top, 2));
+        final float dist = (float) Math.hypot(to.left - from.left, to.top - from.top);
         final Resources res = getResources();
         final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
 

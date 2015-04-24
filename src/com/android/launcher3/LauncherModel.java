@@ -434,7 +434,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         }
-        return CellLayout.findVacantCell(xy, spanX, spanY, xCount, yCount, occupied);
+        return Utilities.findVacantCell(xy, spanX, spanY, xCount, yCount, occupied);
     }
 
     /**

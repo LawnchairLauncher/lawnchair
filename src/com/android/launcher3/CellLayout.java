@@ -48,9 +48,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LayoutAnimationController;
 
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.LauncherAccessibilityDelegate.DragType;
@@ -121,7 +119,6 @@ public class CellLayout extends ViewGroup {
 
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
-    boolean mUseActiveGlowBackground = false;
 
     // These arrays are used to implement the drag visualization on x-large screens.
     // They are used as circular arrays, indexed by mDragOutlineCurrent.
@@ -684,10 +681,6 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    void setUseActiveGlowBackground(boolean use) {
-        mUseActiveGlowBackground = use;
-    }
-
     void disableBackground() {
         mDrawBackground = false;
     }
@@ -703,7 +696,6 @@ public class CellLayout extends ViewGroup {
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
-            setUseActiveGlowBackground(mIsDragOverlapping);
             invalidate();
         }
     }
@@ -722,7 +714,7 @@ public class CellLayout extends ViewGroup {
         if (mDrawBackground && mBackgroundAlpha > 0.0f) {
             Drawable bg;
 
-            if (mUseActiveGlowBackground) {
+            if (mIsDragOverlapping) {
                 // In the mini case, we draw the active_glow bg *over* the active background
                 bg = mActiveGlowBackground;
             } else {
@@ -906,7 +898,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
-            boolean markCells, boolean inLayout) {
+            boolean markCells) {
         final LayoutParams lp = params;
 
         // Hotseat icons - remove text
@@ -927,18 +919,13 @@ public class CellLayout extends ViewGroup {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
-            mShortcutsAndWidgets.addView(child, index, lp, inLayout);
+            mShortcutsAndWidgets.addView(child, index, lp);
 
             if (markCells) markCellsAsOccupiedForView(child);
 
             return true;
         }
         return false;
-    }
-
-    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
-            boolean markCells) {
-        return addViewToCellLayout(child, index, childId, params, markCells, false);
     }
 
     @Override
@@ -953,10 +940,6 @@ public class CellLayout extends ViewGroup {
             clearOccupiedCells();
             mShortcutsAndWidgets.removeAllViewsInLayout();
         }
-    }
-
-    public void removeViewWithoutMarkingCells(View view) {
-        mShortcutsAndWidgets.removeView(view);
     }
 
     @Override
@@ -1088,9 +1071,7 @@ public class CellLayout extends ViewGroup {
 
     public float getDistanceFromCell(float x, float y, int[] cell) {
         cellToCenterPoint(cell[0], cell[1], mTmpPoint);
-        float distance = (float) Math.sqrt( Math.pow(x - mTmpPoint[0], 2) +
-                Math.pow(y - mTmpPoint[1], 2));
-        return distance;
+        return (float) Math.hypot(x - mTmpPoint[0], y - mTmpPoint[1]);
     }
 
     int getCellWidth() {
@@ -1107,28 +1088,6 @@ public class CellLayout extends ViewGroup {
 
     int getHeightGap() {
         return mHeightGap;
-    }
-
-    Rect getContentRect(Rect r) {
-        if (r == null) {
-            r = new Rect();
-        }
-        int left = getPaddingLeft();
-        int top = getPaddingTop();
-        int right = left + getWidth() - getPaddingLeft() - getPaddingRight();
-        int bottom = top + getHeight() - getPaddingTop() - getPaddingBottom();
-        r.set(left, top, right, bottom);
-        return r;
-    }
-
-    /** Return a rect that has the cellWidth/cellHeight (left, top), and
-     * widthGap/heightGap (right, bottom) */
-    static void getMetrics(Rect metrics, int paddedMeasureWidth,
-            int paddedMeasureHeight, int countX, int countY) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        metrics.set(grid.calculateCellWidth(paddedMeasureWidth, countX),
-                grid.calculateCellHeight(paddedMeasureHeight, countY), 0, 0);
     }
 
     public void setFixedSize(int width, int height) {
@@ -1246,7 +1205,6 @@ public class CellLayout extends ViewGroup {
     }
 
     public void setBackgroundAlphaMultiplier(float multiplier) {
-
         if (mBackgroundAlphaMultiplier != multiplier) {
             mBackgroundAlphaMultiplier = multiplier;
             invalidate();
@@ -1360,36 +1318,6 @@ public class CellLayout extends ViewGroup {
         return false;
     }
 
-    /**
-     * Estimate where the top left cell of the dragged item will land if it is dropped.
-     *
-     * @param originX The X value of the top left corner of the item
-     * @param originY The Y value of the top left corner of the item
-     * @param spanX The number of horizontal cells that the item spans
-     * @param spanY The number of vertical cells that the item spans
-     * @param result The estimated drop cell X and Y.
-     */
-    void estimateDropCell(int originX, int originY, int spanX, int spanY, int[] result) {
-        final int countX = mCountX;
-        final int countY = mCountY;
-
-        // pointToCellRounded takes the top left of a cell but will pad that with
-        // cellWidth/2 and cellHeight/2 when finding the matching cell
-        pointToCellRounded(originX, originY, result);
-
-        // If the item isn't fully on this screen, snap to the edges
-        int rightOverhang = result[0] + spanX - countX;
-        if (rightOverhang > 0) {
-            result[0] -= rightOverhang; // Snap to right
-        }
-        result[0] = Math.max(0, result[0]); // Snap to left
-        int bottomOverhang = result[1] + spanY - countY;
-        if (bottomOverhang > 0) {
-            result[1] -= bottomOverhang; // Snap to bottom
-        }
-        result[1] = Math.max(0, result[1]); // Snap to top
-    }
-
     void visualizeDropLocation(View v, Bitmap dragOutline, int originX, int originY, int cellX,
             int cellY, int spanX, int spanY, boolean resize, Point dragOffset, Rect dragRegion) {
         final int oldDragCellX = mDragCell[0];
@@ -1473,9 +1401,8 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestVacantArea(int pixelX, int pixelY, int spanX, int spanY,
-            int[] result) {
-        return findNearestVacantArea(pixelX, pixelY, spanX, spanY, null, result);
+    int[] findNearestVacantArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
+        return findNearestVacantArea(pixelX, pixelY, spanX, spanY, spanX, spanY, result, null);
     }
 
     /**
@@ -1495,28 +1422,8 @@ public class CellLayout extends ViewGroup {
      */
     int[] findNearestVacantArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX,
             int spanY, int[] result, int[] resultSpan) {
-        return findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, null,
+        return findNearestArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, true,
                 result, resultSpan);
-    }
-
-    /**
-     * Find a vacant area that will fit the given bounds nearest the requested
-     * cell location. Uses Euclidean distance to score multiple vacant areas.
-     *
-     * @param pixelX The X location at which you want to search for a vacant area.
-     * @param pixelY The Y location at which you want to search for a vacant area.
-     * @param spanX Horizontal span of the object.
-     * @param spanY Vertical span of the object.
-     * @param ignoreOccupied If true, the result can be an occupied cell
-     * @param result Array in which to place the result, or null (in which case a new array will
-     *        be allocated)
-     * @return The X, Y cell of a vacant area that can contain this object,
-     *         nearest the requested location.
-     */
-    int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, View ignoreView,
-            boolean ignoreOccupied, int[] result) {
-        return findNearestArea(pixelX, pixelY, spanX, spanY,
-                spanX, spanY, ignoreView, ignoreOccupied, result, null, mOccupied);
     }
 
     private final Stack<Rect> mTempRectStack = new Stack<Rect>();
@@ -1550,12 +1457,9 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
-            View ignoreView, boolean ignoreOccupied, int[] result, int[] resultSpan,
-            boolean[][] occupied) {
+    private int[] findNearestArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX,
+            int spanY, boolean ignoreOccupied, int[] result, int[] resultSpan) {
         lazyInitTempRectStack();
-        // mark space take by ignoreView as available (method checks if ignoreView is null)
-        markCellsAsUnoccupiedForView(ignoreView, occupied);
 
         // For items with a spanX / spanY > 1, the passed in point (pixelX, pixelY) corresponds
         // to the center of the item, but we are searching based on the top-left cell, so
@@ -1586,7 +1490,7 @@ public class CellLayout extends ViewGroup {
                     // First, let's see if this thing fits anywhere
                     for (int i = 0; i < minSpanX; i++) {
                         for (int j = 0; j < minSpanY; j++) {
-                            if (occupied[x + i][y + j]) {
+                            if (mOccupied[x + i][y + j]) {
                                 continue inner;
                             }
                         }
@@ -1603,7 +1507,7 @@ public class CellLayout extends ViewGroup {
                     while (!(hitMaxX && hitMaxY)) {
                         if (incX && !hitMaxX) {
                             for (int j = 0; j < ySize; j++) {
-                                if (x + xSize > countX -1 || occupied[x + xSize][y + j]) {
+                                if (x + xSize > countX -1 || mOccupied[x + xSize][y + j]) {
                                     // We can't move out horizontally
                                     hitMaxX = true;
                                 }
@@ -1613,7 +1517,7 @@ public class CellLayout extends ViewGroup {
                             }
                         } else if (!hitMaxY) {
                             for (int i = 0; i < xSize; i++) {
-                                if (y + ySize > countY - 1 || occupied[x + i][y + ySize]) {
+                                if (y + ySize > countY - 1 || mOccupied[x + i][y + ySize]) {
                                     // We can't move out vertically
                                     hitMaxY = true;
                                 }
@@ -1646,8 +1550,7 @@ public class CellLayout extends ViewGroup {
                     }
                 }
                 validRegions.push(currentRect);
-                double distance = Math.sqrt(Math.pow(cellXY[0] - pixelX, 2)
-                        + Math.pow(cellXY[1] - pixelY, 2));
+                double distance = Math.hypot(cellXY[0] - pixelX,  cellXY[1] - pixelY);
 
                 if ((distance <= bestDistance && !contained) ||
                         currentRect.contains(bestRect)) {
@@ -1662,8 +1565,6 @@ public class CellLayout extends ViewGroup {
                 }
             }
         }
-        // re-mark space taken by ignoreView as occupied
-        markCellsAsOccupiedForView(ignoreView, occupied);
 
         // Return -1, -1 if no suitable location found
         if (bestDistance == Double.MAX_VALUE) {
@@ -1717,8 +1618,7 @@ public class CellLayout extends ViewGroup {
                     }
                 }
 
-                float distance = (float)
-                        Math.sqrt((x - cellX) * (x - cellX) + (y - cellY) * (y - cellY));
+                float distance = (float) Math.hypot(x - cellX, y - cellY);
                 int[] curDirection = mTmpPoint;
                 computeDirectionVector(x - cellX, y - cellY, curDirection);
                 // The direction score is just the dot product of the two candidate direction
@@ -2334,7 +2234,7 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX, int minSpanY,
+    private ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX, int minSpanY,
             int spanX, int spanY, int[] direction, View dragView, boolean decX,
             ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
@@ -2623,7 +2523,7 @@ public class CellLayout extends ViewGroup {
         mLauncher.getWorkspace().updateItemLocationsInDatabase(this);
     }
 
-    public void setUseTempCoords(boolean useTempCoords) {
+    private void setUseTempCoords(boolean useTempCoords) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             LayoutParams lp = (LayoutParams) mShortcutsAndWidgets.getChildAt(i).getLayoutParams();
@@ -2631,11 +2531,11 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    ItemConfiguration findConfigurationNoShuffle(int pixelX, int pixelY, int minSpanX, int minSpanY,
+    private ItemConfiguration findConfigurationNoShuffle(int pixelX, int pixelY, int minSpanX, int minSpanY,
             int spanX, int spanY, View dragView, ItemConfiguration solution) {
         int[] result = new int[2];
         int[] resultSpan = new int[2];
-        findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, null, result,
+        findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
                 resultSpan);
         if (result[0] >= 0 && result[1] >= 0) {
             copyCurrentStateToSolution(solution, false);
@@ -2952,45 +2852,6 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
-     * Find a vacant area that will fit the given bounds nearest the requested
-     * cell location. Uses Euclidean distance to score multiple vacant areas.
-     *
-     * @param pixelX The X location at which you want to search for a vacant area.
-     * @param pixelY The Y location at which you want to search for a vacant area.
-     * @param spanX Horizontal span of the object.
-     * @param spanY Vertical span of the object.
-     * @param ignoreView Considers space occupied by this view as unoccupied
-     * @param result Previously returned value to possibly recycle.
-     * @return The X, Y cell of a vacant area that can contain this object,
-     *         nearest the requested location.
-     */
-    int[] findNearestVacantArea(
-            int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] result) {
-        return findNearestArea(pixelX, pixelY, spanX, spanY, ignoreView, true, result);
-    }
-
-    /**
-     * Find a vacant area that will fit the given bounds nearest the requested
-     * cell location. Uses Euclidean distance to score multiple vacant areas.
-     *
-     * @param pixelX The X location at which you want to search for a vacant area.
-     * @param pixelY The Y location at which you want to search for a vacant area.
-     * @param minSpanX The minimum horizontal span required
-     * @param minSpanY The minimum vertical span required
-     * @param spanX Horizontal span of the object.
-     * @param spanY Vertical span of the object.
-     * @param ignoreView Considers space occupied by this view as unoccupied
-     * @param result Previously returned value to possibly recycle.
-     * @return The X, Y cell of a vacant area that can contain this object,
-     *         nearest the requested location.
-     */
-    int[] findNearestVacantArea(int pixelX, int pixelY, int minSpanX, int minSpanY,
-            int spanX, int spanY, View ignoreView, int[] result, int[] resultSpan) {
-        return findNearestArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, ignoreView, true,
-                result, resultSpan, mOccupied);
-    }
-
-    /**
      * Find a starting cell position that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
      *
@@ -3003,9 +2864,8 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestArea(
-            int pixelX, int pixelY, int spanX, int spanY, int[] result) {
-        return findNearestArea(pixelX, pixelY, spanX, spanY, null, false, result);
+    int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
+        return findNearestArea(pixelX, pixelY, spanX, spanY, spanX, spanY, false, result, null);
     }
 
     boolean existsEmptyCell() {
@@ -3026,103 +2886,32 @@ public class CellLayout extends ViewGroup {
      * @return True if a vacant cell of the specified dimension was found, false otherwise.
      */
     public boolean findCellForSpan(int[] cellXY, int spanX, int spanY) {
-        return findCellForSpanThatIntersectsIgnoring(cellXY, spanX, spanY, -1, -1, null, mOccupied);
-    }
-
-    /**
-     * Like above, but ignores any cells occupied by the item "ignoreView"
-     *
-     * @param cellXY The array that will contain the position of a vacant cell if such a cell
-     *               can be found.
-     * @param spanX The horizontal span of the cell we want to find.
-     * @param spanY The vertical span of the cell we want to find.
-     * @param ignoreView The home screen item we should treat as not occupying any space
-     * @return
-     */
-    boolean findCellForSpanIgnoring(int[] cellXY, int spanX, int spanY, View ignoreView) {
-        return findCellForSpanThatIntersectsIgnoring(cellXY, spanX, spanY, -1, -1,
-                ignoreView, mOccupied);
-    }
-
-    /**
-     * Like above, but if intersectX and intersectY are not -1, then this method will try to
-     * return coordinates for rectangles that contain the cell [intersectX, intersectY]
-     *
-     * @param spanX The horizontal span of the cell we want to find.
-     * @param spanY The vertical span of the cell we want to find.
-     * @param ignoreView The home screen item we should treat as not occupying any space
-     * @param intersectX The X coordinate of the cell that we should try to overlap
-     * @param intersectX The Y coordinate of the cell that we should try to overlap
-     *
-     * @return True if a vacant cell of the specified dimension was found, false otherwise.
-     */
-    boolean findCellForSpanThatIntersects(int[] cellXY, int spanX, int spanY,
-            int intersectX, int intersectY) {
-        return findCellForSpanThatIntersectsIgnoring(
-                cellXY, spanX, spanY, intersectX, intersectY, null, mOccupied);
-    }
-
-    /**
-     * The superset of the above two methods
-     */
-    boolean findCellForSpanThatIntersectsIgnoring(int[] cellXY, int spanX, int spanY,
-            int intersectX, int intersectY, View ignoreView, boolean occupied[][]) {
-        // mark space take by ignoreView as available (method checks if ignoreView is null)
-        markCellsAsUnoccupiedForView(ignoreView, occupied);
-
         boolean foundCell = false;
-        while (true) {
-            int startX = 0;
-            if (intersectX >= 0) {
-                startX = Math.max(startX, intersectX - (spanX - 1));
-            }
-            int endX = mCountX - (spanX - 1);
-            if (intersectX >= 0) {
-                endX = Math.min(endX, intersectX + (spanX - 1) + (spanX == 1 ? 1 : 0));
-            }
-            int startY = 0;
-            if (intersectY >= 0) {
-                startY = Math.max(startY, intersectY - (spanY - 1));
-            }
-            int endY = mCountY - (spanY - 1);
-            if (intersectY >= 0) {
-                endY = Math.min(endY, intersectY + (spanY - 1) + (spanY == 1 ? 1 : 0));
-            }
+        final int endX = mCountX - (spanX - 1);
+        final int endY = mCountY - (spanY - 1);
 
-            for (int y = startY; y < endY && !foundCell; y++) {
-                inner:
-                for (int x = startX; x < endX; x++) {
-                    for (int i = 0; i < spanX; i++) {
-                        for (int j = 0; j < spanY; j++) {
-                            if (occupied[x + i][y + j]) {
-                                // small optimization: we can skip to after the column we just found
-                                // an occupied cell
-                                x += i;
-                                continue inner;
-                            }
+        for (int y = 0; y < endY && !foundCell; y++) {
+            inner:
+            for (int x = 0; x < endX; x++) {
+                for (int i = 0; i < spanX; i++) {
+                    for (int j = 0; j < spanY; j++) {
+                        if (mOccupied[x + i][y + j]) {
+                            // small optimization: we can skip to after the column we just found
+                            // an occupied cell
+                            x += i;
+                            continue inner;
                         }
                     }
-                    if (cellXY != null) {
-                        cellXY[0] = x;
-                        cellXY[1] = y;
-                    }
-                    foundCell = true;
-                    break;
                 }
-            }
-            if (intersectX == -1 && intersectY == -1) {
+                if (cellXY != null) {
+                    cellXY[0] = x;
+                    cellXY[1] = y;
+                }
+                foundCell = true;
                 break;
-            } else {
-                // if we failed to find anything, try again but without any requirements of
-                // intersecting
-                intersectX = -1;
-                intersectY = -1;
-                continue;
             }
         }
 
-        // re-mark space taken by ignoreView as occupied
-        markCellsAsOccupiedForView(ignoreView, occupied);
         return foundCell;
     }
 
@@ -3232,13 +3021,6 @@ public class CellLayout extends ViewGroup {
         return result;
     }
 
-    public int[] cellSpansToSize(int hSpans, int vSpans) {
-        int[] size = new int[2];
-        size[0] = hSpans * mCellWidth + (hSpans - 1) * mWidthGap;
-        size[1] = vSpans * mCellHeight + (vSpans - 1) * mHeightGap;
-        return size;
-    }
-
     /**
      * Calculate the grid spans needed to fit given item
      */
@@ -3262,44 +3044,6 @@ public class CellLayout extends ViewGroup {
         info.spanY = spans[1];
     }
 
-    /**
-     * Find the first vacant cell, if there is one.
-     *
-     * @param vacant Holds the x and y coordinate of the vacant cell
-     * @param spanX Horizontal cell span.
-     * @param spanY Vertical cell span.
-     *
-     * @return True if a vacant cell was found
-     */
-    public boolean getVacantCell(int[] vacant, int spanX, int spanY) {
-
-        return findVacantCell(vacant, spanX, spanY, mCountX, mCountY, mOccupied);
-    }
-
-    static boolean findVacantCell(int[] vacant, int spanX, int spanY,
-            int xCount, int yCount, boolean[][] occupied) {
-
-        for (int y = 0; (y + spanY) <= yCount; y++) {
-            for (int x = 0; (x + spanX) <= xCount; x++) {
-                boolean available = !occupied[x][y];
-out:            for (int i = x; i < x + spanX; i++) {
-                    for (int j = y; j < y + spanY; j++) {
-                        available = available && !occupied[i][j];
-                        if (!available) break out;
-                    }
-                }
-
-                if (available) {
-                    vacant[0] = x;
-                    vacant[1] = y;
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     private void clearOccupiedCells() {
         for (int x = 0; x < mCountX; x++) {
             for (int y = 0; y < mCountY; y++) {
@@ -3308,27 +3052,16 @@ out:            for (int i = x; i < x + spanX; i++) {
         }
     }
 
-    public void onMove(View view, int newCellX, int newCellY, int newSpanX, int newSpanY) {
-        markCellsAsUnoccupiedForView(view);
-        markCellsForView(newCellX, newCellY, newSpanX, newSpanY, mOccupied, true);
-    }
-
     public void markCellsAsOccupiedForView(View view) {
-        markCellsAsOccupiedForView(view, mOccupied);
-    }
-    public void markCellsAsOccupiedForView(View view, boolean[][] occupied) {
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
-        markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, occupied, true);
+        markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, mOccupied, true);
     }
 
     public void markCellsAsUnoccupiedForView(View view) {
-        markCellsAsUnoccupiedForView(view, mOccupied);
-    }
-    public void markCellsAsUnoccupiedForView(View view, boolean occupied[][]) {
         if (view == null || view.getParent() != mShortcutsAndWidgets) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
-        markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, occupied, false);
+        markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, mOccupied, false);
     }
 
     private void markCellsForView(int cellX, int cellY, int spanX, int spanY, boolean[][] occupied,
@@ -3372,17 +3105,6 @@ out:            for (int i = x; i < x + spanX; i++) {
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new CellLayout.LayoutParams(p);
-    }
-
-    public static class CellLayoutAnimationController extends LayoutAnimationController {
-        public CellLayoutAnimationController(Animation animation, float delay) {
-            super(animation, delay);
-        }
-
-        @Override
-        protected long getDelayForView(View view) {
-            return (int) (Math.random() * 150);
-        }
     }
 
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {

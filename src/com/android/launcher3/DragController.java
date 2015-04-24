@@ -513,8 +513,7 @@ public class DragController {
         checkTouchMove(dropTarget);
 
         // Check if we are hovering over the scroll areas
-        mDistanceSinceScroll +=
-            Math.sqrt(Math.pow(mLastTouch[0] - x, 2) + Math.pow(mLastTouch[1] - y, 2));
+        mDistanceSinceScroll += Math.hypot(mLastTouch[0] - x, mLastTouch[1] - y);
         mLastTouch[0] = x;
         mLastTouch[1] = y;
         checkScrollState(x, y);

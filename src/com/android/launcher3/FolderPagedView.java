@@ -559,7 +559,7 @@ public class FolderPagedView extends PagedView {
     public int findNearestArea(int pixelX, int pixelY) {
         int pageIndex = getNextPage();
         CellLayout page = getPageAt(pageIndex);
-        page.findNearestArea(pixelX, pixelY, 1, 1, null, false, sTempPosArray);
+        page.findNearestArea(pixelX, pixelY, 1, 1, sTempPosArray);
         if (mFolder.isLayoutRtl()) {
             sTempPosArray[0] = page.getCountX() - sTempPosArray[0] - 1;
         }

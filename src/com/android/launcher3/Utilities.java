@@ -583,4 +583,37 @@ public final class Utilities {
             return lhs.rank - rhs.rank;
         }
     };
+
+    /**
+     * Find the first vacant cell, if there is one.
+     *
+     * @param vacant Holds the x and y coordinate of the vacant cell
+     * @param spanX Horizontal cell span.
+     * @param spanY Vertical cell span.
+     *
+     * @return true if a vacant cell was found
+     */
+    public static boolean findVacantCell(int[] vacant, int spanX, int spanY,
+            int xCount, int yCount, boolean[][] occupied) {
+
+        for (int y = 0; (y + spanY) <= yCount; y++) {
+            for (int x = 0; (x + spanX) <= xCount; x++) {
+                boolean available = !occupied[x][y];
+                out:            for (int i = x; i < x + spanX; i++) {
+                    for (int j = y; j < y + spanY; j++) {
+                        available = available && !occupied[i][j];
+                        if (!available) break out;
+                    }
+                }
+
+                if (available) {
+                    vacant[0] = x;
+                    vacant[1] = y;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
