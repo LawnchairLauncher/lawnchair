@@ -63,6 +63,7 @@ import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -71,7 +72,6 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -120,7 +120,7 @@ public class Workspace extends SmoothPagedView
     final static long EXTRA_EMPTY_SCREEN_ID = -201;
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
-    @Thunk HashMap<Long, CellLayout> mWorkspaceScreens = new HashMap<Long, CellLayout>();
+    @Thunk LongArrayMap<CellLayout> mWorkspaceScreens = new LongArrayMap<>();
     @Thunk ArrayList<Long> mScreenOrder = new ArrayList<Long>();
 
     @Thunk Runnable mRemoveEmptyScreenRunnable;
@@ -834,12 +834,9 @@ public class Workspace extends SmoothPagedView
     }
 
     public long getIdForScreen(CellLayout layout) {
-        Iterator<Long> iter = mWorkspaceScreens.keySet().iterator();
-        while (iter.hasNext()) {
-            long id = iter.next();
-            if (mWorkspaceScreens.get(id) == layout) {
-                return id;
-            }
+        int index = mWorkspaceScreens.indexOfValue(layout);
+        if (index != -1) {
+            return mWorkspaceScreens.keyAt(index);
         }
         return -1;
     }
@@ -874,8 +871,10 @@ public class Workspace extends SmoothPagedView
 
         int currentPage = getNextPage();
         ArrayList<Long> removeScreens = new ArrayList<Long>();
-        for (Long id: mWorkspaceScreens.keySet()) {
-            CellLayout cl = mWorkspaceScreens.get(id);
+        int total = mWorkspaceScreens.size();
+        for (int i = 0; i < total; i++) {
+            long id = mWorkspaceScreens.keyAt(i);
+            CellLayout cl = mWorkspaceScreens.valueAt(i);
             if (id >= 0 && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
