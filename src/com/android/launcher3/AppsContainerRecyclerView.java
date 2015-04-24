@@ -156,6 +156,10 @@ public class AppsContainerRecyclerView extends RecyclerView
         handleTouchEvent(ev);
     }
 
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // Do nothing
+    }
+
     /**
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
      * it is already showing).
