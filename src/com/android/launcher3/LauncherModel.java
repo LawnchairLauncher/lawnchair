@@ -60,6 +60,7 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
 
@@ -141,7 +142,7 @@ public class LauncherModel extends BroadcastReceiver
 
     // sBgItemsIdMap maps *all* the ItemInfos (shortcuts, folders, and widgets) created by
     // LauncherModel to their ids
-    static final HashMap<Long, ItemInfo> sBgItemsIdMap = new HashMap<Long, ItemInfo>();
+    static final LongArrayMap<ItemInfo> sBgItemsIdMap = new LongArrayMap<>();
 
     // sBgWorkspaceItems is passed to bindItems, which expects a list of all folders and shortcuts
     //       created by LauncherModel that are directly on the home screen (however, no widgets or
@@ -153,7 +154,7 @@ public class LauncherModel extends BroadcastReceiver
         new ArrayList<LauncherAppWidgetInfo>();
 
     // sBgFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
-    static final HashMap<Long, FolderInfo> sBgFolders = new HashMap<Long, FolderInfo>();
+    static final LongArrayMap<FolderInfo> sBgFolders = new LongArrayMap<>();
 
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
@@ -182,7 +183,7 @@ public class LauncherModel extends BroadcastReceiver
                               boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void bindAddScreens(ArrayList<Long> orderedScreenIds);
-        public void bindFolders(HashMap<Long,FolderInfo> folders);
+        public void bindFolders(LongArrayMap<FolderInfo> folders);
         public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
@@ -286,7 +287,7 @@ public class LauncherModel extends BroadcastReceiver
                         return;
                     }
 
-                    for (ItemInfo info : sBgItemsIdMap.values()) {
+                    for (ItemInfo info : sBgItemsIdMap) {
                         if (info instanceof ShortcutInfo) {
                             ShortcutInfo si = (ShortcutInfo) info;
                             ComponentName cn = si.getTargetComponent();
@@ -340,7 +341,7 @@ public class LauncherModel extends BroadcastReceiver
                     final ArrayList<ShortcutInfo> updates = new ArrayList<>();
                     final UserHandleCompat user = UserHandleCompat.myUserHandle();
 
-                    for (ItemInfo info : sBgItemsIdMap.values()) {
+                    for (ItemInfo info : sBgItemsIdMap) {
                         if (info instanceof ShortcutInfo) {
                             ShortcutInfo si = (ShortcutInfo) info;
                             ComponentName cn = si.getTargetComponent();
@@ -996,7 +997,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         synchronized (sBgLock) {
-            for (ItemInfo item : sBgItemsIdMap.values()) {
+            for (ItemInfo item : sBgItemsIdMap) {
                 if (item instanceof ShortcutInfo) {
                     ShortcutInfo info = (ShortcutInfo) item;
                     if (intentWithPkg.equals(info.getIntent())
@@ -1012,7 +1013,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Find a folder in the db, creating the FolderInfo if necessary, and adding it to folderList.
      */
-    FolderInfo getFolderById(Context context, HashMap<Long,FolderInfo> folderList, long id) {
+    FolderInfo getFolderById(Context context, LongArrayMap<FolderInfo> folderList, long id) {
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
                 "_id=? and (itemType=? or itemType=?)",
@@ -1132,7 +1133,7 @@ public class LauncherModel extends BroadcastReceiver
                 return cn.getPackageName().equals(pn) && info.user.equals(user);
             }
         };
-        return filterItemInfos(sBgItemsIdMap.values(), filter);
+        return filterItemInfos(sBgItemsIdMap, filter);
     }
 
     /**
@@ -1172,7 +1173,7 @@ public class LauncherModel extends BroadcastReceiver
                         switch (item.itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                                 sBgFolders.remove(item.id);
-                                for (ItemInfo info: sBgItemsIdMap.values()) {
+                                for (ItemInfo info: sBgItemsIdMap) {
                                     if (info.container == item.id) {
                                         // We are deleting a folder which still contains items that
                                         // think they are contained by that folder.
@@ -1749,7 +1750,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(HashMap<Long, ItemInfo[][]> occupied, ItemInfo item) {
+        private boolean checkItemPlacement(LongArrayMap<ItemInfo[][]> occupied, ItemInfo item) {
             LauncherAppState app = LauncherAppState.getInstance();
             DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
             final int countX = (int) grid.numColumns;
@@ -1897,7 +1898,7 @@ public class LauncherModel extends BroadcastReceiver
                 // +1 for the hotseat (it can be larger than the workspace)
                 // Load workspace in reverse order to ensure that latest items are loaded first (and
                 // before any earlier duplicates)
-                final HashMap<Long, ItemInfo[][]> occupied = new HashMap<Long, ItemInfo[][]>();
+                final LongArrayMap<ItemInfo[][]> occupied = new LongArrayMap<>();
 
                 try {
                     final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -2436,7 +2437,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 // Remove any empty screens
                 ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
-                for (ItemInfo item: sBgItemsIdMap.values()) {
+                for (ItemInfo item: sBgItemsIdMap) {
                     long screenId = item.screenId;
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                             unusedScreens.contains(screenId)) {
@@ -2461,14 +2462,13 @@ public class LauncherModel extends BroadcastReceiver
                     for (int y = 0; y < countY; y++) {
                         String line = "";
 
-                        Iterator<Long> iter = occupied.keySet().iterator();
-                        while (iter.hasNext()) {
-                            long screenId = iter.next();
+                        for (int i = 0; i < nScreens; i++) {
+                            long screenId = occupied.keyAt(i);
                             if (screenId > 0) {
                                 line += " | ";
                             }
+                            ItemInfo[][] screen = occupied.valueAt(i);
                             for (int x = 0; x < countX; x++) {
-                                ItemInfo[][] screen = occupied.get(screenId);
                                 if (x < screen.length && y < screen[x].length) {
                                     line += (screen[x][y] != null) ? "#" : ".";
                                 } else {
@@ -2559,14 +2559,17 @@ public class LauncherModel extends BroadcastReceiver
 
         /** Filters the set of folders which are on the specified screen. */
         private void filterCurrentFolders(long currentScreenId,
-                HashMap<Long, ItemInfo> itemsIdMap,
-                HashMap<Long, FolderInfo> folders,
-                HashMap<Long, FolderInfo> currentScreenFolders,
-                HashMap<Long, FolderInfo> otherScreenFolders) {
+                LongArrayMap<ItemInfo> itemsIdMap,
+                LongArrayMap<FolderInfo> folders,
+                LongArrayMap<FolderInfo> currentScreenFolders,
+                LongArrayMap<FolderInfo> otherScreenFolders) {
 
-            for (long id : folders.keySet()) {
+            int total = folders.size();
+            for (int i = 0; i < total; i++) {
+                long id = folders.keyAt(i);
+                FolderInfo folder = folders.valueAt(i);
+
                 ItemInfo info = itemsIdMap.get(id);
-                FolderInfo folder = folders.get(id);
                 if (info == null || folder == null) continue;
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                         info.screenId == currentScreenId) {
@@ -2616,7 +2619,7 @@ public class LauncherModel extends BroadcastReceiver
         private void bindWorkspaceItems(final Callbacks oldCallbacks,
                 final ArrayList<ItemInfo> workspaceItems,
                 final ArrayList<LauncherAppWidgetInfo> appWidgets,
-                final HashMap<Long, FolderInfo> folders,
+                final LongArrayMap<FolderInfo> folders,
                 ArrayList<Runnable> deferredBindRunnables) {
 
             final boolean postOnMainThread = (deferredBindRunnables != null);
@@ -2704,15 +2707,18 @@ public class LauncherModel extends BroadcastReceiver
             ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>();
             ArrayList<LauncherAppWidgetInfo> appWidgets =
                     new ArrayList<LauncherAppWidgetInfo>();
-            HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
-            HashMap<Long, ItemInfo> itemsIdMap = new HashMap<Long, ItemInfo>();
             ArrayList<Long> orderedScreenIds = new ArrayList<Long>();
+
+            final LongArrayMap<FolderInfo> folders;
+            final LongArrayMap<ItemInfo> itemsIdMap;
+
             synchronized (sBgLock) {
                 workspaceItems.addAll(sBgWorkspaceItems);
                 appWidgets.addAll(sBgAppWidgets);
-                folders.putAll(sBgFolders);
-                itemsIdMap.putAll(sBgItemsIdMap);
                 orderedScreenIds.addAll(sBgWorkspaceScreens);
+
+                folders = sBgFolders.clone();
+                itemsIdMap = sBgItemsIdMap.clone();
             }
 
             final boolean isLoadingSynchronously =
@@ -2738,8 +2744,8 @@ public class LauncherModel extends BroadcastReceiver
                     new ArrayList<LauncherAppWidgetInfo>();
             ArrayList<LauncherAppWidgetInfo> otherAppWidgets =
                     new ArrayList<LauncherAppWidgetInfo>();
-            HashMap<Long, FolderInfo> currentFolders = new HashMap<Long, FolderInfo>();
-            HashMap<Long, FolderInfo> otherFolders = new HashMap<Long, FolderInfo>();
+            LongArrayMap<FolderInfo> currentFolders = new LongArrayMap<>();
+            LongArrayMap<FolderInfo> otherFolders = new LongArrayMap<>();
 
             filterCurrentWorkspaceItems(currentScreenId, workspaceItems, currentWorkspaceItems,
                     otherWorkspaceItems);
@@ -2902,7 +2908,7 @@ public class LauncherModel extends BroadcastReceiver
                 if (!updatedPackages.isEmpty()) {
                     final ArrayList<ShortcutInfo> updates = new ArrayList<ShortcutInfo>();
                     synchronized (sBgLock) {
-                        for (ItemInfo info : sBgItemsIdMap.values()) {
+                        for (ItemInfo info : sBgItemsIdMap) {
                             if (info instanceof ShortcutInfo && user.equals(info.user)
                                     && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                 ShortcutInfo si = (ShortcutInfo) info;
@@ -3151,7 +3157,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 HashSet<String> packageSet = new HashSet<String>(Arrays.asList(packages));
                 synchronized (sBgLock) {
-                    for (ItemInfo info : sBgItemsIdMap.values()) {
+                    for (ItemInfo info : sBgItemsIdMap) {
                         if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
                             ShortcutInfo si = (ShortcutInfo) info;
                             boolean infoUpdated = false;
@@ -3527,7 +3533,7 @@ public class LauncherModel extends BroadcastReceiver
         return info;
     }
 
-    static ArrayList<ItemInfo> filterItemInfos(Collection<ItemInfo> infos,
+    static ArrayList<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos,
             ItemInfoFilter f) {
         HashSet<ItemInfo> filtered = new HashSet<ItemInfo>();
         for (ItemInfo i : infos) {
@@ -3568,7 +3574,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         };
-        return filterItemInfos(sBgItemsIdMap.values(), filter);
+        return filterItemInfos(sBgItemsIdMap, filter);
     }
 
     /**
@@ -3678,7 +3684,7 @@ public class LauncherModel extends BroadcastReceiver
      * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    @Thunk static FolderInfo findOrMakeFolder(HashMap<Long, FolderInfo> folders, long id) {
+    @Thunk static FolderInfo findOrMakeFolder(LongArrayMap<FolderInfo> folders, long id) {
         // See if a placeholder was created for us already
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {

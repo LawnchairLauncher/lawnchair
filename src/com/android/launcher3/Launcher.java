@@ -100,6 +100,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetsContainerView;
@@ -302,7 +303,7 @@ public class Launcher extends Activity
 
     @Thunk static LocaleConfiguration sLocaleConfiguration = null;
 
-    private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
+    private static LongArrayMap<FolderInfo> sFolders = new LongArrayMap<>();
 
     private View.OnTouchListener mHapticFeedbackTouchListener;
 
@@ -3886,7 +3887,7 @@ public class Launcher extends Activity
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindFolders(final HashMap<Long, FolderInfo> folders) {
+    public void bindFolders(final LongArrayMap<FolderInfo> folders) {
         Runnable r = new Runnable() {
             public void run() {
                 bindFolders(folders);
@@ -3895,8 +3896,7 @@ public class Launcher extends Activity
         if (waitUntilResume(r)) {
             return;
         }
-        sFolders.clear();
-        sFolders.putAll(folders);
+        sFolders = folders.clone();
     }
 
     /**
