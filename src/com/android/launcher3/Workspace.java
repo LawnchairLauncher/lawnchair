@@ -60,6 +60,7 @@ import android.widget.TextView;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
+import com.android.launcher3.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.compat.UserHandleCompat;
@@ -82,7 +83,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, UninstallSource {
+        Insettable, UninstallSource, AccessibilityDragSource {
     private static final String TAG = "Launcher.Workspace";
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
@@ -125,6 +126,7 @@ public class Workspace extends SmoothPagedView
 
     @Thunk Runnable mRemoveEmptyScreenRunnable;
     @Thunk boolean mDeferRemoveExtraEmptyScreen = false;
+    @Thunk boolean mAddNewPageOnDrag = true;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -390,7 +392,7 @@ public class Workspace extends SmoothPagedView
         post(new Runnable() {
             @Override
             public void run() {
-                if (mIsDragOccuring) {
+                if (mIsDragOccuring && mAddNewPageOnDrag) {
                     mDeferRemoveExtraEmptyScreen = false;
                     addExtraEmptyScreenOnDrag();
                 }
@@ -398,6 +400,9 @@ public class Workspace extends SmoothPagedView
         });
     }
 
+    public void setAddNewPageOnDrag(boolean addPage) {
+        mAddNewPageOnDrag = addPage;
+    }
 
     public void deferRemoveExtraEmptyScreen() {
         mDeferRemoveExtraEmptyScreen = true;
@@ -562,7 +567,7 @@ public class Workspace extends SmoothPagedView
         LauncherAccessibilityDelegate delegate =
                 LauncherAppState.getInstance().getAccessibilityDelegate();
         if (delegate != null && delegate.isInAccessibleDrag()) {
-            newScreen.enableAccessibleDrag(true);
+            newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
         return screenId;
     }
@@ -1601,10 +1606,11 @@ public class Workspace extends SmoothPagedView
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
     public void enableAccessibleDrag(boolean enable) {
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout child = (CellLayout) getChildAt(i);
-            child.enableAccessibleDrag(enable);
+            child.enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
 
         if (enable) {
@@ -1615,7 +1621,8 @@ public class Workspace extends SmoothPagedView
             setOnClickListener(mLauncher);
         }
         mLauncher.getSearchBar().enableAccessibleDrag(enable);
-        mLauncher.getHotseat().getLayout().enableAccessibleDrag(enable);
+        mLauncher.getHotseat().getLayout()
+            .enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
     }
 
     public boolean hasCustomContent() {
@@ -2262,6 +2269,7 @@ public class Workspace extends SmoothPagedView
         startDrag(cellInfo, false);
     }
 
+    @Override
     public void startDrag(CellLayout.CellInfo cellInfo, boolean accessible) {
         View child = cellInfo.cell;
 
@@ -2624,6 +2632,9 @@ public class Workspace extends SmoothPagedView
         }
         return false;
     }
+
+    @Override
+    public void prepareAccessibilityDrop() { }
 
     public void onDrop(final DragObject d) {
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);

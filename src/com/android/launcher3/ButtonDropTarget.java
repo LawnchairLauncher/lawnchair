@@ -203,6 +203,9 @@ public abstract class ButtonDropTarget extends TextView
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
+    @Override
+    public void prepareAccessibilityDrop() { }
+
     @Thunk abstract void completeDrop(DragObject d);
 
     @Override
