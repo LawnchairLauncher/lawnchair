@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
@@ -54,14 +55,16 @@ import java.util.ArrayList;
 /**
  * The widgets list view container.
  */
-public class WidgetsContainerView extends FrameLayout implements Insettable, View.OnTouchListener,
-        View.OnLongClickListener, DragSource{
+public class WidgetsContainerView extends FrameLayout implements Insettable,
+        View.OnLongClickListener, View.OnClickListener, DragSource{
 
-    private static final String TAG = "WidgetContainerView";
+    private static final String TAG = "WidgetsContainerView";
     private static final boolean DEBUG = false;
 
     /* {@link RecyclerView} will keep following # of views in cache, before recycling. */
     private static final int WIDGET_CACHE_SIZE = 2;
+
+    private static final int SPRING_MODE_DELAY_MS = 150;
 
     /* Global instances that are used inside this container. */
     private Launcher mLauncher;
@@ -75,12 +78,13 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
     private RecyclerView mView;
     private WidgetsListAdapter mAdapter;
 
-    /* Dragging related. */
-    private boolean mDraggingWidget = false;    // TODO(hyunyoungs): seems not needed? check!
-    private Point mLastTouchDownPos = new Point();
+    /* Touch handling related member variables. */
+    private Toast mWidgetInstructionToast;
 
     /* Rendering related. */
     private WidgetPreviewLoader mWidgetPreviewLoader;
+    private WidgetHostViewLoader mWidgetHostViewLoader;
+
     private Rect mPadding = new Rect();
 
     public WidgetsContainerView(Context context) {
@@ -95,8 +99,8 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
         super(context, attrs, defStyleAttr);
         mLauncher = (Launcher) context;
         mDragController = mLauncher.getDragController();
-
-        mAdapter = new WidgetsListAdapter(context, this, mLauncher, this, mLauncher);
+        mWidgetHostViewLoader = new WidgetHostViewLoader(mLauncher);
+        mAdapter = new WidgetsListAdapter(context, this, this, mLauncher);
         mWidgets = new WidgetsModel(context, mAdapter);
         mAdapter.setWidgetsModel(mWidgets);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
@@ -147,11 +151,26 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
     //
 
     @Override
+    public void onClick(View v) {
+        // When we have exited widget tray or are in transition, disregard clicks
+        if (!mLauncher.isWidgetsViewVisible()
+                || mLauncher.getWorkspace().isSwitchingState()
+                || !(v instanceof WidgetCell)) return;
+
+        // Let the user know that they have to long press to add a widget
+        if (mWidgetInstructionToast != null) {
+            mWidgetInstructionToast.cancel();
+        }
+        mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
+                Toast.LENGTH_SHORT);
+        mWidgetInstructionToast.show();
+    }
+
+    @Override
     public boolean onLongClick(View v) {
         if (DEBUG) {
             Log.d(TAG, String.format("onLonglick [v=%s]", v));
         }
-
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
         // When we have exited all apps or are in transition, disregard long clicks
@@ -161,7 +180,11 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
         Log.d(TAG, String.format("onLonglick dragging enabled?.", v));
         if (!mLauncher.isDraggingEnabled()) return false;
 
-        return beginDragging(v);
+        boolean status = beginDragging(v);
+        if (status) {
+            mWidgetHostViewLoader.load(v);
+        }
+        return status;
     }
 
     private boolean beginDragging(View v) {
@@ -174,7 +197,7 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
         }
 
         // We delay entering spring-loaded mode slightly to make sure the UI
-        // thready is free of any work.
+        // thread is free of any work.
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -184,13 +207,12 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
                     mLauncher.enterSpringLoadedDragMode();
                 }
             }
-        }, 150);
+        }, SPRING_MODE_DELAY_MS);
 
         return true;
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {
-        mDraggingWidget = true;
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
         PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
@@ -198,7 +220,6 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
         if (image.getDrawable() == null) {
-            mDraggingWidget = false;
             return false;
         }
 
@@ -257,19 +278,6 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
         outline.recycle();
         preview.recycle();
         return true;
-    }
-
-    /*
-     * @see android.view.View.OnTouchListener#onTouch(android.view.View, android.view.MotionEvent)
-     */
-    @Override
-    public boolean onTouch(View v, MotionEvent ev) {
-        Log.d(TAG, String.format("onTouch [MotionEvent=%s]", ev));
-        if (ev.getAction() == MotionEvent.ACTION_DOWN ||
-                ev.getAction() == MotionEvent.ACTION_MOVE) {
-            mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
-        }
-        return false;
     }
 
     //
@@ -340,6 +348,10 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
             }
             d.deferDragViewCleanupPostAnimation = false;
         }
+        //TODO(hyunyoungs): if drop fails, this call cleans up correctly.
+        // However, in rare corner case where drop succeeds but doesn't end up using the widget
+        // id created by the loader, this finish will leave dangling widget id.
+        mWidgetHostViewLoader.finish(success);
     }
 
     //
@@ -368,5 +380,4 @@ public class WidgetsContainerView extends FrameLayout implements Insettable, Vie
         }
         return mWidgetPreviewLoader;
     }
-
 }

@@ -56,20 +56,16 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private WidgetsModel mWidgetsModel;
     private WidgetPreviewLoader mWidgetPreviewLoader;
 
-    private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
-
     public WidgetsListAdapter(Context context,
-            View.OnTouchListener touchListener,
             View.OnClickListener iconClickListener,
             View.OnLongClickListener iconLongClickListener,
             Launcher launcher) {
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
 
-        mTouchListener = touchListener;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
 
@@ -109,7 +105,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 // set up touch.
                 widget.setOnClickListener(mIconClickListener);
                 widget.setOnLongClickListener(mIconLongClickListener);
-                widget.setOnTouchListener(mTouchListener);
                 row.addView(widget);
             }
         } else if (diff < 0) {
