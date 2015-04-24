@@ -349,7 +349,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
                 mTmpRect.right, mTmpRect.bottom);
     }
 
-    static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
+    public static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
         if (rect == null) {
             rect = new Rect();
         }

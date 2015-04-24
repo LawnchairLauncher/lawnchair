@@ -47,7 +47,7 @@
             android:fadingEdge="horizontal"
 
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:textAlignment="viewStart"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"
@@ -64,7 +64,7 @@
             android:layout_weight="0"
             android:gravity="start"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:textAlignment="viewStart"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"

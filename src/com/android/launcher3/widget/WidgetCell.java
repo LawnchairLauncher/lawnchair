@@ -24,8 +24,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.widget.ImageView;
@@ -43,7 +41,7 @@ import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 /**
- * The linear layout used strictly for the widget tray.
+ * Represents the individual cell of the widget inside the widget tray.
  */
 public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
@@ -53,14 +51,12 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private static final int FADE_IN_DURATION_MS = 70;
     private int mPresetPreviewSize;
 
-    private static WidgetCell sShortpressTarget = null;
-
+    private ImageView mWidgetImage;
+    private TextView mWidgetName;
+    private TextView mWidgetDims;
     private final Rect mOriginalImagePadding = new Rect();
 
     private String mDimensionsFormatString;
-    private CheckForShortPress mPendingCheckForShortPress = null;
-    private ShortPressListener mShortPressListener = null;
-    private boolean mShortPressTriggered = false;
     private boolean mIsAppWidget;
     private Object mInfo;
 
@@ -92,57 +88,27 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
-        mOriginalImagePadding.left = image.getPaddingLeft();
-        mOriginalImagePadding.top = image.getPaddingTop();
-        mOriginalImagePadding.right = image.getPaddingRight();
-        mOriginalImagePadding.bottom = image.getPaddingBottom();
+        mWidgetImage = (ImageView) findViewById(R.id.widget_preview);
+        mOriginalImagePadding.left = mWidgetImage.getPaddingLeft();
+        mOriginalImagePadding.top = mWidgetImage.getPaddingTop();
+        mOriginalImagePadding.right = mWidgetImage.getPaddingRight();
+        mOriginalImagePadding.bottom = mWidgetImage.getPaddingBottom();
 
         // Ensure we are using the right text size
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        TextView name = (TextView) findViewById(R.id.widget_name);
-        if (name != null) {
-            name.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-        }
-        TextView dims = (TextView) findViewById(R.id.widget_dims);
-        if (dims != null) {
-            dims.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        if (DEBUG) {
-            Log.d(TAG, String.format("[tag=%s] onDetachedFromWindow", getTagToString()));
-        }
-        super.onDetachedFromWindow();
-        deletePreview(false);
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        mWidgetName = ((TextView) findViewById(R.id.widget_name));
+        mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
     }
 
     public void reset() {
-        ImageView image = (ImageView) findViewById(R.id.widget_preview);
-        final TextView name = (TextView) findViewById(R.id.widget_name);
-        final TextView dims = (TextView) findViewById(R.id.widget_dims);
-        image.setImageDrawable(null);
-        name.setText(null);
-        dims.setText(null);
+        mWidgetImage.setImageDrawable(null);
+        mWidgetName.setText(null);
+        mWidgetDims.setText(null);
     }
 
-    public void deletePreview(boolean recycleImage) {
-        if (recycleImage) {
-            final ImageView image = (ImageView) findViewById(R.id.widget_preview);
-            if (image != null) {
-                image.setImageDrawable(null);
-            }
-        }
-
-        if (mActiveRequest != null) {
-            mActiveRequest.cancel(recycleImage);
-            mActiveRequest = null;
-        }
-    }
-
+    /**
+     * Apply the widget provider info to the view.
+     */
     public void applyFromAppWidgetProviderInfo(LauncherAppWidgetProviderInfo info,
             int maxWidth, WidgetPreviewLoader loader) {
         LauncherAppState app = LauncherAppState.getInstance();
@@ -150,37 +116,41 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         mIsAppWidget = true;
         mInfo = info;
-        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         if (maxWidth > -1) {
-            image.setMaxWidth(maxWidth);
+            mWidgetImage.setMaxWidth(maxWidth);
         }
-        final TextView name = (TextView) findViewById(R.id.widget_name);
-        name.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        final TextView dims = (TextView) findViewById(R.id.widget_dims);
-        if (dims != null) {
-            int hSpan = Math.min(info.spanX, (int) grid.numColumns);
-            int vSpan = Math.min(info.spanY, (int) grid.numRows);
-            dims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
-        }
+        // TODO(hyunyoungs): setup a cache for these labels.
+        mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
+        int hSpan = Math.min(info.spanX, (int) grid.numColumns);
+        int vSpan = Math.min(info.spanY, (int) grid.numRows);
+        mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         mWidgetPreviewLoader = loader;
     }
 
+    /**
+     * Apply the resolve info to the view.
+     */
     public void applyFromResolveInfo(
             PackageManager pm, ResolveInfo info, WidgetPreviewLoader loader) {
         mIsAppWidget = false;
         mInfo = info;
         CharSequence label = info.loadLabel(pm);
-        final TextView name = (TextView) findViewById(R.id.widget_name);
-        name.setText(label);
-        final TextView dims = (TextView) findViewById(R.id.widget_dims);
-        if (dims != null) {
-            dims.setText(String.format(mDimensionsFormatString, 1, 1));
-        }
+        mWidgetName.setText(label);
+        mWidgetDims.setText(String.format(mDimensionsFormatString, 1, 1));
         mWidgetPreviewLoader = loader;
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        deletePreview(false);
+
+        if (DEBUG) {
+            Log.d(TAG, String.format("[tag=%s] onDetachedFromWindow", getTagToString()));
+        }
+    }
+
     public int[] getPreviewSize() {
-        final ImageView i = (ImageView) findViewById(R.id.widget_preview);
         int[] maxSize = new int[2];
         maxSize[0] = mPresetPreviewSize;
         maxSize[1] = mPresetPreviewSize;
@@ -189,108 +159,26 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     public void applyPreview(Bitmap bitmap) {
         FastBitmapDrawable preview = new FastBitmapDrawable(bitmap);
-        final WidgetImageView image =
-            (WidgetImageView) findViewById(R.id.widget_preview);
         if (DEBUG) {
             Log.d(TAG, String.format("[tag=%s] applyPreview preview: %s",
                     getTagToString(), preview));
         }
         if (preview != null) {
-            image.mAllowRequestLayout = false;
-            image.setImageDrawable(preview);
+            mWidgetImage.setImageDrawable(preview);
             if (mIsAppWidget) {
                 // center horizontally
                 int[] imageSize = getPreviewSize();
                 int centerAmount = (imageSize[0] - preview.getIntrinsicWidth()) / 2;
-                image.setPadding(mOriginalImagePadding.left + centerAmount,
+                mWidgetImage.setPadding(mOriginalImagePadding.left + centerAmount,
                         mOriginalImagePadding.top,
                         mOriginalImagePadding.right,
                         mOriginalImagePadding.bottom);
             }
-            image.setAlpha(0f);
-            image.animate().alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
-            image.mAllowRequestLayout = true;
-            image.requestLayout();
+            mWidgetImage.setAlpha(0f);
+            mWidgetImage.animate().alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+            // TODO(hyunyoungs): figure out why this has to be called explicitly.
+            mWidgetImage.requestLayout();
         }
-    }
-
-    void setShortPressListener(ShortPressListener listener) {
-        mShortPressListener = listener;
-    }
-
-    interface ShortPressListener {
-        void onShortPress(View v);
-        void cleanUpShortPress(View v);
-    }
-
-    class CheckForShortPress implements Runnable {
-        public void run() {
-            if (sShortpressTarget != null) return;
-            if (mShortPressListener != null) {
-                mShortPressListener.onShortPress(WidgetCell.this);
-                sShortpressTarget = WidgetCell.this;
-            }
-            mShortPressTriggered = true;
-        }
-    }
-
-    private void checkForShortPress() {
-        if (sShortpressTarget != null) return;
-        if (mPendingCheckForShortPress == null) {
-            mPendingCheckForShortPress = new CheckForShortPress();
-        }
-        postDelayed(mPendingCheckForShortPress, 120);
-    }
-
-    /**
-     * Remove the longpress detection timer.
-     */
-    private void removeShortPressCallback() {
-        if (mPendingCheckForShortPress != null) {
-          removeCallbacks(mPendingCheckForShortPress);
-        }
-    }
-
-    private void cleanUpShortPress() {
-        removeShortPressCallback();
-        if (mShortPressTriggered) {
-            if (mShortPressListener != null) {
-                mShortPressListener.cleanUpShortPress(WidgetCell.this);
-            }
-            mShortPressTriggered = false;
-        }
-    }
-
-    static void resetShortPressTarget() {
-        sShortpressTarget = null;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                cleanUpShortPress();
-                break;
-            case MotionEvent.ACTION_DOWN:
-                checkForShortPress();
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                cleanUpShortPress();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                break;
-        }
-
-        // We eat up the touch events here, since the PagedView (which uses the same swiping
-        // touch code as Workspace previously) uses onInterceptTouchEvent() to determine when
-        // the user is scrolling between pages.  This means that if the pages themselves don't
-        // handle touch events, it gets forwarded up to PagedView itself, and it's own
-        // onTouchEvent() handling will prevent further intercept touch events from being called
-        // (it's the same view in that case).  This is not ideal, but to prevent more changes,
-        // we just always mark the touch event as handled.
-        return true;
     }
 
     public void ensurePreview() {
@@ -329,6 +217,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 .getDynamicGrid().getDeviceProfile().cellWidthPx;
 
         return Math.min(size[0], info.spanX * cellWidth);
+    }
+
+
+    private void deletePreview(boolean recycleImage) {
+        mWidgetImage.setImageDrawable(null);
+
+        if (mActiveRequest != null) {
+            mActiveRequest.cancel(recycleImage);
+            mActiveRequest = null;
+        }
     }
 
     /**

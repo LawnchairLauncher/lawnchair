@@ -103,6 +103,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.io.DataInputStream;
@@ -3944,7 +3945,7 @@ public class Launcher extends Activity
             pendingInfo.minSpanX = item.minSpanX;
             pendingInfo.minSpanY = item.minSpanY;
             Bundle options = null;
-            //        AppsCustomizePagedView.getDefaultOptionsForWidget(this, pendingInfo);
+                    WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
 
             int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
             boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
