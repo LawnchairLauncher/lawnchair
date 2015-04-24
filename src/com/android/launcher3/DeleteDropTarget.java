@@ -29,7 +29,6 @@ import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 
-import com.android.launcher3.R;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
 
@@ -59,13 +58,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
         setDrawable(R.drawable.remove_target_selector);
     }
 
-    public static boolean willAcceptDrop(DragSource source, Object info) {
-        return (info instanceof ItemInfo) && source.supportsDeleteDropTarget();
+    public static boolean supportsDrop(Object info) {
+        return (info instanceof ShortcutInfo)
+                || (info instanceof LauncherAppWidgetInfo)
+                || (info instanceof FolderInfo);
     }
 
     @Override
     protected boolean supportsDrop(DragSource source, Object info) {
-        return willAcceptDrop(source, info);
+        return source.supportsDeleteDropTarget() && supportsDrop(info);
     }
 
     @Override
@@ -303,5 +304,10 @@ public class DeleteDropTarget extends ButtonDropTarget {
         };
         dragLayer.animateView(d.dragView, updateCb, duration, tInterpolator, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
+    }
+
+    @Override
+    protected String getAccessibilityDropConfirmation() {
+        return getResources().getString(R.string.item_removed);
     }
 }

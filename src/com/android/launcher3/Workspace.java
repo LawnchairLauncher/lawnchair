@@ -1615,6 +1615,7 @@ public class Workspace extends SmoothPagedView
             // Reset our click listener
             setOnClickListener(mLauncher);
         }
+        mLauncher.getSearchBar().enableAccessibleDrag(enable);
         mLauncher.getHotseat().getLayout().enableAccessibleDrag(enable);
     }
 

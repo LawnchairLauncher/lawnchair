@@ -33,9 +33,12 @@ public class UninstallDropTarget extends ButtonDropTarget {
 
     @Override
     protected boolean supportsDrop(DragSource source, Object info) {
+        return supportsDrop(getContext(), info);
+    }
+
+    public static boolean supportsDrop(Context context, Object info) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            UserManager userManager = (UserManager)
-                    getContext().getSystemService(Context.USER_SERVICE);
+            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
             Bundle restrictions = userManager.getUserRestrictions();
             if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
                     || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
@@ -78,8 +81,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     void completeDrop(final DragObject d) {
         final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(d.dragInfo);
         final UserHandleCompat user = ((ItemInfo) d.dragInfo).user;
-        if (mLauncher.startApplicationUninstallActivity(
-                componentInfo.first, componentInfo.second, user)) {
+        if (startUninstallActivity(mLauncher, d.dragInfo)) {
 
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
                 @Override
@@ -94,6 +96,13 @@ public class UninstallDropTarget extends ButtonDropTarget {
         } else {
             sendUninstallResult(d.dragSource, false);
         }
+    }
+
+    public static boolean startUninstallActivity(Launcher launcher, Object info) {
+        final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(info);
+        final UserHandleCompat user = ((ItemInfo) info).user;
+        return launcher.startApplicationUninstallActivity(
+                componentInfo.first, componentInfo.second, user);
     }
 
     @Thunk void sendUninstallResult(DragSource target, boolean result) {
