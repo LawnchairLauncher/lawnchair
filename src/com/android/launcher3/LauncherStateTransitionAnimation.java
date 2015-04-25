@@ -258,7 +258,7 @@ public class LauncherStateTransitionAnimation {
             // Setup the reveal view animation
             int width = revealView.getMeasuredWidth();
             int height = revealView.getMeasuredHeight();
-            float revealRadius = (float) Math.sqrt((width * width) / 4 + (height * height) / 4);
+            float revealRadius = (float) Math.hypot(width / 2, height / 2);
             revealView.setVisibility(View.VISIBLE);
             revealView.setAlpha(0f);
             revealView.setTranslationY(0f);
@@ -563,7 +563,7 @@ public class LauncherStateTransitionAnimation {
             if (fromView.getVisibility() == View.VISIBLE) {
                 int width = revealView.getMeasuredWidth();
                 int height = revealView.getMeasuredHeight();
-                float revealRadius = (float) Math.sqrt((width * width) / 4 + (height * height) / 4);
+                float revealRadius = (float) Math.hypot(width / 2, height / 2);
                 revealView.setVisibility(View.VISIBLE);
                 revealView.setAlpha(1f);
                 revealView.setTranslationY(0);

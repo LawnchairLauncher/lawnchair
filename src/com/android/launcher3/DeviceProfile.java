@@ -460,8 +460,7 @@ public class DeviceProfile {
     }
 
     @Thunk float dist(PointF p0, PointF p1) {
-        return (float) Math.sqrt((p1.x - p0.x)*(p1.x-p0.x) +
-                (p1.y-p0.y)*(p1.y-p0.y));
+        return (float) Math.hypot(p1.x - p0.x, p1.y - p0.y);
     }
 
     private float weight(PointF a, PointF b,
