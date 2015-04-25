@@ -459,7 +459,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             int rx = (int) Math.max(Math.max(width - getPivotX(), 0), getPivotX());
             int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
-            float radius = (float) Math.sqrt(rx * rx + ry * ry);
+            float radius = (float) Math.hypot(rx, ry);
             AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
             Animator reveal = LauncherAnimUtils.createCircularReveal(this, (int) getPivotX(),
                     (int) getPivotY(), 0, radius);
