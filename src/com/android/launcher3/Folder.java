@@ -83,12 +83,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public static final int SCROLL_HINT_DURATION = DragController.SCROLL_DELAY;
 
     /**
-     * Time in milliseconds for which an icon sticks to the target position
-     * in case of a sorted folder.
-     */
-    private static final int SORTED_STICKY_REORDER_DELAY = 1500;
-
-    /**
      * Fraction of icon width which behave as scroll region.
      */
     private static final float ICON_OVERSCROLL_WIDTH_FACTOR = 0.45f;
@@ -417,7 +411,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (!(getParent() instanceof DragLayer)) return;
 
         mContent.completePendingPageChanges();
-        if (!(mDragInProgress && mContent.mIsSorted)) {
+        if (!mDragInProgress) {
             // Open on the first page.
             mContent.snapToPageImmediately(0);
         }
@@ -532,12 +526,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mEmptyCellRank = mContent.allocateRankForNewItem(item);
         mIsExternalDrag = true;
         mDragInProgress = true;
-
-        if (mContent.mIsSorted) {
-            mScrollPauseAlarm.setOnAlarmListener(null);
-            mScrollPauseAlarm.cancelAlarm();
-            mScrollPauseAlarm.setAlarm(SORTED_STICKY_REORDER_DELAY);
-        }
 
         // Since this folder opened by another controller, it might not get onDrop or
         // onDropComplete. Perform cleanup once drag-n-drop ends.

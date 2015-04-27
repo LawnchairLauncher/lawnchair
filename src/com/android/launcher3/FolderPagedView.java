@@ -20,23 +20,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
-import android.widget.Switch;
 
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.PageIndicator.PageMarkerResources;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.util.Thunk;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,16 +40,9 @@ public class FolderPagedView extends PagedView {
 
     private static final boolean ALLOW_FOLDER_SCROLL = true;
 
-    // To enable this flag, user_folder.xml needs to be modified to add sort button.
-    private static final boolean ALLOW_ITEM_SORTING = false;
-
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int START_VIEW_REORDER_DELAY = 30;
     private static final float VIEW_REORDER_DELAY_FACTOR = 0.9f;
-
-    private static final int SPAN_TO_PAGE_DURATION = 350;
-    private static final int SORT_ANIM_HIDE_DURATION = 130;
-    private static final int SORT_ANIM_SHOW_DURATION = 160;
 
     /**
      * Fraction of the width to scroll when showing the next page hint.
@@ -87,12 +73,7 @@ public class FolderPagedView extends PagedView {
     private FocusIndicatorView mFocusIndicatorView;
     private PagedFolderKeyEventListener mKeyListener;
 
-    private View mSortButton;
-    private Switch mSortSwitch;
     private View mPageIndicator;
-
-    private boolean mSortOperationPending;
-    boolean mIsSorted;
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -121,132 +102,6 @@ public class FolderPagedView extends PagedView {
         mFocusIndicatorView = (FocusIndicatorView) folder.findViewById(R.id.focus_indicator);
         mKeyListener = new PagedFolderKeyEventListener(folder);
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
-
-        if (ALLOW_ITEM_SORTING) {
-            // Initialize {@link #mSortSwitch} and {@link #mSortButton}.
-        }
-    }
-
-    /**
-     * Called when sort button is clicked.
-     */
-    private void onSortClicked() {
-        if (mSortOperationPending) {
-            return;
-        }
-        if (mIsSorted) {
-            setIsSorted(false, true);
-        } else {
-            mSortOperationPending = true;
-            doSort();
-        }
-    }
-
-    private void setIsSorted(boolean isSorted, boolean saveChanges) {
-        mIsSorted = isSorted;
-        if (ALLOW_ITEM_SORTING) {
-            mSortSwitch.setChecked(isSorted);
-            mFolder.mInfo.setOption(FolderInfo.FLAG_ITEMS_SORTED, isSorted,
-                    saveChanges ? mFolder.mLauncher : null);
-        }
-    }
-
-    /**
-     * Sorts the contents of the folder and animates the icons on the first page to reflect
-     * the changes.
-     * Steps:
-     *      1. Scroll to first page
-     *      2. Sort all icons in one go
-     *      3. Re-apply the old IconInfos on the first page (so that there is no instant change)
-     *      4. Animate each view individually to reflect the new icon.
-     */
-    private void doSort() {
-        if (!mSortOperationPending) {
-            return;
-        }
-        if (getNextPage() != 0) {
-            snapToPage(0, SPAN_TO_PAGE_DURATION, new DecelerateInterpolator());
-            return;
-        }
-
-        mSortOperationPending = false;
-        ShortcutInfo[][] oldItems = new ShortcutInfo[mGridCountX][mGridCountY];
-        CellLayout currentPage = getCurrentCellLayout();
-        for (int x = 0; x < mGridCountX; x++) {
-            for (int y = 0; y < mGridCountY; y++) {
-                View v = currentPage.getChildAt(x, y);
-                if (v != null) {
-                    oldItems[x][y] = (ShortcutInfo) v.getTag();
-                }
-            }
-        }
-
-        ArrayList<View> views = new ArrayList<View>(mFolder.getItemsInReadingOrder());
-        Collections.sort(views, new ViewComparator());
-        arrangeChildren(views, views.size());
-
-        int delay = 0;
-        float delayAmount = START_VIEW_REORDER_DELAY;
-        final Interpolator hideInterpolator = new DecelerateInterpolator(2);
-        final Interpolator showInterpolator = new OvershootInterpolator(0.8f);
-
-        currentPage = getCurrentCellLayout();
-        for (int x = 0; x < mGridCountX; x++) {
-            for (int y = 0; y < mGridCountY; y++) {
-                final BubbleTextView v = (BubbleTextView) currentPage.getChildAt(x, y);
-                if (v != null) {
-                    final ShortcutInfo info = (ShortcutInfo) v.getTag();
-                    final Runnable clearPending = new Runnable() {
-
-                        @Override
-                        public void run() {
-                            mPendingAnimations.remove(v);
-                            v.setScaleX(1);
-                            v.setScaleY(1);
-                        }
-                    };
-                    if (oldItems[x][y] == null) {
-                        v.setScaleX(0);
-                        v.setScaleY(0);
-                        v.animate().setDuration(SORT_ANIM_SHOW_DURATION)
-                            .setStartDelay(SORT_ANIM_HIDE_DURATION + delay)
-                            .scaleX(1).scaleY(1).setInterpolator(showInterpolator)
-                            .withEndAction(clearPending);
-                        mPendingAnimations.put(v, clearPending);
-                    } else {
-                        // Apply the old iconInfo so that there is no sudden change.
-                        v.applyFromShortcutInfo(oldItems[x][y], mIconCache, false);
-                        v.animate().setStartDelay(delay).setDuration(SORT_ANIM_HIDE_DURATION)
-                            .scaleX(0).scaleY(0)
-                            .setInterpolator(hideInterpolator)
-                            .withEndAction(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    // Apply the new iconInfo as part of the animation.
-                                    v.applyFromShortcutInfo(info, mIconCache, false);
-                                    v.animate().scaleX(1).scaleY(1)
-                                        .setDuration(SORT_ANIM_SHOW_DURATION).setStartDelay(0)
-                                        .setInterpolator(showInterpolator)
-                                        .withEndAction(clearPending);
-                                }
-                       });
-                       mPendingAnimations.put(v, new Runnable() {
-
-                           @Override
-                           public void run() {
-                               clearPending.run();
-                               v.applyFromShortcutInfo(info, mIconCache, false);
-                           }
-                        });
-                    }
-                    delay += delayAmount;
-                    delayAmount *= VIEW_REORDER_DELAY_FACTOR;
-                }
-            }
-        }
-
-        setIsSorted(true, true);
     }
 
     /**
@@ -295,7 +150,6 @@ public class FolderPagedView extends PagedView {
      * @return list of items that could not be bound, probably because we hit the max size limit.
      */
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
-        mIsSorted = ALLOW_ITEM_SORTING && mFolder.mInfo.hasOption(FolderInfo.FLAG_ITEMS_SORTED);
         ArrayList<View> icons = new ArrayList<View>();
         ArrayList<ShortcutInfo> extra = new ArrayList<ShortcutInfo>();
 
@@ -317,20 +171,6 @@ public class FolderPagedView extends PagedView {
     public int allocateRankForNewItem(ShortcutInfo info) {
         int rank = getItemCount();
         ArrayList<View> views = new ArrayList<View>(mFolder.getItemsInReadingOrder());
-        if (ALLOW_ITEM_SORTING && mIsSorted) {
-            View tmp = new View(getContext());
-            tmp.setTag(info);
-            int index = Collections.binarySearch(views, tmp, new ViewComparator());
-            if (index < 0) {
-                rank = -index - 1;
-            } else {
-                // Item with same name already exists.
-                // We will just insert it before that item.
-                rank = index;
-            }
-
-        }
-
         views.add(rank, null);
         arrangeChildren(views, views.size(), false);
         setCurrentPage(rank / mMaxItemsPerPage);
@@ -447,10 +287,6 @@ public class FolderPagedView extends PagedView {
         int position = 0;
         int newX, newY, rank;
 
-        boolean isSorted = mIsSorted;
-
-        ViewComparator comparator = new ViewComparator();
-        View lastView = null;
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
@@ -465,10 +301,6 @@ public class FolderPagedView extends PagedView {
             }
 
             if (v != null) {
-                if (lastView != null) {
-                    isSorted &= comparator.compare(lastView, v) <= 0;
-                }
-
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
                 newX = position % mGridCountX;
                 newY = position / mGridCountX;
@@ -488,7 +320,6 @@ public class FolderPagedView extends PagedView {
                         v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
             }
 
-            lastView = v;
             rank ++;
             position++;
         }
@@ -506,23 +337,10 @@ public class FolderPagedView extends PagedView {
         setEnableOverscroll(getPageCount() > 1);
 
         // Update footer
-        if (ALLOW_ITEM_SORTING) {
-            setIsSorted(isSorted, saveChanges);
-            if (getPageCount() > 1) {
-                mPageIndicator.setVisibility(View.VISIBLE);
-                mSortButton.setVisibility(View.VISIBLE);
-                mFolder.mFolderName.setGravity(rtlLayout ? Gravity.RIGHT : Gravity.LEFT);
-            } else {
-                mPageIndicator.setVisibility(View.GONE);
-                mSortButton.setVisibility(View.GONE);
-                mFolder.mFolderName.setGravity(Gravity.CENTER_HORIZONTAL);
-            }
-        } else {
-            int indicatorVisibility = mPageIndicator.getVisibility();
-            mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
-            if (indicatorVisibility != mPageIndicator.getVisibility()) {
-                mFolder.updateFooterHeight();
-            }
+        int indicatorVisibility = mPageIndicator.getVisibility();
+        mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
+        if (indicatorVisibility != mPageIndicator.getVisibility()) {
+            mFolder.updateFooterHeight();
         }
     }
 
@@ -629,17 +447,6 @@ public class FolderPagedView extends PagedView {
         super.notifyPageSwitchListener();
         if (mFolder != null) {
             mFolder.updateTextViewFocus();
-        }
-        if (ALLOW_ITEM_SORTING && mSortOperationPending && getNextPage() == 0) {
-            post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (mSortOperationPending) {
-                        doSort();
-                    }
-                }
-            });
         }
     }
 
@@ -827,16 +634,6 @@ public class FolderPagedView extends PagedView {
                 delay += delayAmount;
                 delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }
-        }
-    }
-
-    private static class ViewComparator implements Comparator<View> {
-        private final Collator mCollator = Collator.getInstance();
-
-        @Override
-        public int compare(View lhs, View rhs) {
-            return mCollator.compare( ((ShortcutInfo) lhs.getTag()).title.toString(),
-                    ((ShortcutInfo) rhs.getTag()).title.toString());
         }
     }
 }
