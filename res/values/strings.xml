@@ -77,7 +77,7 @@
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="apps_view_search_bar_hint">Search Apps</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
-    <string name="loading_apps_message">Loading Apps...</string>
+    <string name="loading_apps_message">Loading Apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
     <string name="apps_view_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
 
@@ -91,8 +91,6 @@
     <string name="rename_action">OK</string>
     <!-- Buttons in Rename folder dialog box -->
     <string name="cancel_action">Cancel</string>
-    <!-- Label for button to sort folder contents. [CHAR_LIMIT=10] -->
-    <string name="sort_alphabetical">A-Z</string>
 
     <!-- Shortcuts -->
     <skip />
