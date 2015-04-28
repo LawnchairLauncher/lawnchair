@@ -42,4 +42,5 @@
 
     <!-- Widgetss view -->
     <color name="widgets_view_section_text_color">#009688</color>
+    <color name="widgets_cell_color">#263238</color>
 </resources>

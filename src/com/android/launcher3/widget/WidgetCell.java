@@ -48,7 +48,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private static final String TAG = "WidgetCell";
     private static final boolean DEBUG = false;
 
-    private static final int FADE_IN_DURATION_MS = 70;
+    private static final int FADE_IN_DURATION_MS = 90;
     private int mPresetPreviewSize;
 
     private ImageView mWidgetImage;
@@ -104,6 +104,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetImage.setImageDrawable(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
+
+        cancelLoader(false);
     }
 
     /**
@@ -138,16 +140,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetName.setText(label);
         mWidgetDims.setText(String.format(mDimensionsFormatString, 1, 1));
         mWidgetPreviewLoader = loader;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        deletePreview(false);
-
-        if (DEBUG) {
-            Log.d(TAG, String.format("[tag=%s] onDetachedFromWindow", getTagToString()));
-        }
     }
 
     public int[] getPreviewSize() {
@@ -219,10 +211,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return Math.min(size[0], info.spanX * cellWidth);
     }
 
-
-    private void deletePreview(boolean recycleImage) {
-        mWidgetImage.setImageDrawable(null);
-
+    private void cancelLoader(boolean recycleImage) {
         if (mActiveRequest != null) {
             mActiveRequest.cancel(recycleImage);
             mActiveRequest = null;
