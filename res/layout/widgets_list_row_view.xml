@@ -20,7 +20,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:focusable="true"
-    android:background="@drawable/focusable_view_bg"
     android:descendantFocusability="afterDescendants">
 
     <!-- Section info -->
@@ -29,24 +28,23 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:focusable="true"
-        android:background="@drawable/focusable_view_bg"
         android:descendantFocusability="afterDescendants">
         <ImageView
             android:id="@+id/section_image"
-            android:layout_width="@dimen/widget_section_height"
             android:layout_height="@dimen/widget_section_height"
-            android:paddingLeft="@dimen/widget_section_icon_padding"
-            android:paddingRight="@dimen/widget_section_icon_padding"
-            android:paddingTop="@dimen/widget_section_icon_padding"
-            android:paddingBottom="@dimen/widget_section_icon_padding"
+            android:layout_width="@dimen/widget_section_icon_width"
+            android:paddingLeft="@dimen/widget_section_icon_horizontal_padding"
+            android:paddingRight="@dimen/widget_section_icon_horizontal_padding"
+            android:paddingTop="@dimen/widget_section_icon_vertical_padding"
+            android:paddingBottom="@dimen/widget_section_icon_vertical_padding"
             android:background="@color/widget_text_panel"
         />
         <TextView
             android:id="@+id/section"
             android:layout_width="match_parent"
             android:layout_height="@dimen/widget_section_height"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingEnd="@dimen/widget_preview_label_horizontal_padding"
+            android:paddingRight="@dimen/widget_preview_label_horizontal_padding"
             android:singleLine="true"
             android:ellipsize="end"
             android:gravity="start|center_vertical"
@@ -57,31 +55,24 @@
     </LinearLayout>
 
     <!--  Widget list -->
-    <RelativeLayout 
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="end"
+        android:background="@color/widgets_cell_color"
         >
-        <!-- TODO(hyunyoungs): replace the indicator with actual assets. -->
-        <FrameLayout
-            android:id="@+id/scrollable_indicator"
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_pageindicator_default"
-            android:visibility="invisible"
-            />
         <HorizontalScrollView
             android:id="@+id/widgets_scroll_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/widget_cell_height"
-            android:paddingLeft="40dp"
+            android:layout_marginLeft="@dimen/widget_row_padding"
             android:scrollbars="none" >
             <LinearLayout
                 android:id="@+id/widgets_cell_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                android:orientation="horizontal"
+                android:background="@color/widget_text_panel"/>
         </HorizontalScrollView>
     </RelativeLayout>
 </LinearLayout>

@@ -127,7 +127,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         // Bind the view in the widget horizontal tray region.
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            widget.reset();
             if (getWidgetPreviewLoader() == null) {
                 return;
             }
@@ -156,6 +155,16 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
         return new WidgetsRowViewHolder(container);
+    }
+
+    @Override
+    public void onViewRecycled(WidgetsRowViewHolder holder) {
+        ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
+
+        for (int i = 0; i < row.getChildCount(); i++) {
+            WidgetCell widget = (WidgetCell) row.getChildAt(i);
+            widget.reset();
+        }
     }
 
     @Override
