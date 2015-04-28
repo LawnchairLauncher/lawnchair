@@ -25,7 +25,7 @@ public class WidgetsRowViewHolder extends ViewHolder {
 
     ViewGroup mContent;
 
-   public WidgetsRowViewHolder(ViewGroup v) {
+    public WidgetsRowViewHolder(ViewGroup v) {
         super(v);
         mContent = v;
     }

@@ -120,7 +120,9 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             mIconCache.getTitleAndIconForApp(infoOut.packageName,
                     UserHandleCompat.myUserHandle(), false /* useLowResIcon */, infoOut);
         }
-        ((TextView) holder.getContent().findViewById(R.id.section)).setText(infoOut.title);
+
+        TextView tv = ((TextView) holder.getContent().findViewById(R.id.section));
+        tv.setText(infoOut.title);
         ImageView iv = (ImageView) holder.getContent().findViewById(R.id.section_image);
         iv.setImageBitmap(infoOut.iconBitmap);
 
@@ -149,7 +151,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     @Override
     public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (DEBUG) {
-            Log.v(TAG, String.format("\nonCreateViewHolder, [widget#=%d]", viewType));
+            Log.v(TAG, "\nonCreateViewHolder");
         }
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
@@ -159,11 +161,15 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     @Override
     public void onViewRecycled(WidgetsRowViewHolder holder) {
+        if (DEBUG) {
+            Log.v(TAG, String.format("onViewDetachedFromWindow, [pos=%d]",
+                    holder.getAdapterPosition()));
+        }
         ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
 
         for (int i = 0; i < row.getChildCount(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            widget.reset();
+            widget.clear();
         }
     }
 
