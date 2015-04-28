@@ -94,18 +94,25 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mOriginalImagePadding.right = mWidgetImage.getPaddingRight();
         mOriginalImagePadding.bottom = mWidgetImage.getPaddingBottom();
 
-        // Ensure we are using the right text size
-        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
         mWidgetName = ((TextView) findViewById(R.id.widget_name));
         mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
     }
 
-    public void reset() {
+    /**
+     * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
+     */
+    public void clear() {
+        if (DEBUG) {
+            Log.d(TAG, "reset called on:" + mWidgetName.getText());
+        }
         mWidgetImage.setImageDrawable(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
 
-        cancelLoader(false);
+        if (mActiveRequest != null) {
+            mActiveRequest.cleanup();
+            mActiveRequest = null;
+        }
     }
 
     /**
@@ -209,13 +216,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 .getDynamicGrid().getDeviceProfile().cellWidthPx;
 
         return Math.min(size[0], info.spanX * cellWidth);
-    }
-
-    private void cancelLoader(boolean recycleImage) {
-        if (mActiveRequest != null) {
-            mActiveRequest.cancel(recycleImage);
-            mActiveRequest = null;
-        }
     }
 
     /**

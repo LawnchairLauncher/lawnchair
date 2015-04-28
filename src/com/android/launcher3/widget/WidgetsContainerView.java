@@ -26,7 +26,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -60,9 +59,6 @@ public class WidgetsContainerView extends FrameLayout implements Insettable,
 
     private static final String TAG = "WidgetsContainerView";
     private static final boolean DEBUG = false;
-
-    /* {@link RecyclerView} will keep following # of views in cache, before recycling. */
-    private static final int WIDGET_CACHE_SIZE = 2;
 
     private static final int SPRING_MODE_DELAY_MS = 150;
 
@@ -119,7 +115,6 @@ public class WidgetsContainerView extends FrameLayout implements Insettable,
         mView = (RecyclerView) findViewById(R.id.widgets_list_view);
         mView.setAdapter(mAdapter);
         mView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mView.setItemViewCacheSize(WIDGET_CACHE_SIZE);
 
         mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
                 getPaddingBottom());

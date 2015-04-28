@@ -34,7 +34,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,8 +50,13 @@ public class WidgetPreviewLoader {
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
 
     private final HashMap<String, long[]> mPackageVersions = new HashMap<>();
-    private final HashMap<WidgetCacheKey, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<>();
-    private Set<Bitmap> mUnusedBitmaps = Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
+
+    /**
+     * Weak reference objects, do not prevent their referents from being made finalizable,
+     * finalized, and then reclaimed.
+     */
+    private Set<Bitmap> mUnusedBitmaps =
+            Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     private final Context mContext;
     private final IconCache mIconCache;
@@ -84,18 +88,9 @@ public class WidgetPreviewLoader {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = getObjectKey(o, size);
 
-        // Check if we have the preview loaded or not.
-        synchronized (mLoadedPreviews) {
-            WeakReference<Bitmap> ref = mLoadedPreviews.get(key);
-            if (ref != null && ref.get() != null) {
-                immediateResult[0] = ref.get();
-                return new PreviewLoadRequest(null, key);
-            }
-        }
-
         PreviewLoadTask task = new PreviewLoadTask(key, o, previewWidth, previewHeight, caller);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        return new PreviewLoadRequest(task, key);
+        return new PreviewLoadRequest(task);
     }
 
     /**
@@ -190,22 +185,6 @@ public class WidgetPreviewLoader {
     private void removePackage(String packageName, UserHandleCompat user, long userSerial) {
         synchronized(mPackageVersions) {
             mPackageVersions.remove(packageName);
-        }
-
-        synchronized (mLoadedPreviews) {
-            Set<WidgetCacheKey> keysToRemove = new HashSet<>();
-            for (WidgetCacheKey key : mLoadedPreviews.keySet()) {
-                if (key.componentName.getPackageName().equals(packageName) && key.user.equals(user)) {
-                    keysToRemove.add(key);
-                }
-            }
-
-            for (WidgetCacheKey key : keysToRemove) {
-                WeakReference<Bitmap> req = mLoadedPreviews.remove(key);
-                if (req != null && req.get() != null) {
-                    mUnusedBitmaps.add(req.get());
-                }
-            }
         }
 
         try {
@@ -549,26 +528,25 @@ public class WidgetPreviewLoader {
     public class PreviewLoadRequest {
 
         private final PreviewLoadTask mTask;
-        private final WidgetCacheKey mKey;
 
-        public PreviewLoadRequest(PreviewLoadTask task, WidgetCacheKey key) {
+        public PreviewLoadRequest(PreviewLoadTask task) {
             mTask = task;
-            mKey = key;
         }
 
-        public void cancel(boolean recycleImage) {
+        public void cleanup() {
             if (mTask != null) {
                 mTask.cancel(true);
             }
 
-            if (recycleImage) {
-                synchronized(mLoadedPreviews) {
-                    WeakReference<Bitmap> result = mLoadedPreviews.remove(mKey);
-                    if (result != null && result.get() != null) {
-                        mUnusedBitmaps.add(result.get());
-                    }
-                }
+            if (mTask.mBitmap == null) {
+                return;
             }
+
+            // The preview is no longer bound to any view, move it to {@link WeakReference} list.
+            synchronized(mUnusedBitmaps) {
+                mUnusedBitmaps.add(mTask.mBitmap);
+            }
+            mTask.mBitmap = null;
         }
     }
 
@@ -579,6 +557,7 @@ public class WidgetPreviewLoader {
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
+        private Bitmap mBitmap;
 
         PreviewLoadTask(WidgetCacheKey key, Object info, int previewWidth,
                 int previewHeight, WidgetCell caller) {
@@ -597,7 +576,6 @@ public class WidgetPreviewLoader {
         protected Bitmap doInBackground(Void... params) {
             Bitmap unusedBitmap = null;
 
-            // TODO(hyunyoungs): Figure out why this path causes concurrency issue.
             synchronized (mUnusedBitmaps) {
                 // Check if we can use a bitmap
                 for (Bitmap candidate : mUnusedBitmaps) {
@@ -638,10 +616,7 @@ public class WidgetPreviewLoader {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            synchronized(mLoadedPreviews) {
-                mLoadedPreviews.put(mKey, new WeakReference<Bitmap>(result));
-            }
-
+            mBitmap = result;
             mCaller.applyPreview(result);
         }
     }
