@@ -66,3 +66,7 @@
   public void setFastScrollerAlpha(float);
   public float getFastScrollerAlpha();
 }
+
+-keep class com.android.launcher3.ButtonDropTarget {
+  public int getTextColor();
+}

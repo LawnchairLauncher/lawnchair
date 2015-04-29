@@ -16,14 +16,16 @@
 
 package com.android.launcher3;
 
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,8 +44,6 @@ public abstract class ButtonDropTarget extends TextView
 
     private static int DRAG_VIEW_DROP_DURATION = 285;
 
-    protected final int mTransitionDuration;
-
     protected Launcher mLauncher;
     private int mBottomDragPadding;
     protected TextView mText;
@@ -58,16 +58,15 @@ public abstract class ButtonDropTarget extends TextView
     protected ColorStateList mOriginalTextColor;
     protected TransitionDrawable mDrawable;
 
+    private ObjectAnimator mCurrentColorAnim;
+
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        Resources r = getResources();
-        mTransitionDuration = r.getInteger(R.integer.config_dropTargetBgTransitionDuration);
-        mBottomDragPadding = r.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
+        mBottomDragPadding = getResources().getDimensionPixelSize(R.dimen.drop_target_drag_padding);
     }
 
     @Override
@@ -123,8 +122,13 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
-        mDrawable.startTransition(mTransitionDuration);
-        setTextColor(mHoverColor);
+        if (Utilities.isLmpOrAbove()) {
+            mDrawable.startTransition(DragView.COLOR_CHANGE_DURATION);
+            animateTextColor(mHoverColor);
+        } else {
+            mDrawable.startTransition(0);
+            setTextColor(mHoverColor);
+        }
     }
 
     @Override
@@ -133,8 +137,23 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected void resetHoverColor() {
-        mDrawable.resetTransition();
-        setTextColor(mOriginalTextColor);
+        if (Utilities.isLmpOrAbove()) {
+            mDrawable.reverseTransition(DragView.COLOR_CHANGE_DURATION);
+            animateTextColor(mOriginalTextColor.getDefaultColor());
+        } else {
+            mDrawable.resetTransition();
+            setTextColor(mOriginalTextColor);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void animateTextColor(int targetColor) {
+        if (mCurrentColorAnim != null) {
+            mCurrentColorAnim.cancel();
+        }
+        mCurrentColorAnim = ObjectAnimator.ofArgb(this, "textColor", targetColor);
+        mCurrentColorAnim.setDuration(DragView.COLOR_CHANGE_DURATION);
+        mCurrentColorAnim.start();
     }
 
     @Override
@@ -152,6 +171,10 @@ public abstract class ButtonDropTarget extends TextView
     public final void onDragStart(DragSource source, Object info, int dragAction) {
         mActive = supportsDrop(source, info);
         mDrawable.resetTransition();
+        if (mCurrentColorAnim != null) {
+            mCurrentColorAnim.cancel();
+            mCurrentColorAnim = null;
+        }
         setTextColor(mOriginalTextColor);
         ((ViewGroup) getParent()).setVisibility(mActive ? View.VISIBLE : View.GONE);
     }
@@ -270,5 +293,9 @@ public abstract class ButtonDropTarget extends TextView
     public void onClick(View v) {
         LauncherAppState.getInstance().getAccessibilityDelegate()
             .handleAccessibleDrop(this, null, getAccessibilityDropConfirmation());
+    }
+
+    public int getTextColor() {
+        return getTextColors().getDefaultColor();
     }
 }
