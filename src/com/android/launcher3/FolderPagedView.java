@@ -95,6 +95,7 @@ public class FolderPagedView extends PagedView {
         mIconCache = app.getIconCache();
 
         rtlLayout = getResources().getConfiguration().getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
     }
 
     public void setFolder(Folder folder) {
@@ -237,6 +238,7 @@ public class FolderPagedView extends PagedView {
         CellLayout page = new CellLayout(getContext());
         page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
+        page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);
 
