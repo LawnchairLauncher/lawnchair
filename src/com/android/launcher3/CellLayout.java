@@ -3294,4 +3294,8 @@ public class CellLayout extends ViewGroup {
     public boolean lastDownOnOccupiedCell() {
         return mLastDownOnOccupiedCell;
     }
+
+    public boolean findVacantCell(int spanX, int spanY, int[] outXY) {
+        return Utilities.findVacantCell(outXY, spanX, spanY, mCountX, mCountY, mOccupied);
+    }
 }
