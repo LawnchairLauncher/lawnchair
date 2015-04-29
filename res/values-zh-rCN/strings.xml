@@ -36,13 +36,13 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"无法将相关内容拖放到此主屏幕上。"</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"选择要创建的小部件"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"搜索应用"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"正在加载应用…"</string>
+    <!-- no translation found for loading_apps_message (5746103323587394548) -->
+    <skip />
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"未找到与“<xliff:g id="QUERY">%1$s</xliff:g>”相符的应用"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"文件夹名称"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"重命名文件夹"</string>
     <string name="rename_action" msgid="5559600076028658757">"确定"</string>
     <string name="cancel_action" msgid="7009134900002915310">"取消"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"名称首字母（升序）"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"添加到主屏幕"</string>
     <string name="group_applications" msgid="3797214114206693605">"应用"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"快捷方式"</string>

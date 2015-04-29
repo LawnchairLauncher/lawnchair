@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Couldn\'t drop item on this Home screen."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Choose widget to create"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Search Apps"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"Loading Apps..."</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"Loading Apps…"</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"No Apps found matching \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Folder name"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Rename folder"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Cancel"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"A-Z"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Add to Home screen"</string>
     <string name="group_applications" msgid="3797214114206693605">"Apps"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Shortcuts"</string>

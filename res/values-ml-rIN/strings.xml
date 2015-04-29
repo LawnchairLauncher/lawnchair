@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"ഹോം സ്‌ക്രീനിൽ ഇനം വലിച്ചിടാനായില്ല."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"സൃഷ്‌ടിക്കുന്നതിന് വിജറ്റ് തിരഞ്ഞെടുക്കുക"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"തിരയല്‍‌ അപ്ലിക്കേഷനുകള്‍‌"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"അപ്ലിക്കേഷനുകൾ ലോഡുചെയ്യുന്നു..."</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"അപ്ലിക്കേഷനുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന അപ്ലിക്കേഷനുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"ഫോൾഡറിന്റെ പേര്"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"ഫോൾഡറിന്റെ പേരുമാറ്റുക"</string>
     <string name="rename_action" msgid="5559600076028658757">"ശരി"</string>
     <string name="cancel_action" msgid="7009134900002915310">"റദ്ദാക്കുക"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"A-Z"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"ഹോം സ്ക്രീനിൽ ചേർക്കുക"</string>
     <string name="group_applications" msgid="3797214114206693605">"അപ്ലിക്കേഷനുകൾ"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"കുറുക്കുവഴികൾ"</string>

@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"এই হোম স্ক্রীনে আইটেম রাখা যায়নি৷"</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"তৈরি করেতে উইজেট চয়ন করুন"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান নেই"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"ফোল্ডারের নাম"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"ফোল্ডার পুনঃনামকরণ করুন"</string>
     <string name="rename_action" msgid="5559600076028658757">"ঠিক আছে"</string>
     <string name="cancel_action" msgid="7009134900002915310">"বাতিল করুন"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"শুরু থেকে শেষ"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"হোম স্ক্রীনে যোগ করুন"</string>
     <string name="group_applications" msgid="3797214114206693605">"অ্যাপ্লিকেশানগুলি"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"শর্টকাটগুলি"</string>

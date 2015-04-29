@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Üksust ei saanud sellele avaekraanile tuua."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Valige loomiseks vidin"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Otsige rakendustest"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"Rakenduste laadimine ..."</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"Rakenduste laadimine ..."</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"Päringule „<xliff:g id="QUERY">%1$s</xliff:g>” ei vastanud ükski rakendus"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Kausta nimi"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Kausta ümbernimetamine"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Tühista"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"A–Z"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Avaekraanile lisamine"</string>
     <string name="group_applications" msgid="3797214114206693605">"Rakendused"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Otseteed"</string>

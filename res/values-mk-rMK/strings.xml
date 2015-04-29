@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Не можеше да се спушти елемент на овој екран на почетната страница."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Избери виџет за да се создаде"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Пребарување апликации"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"Се вчитуваат апликации…"</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"Се вчитуваат апликации…"</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"Не се најдени апликации што одговараат на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Име на папка"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Преименувај папка"</string>
     <string name="rename_action" msgid="5559600076028658757">"Во ред"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Откажи"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"A-Ш"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Додај во екран на почетна страница"</string>
     <string name="group_applications" msgid="3797214114206693605">"Апликации"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Кратенки"</string>

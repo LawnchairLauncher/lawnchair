@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Энэ Нүүр дэлгэцэнд буулгах боломжгүй."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Үүсгэх виджетээ сонгоно уу"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Апп хайх"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"Аппкэйшнүүдийг ачаалж байна..."</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"Аппликейшнуудыг ачаалж байна..."</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"-тай нийцэх апп олдсонгүй"</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Фолдерын нэр"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Фолдерын нэр өөрчлөх"</string>
     <string name="rename_action" msgid="5559600076028658757">"Тийм"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Цуцлах"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"А-Я"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Нүүр дэлгэцэнд нэмэх"</string>
     <string name="group_applications" msgid="3797214114206693605">"Апп"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Товчлол"</string>

@@ -36,13 +36,12 @@
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Αδυναμία τοποθέτησης στοιχείου στην Αρχική οθόνη."</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Επιλ. γραφ. στοιχείο για δημιουργία"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Αναζήτηση στις Εφαρμογές Google"</string>
-    <string name="loading_apps_message" msgid="1914259869238053553">"Φόρτωση εφαρμογών…"</string>
+    <string name="loading_apps_message" msgid="5746103323587394548">"Φόρτωση εφαρμογών…"</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"Δεν βρέθηκαν εφαρμογές για το ερώτημα \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="rename_folder_label" msgid="3727762225964550653">"Όνομα φακέλου"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Μετονομασία φακέλου"</string>
     <string name="rename_action" msgid="5559600076028658757">"OK"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Ακύρωση"</string>
-    <string name="sort_alphabetical" msgid="2990433272205140971">"A-Z"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"Προσθήκη στην αρχική οθόνη"</string>
     <string name="group_applications" msgid="3797214114206693605">"Εφαρμογές"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"Συντομεύσεις"</string>
