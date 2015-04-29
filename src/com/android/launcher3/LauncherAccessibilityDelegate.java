@@ -5,13 +5,13 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
-import com.android.launcher3.LauncherModel.ScreenPosProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -19,11 +19,13 @@ import java.util.ArrayList;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
 
-    public static final int REMOVE = R.id.action_remove;
-    public static final int INFO = R.id.action_info;
-    public static final int UNINSTALL = R.id.action_uninstall;
-    public static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
-    public static final int MOVE = R.id.action_move;
+    private static final String TAG = "LauncherAccessibilityDelegate";
+
+    private static final int REMOVE = R.id.action_remove;
+    private static final int INFO = R.id.action_info;
+    private static final int UNINSTALL = R.id.action_uninstall;
+    private static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
+    private static final int MOVE = R.id.action_move;
 
     enum DragType {
         ICON,
@@ -39,8 +41,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
 
     private DragInfo mDragInfo = null;
 
-    private final SparseArray<AccessibilityAction> mActions =
-            new SparseArray<AccessibilityAction>();
+    private final SparseArray<AccessibilityAction> mActions = new SparseArray<>();
     @Thunk final Launcher mLauncher;
 
     public LauncherAccessibilityDelegate(Launcher launcher) {
@@ -56,7 +57,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
                 launcher.getText(R.string.action_add_to_workspace)));
         mActions.put(MOVE, new AccessibilityAction(MOVE,
                 launcher.getText(R.string.action_move)));
-
     }
 
     @Override
@@ -93,7 +93,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         return super.performAccessibilityAction(host, action, args);
     }
 
-    public boolean performAction(View host, ItemInfo item, int action) {
+    public boolean performAction(View host, final ItemInfo item, int action) {
         if (action == REMOVE) {
             if (DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host)) {
                 announceConfirmation(R.string.item_removed);
@@ -108,32 +108,32 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         } else if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {
-            final int preferredPage = mLauncher.getWorkspace().getCurrentPage();
-            final ScreenPosProvider screenProvider = new ScreenPosProvider() {
+            final int[] coordinates = new int[2];
+            final long screenId = findSpaceOnWorkspace(item, coordinates);
+            mLauncher.showWorkspace(true, new Runnable() {
 
                 @Override
-                public int getScreenIndex(ArrayList<Long> screenIDs) {
-                    return preferredPage;
-                }
-            };
-            if (item instanceof AppInfo) {
-                final ArrayList<ItemInfo> addShortcuts = new ArrayList<ItemInfo>();
-                addShortcuts.add(((AppInfo) item).makeShortcut());
-                mLauncher.showWorkspace(true, new Runnable() {
-                    @Override
-                    public void run() {
-                        mLauncher.getModel().addAndBindAddedWorkspaceItems(
-                                mLauncher, addShortcuts, screenProvider, 0, true);
-                        announceConfirmation(R.string.item_added_to_workspace);
+                public void run() {
+                    if (item instanceof AppInfo) {
+                        ShortcutInfo info = ((AppInfo) item).makeShortcut();
+                        LauncherModel.addItemToDatabase(mLauncher, info,
+                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                screenId, coordinates[0], coordinates[1]);
+
+                        ArrayList<ItemInfo> itemList = new ArrayList<>();
+                        itemList.add(info);
+                        mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                    } else if (item instanceof PendingAddItemInfo) {
+                        PendingAddItemInfo info = (PendingAddItemInfo) item;
+                        Workspace workspace = mLauncher.getWorkspace();
+                        workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
+                        mLauncher.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                screenId, coordinates, info.spanX, info.spanY);
                     }
-                });
-                return true;
-            } else if (item instanceof PendingAddItemInfo) {
-                mLauncher.getModel().addAndBindPendingItem(
-                        mLauncher, (PendingAddItemInfo) item, screenProvider, 0);
-                announceConfirmation(R.string.item_added_to_workspace);
-                return true;
-            }
+                    announceConfirmation(R.string.item_added_to_workspace);
+                }
+            });
+            return true;
         }
         return false;
     }
@@ -219,5 +219,42 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
     private void endAccessibleDrag() {
         mDragInfo = null;
         mLauncher.getWorkspace().enableAccessibleDrag(false);
+    }
+
+    /**
+     * Find empty space on the workspace and returns the screenId.
+     */
+    private long findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
+        Workspace workspace = mLauncher.getWorkspace();
+        ArrayList<Long> workspaceScreens = workspace.getScreenOrder();
+        long screenId;
+
+        // First check if there is space on the current screen.
+        int screenIndex = workspace.getCurrentPage();
+        screenId = workspaceScreens.get(screenIndex);
+        CellLayout layout = (CellLayout) workspace.getPageAt(screenIndex);
+
+        boolean found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
+        screenIndex = workspace.hasCustomContent() ? 1 : 0;
+        while (!found && screenIndex < workspaceScreens.size()) {
+            screenId = workspaceScreens.get(screenIndex);
+            layout = (CellLayout) workspace.getPageAt(screenIndex);
+            found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
+            screenIndex++;
+        }
+
+        if (found) {
+            return screenId;
+        }
+
+        workspace.addExtraEmptyScreen();
+        screenId = workspace.commitExtraEmptyScreen();
+        layout = workspace.getScreenWithId(screenId);
+        found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
+
+        if (!found) {
+            Log.wtf(TAG, "Not enough space on an empty screen");
+        }
+        return screenId;
     }
 }

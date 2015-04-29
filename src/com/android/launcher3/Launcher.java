@@ -3702,19 +3702,6 @@ public class Launcher extends Activity
         }
     }
 
-    @Override
-    public void bindAddPendingItem(final PendingAddItemInfo info, final long container,
-            final long screenId, final int[] cell, final int spanX, final int spanY) {
-        showWorkspace(true, new Runnable() {
-
-            @Override
-            public void run() {
-                mWorkspace.snapToPage(mWorkspace.getPageIndexForScreenId(screenId));
-                addPendingItem(info, container, screenId, cell, spanX, spanY);
-            }
-        });
-    }
-
     private boolean shouldShowWeightWatcher() {
         String spKey = LauncherAppState.getSharedPreferencesKey();
         SharedPreferences sp = getSharedPreferences(spKey, Context.MODE_PRIVATE);
