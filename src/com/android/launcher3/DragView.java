@@ -16,22 +16,30 @@
 
 package com.android.launcher3;
 
+import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.util.Thunk;
 
+import java.util.Arrays;
+
 public class DragView extends View {
+    public static int COLOR_CHANGE_DURATION = 200;
+
     @Thunk static float sDragAlpha = 1f;
 
     private Bitmap mBitmap;
@@ -53,6 +61,9 @@ public class DragView extends View {
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
+
+    private float[] mCurrentFilter;
+    private ValueAnimator mFilterAnimator;
 
     /**
      * Construct the drag view.
@@ -229,11 +240,50 @@ public class DragView extends View {
             mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         }
         if (color != 0) {
-            mPaint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+            ColorMatrix m1 = new ColorMatrix();
+            m1.setSaturation(0);
+
+            ColorMatrix m2 = new ColorMatrix();
+            m2.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                    Color.blue(color) / 255f, Color.alpha(color) / 255f);
+            m1.postConcat(m2);
+
+            if (Utilities.isLmpOrAbove()) {
+                animateFilterTo(m1.getArray());
+            } else {
+                mPaint.setColorFilter(new ColorMatrixColorFilter(m1));
+                invalidate();
+            }
         } else {
-            mPaint.setColorFilter(null);
+            if (!Utilities.isLmpOrAbove() || mCurrentFilter == null) {
+                mPaint.setColorFilter(null);
+                invalidate();
+            } else {
+                animateFilterTo(new ColorMatrix().getArray());
+            }
         }
-        invalidate();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void animateFilterTo(float[] targetFilter) {
+        float[] oldFilter = mCurrentFilter == null ? new ColorMatrix().getArray() : mCurrentFilter;
+        mCurrentFilter = Arrays.copyOf(oldFilter, oldFilter.length);
+
+        if (mFilterAnimator != null) {
+            mFilterAnimator.cancel();
+        }
+        mFilterAnimator = ValueAnimator.ofObject(new FloatArrayEvaluator(mCurrentFilter),
+                oldFilter, targetFilter);
+        mFilterAnimator.setDuration(COLOR_CHANGE_DURATION);
+        mFilterAnimator.addUpdateListener(new AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mPaint.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
+                invalidate();
+            }
+        });
+        mFilterAnimator.start();
     }
 
     public boolean hasDrawn() {
@@ -301,4 +351,3 @@ public class DragView extends View {
         }
     }
 }
-
