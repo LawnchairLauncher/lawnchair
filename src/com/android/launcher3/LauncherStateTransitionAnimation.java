@@ -249,8 +249,8 @@ public class LauncherStateTransitionAnimation {
 
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.getWorkspace().setStateWithAnimation(
-                toWorkspaceState, -1, animated, layerViews);
+        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState, -1,
+                animated, layerViews);
 
         if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();
@@ -546,8 +546,8 @@ public class LauncherStateTransitionAnimation {
 
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.getWorkspace().setStateWithAnimation(
-                toWorkspaceState, toWorkspacePage, animated, layerViews);
+        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
+                toWorkspacePage, animated, layerViews);
 
         if (animated && initialized) {
             mStateAnimation = LauncherAnimUtils.createAnimatorSet();

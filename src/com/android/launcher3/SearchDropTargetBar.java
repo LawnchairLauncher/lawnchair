@@ -180,9 +180,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         prepareStartAnimation(mDropTargetBar);
         mShowDropTargetBarAnim.start();
         hideSearchBar(true);
-        if (mQSBSearchBar != null) {
-            mQSBSearchBar.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -193,9 +190,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         prepareStartAnimation(mDropTargetBar);
         mShowDropTargetBarAnim.reverse();
         showSearchBar(true);
-        if (mQSBSearchBar != null) {
-            mQSBSearchBar.setVisibility(View.VISIBLE);
-        }
     }
 
     /*

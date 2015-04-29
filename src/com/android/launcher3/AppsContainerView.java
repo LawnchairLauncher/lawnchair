@@ -269,19 +269,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
         // Start the drag
         mLauncher.getWorkspace().beginDragShared(v, mLastTouchPos, this, false);
-
-        // We delay entering spring-loaded mode slightly to make sure the UI
-        // thready is free of any work.
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // We don't enter spring-loaded mode if the drag has been cancelled
-                if (mLauncher.getDragController().isDragging()) {
-                    // Go into spring loaded mode (must happen before we startDrag())
-                    mLauncher.enterSpringLoadedDragMode();
-                }
-            }
-        }, 150);
+        // Enter spring loaded mode
+        mLauncher.enterSpringLoadedDragMode();
 
         return false;
     }

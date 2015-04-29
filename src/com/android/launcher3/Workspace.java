@@ -2040,14 +2040,6 @@ public class Workspace extends SmoothPagedView
         return -offsetFromTopEdge + mInsets.top + offsetToCenterInOverview;
     }
 
-    public void updateInteractionForState() {
-        if (mState != State.NORMAL) {
-            mLauncher.onInteractionBegin();
-        } else {
-            mLauncher.onInteractionEnd();
-        }
-    }
-
     /**
      * Sets the current workspace {@link State}, returning an animation transitioning the workspace
      * to that new state.
@@ -2060,7 +2052,6 @@ public class Workspace extends SmoothPagedView
 
         // Update the current state
         mState = toState;
-        updateInteractionForState();
         updateAccessibilityFlags();
 
         return workspaceAnim;

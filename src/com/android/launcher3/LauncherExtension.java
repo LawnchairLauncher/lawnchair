@@ -128,6 +128,10 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
+        public void onAllAppsHidden() {
+        }
+
+        @Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
         }
 
