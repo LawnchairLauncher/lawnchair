@@ -3546,9 +3546,9 @@ public class Launcher extends Activity
         text.clear();
         // Populate event with a fake title based on the current state.
         if (mState == State.APPS) {
-            text.add("Apps");
+            text.add(getString(R.string.all_apps_button_label));
         } else if (mState == State.WIDGETS) {
-            text.add("Widgets");
+            text.add(getString(R.string.widget_button_text));
         } else {
             text.add(getString(R.string.all_apps_home_button_label));
         }
