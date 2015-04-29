@@ -55,9 +55,6 @@
     <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
 
 <!-- Workspace -->
-    <!-- The transition duration for the background of the drop targets -->
-    <integer name="config_dropTargetBgTransitionDuration">0</integer>
-
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
