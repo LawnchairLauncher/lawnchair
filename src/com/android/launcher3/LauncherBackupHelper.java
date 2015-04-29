@@ -88,11 +88,6 @@ public class LauncherBackupHelper implements BackupHelper {
     /** widgets contain previews, which are very large, dribble them out */
     private static final int MAX_WIDGETS_PER_PASS = 5;
 
-    private static final int IMAGE_COMPRESSION_QUALITY = 75;
-
-    private static final Bitmap.CompressFormat IMAGE_FORMAT =
-            android.graphics.Bitmap.CompressFormat.PNG;
-
     private static final String[] FAVORITE_PROJECTION = {
         Favorites._ID,                     // 0
         Favorites.MODIFIED,                // 1
@@ -969,10 +964,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private Resource packIcon(int dpi, Bitmap icon) {
         Resource res = new Resource();
         res.dpi = dpi;
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        if (icon.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
-            res.data = os.toByteArray();
-        }
+        res.data = Utilities.flattenBitmap(icon);
         return res;
     }
 
@@ -990,20 +982,14 @@ public class LauncherBackupHelper implements BackupHelper {
             widget.icon = new Resource();
             Drawable fullResIcon = iconCache.getFullResIcon(provider.getPackageName(), info.icon);
             Bitmap icon = Utilities.createIconBitmap(fullResIcon, mContext);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (icon.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
-                widget.icon.data = os.toByteArray();
-                widget.icon.dpi = dpi;
-            }
+            widget.icon.data = Utilities.flattenBitmap(icon);
+            widget.icon.dpi = dpi;
         }
         if (info.previewImage != 0) {
             widget.preview = new Resource();
             Bitmap preview = previewLoader.generateWidgetPreview(info, previewWidth, null);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (preview.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
-                widget.preview.data = os.toByteArray();
-                widget.preview.dpi = dpi;
-            }
+            widget.preview.data = Utilities.flattenBitmap(preview);
+            widget.preview.dpi = dpi;
         }
         return widget;
     }
