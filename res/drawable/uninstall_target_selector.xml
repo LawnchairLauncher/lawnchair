@@ -19,6 +19,6 @@
 -->
 
 <transition xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_launcher_trashcan_normal_holo"  />
-    <item android:drawable="@drawable/ic_launcher_trashcan_active_holo"  />
+    <item android:drawable="@drawable/ic_launcher_uninstall_normal"  />
+    <item android:drawable="@drawable/ic_launcher_uninstall_active"  />
 </transition>
