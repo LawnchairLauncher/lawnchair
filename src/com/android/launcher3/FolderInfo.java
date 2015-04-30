@@ -33,7 +33,6 @@ public class FolderInfo extends ItemInfo {
 
     /**
      * The folder is locked in sorted mode
-     * @deprecated
      */
     public static final int FLAG_ITEMS_SORTED = 0x00000001;
 
