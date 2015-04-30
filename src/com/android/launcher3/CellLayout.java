@@ -310,7 +310,6 @@ public class CellLayout extends ViewGroup {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void enableAccessibleDrag(boolean enable, int dragType) {
         mUseTouchHelper = enable;
-        Log.e("HIGHRES", getParent() + "  " + enable + "  " + dragType, new Exception());
         if (!enable) {
             ViewCompat.setAccessibilityDelegate(this, null);
             setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
