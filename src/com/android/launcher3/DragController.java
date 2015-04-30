@@ -658,6 +658,7 @@ public class DragController {
         mDragObject.y = coordinates[1];
         checkTouchMove(dropTarget);
 
+        dropTarget.prepareAccessibilityDrop();
         // Perform the drop
         drop(location[0], location[1]);
         endDrag();

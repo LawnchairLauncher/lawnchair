@@ -49,8 +49,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.CellLayout.CellInfo;
 import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.util.Thunk;
@@ -63,7 +65,7 @@ import java.util.Collections;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, UninstallSource {
+        View.OnFocusChangeListener, DragListener, UninstallSource, AccessibilityDragSource {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -237,7 +239,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public boolean onLongClick(View v) {
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return true;
+        return beginDrag(v, false);
+    }
 
+    private boolean beginDrag(View v, boolean accessible) {
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             ShortcutInfo item = (ShortcutInfo) tag;
@@ -245,7 +250,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.getWorkspace().beginDragShared(v, new Point(), this, false);
+            mLauncher.getWorkspace().beginDragShared(v, new Point(), this, accessible);
 
             mCurrentDragInfo = item;
             mEmptyCellRank = item.rank;
@@ -257,6 +262,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mItemAddedBackToSelfViaIcon = false;
         }
         return true;
+    }
+
+    @Override
+    public void startDrag(CellInfo cellInfo, boolean accessible) {
+        beginDrag(cellInfo.cell, accessible);
+    }
+
+    @Override
+    public void enableAccessibleDrag(boolean enable) {
+        mLauncher.getSearchBar().enableAccessibleDrag(enable);
+        for (int i = 0; i < mContent.getChildCount(); i++) {
+            mContent.getPageAt(i).enableAccessibleDrag(enable, CellLayout.FOLDER_ACCESSIBILITY_DRAG);
+        }
+        mLauncher.getWorkspace().setAddNewPageOnDrag(!enable);
     }
 
     public boolean isEditingName() {
@@ -708,6 +727,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (mScrollHintDir != DragController.SCROLL_NONE) {
             mContent.clearScrollHint();
             mScrollHintDir = DragController.SCROLL_NONE;
+        }
+    }
+
+    /**
+     * When performing an accessibility drop, onDrop is sent immediately after onDragEnter. So we
+     * need to complete all transient states based on timers.
+     */
+    @Override
+    public void prepareAccessibilityDrop() {
+        if (mReorderAlarm.alarmPending()) {
+            mReorderAlarm.cancelAlarm();
+            mReorderAlarmListener.onAlarm(mReorderAlarm);
         }
     }
 
