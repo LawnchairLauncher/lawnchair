@@ -24,23 +24,29 @@ import com.android.launcher3.R;
  * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD in a folder.
  */
 public class FolderAccessibilityHelper extends DragAndDropAccessibilityDelegate {
+
+    /**
+     * 0-index position for the first cell in {@link #mView} in {@link #mParent}.
+     */
     private final int mStartPosition;
+
+    private final FolderPagedView mParent;
 
     public FolderAccessibilityHelper(CellLayout layout) {
         super(layout);
-        FolderPagedView parent = (FolderPagedView) layout.getParent();
+        mParent = (FolderPagedView) layout.getParent();
 
-        int index = parent.indexOfChild(layout);
-        mStartPosition = 1 + index * layout.getCountX() * layout.getCountY();
+        int index = mParent.indexOfChild(layout);
+        mStartPosition = index * layout.getCountX() * layout.getCountY();
     }
     @Override
     protected int intersectsValidDropTarget(int id) {
-        return id;
+        return Math.min(id, mParent.getAllocatedContentSize() - mStartPosition - 1);
     }
 
     @Override
     protected String getLocationDescriptionForIconDrop(int id) {
-        return mContext.getString(R.string.move_to_position, id + mStartPosition);
+        return mContext.getString(R.string.move_to_position, id + mStartPosition + 1);
     }
 
     @Override
