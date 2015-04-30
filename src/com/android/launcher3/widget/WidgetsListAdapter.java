@@ -161,10 +161,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     @Override
     public void onViewRecycled(WidgetsRowViewHolder holder) {
-        if (DEBUG) {
-            Log.v(TAG, String.format("onViewDetachedFromWindow, [pos=%d]",
-                    holder.getAdapterPosition()));
-        }
         ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
 
         for (int i = 0; i < row.getChildCount(); i++) {
