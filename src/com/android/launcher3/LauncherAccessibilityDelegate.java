@@ -27,22 +27,23 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
     private static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     private static final int MOVE = R.id.action_move;
 
-    enum DragType {
+    public enum DragType {
         ICON,
         FOLDER,
         WIDGET
     }
 
     public static class DragInfo {
-        DragType dragType;
-        ItemInfo info;
-        View item;
+        public DragType dragType;
+        public ItemInfo info;
+        public View item;
     }
-
-    private DragInfo mDragInfo = null;
 
     private final SparseArray<AccessibilityAction> mActions = new SparseArray<>();
     @Thunk final Launcher mLauncher;
+
+    private DragInfo mDragInfo = null;
+    private AccessibilityDragSource mDragSource = null;
 
     public LauncherAccessibilityDelegate(Launcher launcher) {
         mLauncher = launcher;
@@ -197,10 +198,23 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
 
         Rect pos = new Rect();
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(item, pos);
-
         mLauncher.getDragController().prepareAccessibleDrag(pos.centerX(), pos.centerY());
-        mLauncher.getWorkspace().enableAccessibleDrag(true);
-        mLauncher.getWorkspace().startDrag(cellInfo, true);
+
+        Workspace workspace = mLauncher.getWorkspace();
+
+        Folder folder = workspace.getOpenFolder();
+        if (folder != null) {
+            if (folder.getItemsInReadingOrder().contains(item)) {
+                mDragSource = folder;
+            } else {
+                mLauncher.closeFolder();
+            }
+        }
+        if (mDragSource == null) {
+            mDragSource = workspace;
+        }
+        mDragSource.enableAccessibleDrag(true);
+        mDragSource.startDrag(cellInfo, true);
     }
 
     public boolean onBackPressed() {
@@ -218,7 +232,16 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
 
     private void endAccessibleDrag() {
         mDragInfo = null;
-        mLauncher.getWorkspace().enableAccessibleDrag(false);
+        if (mDragSource != null) {
+            mDragSource.enableAccessibleDrag(false);
+            mDragSource = null;
+        }
+    }
+
+    public static interface AccessibilityDragSource {
+        void startDrag(CellLayout.CellInfo cellInfo, boolean accessible);
+
+        void enableAccessibleDrag(boolean enable);
     }
 
     /**
