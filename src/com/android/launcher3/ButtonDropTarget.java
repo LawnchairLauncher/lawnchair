@@ -117,7 +117,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) { }
+    public void onFlingToDelete(DragObject d, PointF vec) { }
 
     @Override
     public final void onDragEnter(DragObject d) {

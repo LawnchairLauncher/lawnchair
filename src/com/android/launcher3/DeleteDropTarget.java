@@ -17,29 +17,17 @@
 package com.android.launcher3;
 
 import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.util.FlingAnimation;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.widget.WidgetsContainerView;
 
 public class DeleteDropTarget extends ButtonDropTarget {
-
-    private static int FLING_DELETE_ANIMATION_DURATION = 350;
-    private static float FLING_TO_DELETE_FRICTION = 0.035f;
-    private static int MODE_FLING_DELETE_TO_TRASH = 0;
-    private static int MODE_FLING_DELETE_ALONG_VECTOR = 1;
-
-    private final int mFlingDeleteMode = MODE_FLING_DELETE_ALONG_VECTOR;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -119,146 +107,19 @@ public class DeleteDropTarget extends ButtonDropTarget {
         return true;
     }
 
-    /**
-     * Creates an animation from the current drag view to the delete trash icon.
-     */
-    private AnimatorUpdateListener createFlingToTrashAnimatorListener(final DragLayer dragLayer,
-            DragObject d, PointF vel, ViewConfiguration config) {
-
-        int width = mDrawable.getIntrinsicWidth();
-        int height = mDrawable.getIntrinsicHeight();
-        final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
-                width, height);
-        final Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-
-        // Calculate how far along the velocity vector we should put the intermediate point on
-        // the bezier curve
-        float velocity = Math.abs(vel.length());
-        float vp = Math.min(1f, velocity / (config.getScaledMaximumFlingVelocity() / 2f));
-        int offsetY = (int) (-from.top * vp);
-        int offsetX = (int) (offsetY / (vel.y / vel.x));
-        final float y2 = from.top + offsetY;                        // intermediate t/l
-        final float x2 = from.left + offsetX;
-        final float x1 = from.left;                                 // drag view t/l
-        final float y1 = from.top;
-        final float x3 = to.left;                                   // delete target t/l
-        final float y3 = to.top;
-
-        final TimeInterpolator scaleAlphaInterpolator = new TimeInterpolator() {
-            @Override
-            public float getInterpolation(float t) {
-                return t * t * t * t * t * t * t * t;
-            }
-        };
-        return new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final DragView dragView = (DragView) dragLayer.getAnimatedView();
-                float t = ((Float) animation.getAnimatedValue()).floatValue();
-                float tp = scaleAlphaInterpolator.getInterpolation(t);
-                float initialScale = dragView.getInitialScale();
-                float finalAlpha = 0.5f;
-                float scale = dragView.getScaleX();
-                float x1o = ((1f - scale) * dragView.getMeasuredWidth()) / 2f;
-                float y1o = ((1f - scale) * dragView.getMeasuredHeight()) / 2f;
-                float x = (1f - t) * (1f - t) * (x1 - x1o) + 2 * (1f - t) * t * (x2 - x1o) +
-                        (t * t) * x3;
-                float y = (1f - t) * (1f - t) * (y1 - y1o) + 2 * (1f - t) * t * (y2 - x1o) +
-                        (t * t) * y3;
-
-                dragView.setTranslationX(x);
-                dragView.setTranslationY(y);
-                dragView.setScaleX(initialScale * (1f - tp));
-                dragView.setScaleY(initialScale * (1f - tp));
-                dragView.setAlpha(finalAlpha + (1f - finalAlpha) * (1f - tp));
-            }
-        };
-    }
-
-    /**
-     * Creates an animation from the current drag view along its current velocity vector.
-     * For this animation, the alpha runs for a fixed duration and we update the position
-     * progressively.
-     */
-    private static class FlingAlongVectorAnimatorUpdateListener implements AnimatorUpdateListener {
-        private DragLayer mDragLayer;
-        private PointF mVelocity;
-        private Rect mFrom;
-        private long mPrevTime;
-        private boolean mHasOffsetForScale;
-        private float mFriction;
-
-        private final TimeInterpolator mAlphaInterpolator = new DecelerateInterpolator(0.75f);
-
-        public FlingAlongVectorAnimatorUpdateListener(DragLayer dragLayer, PointF vel, Rect from,
-                long startTime, float friction) {
-            mDragLayer = dragLayer;
-            mVelocity = vel;
-            mFrom = from;
-            mPrevTime = startTime;
-            mFriction = 1f - (dragLayer.getResources().getDisplayMetrics().density * friction);
-        }
-
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            final DragView dragView = (DragView) mDragLayer.getAnimatedView();
-            float t = ((Float) animation.getAnimatedValue()).floatValue();
-            long curTime = AnimationUtils.currentAnimationTimeMillis();
-
-            if (!mHasOffsetForScale) {
-                mHasOffsetForScale = true;
-                float scale = dragView.getScaleX();
-                float xOffset = ((scale - 1f) * dragView.getMeasuredWidth()) / 2f;
-                float yOffset = ((scale - 1f) * dragView.getMeasuredHeight()) / 2f;
-
-                mFrom.left += xOffset;
-                mFrom.top += yOffset;
-            }
-
-            mFrom.left += (mVelocity.x * (curTime - mPrevTime) / 1000f);
-            mFrom.top += (mVelocity.y * (curTime - mPrevTime) / 1000f);
-
-            dragView.setTranslationX(mFrom.left);
-            dragView.setTranslationY(mFrom.top);
-            dragView.setAlpha(1f - mAlphaInterpolator.getInterpolation(t));
-
-            mVelocity.x *= mFriction;
-            mVelocity.y *= mFriction;
-            mPrevTime = curTime;
-        }
-    };
-    private AnimatorUpdateListener createFlingAlongVectorAnimatorListener(final DragLayer dragLayer,
-            DragObject d, PointF vel, final long startTime, final int duration,
-            ViewConfiguration config) {
-        final Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-
-        return new FlingAlongVectorAnimatorUpdateListener(dragLayer, vel, from, startTime,
-                FLING_TO_DELETE_FRICTION);
-    }
-
-    public void onFlingToDelete(final DragObject d, int x, int y, PointF vel) {
-        final boolean isWidgets = d.dragSource instanceof WidgetsContainerView;
-        final boolean isAllapps = d.dragSource instanceof AppsContainerView;
-
+    @Override
+    public void onFlingToDelete(final DragObject d, PointF vel) {
         // Don't highlight the icon as it's animating
         d.dragView.setColor(0);
         d.dragView.updateInitialScaleToCurrentScale();
-        // Don't highlight the target if we are flinging from AllApps
-        if (isWidgets || isAllapps) {
-            resetHoverColor();
-        }
 
-        if (mFlingDeleteMode == MODE_FLING_DELETE_TO_TRASH) {
-            // Defer animating out the drop target if we are animating to it
-            mSearchDropTargetBar.deferOnDragEnd();
-            mSearchDropTargetBar.finishAnimations();
-        }
-
-        final ViewConfiguration config = ViewConfiguration.get(mLauncher);
         final DragLayer dragLayer = mLauncher.getDragLayer();
-        final int duration = FLING_DELETE_ANIMATION_DURATION;
+        FlingAnimation fling = new FlingAnimation(d, vel,
+                getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
+                        mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()),
+                        dragLayer);
+
+        final int duration = fling.getDuration();
         final long startTime = AnimationUtils.currentAnimationTimeMillis();
 
         // NOTE: Because it takes time for the first frame of animation to actually be
@@ -282,27 +143,17 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 return Math.min(1f, mOffset + t);
             }
         };
-        AnimatorUpdateListener updateCb = null;
-        if (mFlingDeleteMode == MODE_FLING_DELETE_TO_TRASH) {
-            updateCb = createFlingToTrashAnimatorListener(dragLayer, d, vel, config);
-        } else if (mFlingDeleteMode == MODE_FLING_DELETE_ALONG_VECTOR) {
-            updateCb = createFlingAlongVectorAnimatorListener(dragLayer, d, vel, startTime,
-                    duration, config);
-        }
 
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override
             public void run() {
-                // If we are dragging from AllApps, then we allow AppsCustomizePagedView to clean up
-                // itself, otherwise, complete the drop to initiate the deletion process
-                if (!isWidgets || !isAllapps) {
-                    mLauncher.exitSpringLoadedDragMode();
-                    completeDrop(d);
-                }
+                mLauncher.exitSpringLoadedDragMode();
+                completeDrop(d);
                 mLauncher.getDragController().onDeferredEndFling(d);
             }
         };
-        dragLayer.animateView(d.dragView, updateCb, duration, tInterpolator, onAnimationEndRunnable,
+
+        dragLayer.animateView(d.dragView, fling, duration, tInterpolator, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
