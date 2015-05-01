@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -61,6 +62,9 @@ public class WidgetsContainerView extends FrameLayout implements Insettable,
     private static final boolean DEBUG = false;
 
     private static final int SPRING_MODE_DELAY_MS = 150;
+
+    /* Coefficient multiplied to the screen height for preloading widgets. */
+    private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
 
     /* Global instances that are used inside this container. */
     private Launcher mLauncher;
@@ -114,8 +118,15 @@ public class WidgetsContainerView extends FrameLayout implements Insettable,
         }
         mView = (RecyclerView) findViewById(R.id.widgets_list_view);
         mView.setAdapter(mAdapter);
-        mView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // This extends the layout space so that preloading happen for the {@link RecyclerView}
+        mView.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            protected int getExtraLayoutSpace(State state) {
+                return super.getExtraLayoutSpace(state)
+                        + WidgetsContainerView.this.getHeight() * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
+            }
+        });
         mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
                 getPaddingBottom());
     }
