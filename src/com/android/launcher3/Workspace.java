@@ -3917,7 +3917,7 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
+    public void onFlingToDelete(DragObject d, PointF vec) {
         // Do nothing
     }
 

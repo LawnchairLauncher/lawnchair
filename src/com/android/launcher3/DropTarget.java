@@ -29,7 +29,7 @@ public interface DropTarget {
 
     public static final String TAG = "DropTarget";
 
-    class DragObject {
+    public static class DragObject {
         public int x = -1;
         public int y = -1;
 
@@ -164,7 +164,7 @@ public interface DropTarget {
      * of onDrop().  (This is only called on objects that are set as the DragController's
      * fling-to-delete target.
      */
-    void onFlingToDelete(DragObject dragObject, int x, int y, PointF vec);
+    void onFlingToDelete(DragObject dragObject, PointF vec);
 
     /**
      * Check if a drop action can occur at, or near, the requested location.
