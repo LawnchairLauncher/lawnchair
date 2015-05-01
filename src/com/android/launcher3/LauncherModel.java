@@ -881,22 +881,22 @@ public class LauncherModel extends BroadcastReceiver
      * TODO: Throw exception is above condition is not met.
      */
     @Thunk static boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
-        final Intent intentWithPkg, intentWithoutPkg;
+        final String intentWithPkg, intentWithoutPkg;
         final String packageName;
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
             // the same result and should also be a match.
             packageName = intent.getComponent().getPackageName();
             if (intent.getPackage() != null) {
-                intentWithPkg = intent;
-                intentWithoutPkg = new Intent(intent).setPackage(null);
+                intentWithPkg = intent.toUri(0);
+                intentWithoutPkg = new Intent(intent).setPackage(null).toUri(0);
             } else {
-                intentWithPkg = new Intent(intent).setPackage(packageName);
-                intentWithoutPkg = intent;
+                intentWithPkg = new Intent(intent).setPackage(packageName).toUri(0);
+                intentWithoutPkg = intent.toUri(0);
             }
         } else {
-            intentWithPkg = intent;
-            intentWithoutPkg = intent;
+            intentWithPkg = intent.toUri(0);
+            intentWithoutPkg = intent.toUri(0);
             packageName = intent.getPackage();
         }
 
@@ -904,9 +904,11 @@ public class LauncherModel extends BroadcastReceiver
             for (ItemInfo item : sBgItemsIdMap) {
                 if (item instanceof ShortcutInfo) {
                     ShortcutInfo info = (ShortcutInfo) item;
-                    if (intentWithPkg.equals(info.getIntent())
-                            || intentWithoutPkg.equals(info.getIntent())) {
-                        return true;
+                    if (info.getIntent() != null && info.user.equals(user)) {
+                        String s = info.getIntent().toUri(0);
+                        if (intentWithPkg.equals(s) || intentWithoutPkg.equals(s)) {
+                            return true;
+                        }
                     }
                 }
             }
