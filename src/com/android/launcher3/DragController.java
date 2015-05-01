@@ -710,8 +710,7 @@ public class DragController {
         mDragObject.dragComplete = true;
         mFlingToDeleteDropTarget.onDragExit(mDragObject);
         if (mFlingToDeleteDropTarget.acceptDrop(mDragObject)) {
-            mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, mDragObject.x, mDragObject.y,
-                    vel);
+            mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, vel);
             accepted = true;
         }
         mDragObject.dragSource.onDropCompleted((View) mFlingToDeleteDropTarget, mDragObject, true,
