@@ -704,9 +704,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (mInfo.opened) {
             mLauncher.closeFolder();
             mRearrangeOnClose = true;
+        } else if (mState == STATE_ANIMATING) {
+            mRearrangeOnClose = true;
         } else {
             rearrangeChildren();
+            clearDragInfo();
         }
+    }
+
+    private void clearDragInfo() {
         mCurrentDragInfo = null;
         mCurrentDragView = null;
         mSuppressOnAdd = false;
@@ -1037,6 +1043,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         }
         mSuppressFolderDeletion = false;
+        clearDragInfo();
     }
 
     @Thunk void replaceFolderWithFinalItem() {
