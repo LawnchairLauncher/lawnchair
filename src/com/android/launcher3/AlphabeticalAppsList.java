@@ -254,7 +254,7 @@ public class AlphabeticalAppsList {
         int length = apps.size();
         for (int i = 0; i < length; ++i) {
             AppInfo info = apps.get(i);
-            if (info.user.equals(info.user)
+            if (info.user.equals(targetInfo.user)
                     && info.intent.getComponent().equals(targetComponent)) {
                 return i;
             }
