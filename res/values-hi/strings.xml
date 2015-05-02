@@ -21,54 +21,25 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="home" msgid="7658288663002113681">"होम"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Android के मुख्य ऐप्लिकेशन"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"कार्यस्‍थल"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"एप्‍लिकेशन इंस्‍टॉल नहीं है."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ऐप्स उपलब्ध नहीं है"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्स सुरक्षित मोड में अक्षम है"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोड में अक्षम हैं"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"शॉर्टकट"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"शॉर्टकट"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"मेमोरी दिखाएं"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"आइटम को इस होम स्‍क्रीन पर नहीं छोड़ा जा सका."</string>
-    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"बनाने के लिए विजेट चुनें"</string>
     <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"ऐप्‍स खोजें"</string>
     <string name="loading_apps_message" msgid="5746103323587394548">"ऐप्स लोड हो रहे हैं..."</string>
     <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई भी ऐप नहीं मिला"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"फ़ोल्‍डर का नाम"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"फ़ोल्‍डर का नाम बदलें"</string>
-    <string name="rename_action" msgid="5559600076028658757">"ठीक"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"अभी नहीं"</string>
-    <string name="menu_item_add_item" msgid="1264911265836810421">"होम स्‍क्रीन में जोड़ें"</string>
-    <string name="group_applications" msgid="3797214114206693605">"ऐप्लिकेशन"</string>
-    <string name="group_shortcuts" msgid="6012256992764410535">"शॉर्टकट"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"शॉर्टकट"</string>
-    <string name="completely_out_of_space" msgid="6106288382070760318">"आपकी होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और स्थान नहीं है"</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"पसंदीदा ट्रे के लिए यह विजेट बहुत ही बड़ा है"</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"शॉर्टकट \"<xliff:g id="NAME">%s</xliff:g>\" बनाया गया."</string>
-    <string name="shortcut_duplicate" msgid="9167217446062498127">"शॉर्टकट \"<xliff:g id="NAME">%s</xliff:g>\" पहले से मौजूद है."</string>
-    <string name="title_select_shortcut" msgid="6680642571148153868">"शॉर्टकट चुनें"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"एप्‍लिकेशन चुनें"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ऐप्लिकेशन"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"अनइंस्टॉल करें"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"निकालें"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"अनइंस्टॉल करें"</string>
     <string name="info_target_label" msgid="8053346143994679532">"ऐप्लिकेशन की जानकारी"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"ऐप्लिकेशन"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"निकालें"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"अपडेट अनइंस्‍टॉल करें"</string>
-    <string name="cab_menu_delete_app" msgid="7435191475867183689">"ऐप्लिकेशन अनइंस्‍टॉल करें"</string>
-    <string name="cab_menu_app_info" msgid="8593722221450362342">"ऐप्लिकेशन का विवरण"</string>
-    <string name="cab_app_selection_text" msgid="374688303047985416">"1 एप्‍लिकेशन चयनित"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 विजेट चयनित"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 फ़ोल्‍डर चयनित"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 शॉर्टकट चयनित"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट इंस्‍टॉल करें"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ऐप्लिकेशन को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट जोड़ने देती है."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग और शॉर्टकट पढ़ें"</string>
@@ -78,29 +49,18 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करने में समस्‍या"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
-    <string name="dream_name" msgid="1530253749244328964">"रॉकेट लॉन्‍चर"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="workspace_description_format" msgid="2950174241104043327">"होम स्‍क्रीन %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"ऐप्लिकेशन पृष्ठ %2$d में से %1$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"शॉर्टकट %2$d में से %1$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागत है"</string>
-    <string name="first_run_cling_description" msgid="6447072552696253358">"जैसा चाहें वैसा उपयोग करें."</string>
-    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
-    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"ऐप्लिकेशन और फ़ोल्डर के लिए और अधिक स्क्रीन बनाएं"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"ऐप्स आइकन की प्रतिलिपि बनाएं"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"अपनी पुरानी होम स्क्रीन से आइकन और फ़ोल्डर आयात करें?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"आइकन की प्रतिलिपि बनाएं"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"फिर से शुरू करें"</string>
-    <string name="workspace_cling_title" msgid="5626202359865825661">"अपने स्थान को व्यवस्थित करें"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"वॉलपेपर, शॉर्टकट और सेटिंग प्रबंधित करने के लिए पृष्ठभूमि को स्पर्श करके रखें."</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वॉलपेपर, शॉर्टकट और सेटिंग"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"पृष्ठभूमि कस्टमाइज़ करने के लिए स्पर्श करके रखें"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"समझ लिया"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"यहां एक फ़ोल्डर है"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"इसके जैसा कोई एक बनाने के लिए, किसी ऐप्लिकेशन को स्पर्श करके रखें, फिर इसे किसी दूसरे पर ले जाएं."</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"ठीक"</string>
     <string name="folder_opened" msgid="94695026776264709">"फ़ोल्डर खोला गया, <xliff:g id="WIDTH">%1$d</xliff:g> गुणा <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"फ़ोल्‍डर बंद करने के लिए स्‍पर्श करें"</string>
