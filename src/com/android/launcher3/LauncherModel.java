@@ -1279,6 +1279,9 @@ public class LauncherModel extends BroadcastReceiver
             if (callbacks != null) {
                 callbacks.bindSearchablesChanged();
             }
+        } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
+                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
+            forceReload();
         }
     }
 

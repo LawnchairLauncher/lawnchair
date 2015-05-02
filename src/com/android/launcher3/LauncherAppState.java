@@ -112,6 +112,10 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
         filter.addAction(SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED);
+        // For handling managed profiles
+        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED);
+        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
+
         sContext.registerReceiver(mModel, filter);
     }
 

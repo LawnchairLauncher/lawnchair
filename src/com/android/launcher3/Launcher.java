@@ -1675,9 +1675,6 @@ public class Launcher extends Activity
                 mModel.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
                         LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
                                 | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
-            } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
-                    || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
-                getModel().forceReload();
             }
         }
     };
@@ -1691,8 +1688,6 @@ public class Launcher extends Activity
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
         // For handling managed profiles
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
         if (ENABLE_DEBUG_INTENTS) {
             filter.addAction(DebugIntents.DELETE_DATABASE);
             filter.addAction(DebugIntents.MIGRATE_DATABASE);
