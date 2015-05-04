@@ -559,7 +559,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     /**
      * Sets the current page.
      */
-    void setCurrentPage(int currentPage) {
+    public void setCurrentPage(int currentPage) {
         if (!mScroller.isFinished()) {
             abortScrollerAnimation(true);
         }
@@ -2535,7 +2535,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    protected void onStartReordering() {
+    public void onStartReordering() {
         // Set the touch state to reordering (allows snapping to pages, dragging a child, etc.)
         mTouchState = TOUCH_STATE_REORDERING;
         mIsReordering = true;
@@ -2555,7 +2555,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    protected void onEndReordering() {
+    public void onEndReordering() {
         mIsReordering = false;
     }
 
