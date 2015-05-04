@@ -197,7 +197,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
-        public void bindPackagesUpdated(ArrayList<Object> widgetsAndShortcuts);
+        public void bindAllPackages(ArrayList<Object> widgetsAndShortcuts);
         public void bindSearchablesChanged();
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
@@ -1599,9 +1599,6 @@ public class LauncherModel extends BroadcastReceiver
                 if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
                 loadAndBindAllApps();
 
-                // Remove entries for packages which changed while the launcher was dead.
-                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews();
-
                 // Restore the default thread priority after we are done loading items
                 synchronized (mLock) {
                     android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
@@ -2870,6 +2867,7 @@ public class LauncherModel extends BroadcastReceiver
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(added);
+                        loadAndBindWidgetsAndShortcuts(mContext,callbacks);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound " + added.size() + " apps in "
                                 + (SystemClock.uptimeMillis() - bindTime) + "ms");
@@ -3285,29 +3283,33 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(new Runnable(){
             @Override
             public void run() {
-                final ArrayList<Object> list =
-                        getSortedWidgetsAndShortcuts(context, true /* refresh */);
+                final ArrayList<Object> list = getWidgetsAndShortcuts(context, true /* refresh */);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindPackagesUpdated(list);
+                            callbacks.bindAllPackages(list);
                         }
                     }
                 });
+                // update the Widget entries inside DB on the worker thread.
+                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(list);
             }
         });
     }
 
-    // Returns a list of ResolveInfos/AppWidgetInfos in sorted order
-    public static ArrayList<Object> getSortedWidgetsAndShortcuts(Context context, boolean refresh) {
+    /**
+     *  Returns a list of ResolveInfos/AppWidgetInfos.
+     *
+     *  @see #loadAndBindWidgetsAndShortcuts
+     */
+    private ArrayList<Object> getWidgetsAndShortcuts(Context context, boolean refresh) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
         widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
-        Collections.sort(widgetsAndShortcuts, new WidgetAndShortcutNameComparator(context));
         return widgetsAndShortcuts;
     }
 

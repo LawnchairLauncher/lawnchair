@@ -24,6 +24,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Process;
 import android.util.Log;
 import android.util.LongSparseArray;
 
@@ -34,6 +35,9 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
 
+import junit.framework.Assert;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -202,11 +206,14 @@ public class WidgetPreviewLoader {
      *   2. Any preview for an absent package is removed
      * This ensures that we remove entries for packages which changed while the launcher was dead.
      */
-    public void removeObsoletePreviews() {
+    public void removeObsoletePreviews(ArrayList<Object> list) {
+        // This method should always be called from the worker thread.
+        Assert.assertTrue(LauncherModel.sWorkerThread.getThreadId() == Process.myTid());
+
         LongSparseArray<UserHandleCompat> userIdCache = new LongSparseArray<>();
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
 
-        for (Object obj : LauncherModel.getSortedWidgetsAndShortcuts(mContext, false)) {
+        for (Object obj : list) {
             final UserHandleCompat user;
             final String pkg;
             if (obj instanceof ResolveInfo) {
