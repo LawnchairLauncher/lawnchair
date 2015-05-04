@@ -3584,14 +3584,13 @@ public class Launcher extends Activity
      * in onResume.
      *
      * This needs to be called from incoming places where resources might have been loaded
-     * while we are paused.  That is becaues the Configuration might be wrong
-     * when we're not running, and if it comes back to what it was when we
-     * were paused, we are not restarted.
+     * while the activity is paused. That is because the Configuration (e.g., rotation)  might be
+     * wrong when we're not running, and if the activity comes back to what the configuration was
+     * when we were paused, activity is not restarted.
      *
      * Implementation of the method from LauncherModel.Callbacks.
      *
-     * @return true if we are currently paused.  The caller might be able to
-     * skip some work in that case since we will come back again.
+     * @return {@code true} if we are currently paused. The caller might be able to skip some work
      */
     private boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
         if (mPaused) {
@@ -4135,10 +4134,6 @@ public class Launcher extends Activity
         if (mAppsView != null) {
             mAppsView.setApps(apps);
         }
-        if (mWidgetsView != null) {
-            mWidgetsView.addWidgets(LauncherModel.getSortedWidgetsAndShortcuts(this, false),
-                    getPackageManager());
-        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
         }
@@ -4274,26 +4269,23 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * A number of packages were updated.
-     */
     @Thunk ArrayList<Object> mWidgetsAndShortcuts;
     private Runnable mBindPackagesUpdatedRunnable = new Runnable() {
             public void run() {
-                bindPackagesUpdated(mWidgetsAndShortcuts);
-                mWidgetsAndShortcuts = null;
+                bindAllPackages(mWidgetsAndShortcuts);
             }
         };
 
-    public void bindPackagesUpdated(final ArrayList<Object> widgetsAndShortcuts) {
+    @Override
+    public void bindAllPackages(final ArrayList<Object> widgetsAndShortcuts) {
         if (waitUntilResume(mBindPackagesUpdatedRunnable, true)) {
             mWidgetsAndShortcuts = widgetsAndShortcuts;
             return;
         }
 
-        if (mWidgetsView != null) {
-            mWidgetsView.addWidgets(LauncherModel.getSortedWidgetsAndShortcuts(this, false),
-                    getPackageManager());
+        if (mWidgetsView != null && widgetsAndShortcuts != null) {
+            mWidgetsView.addWidgets(widgetsAndShortcuts, getPackageManager());
+            mWidgetsAndShortcuts = null;
         }
     }
 
