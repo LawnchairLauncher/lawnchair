@@ -146,10 +146,13 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (DBG) Log.d(TAG, "Got INSTALL_SHORTCUT: " + data.toUri(0));
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
-        info = convertToLauncherActivityIfPossible(info);
+        if (info.launchIntent == null || info.label == null) {
+            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
+            return;
+        }
 
+        info = convertToLauncherActivityIfPossible(info);
         queuePendingShortcutInfo(info, context);
     }
 
