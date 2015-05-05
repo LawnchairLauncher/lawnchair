@@ -2863,11 +2863,13 @@ public class LauncherModel extends BroadcastReceiver
             // Post callback on main thread
             mHandler.post(new Runnable() {
                 public void run() {
+
                     final long bindTime = SystemClock.uptimeMillis();
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(added);
-                        loadAndBindWidgetsAndShortcuts(mContext, callbacks, true /* refresh */);
+                        loadAndBindWidgetsAndShortcuts(mApp.getContext(), callbacks,
+                                true /* refresh */);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound " + added.size() + " apps in "
                                 + (SystemClock.uptimeMillis() - bindTime) + "ms");
