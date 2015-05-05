@@ -522,13 +522,19 @@ public class Launcher extends Activity
         mLauncherCallbacks.setLauncherAppsCallback(new Launcher.LauncherAppsCallbacks() {
             @Override
             public void onAllAppsBoundsChanged(Rect bounds) {
+                if (LOGD) {
+                    Log.d(TAG, "onAllAppsBoundsChanged(Rect): " + bounds);
+                }
                 mAppsView.setFixedBounds(Launcher.this, bounds);
             }
 
             @Override
             public void dismissAllApps() {
-                showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true, null,
-                        false /* notifyLauncherCallbacks */);
+                // Dismiss All Apps if we aren't already paused/invisible
+                if (!mPaused) {
+                    showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true,
+                            null /* onCompleteRunnable */, false /* notifyLauncherCallbacks */);
+                }
             }
         });
         return true;
@@ -1012,6 +1018,13 @@ public class Launcher extends Activity
         }
         mOnResumeState = State.NONE;
 
+        // Restore the apps state if we are in all apps
+        if (mState == State.APPS) {
+            if (mLauncherCallbacks != null) {
+                mLauncherCallbacks.onAllAppsShown();
+            }
+        }
+
         // Background was set to gradient in onPause(), restore to black if in all apps.
         setWorkspaceBackground(mState == State.WORKSPACE);
 
@@ -1072,7 +1085,7 @@ public class Launcher extends Activity
                 mWorkspace.getCustomContentCallbacks().onShow(true);
             }
         }
-        mWorkspace.updateInteractionForState();
+        updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
 
         if (!isWorkspaceLoading()) {
@@ -2096,8 +2109,6 @@ public class Launcher extends Activity
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
 
-        showWorkspace(true);
-
         if (initialQuery == null) {
             // Use any text typed in the launcher as the initial query
             initialQuery = getTypedText();
@@ -2116,6 +2127,9 @@ public class Launcher extends Activity
         if (clearTextImmediately) {
             clearTypedText();
         }
+
+        // We need to show the workspace after starting the search
+        showWorkspace(true);
     }
 
     /**
@@ -2861,6 +2875,21 @@ public class Launcher extends Activity
         }
     }
 
+    /** Updates the interaction state. */
+    public void updateInteraction(Workspace.State fromState, Workspace.State toState) {
+        // Only update the interacting state if we are transitioning to/from a view without an
+        // overlay
+        boolean fromStateWithoutOverlay = fromState != Workspace.State.NORMAL &&
+                fromState != Workspace.State.NORMAL_HIDDEN;
+        boolean toStateWithoutOverlay = toState != Workspace.State.NORMAL &&
+                toState != Workspace.State.NORMAL_HIDDEN;
+        if (toStateWithoutOverlay) {
+            onInteractionBegin();
+        } else if (fromStateWithoutOverlay) {
+            onInteractionEnd();
+        }
+    }
+
     void startApplicationDetailsActivity(ComponentName componentName, UserHandleCompat user) {
         try {
             LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
@@ -3165,7 +3194,6 @@ public class Launcher extends Activity
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
-
                 if (!mWorkspace.isTouchActive()) {
                     showOverviewMode(true);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
@@ -3337,8 +3365,12 @@ public class Launcher extends Activity
             // Send an accessibility event to announce the context change
             getWindow().getDecorView()
                     .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-
-            onWorkspaceShown(animated);
+            if (notifyLauncherCallbacks) {
+                // Dismiss all apps when the workspace is shown
+                if (mLauncherCallbacks != null) {
+                    mLauncherCallbacks.onAllAppsHidden();
+                }
+            }
         }
     }
 
@@ -3348,10 +3380,6 @@ public class Launcher extends Activity
                 WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
                 null /* onCompleteRunnable */);
         mState = State.WORKSPACE;
-        onWorkspaceShown(animated);
-    }
-
-    public void onWorkspaceShown(boolean animated) {
     }
 
     /**
@@ -3411,6 +3439,18 @@ public class Launcher extends Activity
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
+    /**
+     * Updates the workspace and interaction state on state change, and return the animation to this
+     * new state.
+     */
+    public Animator startWorkspaceStateChangeAnimation(Workspace.State toState, int toPage,
+            boolean animated, HashMap<View, Integer> layerViews) {
+        Workspace.State fromState = mWorkspace.getState();
+        Animator anim = mWorkspace.setStateWithAnimation(toState, toPage, animated, layerViews);
+        updateInteraction(fromState, toState);
+        return anim;
+    }
+
     public void enterSpringLoadedDragMode() {
         Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s",
                 mState.name()));
@@ -3428,6 +3468,14 @@ public class Launcher extends Activity
     public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
             final Runnable onCompleteRunnable) {
         if (mState != State.APPS_SPRING_LOADED && mState != State.WIDGETS_SPRING_LOADED) return;
+
+        if (successfulDrop) {
+            // We need to trigger all apps hidden to notify search to update itself before the
+            // delayed call to showWorkspace below
+            if (mLauncherCallbacks != null) {
+                mLauncherCallbacks.onAllAppsHidden();
+            }
+        }
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -3449,13 +3497,10 @@ public class Launcher extends Activity
 
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            mStateTransitionAnimation.startAnimationToAllApps(true /* animated */);
-            mState = State.APPS;
+            showAppsView(true, false);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
-            mStateTransitionAnimation.startAnimationToWidgets(true /* animated */);
-            mState = State.WIDGETS;
+            showWidgetsView(true, false);
         }
-        // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
 
     void lockAllApps() {
