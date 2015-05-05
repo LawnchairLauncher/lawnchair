@@ -51,6 +51,7 @@ public interface LauncherCallbacks {
     public void finishBindingItems(final boolean upgradePath);
     public void onClickAllAppsButton(View v);
     public void onAllAppsShown();
+    public void onAllAppsHidden();
     public void bindAllApplications(ArrayList<AppInfo> apps);
     public void onClickFolderIcon(View v);
     public void onClickAppShortcut(View v);
