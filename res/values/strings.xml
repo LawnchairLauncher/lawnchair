@@ -241,4 +241,6 @@
     <!-- Accessibility confirmation for folder created [DO NOT TRANSLATE] -->
     <string name="folder_created">Folder created</string>
 
+    <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
+    <string name="action_move_to_workspace">Move to home screen</string>
 </resources>
