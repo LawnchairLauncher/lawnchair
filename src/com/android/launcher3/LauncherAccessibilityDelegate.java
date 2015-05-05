@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -26,6 +27,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
     private static final int UNINSTALL = R.id.action_uninstall;
     private static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     private static final int MOVE = R.id.action_move;
+    private static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
 
     public enum DragType {
         ICON,
@@ -58,6 +60,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
                 launcher.getText(R.string.action_add_to_workspace)));
         mActions.put(MOVE, new AccessibilityAction(MOVE,
                 launcher.getText(R.string.action_move)));
+        mActions.put(MOVE_TO_WORKSPACE, new AccessibilityAction(MOVE_TO_WORKSPACE,
+                launcher.getText(R.string.action_move_to_workspace)));
     }
 
     @Override
@@ -80,6 +84,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
                 || (item instanceof LauncherAppWidgetInfo)
                 || (item instanceof FolderInfo)) {
             info.addAction(mActions.get(MOVE));
+
+            if (item.container >= 0) {
+                info.addAction(mActions.get(MOVE_TO_WORKSPACE));
+            }
         } if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         }
@@ -135,6 +143,30 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
                 }
             });
             return true;
+        } else if (action == MOVE_TO_WORKSPACE) {
+            Folder folder = mLauncher.getWorkspace().getOpenFolder();
+            mLauncher.closeFolder(folder);
+            ShortcutInfo info = (ShortcutInfo) item;
+            folder.getInfo().remove(info);
+
+            final int[] coordinates = new int[2];
+            final long screenId = findSpaceOnWorkspace(item, coordinates);
+            LauncherModel.moveItemInDatabase(mLauncher, info,
+                    LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                    screenId, coordinates[0], coordinates[1]);
+
+            // Bind the item in next frame so that if a new workspace page was created,
+            // it will get laid out.
+            new Handler().post(new Runnable() {
+
+                @Override
+                public void run() {
+                    ArrayList<ItemInfo> itemList = new ArrayList<>();
+                    itemList.add(item);
+                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                    announceConfirmation(R.string.item_moved);
+                }
+            });
         }
         return false;
     }
