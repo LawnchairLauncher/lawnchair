@@ -33,13 +33,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View mContent;
-        public boolean mIsSectionRow;
+        public boolean mIsSectionHeader;
         public boolean mIsEmptyRow;
 
-        public ViewHolder(View v, boolean isSectionRow, boolean isEmptyRow) {
+        public ViewHolder(View v, boolean isSectionHeader, boolean isEmptyRow) {
             super(v);
             mContent = v;
-            mIsSectionRow = isSectionRow;
+            mIsSectionHeader = isSectionHeader;
             mIsEmptyRow = isEmptyRow;
         }
     }
@@ -72,36 +72,26 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-            if (items.isEmpty()) {
-                return;
-            }
-
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
-                if (holder != null) {
-                    GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
-                            child.getLayoutParams();
-                    if (!holder.mIsSectionRow && !holder.mIsEmptyRow && !lp.isItemRemoved()) {
-                        if (items.get(holder.getPosition() - 1).isSectionHeader) {
-                            // Draw at the parent
-                            AlphabeticalAppsList.AdapterItem item =
-                                    items.get(holder.getPosition());
-                            String section = item.sectionName;
-                            mSectionTextPaint.getTextBounds(section, 0, section.length(),
-                                    mTmpBounds);
-                            if (mIsRtl) {
-                                int left = parent.getWidth() - mPaddingStart - mStartMargin;
-                                c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
-                                        child.getTop() + (2 * child.getPaddingTop()) +
-                                                mTmpBounds.height(), mSectionTextPaint);
-                            } else {
-                                int left = mPaddingStart;
-                                c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
-                                    child.getTop() + (2 * child.getPaddingTop()) +
-                                            mTmpBounds.height(), mSectionTextPaint);
-                            }
-                        }
+                if (shouldDrawItemSection(holder, child, items)) {
+                    // Draw at the parent
+                    AlphabeticalAppsList.AdapterItem item =
+                            items.get(holder.getPosition());
+                    String section = item.sectionName;
+                    mSectionTextPaint.getTextBounds(section, 0, section.length(),
+                            mTmpBounds);
+                    if (mIsRtl) {
+                        int left = parent.getWidth() - mPaddingStart - mStartMargin;
+                        c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
+                                child.getTop() + (2 * child.getPaddingTop()) +
+                                        mTmpBounds.height(), mSectionTextPaint);
+                    } else {
+                        int left = mPaddingStart;
+                        c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
+                            child.getTop() + (2 * child.getPaddingTop()) +
+                                    mTmpBounds.height(), mSectionTextPaint);
                     }
                 }
             }
@@ -111,6 +101,31 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                 RecyclerView.State state) {
             // Do nothing
+        }
+
+        private boolean shouldDrawItemSection(ViewHolder holder, View child,
+                List<AlphabeticalAppsList.AdapterItem> items) {
+            // Ensure item is not already removed
+            GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
+                    child.getLayoutParams();
+            if (lp.isItemRemoved()) {
+                return false;
+            }
+            // Ensure we have a valid holder
+            if (holder == null) {
+                return false;
+            }
+            // Ensure it's not an empty row
+            if (holder.mIsEmptyRow) {
+                return false;
+            }
+            // Ensure we have a holder position
+            int pos = holder.getPosition();
+            if (pos <= 0 || pos >= items.size()) {
+                return false;
+            }
+            // Only draw the first item in the section (the first one after the section header)
+            return items.get(pos - 1).isSectionHeader && !items.get(pos).isSectionHeader;
         }
     }
 
