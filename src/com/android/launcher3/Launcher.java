@@ -4166,11 +4166,28 @@ public class Launcher extends Activity
     }
 
     /**
+     * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
+     * multiple calls to bind the same list.)
+     */
+    @Thunk ArrayList<AppInfo> mTmpAppsList;
+    private Runnable mBindAllApplicationsRunnable = new Runnable() {
+        public void run() {
+            bindAllApplications(mTmpAppsList);
+            mTmpAppsList = null;
+        }
+    };
+
+    /**
      * Add the icons for all apps.
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
+        if (waitUntilResume(mBindAllApplicationsRunnable, true)) {
+            mTmpAppsList = apps;
+            return;
+        }
+
         if (mAppsView != null) {
             mAppsView.setApps(apps);
         }
