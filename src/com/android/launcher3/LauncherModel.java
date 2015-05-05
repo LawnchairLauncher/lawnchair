@@ -2867,7 +2867,7 @@ public class LauncherModel extends BroadcastReceiver
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(added);
-                        loadAndBindWidgetsAndShortcuts(mContext,callbacks);
+                        loadAndBindWidgetsAndShortcuts(mContext, callbacks, true /* refresh */);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound " + added.size() + " apps in "
                                 + (SystemClock.uptimeMillis() - bindTime) + "ms");
@@ -3228,9 +3228,10 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 });
             }
-            if (Build.VERSION.SDK_INT < 17) {
-                loadAndBindWidgetsAndShortcuts(context, callbacks);
-            }
+
+            // onProvidersChanged method (API >= 17) already refreshed the widget list
+            loadAndBindWidgetsAndShortcuts(context, callbacks, Build.VERSION.SDK_INT < 17);
+
             // Write all the logs to disk
             mHandler.post(new Runnable() {
                 public void run() {
@@ -3279,11 +3280,12 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks) {
+    public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks,
+            final boolean refresh) {
         runOnWorkerThread(new Runnable(){
             @Override
             public void run() {
-                final ArrayList<Object> list = getWidgetsAndShortcuts(context, true /* refresh */);
+                final ArrayList<Object> list = getWidgetsAndShortcuts(context, refresh);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
