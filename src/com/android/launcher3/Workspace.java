@@ -94,7 +94,6 @@ public class Workspace extends SmoothPagedView
     protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
 
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
-    private static final int FLING_THRESHOLD_VELOCITY = 500;
 
     static final boolean MAP_NO_RECURSE = false;
     static final boolean MAP_RECURSE = true;
@@ -303,13 +302,11 @@ public class Workspace extends SmoothPagedView
      */
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mContentIsRefreshable = false;
 
         mOutlineHelper = HolographicOutlineHelper.obtain(context);
 
         mDragEnforcer = new DropTarget.DragEnforcer(context);
         // With workspace, data is available straight from the get-go
-        setDataIsReady();
 
         mLauncher = (Launcher) context;
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
@@ -445,7 +442,6 @@ public class Workspace extends SmoothPagedView
         display.getSize(mDisplaySize);
 
         mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
-        mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
 
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
@@ -4444,14 +4440,6 @@ public class Workspace extends SmoothPagedView
         }
 
         return super.getPageIndicatorMarker(pageIndex);
-    }
-
-    @Override
-    public void syncPages() {
-    }
-
-    @Override
-    public void syncPageItems(int page, boolean immediate) {
     }
 
     protected String getPageIndicatorDescription() {

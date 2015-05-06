@@ -3219,8 +3219,7 @@ public class Launcher extends Activity
         // The hotseat touch handling does not go through Workspace, and we always allow long press
         // on hotseat items.
         final boolean inHotseat = isHotseatLayout(v);
-        boolean allowLongPress = inHotseat || mWorkspace.allowLongPress();
-        if (allowLongPress && !mDragController.isDragging()) {
+        if (!mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
