@@ -86,6 +86,8 @@ public class AlphabeticalAppsList {
         public String sectionName;
         // The number of applications in this section
         public int numAppsInSection;
+        // The section AdapterItem for this section
+        public AdapterItem sectionItem;
         // The first app AdapterItem for this section
         public AdapterItem firstAppItem;
 
@@ -137,6 +139,9 @@ public class AlphabeticalAppsList {
         public boolean retainApp(AppInfo info, String sectionName);
     }
 
+    // The maximum number of rows allowed in a merged section before we stop merging
+    private static final int MAX_ROWS_IN_MERGED_SECTION = Integer.MAX_VALUE;
+
     private List<AppInfo> mApps = new ArrayList<>();
     private List<AppInfo> mFilteredApps = new ArrayList<>();
     private List<AdapterItem> mSectionedFilteredApps = new ArrayList<>();
@@ -145,10 +150,23 @@ public class AlphabeticalAppsList {
     private Filter mFilter;
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
+    private int mNumAppsPerRow;
+    // The maximum number of section merges we allow at a given time before we stop merging
+    private int mMaxAllowableMerges = Integer.MAX_VALUE;
 
-    public AlphabeticalAppsList(Context context) {
+    public AlphabeticalAppsList(Context context, int numAppsPerRow) {
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
+        setNumAppsPerRow(numAppsPerRow);
+    }
+
+    /**
+     * Sets the number of apps per row.  Used only for AppsContainerView.SECTIONED_GRID_COALESCED.
+     */
+    public void setNumAppsPerRow(int numAppsPerRow) {
+        mNumAppsPerRow = numAppsPerRow;
+        mMaxAllowableMerges = (int) Math.ceil(numAppsPerRow / 2f);
+        onAppsUpdated();
     }
 
     /**
@@ -180,6 +198,13 @@ public class AlphabeticalAppsList {
     }
 
     /**
+     * Returns whether there are is a filter set.
+     */
+    public boolean hasFilter() {
+        return (mFilter != null);
+    }
+
+    /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
@@ -190,9 +215,11 @@ public class AlphabeticalAppsList {
      * Sets the current filter for this list of apps.
      */
     public void setFilter(Filter f) {
-        mFilter = f;
-        onAppsUpdated();
-        mAdapter.notifyDataSetChanged();
+        if (mFilter != f) {
+            mFilter = f;
+            onAppsUpdated();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -298,9 +325,13 @@ public class AlphabeticalAppsList {
                 lastSectionInfo = new SectionInfo(sectionName);
                 mSections.add(lastSectionInfo);
 
-                // Create a new section item
+                // Create a new section item, this item is used to break the flow of items in the
+                // list
                 AdapterItem sectionItem = AdapterItem.asSection(position++, sectionName);
-                mSectionedFilteredApps.add(sectionItem);
+                if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS && !hasFilter()) {
+                    lastSectionInfo.sectionItem = sectionItem;
+                    mSectionedFilteredApps.add(sectionItem);
+                }
             }
 
             // Create an app item
@@ -311,6 +342,54 @@ public class AlphabeticalAppsList {
             }
             mSectionedFilteredApps.add(appItem);
             mFilteredApps.add(info);
+        }
+
+        if (AppsContainerView.GRID_MERGE_SECTIONS && !hasFilter()) {
+            // Go through each section and try and merge some of the sections
+            int minNumAppsPerRow = (int) Math.ceil(mNumAppsPerRow / 2f);
+            int sectionAppCount = 0;
+            for (int i = 0; i < mSections.size(); i++) {
+                SectionInfo section = mSections.get(i);
+                String mergedSectionName = section.sectionName;
+                sectionAppCount = section.numAppsInSection;
+                int mergeCount = 1;
+                // Merge rows if the last app in this section is in a column that is greater than
+                // 0, but less than the min number of apps per row.  In addition, apply the
+                // constraint to stop merging if the number of rows in the section is greater than
+                // some limit, and also if there are no lessons to merge.
+                while (0 < (sectionAppCount % mNumAppsPerRow) &&
+                        (sectionAppCount % mNumAppsPerRow) < minNumAppsPerRow &&
+                        (int) Math.ceil(sectionAppCount / mNumAppsPerRow) < MAX_ROWS_IN_MERGED_SECTION &&
+                        (i + 1) < mSections.size()) {
+                    SectionInfo nextSection = mSections.remove(i + 1);
+                    // Merge the section names
+                    if (AppsContainerView.GRID_MERGE_SECTION_HEADERS) {
+                        mergedSectionName += nextSection.sectionName;
+                    }
+                    // Remove the next section break
+                    mSectionedFilteredApps.remove(nextSection.sectionItem);
+                    if (AppsContainerView.GRID_MERGE_SECTION_HEADERS) {
+                        // Update the section names for the two sections
+                        int pos = mSectionedFilteredApps.indexOf(section.firstAppItem);
+                        for (int j = pos; j < (pos + section.numAppsInSection + nextSection.numAppsInSection); j++) {
+                            AdapterItem item = mSectionedFilteredApps.get(j);
+                            item.sectionName = mergedSectionName;
+                        }
+                    }
+                    // Update the following adapter items of the removed section
+                    int pos = mSectionedFilteredApps.indexOf(nextSection.firstAppItem);
+                    for (int j = pos; j < mSectionedFilteredApps.size(); j++) {
+                        AdapterItem item = mSectionedFilteredApps.get(j);
+                        item.position--;
+                    }
+                    section.numAppsInSection += nextSection.numAppsInSection;
+                    sectionAppCount += nextSection.numAppsInSection;
+                    mergeCount++;
+                    if (mergeCount >= mMaxAllowableMerges) {
+                        break;
+                    }
+                }
+            }
         }
     }
 }
