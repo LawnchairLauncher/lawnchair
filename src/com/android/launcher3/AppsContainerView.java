@@ -232,8 +232,15 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
             mFixedBounds.set(fixedBounds);
         }
-        updateBackgrounds();
-        updatePaddings();
+        // Post the updates since they can trigger a relayout, and this call can be triggered from
+        // a layout pass itself.
+        post(new Runnable() {
+            @Override
+            public void run() {
+                updateBackgrounds();
+                updatePaddings();
+            }
+        });
     }
 
     @Override
