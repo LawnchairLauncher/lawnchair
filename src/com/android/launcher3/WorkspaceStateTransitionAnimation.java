@@ -24,8 +24,11 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
+
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
@@ -190,7 +193,7 @@ public class WorkspaceStateTransitionAnimation {
                               final HashMap<View, Integer> layerViews) {
         AccessibilityManager am = (AccessibilityManager)
                 mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        boolean accessibilityEnabled = am.isEnabled();
+        final boolean accessibilityEnabled = am.isEnabled();
 
         // Reinitialize animation arrays for the current workspace state
         reinitializeAnimationArrays();
@@ -301,7 +304,7 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         final View searchBar = mLauncher.getOrCreateQsbBar();
-        final View overviewPanel = mLauncher.getOverviewPanel();
+        final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
         final View pageIndicator = mWorkspace.getPageIndicator();
         if (animated) {
@@ -424,6 +427,11 @@ public class WorkspaceStateTransitionAnimation {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mStateAnimator = null;
+
+                    if (accessibilityEnabled && overviewPanel.getVisibility() == View.VISIBLE) {
+                        overviewPanel.getChildAt(0).performAccessibilityAction(
+                                AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+                    }
                 }
             });
         } else {
@@ -443,6 +451,11 @@ public class WorkspaceStateTransitionAnimation {
             mWorkspace.setScaleX(mNewScale);
             mWorkspace.setScaleY(mNewScale);
             mWorkspace.setTranslationY(finalWorkspaceTranslationY);
+
+            if (accessibilityEnabled && overviewPanel.getVisibility() == View.VISIBLE) {
+                overviewPanel.getChildAt(0).performAccessibilityAction(
+                        AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+            }
         }
 
         if (stateIsNormal) {

@@ -243,4 +243,13 @@
 
     <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
     <string name="action_move_to_workspace">Move to home screen</string>
+
+    <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
+    <string name="action_move_screen_left">Move screen to left</string>
+
+    <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
+    <string name="action_move_screen_right">Move screen to right</string>
+
+    <!-- Accessibility confirmation when a screen was moved [DO NOT TRANSLATE] -->
+    <string name="screen_moved">Screen moved</string>
 </resources>

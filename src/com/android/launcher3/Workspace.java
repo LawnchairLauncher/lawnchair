@@ -63,6 +63,7 @@ import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
+import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
@@ -276,6 +277,8 @@ public class Workspace extends SmoothPagedView
 
     // Handles workspace state transitions
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
+
+    private AccessibilityDelegate mPagesAccessibilityDelegate;
 
     private final Runnable mBindPages = new Runnable() {
         @Override
@@ -2000,14 +2003,14 @@ public class Workspace extends SmoothPagedView
         range[1] = Math.max(0,  end);
     }
 
-    protected void onStartReordering() {
+    public void onStartReordering() {
         super.onStartReordering();
         showOutlines();
         // Reordering handles its own animations, disable the automatic ones.
         disableLayoutTransitions();
     }
 
-    protected void onEndReordering() {
+    public void onEndReordering() {
         super.onEndReordering();
 
         if (mLauncher.isWorkspaceLoading()) {
@@ -2068,11 +2071,45 @@ public class Workspace extends SmoothPagedView
         return mState;
     }
 
-    private void updateAccessibilityFlags() {
-        int accessible = mState == State.NORMAL ?
-                IMPORTANT_FOR_ACCESSIBILITY_NO :
-                IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
-        setImportantForAccessibility(accessible);
+    public void updateAccessibilityFlags() {
+        if (Utilities.isLmpOrAbove()) {
+            int total = getPageCount();
+            for (int i = numCustomPages(); i < total; i++) {
+                updateAccessibilityFlags((CellLayout) getPageAt(i), i);
+            }
+            if (mState == State.NORMAL) {
+                setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+            } else {
+                setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            }
+        } else {
+            int accessible = mState == State.NORMAL ?
+                    IMPORTANT_FOR_ACCESSIBILITY_NO :
+                        IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+            setImportantForAccessibility(accessible);
+        }
+    }
+
+    private void updateAccessibilityFlags(CellLayout page, int pageNo) {
+        if (mState == State.OVERVIEW) {
+            page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            page.getShortcutsAndWidgets().setImportantForAccessibility(
+                    IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            page.setContentDescription(getPageDescription(pageNo));
+
+            if (mPagesAccessibilityDelegate == null) {
+                mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
+            }
+            page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
+        } else {
+            int accessible = mState == State.NORMAL ?
+                    IMPORTANT_FOR_ACCESSIBILITY_NO :
+                        IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+            page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+            page.getShortcutsAndWidgets().setImportantForAccessibility(accessible);
+            page.setContentDescription(null);
+            page.setAccessibilityDelegate(null);
+        }
     }
 
     @Override
@@ -4460,11 +4497,15 @@ public class Workspace extends SmoothPagedView
     }
 
     protected String getCurrentPageDescription() {
-        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
-        int delta = numCustomPages();
         if (hasCustomContent() && getNextPage() == 0) {
             return mCustomContentDescription;
         }
+        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+        return getPageDescription(page);
+    }
+
+    private String getPageDescription(int page) {
+        int delta = numCustomPages();
         return String.format(getContext().getString(R.string.workspace_scroll_format),
                 page + 1 - delta, getChildCount() - delta);
     }
