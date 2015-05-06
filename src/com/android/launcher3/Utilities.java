@@ -46,9 +46,11 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
@@ -668,5 +670,18 @@ public final class Utilities {
                 && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
                 && launchIntent.getExtras() == null
                 && TextUtils.isEmpty(launchIntent.getDataString());
+    }
+
+    public static float dpiFromPx(int size, DisplayMetrics metrics){
+        float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
+        return (size / densityRatio);
+    }
+    public static int pxFromDp(float size, DisplayMetrics metrics) {
+        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                size, metrics));
+    }
+    public static int pxFromSp(float size, DisplayMetrics metrics) {
+        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                size, metrics));
     }
 }

@@ -430,8 +430,9 @@ public class Launcher extends Activity
         LauncherAppState app = LauncherAppState.getInstance();
         LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
 
-        // Lazy-initialize the dynamic grid
-        mDeviceProfile = app.initDynamicGrid(this);
+        // Load configuration-specific DeviceProfile
+        mDeviceProfile = new DeviceProfile(this, app.getInvariantDeviceProfile());
+        mDeviceProfile.addCallback(LauncherAppState.getInstance());
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
@@ -439,7 +440,7 @@ public class Launcher extends Activity
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
-        mIconCache.flushInvalidIcons(mDeviceProfile);
+
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, this);
@@ -1415,7 +1416,6 @@ public class Launcher extends Activity
         // Setup the hotseat
         mHotseat = (Hotseat) findViewById(R.id.hotseat);
         if (mHotseat != null) {
-            mHotseat.setup(this);
             mHotseat.setOnLongClickListener(this);
         }
 
@@ -1601,31 +1601,21 @@ public class Launcher extends Activity
         }
     }
 
-    static int[] getSpanForWidget(Context context, ComponentName component, int minWidth,
-            int minHeight) {
-        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(context, component, null);
+    private int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight) {
+        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(this, component, null);
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested
         int requiredWidth = minWidth + padding.left + padding.right;
         int requiredHeight = minHeight + padding.top + padding.bottom;
-        return CellLayout.rectToCell(requiredWidth, requiredHeight, null);
+        return CellLayout.rectToCell(this, requiredWidth, requiredHeight, null);
     }
 
-    static int[] getSpanForWidget(Context context, AppWidgetProviderInfo info) {
-        return getSpanForWidget(context, info.provider, info.minWidth, info.minHeight);
+    public int[] getSpanForWidget(AppWidgetProviderInfo info) {
+        return getSpanForWidget(info.provider, info.minWidth, info.minHeight);
     }
 
-    static int[] getMinSpanForWidget(Context context, AppWidgetProviderInfo info) {
-        return getSpanForWidget(context, info.provider, info.minResizeWidth, info.minResizeHeight);
-    }
-
-    static int[] getSpanForWidget(Context context, PendingAddWidgetInfo info) {
-        return getSpanForWidget(context, info.componentName, info.minWidth, info.minHeight);
-    }
-
-    static int[] getMinSpanForWidget(Context context, PendingAddWidgetInfo info) {
-        return getSpanForWidget(context, info.componentName, info.minResizeWidth,
-                info.minResizeHeight);
+    public int[] getMinSpanForWidget(AppWidgetProviderInfo info) {
+        return getSpanForWidget(info.provider, info.minResizeWidth, info.minResizeHeight);
     }
 
     /**
@@ -1914,6 +1904,10 @@ public class Launcher extends Activity
 
     protected SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
+    }
+
+    public DeviceProfile getDeviceProfile() {
+        return mDeviceProfile;
     }
 
     public void closeSystemDialogs() {
@@ -4021,7 +4015,7 @@ public class Launcher extends Activity
             // Note: This assumes that the id remap broadcast is received before this step.
             // If that is not the case, the id remap will be ignored and user may see the
             // click to setup view.
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo, null);
+            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo, null);
             pendingInfo.spanX = item.spanX;
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;

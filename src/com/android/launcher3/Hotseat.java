@@ -54,10 +54,7 @@ public class Hotseat extends FrameLayout {
                 r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
         mIsLandscape = context.getResources().getConfiguration().orientation ==
             Configuration.ORIENTATION_LANDSCAPE;
-    }
-
-    public void setup(Launcher launcher) {
-        mLauncher = launcher;
+        mLauncher = (Launcher) context;
     }
 
     CellLayout getLayout() {
@@ -108,15 +105,14 @@ public class Hotseat extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
-        mAllAppsButtonRank = grid.hotseatAllAppsRank;
+        mAllAppsButtonRank = grid.inv.hotseatAllAppsRank;
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isLandscape && !grid.isLargeTablet()) {
-            mContent.setGridSize(1, (int) grid.numHotseatIcons);
+            mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize((int) grid.numHotseatIcons, 1);
+            mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);
         }
         mContent.setIsHotseat(true);
 

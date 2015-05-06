@@ -141,13 +141,15 @@ public class LauncherBackupHelper implements BackupHelper {
     private final ItemTypeMatcher[] mItemTypeMatchers;
     private final long mUserSerial;
 
-    private IconCache mIconCache;
     private BackupManager mBackupManager;
     private byte[] mBuffer = new byte[512];
     private long mLastBackupRestoreTime;
     private boolean mBackupDataWasUpdated;
 
-    private DeviceProfieData mCurrentProfile;
+    private LauncherAppState mLauncherAppState;
+    private IconCache mIconCache;
+    private DeviceProfieData mDeviceProfileData;
+
     boolean restoreSuccessful;
     int restoredBackupVersion = 1;
 
@@ -197,10 +199,14 @@ public class LauncherBackupHelper implements BackupHelper {
 
         Journal in = readJournal(oldState);
         if (!launcherIsReady()) {
+            dataChanged();
             // Perform backup later.
             writeJournal(newState, in);
             return;
         }
+
+        lazyInitAppState(true /* noCreate */);
+
         Log.v(TAG, "lastBackupTime = " + in.t);
         mKeys.clear();
         applyJournal(in);
@@ -296,12 +302,7 @@ public class LauncherBackupHelper implements BackupHelper {
         if (!restoreSuccessful) {
             return;
         }
-        if (!initializeIconCache()) {
-            // During restore we do not need an initialized instance of IconCache. We can create
-            // a temporary icon cache here, as the process will be rebooted after restore
-            // is complete.
-            mIconCache = new IconCache(mContext);
-        }
+        lazyInitAppState(false /* noCreate */);
 
         int dataSize = data.size();
         if (mBuffer.length < dataSize) {
@@ -395,19 +396,34 @@ public class LauncherBackupHelper implements BackupHelper {
      * @return the current device profile information.
      */
     private DeviceProfieData getDeviceProfieData() {
-        if (mCurrentProfile != null) {
-            return mCurrentProfile;
-        }
-        final Context applicationContext = mContext.getApplicationContext();
-        DeviceProfile profile = LauncherAppState.createDynamicGrid(applicationContext, null)
-                .getDeviceProfile();
+        return mDeviceProfileData;
+    }
 
-        mCurrentProfile = new DeviceProfieData();
-        mCurrentProfile.desktopRows = profile.numRows;
-        mCurrentProfile.desktopCols = profile.numColumns;
-        mCurrentProfile.hotseatCount = profile.numHotseatIcons;
-        mCurrentProfile.allappsRank = profile.hotseatAllAppsRank;
-        return mCurrentProfile;
+    private void lazyInitAppState(boolean noCreate) {
+        if (mLauncherAppState != null) {
+            return;
+        }
+
+        if (noCreate) {
+            mLauncherAppState = LauncherAppState.getInstanceNoCreate();
+        } else {
+            LauncherAppState.setApplicationContext(mContext);
+            mLauncherAppState = LauncherAppState.getInstance();
+        }
+
+        mIconCache = mLauncherAppState.getIconCache();
+        InvariantDeviceProfile profile = mLauncherAppState.getInvariantDeviceProfile();
+
+        mDeviceProfileData = initDeviceProfileData(profile);
+    }
+
+    private DeviceProfieData initDeviceProfileData(InvariantDeviceProfile profile) {
+        DeviceProfieData data = new DeviceProfieData();
+        data.desktopRows = profile.numRows;
+        data.desktopCols = profile.numColumns;
+        data.hotseatCount = profile.numHotseatIcons;
+        data.allappsRank = profile.hotseatAllAppsRank;
+        return data;
     }
 
     /**
@@ -518,11 +534,6 @@ public class LauncherBackupHelper implements BackupHelper {
      */
     private void backupIcons(BackupDataOutput data) throws IOException {
         // persist icons that haven't been persisted yet
-        if (!initializeIconCache()) {
-            dataChanged(); // try again later
-            if (DEBUG) Log.d(TAG, "Launcher is not initialized, delaying icon backup");
-            return;
-        }
         final ContentResolver cr = mContext.getContentResolver();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
         final UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
@@ -619,16 +630,9 @@ public class LauncherBackupHelper implements BackupHelper {
      */
     private void backupWidgets(BackupDataOutput data) throws IOException {
         // persist static widget info that hasn't been persisted yet
-        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (appState == null || !initializeIconCache()) {
-            Log.w(TAG, "Failed to get icon cache during restore");
-            return;
-        }
         final ContentResolver cr = mContext.getContentResolver();
-        final WidgetPreviewLoader previewLoader = appState.getWidgetCache();
+        final WidgetPreviewLoader previewLoader = mLauncherAppState.getWidgetCache();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
-        final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
-        if (DEBUG) Log.d(TAG, "cellWidthPx: " + profile.cellWidthPx);
         int backupWidgetCount = 0;
 
         String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPWIDGET + " AND "
@@ -661,8 +665,7 @@ public class LauncherBackupHelper implements BackupHelper {
                         if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
                         UserHandleCompat user = UserHandleCompat.myUserHandle();
                         writeRowToBackup(key,
-                                packWidget(dpi, previewLoader,spanX * profile.cellWidthPx,
-                                        mIconCache, provider, user),
+                                packWidget(dpi, previewLoader, mIconCache, provider, user),
                                 data);
                         mKeys.add(key);
                         backupWidgetCount ++;
@@ -969,8 +972,7 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Serialize a widget for persistence, including a checksum wrapper. */
-    private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader,
-            int previewWidth, IconCache iconCache,
+    private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
             ComponentName provider, UserHandleCompat user) {
         final LauncherAppWidgetProviderInfo info =
                 LauncherModel.getProviderInfo(mContext, provider, user);
@@ -984,12 +986,6 @@ public class LauncherBackupHelper implements BackupHelper {
             Bitmap icon = Utilities.createIconBitmap(fullResIcon, mContext);
             widget.icon.data = Utilities.flattenBitmap(icon);
             widget.icon.dpi = dpi;
-        }
-        if (info.previewImage != 0) {
-            widget.preview = new Resource();
-            Bitmap preview = previewLoader.generateWidgetPreview(info, previewWidth, null);
-            widget.preview.data = Utilities.flattenBitmap(preview);
-            widget.preview.dpi = dpi;
         }
         return widget;
     }
@@ -1136,25 +1132,6 @@ public class LauncherBackupHelper implements BackupHelper {
         return wrapper.payload;
     }
 
-    private boolean initializeIconCache() {
-        if (mIconCache != null) {
-            return true;
-        }
-
-        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (appState == null) {
-            if (DEBUG) {
-                Throwable stackTrace = new Throwable();
-                stackTrace.fillInStackTrace();
-                Log.w(TAG, "Failed to get app state during backup/restore", stackTrace);
-            }
-            return false;
-        }
-        mIconCache = appState.getIconCache();
-        return mIconCache != null;
-    }
-
-
     /**
      * @return true if the launcher is in a state to support backup
      */
@@ -1167,9 +1144,8 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         cursor.close();
 
-        if (!initializeIconCache()) {
+        if (LauncherAppState.getInstanceNoCreate() == null) {
             // launcher services are unavailable, try again later
-            dataChanged();
             return false;
         }
 

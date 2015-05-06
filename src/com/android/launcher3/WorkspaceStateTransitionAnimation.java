@@ -162,7 +162,7 @@ public class WorkspaceStateTransitionAnimation {
         mWorkspace = workspace;
 
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         Resources res = launcher.getResources();
         mAllAppsTransitionTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
         mOverviewTransitionTime = res.getInteger(R.integer.config_overviewTransitionTime);

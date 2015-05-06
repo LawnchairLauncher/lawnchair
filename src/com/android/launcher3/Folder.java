@@ -945,8 +945,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, sTempRect);
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
         int centerX = (int) (sTempRect.left + sTempRect.width() * scale / 2);
         int centerY = (int) (sTempRect.top + sTempRect.height() * scale / 2);
@@ -1003,8 +1002,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private int getContentAreaHeight() {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         Rect workspacePadding = grid.getWorkspacePadding(grid.isLandscape ?
                 CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
         int maxContentAreaHeight = grid.availableHeightPx -

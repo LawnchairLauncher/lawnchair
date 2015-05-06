@@ -66,17 +66,19 @@ public class WidgetPreviewLoader {
     private final UserManagerCompat mUserManager;
     private final AppWidgetManagerCompat mManager;
     private final CacheDb mDb;
+    private final InvariantDeviceProfile mDeviceProfile;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     private final Handler mWorkerHandler;
 
-    public WidgetPreviewLoader(Context context, IconCache iconCache) {
+    public WidgetPreviewLoader(Context context, InvariantDeviceProfile inv, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
         mManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
+        mDeviceProfile = inv;
     }
 
     /**
@@ -86,8 +88,8 @@ public class WidgetPreviewLoader {
      * @param o either {@link LauncherAppWidgetProviderInfo} or {@link ResolveInfo}
      * @return a request id which can be used to cancel the request.
      */
-    public PreviewLoadRequest getPreview(final Object o, int previewWidth, int previewHeight,
-            WidgetCell caller) {
+    public PreviewLoadRequest getPreview(final Object o, int previewWidth,
+            int previewHeight, WidgetCell caller) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = getObjectKey(o, size);
 
@@ -329,23 +331,18 @@ public class WidgetPreviewLoader {
         return null;
     }
 
-    private Bitmap generatePreview(Object info, Bitmap recycle, int previewWidth, int previewHeight) {
+    private Bitmap generatePreview(Launcher launcher, Object info, Bitmap recycle,
+            int previewWidth, int previewHeight) {
         if (info instanceof LauncherAppWidgetProviderInfo) {
-            return generateWidgetPreview((LauncherAppWidgetProviderInfo) info, previewWidth, recycle);
+            return generateWidgetPreview(launcher, (LauncherAppWidgetProviderInfo) info,
+                    previewWidth, recycle, null);
         } else {
-            return generateShortcutPreview(
+            return generateShortcutPreview(launcher,
                     (ResolveInfo) info, previewWidth, previewHeight, recycle);
         }
     }
 
-    public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info,
-            int previewWidth, Bitmap preview) {
-        int maxWidth = Math.min(previewWidth, info.spanX
-                * LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile().cellWidthPx);
-        return generateWidgetPreview(info, maxWidth, preview, null);
-    }
-
-    public Bitmap generateWidgetPreview(LauncherAppWidgetProviderInfo info,
+    public Bitmap generateWidgetPreview(Launcher launcher, LauncherAppWidgetProviderInfo info,
             int maxPreviewWidth, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
         if (maxPreviewWidth < 0) maxPreviewWidth = Integer.MAX_VALUE;
@@ -362,8 +359,8 @@ public class WidgetPreviewLoader {
         }
 
         final boolean widgetPreviewExists = (drawable != null);
-        final int spanX = info.spanX < 1 ? 1 : info.spanX;
-        final int spanY = info.spanY < 1 ? 1 : info.spanY;
+        final int spanX = info.getSpanX(launcher) < 1 ? 1 : info.getSpanX(launcher);
+        final int spanY = info.getSpanY(launcher) < 1 ? 1 : info.getSpanY(launcher);
 
         int previewWidth;
         int previewHeight;
@@ -413,8 +410,7 @@ public class WidgetPreviewLoader {
         } else {
             final Paint p = new Paint();
             p.setFilterBitmap(true);
-            int appIconSize = LauncherAppState.getInstance().getDynamicGrid()
-                    .getDeviceProfile().iconSizePx;
+            int appIconSize = launcher.getDeviceProfile().iconSizePx;
 
             // draw the spanX x spanY tiles
             final Rect src = new Rect(0, 0, tileBitmap.getWidth(), tileBitmap.getHeight());
@@ -455,7 +451,7 @@ public class WidgetPreviewLoader {
     }
 
     private Bitmap generateShortcutPreview(
-            ResolveInfo info, int maxWidth, int maxHeight, Bitmap preview) {
+            Launcher launcher, ResolveInfo info, int maxWidth, int maxHeight, Bitmap preview) {
         final Canvas c = new Canvas();
         if (preview == null) {
             preview = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
@@ -488,8 +484,8 @@ public class WidgetPreviewLoader {
 
         // Draw the final icon at top left corner.
         // TODO: use top right for RTL
-        int appIconSize = LauncherAppState.getInstance().getDynamicGrid()
-                .getDeviceProfile().iconSizePx;
+        int appIconSize = launcher.getDeviceProfile().iconSizePx;
+
         icon.setAlpha(255);
         icon.setColorFilter(null);
         icon.setBounds(0, 0, appIconSize, appIconSize);
@@ -626,8 +622,10 @@ public class WidgetPreviewLoader {
                 // which would gets re-written next time.
                 mVersions = getPackageVersion(mKey.componentName.getPackageName());
 
+                Launcher launcher = (Launcher) mCaller.getContext();
+
                 // it's not in the db... we need to generate it
-                preview = generatePreview(mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);
+                preview = generatePreview(launcher, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);
             }
             return preview;
         }

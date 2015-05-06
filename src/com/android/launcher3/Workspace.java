@@ -307,13 +307,11 @@ public class Workspace extends SmoothPagedView
         mLauncher = (Launcher) context;
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         final Resources res = getResources();
-        mWorkspaceFadeInAdjacentScreens = LauncherAppState.getInstance().getDynamicGrid().
-                getDeviceProfile().shouldFadeAdjacentWorkspaceScreens();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
         mSpringLoadedShrinkFactor =
@@ -422,7 +420,7 @@ public class Workspace extends SmoothPagedView
     protected void initWorkspace() {
         mCurrentPage = mDefaultPage;
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         mIconCache = app.getIconCache();
         setWillNotDraw(false);
         setClipChildren(false);
@@ -1901,8 +1899,7 @@ public class Workspace extends SmoothPagedView
 
     public void onExternalDragStartedWithItem(View v) {
         // Compose a drag bitmap with the view scaled to the icon size
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         int iconSize = grid.iconSizePx;
         int bmpWidth = v.getMeasuredWidth();
         int bmpHeight = v.getMeasuredHeight();
@@ -1984,7 +1981,7 @@ public class Workspace extends SmoothPagedView
 
     int getOverviewModeTranslationY() {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         Rect overviewBar = grid.getOverviewModeButtonBarRect();
 
         int availableHeight = getViewportHeight();
@@ -2285,8 +2282,7 @@ public class Workspace extends SmoothPagedView
         int dragLayerY = Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
                         - padding.get() / 2);
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
@@ -2343,7 +2339,7 @@ public class Workspace extends SmoothPagedView
 
     public void beginExternalDragShared(View child, DragSource source) {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         int iconSize = grid.iconSizePx;
 
         // Notify launcher of drag start
@@ -2852,14 +2848,14 @@ public class Workspace extends SmoothPagedView
      * widthGap/heightGap (right, bottom) */
     static Rect getCellLayoutMetrics(Launcher launcher, int orientation) {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = launcher.getDeviceProfile();
 
         Display display = launcher.getWindowManager().getDefaultDisplay();
         Point smallestSize = new Point();
         Point largestSize = new Point();
         display.getCurrentSizeRange(smallestSize, largestSize);
-        int countX = (int) grid.numColumns;
-        int countY = (int) grid.numRows;
+        int countX = (int) grid.inv.numColumns;
+        int countY = (int) grid.inv.numRows;
         if (orientation == CellLayout.LANDSCAPE) {
             if (mLandscapeCellLayoutMetrics == null) {
                 Rect padding = grid.getWorkspacePadding(CellLayout.LANDSCAPE);
@@ -3023,7 +3019,7 @@ public class Workspace extends SmoothPagedView
        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempPt, true);
 
        LauncherAppState app = LauncherAppState.getInstance();
-       DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+       DeviceProfile grid = mLauncher.getDeviceProfile();
        r = grid.getHotseatRect();
        if (r.contains(mTempPt[0], mTempPt[1])) {
            return true;

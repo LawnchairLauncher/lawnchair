@@ -109,7 +109,7 @@ public class WidgetsContainerView extends BaseContainerView
         mView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             protected int getExtraLayoutSpace(State state) {
-                DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+                DeviceProfile grid = mLauncher.getDeviceProfile();
                 return super.getExtraLayoutSpace(state)
                         + grid.availableHeightPx * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
             }
@@ -230,8 +230,8 @@ public class WidgetsContainerView extends BaseContainerView
             int maxWidth = Math.min((int) (icon.getWidth() * minScale), size[0]);
 
             int[] previewSizeBeforeScale = new int[1];
-            preview = getWidgetPreviewLoader().generateWidgetPreview(createWidgetInfo.info,
-                    maxWidth, null, previewSizeBeforeScale);
+            preview = getWidgetPreviewLoader().generateWidgetPreview(mLauncher,
+                    createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
 
             if (previewSizeBeforeScale[0] < icon.getWidth()) {
                 // The icon has extra padding around it.

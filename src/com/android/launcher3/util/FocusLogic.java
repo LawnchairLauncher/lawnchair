@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 
@@ -80,8 +81,8 @@ public class FocusLogic {
                 keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL);
     }
 
-    public static int handleKeyEvent(int keyCode, int cntX, int cntY, int [][] map,
-            int iconIdx, int pageIndex, int pageCount) {
+    public static int handleKeyEvent(int keyCode, int cntX, int cntY,
+            int [][] map, int iconIdx, int pageIndex, int pageCount, boolean isRtl) {
 
         if (DEBUG) {
             Log.v(TAG, String.format(
@@ -89,23 +90,21 @@ public class FocusLogic {
                     cntX, cntY, iconIdx, pageIndex, pageCount));
         }
 
-        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid()
-                .getDeviceProfile();
         int newIndex = NOOP;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/);
-                if (!profile.isLayoutRtl && newIndex == NOOP && pageIndex > 0) {
+                if (isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
-                } else if (profile.isLayoutRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                } else if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_RIGHT_COLUMN;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/);
-                if (!profile.isLayoutRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_LEFT_COLUMN;
-                } else if (profile.isLayoutRtl && newIndex == NOOP && pageIndex > 0) {
+                } else if (isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_LEFT_COLUMN;
                 }
                 break;

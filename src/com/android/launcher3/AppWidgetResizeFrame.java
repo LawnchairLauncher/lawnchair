@@ -75,8 +75,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
-        mMinHSpan = info.minSpanX;
-        mMinVSpan = info.minSpanY;
+        mMinHSpan = info.getMinSpanX(mLauncher);
+        mMinVSpan = info.getMinSpanY(mLauncher);
 
         setBackgroundResource(R.drawable.widget_resize_shadow);
         setForeground(getResources().getDrawable(R.drawable.widget_resize_frame));

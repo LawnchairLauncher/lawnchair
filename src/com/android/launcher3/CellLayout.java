@@ -199,8 +199,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         setClipToPadding(false);
         mLauncher = (Launcher) context;
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = mCellHeight = -1;
@@ -208,8 +207,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mWidthGap = mOriginalWidthGap = 0;
         mHeightGap = mOriginalHeightGap = 0;
         mMaxGap = Integer.MAX_VALUE;
-        mCountX = (int) grid.numColumns;
-        mCountY = (int) grid.numRows;
+        mCountX = (int) grid.inv.numColumns;
+        mCountY = (int) grid.inv.numRows;
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
@@ -499,8 +498,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int previewOffset = FolderRingAnimator.sPreviewSize;
 
         // The folder outer / inner ring image(s)
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         for (int i = 0; i < mFolderOuterRings.size(); i++) {
             FolderRingAnimator fra = mFolderOuterRings.get(i);
 
@@ -841,8 +839,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -2729,18 +2726,18 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @param height Height in pixels
      * @param result An array of length 2 in which to store the result (may be null).
      */
-    public static int[] rectToCell(int width, int height, int[] result) {
+    public static int[] rectToCell(Launcher launcher, int width, int height, int[] result) {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = launcher.getDeviceProfile();
         Rect padding = grid.getWorkspacePadding(grid.isLandscape ?
                 CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
         int parentWidth = grid.calculateCellWidth(grid.widthPx
-                - padding.left - padding.right, (int) grid.numColumns);
+                - padding.left - padding.right, (int) grid.inv.numColumns);
         int parentHeight = grid.calculateCellHeight(grid.heightPx
-                - padding.top - padding.bottom, (int) grid.numRows);
+                - padding.top - padding.bottom, (int) grid.inv.numRows);
         int smallerSize = Math.min(parentWidth, parentHeight);
 
         // Always round up to next largest cell
@@ -2773,7 +2770,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             info.spanX = info.spanY = 1;
             return;
         }
-        int[] spans = rectToCell(minWidth, minHeight, null);
+        int[] spans = rectToCell(mLauncher, minWidth, minHeight, null);
         info.spanX = spans[0];
         info.spanY = spans[1];
     }

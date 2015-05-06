@@ -156,8 +156,7 @@ public class LauncherStateTransitionAnimation {
             }
             @Override
             public float getMaterialRevealViewStartFinalRadius() {
-                int allAppsButtonSize = LauncherAppState.getInstance().
-                        getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
+                int allAppsButtonSize = mLauncher.getDeviceProfile().allAppsButtonVisualSize;
                 return allAppsButtonSize / 2;
             }
             @Override
@@ -456,8 +455,7 @@ public class LauncherStateTransitionAnimation {
             }
             @Override
             float getMaterialRevealViewStartFinalRadius() {
-                int allAppsButtonSize = LauncherAppState.getInstance().
-                        getDynamicGrid().getDeviceProfile().allAppsButtonVisualSize;
+                int allAppsButtonSize = mLauncher.getDeviceProfile().allAppsButtonVisualSize;
                 return allAppsButtonSize / 2;
             }
             @Override

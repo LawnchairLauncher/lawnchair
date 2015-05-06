@@ -199,15 +199,18 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     public AppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         Resources res = context.getResources();
+
+        mLauncher = (Launcher) context;
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
         mContainerInset = context.getResources().getDimensionPixelSize(
                 R.dimen.apps_container_inset);
         mPredictionBarHeight = grid.allAppsCellHeightPx +
                 2 * res.getDimensionPixelSize(R.dimen.apps_prediction_icon_top_bottom_padding);
-        mLauncher = (Launcher) context;
+
         mLayoutInflater = LayoutInflater.from(context);
+
         mNumAppsPerRow = grid.appsViewNumCols;
         mNumPredictedAppsPerRow = grid.appsViewNumPredictiveCols;
         mApps = new AlphabeticalAppsList(context, mNumAppsPerRow, mNumPredictedAppsPerRow);
@@ -219,6 +222,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
         mContentMarginStart = mAdapter.getContentMarginStart();
+
         mApps.setAdapter(mAdapter);
     }
 
@@ -410,7 +414,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     protected void onFixedBoundsUpdated() {
         // Update the number of items in the grid
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         if (grid.updateAppsViewNumCols(getContext().getResources(), mFixedBounds.width())) {
             mNumAppsPerRow = grid.appsViewNumCols;
             mNumPredictedAppsPerRow = grid.appsViewNumPredictiveCols;
@@ -448,7 +452,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         }
 
         // Update the apps recycler view, inset it by the container inset as well
-        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         int startMargin = grid.isPhone() ? mContentMarginStart : 0;
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
         if (isRtl) {
@@ -565,8 +569,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     @Override
     public float getIntrinsicIconScaleFactor() {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         return (float) grid.allAppsIconSizePx / grid.iconSizePx;
     }
 
@@ -760,7 +763,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     private boolean handleTouchEvent(MotionEvent ev) {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
 
@@ -883,7 +886,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     private void showSearchField() {
         // Show the search bar and focus the search
-        final int translationX = DynamicGrid.pxFromDp(SEARCH_TRANSLATION_X_DP,
+        final int translationX = Utilities.pxFromDp(SEARCH_TRANSLATION_X_DP,
                 getContext().getResources().getDisplayMetrics());
         mSearchBarContainerView.setVisibility(View.VISIBLE);
         mSearchBarContainerView.setAlpha(0f);
@@ -913,7 +916,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     private void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
         final boolean resetTextField = mSearchBarEditView.getText().toString().length() > 0;
-        final int translationX = DynamicGrid.pxFromDp(SEARCH_TRANSLATION_X_DP,
+        final int translationX = Utilities.pxFromDp(SEARCH_TRANSLATION_X_DP,
                 getContext().getResources().getDisplayMetrics());
         if (animated) {
             // Hide the search bar and focus the recycler view

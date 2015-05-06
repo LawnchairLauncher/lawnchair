@@ -27,6 +27,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
@@ -44,42 +45,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
-class DeviceProfileQuery {
-    DeviceProfile profile;
-    float widthDps;
-    float heightDps;
-    float value;
-    PointF dimens;
-
-    DeviceProfileQuery(DeviceProfile p, float v) {
-        widthDps = p.minWidthDps;
-        heightDps = p.minHeightDps;
-        value = v;
-        dimens = new PointF(widthDps, heightDps);
-        profile = p;
-    }
-}
-
 public class DeviceProfile {
+
     public static interface DeviceProfileCallbacks {
         public void onAvailableSizeChanged(DeviceProfile grid);
     }
 
-    String name;
-    float minWidthDps;
-    float minHeightDps;
-    public int numRows;
-    public int numColumns;
-    public int numFolderRows;
-    public int numFolderColumns;
-    float numHotseatIcons;
-    float iconSize;
-    private float iconTextSize;
+    public final InvariantDeviceProfile inv;
     private int iconDrawablePaddingOriginalPx;
-    private float hotseatIconSize;
-
-    int defaultLayoutId;
 
     boolean isLandscape;
     public boolean isTablet;
@@ -107,11 +80,7 @@ public class DeviceProfile {
     public int cellWidthPx;
     public int cellHeightPx;
 
-    public int iconSizePx;
-    public int iconTextSizePx;
     int iconDrawablePaddingPx;
-    int allAppsIconSizePx;
-    int allAppsIconTextSizePx;
     int allAppsCellWidthPx;
     int allAppsCellHeightPx;
     int allAppsCellPaddingPx;
@@ -123,7 +92,6 @@ public class DeviceProfile {
     int hotseatCellHeightPx;
     int hotseatIconSizePx;
     int hotseatBarHeightPx;
-    int hotseatAllAppsRank;
     int allAppsNumRows;
     int allAppsNumCols;
     int appsViewNumCols;
@@ -133,6 +101,11 @@ public class DeviceProfile {
     int pageIndicatorHeightPx;
     int allAppsButtonVisualSize;
 
+    int iconSizePx;
+    public int iconTextSizePx;
+    int allAppsIconSizePx;
+    int allAppsIconTextSizePx;
+
     float dragViewScale;
 
     int allAppsShortEdgeCount = -1;
@@ -140,46 +113,26 @@ public class DeviceProfile {
 
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
-    DeviceProfile(String n, float w, float h,
-            int r, int c, int fr, int fc,
-            float is, float its, float hs, float his, int dlId) {
-        // Ensure that we have an odd number of hotseat items (since we need to place all apps)
-        if (hs % 2 == 0) {
-            throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
-        }
+    public DeviceProfile(Context context, InvariantDeviceProfile inv) {
+        // Determine the dynamic grid properties
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
 
-        name = n;
-        minWidthDps = w;
-        minHeightDps = h;
+        Point realSize = new Point();
+        display.getRealSize(realSize);
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
 
-        numRows = r;
-        numColumns = c;
-        numFolderRows = fr;
-        numFolderColumns = fc;
-
-        iconSize = is;
-        iconTextSize = its;
-        numHotseatIcons = hs;
-        hotseatIconSize = his;
-        defaultLayoutId = dlId;
+        this.inv = inv;
+        init(context, realSize.x, realSize.y, dm.widthPixels, dm.heightPixels);
     }
 
-    DeviceProfile() {
-    }
-
-    DeviceProfile(Context context,
-                  ArrayList<DeviceProfile> profiles,
-                  float minWidth, float minHeight,
-                  int wPx, int hPx,
-                  int awPx, int ahPx,
-                  Resources res) {
+    private void init(Context context, int wPx, int hPx, int awPx, int ahPx) {
+        Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
-        ArrayList<DeviceProfileQuery> points =
-                new ArrayList<DeviceProfileQuery>();
+
         transposeLayoutWithOrientation =
                 res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
-        minWidthDps = minWidth;
-        minHeightDps = minHeight;
 
         ComponentName cn = new ComponentName(context.getPackageName(),
                 this.getClass().getName());
@@ -205,56 +158,14 @@ public class DeviceProfile {
         overviewModeScaleFactor =
                 res.getInteger(R.integer.config_dynamic_grid_overview_scale_percentage) / 100f;
 
-        // Find the closes profile given the width/height
-        for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p, 0f));
-        }
-        DeviceProfile closestProfile = findClosestDeviceProfile(minWidth, minHeight, points);
-
-        // Snap to the closest row count
-        numRows = closestProfile.numRows;
-
-        // Snap to the closest column count
-        numColumns = closestProfile.numColumns;
-
-        numFolderRows = closestProfile.numFolderRows;
-        numFolderColumns = closestProfile.numFolderColumns;
-
-        // Snap to the closest hotseat size
-        numHotseatIcons = closestProfile.numHotseatIcons;
-        hotseatAllAppsRank = (int) (numHotseatIcons / 2);
-
-        // Snap to the closest default layout id
-        defaultLayoutId = closestProfile.defaultLayoutId;
-
-        // Interpolate the icon size
-        points.clear();
-        for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p, p.iconSize));
-        }
-        iconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
-
-        // AllApps uses the original non-scaled icon size
-        allAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
-
-        // Interpolate the icon text size
-        points.clear();
-        for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p, p.iconTextSize));
-        }
-        iconTextSize = invDistWeightedInterpolate(minWidth, minHeight, points);
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
-        // AllApps uses the original non-scaled icon text size
-        allAppsIconTextSizePx = DynamicGrid.pxFromDp(iconTextSize, dm);
 
-        // Interpolate the hotseat icon size
-        points.clear();
-        for (DeviceProfile p : profiles) {
-            points.add(new DeviceProfileQuery(p, p.hotseatIconSize));
-        }
-        // Hotseat
-        hotseatIconSize = invDistWeightedInterpolate(minWidth, minHeight, points);
+        // AllApps uses the original non-scaled icon text size
+        allAppsIconTextSizePx = Utilities.pxFromDp(inv.iconTextSize, dm);
+
+        // AllApps uses the original non-scaled icon size
+        allAppsIconSizePx = Utilities.pxFromDp(inv.iconSize, dm);
 
         // If the partner customization apk contains any grid overrides, apply them
         applyPartnerDeviceProfileOverrides(context, dm);
@@ -273,22 +184,7 @@ public class DeviceProfile {
     private void applyPartnerDeviceProfileOverrides(Context ctx, DisplayMetrics dm) {
         Partner p = Partner.get(ctx.getPackageManager());
         if (p != null) {
-            DeviceProfile partnerDp = p.getDeviceProfileOverride(dm);
-            if (partnerDp != null) {
-                if (partnerDp.numRows > 0 && partnerDp.numColumns > 0) {
-                    numRows = numFolderRows = partnerDp.numRows;
-                    numColumns = numFolderColumns = partnerDp.numColumns;
-                }
-                if (partnerDp.allAppsShortEdgeCount > 0 && partnerDp.allAppsLongEdgeCount > 0) {
-                    allAppsShortEdgeCount = partnerDp.allAppsShortEdgeCount;
-                    allAppsLongEdgeCount = partnerDp.allAppsLongEdgeCount;
-                }
-                if (partnerDp.iconSize > 0) {
-                    iconSize = partnerDp.iconSize;
-                    // AllApps uses the original non-scaled icon size
-                    allAppsIconSizePx = DynamicGrid.pxFromDp(iconSize, dm);
-                }
-            }
+            p.applyDeviceProfileOverrides(this);
         }
     }
 
@@ -361,7 +257,7 @@ public class DeviceProfile {
         float scale = 1f;
         int drawablePadding = iconDrawablePaddingOriginalPx;
         updateIconSize(1f, drawablePadding, resources, dm);
-        float usedHeight = (cellHeightPx * numRows);
+        float usedHeight = (cellHeightPx * inv.numRows);
 
         Rect workspacePadding = getWorkspacePadding();
         int maxHeight = (availableHeightPx - workspacePadding.top - workspacePadding.bottom);
@@ -379,10 +275,10 @@ public class DeviceProfile {
 
     private void updateIconSize(float scale, int drawablePadding, Resources res,
                                 DisplayMetrics dm) {
-        iconSizePx = (int) (DynamicGrid.pxFromDp(iconSize, dm) * scale);
-        iconTextSizePx = (int) (DynamicGrid.pxFromSp(iconTextSize, dm) * scale);
+        iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = drawablePadding;
-        hotseatIconSizePx = (int) (DynamicGrid.pxFromDp(hotseatIconSize, dm) * scale);
+        hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
 
         // Search Bar
         searchBarSpaceWidthPx = Math.min(widthPx,
@@ -468,74 +364,6 @@ public class DeviceProfile {
         updateAvailableDimensions(context);
     }
 
-    @Thunk float dist(PointF p0, PointF p1) {
-        return (float) Math.hypot(p1.x - p0.x, p1.y - p0.y);
-    }
-
-    private float weight(PointF a, PointF b,
-                        float pow) {
-        float d = dist(a, b);
-        if (d == 0f) {
-            return Float.POSITIVE_INFINITY;
-        }
-        return (float) (1f / Math.pow(d, pow));
-    }
-
-    /** Returns the closest device profile given the width and height and a list of profiles */
-    private DeviceProfile findClosestDeviceProfile(float width, float height,
-                                                   ArrayList<DeviceProfileQuery> points) {
-        return findClosestDeviceProfiles(width, height, points).get(0).profile;
-    }
-
-    /** Returns the closest device profiles ordered by closeness to the specified width and height */
-    private ArrayList<DeviceProfileQuery> findClosestDeviceProfiles(float width, float height,
-                                                   ArrayList<DeviceProfileQuery> points) {
-        final PointF xy = new PointF(width, height);
-
-        // Sort the profiles by their closeness to the dimensions
-        ArrayList<DeviceProfileQuery> pointsByNearness = points;
-        Collections.sort(pointsByNearness, new Comparator<DeviceProfileQuery>() {
-            public int compare(DeviceProfileQuery a, DeviceProfileQuery b) {
-                return (int) (dist(xy, a.dimens) - dist(xy, b.dimens));
-            }
-        });
-
-        return pointsByNearness;
-    }
-
-    private float invDistWeightedInterpolate(float width, float height,
-                ArrayList<DeviceProfileQuery> points) {
-        float sum = 0;
-        float weights = 0;
-        float pow = 5;
-        float kNearestNeighbors = 3;
-        final PointF xy = new PointF(width, height);
-
-        ArrayList<DeviceProfileQuery> pointsByNearness = findClosestDeviceProfiles(width, height,
-                points);
-
-        for (int i = 0; i < pointsByNearness.size(); ++i) {
-            DeviceProfileQuery p = pointsByNearness.get(i);
-            if (i < kNearestNeighbors) {
-                float w = weight(xy, p.dimens, pow);
-                if (w == Float.POSITIVE_INFINITY) {
-                    return p.value;
-                }
-                weights += w;
-            }
-        }
-
-        for (int i = 0; i < pointsByNearness.size(); ++i) {
-            DeviceProfileQuery p = pointsByNearness.get(i);
-            if (i < kNearestNeighbors) {
-                float w = weight(xy, p.dimens, pow);
-                sum += w * p.value / weights;
-            }
-        }
-
-        return sum;
-    }
-
     /** Returns the search bar top offset */
     int getSearchBarTopOffset() {
         if (isTablet() && !isVerticalBarLayout()) {
@@ -571,7 +399,7 @@ public class DeviceProfile {
                 // XXX: If the icon size changes across orientations, we will have to take
                 //      that into account here too.
                 int gap = (int) ((width - 2 * edgeMarginPx -
-                        (numColumns * cellWidthPx)) / (2 * (numColumns + 1)));
+                        (inv.numColumns * cellWidthPx)) / (2 * (inv.numColumns + 1)));
                 bounds.set(edgeMarginPx + gap, getSearchBarTopOffset(),
                         availableWidthPx - (edgeMarginPx + gap),
                         searchBarSpaceHeightPx);
@@ -620,6 +448,7 @@ public class DeviceProfile {
     Rect getWorkspacePadding() {
         return getWorkspacePadding(isLandscape ? CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
     }
+
     Rect getWorkspacePadding(int orientation) {
         Rect searchBarBounds = getSearchBarBounds(orientation);
         Rect padding = new Rect();
@@ -646,10 +475,10 @@ public class DeviceProfile {
                         : Math.min(widthPx, heightPx);
                 int paddingTop = searchBarBounds.bottom;
                 int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
-                int availableWidth = Math.max(0, width - (int) ((numColumns * cellWidthPx) +
-                        (numColumns * gapScale * cellWidthPx)));
+                int availableWidth = Math.max(0, width - (int) ((inv.numColumns * cellWidthPx) +
+                        (inv.numColumns * gapScale * cellWidthPx)));
                 int availableHeight = Math.max(0, height - paddingTop - paddingBottom
-                        - (int) (2 * numRows * cellHeightPx));
+                        - (int) (2 * inv.numRows * cellHeightPx));
                 padding.set(availableWidth / 2, paddingTop + availableHeight / 2,
                         availableWidth / 2, paddingBottom + availableHeight / 2);
             } else {
@@ -701,10 +530,10 @@ public class DeviceProfile {
         }
     }
 
-    int calculateCellWidth(int width, int countX) {
+    public static int calculateCellWidth(int width, int countX) {
         return width / countX;
     }
-    int calculateCellHeight(int height, int countY) {
+    public static int calculateCellHeight(int height, int countY) {
         return height / countY;
     }
 

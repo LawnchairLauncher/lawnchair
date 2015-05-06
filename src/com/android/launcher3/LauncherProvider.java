@@ -364,7 +364,7 @@ public class LauncherProvider extends ContentProvider {
 
     private DefaultLayoutParser getDefaultLayoutParser() {
         int defaultLayout = LauncherAppState.getInstance()
-                .getDynamicGrid().getDeviceProfile().defaultLayoutId;
+                .getInvariantDeviceProfile().defaultLayoutId;
         return new DefaultLayoutParser(getContext(), mOpenHelper.mAppWidgetHost,
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }
@@ -1042,10 +1042,10 @@ public class LauncherProvider extends ContentProvider {
                         int curY = 0;
 
                         final LauncherAppState app = LauncherAppState.getInstance();
-                        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-                        final int width = (int) grid.numColumns;
-                        final int height = (int) grid.numRows;
-                        final int hotseatWidth = (int) grid.numHotseatIcons;
+                        final InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+                        final int width = (int) profile.numColumns;
+                        final int height = (int) profile.numRows;
+                        final int hotseatWidth = (int) profile.numHotseatIcons;
 
                         final HashSet<String> seenIntents = new HashSet<String>(c.getCount());
 
@@ -1187,7 +1187,7 @@ public class LauncherProvider extends ContentProvider {
                             int hotseatX = hotseat.keyAt(idx);
                             ContentValues values = hotseat.valueAt(idx);
 
-                            if (hotseatX == grid.hotseatAllAppsRank) {
+                            if (hotseatX == profile.hotseatAllAppsRank) {
                                 // let's drop this in the next available hole in the hotseat
                                 while (++hotseatX < hotseatWidth) {
                                     if (hotseat.get(hotseatX) == null) {

@@ -80,9 +80,9 @@ public class FolderPagedView extends PagedView {
         super(context, attrs);
         LauncherAppState app = LauncherAppState.getInstance();
 
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        mMaxCountX = (int) grid.numFolderColumns;
-        mMaxCountY = (int) grid.numFolderRows;
+        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+        mMaxCountX = (int) profile.numFolderColumns;
+        mMaxCountY = (int) profile.numFolderRows;
 
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
@@ -229,7 +229,7 @@ public class FolderPagedView extends PagedView {
     }
 
     private CellLayout createAndAddNewPage() {
-        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = ((Launcher) getContext()).getDeviceProfile();
         CellLayout page = new CellLayout(getContext());
         page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);

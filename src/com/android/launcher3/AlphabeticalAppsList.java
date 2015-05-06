@@ -173,7 +173,7 @@ public class AlphabeticalAppsList {
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
 
-    private Context mContext;
+    private Launcher mLauncher;
 
     // The set of apps from the system not including predictions
     private List<AppInfo> mApps = new ArrayList<>();
@@ -200,7 +200,7 @@ public class AlphabeticalAppsList {
     private int mNumPredictedAppsPerRow;
 
     public AlphabeticalAppsList(Context context, int numAppsPerRow, int numPredictedAppsPerRow) {
-        mContext = context;
+        mLauncher = (Launcher) context;
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
         setNumAppsPerRow(numAppsPerRow, numPredictedAppsPerRow);
@@ -218,7 +218,7 @@ public class AlphabeticalAppsList {
      */
     public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow) {
         // Update the merge algorithm
-        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         if (grid.isPhone()) {
             mMergeAlgorithm = new PhoneMergeAlgorithm((int) Math.ceil(numAppsPerRow / 2f),
                     MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
@@ -381,7 +381,7 @@ public class AlphabeticalAppsList {
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
-        Locale curLocale = mContext.getResources().getConfiguration().locale;
+        Locale curLocale = mLauncher.getResources().getConfiguration().locale;
         TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
         boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
         if (localeRequiresSectionSorting) {
