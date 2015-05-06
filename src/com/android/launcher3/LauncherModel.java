@@ -107,6 +107,7 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk DeferredHandler mHandler = new DeferredHandler();
     @Thunk LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
+    @Thunk boolean mHasLoaderCompletedOnce;
 
     private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
@@ -127,6 +128,12 @@ public class LauncherModel extends BroadcastReceiver
     // draw (in Workspace) to initiate the binding of the remaining side pages.  Any time we start
     // a normal load, we also clear this set of Runnables.
     static final ArrayList<Runnable> mDeferredBindRunnables = new ArrayList<Runnable>();
+
+    /**
+     * Set of runnables to be called on the background thread after the workspace binding
+     * is complete.
+     */
+    static final ArrayList<Runnable> mBindCompleteRunnables = new ArrayList<Runnable>();
 
     @Thunk WeakReference<Callbacks> mCallbacks;
 
@@ -260,6 +267,19 @@ public class LauncherModel extends BroadcastReceiver
         } else {
             // If we are not on the worker thread, then post to the worker handler
             sWorker.post(r);
+        }
+    }
+
+    /**
+     * Runs the specified runnable after the loader is complete
+     */
+    private void runAfterBindCompletes(Runnable r) {
+        if (isLoadingWorkspace() || !mHasLoaderCompletedOnce) {
+            synchronized (mBindCompleteRunnables) {
+                mBindCompleteRunnables.add(r);
+            }
+        } else {
+            runOnWorkerThread(r);
         }
     }
 
@@ -424,7 +444,7 @@ public class LauncherModel extends BroadcastReceiver
      * Find a position on the screen for the given size or adds a new screen.
      * @return screenId and the coordinates for the item.
      */
-    @Thunk static Pair<Long, int[]> findSpaceForItem(
+    @Thunk Pair<Long, int[]> findSpaceForItem(
             Context context,
             ArrayList<Long> workspaceScreens,
             ArrayList<Long> addedWorkspaceScreensFinal,
@@ -432,7 +452,7 @@ public class LauncherModel extends BroadcastReceiver
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
-        // TODO: Throw exception is above condition is not met.
+        assertWorkspaceLoaded();
         synchronized (sBgLock) {
             for (ItemInfo info : sBgItemsIdMap) {
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
@@ -875,12 +895,18 @@ public class LauncherModel extends BroadcastReceiver
         updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
     }
 
+    private void assertWorkspaceLoaded() {
+        if (LauncherAppState.isDogfoodBuild() && (isLoadingWorkspace() || !mHasLoaderCompletedOnce)) {
+            throw new RuntimeException("Trying to add shortcut while loader is running");
+        }
+    }
+
     /**
      * Returns true if the shortcuts already exists on the workspace. This must be called after
      * the workspace has been loaded. We identify a shortcut by its intent.
-     * TODO: Throw exception is above condition is not met.
      */
-    @Thunk static boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
+    @Thunk boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
+        assertWorkspaceLoaded();
         final String intentWithPkg, intentWithoutPkg;
         final String packageName;
         if (intent.getComponent() != null) {
@@ -1390,6 +1416,16 @@ public class LauncherModel extends BroadcastReceiver
                 mHandler.post(r);
             }
         }
+
+        // Run all the bind complete runnables after workspace is bound.
+        if (!mBindCompleteRunnables.isEmpty()) {
+            synchronized (mBindCompleteRunnables) {
+                for (final Runnable r : mBindCompleteRunnables) {
+                    runOnWorkerThread(r);
+                }
+                mBindCompleteRunnables.clear();
+            }
+        }
     }
 
     public void stopLoader() {
@@ -1615,6 +1651,7 @@ public class LauncherModel extends BroadcastReceiver
                     mLoaderTask = null;
                 }
                 mIsLoaderTaskRunning = false;
+                mHasLoaderCompletedOnce = true;
             }
         }
 
@@ -2794,7 +2831,7 @@ public class LauncherModel extends BroadcastReceiver
             for (UserHandleCompat user : profiles) {
                 // Query for the set of apps
                 final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-                List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
+                final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "getActivityList took "
                             + (SystemClock.uptimeMillis()-qiaTime) + "ms for user " + user);
@@ -2849,11 +2886,15 @@ public class LauncherModel extends BroadcastReceiver
                     mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache));
                 }
 
-                if (!user.equals(UserHandleCompat.myUserHandle())) {
-                    ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
-                    if (heuristic != null) {
-                        heuristic.processUserApps(apps);
-                    }
+                final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
+                if (heuristic != null) {
+                    runAfterBindCompletes(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            heuristic.processUserApps(apps);
+                        }
+                    });
                 }
             }
             // Huh? Shouldn't this be inside the Runnable below?
