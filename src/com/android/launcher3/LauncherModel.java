@@ -2767,6 +2767,7 @@ public class LauncherModel extends BroadcastReceiver
             }
             if (!mAllAppsLoaded) {
                 loadAllApps();
+                updateAllAppsIconsCache();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
                         return;
@@ -2821,9 +2822,6 @@ public class LauncherModel extends BroadcastReceiver
                 return;
             }
 
-            final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
             final List<UserHandleCompat> profiles = mUserManager.getUserProfiles();
 
             // Clear the list of apps
@@ -2841,42 +2839,6 @@ public class LauncherModel extends BroadcastReceiver
                 // TODO: Fix this. Only fail for the current user.
                 if (apps == null || apps.isEmpty()) {
                     return;
-                }
-
-                // Update icon cache
-                HashSet<String> updatedPackages = mIconCache.updateDBIcons(user, apps);
-
-                // If any package icon has changed (app was updated while launcher was dead),
-                // update the corresponding shortcuts.
-                if (!updatedPackages.isEmpty()) {
-                    final ArrayList<ShortcutInfo> updates = new ArrayList<ShortcutInfo>();
-                    synchronized (sBgLock) {
-                        for (ItemInfo info : sBgItemsIdMap) {
-                            if (info instanceof ShortcutInfo && user.equals(info.user)
-                                    && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                ShortcutInfo si = (ShortcutInfo) info;
-                                ComponentName cn = si.getTargetComponent();
-                                if (cn != null && updatedPackages.contains(cn.getPackageName())) {
-                                    si.updateIcon(mIconCache);
-                                    updates.add(si);
-                                }
-                            }
-                        }
-                    }
-
-                    if (!updates.isEmpty()) {
-                        final UserHandleCompat userFinal = user;
-                        mHandler.post(new Runnable() {
-
-                            public void run() {
-                                Callbacks cb = getCallback();
-                                if (cb != null) {
-                                    cb.bindShortcutsChanged(
-                                            updates, new ArrayList<ShortcutInfo>(), userFinal);
-                                }
-                            }
-                        });
-                    }
                 }
 
                 // Create the ApplicationInfos
@@ -2926,6 +2888,68 @@ public class LauncherModel extends BroadcastReceiver
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "Icons processed in "
                         + (SystemClock.uptimeMillis() - loadTime) + "ms");
+            }
+        }
+
+        private void updateAllAppsIconsCache() {
+            final ArrayList<AppInfo> updatedApps = new ArrayList<>();
+
+            for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+                // Query for the set of apps
+                final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
+                // Fail if we don't have any apps
+                // TODO: Fix this. Only fail for the current user.
+                if (apps == null || apps.isEmpty()) {
+                    return;
+                }
+
+                // Update icon cache
+                HashSet<String> updatedPackages = mIconCache.updateDBIcons(user, apps);
+
+                // If any package icon has changed (app was updated while launcher was dead),
+                // update the corresponding shortcuts.
+                if (!updatedPackages.isEmpty()) {
+                    final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+                    synchronized (sBgLock) {
+                        for (ItemInfo info : sBgItemsIdMap) {
+                            if (info instanceof ShortcutInfo && user.equals(info.user)
+                                    && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                ShortcutInfo si = (ShortcutInfo) info;
+                                ComponentName cn = si.getTargetComponent();
+                                if (cn != null && updatedPackages.contains(cn.getPackageName())) {
+                                    si.updateIcon(mIconCache);
+                                    updatedShortcuts.add(si);
+                                }
+                            }
+                        }
+                        mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
+                    }
+
+                    if (!updatedShortcuts.isEmpty()) {
+                        final UserHandleCompat userFinal = user;
+                        mHandler.post(new Runnable() {
+
+                            public void run() {
+                                Callbacks cb = getCallback();
+                                if (cb != null) {
+                                    cb.bindShortcutsChanged(updatedShortcuts,
+                                            new ArrayList<ShortcutInfo>(), userFinal);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            if (!updatedApps.isEmpty()) {
+                mHandler.post(new Runnable() {
+
+                    public void run() {
+                        Callbacks cb = getCallback();
+                        if (cb != null) {
+                            cb.bindAppsUpdated(updatedApps);
+                        }
+                    }
+                });
             }
         }
 

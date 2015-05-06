@@ -407,6 +407,20 @@ public class IconCache {
     }
 
     /**
+     * Updates {@param application} only if a valid entry is found.
+     */
+    public synchronized void updateTitleAndIcon(AppInfo application) {
+        CacheEntry entry = cacheLocked(application.componentName, null, application.user,
+                false, application.usingLowResIcon);
+        if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
+            application.title = entry.title;
+            application.iconBitmap = entry.icon;
+            application.contentDescription = entry.contentDescription;
+            application.usingLowResIcon = entry.isLowResIcon;
+        }
+    }
+
+    /**
      * Returns a high res icon for the given intent and user
      */
     public synchronized Bitmap getIcon(Intent intent, UserHandleCompat user) {
@@ -655,7 +669,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 3;
+        private final static int DB_VERSION = 4;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
