@@ -30,6 +30,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.List;
 
 /**
@@ -40,10 +42,10 @@ public class AppsContainerRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
-    private static final int SCROLL_DELTA_THRESHOLD = 6;
+    private static final int SCROLL_DELTA_THRESHOLD = 4;
 
     /** Keeps the last known scrolling delta/velocity along y-axis. */
-    private int mDy = 0;
+    @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
     private AlphabeticalAppsList mApps;
@@ -98,6 +100,19 @@ public class AppsContainerRecyclerView extends RecyclerView
                 res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(getFastScrollerAlpha());
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD;
+
+        ScrollListener listener = new ScrollListener();
+        addOnScrollListener(listener);
+    }
+
+    private class ScrollListener extends RecyclerView.OnScrollListener {
+        public ScrollListener() {
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            mDy = dy;
+        }
     }
 
     /**
@@ -147,11 +162,6 @@ public class AppsContainerRecyclerView extends RecyclerView
         super.dispatchDraw(canvas);
         drawVerticalScrubber(canvas);
         drawFastScrollerPopup(canvas);
-    }
-
-    @Override
-    public void onScrolled(int dx, int dy) {
-        mDy = dy;
     }
 
     /**
