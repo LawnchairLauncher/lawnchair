@@ -4,16 +4,18 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.android.launcher3.util.Thunk;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -23,6 +25,7 @@ import java.util.List;
 class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
+    private static final boolean DEBUG = false;
 
     private static final int SECTION_BREAK_VIEW_TYPE = 0;
     private static final int ICON_VIEW_TYPE = 1;
@@ -48,6 +51,12 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      * Helper class to size the grid items.
      */
     public class GridSpanSizer extends GridLayoutManager.SpanSizeLookup {
+
+        public GridSpanSizer() {
+            super();
+            setSpanIndexCacheEnabled(true);
+        }
+
         @Override
         public int getSpanSize(int position) {
             if (mApps.hasNoFilteredResults()) {
@@ -57,7 +66,11 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
             if (mApps.getAdapterItems().get(position).isSectionHeader) {
                 // Section break spans full width
-                return mAppsPerRow;
+                if (AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
+                    return 0;
+                } else {
+                    return mAppsPerRow;
+                }
             } else {
                 return 1;
             }
@@ -69,30 +82,87 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      */
     public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
+        private static final boolean FADE_OUT_SECTIONS = false;
+
+        private HashMap<String, Point> mCachedSectionBounds = new HashMap<>();
+        private Rect mTmpBounds = new Rect();
+
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            if (mApps.hasFilter()) {
+                return;
+            }
+
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+            String lastSectionName = null;
+            int appIndexInSection = 0;
+            int lastSectionTop = 0;
+            int lastSectionHeight = 0;
             for (int i = 0; i < parent.getChildCount(); i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
-                if (shouldDrawItemSection(holder, child, items)) {
-                    // Draw at the parent
-                    AlphabeticalAppsList.AdapterItem item =
-                            items.get(holder.getPosition());
-                    String section = item.sectionName;
-                    mSectionTextPaint.getTextBounds(section, 0, section.length(),
-                            mTmpBounds);
-                    if (mIsRtl) {
-                        int left = parent.getWidth() - mPaddingStart - mStartMargin;
-                        c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
-                                child.getTop() + (2 * child.getPaddingTop()) +
-                                        mTmpBounds.height(), mSectionTextPaint);
-                    } else {
-                        int left = mPaddingStart;
-                        c.drawText(section, left + (mStartMargin - mTmpBounds.width()) / 2,
-                            child.getTop() + (2 * child.getPaddingTop()) +
-                                    mTmpBounds.height(), mSectionTextPaint);
+                if (shouldDrawItemSection(holder, child, i, items)) {
+                    int cellTopOffset = (2 * child.getPaddingTop());
+                    int pos = holder.getPosition();
+                    AlphabeticalAppsList.AdapterItem item = items.get(pos);
+                    if (!item.sectionName.equals(lastSectionName)) {
+                        lastSectionName = item.sectionName;
+
+                        // Find the section code points
+                        String sectionBegin = null;
+                        String sectionEnd = null;
+                        int charOffset = 0;
+                        while (charOffset < item.sectionName.length()) {
+                            int codePoint = item.sectionName.codePointAt(charOffset);
+                            int codePointSize = Character.charCount(codePoint);
+                            if (charOffset == 0) {
+                                // The first code point
+                                sectionBegin = item.sectionName.substring(charOffset, charOffset + codePointSize);
+                            } else if ((charOffset + codePointSize) >= item.sectionName.length()) {
+                                // The last code point
+                                sectionEnd = item.sectionName.substring(charOffset, charOffset + codePointSize);
+                            }
+                            charOffset += codePointSize;
+                        }
+
+                        Point sectionBeginBounds = getAndCacheSectionBounds(sectionBegin);
+                        int minTop = cellTopOffset + sectionBeginBounds.y;
+                        int top = child.getTop() + cellTopOffset + sectionBeginBounds.y;
+                        int left = mIsRtl ? parent.getWidth() - mPaddingStart - mStartMargin :
+                                mPaddingStart;
+                        int col = appIndexInSection % mAppsPerRow;
+                        int nextRowPos = Math.min(pos - col + mAppsPerRow, items.size() - 1);
+                        int alpha = 255;
+                        boolean fixedToRow = !items.get(nextRowPos).sectionName.equals(item.sectionName);
+                        if (fixedToRow) {
+                            alpha = Math.min(255, (int) (255 * (Math.max(0, top) / (float) minTop)));
+                        } else {
+                            // If we aren't fixed to the current row, then bound into the viewport
+                            top = Math.max(minTop, top);
+                        }
+                        if (lastSectionHeight > 0 && top <= (lastSectionTop + lastSectionHeight)) {
+                            top += lastSectionTop - top + lastSectionHeight;
+                        }
+                        if (FADE_OUT_SECTIONS) {
+                            mSectionTextPaint.setAlpha(alpha);
+                        }
+                        if (sectionEnd != null) {
+                            Point sectionEndBounds = getAndCacheSectionBounds(sectionEnd);
+                            c.drawText(sectionBegin + "/" + sectionEnd,
+                                    left + (mStartMargin - sectionBeginBounds.x - sectionEndBounds.x) / 2, top,
+                                    mSectionTextPaint);
+                        } else {
+                            c.drawText(sectionBegin, left + (mStartMargin - sectionBeginBounds.x) / 2, top,
+                                    mSectionTextPaint);
+                        }
+                        lastSectionTop = top;
+                        lastSectionHeight = sectionBeginBounds.y + mSectionHeaderOffset;
                     }
+                }
+                if (holder.mIsSectionHeader) {
+                    appIndexInSection = 0;
+                } else {
+                    appIndexInSection++;
                 }
             }
         }
@@ -103,7 +173,17 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             // Do nothing
         }
 
-        private boolean shouldDrawItemSection(ViewHolder holder, View child,
+        private Point getAndCacheSectionBounds(String sectionName) {
+            Point bounds = mCachedSectionBounds.get(sectionName);
+            if (bounds == null) {
+                mSectionTextPaint.getTextBounds(sectionName, 0, sectionName.length(), mTmpBounds);
+                bounds = new Point(mTmpBounds.width(), mTmpBounds.height());
+                mCachedSectionBounds.put(sectionName, bounds);
+            }
+            return bounds;
+        }
+
+        private boolean shouldDrawItemSection(ViewHolder holder, View child, int childIndex,
                 List<AlphabeticalAppsList.AdapterItem> items) {
             // Ensure item is not already removed
             GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
@@ -121,11 +201,19 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             }
             // Ensure we have a holder position
             int pos = holder.getPosition();
-            if (pos <= 0 || pos >= items.size()) {
+            if (pos < 0 || pos >= items.size()) {
                 return false;
             }
-            // Only draw the first item in the section (the first one after the section header)
-            return items.get(pos - 1).isSectionHeader && !items.get(pos).isSectionHeader;
+            // Ensure this is not a section header
+            if (items.get(pos).isSectionHeader) {
+                return false;
+            }
+            // Only draw the header for the first item in a section, or whenever the sub-sections
+            // changes (if AppsContainerView.GRID_MERGE_SECTIONS is true, but
+            // AppsContainerView.GRID_MERGE_SECTION_HEADERS is false)
+            return (childIndex == 0) ||
+                    items.get(pos - 1).isSectionHeader && !items.get(pos).isSectionHeader ||
+                    (!items.get(pos - 1).sectionName.equals(items.get(pos).sectionName));
         }
     }
 
@@ -144,8 +232,8 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     // Section drawing
     @Thunk int mPaddingStart;
     @Thunk int mStartMargin;
+    @Thunk int mSectionHeaderOffset;
     @Thunk Paint mSectionTextPaint;
-    @Thunk Rect mTmpBounds = new Rect();
 
 
     public AppsGridAdapter(Context context, AlphabeticalAppsList apps, int appsPerRow,
@@ -163,7 +251,10 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mTouchListener = touchListener;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mStartMargin = res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
+        if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
+            mStartMargin = res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
+            mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.apps_grid_section_y_offset);
+        }
         mPaddingStart = res.getDimensionPixelSize(R.dimen.apps_container_inset);
         mSectionTextPaint = new Paint();
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
@@ -197,7 +288,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     /**
      * Returns the grid layout manager.
      */
-    public GridLayoutManager getLayoutManager(Context context) {
+    public GridLayoutManager getLayoutManager() {
         return mGridLayoutMgr;
     }
 
@@ -205,7 +296,11 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      * Returns the item decoration for the recycler view.
      */
     public RecyclerView.ItemDecoration getItemDecoration() {
-        return mItemDecoration;
+        // We don't draw any headers when we are uncomfortably dense
+        if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
+            return mItemDecoration;
+        }
+        return null;
     }
 
     /**

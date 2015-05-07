@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
@@ -45,24 +44,32 @@ import java.util.List;
  */
 public class AppsContainerView extends FrameLayout implements DragSource, Insettable, TextWatcher,
         TextView.OnEditorActionListener, LauncherTransitionable, View.OnTouchListener,
-        View.OnLongClickListener {
+        View.OnClickListener, View.OnLongClickListener {
+
+    public static final boolean GRID_MERGE_SECTIONS = true;
+    public static final boolean GRID_MERGE_SECTION_HEADERS = false;
+    public static final boolean GRID_HIDE_SECTION_HEADERS = false;
 
     private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
-
-    private static final int GRID_LAYOUT = 0;
-    private static final int LIST_LAYOUT = 1;
-    private static final int USE_LAYOUT = GRID_LAYOUT;
+    private static final boolean DYNAMIC_HEADER_ELEVATION = false;
+    private static final float HEADER_ELEVATION_DP = 4;
+    private static final int FADE_IN_DURATION = 175;
+    private static final int FADE_OUT_DURATION = 125;
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
-    private RecyclerView.Adapter mAdapter;
+    private AppsGridAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
 
     private LinearLayout mContentView;
     @Thunk AppsContainerRecyclerView mAppsRecyclerView;
-    private EditText mSearchBarView;
-    
+    private View mHeaderView;
+    private View mSearchBarContainerView;
+    private View mSearchButtonView;
+    private View mDismissSearchButtonView;
+    private EditText mSearchBarEditView;
+
     private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point(-1, -1);
     private Point mLastTouchPos = new Point();
@@ -73,6 +80,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private int mContainerInset;
     // Fixed bounds container insets
     private int mFixedBoundsContainerInset;
+    // RecyclerView scroll position
+    @Thunk int mRecyclerViewScrollY;
 
     public AppsContainerView(Context context) {
         this(context, null);
@@ -93,23 +102,14 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         mFixedBoundsContainerInset = context.getResources().getDimensionPixelSize(
                 R.dimen.apps_container_fixed_bounds_inset);
         mLauncher = (Launcher) context;
-        mApps = new AlphabeticalAppsList(context);
-        if (USE_LAYOUT == GRID_LAYOUT) {
-            mNumAppsPerRow = grid.appsViewNumCols;
-            AppsGridAdapter adapter = new AppsGridAdapter(context, mApps, mNumAppsPerRow, this,
-                    mLauncher, this);
-            adapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
-            mLayoutManager = adapter.getLayoutManager(context);
-            mItemDecoration = adapter.getItemDecoration();
-            mAdapter = adapter;
-            mContentMarginStart = adapter.getContentMarginStart();
-        } else if (USE_LAYOUT == LIST_LAYOUT) {
-            mNumAppsPerRow = 1;
-            AppsListAdapter adapter = new AppsListAdapter(context, mApps, this, mLauncher, this);
-            adapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
-            mLayoutManager = adapter.getLayoutManager(context);
-            mAdapter = adapter;
-        }
+        mNumAppsPerRow = grid.appsViewNumCols;
+        mApps = new AlphabeticalAppsList(context, mNumAppsPerRow);
+        mAdapter = new AppsGridAdapter(context, mApps, mNumAppsPerRow, this, mLauncher, this);
+        mAdapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
+        mAdapter.setNumAppsPerRow(mNumAppsPerRow);
+        mLayoutManager = mAdapter.getLayoutManager();
+        mItemDecoration = mAdapter.getItemDecoration();
+        mContentMarginStart = mAdapter.getContentMarginStart();
         mApps.setAdapter(mAdapter);
     }
 
@@ -142,10 +142,10 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     }
 
     /**
-     * Hides the search bar
+     * Hides the header bar
      */
-    public void hideSearchBar() {
-        mSearchBarView.setVisibility(View.GONE);
+    public void hideHeaderBar() {
+        mHeaderView.setVisibility(View.GONE);
         updateBackgrounds();
         updatePaddings();
     }
@@ -155,6 +155,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
      */
     public void scrollToTop() {
         mAppsRecyclerView.scrollToPosition(0);
+        mRecyclerViewScrollY = 0;
     }
 
     /**
@@ -175,9 +176,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     protected void onFinishInflate() {
         boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
                 LAYOUT_DIRECTION_RTL);
-        if (USE_LAYOUT == GRID_LAYOUT) {
-            ((AppsGridAdapter) mAdapter).setRtl(isRtl);
-        }
+        mAdapter.setRtl(isRtl);
 
         // Work around the search box getting first focus and showing the cursor by
         // proxying the focus from the content view to the recycler view directly
@@ -190,10 +189,20 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
                 }
             }
         });
-        mSearchBarView = (EditText) findViewById(R.id.app_search_box);
-        if (mSearchBarView != null) {
-            mSearchBarView.addTextChangedListener(this);
-            mSearchBarView.setOnEditorActionListener(this);
+        mHeaderView = findViewById(R.id.header);
+        mHeaderView.setOnClickListener(this);
+        if (Utilities.isLmpOrAbove() && !DYNAMIC_HEADER_ELEVATION) {
+            mHeaderView.setElevation(DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,
+                getContext().getResources().getDisplayMetrics()));
+        }
+        mSearchButtonView = mHeaderView.findViewById(R.id.search_button);
+        mSearchBarContainerView = findViewById(R.id.app_search_container);
+        mDismissSearchButtonView = mSearchBarContainerView.findViewById(R.id.dismiss_search_button);
+        mDismissSearchButtonView.setOnClickListener(this);
+        mSearchBarEditView = (EditText) findViewById(R.id.app_search_box);
+        if (mSearchBarEditView != null) {
+            mSearchBarEditView.addTextChangedListener(this);
+            mSearchBarEditView.setOnEditorActionListener(this);
         }
         mAppsRecyclerView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
         mAppsRecyclerView.setApps(mApps);
@@ -201,6 +210,18 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
+        mAppsRecyclerView.setOnScrollListenerProxy(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                // Do nothing
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                mRecyclerViewScrollY += dy;
+                onRecyclerViewScrolled();
+            }
+        });
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
@@ -225,12 +246,15 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             if (grid.updateAppsViewNumCols(context.getResources(), fixedBounds.width())) {
                 mNumAppsPerRow = grid.appsViewNumCols;
                 mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
-                if (USE_LAYOUT == GRID_LAYOUT) {
-                    ((AppsGridAdapter) mAdapter).setNumAppsPerRow(mNumAppsPerRow);
-                }
+                mAdapter.setNumAppsPerRow(mNumAppsPerRow);
+                mApps.setNumAppsPerRow(mNumAppsPerRow);
             }
 
             mFixedBounds.set(fixedBounds);
+            if (Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
+                mFixedBounds.top = mInsets.top;
+                mFixedBounds.bottom = getMeasuredHeight();
+            }
         }
         // Post the updates since they can trigger a relayout, and this call can be triggered from
         // a layout pass itself.
@@ -262,6 +286,15 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == mHeaderView) {
+            showSearchField();
+        } else if (v == mDismissSearchButtonView) {
+            hideSearchField(true, true);
+        }
     }
 
     @Override
@@ -363,24 +396,27 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             mApps.setFilter(null);
         } else {
             String formatStr = getResources().getString(R.string.apps_view_no_search_results);
-            if (USE_LAYOUT == GRID_LAYOUT) {
-                ((AppsGridAdapter) mAdapter).setEmptySearchText(String.format(formatStr,
-                        s.toString()));
-            } else {
-                ((AppsListAdapter) mAdapter).setEmptySearchText(String.format(formatStr,
-                        s.toString()));
-            }
+            mAdapter.setEmptySearchText(String.format(formatStr, s.toString()));
 
             final String filterText = s.toString().toLowerCase().replaceAll("\\s+", "");
             mApps.setFilter(new AlphabeticalAppsList.Filter() {
                 @Override
                 public boolean retainApp(AppInfo info, String sectionName) {
                     String title = info.title.toString();
-                    return sectionName.toLowerCase().contains(filterText) ||
-                            title.toLowerCase().replaceAll("\\s+", "").contains(filterText);
+                    if (sectionName.toLowerCase().contains(filterText)) {
+                        return true;
+                    }
+                    String[] words = title.toLowerCase().split("\\s+");
+                    for (int i = 0; i < words.length; i++) {
+                        if (words[i].startsWith(filterText)) {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
             });
         }
+        scrollToTop();
     }
 
     @Override
@@ -396,9 +432,7 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
                 AlphabeticalAppsList.AdapterItem item = items.get(i);
                 if (!item.isSectionHeader) {
                     mAppsRecyclerView.getChildAt(i).performClick();
-                    InputMethodManager imm = (InputMethodManager)
-                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getWindowToken(), 0);
+                    getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
                     return true;
                 }
             }
@@ -428,10 +462,22 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        if (mSearchBarView != null) {
+        if (mSearchBarEditView != null) {
             if (toWorkspace) {
-                // Clear the search bar
-                mSearchBarView.setText("");
+                hideSearchField(false, false);
+            }
+        }
+    }
+
+    /**
+     * Updates the container when the recycler view is scrolled.
+     */
+    private void onRecyclerViewScrolled() {
+        if (DYNAMIC_HEADER_ELEVATION) {
+            int elevation = Math.min(mRecyclerViewScrollY, DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,
+                    getContext().getResources().getDisplayMetrics()));
+            if (Float.compare(mHeaderView.getElevation(), elevation) != 0) {
+                mHeaderView.setElevation(elevation);
             }
         }
     }
@@ -494,8 +540,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private void updatePaddings() {
         boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
                 LAYOUT_DIRECTION_RTL);
-        boolean hasSearchBar = (mSearchBarView != null) &&
-                (mSearchBarView.getVisibility() == View.VISIBLE);
+        boolean hasSearchBar = (mSearchBarEditView != null) &&
+                (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
         if (mFixedBounds.isEmpty()) {
             // If there are no fixed bounds, then use the default padding and insets
@@ -516,10 +562,10 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
             mAppsRecyclerView.setPadding(inset + mContentMarginStart, inset, inset, inset);
         }
 
-        // Update the search bar
+        // Update the header
         if (hasSearchBar) {
             LinearLayout.LayoutParams lp =
-                    (LinearLayout.LayoutParams) mSearchBarView.getLayoutParams();
+                    (LinearLayout.LayoutParams) mHeaderView.getLayoutParams();
             lp.leftMargin = lp.rightMargin = inset;
         }
     }
@@ -529,8 +575,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
      */
     private void updateBackgrounds() {
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-        boolean hasSearchBar = (mSearchBarView != null) &&
-                (mSearchBarView.getVisibility() == View.VISIBLE);
+        boolean hasSearchBar = (mSearchBarEditView != null) &&
+                (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
         // Update the background of the reveal view and list to be inset with the fixed bound
         // insets instead of the default insets
@@ -541,5 +587,64 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         getRevealView().setBackground(new InsetDrawable(
                 getContext().getResources().getDrawable(R.drawable.apps_reveal_bg),
                 inset, 0, inset, 0));
+    }
+
+    /**
+     * Shows the search field.
+     */
+    private void showSearchField() {
+        // Show the search bar and focus the search
+        mSearchBarContainerView.setVisibility(View.VISIBLE);
+        mSearchBarContainerView.setAlpha(0f);
+        mSearchBarContainerView.animate().alpha(1f).setDuration(FADE_IN_DURATION).withLayer()
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSearchBarEditView.requestFocus();
+                        getInputMethodManager().showSoftInput(mSearchBarEditView,
+                                InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+        mSearchButtonView.animate().alpha(0f).setDuration(FADE_OUT_DURATION).withLayer();
+    }
+
+    /**
+     * Hides the search field.
+     */
+    private void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
+        if (animated) {
+            // Hide the search bar and focus the recycler view
+            mSearchBarContainerView.animate().alpha(0f).setDuration(FADE_IN_DURATION).withLayer()
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSearchBarContainerView.setVisibility(View.INVISIBLE);
+                            mSearchBarEditView.setText("");
+                            mApps.setFilter(null);
+                            if (returnFocusToRecyclerView) {
+                                mAppsRecyclerView.requestFocus();
+                            }
+                            scrollToTop();
+                        }
+                    });
+            mSearchButtonView.animate().alpha(1f).setDuration(FADE_OUT_DURATION).withLayer();
+        } else {
+            mSearchBarContainerView.setVisibility(View.INVISIBLE);
+            mSearchBarEditView.setText("");
+            mApps.setFilter(null);
+            mSearchButtonView.setAlpha(1f);
+            if (returnFocusToRecyclerView) {
+                mAppsRecyclerView.requestFocus();
+            }
+            scrollToTop();
+        }
+        getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
+    }
+
+    /**
+     * Returns an input method manager.
+     */
+    private InputMethodManager getInputMethodManager() {
+        return (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }

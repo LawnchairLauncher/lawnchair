@@ -66,6 +66,7 @@ public class AppsContainerRecyclerView extends RecyclerView
     private int mScrollbarWidth;
     private int mScrollbarMinHeight;
     private int mScrollbarInset;
+    private RecyclerView.OnScrollListener mScrollListenerProxy;
 
     public AppsContainerRecyclerView(Context context) {
         this(context, null);
@@ -102,7 +103,7 @@ public class AppsContainerRecyclerView extends RecyclerView
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD;
 
         ScrollListener listener = new ScrollListener();
-        addOnScrollListener(listener);
+        setOnScrollListener(listener);
     }
 
     private class ScrollListener extends RecyclerView.OnScrollListener {
@@ -112,6 +113,7 @@ public class AppsContainerRecyclerView extends RecyclerView
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             mDy = dy;
+            mScrollListenerProxy.onScrolled(recyclerView, dx, dy);
         }
     }
 
@@ -127,6 +129,13 @@ public class AppsContainerRecyclerView extends RecyclerView
      */
     public void setNumAppsPerRow(int rowSize) {
         mNumAppsPerRow = rowSize;
+    }
+
+    /**
+     * Sets an additional scroll listener, not necessary in master support lib.
+     */
+    public void setOnScrollListenerProxy(RecyclerView.OnScrollListener listener) {
+        mScrollListenerProxy = listener;
     }
 
     /**
@@ -176,10 +185,6 @@ public class AppsContainerRecyclerView extends RecyclerView
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent ev) {
         handleTouchEvent(ev);
-    }
-
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        // Do nothing
     }
 
     /**
@@ -322,6 +327,7 @@ public class AppsContainerRecyclerView extends RecyclerView
 
         // Find the position of the first application in the section that contains the row at the
         // current progress
+        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
         int rowAtProgress = (int) (progress * getNumRows());
         int rowCount = 0;
         AlphabeticalAppsList.SectionInfo lastSectionInfo = null;
@@ -333,7 +339,7 @@ public class AppsContainerRecyclerView extends RecyclerView
             }
             rowCount += numRowsInSection;
         }
-        int position = mApps.getAdapterItems().indexOf(lastSectionInfo.firstAppItem);
+        int position = items.indexOf(lastSectionInfo.firstAppItem);
 
         // Scroll the position into view, anchored at the top of the screen if possible. We call the
         // scroll method on the LayoutManager directly since it is not exposed by RecyclerView.
@@ -342,15 +348,17 @@ public class AppsContainerRecyclerView extends RecyclerView
         layoutManager.scrollToPositionWithOffset(position, 0);
 
         // Return the section name of the row
-        return mApps.getAdapterItems().get(position).sectionName;
+        return lastSectionInfo.sectionName;
     }
 
     /**
      * Returns the bounds for the scrollbar.
      */
     private void updateVerticalScrollbarBounds() {
+        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+
         // Skip early if there are no items
-        if (mApps.getAdapterItems().isEmpty()) {
+        if (items.isEmpty()) {
             mVerticalScrollbarBounds.setEmpty();
             return;
         }
@@ -369,7 +377,7 @@ public class AppsContainerRecyclerView extends RecyclerView
             View child = getChildAt(i);
             int position = getChildPosition(child);
             if (position != NO_POSITION) {
-                AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
+                AlphabeticalAppsList.AdapterItem item = items.get(position);
                 if (!item.isSectionHeader) {
                     rowIndex = findRowForAppIndex(item.appIndex);
                     rowTopOffset = getLayoutManager().getDecoratedTop(child);

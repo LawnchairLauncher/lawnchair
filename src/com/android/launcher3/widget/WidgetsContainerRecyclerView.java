@@ -51,7 +51,7 @@ public class WidgetsContainerRecyclerView extends RecyclerView
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD;
 
         ScrollListener listener = new ScrollListener();
-        addOnScrollListener(listener);
+        setOnScrollListener(listener);
     }
 
     private class ScrollListener extends RecyclerView.OnScrollListener {
