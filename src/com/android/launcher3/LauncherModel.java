@@ -2810,6 +2810,8 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 mHandler.post(r);
             }
+            loadAndBindWidgetsAndShortcuts(mApp.getContext(), tryGetCallbacks(oldCallbacks),
+                    false /* refresh */);
         }
 
         private void loadAllApps() {
@@ -2871,8 +2873,6 @@ public class LauncherModel extends BroadcastReceiver
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(added);
-                        loadAndBindWidgetsAndShortcuts(mApp.getContext(), callbacks,
-                                true /* refresh */);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound " + added.size() + " apps in "
                                 + (SystemClock.uptimeMillis() - bindTime) + "ms");
@@ -2885,6 +2885,8 @@ public class LauncherModel extends BroadcastReceiver
             // Cleanup any data stored for a deleted user.
             ManagedProfileHeuristic.processAllUsers(profiles, mContext);
 
+            loadAndBindWidgetsAndShortcuts(mApp.getContext(), tryGetCallbacks(oldCallbacks),
+                    true /* refresh */);
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "Icons processed in "
                         + (SystemClock.uptimeMillis() - loadTime) + "ms");
