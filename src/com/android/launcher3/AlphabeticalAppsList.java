@@ -226,7 +226,6 @@ public class AlphabeticalAppsList {
      * Sets the current set of apps.
      */
     public void setApps(List<AppInfo> apps) {
-        Collections.sort(apps, mAppNameComparator.getComparator());
         mApps.clear();
         mApps.addAll(apps);
         onAppsUpdated();
@@ -241,6 +240,8 @@ public class AlphabeticalAppsList {
         for (AppInfo info : apps) {
             addApp(info);
         }
+        onAppsUpdated();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -251,12 +252,12 @@ public class AlphabeticalAppsList {
             int index = mApps.indexOf(info);
             if (index != -1) {
                 mApps.set(index, info);
-                onAppsUpdated();
-                mAdapter.notifyItemChanged(index);
             } else {
                 addApp(info);
             }
         }
+        onAppsUpdated();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -267,10 +268,10 @@ public class AlphabeticalAppsList {
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex != -1) {
                 mApps.remove(removeIndex);
-                onAppsUpdated();
-                mAdapter.notifyDataSetChanged();
             }
         }
+        onAppsUpdated();
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -290,14 +291,12 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * Implementation to actually add an app to the alphabetic list
+     * Implementation to actually add an app to the alphabetic list, but does not notify.
      */
     private void addApp(AppInfo info) {
         int index = Collections.binarySearch(mApps, info, mAppNameComparator.getComparator());
         if (index < 0) {
             mApps.add(-(index + 1), info);
-            onAppsUpdated();
-            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -305,6 +304,9 @@ public class AlphabeticalAppsList {
      * Updates internals when the set of apps are updated.
      */
     private void onAppsUpdated() {
+        // Sort the list of apps
+        Collections.sort(mApps, mAppNameComparator.getComparator());
+
         // Recreate the filtered and sectioned apps (for convenience for the grid layout)
         mFilteredApps.clear();
         mSections.clear();
