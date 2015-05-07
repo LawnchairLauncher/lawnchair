@@ -24,6 +24,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -113,6 +114,16 @@ class AllAppsList {
             if (info.user.equals(user) && packageName.equals(component.getPackageName())) {
                 removed.add(info);
                 data.remove(i);
+            }
+        }
+    }
+
+    public void updateIconsAndLabels(HashSet<String> packages, UserHandleCompat user,
+            ArrayList<AppInfo> outUpdates) {
+        for (AppInfo info : data) {
+            if (info.user.equals(user) && packages.contains(info.componentName.getPackageName())) {
+                mIconCache.updateTitleAndIcon(info);
+                outUpdates.add(info);
             }
         }
     }
