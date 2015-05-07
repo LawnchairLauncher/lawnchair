@@ -40,6 +40,11 @@ public class AppsContainerRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
+    private static final int SCROLL_DELTA_THRESHOLD = 6;
+
+    /** Keeps the last known scrolling delta/velocity along y-axis. */
+    private int mDy = 0;
+    private float mDeltaThreshold;
 
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
@@ -92,6 +97,7 @@ public class AppsContainerRecyclerView extends RecyclerView
         mScrollbarInset =
                 res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(getFastScrollerAlpha());
+        mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD;
     }
 
     /**
@@ -132,6 +138,7 @@ public class AppsContainerRecyclerView extends RecyclerView
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         addOnItemTouchListener(this);
     }
 
@@ -140,6 +147,11 @@ public class AppsContainerRecyclerView extends RecyclerView
         super.dispatchDraw(canvas);
         drawVerticalScrubber(canvas);
         drawFastScrollerPopup(canvas);
+    }
+
+    @Override
+    public void onScrolled(int dx, int dy) {
+        mDy = dy;
     }
 
     /**
@@ -175,7 +187,10 @@ public class AppsContainerRecyclerView extends RecyclerView
                 // Keep track of the down positions
                 mDownX = mLastX = x;
                 mDownY = mLastY = y;
-                stopScroll();
+                if ((Math.abs(mDy) < mDeltaThreshold &&
+                        getScrollState() != RecyclerView.SCROLL_STATE_IDLE)) {
+                    stopScroll();
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Check if we are scrolling
