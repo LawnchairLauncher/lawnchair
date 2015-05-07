@@ -78,7 +78,6 @@ public class FolderPagedView extends PagedView {
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LauncherAppState app = LauncherAppState.getInstance();
-        setDataIsReady();
 
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
         if (ALLOW_FOLDER_SCROLL) {
@@ -345,15 +344,6 @@ public class FolderPagedView extends PagedView {
             mFolder.updateFooterHeight();
         }
     }
-
-    @Override
-    protected void loadAssociatedPages(int page, boolean immediateAndOnly) { }
-
-    @Override
-    public void syncPages() { }
-
-    @Override
-    public void syncPageItems(int page, boolean immediate) { }
 
     public int getDesiredWidth() {
         return getPageCount() > 0 ? getPageAt(0).getDesiredWidth() : 0;
