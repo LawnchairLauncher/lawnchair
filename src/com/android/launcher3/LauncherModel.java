@@ -3028,6 +3028,10 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         public void run() {
+            if (!mHasLoaderCompletedOnce) {
+                // Loader has not yet run.
+                return;
+            }
             final Context context = mApp.getContext();
 
             final String[] packages = mPackages;
