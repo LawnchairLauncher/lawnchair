@@ -21,6 +21,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.android.launcher3.util.Thunk;
+
 /**
  * The widgets recycler view container.
  * <p>
@@ -30,10 +32,10 @@ import android.view.MotionEvent;
 public class WidgetsContainerRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
-    private static final int SCROLL_DELTA_THRESHOLD = 6;
+    private static final int SCROLL_DELTA_THRESHOLD = 4;
 
     /** Keeps the last known scrolling delta/velocity along y-axis. */
-    private int mDy = 0;
+    @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
     public WidgetsContainerRecyclerView(Context context) {
@@ -47,17 +49,25 @@ public class WidgetsContainerRecyclerView extends RecyclerView
     public WidgetsContainerRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD;
+
+        ScrollListener listener = new ScrollListener();
+        addOnScrollListener(listener);
+    }
+
+    private class ScrollListener extends RecyclerView.OnScrollListener {
+        public ScrollListener() {
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            mDy = dy;
+        }
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         addOnItemTouchListener(this);
-    }
-
-    @Override
-    public void onScrolled(int dx, int dy) {
-        mDy = dy;
     }
 
     @Override
