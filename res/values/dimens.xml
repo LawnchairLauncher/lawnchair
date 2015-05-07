@@ -75,9 +75,13 @@
          or right while you're dragging. -->
     <dimen name="scroll_zone">20dp</dimen>
 
-    <!--  When dragging an item, how much bigger (fixed dps) the dragged view
-          should be. If 0, it will not be scaled at all. -->
+    <!-- When dragging an item, how much bigger (fixed dps) the dragged view
+         should be. If 0, it will not be scaled at all. -->
     <dimen name="dragViewScale">12dp</dimen>
+
+    <!-- Elevation for the drag view. It should be larger than elevation of all other drag sources
+         and drop targets like all-apps and folders -->
+    <dimen name="drag_elevation">30dp</dimen>
 
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
@@ -107,6 +111,7 @@
     <!-- The amount that the preview contents are inset from the preview background -->
     <dimen name="folder_preview_padding">4dp</dimen>
     <dimen name="folder_name_padding">10dp</dimen>
+    <dimen name="folder_shadow_padding">8dp</dimen>
 
 <!-- Sizes for managed profile badges -->
     <dimen name="profile_badge_size">24dp</dimen>
