@@ -87,4 +87,8 @@ public class WidgetsContainerRecyclerView extends RecyclerView
     public void onTouchEvent(RecyclerView rv, MotionEvent ev) {
         // Do nothing.
     }
+
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // DO NOT REMOVE, NEEDED IMPLEMENTATION FOR M BUILDS
+    }
 }
