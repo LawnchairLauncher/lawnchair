@@ -40,7 +40,7 @@
         android:clipChildren="false"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
+        <com.android.launcher3.widget.WidgetsContainerRecyclerView
                 android:id="@+id/widgets_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
