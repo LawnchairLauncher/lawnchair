@@ -43,7 +43,7 @@
                 android:paddingBottom="12dp"
                 android:contentDescription="@string/all_apps_button_label"
                 android:src="@drawable/ic_arrow_back_grey" />
-            <EditText
+            <com.android.launcher3.AppsContainerSearchEditTextView
                 android:id="@+id/app_search_box"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -59,6 +59,7 @@
                 android:textColor="#4c4c4c"
                 android:textColorHint="#9c9c9c"
                 android:imeOptions="actionDone|flagNoExtractUi"
+                android:focusableInTouchMode="true"
                 android:background="@android:color/transparent" />
         </LinearLayout>
         <ImageView
