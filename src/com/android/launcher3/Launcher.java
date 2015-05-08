@@ -528,7 +528,8 @@ public class Launcher extends Activity
                 if (LOGD) {
                     Log.d(TAG, "onAllAppsBoundsChanged(Rect): " + bounds);
                 }
-                mAppsView.setFixedBounds(Launcher.this, bounds);
+                mAppsView.setFixedBounds(bounds);
+                mWidgetsView.setFixedBounds(bounds);
             }
 
             @Override
