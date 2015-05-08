@@ -254,8 +254,9 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             mFastScrollTextPaint.setAlpha((int) (mFastScrollAlpha * 255));
             mFastScrollTextPaint.getTextBounds(mFastScrollSectionName, 0,
                     mFastScrollSectionName.length(), mFastScrollTextBounds);
+            float textWidth = mFastScrollTextPaint.measureText(mFastScrollSectionName);
             canvas.drawText(mFastScrollSectionName,
-                    (bgBounds.width() - mFastScrollTextBounds.width()) / 2,
+                    (bgBounds.width() - textWidth) / 2,
                     bgBounds.height() - (bgBounds.height() - mFastScrollTextBounds.height()) / 2,
                     mFastScrollTextPaint);
             canvas.restoreToCount(restoreCount);
@@ -285,38 +286,33 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     }
 
     /**
-     * Maps the progress (from 0..1) to the position that should be visible
+     * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
-    private String scrollToPositionAtProgress(float progress) {
-        List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
-        if (sections.isEmpty()) {
+    private String scrollToPositionAtProgress(float touchFraction) {
+        // Ensure that we have any sections
+        List<AlphabeticalAppsList.FastScrollSectionInfo> fastScrollSections =
+                mApps.getFastScrollerSections();
+        if (fastScrollSections.isEmpty()) {
             return "";
         }
 
-        // Find the position of the first application in the section that contains the row at the
-        // current progress
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        int rowAtProgress = (int) (progress * getNumRows());
-        int rowCount = 0;
-        AlphabeticalAppsList.SectionInfo lastSectionInfo = null;
-        for (AlphabeticalAppsList.SectionInfo section : sections) {
-            int numRowsInSection = (int) Math.ceil((float) section.numAppsInSection / mNumAppsPerRow);
-            if (rowCount + numRowsInSection >= rowAtProgress) {
-                lastSectionInfo = section;
+        AlphabeticalAppsList.FastScrollSectionInfo lastScrollSection = fastScrollSections.get(0);
+        for (int i = 1; i < fastScrollSections.size(); i++) {
+            AlphabeticalAppsList.FastScrollSectionInfo scrollSection = fastScrollSections.get(i);
+            if (lastScrollSection.appRangeFraction <= touchFraction &&
+                    touchFraction < scrollSection.appRangeFraction) {
                 break;
             }
-            rowCount += numRowsInSection;
+            lastScrollSection = scrollSection;
         }
-        int position = items.indexOf(lastSectionInfo.firstAppItem);
 
         // Scroll the position into view, anchored at the top of the screen if possible. We call the
         // scroll method on the LayoutManager directly since it is not exposed by RecyclerView.
         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
         stopScroll();
-        layoutManager.scrollToPositionWithOffset(position, 0);
+        layoutManager.scrollToPositionWithOffset(lastScrollSection.appItem.position, 0);
 
-        // Return the section name of the row
-        return lastSectionInfo.sectionName;
+        return lastScrollSection.sectionName;
     }
 
     /**
@@ -392,11 +388,11 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         int appIndex = 0;
         int rowCount = 0;
         for (AlphabeticalAppsList.SectionInfo info : sections) {
-            int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
-            if (appIndex + info.numAppsInSection > position) {
+            int numRowsInSection = (int) Math.ceil((float) info.numApps / mNumAppsPerRow);
+            if (appIndex + info.numApps > position) {
                 return rowCount + ((position - appIndex) / mNumAppsPerRow);
             }
-            appIndex += info.numAppsInSection;
+            appIndex += info.numApps;
             rowCount += numRowsInSection;
         }
         return appIndex;
@@ -409,7 +405,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
         int rowCount = 0;
         for (AlphabeticalAppsList.SectionInfo info : sections) {
-            int numRowsInSection = (int) Math.ceil((float) info.numAppsInSection / mNumAppsPerRow);
+            int numRowsInSection = (int) Math.ceil((float) info.numApps / mNumAppsPerRow);
             rowCount += numRowsInSection;
         }
         return rowCount;
