@@ -28,10 +28,9 @@ import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragController;
@@ -55,8 +54,8 @@ import java.util.ArrayList;
 /**
  * The widgets list view container.
  */
-public class WidgetsContainerView extends FrameLayout implements Insettable,
-        View.OnLongClickListener, View.OnClickListener, DragSource{
+public class WidgetsContainerView extends BaseContainerView
+        implements View.OnLongClickListener, View.OnClickListener, DragSource{
 
     private static final String TAG = "WidgetsContainerView";
     private static final boolean DEBUG = false;
@@ -129,6 +128,7 @@ public class WidgetsContainerView extends FrameLayout implements Insettable,
         });
         mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
                 getPaddingBottom());
+        onUpdatePaddings();
     }
 
     //
@@ -364,13 +364,17 @@ public class WidgetsContainerView extends FrameLayout implements Insettable,
     // Container rendering related.
     //
 
-    /*
-     * @see Insettable#setInsets(Rect)
-     */
     @Override
-    public void setInsets(Rect insets) {
-        setPadding(mPadding.left + insets.left, mPadding.top + insets.top,
-                mPadding.right + insets.right, mPadding.bottom + insets.bottom);
+    protected void onUpdatePaddings() {
+        if (mFixedBounds.isEmpty()) {
+            // If there are no fixed bounds, then use the default padding and insets
+            setPadding(mPadding.left + mInsets.left, mPadding.top + mInsets.top,
+                    mPadding.right + mInsets.right, mPadding.bottom + mInsets.bottom);
+        } else {
+            // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
+            setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
+                    mInsets.bottom);
+        }
     }
 
     /**

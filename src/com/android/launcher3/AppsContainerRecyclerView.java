@@ -30,23 +30,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.util.Thunk;
-
 import java.util.List;
 
 /**
  * A RecyclerView with custom fastscroll support.  This is the main container for the all apps
  * icons.
  */
-public class AppsContainerRecyclerView extends RecyclerView
-        implements RecyclerView.OnItemTouchListener {
+public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
 
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
-    private static final int SCROLL_DELTA_THRESHOLD = 4;
-
-    /** Keeps the last known scrolling delta/velocity along y-axis. */
-    @Thunk int mDy = 0;
-    private float mDeltaThreshold;
 
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
@@ -66,7 +58,6 @@ public class AppsContainerRecyclerView extends RecyclerView
     private int mScrollbarWidth;
     private int mScrollbarMinHeight;
     private int mScrollbarInset;
-    private RecyclerView.OnScrollListener mScrollListenerProxy;
 
     public AppsContainerRecyclerView(Context context) {
         this(context, null);
@@ -100,21 +91,6 @@ public class AppsContainerRecyclerView extends RecyclerView
         mScrollbarInset =
                 res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(getFastScrollerAlpha());
-        mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD;
-
-        ScrollListener listener = new ScrollListener();
-        setOnScrollListener(listener);
-    }
-
-    private class ScrollListener extends RecyclerView.OnScrollListener {
-        public ScrollListener() {
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            mDy = dy;
-            mScrollListenerProxy.onScrolled(recyclerView, dx, dy);
-        }
     }
 
     /**
@@ -129,13 +105,6 @@ public class AppsContainerRecyclerView extends RecyclerView
      */
     public void setNumAppsPerRow(int rowSize) {
         mNumAppsPerRow = rowSize;
-    }
-
-    /**
-     * Sets an additional scroll listener, not necessary in master support lib.
-     */
-    public void setOnScrollListenerProxy(RecyclerView.OnScrollListener listener) {
-        mScrollListenerProxy = listener;
     }
 
     /**
@@ -187,10 +156,6 @@ public class AppsContainerRecyclerView extends RecyclerView
         handleTouchEvent(ev);
     }
 
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        // DO NOT REMOVE, NEEDED IMPLEMENTATION FOR M BUILDS
-    }
-
     /**
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
      * it is already showing).
@@ -206,8 +171,7 @@ public class AppsContainerRecyclerView extends RecyclerView
                 // Keep track of the down positions
                 mDownX = mLastX = x;
                 mDownY = mLastY = y;
-                if ((Math.abs(mDy) < mDeltaThreshold &&
-                        getScrollState() != RecyclerView.SCROLL_STATE_IDLE)) {
+                if (shouldStopScroll(ev)) {
                     stopScroll();
                 }
                 break;

@@ -31,7 +31,6 @@ import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.launcher3.util.Thunk;
@@ -40,10 +39,10 @@ import java.util.List;
 
 
 /**
- * The all apps list view container.
+ * The all apps view container.
  */
-public class AppsContainerView extends FrameLayout implements DragSource, Insettable, TextWatcher,
-        TextView.OnEditorActionListener, LauncherTransitionable, View.OnTouchListener,
+public class AppsContainerView extends BaseContainerView implements DragSource, Insettable,
+        TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable, View.OnTouchListener,
         View.OnClickListener, View.OnLongClickListener {
 
     public static final boolean GRID_MERGE_SECTIONS = true;
@@ -73,13 +72,9 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
     private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point(-1, -1);
     private Point mLastTouchPos = new Point();
-    private Rect mInsets = new Rect();
-    private Rect mFixedBounds = new Rect();
     private int mContentMarginStart;
     // Normal container insets
     private int mContainerInset;
-    // Fixed bounds container insets
-    private int mFixedBoundsContainerInset;
     // RecyclerView scroll position
     @Thunk int mRecyclerViewScrollY;
 
@@ -99,8 +94,6 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
 
         mContainerInset = context.getResources().getDimensionPixelSize(
                 R.dimen.apps_container_inset);
-        mFixedBoundsContainerInset = context.getResources().getDimensionPixelSize(
-                R.dimen.apps_container_fixed_bounds_inset);
         mLauncher = (Launcher) context;
         mNumAppsPerRow = grid.appsViewNumCols;
         mApps = new AlphabeticalAppsList(context, mNumAppsPerRow);
@@ -146,8 +139,8 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
      */
     public void hideHeaderBar() {
         mHeaderView.setVisibility(View.GONE);
-        updateBackgrounds();
-        updatePaddings();
+        onUpdateBackgrounds();
+        onUpdatePaddings();
     }
 
     /**
@@ -225,46 +218,81 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
-        updateBackgrounds();
-        updatePaddings();
+        onUpdateBackgrounds();
+        onUpdatePaddings();
     }
 
     @Override
-    public void setInsets(Rect insets) {
-        mInsets.set(insets);
-        updatePaddings();
+    protected void onFixedBoundsUpdated() {
+        // Update the number of items in the grid
+        LauncherAppState app = LauncherAppState.getInstance();
+        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        if (grid.updateAppsViewNumCols(getContext().getResources(), mFixedBounds.width())) {
+            mNumAppsPerRow = grid.appsViewNumCols;
+            mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
+            mAdapter.setNumAppsPerRow(mNumAppsPerRow);
+            mApps.setNumAppsPerRow(mNumAppsPerRow);
+        }
     }
 
     /**
-     * Sets the fixed bounds for this Apps view.
+     * Update the padding of the Apps view and children.  To ensure that the RecyclerView has the
+     * full width to handle touches right to the edge of the screen, we only apply the top and
+     * bottom padding to the AppsContainerView and then the left/right padding on the RecyclerView
+     * itself.  In particular, the left/right padding is applied to the background of the view,
+     * and then additionally inset by the start margin.
      */
-    public void setFixedBounds(Context context, Rect fixedBounds) {
-        if (!fixedBounds.isEmpty() && !fixedBounds.equals(mFixedBounds)) {
-            // Update the number of items in the grid
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            if (grid.updateAppsViewNumCols(context.getResources(), fixedBounds.width())) {
-                mNumAppsPerRow = grid.appsViewNumCols;
-                mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
-                mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-                mApps.setNumAppsPerRow(mNumAppsPerRow);
-            }
+    @Override
+    protected void onUpdatePaddings() {
+        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
+                LAYOUT_DIRECTION_RTL);
+        boolean hasSearchBar = (mSearchBarEditView != null) &&
+                (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
-            mFixedBounds.set(fixedBounds);
-            if (Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
-                mFixedBounds.top = mInsets.top;
-                mFixedBounds.bottom = getMeasuredHeight();
-            }
+        if (mFixedBounds.isEmpty()) {
+            // If there are no fixed bounds, then use the default padding and insets
+            setPadding(mInsets.left, mContainerInset + mInsets.top, mInsets.right,
+                    mContainerInset + mInsets.bottom);
+        } else {
+            // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
+            setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
+                    mInsets.bottom);
         }
-        // Post the updates since they can trigger a relayout, and this call can be triggered from
-        // a layout pass itself.
-        post(new Runnable() {
-            @Override
-            public void run() {
-                updateBackgrounds();
-                updatePaddings();
-            }
-        });
+
+        // Update the apps recycler view, inset it by the container inset as well
+        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
+        if (isRtl) {
+            mAppsRecyclerView.setPadding(inset, inset, inset + mContentMarginStart, inset);
+        } else {
+            mAppsRecyclerView.setPadding(inset + mContentMarginStart, inset, inset, inset);
+        }
+
+        // Update the header bar
+        if (hasSearchBar) {
+            LinearLayout.LayoutParams lp =
+                    (LinearLayout.LayoutParams) mHeaderView.getLayoutParams();
+            lp.leftMargin = lp.rightMargin = inset;
+        }
+    }
+
+    /**
+     * Update the background of the Apps view and children.
+     */
+    @Override
+    protected void onUpdateBackgrounds() {
+        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
+        boolean hasSearchBar = (mSearchBarEditView != null) &&
+                (mSearchBarEditView.getVisibility() == View.VISIBLE);
+
+        // Update the background of the reveal view and list to be inset with the fixed bound
+        // insets instead of the default insets
+        mAppsRecyclerView.setBackground(new InsetDrawable(
+                getContext().getResources().getDrawable(
+                        hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.apps_list_bg),
+                inset, 0, inset, 0));
+        getRevealView().setBackground(new InsetDrawable(
+                getContext().getResources().getDrawable(R.drawable.apps_reveal_bg),
+                inset, 0, inset, 0));
     }
 
     @Override
@@ -528,65 +556,6 @@ public class AppsContainerView extends FrameLayout implements DragSource, Insett
                 break;
         }
         return false;
-    }
-
-    /**
-     * Update the padding of the Apps view and children.  To ensure that the RecyclerView has the
-     * full width to handle touches right to the edge of the screen, we only apply the top and
-     * bottom padding to the AppsContainerView and then the left/right padding on the RecyclerView
-     * itself.  In particular, the left/right padding is applied to the background of the view,
-     * and then additionally inset by the start margin.
-     */
-    private void updatePaddings() {
-        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                LAYOUT_DIRECTION_RTL);
-        boolean hasSearchBar = (mSearchBarEditView != null) &&
-                (mSearchBarEditView.getVisibility() == View.VISIBLE);
-
-        if (mFixedBounds.isEmpty()) {
-            // If there are no fixed bounds, then use the default padding and insets
-            setPadding(mInsets.left, mContainerInset + mInsets.top, mInsets.right,
-                    mContainerInset + mInsets.bottom);
-        } else {
-            // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
-            setPadding(mFixedBounds.left, mFixedBounds.top + mFixedBoundsContainerInset,
-                    getMeasuredWidth() - mFixedBounds.right,
-                    mInsets.bottom + mFixedBoundsContainerInset);
-        }
-
-        // Update the apps recycler view
-        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-        if (isRtl) {
-            mAppsRecyclerView.setPadding(inset, inset, inset + mContentMarginStart, inset);
-        } else {
-            mAppsRecyclerView.setPadding(inset + mContentMarginStart, inset, inset, inset);
-        }
-
-        // Update the header
-        if (hasSearchBar) {
-            LinearLayout.LayoutParams lp =
-                    (LinearLayout.LayoutParams) mHeaderView.getLayoutParams();
-            lp.leftMargin = lp.rightMargin = inset;
-        }
-    }
-
-    /**
-     * Update the background of the Apps view and children.
-     */
-    private void updateBackgrounds() {
-        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-        boolean hasSearchBar = (mSearchBarEditView != null) &&
-                (mSearchBarEditView.getVisibility() == View.VISIBLE);
-
-        // Update the background of the reveal view and list to be inset with the fixed bound
-        // insets instead of the default insets
-        mAppsRecyclerView.setBackground(new InsetDrawable(
-                getContext().getResources().getDrawable(
-                        hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.apps_list_bg),
-                inset, 0, inset, 0));
-        getRevealView().setBackground(new InsetDrawable(
-                getContext().getResources().getDrawable(R.drawable.apps_reveal_bg),
-                inset, 0, inset, 0));
     }
 
     /**
