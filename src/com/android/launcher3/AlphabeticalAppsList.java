@@ -104,28 +104,38 @@ public class AlphabeticalAppsList {
         public int position;
         // Whether or not the item at this adapter position is a section or not
         public boolean isSectionHeader;
-        // The name of this section, or the section that this app is contained in
+        // The name of this section, or the section section name of the app.  Note that if this
+        // app was merged into another section, then this may be a different name than the
+        // sectionInfo's sectionName
         public String sectionName;
+        // The section to which this app belongs
+        public SectionInfo sectionInfo;
+        // The index of this app in the section
+        public int sectionAppIndex;
         // The associated AppInfo, or null if this adapter item is a section
         public AppInfo appInfo;
         // The index of this app (not including sections), or -1 if this adapter item is a section
         public int appIndex;
 
-        public static AdapterItem asSection(int pos, String name) {
+        public static AdapterItem asSection(int pos, SectionInfo section) {
             AdapterItem item = new AdapterItem();
             item.position = pos;
             item.isSectionHeader = true;
-            item.sectionName = name;
+            item.sectionInfo = section;
+            item.sectionName = section.sectionName;
             item.appInfo = null;
             item.appIndex = -1;
             return item;
         }
 
-        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo, int appIndex) {
+        public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
+                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = new AdapterItem();
             item.position = pos;
             item.isSectionHeader = false;
+            item.sectionInfo = section;
             item.sectionName = sectionName;
+            item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
             item.appIndex = appIndex;
             return item;
@@ -140,7 +150,7 @@ public class AlphabeticalAppsList {
     }
 
     // The maximum number of rows allowed in a merged section before we stop merging
-    private static final int MAX_ROWS_IN_MERGED_SECTION = Integer.MAX_VALUE;
+    private static final int MAX_ROWS_IN_MERGED_SECTION = 3;
 
     private List<AppInfo> mApps = new ArrayList<>();
     private List<AppInfo> mFilteredApps = new ArrayList<>();
@@ -314,6 +324,7 @@ public class AlphabeticalAppsList {
         SectionInfo lastSectionInfo = null;
         int position = 0;
         int appIndex = 0;
+        int sectionAppIndex = 0;
         for (AppInfo info : mApps) {
             String sectionName = mIndexer.computeSectionName(info.title.toString().trim());
 
@@ -325,11 +336,12 @@ public class AlphabeticalAppsList {
             // Create a new section if necessary
             if (lastSectionInfo == null || !lastSectionInfo.sectionName.equals(sectionName)) {
                 lastSectionInfo = new SectionInfo(sectionName);
+                sectionAppIndex = 0;
                 mSections.add(lastSectionInfo);
 
                 // Create a new section item, this item is used to break the flow of items in the
                 // list
-                AdapterItem sectionItem = AdapterItem.asSection(position++, sectionName);
+                AdapterItem sectionItem = AdapterItem.asSection(position++, lastSectionInfo);
                 if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS && !hasFilter()) {
                     lastSectionInfo.sectionItem = sectionItem;
                     mSectionedFilteredApps.add(sectionItem);
@@ -337,7 +349,8 @@ public class AlphabeticalAppsList {
             }
 
             // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
+            AdapterItem appItem = AdapterItem.asApp(position++, lastSectionInfo, sectionName,
+                    sectionAppIndex++, info, appIndex++);
             lastSectionInfo.numAppsInSection++;
             if (lastSectionInfo.firstAppItem == null) {
                 lastSectionInfo.firstAppItem = appItem;
@@ -361,25 +374,33 @@ public class AlphabeticalAppsList {
                 // some limit, and also if there are no lessons to merge.
                 while (0 < (sectionAppCount % mNumAppsPerRow) &&
                         (sectionAppCount % mNumAppsPerRow) < minNumAppsPerRow &&
-                        (int) Math.ceil(sectionAppCount / mNumAppsPerRow) < MAX_ROWS_IN_MERGED_SECTION &&
+                        (sectionAppCount / mNumAppsPerRow) < MAX_ROWS_IN_MERGED_SECTION &&
                         (i + 1) < mSections.size()) {
                     SectionInfo nextSection = mSections.remove(i + 1);
+
                     // Merge the section names
                     if (AppsContainerView.GRID_MERGE_SECTION_HEADERS) {
                         mergedSectionName += nextSection.sectionName;
                     }
                     // Remove the next section break
                     mSectionedFilteredApps.remove(nextSection.sectionItem);
+                    int pos = mSectionedFilteredApps.indexOf(section.firstAppItem);
                     if (AppsContainerView.GRID_MERGE_SECTION_HEADERS) {
                         // Update the section names for the two sections
-                        int pos = mSectionedFilteredApps.indexOf(section.firstAppItem);
                         for (int j = pos; j < (pos + section.numAppsInSection + nextSection.numAppsInSection); j++) {
                             AdapterItem item = mSectionedFilteredApps.get(j);
                             item.sectionName = mergedSectionName;
+                            item.sectionInfo = section;
                         }
                     }
-                    // Update the following adapter items of the removed section
-                    int pos = mSectionedFilteredApps.indexOf(nextSection.firstAppItem);
+                    // Point the section for these new apps to the merged section
+                    for (int j = pos + section.numAppsInSection; j < (pos + section.numAppsInSection + nextSection.numAppsInSection); j++) {
+                        AdapterItem item = mSectionedFilteredApps.get(j);
+                        item.sectionInfo = section;
+                        item.sectionAppIndex += section.numAppsInSection;
+                    }
+                    // Update the following adapter items of the removed section item
+                    pos = mSectionedFilteredApps.indexOf(nextSection.firstAppItem);
                     for (int j = pos; j < mSectionedFilteredApps.size(); j++) {
                         AdapterItem item = mSectionedFilteredApps.get(j);
                         item.position--;

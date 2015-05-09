@@ -51,9 +51,11 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
     private static final boolean DYNAMIC_HEADER_ELEVATION = false;
+    private static final boolean DISMISS_SEARCH_ON_BACK = true;
     private static final float HEADER_ELEVATION_DP = 4;
     private static final int FADE_IN_DURATION = 175;
-    private static final int FADE_OUT_DURATION = 125;
+    private static final int FADE_OUT_DURATION = 100;
+    private static final int SEARCH_TRANSLATION_X_DP = 18;
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
@@ -67,7 +69,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private View mSearchBarContainerView;
     private View mSearchButtonView;
     private View mDismissSearchButtonView;
-    private EditText mSearchBarEditView;
+    private AppsContainerSearchEditTextView mSearchBarEditView;
 
     private int mNumAppsPerRow;
     private Point mLastTouchDownPos = new Point(-1, -1);
@@ -192,10 +194,19 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mSearchBarContainerView = findViewById(R.id.app_search_container);
         mDismissSearchButtonView = mSearchBarContainerView.findViewById(R.id.dismiss_search_button);
         mDismissSearchButtonView.setOnClickListener(this);
-        mSearchBarEditView = (EditText) findViewById(R.id.app_search_box);
+        mSearchBarEditView = (AppsContainerSearchEditTextView) findViewById(R.id.app_search_box);
         if (mSearchBarEditView != null) {
             mSearchBarEditView.addTextChangedListener(this);
             mSearchBarEditView.setOnEditorActionListener(this);
+            if (DISMISS_SEARCH_ON_BACK) {
+                mSearchBarEditView.setOnBackKeyListener(
+                        new AppsContainerSearchEditTextView.OnBackKeyListener() {
+                            @Override
+                            public void onBackKey() {
+                                hideSearchField(true, true);
+                            }
+                        });
+            }
         }
         mAppsRecyclerView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
         mAppsRecyclerView.setApps(mApps);
@@ -563,9 +574,16 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     private void showSearchField() {
         // Show the search bar and focus the search
+        final int translationX = DynamicGrid.pxFromDp(SEARCH_TRANSLATION_X_DP,
+                getContext().getResources().getDisplayMetrics());
         mSearchBarContainerView.setVisibility(View.VISIBLE);
         mSearchBarContainerView.setAlpha(0f);
-        mSearchBarContainerView.animate().alpha(1f).setDuration(FADE_IN_DURATION).withLayer()
+        mSearchBarContainerView.setTranslationX(translationX);
+        mSearchBarContainerView.animate()
+                .alpha(1f)
+                .translationX(0)
+                .setDuration(FADE_IN_DURATION)
+                .withLayer()
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
@@ -574,38 +592,57 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                                 InputMethodManager.SHOW_IMPLICIT);
                     }
                 });
-        mSearchButtonView.animate().alpha(0f).setDuration(FADE_OUT_DURATION).withLayer();
+        mSearchButtonView.animate()
+                .alpha(0f)
+                .translationX(-translationX)
+                .setDuration(FADE_OUT_DURATION)
+                .withLayer();
     }
 
     /**
      * Hides the search field.
      */
     private void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
+        final boolean resetTextField = mSearchBarEditView.getText().toString().length() > 0;
+        final int translationX = DynamicGrid.pxFromDp(SEARCH_TRANSLATION_X_DP,
+                getContext().getResources().getDisplayMetrics());
         if (animated) {
             // Hide the search bar and focus the recycler view
-            mSearchBarContainerView.animate().alpha(0f).setDuration(FADE_IN_DURATION).withLayer()
+            mSearchBarContainerView.animate()
+                    .alpha(0f)
+                    .translationX(0)
+                    .setDuration(FADE_IN_DURATION)
+                    .withLayer()
                     .withEndAction(new Runnable() {
                         @Override
                         public void run() {
                             mSearchBarContainerView.setVisibility(View.INVISIBLE);
-                            mSearchBarEditView.setText("");
+                            if (resetTextField) {
+                                mSearchBarEditView.setText("");
+                            }
                             mApps.setFilter(null);
                             if (returnFocusToRecyclerView) {
                                 mAppsRecyclerView.requestFocus();
                             }
-                            scrollToTop();
                         }
                     });
-            mSearchButtonView.animate().alpha(1f).setDuration(FADE_OUT_DURATION).withLayer();
+            mSearchButtonView.setTranslationX(-translationX);
+            mSearchButtonView.animate()
+                    .alpha(1f)
+                    .translationX(0)
+                    .setDuration(FADE_OUT_DURATION)
+                    .withLayer();
         } else {
             mSearchBarContainerView.setVisibility(View.INVISIBLE);
-            mSearchBarEditView.setText("");
+            if (resetTextField) {
+                mSearchBarEditView.setText("");
+            }
             mApps.setFilter(null);
             mSearchButtonView.setAlpha(1f);
+            mSearchButtonView.setTranslationX(0f);
             if (returnFocusToRecyclerView) {
                 mAppsRecyclerView.requestFocus();
             }
-            scrollToTop();
         }
         getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
     }
