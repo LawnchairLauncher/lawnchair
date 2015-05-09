@@ -712,21 +712,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         AccessibilityManager am =
                 (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
         if (am.isEnabled()) {
-            AccessibilityEvent ev =
-                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
-            ev.setItemCount(getChildCount());
-            ev.setFromIndex(mCurrentPage);
-            ev.setToIndex(getNextPage());
+            if (mCurrentPage != getNextPage()) {
+                AccessibilityEvent ev =
+                        AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+                ev.setItemCount(getChildCount());
+                ev.setFromIndex(getNextPage());
+                ev.setToIndex(getNextPage());
 
-            final int action;
-            if (getNextPage() >= mCurrentPage) {
-                action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD;
-            } else {
-                action = AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD;
+                sendAccessibilityEventUnchecked(ev);
             }
-
-            ev.setAction(action);
-            sendAccessibilityEventUnchecked(ev);
         }
     }
 
@@ -2300,8 +2294,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 focusedChild == getPageAt(mCurrentPage)) {
             focusedChild.clearFocus();
         }
-
-        sendScrollAccessibilityEvent();
 
         pageBeginMoving();
         awakenScrollBars(duration);
