@@ -296,13 +296,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setHint(sHintText);
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
-        String newTitle = mFolderName.getText().toString();
+        CharSequence newTitle = mFolderName.getText();
         mInfo.setTitle(newTitle);
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
 
         if (commit) {
             sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                    String.format(getContext().getString(R.string.folder_renamed), newTitle));
+                    String.format(getContext().getString(R.string.folder_renamed),
+                            newTitle.toString()));
         }
         // In order to clear the focus from the text field, we set the focus on ourself. This
         // ensures that every time the field is clicked, focus is gained, giving reliable behavior.

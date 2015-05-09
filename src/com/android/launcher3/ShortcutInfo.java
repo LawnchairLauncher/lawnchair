@@ -153,7 +153,7 @@ public class ShortcutInfo extends ItemInfo {
             Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
-        this.title = title;
+        this.title = Utilities.trim(title);
         this.contentDescription = contentDescription;
         mIcon = icon;
         this.user = user;
@@ -161,7 +161,7 @@ public class ShortcutInfo extends ItemInfo {
 
     public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
-        title = info.title.toString();
+        title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         if (info.iconResource != null) {
             iconResource = new Intent.ShortcutIconResource();
@@ -179,7 +179,7 @@ public class ShortcutInfo extends ItemInfo {
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
     public ShortcutInfo(AppInfo info) {
         super(info);
-        title = info.title.toString();
+        title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         customIcon = false;
         flags = info.flags;
@@ -281,7 +281,7 @@ public class ShortcutInfo extends ItemInfo {
     public static ShortcutInfo fromActivityInfo(LauncherActivityInfoCompat info, Context context) {
         final ShortcutInfo shortcut = new ShortcutInfo();
         shortcut.user = info.getUser();
-        shortcut.title = info.getLabel().toString();
+        shortcut.title = Utilities.trim(info.getLabel());
         shortcut.contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(info.getLabel(), info.getUser());
         shortcut.customIcon = false;

@@ -710,7 +710,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void onTitleChanged(CharSequence title) {
-        mFolderName.setText(title.toString());
+        mFolderName.setText(title);
         setContentDescription(String.format(getContext().getString(R.string.folder_name_format),
                 title));
     }

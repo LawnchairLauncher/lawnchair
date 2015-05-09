@@ -145,7 +145,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
             if (info instanceof ShortcutInfo) {
                 return mContext.getString(R.string.create_folder_with, info.title);
             } else if (info instanceof FolderInfo) {
-                if (TextUtils.isEmpty(info.title.toString().trim())) {
+                if (TextUtils.isEmpty(info.title)) {
                     // Find the first item in the folder.
                     FolderInfo folder = (FolderInfo) info;
                     ShortcutInfo firstItem = null;

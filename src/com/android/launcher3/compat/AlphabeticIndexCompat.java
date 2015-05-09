@@ -1,6 +1,7 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
+import com.android.launcher3.Utilities;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -102,10 +103,11 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
     /**
      * Computes the section name for an given string {@param s}.
      */
-    public String computeSectionName(String s) {
+    public String computeSectionName(CharSequence cs) {
+        String s = Utilities.trim(cs);
         String sectionName = getBucketLabel(getBucketIndex(s));
-        if (sectionName.trim().isEmpty() && s.length() > 0) {
-            boolean startsWithDigit = Character.isDigit(Character.codePointAt(s.trim(), 0));
+        if (Utilities.trim(sectionName).isEmpty() && s.length() > 0) {
+            boolean startsWithDigit = Character.isDigit(s.codePointAt(0));
             if (startsWithDigit) {
                 // Digit section
                 return "#";

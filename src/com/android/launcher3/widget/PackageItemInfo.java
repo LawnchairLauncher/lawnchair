@@ -49,7 +49,7 @@ public class PackageItemInfo extends ItemInfo {
 
     @Override
     public String toString() {
-        return "PackageItemInfo(title=" + title.toString() + " id=" + this.id
+        return "PackageItemInfo(title=" + title + " id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container
                 + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY
                 + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
