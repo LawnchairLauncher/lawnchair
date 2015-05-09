@@ -229,7 +229,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      * Draws the fast scroller popup.
      */
     private void drawFastScrollerPopup(Canvas canvas) {
-        if (mFastScrollAlpha > 0f) {
+        if (mFastScrollAlpha > 0f && !mFastScrollSectionName.isEmpty()) {
             int x;
             int y;
             boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
@@ -381,16 +381,16 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     }
 
     /**
-     * Returns the row index for a given position in the list.
+     * Returns the row index for a app index in the list.
      */
-    private int findRowForAppIndex(int position) {
+    private int findRowForAppIndex(int index) {
         List<AlphabeticalAppsList.SectionInfo> sections = mApps.getSections();
         int appIndex = 0;
         int rowCount = 0;
         for (AlphabeticalAppsList.SectionInfo info : sections) {
             int numRowsInSection = (int) Math.ceil((float) info.numApps / mNumAppsPerRow);
-            if (appIndex + info.numApps > position) {
-                return rowCount + ((position - appIndex) / mNumAppsPerRow);
+            if (appIndex + info.numApps > index) {
+                return rowCount + ((index - appIndex) / mNumAppsPerRow);
             }
             appIndex += info.numApps;
             rowCount += numRowsInSection;

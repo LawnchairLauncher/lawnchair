@@ -64,6 +64,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -1018,16 +1019,22 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS) {
-            showAppsView(false /* animated */, false /* resetListToTop */);
+            // Don't update the predicted apps if the user is returning to launcher in the apps
+            // view as they may be depending on the UI to be static to switch to another app
+            showAppsView(false /* animated */, false /* resetListToTop */,
+                    false /* updatePredictedApps */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
         mOnResumeState = State.NONE;
 
         // Restore the apps state if we are in all apps
-        if (!Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION && mState == State.APPS) {
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onAllAppsShown();
+        if (!Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
+            // Otherwise, notify the callbacks if we are in all apps mode
+            if (mState == State.APPS) {
+                if (mLauncherCallbacks != null) {
+                    mLauncherCallbacks.onAllAppsShown();
+                }
             }
         }
 
@@ -2619,7 +2626,9 @@ public class Launcher extends Activity
         if (isAppsViewVisible()) {
             showWorkspace(true);
         } else {
-            showAppsView(true /* animated */, false /* resetListToTop */);
+            // Try and refresh the set of predicted apps before we enter launcher
+            showAppsView(true /* animated */, false /* resetListToTop */,
+                    true /* updatePredictedApps */);
         }
     }
 
@@ -3397,9 +3406,12 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    void showAppsView(boolean animated, boolean resetListToTop) {
+    void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps) {
         if (resetListToTop) {
             mAppsView.scrollToTop();
+        }
+        if (updatePredictedApps) {
+            tryAndUpdatePredictedApps();
         }
         showAppsOrWidgets(animated, State.APPS);
     }
@@ -3509,9 +3521,23 @@ public class Launcher extends Activity
 
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true, false);
+            showAppsView(true /* animated */, false /* resetListToTop */,
+                    false /* updatePredictedApps */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
+        }
+    }
+
+    /**
+     * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
+     * resumed.
+     */
+    private void tryAndUpdatePredictedApps() {
+        if (mLauncherCallbacks != null) {
+            List<ComponentName> apps = mLauncherCallbacks.getPredictedApps();
+            if (!apps.isEmpty()) {
+                mAppsView.setPredictedApps(apps);
+            }
         }
     }
 
