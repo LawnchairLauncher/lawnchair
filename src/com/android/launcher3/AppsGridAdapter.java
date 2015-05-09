@@ -5,10 +5,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,8 +84,10 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
         private static final boolean FADE_OUT_SECTIONS = false;
 
-        private HashMap<String, Point> mCachedSectionBounds = new HashMap<>();
+        private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
         private Rect mTmpBounds = new Rect();
+        private String[] mTmpSections = new String[2];
+        private PointF[] mTmpSectionBounds = new PointF[2];
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
@@ -94,75 +96,83 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             }
 
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-            String lastSectionName = null;
-            int appIndexInSection = 0;
+            int childCount = parent.getChildCount();
             int lastSectionTop = 0;
             int lastSectionHeight = 0;
-            for (int i = 0; i < parent.getChildCount(); i++) {
+            for (int i = 0; i < childCount; i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
                 if (shouldDrawItemSection(holder, child, i, items)) {
-                    int cellTopOffset = (2 * child.getPaddingTop());
+                    // At this point, we only draw sections for each section break;
+                    int viewTopOffset = (2 * child.getPaddingTop());
                     int pos = holder.getPosition();
                     AlphabeticalAppsList.AdapterItem item = items.get(pos);
-                    if (!item.sectionName.equals(lastSectionName)) {
-                        lastSectionName = item.sectionName;
+                    AlphabeticalAppsList.SectionInfo sectionInfo = item.sectionInfo;
+
+                    // Draw all the sections for this index
+                    String lastSectionName = item.sectionName;
+                    for (int j = item.sectionAppIndex; j < sectionInfo.numAppsInSection;j++, pos++) {
+                        AlphabeticalAppsList.AdapterItem nextItem = items.get(pos);
+                        if (nextItem.sectionInfo != sectionInfo) {
+                            break;
+                        }
+                        if (j > item.sectionAppIndex && nextItem.sectionName.equals(lastSectionName)) {
+                            continue;
+                        }
 
                         // Find the section code points
-                        String sectionBegin = null;
-                        String sectionEnd = null;
-                        int charOffset = 0;
-                        while (charOffset < item.sectionName.length()) {
-                            int codePoint = item.sectionName.codePointAt(charOffset);
-                            int codePointSize = Character.charCount(codePoint);
-                            if (charOffset == 0) {
-                                // The first code point
-                                sectionBegin = item.sectionName.substring(charOffset, charOffset + codePointSize);
-                            } else if ((charOffset + codePointSize) >= item.sectionName.length()) {
-                                // The last code point
-                                sectionEnd = item.sectionName.substring(charOffset, charOffset + codePointSize);
-                            }
-                            charOffset += codePointSize;
+                        getSectionLetters(nextItem.sectionName, mTmpSections, mTmpSectionBounds);
+                        String sectionBegin = mTmpSections[0];
+                        String sectionEnd = mTmpSections[1];
+                        PointF sectionBeginBounds = mTmpSectionBounds[0];
+                        PointF sectionEndBounds = mTmpSectionBounds[1];
+
+                        // Calculate where to draw the section
+                        int sectionBaseline = (int) (viewTopOffset + sectionBeginBounds.y);
+                        int x = mIsRtl ? parent.getWidth() - mPaddingStart - mStartMargin :
+                                mPaddingStart;
+                        int y = child.getTop() + sectionBaseline;
+
+                        // Determine whether this is the last row with apps in that section, if
+                        // so, then fix the section to the row allowing it to scroll past the
+                        // baseline, otherwise, bound it to the baseline so it's in the viewport
+                        int appIndexInSection = items.get(pos).sectionAppIndex;
+                        int nextRowPos = Math.min(items.size() - 1,
+                                pos + mAppsPerRow - (appIndexInSection % mAppsPerRow));
+                        boolean fixedToRow = !items.get(nextRowPos).sectionName.equals(nextItem.sectionName);
+                        if (!fixedToRow) {
+                            y = Math.max(sectionBaseline, y);
                         }
 
-                        Point sectionBeginBounds = getAndCacheSectionBounds(sectionBegin);
-                        int minTop = cellTopOffset + sectionBeginBounds.y;
-                        int top = child.getTop() + cellTopOffset + sectionBeginBounds.y;
-                        int left = mIsRtl ? parent.getWidth() - mPaddingStart - mStartMargin :
-                                mPaddingStart;
-                        int col = appIndexInSection % mAppsPerRow;
-                        int nextRowPos = Math.min(pos - col + mAppsPerRow, items.size() - 1);
-                        int alpha = 255;
-                        boolean fixedToRow = !items.get(nextRowPos).sectionName.equals(item.sectionName);
-                        if (fixedToRow) {
-                            alpha = Math.min(255, (int) (255 * (Math.max(0, top) / (float) minTop)));
-                        } else {
-                            // If we aren't fixed to the current row, then bound into the viewport
-                            top = Math.max(minTop, top);
+                        // In addition, if it overlaps with the last section that was drawn, then
+                        // offset it so that it does not overlap
+                        if (lastSectionHeight > 0 && y <= (lastSectionTop + lastSectionHeight)) {
+                            y += lastSectionTop - y + lastSectionHeight;
                         }
-                        if (lastSectionHeight > 0 && top <= (lastSectionTop + lastSectionHeight)) {
-                            top += lastSectionTop - top + lastSectionHeight;
-                        }
+
+                        // Draw the section header
                         if (FADE_OUT_SECTIONS) {
+                            int alpha = 255;
+                            if (fixedToRow) {
+                                alpha = Math.min(255, (int) (255 * (Math.max(0, y) / (float) sectionBaseline)));
+                            }
                             mSectionTextPaint.setAlpha(alpha);
                         }
                         if (sectionEnd != null) {
-                            Point sectionEndBounds = getAndCacheSectionBounds(sectionEnd);
+                            // If there is a range, draw the range
                             c.drawText(sectionBegin + "/" + sectionEnd,
-                                    left + (mStartMargin - sectionBeginBounds.x - sectionEndBounds.x) / 2, top,
+                                    x + (mStartMargin - sectionBeginBounds.x - sectionEndBounds.x) / 2, y,
                                     mSectionTextPaint);
                         } else {
-                            c.drawText(sectionBegin, left + (mStartMargin - sectionBeginBounds.x) / 2, top,
+                            c.drawText(sectionBegin, (int) (x + (mStartMargin / 2f) - (sectionBeginBounds.x / 2f)), y,
                                     mSectionTextPaint);
                         }
-                        lastSectionTop = top;
-                        lastSectionHeight = sectionBeginBounds.y + mSectionHeaderOffset;
+
+                        lastSectionTop = y;
+                        lastSectionHeight = (int) (sectionBeginBounds.y + mSectionHeaderOffset);
+                        lastSectionName = nextItem.sectionName;
                     }
-                }
-                if (holder.mIsSectionHeader) {
-                    appIndexInSection = 0;
-                } else {
-                    appIndexInSection++;
+                    i += (sectionInfo.numAppsInSection - item.sectionAppIndex);
                 }
             }
         }
@@ -173,16 +183,50 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             // Do nothing
         }
 
-        private Point getAndCacheSectionBounds(String sectionName) {
-            Point bounds = mCachedSectionBounds.get(sectionName);
+        /**
+         * Given a section name, return the first and last section letters.
+         */
+        private void getSectionLetters(String sectionName, String[] lettersOut, PointF[] boundsOut) {
+            lettersOut[0] = lettersOut[1] = null;
+            boundsOut[0] = boundsOut[1] = null;
+            if (AppsContainerView.GRID_MERGE_SECTION_HEADERS) {
+                int charOffset = 0;
+                while (charOffset < sectionName.length()) {
+                    int codePoint = sectionName.codePointAt(charOffset);
+                    int codePointSize = Character.charCount(codePoint);
+                    if (charOffset == 0) {
+                        // The first code point
+                        lettersOut[0] = sectionName.substring(charOffset, charOffset + codePointSize);
+                        boundsOut[0] = getAndCacheSectionBounds(lettersOut[0]);
+                    } else if ((charOffset + codePointSize) >= sectionName.length()) {
+                        // The last code point
+                        lettersOut[1] = sectionName.substring(charOffset, charOffset + codePointSize);
+                        boundsOut[0] = getAndCacheSectionBounds(lettersOut[1]);
+                    }
+                    charOffset += codePointSize;
+                }
+            } else {
+                lettersOut[0] = sectionName;
+                boundsOut[0] = getAndCacheSectionBounds(lettersOut[0]);
+            }
+        }
+
+        /**
+         * Given a section name, return the first and last section letters.
+         */
+        private PointF getAndCacheSectionBounds(String sectionName) {
+            PointF bounds = mCachedSectionBounds.get(sectionName);
             if (bounds == null) {
                 mSectionTextPaint.getTextBounds(sectionName, 0, sectionName.length(), mTmpBounds);
-                bounds = new Point(mTmpBounds.width(), mTmpBounds.height());
+                bounds = new PointF(mSectionTextPaint.measureText(sectionName), mTmpBounds.height());
                 mCachedSectionBounds.put(sectionName, bounds);
             }
             return bounds;
         }
 
+        /**
+         * Returns whether to draw the section for the given child.
+         */
         private boolean shouldDrawItemSection(ViewHolder holder, View child, int childIndex,
                 List<AlphabeticalAppsList.AdapterItem> items) {
             // Ensure item is not already removed
@@ -201,19 +245,12 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             }
             // Ensure we have a holder position
             int pos = holder.getPosition();
-            if (pos < 0 || pos >= items.size()) {
+            if (pos <= 0 || pos >= items.size()) {
                 return false;
             }
-            // Ensure this is not a section header
-            if (items.get(pos).isSectionHeader) {
-                return false;
-            }
-            // Only draw the header for the first item in a section, or whenever the sub-sections
-            // changes (if AppsContainerView.GRID_MERGE_SECTIONS is true, but
-            // AppsContainerView.GRID_MERGE_SECTION_HEADERS is false)
+            // Draw the section header for the first item in each section
             return (childIndex == 0) ||
-                    items.get(pos - 1).isSectionHeader && !items.get(pos).isSectionHeader ||
-                    (!items.get(pos - 1).sectionName.equals(items.get(pos).sectionName));
+                    (items.get(pos - 1).isSectionHeader && !items.get(pos).isSectionHeader);
         }
     }
 
