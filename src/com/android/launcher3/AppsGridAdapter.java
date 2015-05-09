@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
@@ -86,8 +85,6 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
         private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
         private Rect mTmpBounds = new Rect();
-        private String[] mTmpSections = new String[2];
-        private PointF[] mTmpSectionBounds = new PointF[2];
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
@@ -111,26 +108,24 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
                     // Draw all the sections for this index
                     String lastSectionName = item.sectionName;
-                    for (int j = item.sectionAppIndex; j < sectionInfo.numAppsInSection;j++, pos++) {
+                    for (int j = item.sectionAppIndex; j < sectionInfo.numApps; j++, pos++) {
                         AlphabeticalAppsList.AdapterItem nextItem = items.get(pos);
+                        String sectionName = nextItem.sectionName;
                         if (nextItem.sectionInfo != sectionInfo) {
                             break;
                         }
-                        if (j > item.sectionAppIndex && nextItem.sectionName.equals(lastSectionName)) {
+                        if (j > item.sectionAppIndex && sectionName.equals(lastSectionName)) {
                             continue;
                         }
 
                         // Find the section code points
-                        getSectionLetters(nextItem.sectionName, mTmpSections, mTmpSectionBounds);
-                        String sectionBegin = mTmpSections[0];
-                        String sectionEnd = mTmpSections[1];
-                        PointF sectionBeginBounds = mTmpSectionBounds[0];
-                        PointF sectionEndBounds = mTmpSectionBounds[1];
+                        PointF sectionBounds = getAndCacheSectionBounds(sectionName);
 
                         // Calculate where to draw the section
-                        int sectionBaseline = (int) (viewTopOffset + sectionBeginBounds.y);
+                        int sectionBaseline = (int) (viewTopOffset + sectionBounds.y);
                         int x = mIsRtl ? parent.getWidth() - mPaddingStart - mStartMargin :
                                 mPaddingStart;
+                        x += (int) ((mStartMargin - sectionBounds.x) / 2f);
                         int y = child.getTop() + sectionBaseline;
 
                         // Determine whether this is the last row with apps in that section, if
@@ -139,7 +134,8 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                         int appIndexInSection = items.get(pos).sectionAppIndex;
                         int nextRowPos = Math.min(items.size() - 1,
                                 pos + mAppsPerRow - (appIndexInSection % mAppsPerRow));
-                        boolean fixedToRow = !items.get(nextRowPos).sectionName.equals(nextItem.sectionName);
+                        AlphabeticalAppsList.AdapterItem nextRowItem = items.get(nextRowPos);
+                        boolean fixedToRow = !sectionName.equals(nextRowItem.sectionName);
                         if (!fixedToRow) {
                             y = Math.max(sectionBaseline, y);
                         }
@@ -154,25 +150,18 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                         if (FADE_OUT_SECTIONS) {
                             int alpha = 255;
                             if (fixedToRow) {
-                                alpha = Math.min(255, (int) (255 * (Math.max(0, y) / (float) sectionBaseline)));
+                                alpha = Math.min(255,
+                                        (int) (255 * (Math.max(0, y) / (float) sectionBaseline)));
                             }
                             mSectionTextPaint.setAlpha(alpha);
                         }
-                        if (sectionEnd != null) {
-                            // If there is a range, draw the range
-                            c.drawText(sectionBegin + "/" + sectionEnd,
-                                    x + (mStartMargin - sectionBeginBounds.x - sectionEndBounds.x) / 2, y,
-                                    mSectionTextPaint);
-                        } else {
-                            c.drawText(sectionBegin, (int) (x + (mStartMargin / 2f) - (sectionBeginBounds.x / 2f)), y,
-                                    mSectionTextPaint);
-                        }
+                        c.drawText(sectionName, x, y, mSectionTextPaint);
 
                         lastSectionTop = y;
-                        lastSectionHeight = (int) (sectionBeginBounds.y + mSectionHeaderOffset);
-                        lastSectionName = nextItem.sectionName;
+                        lastSectionHeight = (int) (sectionBounds.y + mSectionHeaderOffset);
+                        lastSectionName = sectionName;
                     }
-                    i += (sectionInfo.numAppsInSection - item.sectionAppIndex);
+                    i += (sectionInfo.numApps - item.sectionAppIndex);
                 }
             }
         }
@@ -184,35 +173,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         }
 
         /**
-         * Given a section name, return the first and last section letters.
-         */
-        private void getSectionLetters(String sectionName, String[] lettersOut, PointF[] boundsOut) {
-            lettersOut[0] = lettersOut[1] = null;
-            boundsOut[0] = boundsOut[1] = null;
-            if (AppsContainerView.GRID_MERGE_SECTION_HEADERS) {
-                int charOffset = 0;
-                while (charOffset < sectionName.length()) {
-                    int codePoint = sectionName.codePointAt(charOffset);
-                    int codePointSize = Character.charCount(codePoint);
-                    if (charOffset == 0) {
-                        // The first code point
-                        lettersOut[0] = sectionName.substring(charOffset, charOffset + codePointSize);
-                        boundsOut[0] = getAndCacheSectionBounds(lettersOut[0]);
-                    } else if ((charOffset + codePointSize) >= sectionName.length()) {
-                        // The last code point
-                        lettersOut[1] = sectionName.substring(charOffset, charOffset + codePointSize);
-                        boundsOut[0] = getAndCacheSectionBounds(lettersOut[1]);
-                    }
-                    charOffset += codePointSize;
-                }
-            } else {
-                lettersOut[0] = sectionName;
-                boundsOut[0] = getAndCacheSectionBounds(lettersOut[0]);
-            }
-        }
-
-        /**
-         * Given a section name, return the first and last section letters.
+         * Given a section name, return the bounds of the given section name.
          */
         private PointF getAndCacheSectionBounds(String sectionName) {
             PointF bounds = mCachedSectionBounds.get(sectionName);

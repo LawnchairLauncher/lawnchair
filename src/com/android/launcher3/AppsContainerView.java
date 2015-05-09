@@ -46,7 +46,6 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         View.OnClickListener, View.OnLongClickListener {
 
     public static final boolean GRID_MERGE_SECTIONS = true;
-    public static final boolean GRID_MERGE_SECTION_HEADERS = false;
     public static final boolean GRID_HIDE_SECTION_HEADERS = false;
 
     private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
