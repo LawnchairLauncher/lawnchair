@@ -51,9 +51,6 @@ public class FolderPagedView extends PagedView {
 
     private static final int[] sTempPosArray = new int[2];
 
-    // TODO: Remove this restriction
-    private static final int MAX_ITEMS_PER_PAGE = 4;
-
     public final boolean rtlLayout;
 
     private final LayoutInflater mInflater;
@@ -80,13 +77,8 @@ public class FolderPagedView extends PagedView {
         LauncherAppState app = LauncherAppState.getInstance();
 
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        if (ALLOW_FOLDER_SCROLL) {
-            mMaxCountX = Math.min((int) grid.numColumns, MAX_ITEMS_PER_PAGE);
-            mMaxCountY = Math.min((int) grid.numRows, MAX_ITEMS_PER_PAGE);
-        } else {
-            mMaxCountX = (int) grid.numColumns;
-            mMaxCountY = (int) grid.numRows;
-        }
+        mMaxCountX = (int) grid.numFolderColumns;
+        mMaxCountY = (int) grid.numFolderRows;
 
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
