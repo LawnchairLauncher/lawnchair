@@ -15,6 +15,7 @@
  */
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -108,6 +109,13 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mItemDecoration = mAdapter.getItemDecoration();
         mContentMarginStart = mAdapter.getContentMarginStart();
         mApps.setAdapter(mAdapter);
+    }
+
+    /**
+     * Sets the current set of predicted apps.
+     */
+    public void setPredictedApps(List<ComponentName> apps) {
+        mApps.setPredictedApps(apps);
     }
 
     /**

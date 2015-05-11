@@ -35,13 +35,11 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View mContent;
-        public boolean mIsSectionHeader;
         public boolean mIsEmptyRow;
 
-        public ViewHolder(View v, boolean isSectionHeader, boolean isEmptyRow) {
+        public ViewHolder(View v, boolean isEmptyRow) {
             super(v);
             mContent = v;
-            mIsSectionHeader = isSectionHeader;
             mIsEmptyRow = isEmptyRow;
         }
     }
@@ -93,13 +91,29 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             }
 
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+            boolean hasDrawnPredictedAppDivider = false;
             int childCount = parent.getChildCount();
             int lastSectionTop = 0;
             int lastSectionHeight = 0;
             for (int i = 0; i < childCount; i++) {
                 View child = parent.getChildAt(i);
                 ViewHolder holder = (ViewHolder) parent.getChildViewHolder(child);
-                if (shouldDrawItemSection(holder, child, i, items)) {
+                if (!isValidHolderAndChild(holder, child, items)) {
+                    continue;
+                }
+
+                if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppDivider) {
+                    // Draw the divider under the predicted app
+                    DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().
+                            getDeviceProfile();
+                    int top = child.getTop() + child.getHeight();
+                    int left = parent.getPaddingLeft();
+                    int right = parent.getWidth() - parent.getPaddingRight();
+                    int iconInset = (((right - left) / mAppsPerRow) - grid.allAppsIconSizePx) / 2;
+                    c.drawLine(left + iconInset, top, right - iconInset, top, mPredictedAppsDividerPaint);
+                    hasDrawnPredictedAppDivider = true;
+
+                } else if (shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
                     int viewTopOffset = (2 * child.getPaddingTop());
                     int pos = holder.getPosition();
@@ -186,9 +200,9 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         }
 
         /**
-         * Returns whether to draw the section for the given child.
+         * Returns whether we consider this a valid view holder for us to draw a divider or section for.
          */
-        private boolean shouldDrawItemSection(ViewHolder holder, View child, int childIndex,
+        private boolean isValidHolderAndChild(ViewHolder holder, View child,
                 List<AlphabeticalAppsList.AdapterItem> items) {
             // Ensure item is not already removed
             GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
@@ -200,18 +214,44 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             if (holder == null) {
                 return false;
             }
+            // Ensure we have a holder position
+            int pos = holder.getPosition();
+            if (pos < 0 || pos >= items.size()) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Returns whether to draw the divider for a given child.
+         */
+        private boolean shouldDrawItemDivider(ViewHolder holder, List<AlphabeticalAppsList.AdapterItem> items) {
+            int pos = holder.getPosition();
+            return items.get(pos).isPredictedApp;
+        }
+
+        /**
+         * Returns whether to draw the section for the given child.
+         */
+        private boolean shouldDrawItemSection(ViewHolder holder, int childIndex,
+                List<AlphabeticalAppsList.AdapterItem> items) {
+            int pos = holder.getPosition();
+            AlphabeticalAppsList.AdapterItem item = items.get(pos);
+
             // Ensure it's not an empty row
             if (holder.mIsEmptyRow) {
                 return false;
             }
-            // Ensure we have a holder position
-            int pos = holder.getPosition();
-            if (pos <= 0 || pos >= items.size()) {
+            // Ensure this is not a section break
+            if (item.isSectionHeader) {
+                return false;
+            }
+            // Ensure this is not a predicted app
+            if (item.isPredictedApp) {
                 return false;
             }
             // Draw the section header for the first item in each section
-            return (childIndex == 0) ||
-                    (items.get(pos - 1).isSectionHeader && !items.get(pos).isSectionHeader);
+            return (childIndex == 0) || (items.get(pos - 1).isSectionHeader && !item.isSectionHeader);
         }
     }
 
@@ -232,6 +272,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     @Thunk int mStartMargin;
     @Thunk int mSectionHeaderOffset;
     @Thunk Paint mSectionTextPaint;
+    @Thunk Paint mPredictedAppsDividerPaint;
 
 
     public AppsGridAdapter(Context context, AlphabeticalAppsList apps, int appsPerRow,
@@ -254,11 +295,17 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.apps_grid_section_y_offset);
         }
         mPaddingStart = res.getDimensionPixelSize(R.dimen.apps_container_inset);
+
         mSectionTextPaint = new Paint();
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.apps_view_section_text_size));
         mSectionTextPaint.setColor(res.getColor(R.color.apps_view_section_text_color));
         mSectionTextPaint.setAntiAlias(true);
+
+        mPredictedAppsDividerPaint = new Paint();
+        mPredictedAppsDividerPaint.setStrokeWidth(DynamicGrid.pxFromDp(1.5f, res.getDisplayMetrics()));
+        mPredictedAppsDividerPaint.setColor(0x10000000);
+        mPredictedAppsDividerPaint.setAntiAlias(true);
     }
 
     /**
@@ -313,10 +360,9 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         switch (viewType) {
             case EMPTY_VIEW_TYPE:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.apps_empty_view, parent,
-                        false), false /* isSectionRow */, true /* isEmptyRow */);
+                        false), true /* isEmptyRow */);
             case SECTION_BREAK_VIEW_TYPE:
-                return new ViewHolder(new View(parent.getContext()), true /* isSectionRow */,
-                        false /* isEmptyRow */);
+                return new ViewHolder(new View(parent.getContext()), false /* isEmptyRow */);
             case ICON_VIEW_TYPE:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.apps_grid_row_icon_view, parent, false);
@@ -324,7 +370,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setFocusable(true);
-                return new ViewHolder(icon, false /* isSectionRow */, false /* isEmptyRow */);
+                return new ViewHolder(icon, false /* isEmptyRow */);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
