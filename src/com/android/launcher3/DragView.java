@@ -129,6 +129,10 @@ public class DragView extends View {
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
+        if (Utilities.isLmpOrAbove()) {
+            setElevation(getResources().getDimension(R.dimen.drag_elevation));
+        }
     }
 
     /** Sets the scale of the view over the normal workspace icon size. */

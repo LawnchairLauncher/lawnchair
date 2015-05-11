@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.text.InputType;
 import android.text.Selection;
@@ -180,6 +181,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
+
+        if (Utilities.isLmpOrAbove()) {
+            int padding = getResources().getDimensionPixelSize(R.dimen.folder_shadow_padding);
+            setBackground(new InsetDrawable(
+                    getResources().getDrawable(R.drawable.apps_list_bg),
+                    padding, padding, padding, padding));
+        } else {
+            setBackgroundResource(R.drawable.quantum_panel);
+        }
     }
 
     @Override
@@ -473,9 +483,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             PropertyValuesHolder tx = PropertyValuesHolder.ofFloat("translationX", transX, 0);
             PropertyValuesHolder ty = PropertyValuesHolder.ofFloat("translationY", transY, 0);
 
+            Animator drift = LauncherAnimUtils.ofPropertyValuesHolder(this, tx, ty);
+            drift.setDuration(mMaterialExpandDuration);
+            drift.setStartDelay(mMaterialExpandStagger);
+            drift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+
             int rx = (int) Math.max(Math.max(width - getPivotX(), 0), getPivotX());
             int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
             float radius = (float) Math.hypot(rx, ry);
+
             AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
             Animator reveal = LauncherAnimUtils.createCircularReveal(this, (int) getPivotX(),
                     (int) getPivotY(), 0, radius);
@@ -494,10 +510,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             textAlpha.setStartDelay(mMaterialExpandStagger);
             textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
 
-            Animator drift = LauncherAnimUtils.ofPropertyValuesHolder(this, tx, ty);
-            drift.setDuration(mMaterialExpandDuration);
-            drift.setStartDelay(mMaterialExpandStagger);
-            drift.setInterpolator(new LogDecelerateInterpolator(60, 0));
 
             anim.play(drift);
             anim.play(iconsAlpha);
@@ -507,9 +519,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             openFolderAnim = anim;
 
             mContentWrapper.setLayerType(LAYER_TYPE_HARDWARE, null);
+            mFooter.setLayerType(LAYER_TYPE_HARDWARE, null);
             onCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    mContentWrapper.setLayerType(LAYER_TYPE_NONE, null);
                     mContentWrapper.setLayerType(LAYER_TYPE_NONE, null);
                 }
             };
