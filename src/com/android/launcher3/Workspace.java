@@ -4185,7 +4185,7 @@ public class Workspace extends SmoothPagedView
                             && packageNames.contains(cn.getPackageName())) {
                         shortcutInfo.isDisabled |= reason;
                         BubbleTextView shortcut = (BubbleTextView) v;
-                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, true, false);
+                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, false);
 
                         if (parent != null) {
                             parent.invalidate();
@@ -4371,7 +4371,7 @@ public class Workspace extends SmoothPagedView
                     BubbleTextView shortcut = (BubbleTextView) v;
                     boolean oldPromiseState = getTextViewIcon(shortcut)
                             instanceof PreloadIconDrawable;
-                    shortcut.applyFromShortcutInfo(si, mIconCache, true,
+                    shortcut.applyFromShortcutInfo(si, mIconCache, false,
                             si.isPromise() != oldPromiseState);
 
                     if (parent != null) {
