@@ -19,10 +19,11 @@
     android:layout_width="@dimen/widget_preview_container_width"
     android:layout_height="@dimen/widget_cell_height"
     android:layout_weight="1"
-    android:layout_marginRight="@dimen/widget_row_divider"
+    android:layout_marginEnd="@dimen/widget_row_divider"
     android:orientation="vertical"
     android:background="@color/widgets_cell_color"
-    android:focusable="true">
+    android:focusable="true"
+    android:gravity="center_horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -43,7 +44,6 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:fadingEdge="horizontal"
-
             android:textColor="@color/widgets_view_item_text_color"
             android:textSize="16sp"
             android:textAlignment="viewStart"

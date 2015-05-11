@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache;
@@ -105,6 +106,10 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 // set up touch.
                 widget.setOnClickListener(mIconClickListener);
                 widget.setOnLongClickListener(mIconLongClickListener);
+                // Add a devider if it is not the last item.
+                if (i == diff - 1) {
+                   widget.setSeparator(false);
+                }
                 row.addView(widget);
             }
         } else if (diff < 0) {
@@ -156,6 +161,11 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
+        WidgetRowView row = (WidgetRowView) container.findViewById(R.id.widget_row);
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) row.getLayoutParams();
+        lp.setMarginStart(WidgetRowView.sIndent);
+        lp.height = WidgetRowView.sHeight;
+        row.setLayoutParams(lp);
         return new WidgetsRowViewHolder(container);
     }
 

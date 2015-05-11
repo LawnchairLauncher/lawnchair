@@ -55,17 +55,18 @@
     </LinearLayout>
 
     <!--  Widget list -->
-    <RelativeLayout
+    <com.android.launcher3.widget.WidgetRowView
+        android:id="@+id/widget_row"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/widget_cell_height"
         android:layout_gravity="end"
+        android:layout_marginLeft="@dimen/widget_row_padding"
         android:background="@color/widgets_cell_color"
         >
         <HorizontalScrollView
             android:id="@+id/widgets_scroll_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/widget_cell_height"
-            android:layout_marginLeft="@dimen/widget_row_padding"
+            android:layout_height="match_parent"
             android:scrollbars="none" >
             <LinearLayout
                 android:id="@+id/widgets_cell_list"
@@ -74,5 +75,5 @@
                 android:orientation="horizontal"
                 android:background="@color/widget_text_panel"/>
         </HorizontalScrollView>
-    </RelativeLayout>
+    </com.android.launcher3.widget.WidgetRowView>
 </LinearLayout>

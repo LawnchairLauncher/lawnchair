@@ -80,12 +80,11 @@ public class DeviceProfile {
     int defaultLayoutId;
 
     boolean isLandscape;
-    boolean isTablet;
-    boolean isLargeTablet;
+    public boolean isTablet;
+    public boolean isLargeTablet;
     public boolean isLayoutRtl;
 
     boolean transposeLayoutWithOrientation;
-
     int desiredWorkspaceLeftRightMarginPx;
     public int edgeMarginPx;
     Rect defaultWidgetPadding;
