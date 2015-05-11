@@ -88,7 +88,7 @@
 
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
-    <dimen name="widget_preview_size">120dp</dimen>
+    <dimen name="widget_preview_size">130dp</dimen>
     <dimen name="widget_preview_padding_top">8dp</dimen>
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
@@ -100,10 +100,10 @@
     <dimen name="widget_section_icon_horizontal_padding">16dp</dimen>
 
     <!-- Equation: widget_preview_size + 2 * widget_preview_padding_horizontal -->
-    <dimen name="widget_preview_container_width">136dp</dimen>
+    <dimen name="widget_preview_container_width">146dp</dimen>
     <dimen name="widget_cell_height">150dp</dimen>
     <dimen name="widget_row_padding">8dp</dimen>
-    <dimen name="widget_row_divider">1dp</dimen>
+    <dimen name="widget_row_divider">2dp</dimen>
 
     <!-- Padding applied to shortcut previews -->
     <dimen name="shortcut_preview_padding_left">0dp</dimen>
