@@ -3051,4 +3051,21 @@ public class CellLayout extends ViewGroup {
     public boolean findVacantCell(int spanX, int spanY, int[] outXY) {
         return Utilities.findVacantCell(outXY, spanX, spanY, mCountX, mCountY, mOccupied);
     }
+
+    public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
+        int x2 = x + spanX - 1;
+        int y2 = y + spanY - 1;
+        if (x < 0 || y < 0 || x2 >= mCountX || y2 >= mCountY) {
+            return false;
+        }
+        for (int i = x; i <= x2; i++) {
+            for (int j = y; j <= y2; j++) {
+                if (mOccupied[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

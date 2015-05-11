@@ -252,4 +252,23 @@
 
     <!-- Accessibility confirmation when a screen was moved [DO NOT TRANSLATE] -->
     <string name="screen_moved">Screen moved</string>
+
+    <!-- Accessibility action to resize a widget [DO NOT TRANSLATE] -->
+    <string name="action_resize">Resize</string>
+
+    <!-- Accessibility action to increase width of a widget [DO NOT TRANSLATE] -->
+    <string name="action_increase_width">Increase width</string>
+
+    <!-- Accessibility action to increase height of a widget [DO NOT TRANSLATE] -->
+    <string name="action_increase_height">Increase height</string>
+
+    <!-- Accessibility action to decrease width of a widget [DO NOT TRANSLATE] -->
+    <string name="action_decrease_width">Decrease width</string>
+
+    <!-- Accessibility action to decrease height of a widget [DO NOT TRANSLATE] -->
+    <string name="action_decrease_height">Decrease height</string>
+
+    <!-- Accessibility confirmation for widget resize [DO NOT TRANSLATE]-->
+    <string name="widget_resized">Widget resized to width <xliff:g id="number" example="2">%1$s</xliff:g> height <xliff:g id="number" example="1">%2$s</xliff:g></string>
+
 </resources>
