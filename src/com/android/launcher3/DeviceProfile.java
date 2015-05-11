@@ -69,8 +69,10 @@ public class DeviceProfile {
     String name;
     float minWidthDps;
     float minHeightDps;
-    public float numRows;
-    public float numColumns;
+    public int numRows;
+    public int numColumns;
+    public int numFolderRows;
+    public int numFolderColumns;
     float numHotseatIcons;
     float iconSize;
     private float iconTextSize;
@@ -137,8 +139,9 @@ public class DeviceProfile {
 
     private ArrayList<DeviceProfileCallbacks> mCallbacks = new ArrayList<DeviceProfileCallbacks>();
 
-    DeviceProfile(String n, float w, float h, float r, float c,
-                  float is, float its, float hs, float his, int dlId) {
+    DeviceProfile(String n, float w, float h,
+            int r, int c, int fr, int fc,
+            float is, float its, float hs, float his, int dlId) {
         // Ensure that we have an odd number of hotseat items (since we need to place all apps)
         if (hs % 2 == 0) {
             throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
@@ -147,8 +150,12 @@ public class DeviceProfile {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
+
         numRows = r;
         numColumns = c;
+        numFolderRows = fr;
+        numFolderColumns = fc;
+
         iconSize = is;
         iconTextSize = its;
         numHotseatIcons = hs;
@@ -209,6 +216,9 @@ public class DeviceProfile {
         // Snap to the closest column count
         numColumns = closestProfile.numColumns;
 
+        numFolderRows = closestProfile.numFolderRows;
+        numFolderColumns = closestProfile.numFolderColumns;
+
         // Snap to the closest hotseat size
         numHotseatIcons = closestProfile.numHotseatIcons;
         hotseatAllAppsRank = (int) (numHotseatIcons / 2);
@@ -265,8 +275,8 @@ public class DeviceProfile {
             DeviceProfile partnerDp = p.getDeviceProfileOverride(dm);
             if (partnerDp != null) {
                 if (partnerDp.numRows > 0 && partnerDp.numColumns > 0) {
-                    numRows = partnerDp.numRows;
-                    numColumns = partnerDp.numColumns;
+                    numRows = numFolderRows = partnerDp.numRows;
+                    numColumns = numFolderColumns = partnerDp.numColumns;
                 }
                 if (partnerDp.allAppsShortEdgeCount > 0 && partnerDp.allAppsLongEdgeCount > 0) {
                     allAppsShortEdgeCount = partnerDp.allAppsShortEdgeCount;

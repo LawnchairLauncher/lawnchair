@@ -59,30 +59,30 @@ public class DynamicGrid {
         DEFAULT_ICON_SIZE_PX = pxFromDp(DEFAULT_ICON_SIZE_DP, dm);
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
-                255, 300,  2, 3,  48, 13, 3, 48, R.xml.default_workspace_4x4));
+                255, 300,  2, 3, 2, 3, 48, 13, 3, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Shorter Stubby",
-                255, 400,  3, 3,  48, 13, 3, 48, R.xml.default_workspace_4x4));
+                255, 400,  3, 3, 3, 3, 48, 13, 3, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Short Stubby",
-                275, 420,  3, 4,  48, 13, 5, 48, R.xml.default_workspace_4x4));
+                275, 420,  3, 4, 3, 4, 48, 13, 5, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Stubby",
-                255, 450,  3, 4,  48, 13, 5, 48, R.xml.default_workspace_4x4));
+                255, 450,  3, 4, 3, 4, 48, 13, 5, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Nexus S",
-                296, 491.33f,  4, 4,  48, 13, 5, 48, R.xml.default_workspace_4x4));
+                296, 491.33f,  4, 4, 4, 4, 48, 13, 5, 48, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Nexus 4",
-                335, 567,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
+                335, 567,  4, 4, 4, 4, DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Nexus 5",
-                359, 567,  4, 4,  DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
+                359, 567,  4, 4, 4, 4, DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
         deviceProfiles.add(new DeviceProfile("Large Phone",
-                406, 694,  5, 5,  64, 14.4f,  5, 56, R.xml.default_workspace_5x5));
+                406, 694,  5, 5, 4, 4,  64, 14.4f,  5, 56, R.xml.default_workspace_5x5));
         // The tablet profile is odd in that the landscape orientation
         // also includes the nav bar on the side
         deviceProfiles.add(new DeviceProfile("Nexus 7",
-                575, 904,  5, 6,  72, 14.4f,  7, 60, R.xml.default_workspace_5x6));
+                575, 904,  5, 6, 4, 5, 72, 14.4f,  7, 60, R.xml.default_workspace_5x6));
         // Larger tablet profiles always have system bars on the top & bottom
         deviceProfiles.add(new DeviceProfile("Nexus 10",
-                727, 1207,  5, 6,  76, 14.4f,  7, 64, R.xml.default_workspace_5x6));
+                727, 1207,  5, 6, 4, 5, 76, 14.4f,  7, 64, R.xml.default_workspace_5x6));
         deviceProfiles.add(new DeviceProfile("20-inch Tablet",
-                1527, 2527,  7, 7,  100, 20,  7, 72, R.xml.default_workspace_4x4));
+                1527, 2527,  7, 7, 6, 6, 100, 20,  7, 72, R.xml.default_workspace_4x4));
         mMinWidth = dpiFromPx(minWidthPx, dm);
         mMinHeight = dpiFromPx(minHeightPx, dm);
         mProfile = new DeviceProfile(context, deviceProfiles,
