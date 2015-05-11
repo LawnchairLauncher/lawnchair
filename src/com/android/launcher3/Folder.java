@@ -1076,8 +1076,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 // Move the item from the folder to the workspace, in the position of the folder
                 if (getItemCount() == 1) {
                     ShortcutInfo finalItem = mInfo.contents.get(0);
-                    child = mLauncher.createShortcut(R.layout.application, cellLayout,
-                            finalItem);
+                    child = mLauncher.createShortcut(cellLayout, finalItem);
                     LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
                             mInfo.screenId, mInfo.cellX, mInfo.cellY);
                 }

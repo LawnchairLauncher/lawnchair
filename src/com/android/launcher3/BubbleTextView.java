@@ -52,13 +52,14 @@ public class BubbleTextView extends TextView {
     private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
     static final float PADDING_V = 3.0f;
 
+    private static final int DISPLAY_WORKSPACE = 0;
+    private static final int DISPLAY_ALL_APPS = 1;
+
     private Drawable mIcon;
     private final Drawable mBackground;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
 
-    // TODO: Remove custom background handling code, as no instance of BubbleTextView use any
-    // background.
     private boolean mBackgroundSizeChanged;
 
     private Bitmap mPressedBackground;
@@ -69,8 +70,6 @@ public class BubbleTextView extends TextView {
     private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
-    private final int mIconPaddingSize;
-    private final int mTextSize;
     private int mTextColor;
 
     private boolean mStayPressed;
@@ -95,14 +94,21 @@ public class BubbleTextView extends TextView {
                 R.styleable.BubbleTextView, defStyle, 0);
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
-        mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
-                grid.allAppsIconSizePx);
-        mIconPaddingSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconPaddingOverride,
-                grid.iconDrawablePaddingPx);
-        mTextSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_textSizeOverride,
-                grid.allAppsIconTextSizePx);
         mDeferShadowGenerationOnTouch =
                 a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
+
+        int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
+        int defaultIconSize = grid.iconSizePx;
+        if (display == DISPLAY_WORKSPACE) {
+            setTextSize(grid.iconTextSizePx);
+        } else if (display == DISPLAY_ALL_APPS) {
+            setTextSize(grid.allAppsIconTextSizePx);
+            defaultIconSize = grid.allAppsIconSizePx;
+        }
+
+        mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
+                defaultIconSize);
+
         a.recycle();
 
         if (mCustomShadowsEnabled) {
@@ -128,26 +134,18 @@ public class BubbleTextView extends TextView {
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
-    public void onFinishInflate() {
-        super.onFinishInflate();
-
-        // Ensure we are using the right text size
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
+        applyFromShortcutInfo(info, iconCache, false);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean setDefaultPadding) {
-        applyFromShortcutInfo(info, iconCache, setDefaultPadding, false);
-    }
-
-    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean setDefaultPadding, boolean promiseStateChanged) {
+            boolean promiseStateChanged) {
         Bitmap b = info.getIcon(iconCache);
 
         FastBitmapDrawable iconDrawable = Utilities.createIconDrawable(b);
         iconDrawable.setGhostModeEnabled(info.isDisabled != 0);
 
-        setIcon(iconDrawable, mIconSize, setDefaultPadding ? mIconPaddingSize : -1);
+        setIcon(iconDrawable, mIconSize);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
         }
@@ -160,7 +158,7 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        setIcon(Utilities.createIconDrawable(info.iconBitmap), mIconSize, mIconPaddingSize);
+        setIcon(Utilities.createIconDrawable(info.iconBitmap), mIconSize);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
@@ -409,7 +407,7 @@ public class BubbleTextView extends TextView {
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                 } else {
                     preloadDrawable = new PreloadIconDrawable(mIcon, getPreloaderTheme());
-                    setIcon(preloadDrawable, mIconSize, -1);
+                    setIcon(preloadDrawable, mIconSize);
                 }
 
                 preloadDrawable.setLevel(progressLevel);
@@ -437,7 +435,7 @@ public class BubbleTextView extends TextView {
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    private Drawable setIcon(Drawable icon, int iconSize, int drawablePadding) {
+    private Drawable setIcon(Drawable icon, int iconSize) {
         mIcon = icon;
         if (iconSize != -1) {
             mIcon.setBounds(0, 0, iconSize, iconSize);
@@ -446,9 +444,6 @@ public class BubbleTextView extends TextView {
             setCompoundDrawablesRelative(mIcon, null, null, null);
         } else {
             setCompoundDrawablesRelative(null, mIcon, null, null);
-        }
-        if (drawablePadding != -1) {
-            setCompoundDrawablePadding(drawablePadding);
         }
         return icon;
     }
@@ -463,7 +458,7 @@ public class BubbleTextView extends TextView {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
                 applyFromShortcutInfo((ShortcutInfo) info,
-                        LauncherAppState.getInstance().getIconCache(), false);
+                        LauncherAppState.getInstance().getIconCache());
             }
         }
     }
