@@ -3,6 +3,7 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -76,6 +77,9 @@ class AppNameComparator {
  * The alphabetically sorted list of applications.
  */
 public class AlphabeticalAppsList {
+
+    public static final String TAG = "AlphabeticalAppsList";
+    private static final boolean DEBUG = false;
 
     /**
      * Info about a section in the alphabetic list
@@ -162,11 +166,58 @@ public class AlphabeticalAppsList {
      * A filter interface to limit the set of applications in the apps list.
      */
     public interface Filter {
-        public boolean retainApp(AppInfo info, String sectionName);
+        boolean retainApp(AppInfo info, String sectionName);
     }
 
-    // The maximum number of rows allowed in a merged section before we stop merging
-    private static final int MAX_ROWS_IN_MERGED_SECTION = 3;
+    /**
+     * Common interface for different merging strategies.
+     */
+    private interface MergeAlgorithm {
+        boolean continueMerging(int sectionAppCount, int numAppsPerRow, int mergeCount);
+    }
+
+    /**
+     * The logic we use to merge sections on tablets.
+     */
+    private static class TabletMergeAlgorithm implements MergeAlgorithm {
+
+        @Override
+        public boolean continueMerging(int sectionAppCount, int numAppsPerRow, int mergeCount) {
+            // Merge EVERYTHING
+            return true;
+        }
+    }
+
+    /**
+     * The logic we use to merge sections on phones.
+     */
+    private static class PhoneMergeAlgorithm implements MergeAlgorithm {
+
+        private int mMinAppsPerRow;
+        private int mMinRowsInMergedSection;
+        private int mMaxAllowableMerges;
+
+        public PhoneMergeAlgorithm(int minAppsPerRow, int minRowsInMergedSection, int maxNumMerges) {
+            mMinAppsPerRow = minAppsPerRow;
+            mMinRowsInMergedSection = minRowsInMergedSection;
+            mMaxAllowableMerges = maxNumMerges;
+        }
+
+        @Override
+        public boolean continueMerging(int sectionAppCount, int numAppsPerRow, int mergeCount) {
+            // Continue merging if the number of hanging apps on the final row is less than some
+            // fixed number (ragged), the merged rows has yet to exceed some minimum row count,
+            // and while the number of merged sections is less than some fixed number of merges
+            int rows = sectionAppCount / numAppsPerRow;
+            int cols = sectionAppCount % numAppsPerRow;
+            return (0 < cols && cols < mMinAppsPerRow) &&
+                    rows < mMinRowsInMergedSection &&
+                    mergeCount < mMaxAllowableMerges;
+        }
+    }
+
+    private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
+    private static final int MAX_NUM_MERGES_PHONE = 2;
 
     private List<AppInfo> mApps = new ArrayList<>();
     private List<AppInfo> mFilteredApps = new ArrayList<>();
@@ -174,13 +225,13 @@ public class AlphabeticalAppsList {
     private List<SectionInfo> mSections = new ArrayList<>();
     private List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     private List<ComponentName> mPredictedApps = new ArrayList<>();
+    private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
     private RecyclerView.Adapter mAdapter;
     private Filter mFilter;
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
+    private MergeAlgorithm mMergeAlgorithm;
     private int mNumAppsPerRow;
-    // The maximum number of section merges we allow at a given time before we stop merging
-    private int mMaxAllowableMerges = Integer.MAX_VALUE;
 
     public AlphabeticalAppsList(Context context, int numAppsPerRow) {
         mIndexer = new AlphabeticIndexCompat(context);
@@ -193,7 +244,16 @@ public class AlphabeticalAppsList {
      */
     public void setNumAppsPerRow(int numAppsPerRow) {
         mNumAppsPerRow = numAppsPerRow;
-        mMaxAllowableMerges = (int) Math.ceil(numAppsPerRow / 2f);
+
+        // Update the merge algorithm
+        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        if (grid.isPhone()) {
+            mMergeAlgorithm = new PhoneMergeAlgorithm((int) Math.ceil(numAppsPerRow / 2f),
+                    MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
+        } else {
+            mMergeAlgorithm = new TabletMergeAlgorithm();
+        }
+
         onAppsUpdated();
     }
 
@@ -392,7 +452,15 @@ public class AlphabeticalAppsList {
         for (int i = 0; i < numApps; i++) {
             boolean isPredictedApp = i < numPredictedApps;
             AppInfo info = allApps.get(i);
-            String sectionName = isPredictedApp ? "" : mIndexer.computeSectionName(info.title);
+            String sectionName = "";
+            if (!isPredictedApp) {
+                // Only cache section names from non-predicted apps
+                sectionName = mCachedSectionNames.get(info.title);
+                if (sectionName == null) {
+                    sectionName = mIndexer.computeSectionName(info.title);
+                    mCachedSectionNames.put(info.title, sectionName);
+                }
+            }
 
             // Check if we want to retain this app
             if (mFilter != null && !mFilter.retainApp(info, sectionName)) {
@@ -429,20 +497,14 @@ public class AlphabeticalAppsList {
 
         // Go through each section and try and merge some of the sections
         if (AppsContainerView.GRID_MERGE_SECTIONS && !hasFilter()) {
-            int minNumAppsPerRow = (int) Math.ceil(mNumAppsPerRow / 2f);
             int sectionAppCount = 0;
             for (int i = 0; i < mSections.size(); i++) {
                 SectionInfo section = mSections.get(i);
                 sectionAppCount = section.numApps;
                 int mergeCount = 1;
 
-                // Merge rows if the last app in this section is in a column that is greater than
-                // 0, but less than the min number of apps per row.  In addition, apply the
-                // constraint to stop merging if the number of rows in the section is greater than
-                // some limit, and also if there are no lessons to merge.
-                while (0 < (sectionAppCount % mNumAppsPerRow) &&
-                        (sectionAppCount % mNumAppsPerRow) < minNumAppsPerRow &&
-                        (sectionAppCount / mNumAppsPerRow) < MAX_ROWS_IN_MERGED_SECTION &&
+                // Merge rows based on the current strategy
+                while (mMergeAlgorithm.continueMerging(sectionAppCount, mNumAppsPerRow, mergeCount) &&
                         (i + 1) < mSections.size()) {
                     SectionInfo nextSection = mSections.remove(i + 1);
 
@@ -465,10 +527,13 @@ public class AlphabeticalAppsList {
                     }
                     section.numApps += nextSection.numApps;
                     sectionAppCount += nextSection.numApps;
-                    mergeCount++;
-                    if (mergeCount >= mMaxAllowableMerges) {
-                        break;
+
+                    if (DEBUG) {
+                        Log.d(TAG, "Merging: " + nextSection.firstAppItem.sectionName +
+                                " to " + section.firstAppItem.sectionName +
+                                " mergedNumRows: " + (sectionAppCount / mNumAppsPerRow));
                     }
+                    mergeCount++;
                 }
             }
         }

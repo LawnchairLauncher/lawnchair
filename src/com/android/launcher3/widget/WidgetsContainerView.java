@@ -373,7 +373,7 @@ public class WidgetsContainerView extends BaseContainerView
         } else {
             // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
             setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
-                    mInsets.bottom);
+                    mFixedBounds.bottom);
         }
     }
 
