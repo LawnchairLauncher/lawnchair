@@ -275,6 +275,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         for (int i = 0; i < mContent.getChildCount(); i++) {
             mContent.getPageAt(i).enableAccessibleDrag(enable, CellLayout.FOLDER_ACCESSIBILITY_DRAG);
         }
+
+        mFooter.setImportantForAccessibility(enable ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS :
+            IMPORTANT_FOR_ACCESSIBILITY_AUTO);
         mLauncher.getWorkspace().setAddNewPageOnDrag(!enable);
     }
 

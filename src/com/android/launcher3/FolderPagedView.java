@@ -504,6 +504,10 @@ public class FolderPagedView extends PagedView {
         }
     }
 
+    public int getAllocatedContentSize() {
+        return mAllocatedContentSize;
+    }
+
     /**
      * Reorders the items such that the {@param empty} spot moves to {@param target}
      */
