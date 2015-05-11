@@ -38,7 +38,6 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -153,6 +152,14 @@ public class DragLayer extends InsettableFrameLayout {
         return false;
     }
 
+    private boolean isEventOverDropTargetBar(MotionEvent ev) {
+        getDescendantRectRelativeToSelf(mLauncher.getSearchBar(), mHitRect);
+        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
+            return true;
+        }
+        return false;
+    }
+
     public void setBlockTouch(boolean block) {
         mBlockTouches = block;
     }
@@ -188,10 +195,16 @@ public class DragLayer extends InsettableFrameLayout {
                 }
             }
 
-            getDescendantRectRelativeToSelf(currentFolder, hitRect);
             if (!isEventOverFolder(currentFolder, ev)) {
-                mLauncher.closeFolder();
-                return true;
+                if (isInAccessibleDrag()) {
+                    // Do not close the folder if in drag and drop.
+                    if (!isEventOverDropTargetBar(ev)) {
+                        return true;
+                    }
+                } else {
+                    mLauncher.closeFolder();
+                    return true;
+                }
             }
         }
         return false;
@@ -228,11 +241,12 @@ public class DragLayer extends InsettableFrameLayout {
                         getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             if (accessibilityManager.isTouchExplorationEnabled()) {
                 final int action = ev.getAction();
-                boolean isOverFolder;
+                boolean isOverFolderOrSearchBar;
                 switch (action) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        isOverFolder = isEventOverFolder(currentFolder, ev);
-                        if (!isOverFolder) {
+                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
+                            (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        if (!isOverFolderOrSearchBar) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
@@ -240,12 +254,13 @@ public class DragLayer extends InsettableFrameLayout {
                         mHoverPointClosesFolder = false;
                         break;
                     case MotionEvent.ACTION_HOVER_MOVE:
-                        isOverFolder = isEventOverFolder(currentFolder, ev);
-                        if (!isOverFolder && !mHoverPointClosesFolder) {
+                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
+                            (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (!isOverFolder) {
+                        } else if (!isOverFolderOrSearchBar) {
                             return true;
                         }
                         mHoverPointClosesFolder = false;
@@ -268,11 +283,21 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
+    private boolean isInAccessibleDrag() {
+        LauncherAccessibilityDelegate delegate = LauncherAppState
+                .getInstance().getAccessibilityDelegate();
+        return delegate != null && delegate.isInAccessibleDrag();
+    }
+
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
         if (currentFolder != null) {
             if (child == currentFolder) {
+                return super.onRequestSendAccessibilityEvent(child, event);
+            }
+
+            if (isInAccessibleDrag() && child instanceof SearchDropTargetBar) {
                 return super.onRequestSendAccessibilityEvent(child, event);
             }
             // Skip propagating onRequestSendAccessibilityEvent all for other children
@@ -288,6 +313,10 @@ public class DragLayer extends InsettableFrameLayout {
         if (currentFolder != null) {
             // Only add the folder as a child for accessibility when it is open
             childrenForAccessibility.add(currentFolder);
+
+            if (isInAccessibleDrag()) {
+                childrenForAccessibility.add(mLauncher.getSearchBar());
+            }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
         }
