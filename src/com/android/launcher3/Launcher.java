@@ -347,6 +347,8 @@ public class Launcher extends Activity
     private Canvas mFolderIconCanvas;
     private Rect mRectForFolderAnimation = new Rect();
 
+    private DeviceProfile mDeviceProfile;
+
     private BubbleTextView mWaitingForResume;
 
     protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
@@ -423,7 +425,7 @@ public class Launcher extends Activity
         LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
 
         // Lazy-initialize the dynamic grid
-        DeviceProfile grid = app.initDynamicGrid(this);
+        mDeviceProfile = app.initDynamicGrid(this);
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
@@ -431,7 +433,7 @@ public class Launcher extends Activity
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
-        mIconCache.flushInvalidIcons(grid);
+        mIconCache.flushInvalidIcons(mDeviceProfile);
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, this);
@@ -457,7 +459,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
-        grid.layout(this);
+        mDeviceProfile.layout(this);
 
         registerContentObservers();
 
@@ -1511,22 +1513,22 @@ public class Launcher extends Activity
      * @return A View inflated from R.layout.application.
      */
     View createShortcut(ShortcutInfo info) {
-        return createShortcut(R.layout.application,
-                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
+        return createShortcut((ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
     }
 
     /**
      * Creates a view representing a shortcut inflated from the specified resource.
      *
-     * @param layoutResId The id of the XML layout used to create the shortcut.
      * @param parent The group the shortcut belongs to.
      * @param info The data structure describing the shortcut.
      *
      * @return A View inflated from layoutResId.
      */
-    public View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
-        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
-        favorite.applyFromShortcutInfo(info, mIconCache, true);
+    public View createShortcut(ViewGroup parent, ShortcutInfo info) {
+        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(R.layout.application,
+                parent, false);
+        favorite.applyFromShortcutInfo(info, mIconCache);
+        favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
         favorite.setOnClickListener(this);
         favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
@@ -4157,13 +4159,11 @@ public class Launcher extends Activity
     }
 
     public boolean useVerticalBarLayout() {
-        return LauncherAppState.getInstance().getDynamicGrid().
-                getDeviceProfile().isVerticalBarLayout();
+        return mDeviceProfile.isVerticalBarLayout();
     }
 
     protected Rect getSearchBarBounds() {
-        return LauncherAppState.getInstance().getDynamicGrid().
-                getDeviceProfile().getSearchBarBounds();
+        return mDeviceProfile.getSearchBarBounds();
     }
 
     public void bindSearchablesChanged() {

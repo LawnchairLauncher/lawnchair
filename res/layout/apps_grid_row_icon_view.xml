@@ -25,5 +25,6 @@
     android:paddingBottom="8dp"
     android:focusable="true"
     android:background="@drawable/focusable_view_bg"
-    launcher:deferShadowGeneration="true" />
+    launcher:deferShadowGeneration="true"
+    launcher:iconDisplay="all_apps" />
 
