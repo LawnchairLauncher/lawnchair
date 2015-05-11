@@ -66,7 +66,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public String getLabel(PackageManager packageManager) {
         if (isCustomWidget) {
-            return label.toString().trim();
+            return Utilities.trim(label);
         }
         return super.loadLabel(packageManager);
     }

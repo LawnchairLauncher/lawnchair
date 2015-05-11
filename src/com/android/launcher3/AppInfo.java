@@ -105,7 +105,7 @@ public class AppInfo extends ItemInfo {
     public AppInfo(AppInfo info) {
         super(info);
         componentName = info.componentName;
-        title = info.title.toString();
+        title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         flags = info.flags;
         firstInstallTime = info.firstInstallTime;
@@ -114,7 +114,7 @@ public class AppInfo extends ItemInfo {
 
     @Override
     public String toString() {
-        return "ApplicationInfo(title=" + title.toString() + " id=" + this.id
+        return "ApplicationInfo(title=" + title + " id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container
                 + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY
                 + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
