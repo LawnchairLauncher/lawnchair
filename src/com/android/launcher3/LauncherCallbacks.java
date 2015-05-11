@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -90,6 +91,7 @@ public interface LauncherCallbacks {
     public boolean overrideWallpaperDimensions();
     public boolean isLauncherPreinstalled();
     public boolean overrideAllAppsSearch();
+    public List<ComponentName> getPredictedApps();
 
     /**
      * Returning true will immediately result in a call to {@link #setLauncherOverlayView(ViewGroup,

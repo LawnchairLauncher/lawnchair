@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a very trivial LauncherExtension. It primarily serves as a simple
@@ -256,6 +257,11 @@ public class LauncherExtension extends Launcher {
         @Override
         public boolean overrideAllAppsSearch() {
             return false;
+        }
+
+        @Override
+        public List<ComponentName> getPredictedApps() {
+            return new ArrayList<>();
         }
 
         @Override
