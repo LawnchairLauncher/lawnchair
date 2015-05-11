@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -55,6 +56,8 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private static final int FADE_IN_DURATION = 175;
     private static final int FADE_OUT_DURATION = 100;
     private static final int SEARCH_TRANSLATION_X_DP = 18;
+
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("[\\s|\\p{javaSpaceChar}]+");
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
@@ -430,23 +433,24 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     @Override
     public void afterTextChanged(final Editable s) {
-        if (s.toString().isEmpty()) {
+        String queryText = s.toString();
+        if (queryText.isEmpty()) {
             mApps.setFilter(null);
         } else {
             String formatStr = getResources().getString(R.string.apps_view_no_search_results);
-            mAdapter.setEmptySearchText(String.format(formatStr, s.toString()));
+            mAdapter.setEmptySearchText(String.format(formatStr, queryText));
 
-            final String filterText = s.toString().toLowerCase().replaceAll("\\s+", "");
+            final String queryTextLower = queryText.toLowerCase();
             mApps.setFilter(new AlphabeticalAppsList.Filter() {
                 @Override
                 public boolean retainApp(AppInfo info, String sectionName) {
-                    String title = info.title.toString();
-                    if (sectionName.toLowerCase().contains(filterText)) {
+                    if (sectionName.toLowerCase().contains(queryTextLower)) {
                         return true;
                     }
-                    String[] words = title.toLowerCase().split("\\s+");
+                    String title = info.title.toString();
+                    String[] words = SPLIT_PATTERN.split(title.toLowerCase());
                     for (int i = 0; i < words.length; i++) {
-                        if (words[i].startsWith(filterText)) {
+                        if (words[i].startsWith(queryTextLower)) {
                             return true;
                         }
                     }

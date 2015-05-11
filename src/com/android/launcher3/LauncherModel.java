@@ -969,7 +969,7 @@ public class LauncherModel extends BroadcastReceiver
                         break;
                 }
 
-                folderInfo.title = c.getString(titleIndex);
+                folderInfo.title = Utilities.trim(c.getString(titleIndex));
                 folderInfo.id = id;
                 folderInfo.container = c.getInt(containerIndex);
                 folderInfo.screenId = c.getInt(screenIndex);
@@ -2144,7 +2144,7 @@ public class LauncherModel extends BroadcastReceiver
                                 id = c.getLong(idIndex);
                                 FolderInfo folderInfo = findOrMakeFolder(sBgFolders, id);
 
-                                folderInfo.title = c.getString(titleIndex);
+                                folderInfo.title = Utilities.trim(c.getString(titleIndex));
                                 folderInfo.id = id;
                                 container = c.getInt(containerIndex);
                                 folderInfo.container = container;
@@ -3199,7 +3199,7 @@ public class LauncherModel extends BroadcastReceiver
                                 if (appInfo != null && Intent.ACTION_MAIN.equals(si.intent.getAction())
                                         && si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                     si.updateIcon(mIconCache);
-                                    si.title = appInfo.title.toString();
+                                    si.title = Utilities.trim(appInfo.title);
                                     si.contentDescription = appInfo.contentDescription;
                                     infoUpdated = true;
                                 }
@@ -3428,18 +3428,17 @@ public class LauncherModel extends BroadcastReceiver
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
             String title = (cursor != null) ? cursor.getString(titleIndex) : null;
             if (!TextUtils.isEmpty(title)) {
-                info.title = title;
+                info.title = Utilities.trim(title);
             }
         } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
             if (TextUtils.isEmpty(info.title)) {
-                info.title = (cursor != null) ? cursor.getString(titleIndex) : "";
+                info.title = (cursor != null) ? Utilities.trim(cursor.getString(titleIndex)) : "";
             }
         } else {
             throw new InvalidParameterException("Invalid restoreType " + promiseType);
         }
 
-        info.contentDescription = mUserManager.getBadgedLabelForUser(
-                info.title.toString(), info.user);
+        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         info.promisedIntent = intent;
         info.status = promiseType;
@@ -3501,7 +3500,7 @@ public class LauncherModel extends BroadcastReceiver
 
         // from the db
         if (TextUtils.isEmpty(info.title) && c != null) {
-            info.title =  c.getString(titleIndex);
+            info.title =  Utilities.trim(c.getString(titleIndex));
         }
 
         // fall back to the class name of the activity
@@ -3511,8 +3510,7 @@ public class LauncherModel extends BroadcastReceiver
 
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
-        info.contentDescription = mUserManager.getBadgedLabelForUser(
-                info.title.toString(), info.user);
+        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         if (lai != null) {
             info.flags = AppInfo.initFlags(lai);
         }
@@ -3578,7 +3576,7 @@ public class LauncherModel extends BroadcastReceiver
 
         // TODO: If there's an explicit component and we can't install that, delete it.
 
-        info.title = c.getString(titleIndex);
+        info.title = Utilities.trim(c.getString(titleIndex));
 
         int iconType = c.getInt(iconTypeIndex);
         switch (iconType) {
@@ -3656,9 +3654,8 @@ public class LauncherModel extends BroadcastReceiver
         }
         info.setIcon(icon);
 
-        info.title = name;
-        info.contentDescription = mUserManager.getBadgedLabelForUser(
-                info.title.toString(), info.user);
+        info.title = Utilities.trim(name);
+        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         info.intent = intent;
         info.customIcon = customIcon;
         info.iconResource = iconResource;
@@ -3699,16 +3696,16 @@ public class LauncherModel extends BroadcastReceiver
                 labelA = mLabelCache.get(a);
             } else {
                 labelA = (a instanceof LauncherAppWidgetProviderInfo)
-                        ? mManager.loadLabel((LauncherAppWidgetProviderInfo) a)
-                        : ((ResolveInfo) a).loadLabel(mPackageManager).toString().trim();
+                        ? Utilities.trim(mManager.loadLabel((LauncherAppWidgetProviderInfo) a))
+                        : Utilities.trim(((ResolveInfo) a).loadLabel(mPackageManager));
                 mLabelCache.put(a, labelA);
             }
             if (mLabelCache.containsKey(b)) {
                 labelB = mLabelCache.get(b);
             } else {
                 labelB = (b instanceof LauncherAppWidgetProviderInfo)
-                        ? mManager.loadLabel((LauncherAppWidgetProviderInfo) b)
-                        : ((ResolveInfo) b).loadLabel(mPackageManager).toString().trim();
+                        ? Utilities.trim(mManager.loadLabel((LauncherAppWidgetProviderInfo) b))
+                        : Utilities.trim(((ResolveInfo) b).loadLabel(mPackageManager));
                 mLabelCache.put(b, labelB);
             }
             return mCollator.compare(labelA, labelB);

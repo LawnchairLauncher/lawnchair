@@ -54,6 +54,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -66,6 +68,9 @@ public final class Utilities {
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
+
+    private static final Pattern sTrimPattern =
+            Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -615,5 +620,15 @@ public final class Utilities {
         }
 
         return false;
+    }
+
+    /**
+     * Trims the string, removing all whitespace at the beginning and end of the string.
+     * Non-breaking whitespaces are also removed.
+     */
+    public static String trim(CharSequence s) {
+        // Just strip any sequence of whitespace or java space characters from the beginning and end
+        Matcher m = sTrimPattern.matcher(s);
+        return m.replaceAll("$1");
     }
 }

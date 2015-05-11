@@ -29,8 +29,7 @@ class AppNameComparator {
         mAppNameComparator = new Comparator<AppInfo>() {
             public final int compare(AppInfo a, AppInfo b) {
                 // Order by the title
-                int result = collator.compare(a.title.toString().trim(),
-                        b.title.toString().trim());
+                int result = collator.compare(a.title.toString(), b.title.toString());
                 if (result == 0) {
                     // If two apps have the same title, then order by the component name
                     result = a.componentName.compareTo(b.componentName);
@@ -349,7 +348,7 @@ public class AlphabeticalAppsList {
         int appIndex = 0;
         int numApps = mApps.size();
         for (AppInfo info : mApps) {
-            String sectionName = mIndexer.computeSectionName(info.title.toString().trim());
+            String sectionName = mIndexer.computeSectionName(info.title);
 
             // Check if we want to retain this app
             if (mFilter != null && !mFilter.retainApp(info, sectionName)) {

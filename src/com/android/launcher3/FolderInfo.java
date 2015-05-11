@@ -87,7 +87,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     public void setTitle(CharSequence title) {
-        this.title = title;
+        this.title = Utilities.trim(title);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onTitleChanged(title);
         }

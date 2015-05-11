@@ -400,7 +400,7 @@ public class IconCache {
         UserHandleCompat user = info == null ? application.user : info.getUser();
         CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
-        application.title = entry.title;
+        application.title = Utilities.trim(entry.title);
         application.iconBitmap = getNonNullIcon(entry, user);
         application.contentDescription = entry.contentDescription;
         application.usingLowResIcon = entry.isLowResIcon;
@@ -413,7 +413,7 @@ public class IconCache {
         CacheEntry entry = cacheLocked(application.componentName, null, application.user,
                 false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
-            application.title = entry.title;
+            application.title = Utilities.trim(entry.title);
             application.iconBitmap = entry.icon;
             application.contentDescription = entry.contentDescription;
             application.usingLowResIcon = entry.isLowResIcon;
@@ -464,7 +464,7 @@ public class IconCache {
             UserHandleCompat user, boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
         shortcutInfo.setIcon(getNonNullIcon(entry, user));
-        shortcutInfo.title = entry.title;
+        shortcutInfo.title = Utilities.trim(entry.title);
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
     }
@@ -477,7 +477,7 @@ public class IconCache {
             PackageItemInfo infoOut) {
         CacheEntry entry = getEntryForPackageLocked(packageName, user, useLowResIcon);
         infoOut.iconBitmap = getNonNullIcon(entry, user);
-        infoOut.title = entry.title;
+        infoOut.title = Utilities.trim(entry.title);
         infoOut.usingLowResIcon = entry.isLowResIcon;
         infoOut.contentDescription = entry.contentDescription;
     }
@@ -530,7 +530,7 @@ public class IconCache {
             }
 
             if (TextUtils.isEmpty(entry.title) && info != null) {
-                entry.title = info.getLabel().toString();
+                entry.title = info.getLabel();
                 entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
             }
         }

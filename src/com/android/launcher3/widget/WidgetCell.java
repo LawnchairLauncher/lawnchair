@@ -222,10 +222,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      * Helper method to get the string info of the tag.
      */
     private String getTagToString() {
-        if (getTag() instanceof PendingAddWidgetInfo) {
-            return ((PendingAddWidgetInfo)getTag()).toString();
-        } else if (getTag() instanceof PendingAddShortcutInfo) {
-            return ((PendingAddShortcutInfo)getTag()).toString();
+        if (getTag() instanceof PendingAddWidgetInfo ||
+                getTag() instanceof PendingAddShortcutInfo) {
+            return getTag().toString();
         }
         return "";
     }
