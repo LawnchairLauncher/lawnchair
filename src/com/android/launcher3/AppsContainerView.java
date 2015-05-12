@@ -213,7 +213,13 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                         new AppsContainerSearchEditTextView.OnBackKeyListener() {
                             @Override
                             public void onBackKey() {
-                                hideSearchField(true, true);
+                                // Only hide the search field if there is no query, or if there
+                                // are no filtered results
+                                String query = Utilities.trim(
+                                        mSearchBarEditView.getEditableText().toString());
+                                if (query.isEmpty() || mApps.hasNoFilteredResults()) {
+                                    hideSearchField(true, true);
+                                }
                             }
                         });
             }
@@ -277,15 +283,17 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         } else {
             // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
             setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
-                    mInsets.bottom);
+                    mFixedBounds.bottom);
         }
 
         // Update the apps recycler view, inset it by the container inset as well
+        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        int startMargin = grid.isPhone() ? mContentMarginStart : 0;
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
         if (isRtl) {
-            mAppsRecyclerView.setPadding(inset, inset, inset + mContentMarginStart, inset);
+            mAppsRecyclerView.setPadding(inset, inset, inset + startMargin, inset);
         } else {
-            mAppsRecyclerView.setPadding(inset + mContentMarginStart, inset, inset, inset);
+            mAppsRecyclerView.setPadding(inset + startMargin, inset, inset, inset);
         }
 
         // Update the header bar
