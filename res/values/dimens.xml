@@ -101,7 +101,6 @@
 
     <!-- Equation: widget_preview_size + 2 * widget_preview_padding_horizontal -->
     <dimen name="widget_preview_container_width">146dp</dimen>
-    <dimen name="widget_cell_height">150dp</dimen>
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
 
