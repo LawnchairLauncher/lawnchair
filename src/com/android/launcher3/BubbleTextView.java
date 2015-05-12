@@ -28,13 +28,13 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
+import com.android.launcher3.widget.PackageItemInfo;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -119,11 +119,6 @@ public class BubbleTextView extends TextView {
             mBackground = null;
         }
 
-        // If we are laying out horizontal, then center the text vertically
-        if (mLayoutHorizontal) {
-            setGravity(Gravity.CENTER_VERTICAL);
-        }
-
         mLongPressHelper = new CheckLongPressHelper(this);
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
@@ -169,6 +164,20 @@ public class BubbleTextView extends TextView {
         // Verify high res immediately
         verifyHighRes();
     }
+
+    public void applyFromPackageItemInfo(PackageItemInfo info) {
+        setIcon(Utilities.createIconDrawable(info.iconBitmap), mIconSize);
+        setText(info.title);
+        if (info.contentDescription != null) {
+            setContentDescription(info.contentDescription);
+        }
+        // We don't need to check the info since it's not a ShortcutInfo
+        super.setTag(info);
+
+        // Verify high res immediately
+        verifyHighRes();
+    }
+
 
     @Override
     protected boolean setFrame(int left, int top, int right, int bottom) {
@@ -459,6 +468,8 @@ public class BubbleTextView extends TextView {
             } else if (info instanceof ShortcutInfo) {
                 applyFromShortcutInfo((ShortcutInfo) info,
                         LauncherAppState.getInstance().getIconCache());
+            } else if (info instanceof PackageItemInfo) {
+                applyFromPackageItemInfo((PackageItemInfo) info);
             }
         }
     }
@@ -479,6 +490,12 @@ public class BubbleTextView extends TextView {
             }
         } else if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
+            if (info.usingLowResIcon) {
+                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
+                        .updateIconInBackground(BubbleTextView.this, info);
+            }
+        } else if (getTag() instanceof PackageItemInfo) {
+            PackageItemInfo info = (PackageItemInfo) getTag();
             if (info.usingLowResIcon) {
                 mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
                         .updateIconInBackground(BubbleTextView.this, info);

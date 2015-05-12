@@ -15,6 +15,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/widgets_cell_list_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,36 +24,29 @@
     android:descendantFocusability="afterDescendants">
 
     <!-- Section info -->
-    <LinearLayout
+
+    <com.android.launcher3.BubbleTextView
+        android:id="@+id/section"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="@dimen/widget_section_height"
+        android:background="@color/widget_text_panel"
+        android:drawablePadding="@dimen/widget_section_horizontal_padding"
+        android:ellipsize="end"
         android:focusable="true"
-        android:descendantFocusability="afterDescendants">
-        <ImageView
-            android:id="@+id/section_image"
-            android:layout_height="@dimen/widget_section_height"
-            android:layout_width="@dimen/widget_section_icon_width"
-            android:paddingLeft="@dimen/widget_section_icon_horizontal_padding"
-            android:paddingRight="@dimen/widget_section_icon_horizontal_padding"
-            android:paddingTop="@dimen/widget_section_icon_vertical_padding"
-            android:paddingBottom="@dimen/widget_section_icon_vertical_padding"
-            android:background="@color/widget_text_panel"
-        />
-        <TextView
-            android:id="@+id/section"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/widget_section_height"
-            android:paddingEnd="@dimen/widget_preview_label_horizontal_padding"
-            android:paddingRight="@dimen/widget_preview_label_horizontal_padding"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:gravity="start|center_vertical"
-            android:textColor="@color/widgets_view_section_text_color"
-            android:background="@color/widget_text_panel"
-            android:textSize="20sp"
-            android:focusable="false" />
-    </LinearLayout>
+        android:gravity="start|center_vertical"
+        android:importantForAccessibility="no"
+        android:paddingBottom="@dimen/widget_section_vertical_padding"
+        android:paddingLeft="@dimen/widget_section_horizontal_padding"
+        android:paddingRight="@dimen/widget_section_horizontal_padding"
+        android:paddingTop="@dimen/widget_section_vertical_padding"
+        android:singleLine="true"
+        android:textColor="@color/widgets_view_section_text_color"
+        android:textSize="20sp"
+        launcher:customShadows="false"
+        launcher:deferShadowGeneration="true"
+        launcher:iconDisplay="widget_section"
+        launcher:iconSizeOverride="@dimen/widget_section_icon_size"
+        launcher:layoutHorizontal="true" />
 
     <!--  Widget list -->
     <com.android.launcher3.widget.WidgetRowView
