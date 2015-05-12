@@ -63,11 +63,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
             if (mApps.getAdapterItems().get(position).isSectionHeader) {
                 // Section break spans full width
-                if (AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
-                    return 0;
-                } else {
-                    return mAppsPerRow;
-                }
+                return mAppsPerRow;
             } else {
                 return 1;
             }
@@ -290,10 +286,8 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mTouchListener = touchListener;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
-            mStartMargin = res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
-            mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.apps_grid_section_y_offset);
-        }
+        mStartMargin = res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
+        mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.apps_grid_section_y_offset);
         mPaddingStart = res.getDimensionPixelSize(R.dimen.apps_container_inset);
 
         mSectionTextPaint = new Paint();
@@ -342,10 +336,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      */
     public RecyclerView.ItemDecoration getItemDecoration() {
         // We don't draw any headers when we are uncomfortably dense
-        if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
-            return mItemDecoration;
-        }
-        return null;
+        return mItemDecoration;
     }
 
     /**

@@ -437,13 +437,6 @@ public class DeviceProfile {
     }
 
     public boolean updateAppsViewNumCols(Resources res, int containerWidth) {
-        if (AppsContainerView.GRID_HIDE_SECTION_HEADERS) {
-            if (appsViewNumCols != allAppsNumCols) {
-                appsViewNumCols = allAppsNumCols;
-                return true;
-            }
-            return false;
-        }
         int appsViewLeftMarginPx =
                 res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
         int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;

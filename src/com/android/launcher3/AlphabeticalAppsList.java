@@ -14,23 +14,28 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
  * A private class to manage access to an app name comparator.
  */
 class AppNameComparator {
-    private UserManagerCompat mUserManager;
-    private Comparator<AppInfo> mAppNameComparator;
+    private final UserManagerCompat mUserManager;
+    private final Collator mCollator;
+    private final Comparator<AppInfo> mAppInfoComparator;
+    private final Comparator<String> mSectionNameComparator;
     private HashMap<UserHandleCompat, Long> mUserSerialCache = new HashMap<>();
 
     public AppNameComparator(Context context) {
-        final Collator collator = Collator.getInstance();
+        mCollator = Collator.getInstance();
         mUserManager = UserManagerCompat.getInstance(context);
-        mAppNameComparator = new Comparator<AppInfo>() {
+        mAppInfoComparator = new Comparator<AppInfo>() {
             public final int compare(AppInfo a, AppInfo b) {
-                // Order by the title
-                int result = collator.compare(a.title.toString(), b.title.toString());
+                // Order by the title in the current locale
+                int result = compareTitles(a.title.toString(), b.title.toString());
                 if (result == 0) {
                     // If two apps have the same title, then order by the component name
                     result = a.componentName.compareTo(b.componentName);
@@ -49,15 +54,45 @@ class AppNameComparator {
                 return result;
             }
         };
+        mSectionNameComparator = new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return compareTitles(o1, o2);
+            }
+        };
     }
 
     /**
      * Returns a locale-aware comparator that will alphabetically order a list of applications.
      */
-    public Comparator<AppInfo> getComparator() {
+    public Comparator<AppInfo> getAppInfoComparator() {
         // Clear the user serial cache so that we get serials as needed in the comparator
         mUserSerialCache.clear();
-        return mAppNameComparator;
+        return mAppInfoComparator;
+    }
+
+    /**
+     * Returns a locale-aware comparator that will alphabetically order a list of section names.
+     */
+    public Comparator<String> getSectionNameComparator() {
+        return mSectionNameComparator;
+    }
+
+    /**
+     * Compares two titles with the same return value semantics as Comparator.
+     */
+    private int compareTitles(String titleA, String titleB) {
+        // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
+        boolean aStartsWithLetter = Character.isLetterOrDigit(titleA.codePointAt(0));
+        boolean bStartsWithLetter = Character.isLetterOrDigit(titleB.codePointAt(0));
+        if (aStartsWithLetter && !bStartsWithLetter) {
+            return -1;
+        } else if (!aStartsWithLetter && bStartsWithLetter) {
+            return 1;
+        }
+
+        // Order by the title in the current locale
+        return mCollator.compare(titleA, titleB);
     }
 
     /**
@@ -219,6 +254,7 @@ public class AlphabeticalAppsList {
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
 
+    private Context mContext;
     private List<AppInfo> mApps = new ArrayList<>();
     private List<AppInfo> mFilteredApps = new ArrayList<>();
     private List<AdapterItem> mSectionedFilteredApps = new ArrayList<>();
@@ -234,6 +270,7 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
 
     public AlphabeticalAppsList(Context context, int numAppsPerRow) {
+        mContext = context;
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
         setNumAppsPerRow(numAppsPerRow);
@@ -400,7 +437,7 @@ public class AlphabeticalAppsList {
      * Implementation to actually add an app to the alphabetic list, but does not notify.
      */
     private void addApp(AppInfo info) {
-        int index = Collections.binarySearch(mApps, info, mAppNameComparator.getComparator());
+        int index = Collections.binarySearch(mApps, info, mAppNameComparator.getAppInfoComparator());
         if (index < 0) {
             mApps.add(-(index + 1), info);
         }
@@ -411,7 +448,44 @@ public class AlphabeticalAppsList {
      */
     private void onAppsUpdated() {
         // Sort the list of apps
-        Collections.sort(mApps, mAppNameComparator.getComparator());
+        Collections.sort(mApps, mAppNameComparator.getAppInfoComparator());
+
+        // As a special case for some languages (currently only Simplified Chinese), we may need to
+        // coalesce sections
+        Locale curLocale = mContext.getResources().getConfiguration().locale;
+        TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
+        boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
+        if (localeRequiresSectionSorting) {
+            // Compute the section headers.  We use a TreeMap with the section name comparator to
+            // ensure that the sections are ordered when we iterate over it later
+            sectionMap = new TreeMap<>(mAppNameComparator.getSectionNameComparator());
+            for (AppInfo info : mApps) {
+                // Add the section to the cache
+                String sectionName = mCachedSectionNames.get(info.title);
+                if (sectionName == null) {
+                    sectionName = mIndexer.computeSectionName(info.title);
+                    mCachedSectionNames.put(info.title, sectionName);
+                }
+
+                // Add it to the mapping
+                ArrayList<AppInfo> sectionApps = sectionMap.get(sectionName);
+                if (sectionApps == null) {
+                    sectionApps = new ArrayList<>();
+                    sectionMap.put(sectionName, sectionApps);
+                }
+                sectionApps.add(info);
+            }
+        } else {
+            // Just compute the section headers for use below
+            for (AppInfo info : mApps) {
+                // Add the section to the cache
+                String sectionName = mCachedSectionNames.get(info.title);
+                if (sectionName == null) {
+                    sectionName = mIndexer.computeSectionName(info.title);
+                    mCachedSectionNames.put(info.title, sectionName);
+                }
+            }
+        }
 
         // Prepare to update the list of sections, filtered apps, etc.
         mFilteredApps.clear();
@@ -444,23 +518,22 @@ public class AlphabeticalAppsList {
         }
 
         // Add all the other apps to the combined list
-        allApps.addAll(mApps);
+        if (localeRequiresSectionSorting) {
+            for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
+                allApps.addAll(entry.getValue());
+            }
+        } else {
+            allApps.addAll(mApps);
+        }
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
-        // combined list
+        // ordered set of sections
         int numApps = allApps.size();
         for (int i = 0; i < numApps; i++) {
             boolean isPredictedApp = i < numPredictedApps;
             AppInfo info = allApps.get(i);
-            String sectionName = "";
-            if (!isPredictedApp) {
-                // Only cache section names from non-predicted apps
-                sectionName = mCachedSectionNames.get(info.title);
-                if (sectionName == null) {
-                    sectionName = mIndexer.computeSectionName(info.title);
-                    mCachedSectionNames.put(info.title, sectionName);
-                }
-            }
+            // The section name was computed above so this should be find
+            String sectionName = isPredictedApp ? "" : mCachedSectionNames.get(info.title);
 
             // Check if we want to retain this app
             if (mFilter != null && !mFilter.retainApp(info, sectionName)) {
@@ -478,7 +551,7 @@ public class AlphabeticalAppsList {
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
 
                 // Create a new section item to break the flow of items in the list
-                if (!AppsContainerView.GRID_HIDE_SECTION_HEADERS && !hasFilter()) {
+                if (!hasFilter()) {
                     AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
                     mSectionedFilteredApps.add(sectionItem);
                 }
