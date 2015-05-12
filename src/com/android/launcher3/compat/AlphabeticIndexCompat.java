@@ -52,12 +52,15 @@ class BaseAlphabeticIndex {
  */
 public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
 
+    private static final String MID_DOT = "\u2219";
+
     private Object mAlphabeticIndex;
     private Method mAddLabelsMethod;
     private Method mSetMaxLabelCountMethod;
     private Method mGetBucketIndexMethod;
     private Method mGetBucketLabelMethod;
     private boolean mHasValidAlphabeticIndex;
+    private String mDefaultMiscLabel;
 
     public AlphabeticIndexCompat(Context context) {
         super();
@@ -72,11 +75,19 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
             mAlphabeticIndex = ctor.newInstance(curLocale);
             try {
                 // Ensure we always have some base English locale buckets
-                if (!curLocale.getLanguage().equals(new Locale("en").getLanguage())) {
+                if (!curLocale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
                     mAddLabelsMethod.invoke(mAlphabeticIndex, Locale.ENGLISH);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if (curLocale.getLanguage().equals(Locale.JAPANESE.getLanguage())) {
+                // Japanese character 他 ("misc")
+                mDefaultMiscLabel = "\u4ed6";
+                // TODO(winsonc, omakoto): We need to handle Japanese sections better, especially the kanji
+            } else {
+                // Dot
+                mDefaultMiscLabel = MID_DOT;
             }
             mHasValidAlphabeticIndex = true;
         } catch (Exception e) {
@@ -107,13 +118,21 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
         String s = Utilities.trim(cs);
         String sectionName = getBucketLabel(getBucketIndex(s));
         if (Utilities.trim(sectionName).isEmpty() && s.length() > 0) {
-            boolean startsWithDigit = Character.isDigit(s.codePointAt(0));
+            int c = s.codePointAt(0);
+            boolean startsWithDigit = Character.isDigit(c);
             if (startsWithDigit) {
                 // Digit section
                 return "#";
             } else {
-                // Unknown section
-                return "\u2022";
+                boolean startsWithLetter = Character.isLetter(c);
+                if (startsWithLetter) {
+                    return mDefaultMiscLabel;
+                } else {
+                    // In languages where these differ, this ensures that we differentiate
+                    // between the misc section in the native language and a misc section
+                    // for everything else.
+                    return MID_DOT;
+                }
             }
         }
         return sectionName;
