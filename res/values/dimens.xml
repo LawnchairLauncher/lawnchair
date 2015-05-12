@@ -95,9 +95,9 @@
     <dimen name="widget_preview_horizontal_padding">8dp</dimen>
 
     <dimen name="widget_section_height">56dp</dimen>
-    <dimen name="widget_section_icon_width">72dp</dimen>
-    <dimen name="widget_section_icon_vertical_padding">8dp</dimen>
-    <dimen name="widget_section_icon_horizontal_padding">16dp</dimen>
+    <dimen name="widget_section_icon_size">40dp</dimen>
+    <dimen name="widget_section_vertical_padding">8dp</dimen>
+    <dimen name="widget_section_horizontal_padding">16dp</dimen>
 
     <!-- Equation: widget_preview_size + 2 * widget_preview_padding_horizontal -->
     <dimen name="widget_preview_container_width">146dp</dimen>

@@ -17,22 +17,21 @@ package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.content.pm.ResolveInfo;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.List;
 
@@ -120,16 +119,8 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         // Bind the views in the application info section.
         PackageItemInfo infoOut = mWidgetsModel.getPackageItemInfo(pos);
-        if (infoOut.usingLowResIcon) {
-            // TODO(hyunyoungs): call this in none UI thread in the same way as BubbleTextView.
-            mIconCache.getTitleAndIconForApp(infoOut.packageName,
-                    UserHandleCompat.myUserHandle(), false /* useLowResIcon */, infoOut);
-        }
-
-        TextView tv = ((TextView) holder.getContent().findViewById(R.id.section));
-        tv.setText(infoOut.title);
-        ImageView iv = (ImageView) holder.getContent().findViewById(R.id.section_image);
-        iv.setImageBitmap(infoOut.iconBitmap);
+        BubbleTextView tv = ((BubbleTextView) holder.getContent().findViewById(R.id.section));
+        tv.applyFromPackageItemInfo(infoOut);
 
         // Bind the view in the widget horizontal tray region.
         for (int i=0; i < infoList.size(); i++) {
