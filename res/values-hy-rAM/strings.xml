@@ -21,55 +21,23 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="home" msgid="7658288663002113681">"Հիմնական"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Android Core Apps"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Ծրագիրը տեղադրված չէ:"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Հավելվածը հասանելի չէ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Ներբեռնված ծրագիրն անջատված է Անվտանգ ռեժիմում"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Վիջեթներն անջատված են անվտանգ ռեժիմում"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"Վիջեթներ"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"Վիջեթներ"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Ցուցադրել մեմը"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Հպեք և պահեք՝ վիջեթն ընտրելու համար:"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"Հնարավոր չէ տեղադրել տարրն այս հիմնական էկրանին:"</string>
-    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Ստեղծելու համար ընտրեք վիջեթը"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"Թղթապանակի անունը"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"Վերանվանել թղթապանակը"</string>
-    <string name="rename_action" msgid="5559600076028658757">"Լավ"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"Չեղարկել"</string>
-    <string name="menu_item_add_item" msgid="1264911265836810421">"Ավելացնել հիմնական էկրանին"</string>
-    <string name="group_applications" msgid="3797214114206693605">"Ծրագրեր"</string>
-    <string name="group_shortcuts" msgid="6012256992764410535">"Դյուրանցումներ"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"Վիջեթներ"</string>
-    <string name="completely_out_of_space" msgid="6106288382070760318">"Այլևս տեղ չկա ձեր հիմնական էկրաններին:"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Այլևս տեղ չկա այս հիմնական էկրանին:"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ընտրյալների ցուցակում այլևս ազատ տեղ չկա"</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Այս վիջեթը շատ մեծ է Ընտրյալների ցուցակի համար"</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"«<xliff:g id="NAME">%s</xliff:g>» դյուրանցումը ստեղծված է:"</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"«<xliff:g id="NAME">%s</xliff:g>» դյուրանցումը հեռացվեց:"</string>
-    <string name="shortcut_duplicate" msgid="9167217446062498127">"«<xliff:g id="NAME">%s</xliff:g>» դյուրանցումն արդեն գոյություն ունի:"</string>
-    <string name="title_select_shortcut" msgid="6680642571148153868">"Ընտրել դյուրանցումը"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"Ընտրել ծրագիրը"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ծրագրեր"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Հիմնական"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Ապատեղադրել"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Հեռացնել"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Ապատեղադրել"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Ծրագրի տեղեկություններ"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Ծրագրեր"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"Հեռացնել"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Ապատեղադրել թարմացումը"</string>
-    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Ապատեղադրել ծրագիրը"</string>
-    <string name="cab_menu_app_info" msgid="8593722221450362342">"Ծրագրի մանրամասներ"</string>
-    <string name="cab_app_selection_text" msgid="374688303047985416">"1 ընտրված ծրագիր"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 ընտրված վիջեթ"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 ընտրված թղթապանակ"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 ընտրված դյուրանցում"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"տեղադրել դյուրանցումներ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Ծրագրին թույլ է տալիս ավելացնել դյուրանցումներ՝ առանց օգտագործողի միջամտության:"</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"ապատեղադրել դյուրանցումները"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Ծրագրին թույլ է տալիս հեռացնել դյուրանցումներ՝ առանց օգտագործողի միջամտության:"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"կարդալ հիմնաէջի կարգավորումներն ու դյուրանցումները"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Ծրագրին թույլ է տալիս կարդալ հիմնաէջի կարգավորումներն ու դյուրանցումները:"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"ստեղծել հիմնաէջի կարգավորումներ ու դյուրանցումներ"</string>
@@ -77,29 +45,18 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Վիջեթի բեռնման խնդիր կա"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Կարգավորում"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Սա համակարգային ծրագիր է և չի կարող ապատեղադրվել:"</string>
-    <string name="dream_name" msgid="1530253749244328964">"Հրթիռային թողարկիչ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Անանուն թղթապանակ"</string>
     <string name="workspace_description_format" msgid="2950174241104043327">"Հիմնական էկրան %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Էջ %1$d՝ %2$d-ից"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Հիմնական էկրան %1$d` %2$d-ից"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Ծրագրերի էջերը՝ %1$d %2$d-ից"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Վիջեթների էջերը՝ %1$d %2$d-ից"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Բարի գալուստ"</string>
-    <string name="first_run_cling_description" msgid="6447072552696253358">"Զգացեք ձեզ ինչպես տանը:"</string>
-    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
-    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Ստեղծեք նոր էկրաններ ծրագրերի և թղթապանակների համար"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Պատճենել ձեր ծրագրի պատկերակները"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Ներմուծե՞լ պատկերակները և թղթապանակները ձեր նախկին Հիմնական էկրանից"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ՊԱՏՃԵՆԵԼ ՊԱՏԿԵՐԱԿՆԵՐԸ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ՄԵԿՆԱՐԿԵԼ ԸՍՏ ԿԱՆԽԱԴՐՎԱԾԻ"</string>
-    <string name="workspace_cling_title" msgid="5626202359865825661">"Կառավարեք ձեր տարածությունը"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"Հպեք և պահեք հետնաշերտի վրա՝ պաստառները, վիջեթներն ու կարգավորումները կառավարելու համար:"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Պաստառներ, վիջեթներ և կարգավորումներ"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Հարմարեցնելու համար հպեք և պահեք հետնաշերտի վրա"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ՀԱՍԿԱՆԱԼԻ Է"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"Ահա մի թղթապանակ"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Նման թղթապանակ ստեղծելու համար հպեք և պահեք որևէ ծրագրի վրա, ապա տեղաշարժեք այն մեկ ուրիշ ծրագրի վրա:"</string>
     <string name="cling_dismiss" msgid="8962359497601507581">"Լավ"</string>
     <string name="folder_opened" msgid="94695026776264709">"Թղթապանակը բաց է, <xliff:g id="WIDTH">%1$d</xliff:g>-ից <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Հպեք՝ թղթապանակը փակելու համար"</string>
