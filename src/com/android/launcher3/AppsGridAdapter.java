@@ -90,6 +90,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 return;
             }
 
+            DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
             boolean hasDrawnPredictedAppDivider = false;
             int childCount = parent.getChildCount();
@@ -104,8 +105,6 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
                 if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppDivider) {
                     // Draw the divider under the predicted app
-                    DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().
-                            getDeviceProfile();
                     int top = child.getTop() + child.getHeight();
                     int left = parent.getPaddingLeft();
                     int right = parent.getWidth() - parent.getPaddingRight();
@@ -113,7 +112,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                     c.drawLine(left + iconInset, top, right - iconInset, top, mPredictedAppsDividerPaint);
                     hasDrawnPredictedAppDivider = true;
 
-                } else if (shouldDrawItemSection(holder, i, items)) {
+                } else if (grid.isPhone() && shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
                     int viewTopOffset = (2 * child.getPaddingTop());
                     int pos = holder.getPosition();
@@ -132,7 +131,8 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                             continue;
                         }
 
-                        // Find the section code points
+
+                        // Find the section name bounds
                         PointF sectionBounds = getAndCacheSectionBounds(sectionName);
 
                         // Calculate where to draw the section

@@ -59,11 +59,12 @@ public class BaseContainerView extends FrameLayout implements Insettable {
             mFixedBounds.set(fixedBounds);
             if (Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
                 mFixedBounds.top = mInsets.top;
-                mFixedBounds.bottom = getMeasuredHeight();
+                mFixedBounds.bottom = mInsets.bottom;
             }
             // To ensure that the child RecyclerView has the full width to handle touches right to
             // the edge of the screen, we only apply the top and bottom padding to the bounds
-            mFixedBounds.inset(0, mFixedBoundsContainerInset);
+            mFixedBounds.top += mFixedBoundsContainerInset;
+            mFixedBounds.bottom += mFixedBoundsContainerInset;
             onFixedBoundsUpdated();
         }
         // Post the updates since they can trigger a relayout, and this call can be triggered from

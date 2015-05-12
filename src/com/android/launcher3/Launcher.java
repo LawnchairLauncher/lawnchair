@@ -350,6 +350,9 @@ public class Launcher extends Activity
 
     private DeviceProfile mDeviceProfile;
 
+    // This is set to the view that launched the activity that navigated the user away from
+    // launcher. Since there is no callback for when the activity has finished launching, enable
+    // the press state and keep this reference to reset the press state when we return to launcher.
     private BubbleTextView mWaitingForResume;
 
     protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
@@ -1021,10 +1024,12 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS) {
+            boolean launchedFromApp = (mWaitingForResume != null);
             // Don't update the predicted apps if the user is returning to launcher in the apps
-            // view as they may be depending on the UI to be static to switch to another app
+            // view after launching an app, as they may be depending on the UI to be static to
+            // switch to another app, otherwise, if it was
             showAppsView(false /* animated */, false /* resetListToTop */,
-                    false /* updatePredictedApps */);
+                    !launchedFromApp /* updatePredictedApps */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }

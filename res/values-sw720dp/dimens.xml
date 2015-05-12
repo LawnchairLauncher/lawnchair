@@ -16,7 +16,7 @@
 
 <resources>
     <dimen name="app_icon_size">72dp</dimen>
-    <dimen name="apps_search_bar_height">56dp</dimen>
+    <dimen name="apps_search_bar_height">54dp</dimen>
     <dimen name="apps_icon_top_bottom_padding">16dp</dimen>
 
 <!-- QSB -->

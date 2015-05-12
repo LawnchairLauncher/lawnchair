@@ -18,7 +18,7 @@
     android:id="@+id/empty_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
+    android:gravity="center"
     android:paddingTop="24dp"
     android:paddingBottom="24dp"
     android:paddingRight="@dimen/apps_grid_view_start_margin"
