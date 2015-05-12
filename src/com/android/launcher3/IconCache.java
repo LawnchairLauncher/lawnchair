@@ -374,6 +374,9 @@ public class IconCache {
                     getTitleAndIcon(st,
                             st.promisedIntent != null ? st.promisedIntent : st.intent,
                             st.user, false);
+                } else if (info instanceof PackageItemInfo) {
+                    PackageItemInfo pti = (PackageItemInfo) info;
+                    getTitleAndIconForApp(pti.packageName, pti.user, false, pti);
                 }
                 mMainThreadExecutor.execute(new Runnable() {
 
