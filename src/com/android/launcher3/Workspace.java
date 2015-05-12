@@ -3558,8 +3558,7 @@ public class Workspace extends SmoothPagedView
                     // Came from all apps -- make a copy
                     info = ((AppInfo) info).makeShortcut();
                 }
-                view = mLauncher.createShortcut(R.layout.application, cellLayout,
-                        (ShortcutInfo) info);
+                view = mLauncher.createShortcut(cellLayout, (ShortcutInfo) info);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
@@ -4185,7 +4184,7 @@ public class Workspace extends SmoothPagedView
                             && packageNames.contains(cn.getPackageName())) {
                         shortcutInfo.isDisabled |= reason;
                         BubbleTextView shortcut = (BubbleTextView) v;
-                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache, false);
+                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache);
 
                         if (parent != null) {
                             parent.invalidate();
@@ -4371,7 +4370,7 @@ public class Workspace extends SmoothPagedView
                     BubbleTextView shortcut = (BubbleTextView) v;
                     boolean oldPromiseState = getTextViewIcon(shortcut)
                             instanceof PreloadIconDrawable;
-                    shortcut.applyFromShortcutInfo(si, mIconCache, false,
+                    shortcut.applyFromShortcutInfo(si, mIconCache,
                             si.isPromise() != oldPromiseState);
 
                     if (parent != null) {
