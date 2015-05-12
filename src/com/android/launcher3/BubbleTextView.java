@@ -100,9 +100,9 @@ public class BubbleTextView extends TextView {
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            setTextSize(grid.iconTextSizePx);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         } else if (display == DISPLAY_ALL_APPS) {
-            setTextSize(grid.allAppsIconTextSizePx);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             defaultIconSize = grid.allAppsIconSizePx;
         }
 
