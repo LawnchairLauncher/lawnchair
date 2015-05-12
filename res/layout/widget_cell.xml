@@ -16,13 +16,12 @@
 <com.android.launcher3.widget.WidgetCell
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/widget_preview_container_width"
-    android:layout_height="@dimen/widget_cell_height"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:layout_marginEnd="@dimen/widget_row_divider"
     android:orientation="vertical"
-    android:background="@color/widgets_cell_color"
     android:focusable="true"
+    android:background="@color/widgets_cell_color"
     android:gravity="center_horizontal">
 
     <LinearLayout
@@ -73,9 +72,8 @@
     <com.android.launcher3.widget.WidgetImageView
         android:id="@+id/widget_preview"
         style="@style/WidgetImageView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:scaleType="matrix" />
-
 </com.android.launcher3.widget.WidgetCell>

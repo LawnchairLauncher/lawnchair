@@ -48,26 +48,19 @@
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"
         launcher:layoutHorizontal="true" />
 
-    <!--  Widget list -->
-    <com.android.launcher3.widget.WidgetRowView
-        android:id="@+id/widget_row"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/widget_cell_height"
-        android:layout_gravity="end"
-        android:layout_marginLeft="@dimen/widget_row_padding"
-        android:background="@color/widgets_cell_color"
-        >
-        <HorizontalScrollView
-            android:id="@+id/widgets_scroll_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none" >
-            <LinearLayout
-                android:id="@+id/widgets_cell_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/widget_text_panel"/>
-        </HorizontalScrollView>
-    </com.android.launcher3.widget.WidgetRowView>
+    <HorizontalScrollView
+        android:id="@+id/widgets_scroll_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="none" >
+        <LinearLayout
+            android:id="@+id/widgets_cell_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/widget_row_padding"
+            android:orientation="horizontal"
+            android:divider="@drawable/widgets_row_divider"
+            android:showDividers="middle"
+            android:background="@color/widgets_cell_color"/>
+    </HorizontalScrollView>
 </LinearLayout>

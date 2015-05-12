@@ -18,14 +18,19 @@ package com.android.launcher3.widget;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
 import android.support.v7.widget.RecyclerView;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DynamicGrid;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -46,7 +51,7 @@ import java.util.List;
 public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private static final String TAG = "WidgetsListAdapter";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private Context mContext;
     private Launcher mLauncher;
@@ -58,6 +63,9 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
+
+    private static final int PRESET_INDENT_SIZE_TABLET = 56;
+    private int mIndent = 0;
 
     public WidgetsListAdapter(Context context,
             View.OnClickListener iconClickListener,
@@ -71,6 +79,8 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         mLauncher = launcher;
         mIconCache = LauncherAppState.getInstance().getIconCache();
+
+        setContainerHeight();
     }
 
     public void setWidgetsModel(WidgetsModel w) {
@@ -96,6 +106,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         // Add more views.
         // if there are too many, hide them.
         int diff = infoList.size() - row.getChildCount();
+
         if (diff > 0) {
             for (int i = 0; i < diff; i++) {
                 WidgetCell widget = new WidgetCell(mContext);
@@ -105,10 +116,11 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 // set up touch.
                 widget.setOnClickListener(mIconClickListener);
                 widget.setOnLongClickListener(mIconLongClickListener);
-                // Add a devider if it is not the last item.
-                if (i == diff - 1) {
-                   widget.setSeparator(false);
-                }
+                LayoutParams lp = widget.getLayoutParams();
+                lp.height = widget.cellSize;
+                lp.width = widget.cellSize;
+                widget.setLayoutParams(lp);
+
                 row.addView(widget);
             }
         } else if (diff < 0) {
@@ -152,11 +164,10 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
-        WidgetRowView row = (WidgetRowView) container.findViewById(R.id.widget_row);
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) row.getLayoutParams();
-        lp.setMarginStart(WidgetRowView.sIndent);
-        lp.height = WidgetRowView.sHeight;
-        row.setLayoutParams(lp);
+        View cellList = container.findViewById(R.id.widgets_cell_list);
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) cellList.getLayoutParams();
+        lp.setMarginStart(mIndent);
+
         return new WidgetsRowViewHolder(container);
     }
 
@@ -180,5 +191,13 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
         }
         return mWidgetPreviewLoader;
+    }
+
+    private void setContainerHeight() {
+        Resources r = mContext.getResources();
+        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        if (profile.isLargeTablet || profile.isTablet) {
+            mIndent = DynamicGrid.pxFromDp(PRESET_INDENT_SIZE_TABLET, r.getDisplayMetrics());
+        }
     }
 }

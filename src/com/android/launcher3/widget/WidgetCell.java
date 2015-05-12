@@ -51,14 +51,13 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private static final int FADE_IN_DURATION_MS = 90;
 
     /** Widget cell width is calculated by multiplying this factor to grid cell width. */
-    private static final float WIDTH_SCALE = 2.8f;
+    private static final float WIDTH_SCALE = 2.6f;
 
     /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
-    private static final float PREVIEW_SCALE = 0.9f;
+    private static final float PREVIEW_SCALE = 0.8f;
 
-    private static int mPresetPreviewSize;
-    private static int mSize;
-    private static int mDividerWidth;
+    private int mPresetPreviewSize;
+    int cellSize;
 
     private ImageView mWidgetImage;
     private TextView mWidgetName;
@@ -93,14 +92,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     private void setContainerWidth() {
-        // Do nothing if already set
-        if (mSize > 0) {
-            return;
-        }
         DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
-        mSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
+        cellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
         mPresetPreviewSize = (int) (profile.cellWidthPx * WIDTH_SCALE * PREVIEW_SCALE);
-        mDividerWidth = getResources().getDimensionPixelSize(R.dimen.widget_row_divider);
     }
 
     @Override
@@ -117,12 +111,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(MeasureSpec.makeMeasureSpec(mSize, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(mSize, MeasureSpec.EXACTLY));
-    }
-
     /**
      * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
      */
@@ -133,7 +121,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetImage.setImageDrawable(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
-        setSeparator(true);
 
         if (mActiveRequest != null) {
             mActiveRequest.cleanup();
@@ -253,12 +240,5 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return getTag().toString();
         }
         return "";
-    }
-
-    public void setSeparator(boolean enable) {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) getLayoutParams();
-        lp.setMarginEnd(enable? mDividerWidth : 0);
-        setLayoutParams(lp);
-        requestLayout();
     }
 }
