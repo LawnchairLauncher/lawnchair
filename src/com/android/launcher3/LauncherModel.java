@@ -2331,6 +2331,22 @@ public class LauncherModel extends BroadcastReceiver
                     return;
                 }
 
+                // Remove any empty folder
+                LongArrayMap<FolderInfo> emptyFolders = sBgFolders.clone();
+                for (ItemInfo item: sBgItemsIdMap) {
+                    long container = item.container;
+                    if (emptyFolders.containsKey(container)) {
+                        emptyFolders.remove(container);
+                    }
+                }
+                for (FolderInfo folder : emptyFolders) {
+                    long folderId = folder.id;
+                    sBgFolders.remove(folderId);
+                    sBgItemsIdMap.remove(folderId);
+                    sBgWorkspaceItems.remove(folder);
+                    itemsToRemove.add(folderId);
+                }
+
                 if (itemsToRemove.size() > 0) {
                     ContentProviderClient client = contentResolver.acquireContentProviderClient(
                             contentUri);
