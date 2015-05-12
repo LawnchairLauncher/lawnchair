@@ -38,6 +38,23 @@ import java.util.List;
  */
 public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
 
+    /**
+     * The current scroll state of the recycler view.  We use this in updateVerticalScrollbarBounds()
+     * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
+     * that we can calculate what the scroll bar looks like, and where to jump to from the fast
+     * scroller.
+     */
+    private static class ScrollPositionState {
+        // The index of the first app in the row (Note that is this not the position)
+        int rowFirstAppIndex;
+        // The index of the first visible row
+        int rowIndex;
+        // The offset of the first visible row
+        int rowTopOffset;
+        // The height of a given row (they are currently all the same height)
+        int rowHeight;
+    }
+
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
 
     private AlphabeticalAppsList mApps;
@@ -58,6 +75,8 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     private int mScrollbarWidth;
     private int mScrollbarMinHeight;
     private int mScrollbarInset;
+    private Rect mBackgroundPadding = new Rect();
+    private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
     public AppsContainerRecyclerView(Context context) {
         this(context, null);
@@ -91,6 +110,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         mScrollbarInset =
                 res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(getFastScrollerAlpha());
+        setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     /**
@@ -105,6 +125,12 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      */
     public void setNumAppsPerRow(int rowSize) {
         mNumAppsPerRow = rowSize;
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        super.setBackground(background);
+        background.getPadding(mBackgroundPadding);
     }
 
     /**
@@ -127,6 +153,14 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      */
     public int getScrollbarWidth() {
         return mScrollbarWidth;
+    }
+
+    /**
+     * Scrolls this recycler view to the top.
+     */
+    public void scrollToTop() {
+        scrollToPosition(0);
+        updateScrollY(0);
     }
 
     @Override
@@ -238,7 +272,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             // Calculate the position for the fast scroller popup
             Rect bgBounds = mFastScrollerBg.getBounds();
             if (isRtl) {
-                x = getPaddingLeft() + getScrollBarSize();
+                x = mBackgroundPadding.left + getScrollBarSize();
             } else {
                 x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
             }
@@ -281,7 +315,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      * Invalidates the fast scroller popup.
      */
     private void invalidateFastScroller() {
-        invalidate(getWidth() - getPaddingRight() - getScrollBarSize() -
+        invalidate(getWidth() - mBackgroundPadding.right - getScrollBarSize() -
                 mFastScrollerBg.getIntrinsicWidth(), 0, getWidth(), getHeight());
     }
 
@@ -312,6 +346,15 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         stopScroll();
         layoutManager.scrollToPositionWithOffset(lastScrollSection.appItem.position, 0);
 
+        // We need to workaround the RecyclerView to get the right scroll position after scrolling
+        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+        getCurScrollState(mScrollPosState, items);
+        if (mScrollPosState.rowIndex != -1) {
+            int rowIndex = findRowForAppIndex(mScrollPosState.rowFirstAppIndex);
+            int y = (rowIndex * mScrollPosState.rowHeight) - mScrollPosState.rowTopOffset;
+            updateScrollY(y);
+        }
+
         return lastScrollSection.sectionName;
     }
 
@@ -332,44 +375,29 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         int y;
         boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
                 LAYOUT_DIRECTION_RTL);
-        int rowIndex = -1;
-        int rowTopOffset = -1;
-        int rowHeight = -1;
         int rowCount = getNumRows();
-        int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = getChildAt(i);
-            int position = getChildPosition(child);
-            if (position != NO_POSITION) {
-                AlphabeticalAppsList.AdapterItem item = items.get(position);
-                if (!item.isSectionHeader) {
-                    rowIndex = findRowForAppIndex(item.appIndex);
-                    rowTopOffset = getLayoutManager().getDecoratedTop(child);
-                    rowHeight = child.getHeight();
-                    break;
-                }
-            }
-        }
+        getCurScrollState(mScrollPosState, items);
 
-        if (rowIndex != -1) {
+        if (mScrollPosState.rowIndex != -1) {
             int height = getHeight() - getPaddingTop() - getPaddingBottom();
-            int totalScrollHeight = rowCount * rowHeight;
+            int totalScrollHeight = rowCount * mScrollPosState.rowHeight;
             if (totalScrollHeight > height) {
                 int scrollbarHeight = Math.max(mScrollbarMinHeight,
                         (int) (height / ((float) totalScrollHeight / height)));
 
                 // Calculate the position and size of the scroll bar
                 if (isRtl) {
-                    x = getPaddingLeft();
+                    x = mBackgroundPadding.left;
                 } else {
-                    x = getWidth() - getPaddingRight() - mScrollbarWidth;
+                    x = getWidth() - mBackgroundPadding.right - mScrollbarWidth;
                 }
 
                 // To calculate the offset, we compute the percentage of the total scrollable height
                 // that the user has already scrolled and then map that to the scroll bar bounds
                 int availableY = totalScrollHeight - height;
                 int availableScrollY = height - scrollbarHeight;
-                y = (rowIndex * rowHeight) - rowTopOffset;
+                y = (mScrollPosState.rowIndex * mScrollPosState.rowHeight) -
+                        mScrollPosState.rowTopOffset;
                 y = getPaddingTop() +
                         (int) (((float) (getPaddingTop() + y) / availableY) * availableScrollY);
 
@@ -409,5 +437,31 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             rowCount += numRowsInSection;
         }
         return rowCount;
+    }
+
+    /**
+     * Returns the current scroll state.
+     */
+    private void getCurScrollState(ScrollPositionState stateOut,
+            List<AlphabeticalAppsList.AdapterItem> items) {
+        stateOut.rowFirstAppIndex = -1;
+        stateOut.rowIndex = -1;
+        stateOut.rowTopOffset = -1;
+        stateOut.rowHeight = -1;
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            int position = getChildPosition(child);
+            if (position != NO_POSITION) {
+                AlphabeticalAppsList.AdapterItem item = items.get(position);
+                if (!item.isSectionHeader) {
+                    stateOut.rowFirstAppIndex = item.appIndex;
+                    stateOut.rowIndex = findRowForAppIndex(item.appIndex);
+                    stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
+                    stateOut.rowHeight = child.getHeight();
+                    break;
+                }
+            }
+        }
     }
 }

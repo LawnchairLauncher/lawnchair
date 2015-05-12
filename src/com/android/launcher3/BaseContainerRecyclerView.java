@@ -29,12 +29,20 @@ import com.android.launcher3.util.Thunk;
 public class BaseContainerRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
+    /**
+     * Listener to get notified when the absolute scroll changes.
+     */
+    public interface OnScrollToListener {
+        void onScrolledTo(int x, int y);
+    }
+
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
 
     /** Keeps the last known scrolling delta/velocity along y-axis. */
     @Thunk int mDy = 0;
+    @Thunk int mScrollY;
     private float mDeltaThreshold;
-    private RecyclerView.OnScrollListener mScrollListenerProxy;
+    private OnScrollToListener mScrollToListener;
 
     public BaseContainerRecyclerView(Context context) {
         this(context, null);
@@ -60,8 +68,9 @@ public class BaseContainerRecyclerView extends RecyclerView
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             mDy = dy;
-            if (mScrollListenerProxy != null) {
-                mScrollListenerProxy.onScrolled(recyclerView, dx, dy);
+            mScrollY += dy;
+            if (mScrollToListener != null) {
+                mScrollToListener.onScrolledTo(0, mScrollY);
             }
         }
     }
@@ -69,8 +78,8 @@ public class BaseContainerRecyclerView extends RecyclerView
     /**
      * Sets an additional scroll listener, only needed for LMR1 version of the support lib.
      */
-    public void setOnScrollListenerProxy(RecyclerView.OnScrollListener listener) {
-        mScrollListenerProxy = listener;
+    public void setOnScrollListenerProxy(OnScrollToListener listener) {
+        mScrollToListener = listener;
     }
 
     @Override
@@ -94,6 +103,17 @@ public class BaseContainerRecyclerView extends RecyclerView
 
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         // DO NOT REMOVE, NEEDED IMPLEMENTATION FOR M BUILDS
+    }
+
+    /**
+     * Updates the scroll position, used to workaround a RecyclerView issue with scrolling to
+     * position.
+     */
+    protected void updateScrollY(int scrollY) {
+        mScrollY = scrollY;
+        if (mScrollToListener != null) {
+            mScrollToListener.onScrolledTo(0, mScrollY);
+        }
     }
 
     /**
