@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
@@ -164,10 +165,10 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
-        View cellList = container.findViewById(R.id.widgets_cell_list);
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) cellList.getLayoutParams();
+        LinearLayout cellList = (LinearLayout) container.findViewById(R.id.widgets_cell_list);
+        MarginLayoutParams lp = (MarginLayoutParams) cellList.getLayoutParams();
         lp.setMarginStart(mIndent);
-
+        cellList.setLayoutParams(lp);
         return new WidgetsRowViewHolder(container);
     }
 
