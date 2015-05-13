@@ -22,6 +22,7 @@ import com.android.launcher3.util.Thunk;
 
 public class CheckLongPressHelper {
     @Thunk View mView;
+    @Thunk View.OnLongClickListener mListener;
     @Thunk boolean mHasPerformedLongPress;
     private CheckForLongPress mPendingCheckForLongPress;
 
@@ -29,7 +30,13 @@ public class CheckLongPressHelper {
         public void run() {
             if ((mView.getParent() != null) && mView.hasWindowFocus()
                     && !mHasPerformedLongPress) {
-                if (mView.performLongClick()) {
+                boolean handled;
+                if (mListener != null) {
+                    handled = mListener.onLongClick(mView);
+                } else {
+                    handled = mView.performLongClick();
+                }
+                if (handled) {
                     mView.setPressed(false);
                     mHasPerformedLongPress = true;
                 }
@@ -39,6 +46,11 @@ public class CheckLongPressHelper {
 
     public CheckLongPressHelper(View v) {
         mView = v;
+    }
+
+    public CheckLongPressHelper(View v, View.OnLongClickListener listener) {
+        mView = v;
+        mListener = listener;
     }
 
     public void postCheckForLongPress() {
