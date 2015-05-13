@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.launcher3.util.Thunk;
 
@@ -82,14 +81,21 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
-    private Point mLastTouchDownPos = new Point(-1, -1);
-    private Point mLastTouchPos = new Point();
+    // This coordinate is relative to this container view
+    private Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
+    // This coordinate is relative to its parent
+    private Point mIconLastTouchPos = new Point();
+    // This coordinate is used to proxy click and long-click events
+    private Point mPredictionIconTouchDownPos = new Point();
     private int mContentMarginStart;
     // Normal container insets
     private int mContainerInset;
     private int mPredictionBarHeight;
     // RecyclerView scroll position
     @Thunk int mRecyclerViewScrollY;
+
+    private CheckLongPressHelper mPredictionIconCheckForLongPress;
+    private View mPredictionIconUnderTouch;
 
     public AppsContainerView(Context context) {
         this(context, null);
@@ -283,9 +289,6 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                 // Otherwise, inflate a new icon
                 icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.apps_prediction_bar_icon_view, mPredictionBarView, false);
-                icon.setOnTouchListener(this);
-                icon.setOnClickListener(mLauncher);
-                icon.setOnLongClickListener(this);
                 icon.setFocusable(true);
                 mPredictionBarView.addView(icon);
             }
@@ -401,7 +404,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                mLastTouchPos.set((int) ev.getX(), (int) ev.getY());
+                mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
                 break;
         }
         return false;
@@ -427,7 +430,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         if (!mLauncher.isDraggingEnabled()) return false;
 
         // Start the drag
-        mLauncher.getWorkspace().beginDragShared(v, mLastTouchPos, this, false);
+        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false);
         // Enter spring loaded mode
         mLauncher.enterSpringLoadedDragMode();
 
@@ -626,6 +629,16 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mPredictionBarView.setTranslationY(-mRecyclerViewScrollY + mAppsRecyclerView.getPaddingTop());
     }
 
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // If we were waiting for long-click, cancel the request once a child has started handling
+        // the scrolling
+        if (mPredictionIconCheckForLongPress != null) {
+            mPredictionIconCheckForLongPress.cancelLongPress();
+        }
+        super.requestDisallowInterceptTouchEvent(disallowIntercept);
+    }
+
     /**
      * Handles the touch events to dismiss all apps when clicking outside the bounds of the
      * recycler view.
@@ -633,31 +646,44 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private boolean handleTouchEvent(MotionEvent ev) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                // We workaround the fact that the recycler view needs the touches for the scroll
+                // and we want to intercept it for clicks in the prediction bar by handling clicks
+                // and long clicks in the prediction bar ourselves.
+                mPredictionIconTouchDownPos.set(x, y);
+                mPredictionIconUnderTouch = findPredictedAppAtCoordinate(x, y);
+                if (mPredictionIconUnderTouch != null) {
+                    mPredictionIconCheckForLongPress =
+                            new CheckLongPressHelper(mPredictionIconUnderTouch, this);
+                    mPredictionIconCheckForLongPress.postCheckForLongPress();
+                }
+
                 if (!mFixedBounds.isEmpty()) {
                     // Outset the fixed bounds and check if the touch is outside all apps
                     Rect tmpRect = new Rect(mFixedBounds);
                     tmpRect.inset(-grid.allAppsIconSizePx / 2, 0);
                     if (ev.getX() < tmpRect.left || ev.getX() > tmpRect.right) {
-                        mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+                        mBoundsCheckLastTouchDownPos.set(x, y);
                         return true;
                     }
                 } else {
                     // Check if the touch is outside all apps
                     if (ev.getX() < getPaddingLeft() ||
                             ev.getX() > (getWidth() - getPaddingRight())) {
-                        mLastTouchDownPos.set((int) ev.getX(), (int) ev.getY());
+                        mBoundsCheckLastTouchDownPos.set(x, y);
                         return true;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (mLastTouchDownPos.x > -1) {
+                if (mBoundsCheckLastTouchDownPos.x > -1) {
                     ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
-                    float dx = ev.getX() - mLastTouchDownPos.x;
-                    float dy = ev.getY() - mLastTouchDownPos.y;
+                    float dx = ev.getX() - mBoundsCheckLastTouchDownPos.x;
+                    float dy = ev.getY() - mBoundsCheckLastTouchDownPos.y;
                     float distance = (float) Math.hypot(dx, dy);
                     if (distance < viewConfig.getScaledTouchSlop()) {
                         // The background was clicked, so just go home
@@ -666,12 +692,46 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                         return true;
                     }
                 }
+
+                // Trigger the click on the prediction bar icon if that's where we touched
+                if (mPredictionIconUnderTouch != null &&
+                        !mPredictionIconCheckForLongPress.hasPerformedLongPress()) {
+                    mLauncher.onClick(mPredictionIconUnderTouch);
+                }
+
                 // Fall through
             case MotionEvent.ACTION_CANCEL:
-                mLastTouchDownPos.set(-1, -1);
+                mBoundsCheckLastTouchDownPos.set(-1, -1);
+                mPredictionIconTouchDownPos.set(-1, -1);
+
+                // On touch up/cancel, cancel the long press on the prediction bar icon if it has
+                // not yet been performed
+                if (mPredictionIconCheckForLongPress != null) {
+                    mPredictionIconCheckForLongPress.cancelLongPress();
+                    mPredictionIconCheckForLongPress = null;
+                }
+                mPredictionIconUnderTouch = null;
+
                 break;
         }
         return false;
+    }
+
+    /**
+     * Returns the predicted app in the prediction bar given a set of local coordinates.
+     */
+    private View findPredictedAppAtCoordinate(int x, int y) {
+        int[] coord = {x, y};
+        Rect hitRect = new Rect();
+        Utilities.mapCoordInSelfToDescendent(mPredictionBarView, this, coord);
+        for (int i = 0; i < mPredictionBarView.getChildCount(); i++) {
+            View child = mPredictionBarView.getChildAt(i);
+            child.getHitRect(hitRect);
+            if (hitRect.contains(coord[0], coord[1])) {
+                return child;
+            }
+        }
+        return null;
     }
 
     /**
