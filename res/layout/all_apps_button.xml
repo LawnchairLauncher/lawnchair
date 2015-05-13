@@ -15,5 +15,5 @@
 -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-   style="@style/WorkspaceIcon"
+   style="@style/Icon"
    android:focusable="true" />

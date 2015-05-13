@@ -45,8 +45,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      * scroller.
      */
     private static class ScrollPositionState {
-        // The index of the first app in the row (Note that is this not the position)
-        int rowFirstAppIndex;
         // The index of the first visible row
         int rowIndex;
         // The offset of the first visible row
@@ -59,6 +57,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
 
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
+    private int mNumPredictedAppsPerRow;
 
     private Drawable mScrollbar;
     private Drawable mFastScrollerBg;
@@ -68,6 +67,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     private Paint mFastScrollTextPaint;
     private Rect mFastScrollTextBounds = new Rect();
     private float mFastScrollAlpha;
+    private int mPredictionBarHeight;
     private int mDownX;
     private int mDownY;
     private int mLastX;
@@ -123,14 +123,22 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     /**
      * Sets the number of apps per row in this recycler view.
      */
-    public void setNumAppsPerRow(int rowSize) {
-        mNumAppsPerRow = rowSize;
+    public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow) {
+        mNumAppsPerRow = numAppsPerRow;
+        mNumPredictedAppsPerRow = numPredictedAppsPerRow;
     }
 
     @Override
     public void setBackground(Drawable background) {
         super.setBackground(background);
         background.getPadding(mBackgroundPadding);
+    }
+
+    /**
+     * Sets the prediction bar height.
+     */
+    public void setPredictionBarHeight(int height) {
+        mPredictionBarHeight = height;
     }
 
     /**
@@ -330,6 +338,26 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             return "";
         }
 
+        // Stop the scroller if it is scrolling
+        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
+        stopScroll();
+
+        // If there is a prediction bar, then capture the appropriate area for the prediction bar
+        float predictionBarFraction = 0f;
+        if (mPredictionBarHeight > 0) {
+            predictionBarFraction = (float) mNumPredictedAppsPerRow / mApps.getSize();
+            if (touchFraction <= predictionBarFraction) {
+                // Scroll to the top of the view, where the prediction bar is
+                layoutManager.scrollToPositionWithOffset(0, 0);
+                updateScrollY(0);
+                return "";
+            }
+        }
+
+        // Since the app ranges are from 0..1, we need to map the touch fraction back to 0..1 from
+        // predictionBarFraction..1
+        touchFraction = (touchFraction - predictionBarFraction) *
+                (1f / (1f - predictionBarFraction));
         AlphabeticalAppsList.FastScrollSectionInfo lastScrollSection = fastScrollSections.get(0);
         for (int i = 1; i < fastScrollSections.size(); i++) {
             AlphabeticalAppsList.FastScrollSectionInfo scrollSection = fastScrollSections.get(i);
@@ -340,20 +368,18 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             lastScrollSection = scrollSection;
         }
 
-        // Scroll the position into view, anchored at the top of the screen if possible. We call the
-        // scroll method on the LayoutManager directly since it is not exposed by RecyclerView.
-        LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-        stopScroll();
-        layoutManager.scrollToPositionWithOffset(lastScrollSection.appItem.position, 0);
-
-        // We need to workaround the RecyclerView to get the right scroll position after scrolling
+        // We need to workaround the RecyclerView to get the right scroll position
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
         getCurScrollState(mScrollPosState, items);
         if (mScrollPosState.rowIndex != -1) {
-            int rowIndex = findRowForAppIndex(mScrollPosState.rowFirstAppIndex);
-            int y = (rowIndex * mScrollPosState.rowHeight) - mScrollPosState.rowTopOffset;
-            updateScrollY(y);
+            int scrollY = getPaddingTop() + (mScrollPosState.rowIndex * mScrollPosState.rowHeight) +
+                    mPredictionBarHeight - mScrollPosState.rowTopOffset;
+            updateScrollY(scrollY);
         }
+
+        // Scroll to the view at the position, anchored at the top of the screen. We call the scroll
+        // method on the LayoutManager directly since it is not exposed by RecyclerView.
+        layoutManager.scrollToPositionWithOffset(lastScrollSection.appItem.position, 0);
 
         return lastScrollSection.sectionName;
     }
@@ -377,10 +403,9 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
                 LAYOUT_DIRECTION_RTL);
         int rowCount = getNumRows();
         getCurScrollState(mScrollPosState, items);
-
         if (mScrollPosState.rowIndex != -1) {
             int height = getHeight() - getPaddingTop() - getPaddingBottom();
-            int totalScrollHeight = rowCount * mScrollPosState.rowHeight;
+            int totalScrollHeight = rowCount * mScrollPosState.rowHeight + mPredictionBarHeight;
             if (totalScrollHeight > height) {
                 int scrollbarHeight = Math.max(mScrollbarMinHeight,
                         (int) (height / ((float) totalScrollHeight / height)));
@@ -396,8 +421,8 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
                 // that the user has already scrolled and then map that to the scroll bar bounds
                 int availableY = totalScrollHeight - height;
                 int availableScrollY = height - scrollbarHeight;
-                y = (mScrollPosState.rowIndex * mScrollPosState.rowHeight) -
-                        mScrollPosState.rowTopOffset;
+                y = (mScrollPosState.rowIndex * mScrollPosState.rowHeight) + mPredictionBarHeight
+                        - mScrollPosState.rowTopOffset;
                 y = getPaddingTop() +
                         (int) (((float) (getPaddingTop() + y) / availableY) * availableScrollY);
 
@@ -444,7 +469,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      */
     private void getCurScrollState(ScrollPositionState stateOut,
             List<AlphabeticalAppsList.AdapterItem> items) {
-        stateOut.rowFirstAppIndex = -1;
         stateOut.rowIndex = -1;
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;
@@ -454,8 +478,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             int position = getChildPosition(child);
             if (position != NO_POSITION) {
                 AlphabeticalAppsList.AdapterItem item = items.get(position);
-                if (!item.isSectionHeader) {
-                    stateOut.rowFirstAppIndex = item.appIndex;
+                if (item.viewType == AppsGridAdapter.ICON_VIEW_TYPE) {
                     stateOut.rowIndex = findRowForAppIndex(item.appIndex);
                     stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
                     stateOut.rowHeight = child.getHeight();

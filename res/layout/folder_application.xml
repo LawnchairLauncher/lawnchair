@@ -15,5 +15,5 @@
 -->
 
 <com.android.launcher3.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
-   style="@style/WorkspaceIcon.Folder"
+   style="@style/Icon.Folder"
    android:focusable="true" />
