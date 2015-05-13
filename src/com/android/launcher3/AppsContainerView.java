@@ -51,9 +51,11 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     public static final boolean GRID_HIDE_SECTION_HEADERS = false;
 
     private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
-    private static final boolean DYNAMIC_HEADER_ELEVATION = false;
+    private static final boolean DYNAMIC_HEADER_ELEVATION = true;
     private static final boolean DISMISS_SEARCH_ON_BACK = true;
     private static final float HEADER_ELEVATION_DP = 4;
+    // How far the user has to scroll in order to reach the full elevation
+    private static final float HEADER_SCROLL_TO_ELEVATION_DP = 16;
     private static final int FADE_IN_DURATION = 175;
     private static final int FADE_OUT_DURATION = 100;
     private static final int SEARCH_TRANSLATION_X_DP = 18;
@@ -159,8 +161,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      * Scrolls this list view to the top.
      */
     public void scrollToTop() {
-        mAppsRecyclerView.scrollToPosition(0);
-        mRecyclerViewScrollY = 0;
+        mAppsRecyclerView.scrollToTop();
     }
 
     /**
@@ -230,18 +231,14 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
-        mAppsRecyclerView.setOnScrollListenerProxy(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                // Do nothing
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                mRecyclerViewScrollY += dy;
-                onRecyclerViewScrolled();
-            }
-        });
+        mAppsRecyclerView.setOnScrollListenerProxy(
+                new BaseContainerRecyclerView.OnScrollToListener() {
+                    @Override
+                    public void onScrolledTo(int x, int y) {
+                        mRecyclerViewScrollY = y;
+                        onRecyclerViewScrolled();
+                    }
+                });
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
@@ -291,9 +288,11 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         int startMargin = grid.isPhone() ? mContentMarginStart : 0;
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
         if (isRtl) {
-            mAppsRecyclerView.setPadding(inset, inset, inset + startMargin, inset);
+            mAppsRecyclerView.setPadding(inset + mAppsRecyclerView.getScrollbarWidth(), inset,
+                    inset + startMargin, inset);
         } else {
-            mAppsRecyclerView.setPadding(inset + startMargin, inset, inset, inset);
+            mAppsRecyclerView.setPadding(inset + startMargin, inset,
+                    inset + mAppsRecyclerView.getScrollbarWidth(), inset);
         }
 
         // Update the header bar
@@ -456,7 +455,10 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
             String formatStr = getResources().getString(R.string.apps_view_no_search_results);
             mAdapter.setEmptySearchText(String.format(formatStr, queryText));
 
+            // Do an intersection of the words in the query and each title, and filter out all the
+            // apps that don't match all of the words in the query.
             final String queryTextLower = queryText.toLowerCase();
+            final String[] queryWords = SPLIT_PATTERN.split(queryTextLower);
             mApps.setFilter(new AlphabeticalAppsList.Filter() {
                 @Override
                 public boolean retainApp(AppInfo info, String sectionName) {
@@ -465,12 +467,21 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                     }
                     String title = info.title.toString();
                     String[] words = SPLIT_PATTERN.split(title.toLowerCase());
-                    for (int i = 0; i < words.length; i++) {
-                        if (words[i].startsWith(queryTextLower)) {
-                            return true;
+                    for (int qi = 0; qi < queryWords.length; qi++) {
+                        boolean foundMatch = false;
+                        for (int i = 0; i < words.length; i++) {
+                            if (words[i].startsWith(queryWords[qi])) {
+                                foundMatch = true;
+                                break;
+                            }
+                        }
+                        if (!foundMatch) {
+                            // If there is a word in the query that does not match any words in this
+                            // title, so skip it.
+                            return false;
                         }
                     }
-                    return false;
+                    return true;
                 }
             });
         }
@@ -531,11 +542,16 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      * Updates the container when the recycler view is scrolled.
      */
     private void onRecyclerViewScrolled() {
-        if (DYNAMIC_HEADER_ELEVATION) {
-            int elevation = Math.min(mRecyclerViewScrollY, DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,
-                    getContext().getResources().getDisplayMetrics()));
-            if (Float.compare(mHeaderView.getElevation(), elevation) != 0) {
-                mHeaderView.setElevation(elevation);
+        if (DYNAMIC_HEADER_ELEVATION && Utilities.isLmpOrAbove()) {
+            int elevation = DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,
+                    getContext().getResources().getDisplayMetrics());
+            int scrollToElevation = DynamicGrid.pxFromDp(HEADER_SCROLL_TO_ELEVATION_DP,
+                    getContext().getResources().getDisplayMetrics());
+            float elevationPct = (float) Math.min(mRecyclerViewScrollY, scrollToElevation) /
+                    scrollToElevation;
+            float newElevation = elevation * elevationPct;
+            if (Float.compare(mHeaderView.getElevation(), newElevation) != 0) {
+                mHeaderView.setElevation(newElevation);
             }
         }
     }

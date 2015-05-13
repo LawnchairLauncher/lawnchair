@@ -101,11 +101,10 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
                 if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppDivider) {
                     // Draw the divider under the predicted app
+                    parent.getBackground().getPadding(mTmpBounds);
                     int top = child.getTop() + child.getHeight();
-                    int left = parent.getPaddingLeft();
-                    int right = parent.getWidth() - parent.getPaddingRight();
-                    int iconInset = (((right - left) / mAppsPerRow) - grid.allAppsIconSizePx) / 2;
-                    c.drawLine(left + iconInset, top, right - iconInset, top, mPredictedAppsDividerPaint);
+                    c.drawLine(mTmpBounds.left, top, parent.getWidth() - mTmpBounds.right, top,
+                            mPredictedAppsDividerPaint);
                     hasDrawnPredictedAppDivider = true;
 
                 } else if (grid.isPhone() && shouldDrawItemSection(holder, i, items)) {
@@ -297,8 +296,8 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mSectionTextPaint.setAntiAlias(true);
 
         mPredictedAppsDividerPaint = new Paint();
-        mPredictedAppsDividerPaint.setStrokeWidth(DynamicGrid.pxFromDp(1.5f, res.getDisplayMetrics()));
-        mPredictedAppsDividerPaint.setColor(0x10000000);
+        mPredictedAppsDividerPaint.setStrokeWidth(DynamicGrid.pxFromDp(1f, res.getDisplayMetrics()));
+        mPredictedAppsDividerPaint.setColor(0x1E000000);
         mPredictedAppsDividerPaint.setAntiAlias(true);
     }
 

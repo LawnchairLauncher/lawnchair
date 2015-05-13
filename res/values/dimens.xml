@@ -50,15 +50,14 @@
     <dimen name="apps_container_width">0dp</dimen>
     <dimen name="apps_container_height">0dp</dimen>
     <dimen name="apps_container_inset">8dp</dimen>
-    <dimen name="apps_grid_view_start_margin">52dp</dimen>
+    <dimen name="apps_grid_view_start_margin">56dp</dimen>
     <dimen name="apps_grid_section_y_offset">8dp</dimen>
-    <dimen name="apps_view_row_height">64dp</dimen>
     <dimen name="apps_view_section_text_size">24sp</dimen>
-    <dimen name="apps_view_fast_scroll_bar_width">6dp</dimen>
+    <dimen name="apps_view_fast_scroll_bar_width">4dp</dimen>
     <dimen name="apps_view_fast_scroll_bar_min_height">64dp</dimen>
     <dimen name="apps_view_fast_scroll_scrubber_touch_inset">-16dp</dimen>
-    <dimen name="apps_view_fast_scroll_popup_size">64dp</dimen>
-    <dimen name="apps_view_fast_scroll_text_size">40dp</dimen>
+    <dimen name="apps_view_fast_scroll_popup_size">72dp</dimen>
+    <dimen name="apps_view_fast_scroll_text_size">48dp</dimen>
     <dimen name="apps_search_bar_height">52dp</dimen>
     <dimen name="apps_icon_top_bottom_padding">8dp</dimen>
 
