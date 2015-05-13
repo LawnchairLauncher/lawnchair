@@ -623,10 +623,6 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
             }
         }
 
-        // XXX: Optimize this, stop once we are out of bounds
-        if (mRecyclerViewScrollY < 0) {
-            new Throwable().printStackTrace();
-        }
         mPredictionBarView.setTranslationY(-mRecyclerViewScrollY + mAppsRecyclerView.getPaddingTop());
     }
 
