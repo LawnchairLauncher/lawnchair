@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragController;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
@@ -122,8 +123,9 @@ public class WidgetsContainerView extends BaseContainerView
         mView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             protected int getExtraLayoutSpace(State state) {
+                DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
                 return super.getExtraLayoutSpace(state)
-                        + WidgetsContainerView.this.getHeight() * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
+                        + grid.availableHeightPx * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
             }
         });
         mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
