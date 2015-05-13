@@ -27,7 +27,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.text.InputType;
 import android.text.Selection;
@@ -183,15 +182,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
-
-        if (Utilities.isLmpOrAbove()) {
-            int padding = getResources().getDimensionPixelSize(R.dimen.folder_shadow_padding);
-            setBackground(new InsetDrawable(
-                    getResources().getDrawable(R.drawable.apps_list_bg),
-                    padding, padding, padding, padding));
-        } else {
-            setBackgroundResource(R.drawable.quantum_panel);
-        }
     }
 
     @Override
