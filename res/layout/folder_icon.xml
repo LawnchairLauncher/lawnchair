@@ -28,7 +28,7 @@
         android:antialias="true"
         android:src="@drawable/portal_ring_inner_holo"/>
     <com.android.launcher3.BubbleTextView
-        style="@style/WorkspaceIcon"
+        style="@style/Icon"
         android:id="@+id/folder_icon_name"
         android:layout_gravity="top"
         android:layout_width="match_parent"

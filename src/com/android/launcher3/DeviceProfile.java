@@ -127,6 +127,7 @@ public class DeviceProfile {
     int allAppsNumRows;
     int allAppsNumCols;
     int appsViewNumCols;
+    int appsViewNumPredictiveCols;
     int searchBarSpaceWidthPx;
     int searchBarSpaceHeightPx;
     int pageIndicatorHeightPx;
@@ -411,7 +412,7 @@ public class DeviceProfile {
 
         // All Apps
         allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellHeightPx = allAppsIconSizePx + drawablePadding + iconTextSizePx;
+        allAppsCellHeightPx = allAppsIconSizePx + drawablePadding + allAppsIconTextSizePx;
         int maxLongEdgeCellCount =
                 res.getInteger(R.integer.config_dynamic_grid_max_long_edge_cell_count);
         int maxShortEdgeCellCount =
@@ -440,10 +441,13 @@ public class DeviceProfile {
         int appsViewLeftMarginPx =
                 res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
         int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;
-        int numCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
+        int numAppsCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
                 (allAppsCellWidthPx + 2 * allAppsCellPaddingPx);
-        if (numCols != appsViewNumCols) {
-            appsViewNumCols = numCols;
+        int numPredictiveAppCols = isPhone() ? numColumns : numAppsCols;
+        if ((numAppsCols != appsViewNumCols) ||
+                (numPredictiveAppCols != appsViewNumPredictiveCols)) {
+            appsViewNumCols = numAppsCols;
+            appsViewNumPredictiveCols = numPredictiveAppCols;
             return true;
         }
         return false;

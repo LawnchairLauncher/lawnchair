@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,21 +27,31 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     public static final String TAG = "AppsGridAdapter";
     private static final boolean DEBUG = false;
 
-    private static final int SECTION_BREAK_VIEW_TYPE = 0;
-    private static final int ICON_VIEW_TYPE = 1;
-    private static final int EMPTY_VIEW_TYPE = 2;
+    // A section break in the grid
+    public static final int SECTION_BREAK_VIEW_TYPE = 0;
+    // A normal icon
+    public static final int ICON_VIEW_TYPE = 1;
+    // The message shown when there are no filtered results
+    public static final int EMPTY_VIEW_TYPE = 2;
+    // The spacer used for the prediction bar
+    public static final int PREDICTION_BAR_SPACER_TYPE = 3;
+
+    /**
+     * Callback for when the prediction bar spacer is bound.
+     */
+    public interface PredictionBarSpacerCallbacks {
+        void onBindPredictionBar();
+    }
 
     /**
      * ViewHolder for each icon.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View mContent;
-        public boolean mIsEmptyRow;
 
-        public ViewHolder(View v, boolean isEmptyRow) {
+        public ViewHolder(View v) {
             super(v);
             mContent = v;
-            mIsEmptyRow = isEmptyRow;
         }
     }
 
@@ -61,8 +72,8 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 return mAppsPerRow;
             }
 
-            if (mApps.getAdapterItems().get(position).isSectionHeader) {
-                // Section break spans full width
+            if (mApps.getAdapterItems().get(position).viewType != AppsGridAdapter.ICON_VIEW_TYPE) {
+                // Both the section breaks and predictive bar span the full width
                 return mAppsPerRow;
             } else {
                 return 1;
@@ -88,7 +99,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
             DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-            boolean hasDrawnPredictedAppDivider = false;
+            boolean hasDrawnPredictedAppsDivider = false;
             int childCount = parent.getChildCount();
             int lastSectionTop = 0;
             int lastSectionHeight = 0;
@@ -99,13 +110,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                     continue;
                 }
 
-                if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppDivider) {
-                    // Draw the divider under the predicted app
+                if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppsDivider) {
+                    // Draw the divider under the predicted apps
                     parent.getBackground().getPadding(mTmpBounds);
                     int top = child.getTop() + child.getHeight();
                     c.drawLine(mTmpBounds.left, top, parent.getWidth() - mTmpBounds.right, top,
                             mPredictedAppsDividerPaint);
-                    hasDrawnPredictedAppDivider = true;
+                    hasDrawnPredictedAppsDivider = true;
 
                 } else if (grid.isPhone() && shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
@@ -220,9 +231,10 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         /**
          * Returns whether to draw the divider for a given child.
          */
-        private boolean shouldDrawItemDivider(ViewHolder holder, List<AlphabeticalAppsList.AdapterItem> items) {
+        private boolean shouldDrawItemDivider(ViewHolder holder,
+                List<AlphabeticalAppsList.AdapterItem> items) {
             int pos = holder.getPosition();
-            return items.get(pos).isPredictedApp;
+            return items.get(pos).viewType == AppsGridAdapter.PREDICTION_BAR_SPACER_TYPE;
         }
 
         /**
@@ -233,31 +245,27 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
             int pos = holder.getPosition();
             AlphabeticalAppsList.AdapterItem item = items.get(pos);
 
-            // Ensure it's not an empty row
-            if (holder.mIsEmptyRow) {
-                return false;
-            }
-            // Ensure this is not a section break
-            if (item.isSectionHeader) {
-                return false;
-            }
-            // Ensure this is not a predicted app
-            if (item.isPredictedApp) {
+            // Ensure it's an icon
+            if (item.viewType != AppsGridAdapter.ICON_VIEW_TYPE) {
                 return false;
             }
             // Draw the section header for the first item in each section
-            return (childIndex == 0) || (items.get(pos - 1).isSectionHeader && !item.isSectionHeader);
+            return (childIndex == 0) ||
+                    (items.get(pos - 1).viewType == AppsGridAdapter.SECTION_BREAK_VIEW_TYPE);
         }
     }
 
+    private Handler mHandler;
     private LayoutInflater mLayoutInflater;
     @Thunk AlphabeticalAppsList mApps;
     private GridLayoutManager mGridLayoutMgr;
     private GridSpanSizer mGridSizer;
     private GridItemDecoration mItemDecoration;
+    private PredictionBarSpacerCallbacks mPredictionBarCb;
     private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
+    @Thunk int mPredictionBarHeight;
     @Thunk int mAppsPerRow;
     @Thunk boolean mIsRtl;
     private String mEmptySearchText;
@@ -271,11 +279,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
 
     public AppsGridAdapter(Context context, AlphabeticalAppsList apps, int appsPerRow,
-            View.OnTouchListener touchListener, View.OnClickListener iconClickListener,
-            View.OnLongClickListener iconLongClickListener) {
+            PredictionBarSpacerCallbacks pbCb, View.OnTouchListener touchListener,
+            View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
         Resources res = context.getResources();
+        mHandler = new Handler();
         mApps = apps;
         mAppsPerRow = appsPerRow;
+        mPredictionBarCb = pbCb;
         mGridSizer = new GridSpanSizer();
         mGridLayoutMgr = new GridLayoutManager(context, appsPerRow, GridLayoutManager.VERTICAL,
                 false);
@@ -307,6 +317,13 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     public void setNumAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
         mGridLayoutMgr.setSpanCount(appsPerRow);
+    }
+
+    /**
+     * Sets the prediction row height.
+     */
+    public void setPredictionRowHeight(int height) {
+        mPredictionBarHeight = height;
     }
 
     /**
@@ -350,17 +367,24 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         switch (viewType) {
             case EMPTY_VIEW_TYPE:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.apps_empty_view, parent,
-                        false), true /* isEmptyRow */);
+                        false));
             case SECTION_BREAK_VIEW_TYPE:
-                return new ViewHolder(new View(parent.getContext()), false /* isEmptyRow */);
+                return new ViewHolder(new View(parent.getContext()));
+            case PREDICTION_BAR_SPACER_TYPE:
+                // Create a view of a specific height to match the floating prediction bar
+                View v = new View(parent.getContext());
+                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, mPredictionBarHeight);
+                v.setLayoutParams(lp);
+                return new ViewHolder(v);
             case ICON_VIEW_TYPE:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.apps_grid_row_icon_view, parent, false);
+                        R.layout.apps_grid_icon_view, parent, false);
                 icon.setOnTouchListener(mTouchListener);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setFocusable(true);
-                return new ViewHolder(icon, false /* isEmptyRow */);
+                return new ViewHolder(icon);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -373,6 +397,16 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                break;
+            case PREDICTION_BAR_SPACER_TYPE:
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mPredictionBarCb != null) {
+                            mPredictionBarCb.onBindPredictionBar();
+                        }
+                    }
+                });
                 break;
             case EMPTY_VIEW_TYPE:
                 TextView emptyViewText = (TextView) holder.mContent.findViewById(R.id.empty_text);
@@ -394,9 +428,9 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     public int getItemViewType(int position) {
         if (mApps.hasNoFilteredResults()) {
             return EMPTY_VIEW_TYPE;
-        } else if (mApps.getAdapterItems().get(position).isSectionHeader) {
-            return SECTION_BREAK_VIEW_TYPE;
         }
-        return ICON_VIEW_TYPE;
+
+        AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
+        return item.viewType;
     }
 }
