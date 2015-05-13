@@ -900,7 +900,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     pageGap = getPaddingRight();
                 }
 
-                childLeft += childWidth + pageGap;
+                childLeft += childWidth + pageGap
+                        + (lp.isFullScreenPage ? 0 : (getPaddingLeft() + getPaddingRight()));
             }
         }
 

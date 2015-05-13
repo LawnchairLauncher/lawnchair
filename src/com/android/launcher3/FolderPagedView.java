@@ -237,13 +237,13 @@ public class FolderPagedView extends PagedView {
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);
 
-        LayoutParams lp = generateDefaultLayoutParams();
-        lp.isFullScreenPage = true;
-        addView(page, -1, lp);
+        addView(page, -1, generateDefaultLayoutParams());
         return page;
     }
 
     public void setFixedSize(int width, int height) {
+        width -= (getPaddingLeft() + getPaddingRight());
+        height -= (getPaddingTop() + getPaddingBottom());
         for (int i = getChildCount() - 1; i >= 0; i --) {
             ((CellLayout) getChildAt(i)).setFixedSize(width, height);
         }
@@ -339,11 +339,13 @@ public class FolderPagedView extends PagedView {
     }
 
     public int getDesiredWidth() {
-        return getPageCount() > 0 ? getPageAt(0).getDesiredWidth() : 0;
+        return getPageCount() > 0 ?
+                (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
     public int getDesiredHeight()  {
-        return  getPageCount() > 0 ? getPageAt(0).getDesiredHeight() : 0;
+        return  getPageCount() > 0 ?
+                (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
     }
 
     public int getItemCount() {
