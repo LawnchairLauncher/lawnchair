@@ -378,11 +378,12 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
                     // Enable all necessary layers
+                    boolean isLmpOrAbove = Utilities.isLmpOrAbove();
                     for (View v : layerViews.keySet()) {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.isViewAttachedToWindow(v)) {
+                        if (isLmpOrAbove && Utilities.isViewAttachedToWindow(v)) {
                             v.buildLayer();
                         }
                     }
@@ -697,11 +698,12 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
                     // Enable all necessary layers
+                    boolean isLmpOrAbove = Utilities.isLmpOrAbove();
                     for (View v : layerViews.keySet()) {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.isLmpOrAbove()) {
+                        if (isLmpOrAbove && Utilities.isViewAttachedToWindow(v)) {
                             v.buildLayer();
                         }
                     }
