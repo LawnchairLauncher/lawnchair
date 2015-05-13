@@ -90,6 +90,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     private static final float ICON_OVERSCROLL_WIDTH_FACTOR = 0.45f;
 
+    public static final int FOOTER_ANIMATION_DURATION = 200;
+
     private static final int REORDER_DELAY = 250;
     private static final int ON_EXIT_CLOSE_DELAY = 400;
     private static final Rect sTempRect = new Rect();
@@ -211,10 +213,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         mFooter = findViewById(R.id.folder_footer);
-        updateFooterHeight();
-    }
 
-    public void updateFooterHeight() {
         // We find out how tall footer wants to be (it is set to wrap_content), so that
         // we can allocate the appropriate amount of space for it.
         int measureSpec = MeasureSpec.UNSPECIFIED;
@@ -547,6 +546,36 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 mContent.setFocusOnFirstChild();
             }
         });
+
+        // Footer animation
+        if (mContent.getPageCount() > 1 && !mInfo.hasOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION)) {
+            int footerWidth = mContent.getDesiredWidth()
+                    - mFooter.getPaddingLeft() - mFooter.getPaddingRight();
+
+            float textWidth =  mFolderName.getPaint().measureText(mFolderName.getText().toString());
+            mFolderName.setTranslationX((footerWidth - textWidth) / 2);
+            mContent.setMarkerScale(0);
+
+            // Do not update the flag if we are in drag mode. The flag will be updated, when we
+            // actually drop the icon.
+            final boolean updateAnimationFlag = !mDragInProgress;
+            openFolderAnim.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mFolderName.animate().setDuration(FOOTER_ANIMATION_DURATION).translationX(0);
+                    mContent.animateMarkers();
+
+                    if (updateAnimationFlag) {
+                        mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher);
+                    }
+                }
+            });
+        } else {
+            mFolderName.setTranslationX(0);
+            mContent.setMarkerScale(1);
+        }
+
         openFolderAnim.start();
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.
@@ -823,6 +852,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Reordering may have occured, and we need to save the new item locations. We do this once
         // at the end to prevent unnecessary database operations.
         updateItemLocationsInDatabaseBatch();
+
+        // Use the item count to check for multi-page as the folder UI may not have
+        // been refreshed yet.
+        if (getItemCount() <= mContent.itemsPerPage()) {
+            // Show the animation, next time something is added to the folder.
+            mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, false, mLauncher);
+        }
+
     }
 
     @Override
@@ -1200,6 +1237,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Clear the drag info, as it is no longer being dragged.
         mCurrentDragInfo = null;
         mDragInProgress = false;
+
+        if (mContent.getPageCount() > 1) {
+            // The animation has already been shown while opening the folder.
+            mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher);
+        }
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case
@@ -1214,6 +1256,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         v.setVisibility(VISIBLE);
     }
 
+    @Override
     public void onAdd(ShortcutInfo item) {
         // If the item was dropped onto this open folder, we have done the work associated
         // with adding the item to the folder, as indicated by mSuppressOnAdd being set

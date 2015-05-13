@@ -45,20 +45,16 @@
         android:id="@+id/folder_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <include
-            android:id="@+id/folder_page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="12dp"
-            android:layout_gravity="center_horizontal"
-            layout="@layout/page_indicator" />
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
 
         <com.android.launcher3.FolderEditText
             android:id="@+id/folder_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:background="#00000000"
             android:fontFamily="sans-serif-condensed"
             android:gravity="center_horizontal"
@@ -72,6 +68,13 @@
             android:textColorHint="#ff808080"
             android:textCursorDrawable="@null"
             android:textSize="14sp" />
+
+        <include
+            android:id="@+id/folder_page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            android:layout_gravity="center_vertical"
+            layout="@layout/page_indicator" />
     </LinearLayout>
 
 </com.android.launcher3.Folder>
