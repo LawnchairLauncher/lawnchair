@@ -20,9 +20,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.PageIndicator.PageMarkerResources;
@@ -43,6 +45,8 @@ public class FolderPagedView extends PagedView {
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int START_VIEW_REORDER_DELAY = 30;
     private static final float VIEW_REORDER_DELAY_FACTOR = 0.9f;
+
+    private static final int PAGE_INDICATOR_ANIMATION_DELAY = 150;
 
     /**
      * Fraction of the width to scroll when showing the next page hint.
@@ -70,7 +74,7 @@ public class FolderPagedView extends PagedView {
     private FocusIndicatorView mFocusIndicatorView;
     private PagedFolderKeyEventListener mKeyListener;
 
-    private View mPageIndicator;
+    private PageIndicator mPageIndicator;
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,7 +97,7 @@ public class FolderPagedView extends PagedView {
         mFolder = folder;
         mFocusIndicatorView = (FocusIndicatorView) folder.findViewById(R.id.focus_indicator);
         mKeyListener = new PagedFolderKeyEventListener(folder);
-        mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
+        mPageIndicator = (PageIndicator) folder.findViewById(R.id.folder_page_indicator);
     }
 
     /**
@@ -330,11 +334,8 @@ public class FolderPagedView extends PagedView {
         setEnableOverscroll(getPageCount() > 1);
 
         // Update footer
-        int indicatorVisibility = mPageIndicator.getVisibility();
         mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
-        if (indicatorVisibility != mPageIndicator.getVisibility()) {
-            mFolder.updateFooterHeight();
-        }
+        mFolder.mFolderName.setGravity(getPageCount() > 1 ? Gravity.START : Gravity.CENTER_HORIZONTAL);
     }
 
     public int getDesiredWidth() {
@@ -623,5 +624,30 @@ public class FolderPagedView extends PagedView {
                 delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }
         }
+    }
+
+    public void setMarkerScale(float scale) {
+        int count  = mPageIndicator.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View marker = mPageIndicator.getChildAt(i);
+            marker.animate().cancel();
+            marker.setScaleX(scale);
+            marker.setScaleY(scale);
+        }
+    }
+
+    public void animateMarkers() {
+        int count  = mPageIndicator.getChildCount();
+        OvershootInterpolator interpolator = new OvershootInterpolator(4);
+        for (int i = 0; i < count; i++) {
+            mPageIndicator.getChildAt(i).animate().scaleX(1).scaleY(1)
+                .setInterpolator(interpolator)
+                .setDuration(Folder.FOOTER_ANIMATION_DURATION)
+                .setStartDelay(PAGE_INDICATOR_ANIMATION_DELAY * i);
+        }
+    }
+
+    public int itemsPerPage() {
+        return mMaxItemsPerPage;
     }
 }
