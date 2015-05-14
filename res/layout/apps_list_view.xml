@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 The Android Open Source Project
+<!--
+     Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,44 +14,48 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="15dp"
-    android:visibility="gone"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:visibility="gone" >
+
     <com.android.launcher3.AppsContainerRecyclerView
         android:id="@+id/apps_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/apps_search_bar_height"
         android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="@dimen/apps_search_bar_height"
         android:clipToPadding="false"
-        android:focusable="true"
-        android:descendantFocusability="afterDescendants" />
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true" />
+
     <LinearLayout
         android:id="@+id/prediction_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/apps_search_bar_height"
         android:orientation="horizontal"
-        android:visibility="invisible">
+        android:visibility="invisible" >
     </LinearLayout>
 
     <!-- We always want the search bar on top, so it goes last. -->
+
     <FrameLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/apps_search_bar_height"
-        android:background="@drawable/apps_search_bg">
+        android:background="@drawable/apps_search_bg" >
+
         <LinearLayout
             android:id="@+id/app_search_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="invisible">
+            android:visibility="invisible" >
+
             <ImageView
                 android:id="@+id/dismiss_search_button"
                 android:layout_width="wrap_content"
@@ -58,29 +63,31 @@
                 android:layout_gravity="start|center_vertical"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
                 android:contentDescription="@string/all_apps_button_label"
+                android:paddingBottom="13dp"
+                android:paddingTop="13dp"
                 android:src="@drawable/ic_arrow_back_grey" />
+
             <com.android.launcher3.AppsContainerSearchEditTextView
                 android:id="@+id/app_search_box"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="16dp"
+                android:background="@android:color/transparent"
+                android:focusableInTouchMode="true"
+                android:gravity="fill_horizontal"
+                android:hint="@string/apps_view_search_bar_hint"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:maxLines="1"
                 android:paddingBottom="16dp"
                 android:paddingLeft="8dp"
-                android:hint="@string/apps_view_search_bar_hint"
-                android:maxLines="1"
-                android:singleLine="true"
+                android:paddingTop="16dp"
                 android:scrollHorizontally="true"
-                android:gravity="fill_horizontal"
-                android:textSize="16sp"
+                android:singleLine="true"
                 android:textColor="#4c4c4c"
                 android:textColorHint="#9c9c9c"
-                android:imeOptions="actionDone|flagNoExtractUi"
-                android:focusableInTouchMode="true"
-                android:background="@android:color/transparent" />
+                android:textSize="16sp" />
         </LinearLayout>
+
         <ImageView
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
@@ -88,9 +95,10 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="6dp"
             android:layout_marginRight="6dp"
-            android:paddingTop="13dp"
-            android:paddingBottom="13dp"
             android:contentDescription="@string/apps_view_search_bar_hint"
+            android:paddingBottom="13dp"
+            android:paddingTop="13dp"
             android:src="@drawable/ic_search_grey" />
     </FrameLayout>
+
 </FrameLayout>

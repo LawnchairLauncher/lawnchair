@@ -146,9 +146,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
     }
 
-    @Override
-    public void setBackground(Drawable background) {
-        super.setBackground(background);
+    public void updateBackgroundPadding(Drawable background) {
         background.getPadding(mBackgroundPadding);
     }
 
