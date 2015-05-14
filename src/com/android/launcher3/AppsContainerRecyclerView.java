@@ -120,24 +120,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         mApps = apps;
     }
 
-    @Override
-    public void setAdapter(Adapter adapter) {
-        // Register a change listener to update the scroll position state whenever the data set
-        // changes.
-        adapter.registerAdapterDataObserver(new AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshCurScrollPosition();
-                    }
-                });
-            }
-        });
-        super.setAdapter(adapter);
-    }
-
     /**
      * Sets the number of apps per row in this recycler view.
      */
@@ -387,7 +369,13 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         }
 
         // We need to workaround the RecyclerView to get the right scroll position
-        refreshCurScrollPosition();
+        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+        getCurScrollState(mScrollPosState, items);
+        if (mScrollPosState.rowIndex != -1) {
+            int scrollY = getPaddingTop() + (mScrollPosState.rowIndex * mScrollPosState.rowHeight) +
+                    mPredictionBarHeight - mScrollPosState.rowTopOffset;
+            updateScrollY(scrollY);
+        }
 
         // Scroll to the view at the position, anchored at the top of the screen. We call the scroll
         // method on the LayoutManager directly since it is not exposed by RecyclerView.
@@ -474,19 +462,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             rowCount += numRowsInSection;
         }
         return rowCount;
-    }
-
-    /**
-     * Forces a refresh of the scroll position to any scroll listener.
-     */
-    private void refreshCurScrollPosition() {
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        getCurScrollState(mScrollPosState, items);
-        if (mScrollPosState.rowIndex != -1) {
-            int scrollY = getPaddingTop() + (mScrollPosState.rowIndex * mScrollPosState.rowHeight) +
-                    mPredictionBarHeight - mScrollPosState.rowTopOffset;
-            updateScrollY(scrollY);
-        }
     }
 
     /**
