@@ -52,6 +52,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
 
 import java.io.File;
@@ -64,7 +65,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 24;
+    private static final int DATABASE_VERSION = 25;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -475,6 +476,9 @@ public class LauncherProvider extends ContentProvider {
             // Fresh and clean launcher DB.
             mMaxItemId = initializeMaxItemId(db);
             setFlagEmptyDbCreated();
+
+            // When a new DB is created, remove all previously stored managed profile information.
+            ManagedProfileHeuristic.processAllUsers(Collections.EMPTY_LIST, mContext);
         }
 
         private void addWorkspacesTable(SQLiteDatabase db) {
@@ -620,7 +624,9 @@ public class LauncherProvider extends ContentProvider {
                 }
                 case 23:
                     convertShortcutsToLauncherActivities(db);
-                case 24: {
+                case 24:
+                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
+                case 25: {
                     // DB Upgraded successfully
                     return;
                 }
