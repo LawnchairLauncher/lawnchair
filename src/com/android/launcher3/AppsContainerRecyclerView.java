@@ -61,6 +61,8 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
 
     private Drawable mScrollbar;
     private Drawable mFastScrollerBg;
+    private Rect mTmpFastScrollerInvalidateRect = new Rect();
+    private Rect mFastScrollerBounds = new Rect();
     private Rect mVerticalScrollbarBounds = new Rect();
     private boolean mDraggingFastScroller;
     private String mFastScrollSectionName;
@@ -162,7 +164,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      */
     public void setFastScrollerAlpha(float alpha) {
         mFastScrollAlpha = alpha;
-        invalidateFastScroller();
+        invalidateFastScroller(mFastScrollerBounds);
     }
 
     /**
@@ -252,7 +254,13 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
                     float boundedY = (float) Math.max(top, Math.min(bottom, y));
                     mFastScrollSectionName = scrollToPositionAtProgress((boundedY - top) /
                             (bottom - top));
-                    invalidateFastScroller();
+
+                    // Combine the old and new fast scroller bounds to create the full invalidate
+                    // rect
+                    mTmpFastScrollerInvalidateRect.set(mFastScrollerBounds);
+                    updateFastScrollerBounds();
+                    mTmpFastScrollerInvalidateRect.union(mFastScrollerBounds);
+                    invalidateFastScroller(mTmpFastScrollerInvalidateRect);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -288,24 +296,9 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      */
     private void drawFastScrollerPopup(Canvas canvas) {
         if (mFastScrollAlpha > 0f && !mFastScrollSectionName.isEmpty()) {
-            int x;
-            int y;
-            boolean isRtl = Utilities.isRtl(getResources());
-
-            // Calculate the position for the fast scroller popup
-            Rect bgBounds = mFastScrollerBg.getBounds();
-            if (isRtl) {
-                x = mBackgroundPadding.left + getScrollBarSize();
-            } else {
-                x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
-            }
-            y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
-            y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -
-                    bgBounds.height()));
-
             // Draw the fast scroller popup
             int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.translate(x, y);
+            canvas.translate(mFastScrollerBounds.left, mFastScrollerBounds.top);
             mFastScrollerBg.setAlpha((int) (mFastScrollAlpha * 255));
             mFastScrollerBg.draw(canvas);
             mFastScrollTextPaint.setAlpha((int) (mFastScrollAlpha * 255));
@@ -313,8 +306,9 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
                     mFastScrollSectionName.length(), mFastScrollTextBounds);
             float textWidth = mFastScrollTextPaint.measureText(mFastScrollSectionName);
             canvas.drawText(mFastScrollSectionName,
-                    (bgBounds.width() - textWidth) / 2,
-                    bgBounds.height() - (bgBounds.height() - mFastScrollTextBounds.height()) / 2,
+                    (mFastScrollerBounds.width() - textWidth) / 2,
+                    mFastScrollerBounds.height() -
+                            (mFastScrollerBounds.height() - mFastScrollTextBounds.height()) / 2,
                     mFastScrollTextPaint);
             canvas.restoreToCount(restoreCount);
         }
@@ -337,9 +331,8 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     /**
      * Invalidates the fast scroller popup.
      */
-    private void invalidateFastScroller() {
-        invalidate(getWidth() - mBackgroundPadding.right - getScrollBarSize() -
-                mFastScrollerBg.getIntrinsicWidth(), 0, getWidth(), getHeight());
+    private void invalidateFastScroller(Rect bounds) {
+        invalidate(bounds.left, bounds.top, bounds.right, bounds.bottom);
     }
 
     /**
@@ -394,7 +387,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     }
 
     /**
-     * Returns the bounds for the scrollbar.
+     * Updates the bounds for the scrollbar.
      */
     private void updateVerticalScrollbarBounds() {
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
@@ -440,6 +433,31 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             }
         }
         mVerticalScrollbarBounds.setEmpty();
+    }
+
+    /**
+     * Updates the bounds for the fast scroller.
+     */
+    private void updateFastScrollerBounds() {
+        if (mFastScrollAlpha > 0f && !mFastScrollSectionName.isEmpty()) {
+            int x;
+            int y;
+            boolean isRtl = Utilities.isRtl(getResources());
+
+            // Calculate the position for the fast scroller popup
+            Rect bgBounds = mFastScrollerBg.getBounds();
+            if (isRtl) {
+                x = mBackgroundPadding.left + getScrollBarSize();
+            } else {
+                x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
+            }
+            y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
+            y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -
+                    bgBounds.height()));
+            mFastScrollerBounds.set(x, y, x + bgBounds.width(), y + bgBounds.height());
+        } else {
+            mFastScrollerBounds.setEmpty();
+        }
     }
 
     /**
