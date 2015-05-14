@@ -32,6 +32,9 @@
     <color name="workspace_icon_text_color">#FFF</color>
 
     <color name="quantum_panel_text_color">#FF666666</color>
+    <color name="quantum_panel_bg_color">#FFF5F5F5</color>
+    <color name="quantum_panel_bg_color_dark">#FF243036</color>
+
     <color name="outline_color">#FFFFFFFF</color>
     <color name="widget_text_panel">#FF374248</color>
 
@@ -39,7 +42,7 @@
     <color name="apps_view_scrollbar_thumb_color">#009688</color>
     <color name="apps_view_section_text_color">#009688</color>
 
-    <!-- Widgetss view -->
+    <!-- Widgets view -->
     <color name="widgets_view_section_text_color">#FFFFFF</color>
     <color name="widgets_view_item_text_color">#C4C4C4</color>
     <color name="widgets_cell_color">#263238</color>

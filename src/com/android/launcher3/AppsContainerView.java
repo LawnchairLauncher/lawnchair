@@ -35,6 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
@@ -380,12 +381,13 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
         // Update the background of the reveal view and list to be inset with the fixed bound
         // insets instead of the default insets
+        // TODO: Use quantum_panel instead of quantum_panel_shape.
         mAppsRecyclerView.setBackground(new InsetDrawable(
                 getContext().getResources().getDrawable(
-                        hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.apps_list_bg),
+                        hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.quantum_panel_shape),
                 inset, 0, inset, 0));
         getRevealView().setBackground(new InsetDrawable(
-                getContext().getResources().getDrawable(R.drawable.apps_reveal_bg),
+                getContext().getResources().getDrawable(R.drawable.quantum_panel_shape),
                 inset, 0, inset, 0));
     }
 
