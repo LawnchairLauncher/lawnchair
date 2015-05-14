@@ -24,6 +24,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -46,6 +47,10 @@ import java.util.ArrayList;
  * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends InsettableFrameLayout {
+
+    // Scrim color without any alpha component.
+    private static final int SCRIM_COLOR = Color.BLACK & 0x00FFFFFF;
+
     @Thunk DragController mDragController;
     private int[] mTmpXY = new int[2];
 
@@ -78,7 +83,6 @@ public class DragLayer extends InsettableFrameLayout {
     private int mChildCountOnLastUpdate = -1;
 
     // Darkening scrim
-    private Drawable mBackground;
     private float mBackgroundAlpha = 0;
 
     // Related to adjacent page hints
@@ -109,7 +113,6 @@ public class DragLayer extends InsettableFrameLayout {
         mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
         mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
         mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
-        mBackground = res.getDrawable(R.drawable.apps_customize_bg);
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -926,12 +929,10 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // Draw the background gradient below children.
-        if (mBackground != null && mBackgroundAlpha > 0.0f) {
+        // Draw the background below children.
+        if (mBackgroundAlpha > 0.0f) {
             int alpha = (int) (mBackgroundAlpha * 255);
-            mBackground.setAlpha(alpha);
-            mBackground.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
-            mBackground.draw(canvas);
+            canvas.drawColor((alpha << 24) | SCRIM_COLOR);
         }
 
         super.dispatchDraw(canvas);
