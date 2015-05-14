@@ -48,7 +48,6 @@
 
 <!-- Apps view -->
     <dimen name="apps_container_width">0dp</dimen>
-    <dimen name="apps_container_height">0dp</dimen>
     <dimen name="apps_container_inset">8dp</dimen>
     <dimen name="apps_grid_view_start_margin">56dp</dimen>
     <dimen name="apps_grid_section_y_offset">8dp</dimen>
@@ -67,7 +66,6 @@
 
 <!-- AllApps/Customize/AppsCustomize -->
     <dimen name="app_icon_size">48dp</dimen>
-    <dimen name="apps_customize_horizontal_padding">0dp</dimen>
 
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
@@ -88,8 +86,6 @@
 
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
-    <dimen name="widget_preview_size">130dp</dimen>
-    <dimen name="widget_preview_padding_top">8dp</dimen>
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
     <dimen name="widget_preview_horizontal_padding">8dp</dimen>
@@ -99,8 +95,6 @@
     <dimen name="widget_section_vertical_padding">8dp</dimen>
     <dimen name="widget_section_horizontal_padding">16dp</dimen>
 
-    <!-- Equation: widget_preview_size + 2 * widget_preview_padding_horizontal -->
-    <dimen name="widget_preview_container_width">146dp</dimen>
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
 
