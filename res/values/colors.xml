@@ -25,7 +25,6 @@
     <color name="info_target_hover_tint">#DA009688</color>
     <color name="cling_scrim_background">#80000000</color>
 
-    <color name="bubble_dark_background">#20000000</color>
     <color name="focused_background">#80c6c5c5</color>
 
     <color name="appwidget_error_color">#FCCC</color>
@@ -33,7 +32,6 @@
     <color name="workspace_icon_text_color">#FFF</color>
 
     <color name="quantum_panel_text_color">#FF666666</color>
-    <color name="quantum_panel_text_shadow_color">#FFC4C4C4</color>
     <color name="outline_color">#FFFFFFFF</color>
     <color name="widget_text_panel">#FF374248</color>
 

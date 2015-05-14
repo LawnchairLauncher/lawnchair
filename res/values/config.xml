@@ -38,7 +38,6 @@
     <integer name="config_appsCustomizeRevealTime">220</integer>
     <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
 
-    <integer name="config_appsCustomizeConcealTime">250</integer>
     <integer name="config_appsCustomizeItemsAlphaStagger">60</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which
@@ -46,13 +45,6 @@
     <integer name="config_allAppsButtonPaddingPercent">17</integer>
 
     <integer name="config_workspaceDefaultScreen">0</integer>
-
-    <!-- Tab transition animation duration -->
-    <integer name="config_tabTransitionDuration">250</integer>
-
-    <!-- The slope, in percent, of the drag movement needed to drag an item out of
-         AppsCustomize (y / x * 100%)  -->
-    <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
 
 <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
@@ -74,10 +66,6 @@
 
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
-
-    <!-- Properties controlling the workspace fade-out during dragging -->
-    <integer name="config_dragFadeOutAlpha">80</integer>
-    <integer name="config_dragFadeOutDuration">250</integer>
 
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>

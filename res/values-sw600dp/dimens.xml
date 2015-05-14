@@ -23,11 +23,6 @@
     <dimen name="apps_view_section_text_size">26sp</dimen>
     <dimen name="apps_icon_top_bottom_padding">12dp</dimen>
 
-<!-- AppsCustomize -->
-    <dimen name="widget_preview_label_margin_top">8dp</dimen>
-    <dimen name="widget_preview_label_margin_left">@dimen/widget_preview_label_horizontal_padding</dimen>
-    <dimen name="widget_preview_label_margin_right">@dimen/widget_preview_label_horizontal_padding</dimen>
-
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">400dp</dimen>
     <dimen name="cling_migration_logo_width">274dp</dimen>
