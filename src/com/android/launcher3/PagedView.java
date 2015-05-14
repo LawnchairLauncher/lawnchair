@@ -695,13 +695,33 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             super(width, height);
         }
 
+        public LayoutParams(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
         public LayoutParams(ViewGroup.LayoutParams source) {
             super(source);
         }
     }
 
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
+
+    @Override
     protected LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    }
+
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new LayoutParams(p);
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof LayoutParams;
     }
 
     public void addFullScreenPage(View page) {
