@@ -443,7 +443,7 @@ public class DeviceProfile {
         int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;
         int numAppsCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
                 (allAppsCellWidthPx + 2 * allAppsCellPaddingPx);
-        int numPredictiveAppCols = Math.max(numColumns, numAppsCols);
+        int numPredictiveAppCols = isPhone() ? 4 : numAppsCols;
         if ((numAppsCols != appsViewNumCols) ||
                 (numPredictiveAppCols != appsViewNumPredictiveCols)) {
             appsViewNumCols = numAppsCols;
