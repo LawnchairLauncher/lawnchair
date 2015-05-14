@@ -60,6 +60,7 @@ public class DragLayer extends InsettableFrameLayout {
     // Variables relating to resizing widgets
     private final ArrayList<AppWidgetResizeFrame> mResizeFrames =
             new ArrayList<AppWidgetResizeFrame>();
+    private final boolean mIsRtl;
     private AppWidgetResizeFrame mCurrentResizeFrame;
 
     // Variables relating to animation of views after drop
@@ -113,6 +114,7 @@ public class DragLayer extends InsettableFrameLayout {
         mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
         mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
         mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
+        mIsRtl = Utilities.isRtl(res);
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -920,13 +922,6 @@ public class DragLayer extends InsettableFrameLayout {
         invalidate();
     }
 
-    /**
-     * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
-     */
-    private boolean isLayoutRtl() {
-        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
@@ -947,9 +942,8 @@ public class DragLayer extends InsettableFrameLayout {
                     childRect);
 
             int page = workspace.getNextPage();
-            final boolean isRtl = isLayoutRtl();
-            CellLayout leftPage = (CellLayout) workspace.getChildAt(isRtl ? page + 1 : page - 1);
-            CellLayout rightPage = (CellLayout) workspace.getChildAt(isRtl ? page - 1 : page + 1);
+            CellLayout leftPage = (CellLayout) workspace.getChildAt(mIsRtl ? page + 1 : page - 1);
+            CellLayout rightPage = (CellLayout) workspace.getChildAt(mIsRtl ? page - 1 : page + 1);
 
             if (leftPage != null && leftPage.isDragTarget()) {
                 Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?

@@ -20,10 +20,12 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -34,7 +36,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityManager;
-
 import com.android.launcher3.util.Thunk;
 
 class LauncherClings implements OnClickListener {
@@ -212,6 +213,7 @@ class LauncherClings implements OnClickListener {
     }
 
     /** Returns whether the clings are enabled or should be shown */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private boolean areClingsEnabled() {
         if (DISABLE_CLINGS) {
             return false;

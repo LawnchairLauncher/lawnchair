@@ -54,7 +54,7 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="DropTargetButton.Base">
+    <style name="DropTargetButtonBase">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -72,7 +72,7 @@
         <item name="android:shadowRadius">4.0</item>
     </style>
 
-    <style name="DropTargetButton" parent="DropTargetButton.Base"></style>
+    <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
     <style name="PreloadIcon">
         <item name="background">@drawable/virtual_preload</item>

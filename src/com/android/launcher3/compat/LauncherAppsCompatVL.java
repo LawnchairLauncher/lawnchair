@@ -16,6 +16,7 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     private LauncherApps mLauncherApps;

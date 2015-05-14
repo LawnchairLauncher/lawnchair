@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
@@ -48,7 +49,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.launcher3.CellLayout.CellInfo;
 import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.FolderInfo.FolderListener;
@@ -56,7 +56,6 @@ import com.android.launcher3.LauncherAccessibilityDelegate.AccessibilityDragSour
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.util.Thunk;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -330,6 +329,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     /**
      * We need to handle touch events to prevent them from falling through to the workspace below.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return true;
@@ -406,8 +406,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      *
      * @return A new UserFolder.
      */
-    static Folder fromXml(Context context) {
-        return (Folder) LayoutInflater.from(context).inflate(R.layout.user_folder, null);
+    static Folder fromXml(Launcher launcher) {
+        return (Folder) LayoutInflater.from(launcher).inflate(R.layout.user_folder,
+                launcher.getDragLayer(), false);
     }
 
     /**
@@ -698,10 +699,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         boolean isOutsideLeftEdge = x < cellOverlap;
         boolean isOutsideRightEdge = x > (getWidth() - cellOverlap);
 
-        if (currentPage > 0 && (mContent.rtlLayout ? isOutsideRightEdge : isOutsideLeftEdge)) {
+        if (currentPage > 0 && (mContent.mIsRtl ? isOutsideRightEdge : isOutsideLeftEdge)) {
             showScrollHint(DragController.SCROLL_LEFT, d);
         } else if (currentPage < (mContent.getPageCount() - 1)
-                && (mContent.rtlLayout ? isOutsideLeftEdge : isOutsideRightEdge)) {
+                && (mContent.mIsRtl ? isOutsideLeftEdge : isOutsideRightEdge)) {
             showScrollHint(DragController.SCROLL_RIGHT, d);
         } else {
             mOnScrollHintAlarm.cancelAlarm();

@@ -16,17 +16,20 @@
 
 package com.android.launcher3.accessibility;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
-
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
 
     private static final int MOVE_BACKWARD = R.id.action_move_screen_backwards;
@@ -39,7 +42,7 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
         mWorkspace = workspace;
 
         Context context = mWorkspace.getContext();
-        boolean isRtl = mWorkspace.isLayoutRtl();
+        boolean isRtl = Utilities.isRtl(context.getResources());
         mActions.put(MOVE_BACKWARD, new AccessibilityAction(MOVE_BACKWARD,
                 context.getText(isRtl ? R.string.action_move_screen_right :
                     R.string.action_move_screen_left)));

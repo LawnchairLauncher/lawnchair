@@ -16,10 +16,12 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.util.SparseArray;
 
@@ -30,6 +32,7 @@ import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Thunk final SparseArray<String> mActiveSessions = new SparseArray<>();

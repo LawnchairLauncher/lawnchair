@@ -55,7 +55,7 @@ public class FolderPagedView extends PagedView {
 
     private static final int[] sTempPosArray = new int[2];
 
-    public final boolean rtlLayout;
+    public final boolean mIsRtl;
 
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
@@ -89,7 +89,7 @@ public class FolderPagedView extends PagedView {
         mInflater = LayoutInflater.from(context);
         mIconCache = app.getIconCache();
 
-        rtlLayout = getResources().getConfiguration().getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
     }
 
@@ -439,7 +439,7 @@ public class FolderPagedView extends PagedView {
      * Scrolls the current view by a fraction
      */
     public void showScrollHint(int direction) {
-        float fraction = (direction == DragController.SCROLL_LEFT) ^ rtlLayout
+        float fraction = (direction == DragController.SCROLL_LEFT) ^ mIsRtl
                 ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
         int scroll = getScrollForPage(getNextPage()) + hint;
@@ -596,7 +596,7 @@ public class FolderPagedView extends PagedView {
                         }
                     };
                     v.animate()
-                        .translationXBy((direction > 0 ^ rtlLayout) ? -v.getWidth() : v.getWidth())
+                        .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
                         .setDuration(REORDER_ANIMATION_DURATION)
                         .setStartDelay(0)
                         .withEndAction(endAction);

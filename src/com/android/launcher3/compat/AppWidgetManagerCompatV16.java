@@ -16,6 +16,7 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
@@ -49,6 +50,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
         return Utilities.trim(info.label);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {

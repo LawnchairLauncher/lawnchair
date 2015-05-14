@@ -221,6 +221,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final Rect sTmpRect = new Rect();
 
     protected final Rect mInsets = new Rect();
+    protected final boolean mIsRtl;
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -248,6 +249,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         a.recycle();
 
         setHapticFeedbackEnabled(false);
+        mIsRtl = Utilities.isRtl(getResources());
         init();
     }
 
@@ -400,13 +402,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mPageSwitchListener != null) {
             mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
         }
-    }
-
-    /**
-     * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
-     */
-    public boolean isLayoutRtl() {
-        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
     /**
@@ -586,16 +581,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             x = Math.max(x, mFreeScrollMinScrollX);
         }
 
-        final boolean isRtl = isLayoutRtl();
         mUnboundedScrollX = x;
 
-        boolean isXBeforeFirstPage = isRtl ? (x > mMaxScrollX) : (x < 0);
-        boolean isXAfterLastPage = isRtl ? (x < 0) : (x > mMaxScrollX);
+        boolean isXBeforeFirstPage = mIsRtl ? (x > mMaxScrollX) : (x < 0);
+        boolean isXAfterLastPage = mIsRtl ? (x < 0) : (x > mMaxScrollX);
         if (isXBeforeFirstPage) {
             super.scrollTo(0, y);
             if (mAllowOverScroll) {
                 mWasInOverscroll = true;
-                if (isRtl) {
+                if (mIsRtl) {
                     overScroll(x - mMaxScrollX);
                 } else {
                     overScroll(x);
@@ -605,7 +599,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             super.scrollTo(mMaxScrollX, y);
             if (mAllowOverScroll) {
                 mWasInOverscroll = true;
-                if (isRtl) {
+                if (mIsRtl) {
                     overScroll(x);
                 } else {
                     overScroll(x - mMaxScrollX);
@@ -844,11 +838,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the viewport offsets
         mViewport.offset(offsetX,  offsetY);
 
-        final boolean isRtl = isLayoutRtl();
-
-        final int startIndex = isRtl ? childCount - 1 : 0;
-        final int endIndex = isRtl ? -1 : childCount;
-        final int delta = isRtl ? -1 : 1;
+        final int startIndex = mIsRtl ? childCount - 1 : 0;
+        final int endIndex = mIsRtl ? -1 : childCount;
+        final int delta = mIsRtl ? -1 : 1;
 
         int verticalPadding = getPaddingTop() + getPaddingBottom();
 
@@ -951,7 +943,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updateMaxScrollX() {
         int childCount = getChildCount();
         if (childCount > 0) {
-            final int index = isLayoutRtl() ? 0 : childCount - 1;
+            final int index = mIsRtl ? 0 : childCount - 1;
             mMaxScrollX = getScrollForPage(index);
         } else {
             mMaxScrollX = 0;
@@ -1261,7 +1253,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Return true if a tap at (x, y) should trigger a flip to the previous page.
      */
     protected boolean hitsPreviousPage(float x, float y) {
-        if (isLayoutRtl()) {
+        if (mIsRtl) {
             return (x > (getViewportOffsetX() + getViewportWidth() -
                     getPaddingRight() - mPageSpacing));
         }
@@ -1272,7 +1264,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Return true if a tap at (x, y) should trigger a flip to the next page.
      */
     protected boolean hitsNextPage(float x, float y) {
-        if (isLayoutRtl()) {
+        if (mIsRtl) {
             return (x < getViewportOffsetX() + getPaddingLeft() + mPageSpacing);
         }
         return  (x > (getViewportOffsetX() + getViewportWidth() -
@@ -1462,7 +1454,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int totalDistance;
 
         int adjacentPage = page + 1;
-        if ((delta < 0 && !isLayoutRtl()) || (delta > 0 && isLayoutRtl())) {
+        if ((delta < 0 && !mIsRtl) || (delta > 0 && mIsRtl)) {
             adjacentPage = page - 1;
         }
 
@@ -1497,7 +1489,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             int scrollOffset = 0;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             if (!lp.isFullScreenPage) {
-                scrollOffset = isLayoutRtl() ? getPaddingRight() : getPaddingLeft();
+                scrollOffset = mIsRtl ? getPaddingRight() : getPaddingLeft();
             }
 
             int baselineX = mPageScrolls[index] + scrollOffset + getViewportOffsetX();
@@ -1574,7 +1566,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     void updateFreescrollBounds() {
         getFreeScrollPageRange(mTempVisiblePagesRange);
-        if (isLayoutRtl()) {
+        if (mIsRtl) {
             mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
             mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
         } else {
@@ -1813,9 +1805,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     // We give flings precedence over large moves, which is why we short-circuit our
                     // test for a large move if a fling has been registered. That is, a large
                     // move to the left and fling to the right will register as a fling to the right.
-                    final boolean isRtl = isLayoutRtl();
-                    boolean isDeltaXLeft = isRtl ? deltaX > 0 : deltaX < 0;
-                    boolean isVelocityXLeft = isRtl ? velocityX > 0 : velocityX < 0;
+                    boolean isDeltaXLeft = mIsRtl ? deltaX > 0 : deltaX < 0;
+                    boolean isVelocityXLeft = mIsRtl ? velocityX > 0 : velocityX < 0;
                     if (((isSignificantMove && !isDeltaXLeft && !isFling) ||
                             (isFling && !isVelocityXLeft)) && mCurrentPage > 0) {
                         finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage - 1;
@@ -1939,7 +1930,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
                     }
                     if (hscroll != 0 || vscroll != 0) {
-                        boolean isForwardScroll = isLayoutRtl() ? (hscroll < 0 || vscroll < 0)
+                        boolean isForwardScroll = mIsRtl ? (hscroll < 0 || vscroll < 0)
                                                          : (hscroll > 0 || vscroll > 0);
                         if (isForwardScroll) {
                             scrollRight();
