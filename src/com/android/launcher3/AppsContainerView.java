@@ -83,11 +83,11 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     // This coordinate is relative to this container view
-    private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
+    private Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
     // This coordinate is relative to its parent
-    private final Point mIconLastTouchPos = new Point();
-    // This coordinate is used to proxy click and long-click events to the prediction bar icons
-    private final Point mPredictionIconTouchDownPos = new Point();
+    private Point mIconLastTouchPos = new Point();
+    // This coordinate is used to proxy click and long-click events
+    private Point mPredictionIconTouchDownPos = new Point();
     private int mContentMarginStart;
     // Normal container insets
     private int mContainerInset;
