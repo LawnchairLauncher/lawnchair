@@ -71,6 +71,7 @@ public class DragController {
     // temporaries to avoid gc thrash
     private Rect mRectTemp = new Rect();
     private final int[] mCoordinatesTemp = new int[2];
+    private final boolean mIsRtl;
 
     /** Whether or not we're dragging. */
     private boolean mDragging;
@@ -157,6 +158,7 @@ public class DragController {
         float density = r.getDisplayMetrics().density;
         mFlingToDeleteThresholdVelocity =
                 (int) (r.getInteger(R.integer.config_flingToDeleteMinVelocity) * density);
+        mIsRtl = Utilities.isRtl(r);
     }
 
     public boolean dragging() {
@@ -548,9 +550,8 @@ public class DragController {
         final int slop = ViewConfiguration.get(mLauncher).getScaledWindowTouchSlop();
         final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
         final DragLayer dragLayer = mLauncher.getDragLayer();
-        final boolean isRtl = (dragLayer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
-        final int forwardDirection = isRtl ? SCROLL_RIGHT : SCROLL_LEFT;
-        final int backwardsDirection = isRtl ? SCROLL_LEFT : SCROLL_RIGHT;
+        final int forwardDirection = mIsRtl ? SCROLL_RIGHT : SCROLL_LEFT;
+        final int backwardsDirection = mIsRtl ? SCROLL_LEFT : SCROLL_RIGHT;
 
         if (x < mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {

@@ -83,6 +83,7 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected void setDrawable(int resId) {
         // Get the hover color
         mDrawable = (TransitionDrawable) getCurrentDrawable();
@@ -90,7 +91,11 @@ public abstract class ButtonDropTarget extends TextView
         if (mDrawable == null) {
             // TODO: investigate why this is ever happening. Presently only on one known device.
             mDrawable = (TransitionDrawable) getResources().getDrawable(resId);
-            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+            } else {
+                setCompoundDrawablesWithIntrinsicBounds(mDrawable, null, null, null);
+            }
         }
 
         if (null != mDrawable) {
@@ -107,7 +112,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected Drawable getCurrentDrawable() {
-        Drawable[] drawables = getCompoundDrawablesRelative();
+        Drawable[] drawables = getCompoundDrawables();
         for (int i = 0; i < drawables.length; ++i) {
             if (drawables[i] != null) {
                 return drawables[i];
@@ -241,10 +246,6 @@ public abstract class ButtonDropTarget extends TextView
         outRect.offsetTo(coords[0], coords[1]);
     }
 
-    private boolean isRtl() {
-        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
-    }
-
     protected Rect getIconRect(int viewWidth, int viewHeight, int drawableWidth, int drawableHeight) {
         DragLayer dragLayer = mLauncher.getDragLayer();
 
@@ -258,7 +259,7 @@ public abstract class ButtonDropTarget extends TextView
         final int left;
         final int right;
 
-        if (isRtl()) {
+        if (Utilities.isRtl(getResources())) {
             right = to.right - getPaddingRight();
             left = right - width;
         } else {

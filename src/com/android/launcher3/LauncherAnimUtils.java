@@ -21,10 +21,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
-
 import java.util.HashSet;
 import java.util.WeakHashMap;
 
@@ -128,6 +129,7 @@ public class LauncherAnimUtils {
         return anim;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Animator createCircularReveal(View view, int centerX,
             int centerY, float startRadius, float endRadius) {
         Animator anim = ViewAnimationUtils.createCircularReveal(view, centerX,

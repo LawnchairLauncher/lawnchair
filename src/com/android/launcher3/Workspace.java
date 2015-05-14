@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
@@ -56,7 +57,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
-
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -70,7 +70,6 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -553,8 +552,10 @@ public class Workspace extends SmoothPagedView
             throw new RuntimeException("Screen id " + screenId + " already exists!");
         }
 
-        CellLayout newScreen = (CellLayout)
-                mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
+        // Inflate the cell layout, but do not add it automatically so that we can get the newly
+        // created CellLayout.
+        CellLayout newScreen = (CellLayout) mLauncher.getLayoutInflater().inflate(
+                        R.layout.workspace_screen, this, false /* attachToRoot */);
 
         newScreen.setOnLongClickListener(mLongClickListener);
         newScreen.setOnClickListener(mLauncher);
@@ -573,7 +574,7 @@ public class Workspace extends SmoothPagedView
 
     public void createCustomContentContainer() {
         CellLayout customScreen = (CellLayout)
-                mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, null);
+                mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, this, false);
         customScreen.disableBackground();
         customScreen.disableDragTarget();
 
@@ -1033,6 +1034,7 @@ public class Workspace extends SmoothPagedView
      * listener via setOnInterceptTouchEventListener(). This allows us to tell the CellLayout
      * that it should intercept touch events, which is not something that is normally supported.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return (workspaceInModalState() || !isFinishedSwitchingState())
@@ -1136,7 +1138,7 @@ public class Workspace extends SmoothPagedView
         boolean passRightSwipesToCustomContent =
                 (mTouchDownTime - mCustomContentShowTime) > CUSTOM_CONTENT_GESTURE_DELAY;
 
-        boolean swipeInIgnoreDirection = isLayoutRtl() ? deltaX < 0 : deltaX > 0;
+        boolean swipeInIgnoreDirection = mIsRtl ? deltaX < 0 : deltaX > 0;
         boolean onCustomContentScreen =
                 getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID;
         if (swipeInIgnoreDirection && onCustomContentScreen && passRightSwipesToCustomContent) {
@@ -1243,15 +1245,14 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void overScroll(float amount) {
-        boolean isRtl = isLayoutRtl();
-        boolean shouldOverScroll = (amount <= 0 && (!hasCustomContent() || isRtl)) ||
-                (amount >= 0 && (!hasCustomContent() || !isRtl));
+        boolean shouldOverScroll = (amount <= 0 && (!hasCustomContent() || mIsRtl)) ||
+                (amount >= 0 && (!hasCustomContent() || !mIsRtl));
 
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
-                ((amount <= 0 && !isRtl) || (amount >= 0 && isRtl));
+                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlaySroll != 0 &&
-                ((amount >= 0 && !isRtl) || (amount <= 0 && isRtl));
+                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
@@ -1265,7 +1266,7 @@ public class Workspace extends SmoothPagedView
             int progress = (int) Math.abs((f * 100));
 
             mLastOverlaySroll = progress;
-            mLauncherOverlay.onScrollChange(progress, isRtl);
+            mLauncherOverlay.onScrollChange(progress, mIsRtl);
         } else if (shouldOverScroll) {
             dampedOverScroll(amount);
             mOverScrollEffect = acceleratedOverFactor(amount);
@@ -1274,7 +1275,7 @@ public class Workspace extends SmoothPagedView
         }
 
         if (shouldZeroOverlay) {
-            mLauncherOverlay.onScrollChange(0, isRtl);
+            mLauncherOverlay.onScrollChange(0, mIsRtl);
         }
     }
 
@@ -1409,7 +1410,7 @@ public class Workspace extends SmoothPagedView
             mNumPagesForWallpaperParallax = parallaxPageSpan;
 
             if (getChildCount() <= 1) {
-                if (isLayoutRtl()) {
+                if (mIsRtl) {
                     return 1 - 1.0f/mNumPagesForWallpaperParallax;
                 }
                 return 0;
@@ -1420,7 +1421,7 @@ public class Workspace extends SmoothPagedView
             int firstIndex = numCustomPages();
             // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
             int lastIndex = getChildCount() - 1 - emptyExtraPages;
-            if (isLayoutRtl()) {
+            if (mIsRtl) {
                 int temp = firstIndex;
                 firstIndex = lastIndex;
                 lastIndex = temp;
@@ -1441,7 +1442,7 @@ public class Workspace extends SmoothPagedView
                 // On RTL devices, push the wallpaper offset to the right if we don't have enough
                 // pages (ie if numScrollingPages < MIN_PARALLAX_PAGE_SPAN)
                 if (!mWallpaperIsLiveWallpaper && numScrollingPages < MIN_PARALLAX_PAGE_SPAN
-                        && isLayoutRtl()) {
+                        && mIsRtl) {
                     return offset * (parallaxPageSpan - numScrollingPages + 1) / parallaxPageSpan;
                 }
                 return offset * (numScrollingPages - 1) / parallaxPageSpan;
@@ -1648,7 +1649,7 @@ public class Workspace extends SmoothPagedView
             translationX = scrollRange - scrollDelta;
             progress = (scrollRange - scrollDelta) / scrollRange;
 
-            if (isLayoutRtl()) {
+            if (mIsRtl) {
                 translationX = Math.min(0, translationX);
             } else {
                 translationX = Math.max(0, translationX);
@@ -1702,7 +1703,6 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
-        final boolean isRtl = isLayoutRtl();
         super.screenScrolled(screenCenter);
 
         updatePageAlphaValues(screenCenter);
@@ -1717,7 +1717,7 @@ public class Workspace extends SmoothPagedView
             final int upperIndex = getChildCount() - 1;
 
             final boolean isLeftPage = mOverScrollX < 0;
-            index = (!isRtl && isLeftPage) || (isRtl && !isLeftPage) ? lowerIndex : upperIndex;
+            index = (!mIsRtl && isLeftPage) || (mIsRtl && !isLeftPage) ? lowerIndex : upperIndex;
 
             CellLayout cl = (CellLayout) getChildAt(index);
             float effect = Math.abs(mOverScrollEffect);

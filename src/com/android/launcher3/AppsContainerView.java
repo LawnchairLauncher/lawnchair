@@ -15,12 +15,15 @@
  */
 package com.android.launcher3;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.InsetDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -198,8 +201,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     @Override
     protected void onFinishInflate() {
-        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                LAYOUT_DIRECTION_RTL);
+        boolean isRtl = Utilities.isRtl(getResources());
         mAdapter.setRtl(isRtl);
 
         // Work around the search box getting first focus and showing the cursor by
@@ -329,8 +331,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     @Override
     protected void onUpdatePaddings() {
-        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                LAYOUT_DIRECTION_RTL);
+        boolean isRtl = Utilities.isRtl(getResources());
         boolean hasSearchBar = (mSearchBarEditView != null) &&
                 (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
@@ -396,11 +397,13 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         return handleTouchEvent(ev);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return handleTouchEvent(ev);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
         switch (ev.getAction()) {
@@ -614,6 +617,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     /**
      * Updates the container when the recycler view is scrolled.
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void onRecyclerViewScrolled() {
         if (DYNAMIC_HEADER_ELEVATION && Utilities.isLmpOrAbove()) {
             int elevation = DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,

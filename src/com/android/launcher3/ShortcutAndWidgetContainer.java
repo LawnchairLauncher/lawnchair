@@ -170,11 +170,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public boolean invertLayoutHorizontally() {
-        return mInvertIfRtl && isLayoutRtl();
-    }
-
-    public boolean isLayoutRtl() {
-        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
+        return mInvertIfRtl && Utilities.isRtl(getResources());
     }
 
     @Override

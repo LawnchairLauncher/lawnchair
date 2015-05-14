@@ -1,10 +1,12 @@
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcel;
 
 /**
@@ -32,6 +34,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         info.writeToParcel(p, 0);
         p.setDataPosition(0);
         LauncherAppWidgetProviderInfo lawpi = new LauncherAppWidgetProviderInfo(p);
+        p.recycle();
 
         int[] minResizeSpan = Launcher.getMinSpanForWidget(context, lawpi);
         int[] span = Launcher.getSpanForWidget(context, lawpi);
@@ -64,6 +67,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         minSpanY = widget.getMinSpanY();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public String getLabel(PackageManager packageManager) {
         if (isCustomWidget) {
             return Utilities.trim(label);
@@ -71,6 +75,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return super.loadLabel(packageManager);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getIcon(Context context, IconCache cache) {
         if (isCustomWidget) {
             return cache.getFullResIcon(provider.getPackageName(), icon);

@@ -76,6 +76,7 @@ public class DragView extends View {
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
             int left, int top, int width, int height, final float initialScale) {
         super(launcher);

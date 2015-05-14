@@ -28,7 +28,7 @@
     </style>
 
     <!-- This style applies to the drop target when it is shown in the sidebar -->
-    <style name="DropTargetButton" parent="DropTargetButton.Base">
+    <style name="DropTargetButton" parent="DropTargetButtonBase">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:drawablePadding">0dp</item>

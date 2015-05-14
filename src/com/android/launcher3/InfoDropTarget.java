@@ -16,8 +16,10 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.AttributeSet;
 
@@ -68,10 +70,18 @@ public class InfoDropTarget extends ButtonDropTarget {
         return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
     }
 
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean supportsDrop(Context context, Object info) {
-        return (Settings.Global.getInt(context.getContentResolver(),
-                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1) &&
-                (info instanceof AppInfo || info instanceof PendingAddItemInfo);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return (Settings.Global.getInt(context.getContentResolver(),
+                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1) &&
+                    (info instanceof AppInfo || info instanceof PendingAddItemInfo);
+        } else {
+            return (Settings.Secure.getInt(context.getContentResolver(),
+                    Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1) &&
+                    (info instanceof AppInfo || info instanceof PendingAddItemInfo);
+        }
     }
 
     @Override
