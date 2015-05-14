@@ -396,6 +396,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                 inset, 0, inset, 0);
         mContentView.setBackground(background);
         mAppsRecyclerView.updateBackgroundPadding(background);
+        mAdapter.updateBackgroundPadding(background);
         getRevealView().setBackground(background.getConstantState().newDrawable());
     }
 

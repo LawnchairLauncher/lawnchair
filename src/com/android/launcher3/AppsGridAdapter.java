@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -112,9 +113,9 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
                 if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppsDivider) {
                     // Draw the divider under the predicted apps
-                    parent.getBackground().getPadding(mTmpBounds);
                     int top = child.getTop() + child.getHeight();
-                    c.drawLine(mTmpBounds.left, top, parent.getWidth() - mTmpBounds.right, top,
+                    c.drawLine(mBackgroundPadding.left, top,
+                            parent.getWidth() - mBackgroundPadding.right, top,
                             mPredictedAppsDividerPaint);
                     hasDrawnPredictedAppsDivider = true;
 
@@ -265,6 +266,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
+    @Thunk final Rect mBackgroundPadding = new Rect();
     @Thunk int mPredictionBarHeight;
     @Thunk int mAppsPerRow;
     @Thunk boolean mIsRtl;
@@ -338,6 +340,14 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
      */
     public void setEmptySearchText(String query) {
         mEmptySearchText = query;
+    }
+
+    /**
+     * Notifies the adapter of the background padding so that it can draw things correctly in the
+     * item decorator.
+     */
+    public void updateBackgroundPadding(Drawable background) {
+        background.getPadding(mBackgroundPadding);
     }
 
     /**
