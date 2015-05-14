@@ -32,8 +32,6 @@
 
     <!-- Application name -->
     <string name="application_name">Launcher3</string>
-    <!-- Accessibility-facing application name -->
-    <string name="home">Home</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
     <!-- Work folder name -->
@@ -120,9 +118,6 @@
     <!-- Accessibility -->
     <skip />
 
-    <!-- The format string for Workspace descriptions [CHAR_LIMIT=none] -->
-    <string name="workspace_description_format">Home screen %1$d</string>
-
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
     <string name="default_scroll_format">Page %1$d of %2$d</string>
     <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -145,8 +140,6 @@
     <string name="workspace_cling_longpress_description">Touch &amp; hold background to customize</string>
     <!-- The description of the button to dismiss the cling [CHAR_LIMIT=30] -->
     <string name="workspace_cling_longpress_dismiss">GOT IT</string>
-    <!-- The text on the button to dismiss a cling [CHAR_LIMIT=30] -->
-    <string name="cling_dismiss">OK</string>
 
     <!-- Folder accessibility -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -173,19 +166,9 @@
     <!-- Text for settings button -->
     <string name="settings_button_text">Settings</string>
 
-    <!-- Label on an icon that references an uninstalled package, that is going to be installed at some point. [CHAR_LIMIT=15] -->
-    <string name="package_state_enqueued">Waiting</string>
-    <!-- Label on an icon that references an uninstalled package, that is currently being downloaded. [CHAR_LIMIT=15] -->
-    <string name="package_state_downloading">Downloading</string>
-    <!-- Label on an icon that references an uninstalled package, that is currently being installed. [CHAR_LIMIT=15] -->
-    <string name="package_state_installing">Installing</string>
     <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
     <string name="package_state_unknown">Unknown</string>
-    <!-- Label on an icon that references an uninstalled package, for which restore from market has failed. [CHAR_LIMIT=15] -->
-    <string name="package_state_error">Not restored</string>
 
-    <!-- Button for abandoned promises dialog, that removes all abandoned promise icons. -->
-    <string name="abandoned_clean_all">Remove All</string>
     <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
     <string name="abandoned_clean_this">Remove</string>
     <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
