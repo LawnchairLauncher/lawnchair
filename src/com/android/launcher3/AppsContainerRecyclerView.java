@@ -497,6 +497,12 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         stateOut.rowIndex = -1;
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;
+
+        // Return early if there are no items
+        if (items.isEmpty()) {
+            return;
+        }
+
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
