@@ -274,4 +274,30 @@ public class ManagedProfileHeuristic {
         keysOut.add(INSTALLED_PACKAGES_PREFIX + userSerial);
         keysOut.add(USER_FOLDER_ID_PREFIX + userSerial);
     }
+
+    /**
+     * For each user, if a work folder has not been created, mark it such that the folder will
+     * never get created.
+     */
+    public static void markExistingUsersForNoFolderCreation(Context context) {
+        UserManagerCompat userManager = UserManagerCompat.getInstance(context);
+        UserHandleCompat myUser = UserHandleCompat.myUserHandle();
+
+        SharedPreferences prefs = null;
+        for (UserHandleCompat user : userManager.getUserProfiles()) {
+            if (myUser.equals(user)) {
+                continue;
+            }
+
+            if (prefs == null) {
+                prefs = context.getSharedPreferences(
+                        LauncherFiles.MANAGED_USER_PREFERENCES_KEY,
+                        Context.MODE_PRIVATE);
+            }
+            String folderIdKey = USER_FOLDER_ID_PREFIX + userManager.getSerialNumberForUser(user);
+            if (!prefs.contains(folderIdKey)) {
+                prefs.edit().putLong(folderIdKey, ItemInfo.NO_ID).apply();
+            }
+        }
+    }
 }
