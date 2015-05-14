@@ -71,6 +71,10 @@
     <dimen name="drop_target_drag_padding">14dp</dimen>
     <dimen name="drop_target_text_size">14sp</dimen>
 
+    <dimen name="all_apps_header_max_elevation">4dp</dimen>
+    <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
+    <dimen name="all_apps_header_shadow_height">6dp</dimen>
+
 <!-- Dragging -->
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->

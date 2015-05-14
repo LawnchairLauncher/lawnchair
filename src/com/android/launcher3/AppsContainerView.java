@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -58,9 +59,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
     private static final boolean DYNAMIC_HEADER_ELEVATION = true;
     private static final boolean DISMISS_SEARCH_ON_BACK = true;
-    private static final float HEADER_ELEVATION_DP = 4;
-    // How far the user has to scroll in order to reach the full elevation
-    private static final float HEADER_SCROLL_TO_ELEVATION_DP = 16;
+
     private static final int FADE_IN_DURATION = 175;
     private static final int FADE_OUT_DURATION = 100;
     private static final int SEARCH_TRANSLATION_X_DP = 18;
@@ -82,6 +81,8 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private View mSearchButtonView;
     private View mDismissSearchButtonView;
     private AppsContainerSearchEditTextView mSearchBarEditView;
+
+    private HeaderElevationController mElevationController;
 
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
@@ -174,6 +175,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     public void hideHeaderBar() {
         mHeaderView.setVisibility(View.GONE);
+        mElevationController.disable();
         onUpdateBackgrounds();
         onUpdatePaddings();
     }
@@ -219,9 +221,13 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         // Fix the header view elevation if not dynamically calculating it
         mHeaderView = findViewById(R.id.header);
         mHeaderView.setOnClickListener(this);
-        if (Utilities.isLmpOrAbove() && !DYNAMIC_HEADER_ELEVATION) {
-            mHeaderView.setElevation(DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,
-                getContext().getResources().getDisplayMetrics()));
+
+        mElevationController = Utilities.isLmpOrAbove() ?
+                new HeaderElevationControllerVL(mHeaderView) :
+                    new HeaderElevationControllerV16(mHeaderView);
+        if (!DYNAMIC_HEADER_ELEVATION) {
+            mElevationController.onScroll(getResources()
+                    .getDimensionPixelSize(R.dimen.all_apps_header_scroll_to_elevation));
         }
 
         // Fix the prediction bar size
@@ -335,6 +341,10 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         boolean hasSearchBar = (mSearchBarEditView != null) &&
                 (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
+        // Set the background on the container, but let the recyclerView extend the full screen,
+        // so that the fast-scroller works on the edge as well.
+        mContentView.setPadding(0, 0, 0, 0);
+
         if (mFixedBounds.isEmpty()) {
             // If there are no fixed bounds, then use the default padding and insets
             setPadding(mInsets.left, mContainerInset + mInsets.top, mInsets.right,
@@ -377,19 +387,16 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     @Override
     protected void onUpdateBackgrounds() {
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-        boolean hasSearchBar = (mSearchBarEditView != null) &&
-                (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
         // Update the background of the reveal view and list to be inset with the fixed bound
         // insets instead of the default insets
         // TODO: Use quantum_panel instead of quantum_panel_shape.
-        mAppsRecyclerView.setBackground(new InsetDrawable(
-                getContext().getResources().getDrawable(
-                        hasSearchBar ? R.drawable.apps_list_search_bg : R.drawable.quantum_panel_shape),
-                inset, 0, inset, 0));
-        getRevealView().setBackground(new InsetDrawable(
+        InsetDrawable background = new InsetDrawable(
                 getContext().getResources().getDrawable(R.drawable.quantum_panel_shape),
-                inset, 0, inset, 0));
+                inset, 0, inset, 0);
+        mContentView.setBackground(background);
+        mAppsRecyclerView.updateBackgroundPadding(background);
+        getRevealView().setBackground(background.getConstantState().newDrawable());
     }
 
     @Override
@@ -619,17 +626,8 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void onRecyclerViewScrolled() {
-        if (DYNAMIC_HEADER_ELEVATION && Utilities.isLmpOrAbove()) {
-            int elevation = DynamicGrid.pxFromDp(HEADER_ELEVATION_DP,
-                    getContext().getResources().getDisplayMetrics());
-            int scrollToElevation = DynamicGrid.pxFromDp(HEADER_SCROLL_TO_ELEVATION_DP,
-                    getContext().getResources().getDisplayMetrics());
-            float elevationPct = (float) Math.min(mRecyclerViewScrollY, scrollToElevation) /
-                    scrollToElevation;
-            float newElevation = elevation * elevationPct;
-            if (Float.compare(mHeaderView.getElevation(), newElevation) != 0) {
-                mHeaderView.setElevation(newElevation);
-            }
+        if (DYNAMIC_HEADER_ELEVATION) {
+            mElevationController.onScroll(mRecyclerViewScrollY);
         }
 
         mPredictionBarView.setTranslationY(-mRecyclerViewScrollY + mAppsRecyclerView.getPaddingTop());
@@ -838,5 +836,80 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     private InputMethodManager getInputMethodManager() {
         return (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+
+    private static interface HeaderElevationController {
+
+        public void onScroll(int scrollY);
+
+        public void disable();
+    }
+
+    private static final class HeaderElevationControllerV16 implements HeaderElevationController {
+
+        private final View mShadow;
+
+        private final float mScrollToElevation;
+
+        public HeaderElevationControllerV16(View header) {
+            Resources res = header.getContext().getResources();
+            mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
+
+            mShadow = new View(header.getContext());
+            mShadow.setBackground(new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM, new int[] {0x44000000, 0x00000000}));
+            mShadow.setAlpha(0);
+
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT,
+                    res.getDimensionPixelSize(R.dimen.all_apps_header_shadow_height));
+            lp.topMargin = ((FrameLayout.LayoutParams) header.getLayoutParams()).height;
+
+            ((ViewGroup) header.getParent()).addView(mShadow, lp);
+        }
+
+        @Override
+        public void onScroll(int scrollY) {
+            float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
+                    mScrollToElevation;
+            mShadow.setAlpha(elevationPct);
+        }
+
+        @Override
+        public void disable() {
+            ViewGroup parent = (ViewGroup) mShadow.getParent();
+            if (parent != null) {
+                parent.removeView(mShadow);
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static final class HeaderElevationControllerVL implements HeaderElevationController {
+
+        private final View mHeader;
+        private final float mMaxElevation;
+        private final float mScrollToElevation;
+
+        public HeaderElevationControllerVL(View header) {
+            mHeader = header;
+
+            Resources res = header.getContext().getResources();
+            mMaxElevation = res.getDimension(R.dimen.all_apps_header_max_elevation);
+            mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
+        }
+
+        @Override
+        public void onScroll(int scrollY) {
+            float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
+                    mScrollToElevation;
+            float newElevation = mMaxElevation * elevationPct;
+            if (Float.compare(mHeader.getElevation(), newElevation) != 0) {
+                mHeader.setElevation(newElevation);
+            }
+        }
+
+        @Override
+        public void disable() { }
     }
 }
