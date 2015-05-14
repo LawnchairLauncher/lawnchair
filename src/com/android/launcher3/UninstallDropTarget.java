@@ -1,5 +1,6 @@
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
@@ -7,7 +8,6 @@ import android.os.Bundle;
 import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
-
 import com.android.launcher3.R;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.Thunk;
@@ -36,6 +36,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
         return supportsDrop(getContext(), info);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean supportsDrop(Context context, Object info) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);

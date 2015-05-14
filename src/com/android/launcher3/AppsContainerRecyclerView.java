@@ -292,8 +292,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         if (mFastScrollAlpha > 0f && !mFastScrollSectionName.isEmpty()) {
             int x;
             int y;
-            boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                    LAYOUT_DIRECTION_RTL);
+            boolean isRtl = Utilities.isRtl(getResources());
 
             // Calculate the position for the fast scroller popup
             Rect bgBounds = mFastScrollerBg.getBounds();
@@ -411,8 +410,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         // Find the index and height of the first visible row (all rows have the same height)
         int x;
         int y;
-        boolean isRtl = (getResources().getConfiguration().getLayoutDirection() ==
-                LAYOUT_DIRECTION_RTL);
+        boolean isRtl = Utilities.isRtl(getResources());
         int rowCount = getNumRows();
         getCurScrollState(mScrollPosState, items);
         if (mScrollPosState.rowIndex != -1) {

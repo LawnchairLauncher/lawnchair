@@ -46,6 +46,7 @@
         android:layout_width="@dimen/cling_migration_content_width"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/cling_migration_content_margin"
+        android:layout_marginRight="@dimen/cling_migration_content_margin"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingRight="24dp" >

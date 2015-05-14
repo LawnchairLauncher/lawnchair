@@ -22,16 +22,17 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
-
 import java.util.HashMap;
 
 /**
@@ -227,6 +228,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Creates and starts a new animation to a particular overlay view.
      */
+    @SuppressLint("NewApi")
     private void startAnimationToOverlay(final Workspace.State toWorkspaceState, final View toView,
              final View contentView, final View revealView, final boolean animated,
              final boolean hideSearchBar, final PrivateTransitionCallbacks pCb) {

@@ -665,7 +665,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     @Thunk void initializeScrollForRtl() {
-        if (mWallpaperScrollContainer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+        if (Utilities.isRtl(getResources())) {
             final ViewTreeObserver observer = mWallpaperScrollContainer.getViewTreeObserver();
             observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
                 public void onGlobalLayout() {
@@ -838,7 +838,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     int rotation = BitmapUtils.getRotationFromExif(context, uri);
                     return createThumbnail(defaultSize, context, uri, null, null, 0, rotation, false);
                 } catch (SecurityException securityException) {
-                    if (isDestroyed()) {
+                    if (isActivityDestroyed()) {
                         // Temporarily granted permissions are revoked when the activity
                         // finishes, potentially resulting in a SecurityException here.
                         // Even though {@link #isDestroyed} might also return true in different

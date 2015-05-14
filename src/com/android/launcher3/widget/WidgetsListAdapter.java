@@ -15,8 +15,10 @@
  */
 package com.android.launcher3.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -27,9 +29,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.LinearLayout;
-
 import com.android.launcher3.BubbleTextView;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DynamicGrid;
 import com.android.launcher3.IconCache;
@@ -38,7 +38,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
-
 import java.util.List;
 
 /**
@@ -157,6 +156,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (DEBUG) {
@@ -167,7 +167,11 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 R.layout.widgets_list_row_view, parent, false);
         LinearLayout cellList = (LinearLayout) container.findViewById(R.id.widgets_cell_list);
         MarginLayoutParams lp = (MarginLayoutParams) cellList.getLayoutParams();
-        lp.setMarginStart(mIndent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            lp.setMarginStart(mIndent);
+        } else {
+            lp.leftMargin = mIndent;
+        }
         cellList.setLayoutParams(lp);
         return new WidgetsRowViewHolder(container);
     }

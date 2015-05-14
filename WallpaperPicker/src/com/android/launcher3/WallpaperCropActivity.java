@@ -190,7 +190,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                     }
                 });
             } catch (SecurityException securityException) {
-                if (isDestroyed()) {
+                if (isActivityDestroyed()) {
                     // Temporarily granted permissions are revoked when the activity
                     // finishes, potentially resulting in a SecurityException here.
                     // Even though {@link #isDestroyed} might also return true in different
@@ -219,6 +219,12 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             return true;
         }
         return false;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    protected boolean isActivityDestroyed() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                && isDestroyed();
     }
 
     @Thunk void addReusableBitmap(TileSource src) {

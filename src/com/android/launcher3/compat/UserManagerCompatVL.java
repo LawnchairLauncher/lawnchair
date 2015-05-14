@@ -17,18 +17,19 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.UserHandle;
-
 import com.android.launcher3.LauncherAppState;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UserManagerCompatVL extends UserManagerCompatV17 {
     private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 
