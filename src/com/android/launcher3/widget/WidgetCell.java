@@ -118,6 +118,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (DEBUG) {
             Log.d(TAG, "reset called on:" + mWidgetName.getText());
         }
+        mWidgetImage.animate().cancel();
         mWidgetImage.setImageDrawable(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
