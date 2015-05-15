@@ -514,7 +514,7 @@ public class LauncherModel extends BroadcastReceiver
      * Adds the provided items to the workspace.
      */
     public void addAndBindAddedWorkspaceItems(final Context context,
-            final ArrayList<ItemInfo> workspaceApps) {
+            final ArrayList<? extends ItemInfo> workspaceApps) {
         final Callbacks callbacks = getCallback();
         if (workspaceApps.isEmpty()) {
             return;

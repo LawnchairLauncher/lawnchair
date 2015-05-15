@@ -23,8 +23,10 @@ import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Handles addition of app shortcuts for managed profiles.
@@ -62,8 +64,8 @@ public class ManagedProfileHeuristic {
     private final long mUserCreationTime;
     private final String mPackageSetKey;
 
-    private ArrayList<ItemInfo> mHomescreenApps;
-    private ArrayList<ItemInfo> mWorkFolderApps;
+    private ArrayList<ShortcutInfo> mHomescreenApps;
+    private ArrayList<ShortcutInfo> mWorkFolderApps;
 
     private ManagedProfileHeuristic(Context context, UserHandleCompat user) {
         mContext = context;
@@ -84,9 +86,12 @@ public class ManagedProfileHeuristic {
      * workfolder.
      */
     public void processUserApps(List<LauncherActivityInfoCompat> apps) {
-        mHomescreenApps = new ArrayList<ItemInfo>();
-        mWorkFolderApps = new ArrayList<ItemInfo>();
-        HashSet<String> packageSet = getPackageSet();
+        mHomescreenApps = new ArrayList<>();
+        mWorkFolderApps = new ArrayList<>();
+
+        HashSet<String> packageSet = new HashSet<>();
+        final boolean userAppsExisted = getUserApps(packageSet);
+
         boolean newPackageAdded = false;
 
         for (LauncherActivityInfoCompat info : apps) {
@@ -107,12 +112,15 @@ public class ManagedProfileHeuristic {
 
         if (newPackageAdded) {
             mPrefs.edit().putStringSet(mPackageSetKey, packageSet).apply();
-            finalizeAdditions();
+            // Do not add shortcuts on the homescreen for the first time. This prevents the launcher
+            // getting filled with the managed user apps, when it start with a fresh DB (or after
+            // a very long time).
+            finalizeAdditions(userAppsExisted);
         }
     }
 
     private void markForAddition(LauncherActivityInfoCompat info, long installTime) {
-        ArrayList<ItemInfo> targetList =
+        ArrayList<ShortcutInfo> targetList =
                 (installTime <= mUserCreationTime + AUTO_ADD_TO_FOLDER_DURATION) ?
                         mWorkFolderApps : mHomescreenApps;
         targetList.add(ShortcutInfo.fromActivityInfo(info, mContext));
@@ -125,6 +133,13 @@ public class ManagedProfileHeuristic {
         if (mWorkFolderApps.isEmpty()) {
             return;
         }
+        Collections.sort(mWorkFolderApps, new Comparator<ShortcutInfo>() {
+
+            @Override
+            public int compare(ShortcutInfo lhs, ShortcutInfo rhs) {
+                return Long.compare(lhs.firstInstallTime, rhs.firstInstallTime);
+            }
+        });
 
         // Try to get a work folder.
         String folderIdKey = USER_FOLDER_ID_PREFIX + mUserSerial;
@@ -139,14 +154,14 @@ public class ManagedProfileHeuristic {
             }
             saveWorkFolderShortcuts(folderId, workFolder.contents.size());
 
-            final ArrayList<ItemInfo> shortcuts = mWorkFolderApps;
+            final ArrayList<ShortcutInfo> shortcuts = mWorkFolderApps;
             // FolderInfo could already be bound. We need to add shortcuts on the UI thread.
             new MainThreadExecutor().execute(new Runnable() {
 
                 @Override
                 public void run() {
-                    for (ItemInfo info : shortcuts) {
-                        workFolder.add((ShortcutInfo) info);
+                    for (ShortcutInfo info : shortcuts) {
+                        workFolder.add(info);
                     }
                 }
             });
@@ -157,8 +172,8 @@ public class ManagedProfileHeuristic {
             workFolder.setOption(FolderInfo.FLAG_WORK_FOLDER, true, null);
 
             // Add all shortcuts before adding it to the UI, as an empty folder might get deleted.
-            for (ItemInfo info : mWorkFolderApps) {
-                workFolder.add((ShortcutInfo) info);
+            for (ShortcutInfo info : mWorkFolderApps) {
+                workFolder.add(info);
             }
 
             // Add the item to home screen and DB. This also generates an item id synchronously.
@@ -184,10 +199,10 @@ public class ManagedProfileHeuristic {
     /**
      * Adds and binds all shortcuts marked for addition.
      */
-    private void finalizeAdditions() {
+    private void finalizeAdditions(boolean addHomeScreenShortcuts) {
         finalizeWorkFolder();
 
-        if (!mHomescreenApps.isEmpty()) {
+        if (addHomeScreenShortcuts && !mHomescreenApps.isEmpty()) {
             mModel.addAndBindAddedWorkspaceItems(mContext, mHomescreenApps);
         }
     }
@@ -196,9 +211,12 @@ public class ManagedProfileHeuristic {
      * Updates the list of installed apps and adds any new icons on homescreen or work folder.
      */
     public void processPackageAdd(String[] packages) {
-        mHomescreenApps = new ArrayList<ItemInfo>();
-        mWorkFolderApps = new ArrayList<ItemInfo>();
-        HashSet<String> packageSet = getPackageSet();
+        mHomescreenApps = new ArrayList<>();
+        mWorkFolderApps = new ArrayList<>();
+
+        HashSet<String> packageSet = new HashSet<>();
+        final boolean userAppsExisted = getUserApps(packageSet);
+
         boolean newPackageAdded = false;
         long installTime = System.currentTimeMillis();
         LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
@@ -218,7 +236,7 @@ public class ManagedProfileHeuristic {
 
         if (newPackageAdded) {
             mPrefs.edit().putStringSet(mPackageSetKey, packageSet).apply();
-            finalizeAdditions();
+            finalizeAdditions(userAppsExisted);
         }
     }
 
@@ -226,7 +244,8 @@ public class ManagedProfileHeuristic {
      * Updates the list of installed packages for the user.
      */
     public void processPackageRemoved(String[] packages) {
-        HashSet<String> packageSet = getPackageSet();
+        HashSet<String> packageSet = new HashSet<String>();
+        getUserApps(packageSet);
         boolean packageRemoved = false;
 
         for (String packageName : packages) {
@@ -240,9 +259,18 @@ public class ManagedProfileHeuristic {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private HashSet<String> getPackageSet() {
-        return new HashSet<String>(mPrefs.getStringSet(mPackageSetKey, Collections.EMPTY_SET));
+    /**
+     * Reads the list of user apps which have already been processed.
+     * @return false if the list didn't exist, true otherwise
+     */
+    private boolean getUserApps(HashSet<String> outExistingApps) {
+        Set<String> userApps = mPrefs.getStringSet(mPackageSetKey, null);
+        if (userApps == null) {
+            return false;
+        } else {
+            outExistingApps.addAll(userApps);
+            return true;
+        }
     }
 
     /**

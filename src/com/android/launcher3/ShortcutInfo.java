@@ -127,7 +127,7 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * Refer {@link AppInfo#firstInstallTime}.
      */
-    long firstInstallTime;
+    public long firstInstallTime;
 
     /**
      * TODO move this to {@link status}
