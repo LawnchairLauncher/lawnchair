@@ -62,7 +62,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private ImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
-    private final Rect mOriginalImagePadding = new Rect();
+    private final Rect mOrigImgPadding = new Rect();
 
     private String mDimensionsFormatString;
     private boolean mIsAppWidget;
@@ -102,10 +102,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         super.onFinishInflate();
 
         mWidgetImage = (ImageView) findViewById(R.id.widget_preview);
-        mOriginalImagePadding.left = mWidgetImage.getPaddingLeft();
-        mOriginalImagePadding.top = mWidgetImage.getPaddingTop();
-        mOriginalImagePadding.right = mWidgetImage.getPaddingRight();
-        mOriginalImagePadding.bottom = mWidgetImage.getPaddingBottom();
+        mOrigImgPadding.left = mWidgetImage.getPaddingLeft();
+        mOrigImgPadding.top = mWidgetImage.getPaddingTop();
+        mOrigImgPadding.right = mWidgetImage.getPaddingRight();
+        mOrigImgPadding.bottom = mWidgetImage.getPaddingBottom();
 
         mWidgetName = ((TextView) findViewById(R.id.widget_name));
         mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
@@ -164,6 +164,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     public int[] getPreviewSize() {
         int[] maxSize = new int[2];
+
         maxSize[0] = mPresetPreviewSize;
         maxSize[1] = mPresetPreviewSize;
         return maxSize;
@@ -171,25 +172,21 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     public void applyPreview(Bitmap bitmap) {
         FastBitmapDrawable preview = new FastBitmapDrawable(bitmap);
-        if (DEBUG) {
-            Log.d(TAG, String.format("[tag=%s] applyPreview preview: %s",
-                    getTagToString(), preview));
-        }
+
         if (preview != null) {
             mWidgetImage.setImageDrawable(preview);
+
             if (mIsAppWidget) {
                 // center horizontally
                 int[] imageSize = getPreviewSize();
                 int centerAmount = (imageSize[0] - preview.getIntrinsicWidth()) / 2;
-                mWidgetImage.setPadding(mOriginalImagePadding.left + centerAmount,
-                        mOriginalImagePadding.top,
-                        mOriginalImagePadding.right,
-                        mOriginalImagePadding.bottom);
+                mWidgetImage.setPadding(mOrigImgPadding.left + centerAmount,
+                        mOrigImgPadding.top,
+                        mOrigImgPadding.right,
+                        mOrigImgPadding.bottom);
             }
             mWidgetImage.setAlpha(0f);
             mWidgetImage.animate().alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
-            // TODO(hyunyoungs): figure out why this has to be called explicitly.
-            mWidgetImage.requestLayout();
         }
     }
 
@@ -201,11 +198,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (DEBUG) {
             Log.d(TAG, String.format("[tag=%s] ensurePreview (%d, %d):",
                     getTagToString(), size[0], size[1]));
-        }
-
-        if (size[0] <= 0 || size[1] <= 0) {
-            addOnLayoutChangeListener(this);
-            return;
         }
         Bitmap[] immediateResult = new Bitmap[1];
         mActiveRequest = mWidgetPreviewLoader.getPreview(mInfo, size[0], size[1], this,
