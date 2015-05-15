@@ -38,6 +38,9 @@
             android:id="@+id/folder_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="4dp"
             launcher:pageIndicator="@+id/folder_page_indicator" />
     </FrameLayout>
 
