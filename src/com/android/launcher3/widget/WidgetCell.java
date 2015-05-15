@@ -143,8 +143,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
         // TODO(hyunyoungs): setup a cache for these labels.
         mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        int hSpan = Math.min(info.spanX, (int) grid.numColumns);
-        int vSpan = Math.min(info.spanY, (int) grid.numRows);
+        int hSpan = Math.min(info.spanX, grid.numColumns);
+        int vSpan = Math.min(info.spanY, grid.numRows);
         mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         mWidgetPreviewLoader = loader;
     }
@@ -199,12 +199,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, String.format("[tag=%s] ensurePreview (%d, %d):",
                     getTagToString(), size[0], size[1]));
         }
-        Bitmap[] immediateResult = new Bitmap[1];
-        mActiveRequest = mWidgetPreviewLoader.getPreview(mInfo, size[0], size[1], this,
-                immediateResult);
-        if (immediateResult[0] != null) {
-            applyPreview(immediateResult[0]);
-        }
+        mActiveRequest = mWidgetPreviewLoader.getPreview(mInfo, size[0], size[1], this);
     }
 
     @Override

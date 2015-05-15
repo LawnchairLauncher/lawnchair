@@ -109,8 +109,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         if (diff > 0) {
             for (int i = 0; i < diff; i++) {
-                WidgetCell widget = new WidgetCell(mContext);
-                widget = (WidgetCell) mLayoutInflater.inflate(
+                WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
                         R.layout.widget_cell, row, false);
 
                 // set up touch.
@@ -135,11 +134,11 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         tv.applyFromPackageItemInfo(infoOut);
 
         // Bind the view in the widget horizontal tray region.
+        if (getWidgetPreviewLoader() == null) {
+            return;
+        }
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            if (getWidgetPreviewLoader() == null) {
-                return;
-            }
             if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
                 PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(info, null);
