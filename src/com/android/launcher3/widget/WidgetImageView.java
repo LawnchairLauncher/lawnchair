@@ -22,16 +22,9 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 public class WidgetImageView extends ImageView {
-    public boolean mAllowRequestLayout = true;
 
     public WidgetImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public void requestLayout() {
-        if (mAllowRequestLayout) {
-            super.requestLayout();
-        }
     }
 
     @Override
