@@ -122,24 +122,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         mApps = apps;
     }
 
-    @Override
-    public void setAdapter(Adapter adapter) {
-        // Register a change listener to update the scroll position state whenever the data set
-        // changes.
-        adapter.registerAdapterDataObserver(new AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshCurScrollPosition();
-                    }
-                });
-            }
-        });
-        super.setAdapter(adapter);
-    }
-
     /**
      * Sets the number of apps per row in this recycler view.
      */
@@ -186,7 +168,20 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
      */
     public void scrollToTop() {
         scrollToPosition(0);
-        updateScrollY(0);
+    }
+
+    /**
+     * Returns the current scroll position.
+     */
+    public int getScrollPosition() {
+        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+        getCurScrollState(mScrollPosState, items);
+        if (mScrollPosState.rowIndex != -1) {
+            int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
+            return getPaddingTop() + (mScrollPosState.rowIndex * mScrollPosState.rowHeight) +
+                    predictionBarHeight - mScrollPosState.rowTopOffset;
+        }
+        return 0;
     }
 
     @Override
@@ -357,7 +352,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             if (touchFraction <= predictionBarFraction) {
                 // Scroll to the top of the view, where the prediction bar is
                 layoutManager.scrollToPositionWithOffset(0, 0);
-                updateScrollY(0);
                 return "";
             }
         }
@@ -375,9 +369,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             }
             lastScrollSection = scrollSection;
         }
-
-        // We need to workaround the RecyclerView to get the right scroll position
-        refreshCurScrollPosition();
 
         // Scroll to the view at the position, anchored at the top of the screen. We call the scroll
         // method on the LayoutManager directly since it is not exposed by RecyclerView.
@@ -487,20 +478,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             rowCount += numRowsInSection;
         }
         return rowCount;
-    }
-
-    /**
-     * Forces a refresh of the scroll position to any scroll listener.
-     */
-    private void refreshCurScrollPosition() {
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        getCurScrollState(mScrollPosState, items);
-        if (mScrollPosState.rowIndex != -1) {
-            int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-            int scrollY = getPaddingTop() + (mScrollPosState.rowIndex * mScrollPosState.rowHeight) +
-                    predictionBarHeight - mScrollPosState.rowTopOffset;
-            updateScrollY(scrollY);
-        }
     }
 
     /**
