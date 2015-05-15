@@ -809,7 +809,7 @@ public class Launcher extends Activity
         }
 
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
-                requestCode == REQUEST_CREATE_APPWIDGET);
+                requestCode == REQUEST_CREATE_APPWIDGET || requestCode == REQUEST_CREATE_SHORTCUT);
 
         final boolean workspaceLocked = isWorkspaceLocked();
         // We have special handling for widgets
@@ -3447,10 +3447,19 @@ public class Launcher extends Activity
 
     /**
      * Sets up the transition to show the apps/widgets view.
+     *
+     * @return whether the current from and to state allowed this operation
      */
-    private void showAppsOrWidgets(boolean animated, State toState) {
-        if (mState != State.WORKSPACE) return;
-        if (toState != State.APPS && toState != State.WIDGETS) return;
+    // TODO: calling method should use the return value so that when {@code false} is returned
+    // the workspace transition doesn't fall into invalid state.
+    private boolean showAppsOrWidgets(boolean animated, State toState) {
+        if (mState != State.WORKSPACE &&  mState != State.APPS_SPRING_LOADED &&
+                mState != State.WIDGETS_SPRING_LOADED) {
+            return false;
+        }
+        if (toState != State.APPS && toState != State.WIDGETS) {
+            return false;
+        }
 
         if (toState == State.APPS) {
             mStateTransitionAnimation.startAnimationToAllApps(animated);
@@ -3472,6 +3481,7 @@ public class Launcher extends Activity
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        return true;
     }
 
     /**
