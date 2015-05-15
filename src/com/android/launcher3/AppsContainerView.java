@@ -686,6 +686,19 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                     }
                 }
                 break;
+            case MotionEvent.ACTION_MOVE:
+                if (mPredictionIconUnderTouch != null) {
+                    float dist = (float) Math.hypot(x - mPredictionIconTouchDownPos.x,
+                            y - mPredictionIconTouchDownPos.y);
+                    if (dist > ViewConfiguration.get(getContext()).getScaledTouchSlop()) {
+                        if (mPredictionIconCheckForLongPress != null) {
+                            mPredictionIconCheckForLongPress.cancelLongPress();
+                        }
+                        mPredictionIconCheckForLongPress = null;
+                        mPredictionIconUnderTouch = null;
+                    }
+                }
+                break;
             case MotionEvent.ACTION_UP:
                 if (mBoundsCheckLastTouchDownPos.x > -1) {
                     ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
@@ -728,8 +741,19 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      * Returns the predicted app in the prediction bar given a set of local coordinates.
      */
     private View findPredictedAppAtCoordinate(int x, int y) {
-        int[] coord = {x, y};
         Rect hitRect = new Rect();
+
+        // Ensure we aren't hitting the search bar
+        int[] coord = {x, y};
+        Utilities.mapCoordInSelfToDescendent(mHeaderView, this, coord);
+        mHeaderView.getHitRect(hitRect);
+        if (hitRect.contains(coord[0], coord[1])) {
+            return null;
+        }
+
+        // Check against the children of the prediction bar
+        coord[0] = x;
+        coord[1] = y;
         Utilities.mapCoordInSelfToDescendent(mPredictionBarView, this, coord);
         for (int i = 0; i < mPredictionBarView.getChildCount(); i++) {
             View child = mPredictionBarView.getChildAt(i);
