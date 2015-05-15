@@ -88,7 +88,7 @@ public class WidgetPreviewLoader {
      * @return a request id which can be used to cancel the request.
      */
     public PreviewLoadRequest getPreview(final Object o, int previewWidth, int previewHeight,
-            WidgetCell caller, Bitmap[] immediateResult) {
+            WidgetCell caller) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = getObjectKey(o, size);
 
