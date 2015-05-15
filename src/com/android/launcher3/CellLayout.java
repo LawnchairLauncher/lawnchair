@@ -132,7 +132,7 @@ public class CellLayout extends ViewGroup {
     private int mDragOutlineCurrent = 0;
     private final Paint mDragOutlinePaint = new Paint();
 
-    private final FastBitmapView mTouchFeedbackView;
+    private final ClickShadowView mTouchFeedbackView;
 
     @Thunk HashMap<CellLayout.LayoutParams, Animator> mReorderAnimators = new
             HashMap<CellLayout.LayoutParams, Animator>();
@@ -301,9 +301,8 @@ public class CellLayout extends ViewGroup {
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                 mCountX, mCountY);
 
-        mTouchFeedbackView = new FastBitmapView(context);
-        // Make the feedback view large enough to hold the blur bitmap.
-        addView(mTouchFeedbackView, (int) (grid.cellWidthPx * 1.5), (int) (grid.cellHeightPx * 1.5));
+        mTouchFeedbackView = new ClickShadowView(context);
+        addView(mTouchFeedbackView);
         addView(mShortcutsAndWidgets);
     }
 
@@ -410,22 +409,14 @@ public class CellLayout extends ViewGroup {
         invalidate();
     }
 
-    void setPressedIcon(BubbleTextView icon, Bitmap background, int padding) {
+    void setPressedIcon(BubbleTextView icon, Bitmap background) {
         if (icon == null || background == null) {
             mTouchFeedbackView.setBitmap(null);
             mTouchFeedbackView.animate().cancel();
         } else {
-            int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight()
-                    - (mCountX * mCellWidth);
-            mTouchFeedbackView.setTranslationX(icon.getLeft() + (int) Math.ceil(offset / 2f)
-                    - padding);
-            mTouchFeedbackView.setTranslationY(icon.getTop() - padding);
             if (mTouchFeedbackView.setBitmap(background)) {
-                mTouchFeedbackView.setAlpha(0);
-                mTouchFeedbackView.animate().alpha(1)
-                    .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
-                    .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
-                    .start();
+                mTouchFeedbackView.alignWithIconView(icon, mShortcutsAndWidgets);
+                mTouchFeedbackView.animateShadow();
             }
         }
     }
@@ -895,19 +886,20 @@ public class CellLayout extends ViewGroup {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
         }
-        int count = getChildCount();
-        int maxWidth = 0;
-        int maxHeight = 0;
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth,
-                    MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight,
-                    MeasureSpec.EXACTLY);
-            child.measure(childWidthMeasureSpec, childheightMeasureSpec);
-            maxWidth = Math.max(maxWidth, child.getMeasuredWidth());
-            maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
-        }
+
+        // Make the feedback view large enough to hold the blur bitmap.
+        mTouchFeedbackView.measure(
+                MeasureSpec.makeMeasureSpec(mCellWidth + mTouchFeedbackView.getExtraSize(),
+                        MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(mCellHeight + mTouchFeedbackView.getExtraSize(),
+                        MeasureSpec.EXACTLY));
+
+        mShortcutsAndWidgets.measure(
+                MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY));
+
+        int maxWidth = mShortcutsAndWidgets.getMeasuredWidth();
+        int maxHeight = mShortcutsAndWidgets.getMeasuredHeight();
         if (mFixedWidth > 0 && mFixedHeight > 0) {
             setMeasuredDimension(maxWidth, maxHeight);
         } else {
@@ -921,13 +913,13 @@ public class CellLayout extends ViewGroup {
                 (mCountX * mCellWidth);
         int left = getPaddingLeft() + (int) Math.ceil(offset / 2f);
         int top = getPaddingTop();
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            child.layout(left, top,
-                    left + r - l,
-                    top + b - t);
-        }
+
+        mTouchFeedbackView.layout(left, top,
+                left + mTouchFeedbackView.getMeasuredWidth(),
+                top + mTouchFeedbackView.getMeasuredHeight());
+        mShortcutsAndWidgets.layout(left, top,
+                left + r - l,
+                top + b - t);
     }
 
     @Override

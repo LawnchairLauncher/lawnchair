@@ -276,7 +276,7 @@ public class BubbleTextView extends TextView {
         // Only show the shadow effect when persistent pressed state is set.
         if (getParent() instanceof ShortcutAndWidgetContainer) {
             CellLayout layout = (CellLayout) getParent().getParent();
-            layout.setPressedIcon(this, mPressedBackground, mOutlineHelper.shadowBitmapPadding);
+            layout.setPressedIcon(this, mPressedBackground);
         }
 
         updateIconState();
