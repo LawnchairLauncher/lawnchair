@@ -41,7 +41,7 @@
         android:paddingTop="@dimen/widget_section_vertical_padding"
         android:singleLine="true"
         android:textColor="@color/widgets_view_section_text_color"
-        android:textSize="20sp"
+        android:textSize="16sp"
         launcher:customShadows="false"
         launcher:deferShadowGeneration="true"
         launcher:iconDisplay="widget_section"
