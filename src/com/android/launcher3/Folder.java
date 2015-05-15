@@ -406,9 +406,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      *
      * @return A new UserFolder.
      */
+    @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) LayoutInflater.from(launcher).inflate(R.layout.user_folder,
-                launcher.getDragLayer(), false);
+        return (Folder) launcher.getLayoutInflater().inflate(R.layout.user_folder, null);
     }
 
     /**
