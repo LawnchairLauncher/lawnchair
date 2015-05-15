@@ -658,12 +658,14 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                 // We workaround the fact that the recycler view needs the touches for the scroll
                 // and we want to intercept it for clicks in the prediction bar by handling clicks
                 // and long clicks in the prediction bar ourselves.
-                mPredictionIconTouchDownPos.set(x, y);
-                mPredictionIconUnderTouch = findPredictedAppAtCoordinate(x, y);
-                if (mPredictionIconUnderTouch != null) {
-                    mPredictionIconCheckForLongPress =
-                            new CheckLongPressHelper(mPredictionIconUnderTouch, this);
-                    mPredictionIconCheckForLongPress.postCheckForLongPress();
+                if (mPredictionBarView != null && mPredictionBarView.getVisibility() == View.VISIBLE) {
+                    mPredictionIconTouchDownPos.set(x, y);
+                    mPredictionIconUnderTouch = findPredictedAppAtCoordinate(x, y);
+                    if (mPredictionIconUnderTouch != null) {
+                        mPredictionIconCheckForLongPress =
+                                new CheckLongPressHelper(mPredictionIconUnderTouch, this);
+                        mPredictionIconCheckForLongPress.postCheckForLongPress();
+                    }
                 }
 
                 if (!mFixedBounds.isEmpty()) {
@@ -730,6 +732,9 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         Utilities.mapCoordInSelfToDescendent(mPredictionBarView, this, coord);
         for (int i = 0; i < mPredictionBarView.getChildCount(); i++) {
             View child = mPredictionBarView.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             child.getHitRect(hitRect);
             if (hitRect.contains(coord[0], coord[1])) {
                 return child;
