@@ -627,6 +627,10 @@ public final class Utilities {
      * Non-breaking whitespaces are also removed.
      */
     public static String trim(CharSequence s) {
+        if (s == null) {
+            return null;
+        }
+
         // Just strip any sequence of whitespace or java space characters from the beginning and end
         Matcher m = sTrimPattern.matcher(s);
         return m.replaceAll("$1");
