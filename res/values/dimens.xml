@@ -118,4 +118,5 @@
 <!-- Sizes for managed profile badges -->
     <dimen name="profile_badge_size">24dp</dimen>
     <dimen name="profile_badge_margin">4dp</dimen>
+    <dimen name="profile_badge_minimum_top">2dp</dimen>
 </resources>

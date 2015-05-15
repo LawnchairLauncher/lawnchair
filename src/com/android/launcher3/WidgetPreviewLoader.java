@@ -444,7 +444,7 @@ public class WidgetPreviewLoader {
             } catch (Resources.NotFoundException e) { }
             c.setBitmap(null);
         }
-        return mManager.getBadgeBitmap(info, preview);
+        return mManager.getBadgeBitmap(info, preview, Math.min(preview.getHeight(), previewHeight));
     }
 
     private Bitmap generateShortcutPreview(

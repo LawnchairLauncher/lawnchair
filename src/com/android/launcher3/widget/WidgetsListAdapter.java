@@ -151,8 +151,8 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 widget.setTag(pasi);
                 widget.applyFromResolveInfo(mLauncher.getPackageManager(), info, mWidgetPreviewLoader);
             }
-            widget.setVisibility(View.VISIBLE);
             widget.ensurePreview();
+            widget.setVisibility(View.VISIBLE);
         }
     }
 
