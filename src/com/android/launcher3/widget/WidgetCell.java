@@ -21,17 +21,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -41,7 +38,13 @@ import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 /**
- * Represents the individual cell of the widget inside the widget tray.
+ * Represents the individual cell of the widget inside the widget tray. The preview is drawn
+ * horizontally centered, and scaled down if needed.
+ *
+ * This view does not support padding. Since the image is scaled down to fit the view, padding will
+ * further decrease the scaling factor. Drag-n-drop uses the view bounds for showing a smooth
+ * transition from the view to drag view, so when adding padding support, DnD would need to
+ * consider the appropriate scaling factor.
  */
 public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
@@ -59,13 +62,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private int mPresetPreviewSize;
     int cellSize;
 
-    private ImageView mWidgetImage;
+    private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
-    private final Rect mOrigImgPadding = new Rect();
 
     private String mDimensionsFormatString;
-    private boolean mIsAppWidget;
     private Object mInfo;
 
     private WidgetPreviewLoader mWidgetPreviewLoader;
@@ -101,12 +102,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWidgetImage = (ImageView) findViewById(R.id.widget_preview);
-        mOrigImgPadding.left = mWidgetImage.getPaddingLeft();
-        mOrigImgPadding.top = mWidgetImage.getPaddingTop();
-        mOrigImgPadding.right = mWidgetImage.getPaddingRight();
-        mOrigImgPadding.bottom = mWidgetImage.getPaddingBottom();
-
+        mWidgetImage = (WidgetImageView) findViewById(R.id.widget_preview);
         mWidgetName = ((TextView) findViewById(R.id.widget_name));
         mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
     }
@@ -119,7 +115,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, "reset called on:" + mWidgetName.getText());
         }
         mWidgetImage.animate().cancel();
-        mWidgetImage.setImageDrawable(null);
+        mWidgetImage.setBitmap(null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
 
@@ -133,15 +129,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      * Apply the widget provider info to the view.
      */
     public void applyFromAppWidgetProviderInfo(LauncherAppWidgetProviderInfo info,
-            int maxWidth, WidgetPreviewLoader loader) {
+            WidgetPreviewLoader loader) {
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
-        mIsAppWidget = true;
         mInfo = info;
-        if (maxWidth > -1) {
-            mWidgetImage.setMaxWidth(maxWidth);
-        }
         // TODO(hyunyoungs): setup a cache for these labels.
         mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
         int hSpan = Math.min(info.spanX, grid.numColumns);
@@ -155,7 +147,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      */
     public void applyFromResolveInfo(
             PackageManager pm, ResolveInfo info, WidgetPreviewLoader loader) {
-        mIsAppWidget = false;
         mInfo = info;
         CharSequence label = info.loadLabel(pm);
         mWidgetName.setText(label);
@@ -172,20 +163,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void applyPreview(Bitmap bitmap) {
-        FastBitmapDrawable preview = new FastBitmapDrawable(bitmap);
-
-        if (preview != null) {
-            mWidgetImage.setImageDrawable(preview);
-
-            if (mIsAppWidget) {
-                // center horizontally
-                int[] imageSize = getPreviewSize();
-                int centerAmount = (imageSize[0] - preview.getIntrinsicWidth()) / 2;
-                mWidgetImage.setPadding(mOrigImgPadding.left + centerAmount,
-                        mOrigImgPadding.top,
-                        mOrigImgPadding.right,
-                        mOrigImgPadding.bottom);
-            }
+        if (bitmap != null) {
+            mWidgetImage.setBitmap(bitmap);
             mWidgetImage.setAlpha(0f);
             mWidgetImage.animate().alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
         }

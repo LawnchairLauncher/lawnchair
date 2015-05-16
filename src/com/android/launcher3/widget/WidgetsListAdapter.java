@@ -18,9 +18,9 @@ package com.android.launcher3.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,15 +29,16 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.LinearLayout;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DynamicGrid;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
+
 import java.util.List;
 
 /**
@@ -56,7 +57,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private Context mContext;
     private Launcher mLauncher;
     private LayoutInflater mLayoutInflater;
-    private IconCache mIconCache;
 
     private WidgetsModel mWidgetsModel;
     private WidgetPreviewLoader mWidgetPreviewLoader;
@@ -76,9 +76,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-
         mLauncher = launcher;
-        mIconCache = LauncherAppState.getInstance().getIconCache();
 
         setContainerHeight();
     }
@@ -143,7 +141,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
                 PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(info, null);
                 widget.setTag(pawi);
-                widget.applyFromAppWidgetProviderInfo(info, -1, mWidgetPreviewLoader);
+                widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
             } else if (infoList.get(i) instanceof ResolveInfo) {
                 ResolveInfo info = (ResolveInfo) infoList.get(i);
                 PendingAddShortcutInfo pasi = new PendingAddShortcutInfo(info.activityInfo);

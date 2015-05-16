@@ -174,19 +174,18 @@ public class DragController {
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
+     * @param viewImageBounds the position of the image inside the view
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
-            Point extraPadding, float initialDragViewScale) {
+    public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo,
+            Rect viewImageBounds, int dragAction, float initialDragViewScale) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
-        int viewExtraPaddingLeft = extraPadding != null ? extraPadding.x : 0;
-        int viewExtraPaddingTop = extraPadding != null ? extraPadding.y : 0;
-        int dragLayerX = loc[0] + v.getPaddingLeft() + viewExtraPaddingLeft +
-                (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
-        int dragLayerY = loc[1] + v.getPaddingTop() + viewExtraPaddingTop +
-                (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
+        int dragLayerX = loc[0] + viewImageBounds.left
+                + (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
+        int dragLayerY = loc[1] + viewImageBounds.top
+                + (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
 
         startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null,
                 null, initialDragViewScale, false);
