@@ -1346,40 +1346,32 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
         if (runLoader) {
-            startLoader(false, PagedView.INVALID_RESTORE_PAGE);
+            startLoader(PagedView.INVALID_RESTORE_PAGE);
         }
     }
 
-    // If there is already a loader task running, tell it to stop.
-    // returns true if isLaunching() was true on the old task
-    private boolean stopLoaderLocked() {
-        boolean isLaunching = false;
+    /**
+     * If there is already a loader task running, tell it to stop.
+     */
+    private void stopLoaderLocked() {
         LoaderTask oldTask = mLoaderTask;
         if (oldTask != null) {
-            if (oldTask.isLaunching()) {
-                isLaunching = true;
-            }
             oldTask.stopLocked();
         }
-        return isLaunching;
     }
 
     public boolean isCurrentCallbacks(Callbacks callbacks) {
         return (mCallbacks != null && mCallbacks.get() == callbacks);
     }
 
-    public void startLoader(boolean isLaunching, int synchronousBindPage) {
-        startLoader(isLaunching, synchronousBindPage, LOADER_FLAG_NONE);
+    public void startLoader(int synchronousBindPage) {
+        startLoader(synchronousBindPage, LOADER_FLAG_NONE);
     }
 
-    public void startLoader(boolean isLaunching, int synchronousBindPage, int loadFlags) {
+    public void startLoader(int synchronousBindPage, int loadFlags) {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue();
         synchronized (mLock) {
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "startLoader isLaunching=" + isLaunching);
-            }
-
             // Clear any deferred bind-runnables from the synchronized load process
             // We must do this before any loading/binding is scheduled below.
             synchronized (mDeferredBindRunnables) {
@@ -1389,9 +1381,8 @@ public class LauncherModel extends BroadcastReceiver
             // Don't bother to start the thread if we know it's not going to do anything
             if (mCallbacks != null && mCallbacks.get() != null) {
                 // If there is already one running, tell it to stop.
-                // also, don't downgrade isLaunching if we're already running
-                isLaunching = stopLoaderLocked() || isLaunching;
-                mLoaderTask = new LoaderTask(mApp.getContext(), isLaunching, loadFlags);
+                stopLoaderLocked();
+                mLoaderTask = new LoaderTask(mApp.getContext(), loadFlags);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
                         && mAllAppsLoaded && mWorkspaceLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
@@ -1484,20 +1475,14 @@ public class LauncherModel extends BroadcastReceiver
      */
     private class LoaderTask implements Runnable {
         private Context mContext;
-        private boolean mIsLaunching;
         @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         @Thunk boolean mLoadAndBindStepFinished;
         private int mFlags;
 
-        LoaderTask(Context context, boolean isLaunching, int flags) {
+        LoaderTask(Context context, int flags) {
             mContext = context;
-            mIsLaunching = isLaunching;
             mFlags = flags;
-        }
-
-        boolean isLaunching() {
-            return mIsLaunching;
         }
 
         boolean isLoadingWorkspace() {
@@ -1609,14 +1594,6 @@ public class LauncherModel extends BroadcastReceiver
             // All Apps interface in the foreground, load All Apps first. Otherwise, load the
             // workspace first (default).
             keep_running: {
-                // Elevate priority when Home launches for the first time to avoid
-                // starving at boot time. Staring at a blank home is not cool.
-                synchronized (mLock) {
-                    if (DEBUG_LOADERS) Log.d(TAG, "Setting thread priority to " +
-                            (mIsLaunching ? "DEFAULT" : "BACKGROUND"));
-                    android.os.Process.setThreadPriority(mIsLaunching
-                            ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
-                }
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
                 loadAndBindWorkspace();
 
@@ -1624,24 +1601,11 @@ public class LauncherModel extends BroadcastReceiver
                     break keep_running;
                 }
 
-                // Whew! Hard work done.  Slow us down, and wait until the UI thread has
-                // settled down.
-                synchronized (mLock) {
-                    if (mIsLaunching) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "Setting thread priority to BACKGROUND");
-                        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                    }
-                }
                 waitForIdle();
 
                 // second step
                 if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
                 loadAndBindAllApps();
-
-                // Restore the default thread priority after we are done loading items
-                synchronized (mLock) {
-                    android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
-                }
             }
 
             // Clear out this reference, otherwise we end up holding it until all of the
@@ -2982,7 +2946,6 @@ public class LauncherModel extends BroadcastReceiver
         public void dumpState() {
             synchronized (sBgLock) {
                 Log.d(TAG, "mLoaderTask.mContext=" + mContext);
-                Log.d(TAG, "mLoaderTask.mIsLaunching=" + mIsLaunching);
                 Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
                 Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
                 Log.d(TAG, "mItems size=" + sBgWorkspaceItems.size());
