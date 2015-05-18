@@ -28,6 +28,7 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -76,6 +77,7 @@ public class BubbleTextView extends TextView {
 
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
+    private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
 
@@ -464,12 +466,20 @@ public class BubbleTextView extends TextView {
         return icon;
     }
 
+    @Override
+    public void requestLayout() {
+        if (!mDisableRelayout) {
+            super.requestLayout();
+        }
+    }
+
     /**
      * Applies the item info if it is same as what the view is pointing to currently.
      */
     public void reapplyItemInfo(final ItemInfo info) {
         if (getTag() == info) {
             mIconLoadRequest = null;
+            mDisableRelayout = true;
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
@@ -478,6 +488,7 @@ public class BubbleTextView extends TextView {
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
             }
+            mDisableRelayout = false;
         }
     }
 
