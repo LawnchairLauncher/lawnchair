@@ -1390,10 +1390,10 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 // If there is already one running, tell it to stop.
                 // also, don't downgrade isLaunching if we're already running
-                isLaunching = isLaunching || stopLoaderLocked();
+                isLaunching = stopLoaderLocked() || isLaunching;
                 mLoaderTask = new LoaderTask(mApp.getContext(), isLaunching, loadFlags);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
-                        && mAllAppsLoaded && mWorkspaceLoaded) {
+                        && mAllAppsLoaded && mWorkspaceLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
                 } else {
                     sWorkerThread.setPriority(Thread.NORM_PRIORITY);
@@ -1600,6 +1600,9 @@ public class LauncherModel extends BroadcastReceiver
 
         public void run() {
             synchronized (mLock) {
+                if (mStopped) {
+                    return;
+                }
                 mIsLoaderTaskRunning = true;
             }
             // Optimize for end-user experience: if the Launcher is up and // running with the
@@ -2783,6 +2786,11 @@ public class LauncherModel extends BroadcastReceiver
             }
             if (!mAllAppsLoaded) {
                 loadAllApps();
+                synchronized (LoaderTask.this) {
+                    if (mStopped) {
+                        return;
+                    }
+                }
                 updateAllAppsIconsCache();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
