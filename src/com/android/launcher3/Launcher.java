@@ -134,7 +134,7 @@ public class Launcher extends Activity
                    View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener,
                    LauncherStateTransitionAnimation.Callbacks {
     static final String TAG = "Launcher";
-    static final boolean LOGD = true;
+    static final boolean LOGD = false;
 
     // Temporary flag
     static final boolean DISABLE_ALL_APPS_SEARCH_INTEGRATION = true;
@@ -185,10 +185,6 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_ADD_CELL_X = "launcher.add_cell_x";
     // Type: int
     private static final String RUNTIME_STATE_PENDING_ADD_CELL_Y = "launcher.add_cell_y";
-    // Type: boolean
-    private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME = "launcher.rename_folder";
-    // Type: long
-    private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
     // Type: int
     private static final String RUNTIME_STATE_PENDING_ADD_SPAN_X = "launcher.add_span_x";
     // Type: int
@@ -260,8 +256,6 @@ public class Launcher extends Activity
     private int mPendingAddWidgetId = -1;
 
     private int[] mTmpAddItemCellCoordinates = new int[2];
-
-    private FolderInfo mFolderInfo;
 
     private Hotseat mHotseat;
     private ViewGroup mOverviewPanel;
@@ -480,11 +474,11 @@ public class Launcher extends Activity
             if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE) {
                 // If the user leaves launcher, then we should just load items asynchronously when
                 // they return.
-                mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
+                mModel.startLoader(PagedView.INVALID_RESTORE_PAGE);
             } else {
                 // We only load the page synchronously if the user rotates (or triggers a
                 // configuration change) while launcher is in the foreground
-                mModel.startLoader(true, mWorkspace.getRestorePage());
+                mModel.startLoader(mWorkspace.getRestorePage());
             }
         }
 
@@ -1051,7 +1045,7 @@ public class Launcher extends Activity
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
-            mModel.startLoader(true, PagedView.INVALID_RESTORE_PAGE);
+            mModel.startLoader(PagedView.INVALID_RESTORE_PAGE);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
@@ -1385,13 +1379,6 @@ public class Launcher extends Activity
             mRestoring = true;
         }
 
-        boolean renameFolder = savedState.getBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, false);
-        if (renameFolder) {
-            long id = savedState.getLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID);
-            mFolderInfo = mModel.getFolderById(this, sFolders, id);
-            mRestoring = true;
-        }
-
         mItemIdToViewId = (HashMap<Integer, Integer>)
                 savedState.getSerializable(RUNTIME_STATE_VIEW_IDS);
     }
@@ -1703,11 +1690,11 @@ public class Launcher extends Activity
                 updateAutoAdvanceState();
             } else if (ENABLE_DEBUG_INTENTS && DebugIntents.DELETE_DATABASE.equals(action)) {
                 mModel.resetLoadedState(false, true);
-                mModel.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+                mModel.startLoader(PagedView.INVALID_RESTORE_PAGE,
                         LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE);
             } else if (ENABLE_DEBUG_INTENTS && DebugIntents.MIGRATE_DATABASE.equals(action)) {
                 mModel.resetLoadedState(false, true);
-                mModel.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+                mModel.startLoader(PagedView.INVALID_RESTORE_PAGE,
                         LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
                                 | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
             }
@@ -2033,11 +2020,6 @@ public class Launcher extends Activity
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y, mPendingAddInfo.spanY);
             outState.putParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO, mPendingAddWidgetInfo);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID, mPendingAddWidgetId);
-        }
-
-        if (mFolderInfo != null && mWaitingForResult) {
-            outState.putBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, true);
-            outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
         }
 
         // Save the current widgets tray?
@@ -3431,7 +3413,7 @@ public class Launcher extends Activity
      * Shows the widgets view.
      */
     void showWidgetsView(boolean animated, boolean resetPageToZero) {
-        Log.d(TAG, "showWidgetsView:" + animated + " resetPageToZero:" + resetPageToZero);
+        if (LOGD) Log.d(TAG, "showWidgetsView:" + animated + " resetPageToZero:" + resetPageToZero);
         if (resetPageToZero) {
             mWidgetsView.scrollToTop();
         }
@@ -3497,8 +3479,7 @@ public class Launcher extends Activity
     }
 
     public void enterSpringLoadedDragMode() {
-        Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s",
-                mState.name()));
+        if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
         if (mState == State.WORKSPACE || mState == State.APPS_SPRING_LOADED ||
                 mState == State.WIDGETS_SPRING_LOADED) {
             return;
@@ -3693,7 +3674,7 @@ public class Launcher extends Activity
      */
     private boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
         if (mPaused) {
-            Log.i(TAG, "Deferring update until onResume");
+            if (LOGD) Log.d(TAG, "Deferring update until onResume");
             if (deletePreviousRunnables) {
                 while (mBindOnResumeCallbacks.remove(run)) {
                 }
@@ -3729,7 +3710,7 @@ public class Launcher extends Activity
      */
     public boolean setLoadOnResume() {
         if (mPaused) {
-            Log.i(TAG, "setLoadOnResume");
+            if (LOGD) Log.d(TAG, "setLoadOnResume");
             mOnResumeNeedsLoad = true;
             return true;
         } else {

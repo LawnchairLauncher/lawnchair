@@ -71,7 +71,7 @@ class LauncherClings implements OnClickListener {
             // Copy the shortcuts from the old database
             LauncherModel model = mLauncher.getModel();
             model.resetLoadedState(false, true);
-            model.startLoader(false, PagedView.INVALID_RESTORE_PAGE,
+            model.startLoader(PagedView.INVALID_RESTORE_PAGE,
                     LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
                             | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
             // Set the flag to skip the folder cling

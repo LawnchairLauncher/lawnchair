@@ -33,11 +33,9 @@ import android.view.WindowManager;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
