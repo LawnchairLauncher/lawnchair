@@ -24,17 +24,16 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Process;
 import android.util.Log;
 import android.util.LongSparseArray;
-
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
-
 import junit.framework.Assert;
 
 import java.util.ArrayList;
@@ -69,6 +68,7 @@ public class WidgetPreviewLoader {
     private final CacheDb mDb;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    private final Handler mWorkerHandler;
 
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
@@ -76,6 +76,7 @@ public class WidgetPreviewLoader {
         mManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
+        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
     }
 
     /**
@@ -83,8 +84,6 @@ public class WidgetPreviewLoader {
      * called on UI thread
      *
      * @param o either {@link LauncherAppWidgetProviderInfo} or {@link ResolveInfo}
-     * @param immediateResult A bitmap array of size 1. If the result is already cached, it is
-     * set to the final result.
      * @return a request id which can be used to cancel the request.
      */
     public PreviewLoadRequest getPreview(final Object o, int previewWidth, int previewHeight,
@@ -289,7 +288,10 @@ public class WidgetPreviewLoader {
         }
     }
 
-    private Bitmap readFromDb(WidgetCacheKey key, Bitmap recycle) {
+    /**
+     * Reads the preview bitmap from the DB or null if the preview is not in the DB.
+     */
+    private Bitmap readFromDb(WidgetCacheKey key, Bitmap recycle, PreviewLoadTask loadTask) {
         Cursor cursor = null;
         try {
             cursor = mDb.getReadableDatabase().query(
@@ -302,12 +304,18 @@ public class WidgetPreviewLoader {
                             key.size
                     },
                     null, null, null);
+            // If cancelled, skip getting the blob and decoding it into a bitmap
+            if (loadTask.isCancelled()) {
+                return null;
+            }
             if (cursor.moveToNext()) {
                 byte[] blob = cursor.getBlob(0);
                 BitmapFactory.Options opts = new BitmapFactory.Options();
                 opts.inBitmap = recycle;
                 try {
-                    return BitmapFactory.decodeByteArray(blob, 0, blob.length, opts);
+                    if (!loadTask.isCancelled()) {
+                        return BitmapFactory.decodeByteArray(blob, 0, blob.length, opts);
+                    }
                 } catch (Exception e) {
                     return null;
                 }
@@ -545,15 +553,17 @@ public class WidgetPreviewLoader {
                 mTask.cancel(true);
             }
 
-            if (mTask.mBitmap == null) {
-                return;
+            // This only handles the case where the PreviewLoadTask is cancelled after the task has
+            // successfully completed (including having written to disk when necessary).  In the
+            // other cases where it is cancelled while the task is running, it will be cleaned up
+            // in the tasks's onCancelled() call, and if cancelled while the task is writing to
+            // disk, it will be cancelled in the task's onPostExecute() call.
+            if (mTask.mBitmapToRecycle != null) {
+                synchronized (mUnusedBitmaps) {
+                    mUnusedBitmaps.add(mTask.mBitmapToRecycle);
+                }
+                mTask.mBitmapToRecycle = null;
             }
-
-            // The preview is no longer bound to any view, move it to {@link WeakReference} list.
-            synchronized(mUnusedBitmaps) {
-                mUnusedBitmaps.add(mTask.mBitmap);
-            }
-            mTask.mBitmap = null;
         }
     }
 
@@ -564,7 +574,8 @@ public class WidgetPreviewLoader {
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
-        private Bitmap mBitmap;
+        private long[] mVersions;
+        private Bitmap mBitmapToRecycle;
 
         PreviewLoadTask(WidgetCacheKey key, Object info, int previewWidth,
                 int previewHeight, WidgetCell caller) {
@@ -584,6 +595,10 @@ public class WidgetPreviewLoader {
             Bitmap unusedBitmap = null;
 
             synchronized (mUnusedBitmaps) {
+                // If already cancelled before this gets to run in the background, then return early
+                if (isCancelled()) {
+                    return null;
+                }
                 // Check if we can use a bitmap
                 for (Bitmap candidate : mUnusedBitmaps) {
                     if (candidate != null && candidate.isMutable() &&
@@ -600,31 +615,64 @@ public class WidgetPreviewLoader {
                     mUnusedBitmaps.remove(unusedBitmap);
                 }
             }
+            // If cancelled now, don't bother reading the preview from the DB
             if (isCancelled()) {
-                return null;
+                return unusedBitmap;
             }
-            Bitmap preview = readFromDb(mKey, unusedBitmap);
+            Bitmap preview = readFromDb(mKey, unusedBitmap, this);
+            // Only consider generating the preview if we have not cancelled the task already
             if (!isCancelled() && preview == null) {
                 // Fetch the version info before we generate the preview, so that, in-case the
                 // app was updated while we are generating the preview, we use the old version info,
                 // which would gets re-written next time.
-                long[] versions = getPackageVersion(mKey.componentName.getPackageName());
+                mVersions = getPackageVersion(mKey.componentName.getPackageName());
 
                 // it's not in the db... we need to generate it
                 preview = generatePreview(mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);
-
-                if (!isCancelled()) {
-                    writeToDb(mKey, versions, preview);
-                }
             }
-
             return preview;
         }
 
         @Override
-        protected void onPostExecute(Bitmap result) {
-            mBitmap = result;
-            mCaller.applyPreview(result);
+        protected void onPostExecute(final Bitmap preview) {
+            mCaller.applyPreview(preview);
+
+            // Write the generated preview to the DB in the worker thread
+            if (mVersions != null) {
+                mWorkerHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!isCancelled()) {
+                            // If we are still using this preview, then write it to the DB and then
+                            // let the normal clear mechanism recycle the bitmap
+                            writeToDb(mKey, mVersions, preview);
+                            mBitmapToRecycle = preview;
+                        } else {
+                            // If we've already cancelled, then skip writing the bitmap to the DB
+                            // and manually add the bitmap back to the recycled set
+                            synchronized (mUnusedBitmaps) {
+                                mUnusedBitmaps.add(preview);
+                            }
+                        }
+                    }
+                });
+            } else {
+                // If we don't need to write to disk, then ensure the preview gets recycled by
+                // the normal clear mechanism
+                mBitmapToRecycle = preview;
+            }
+        }
+
+        @Override
+        protected void onCancelled(Bitmap preview) {
+            // If we've cancelled while the task is running, then can return the bitmap to the
+            // recycled set immediately. Otherwise, it will be recycled after the preview is written
+            // to disk.
+            if (preview != null) {
+                synchronized (mUnusedBitmaps) {
+                    mUnusedBitmaps.add(preview);
+                }
+            }
         }
     }
 
