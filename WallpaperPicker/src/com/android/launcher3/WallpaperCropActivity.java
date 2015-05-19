@@ -131,7 +131,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
         // Load image in background
         final BitmapRegionTileSource.UriBitmapSource bitmapSource =
-                new BitmapRegionTileSource.UriBitmapSource(getContext(), imageUri, 1024);
+                new BitmapRegionTileSource.UriBitmapSource(getContext(), imageUri);
         mSetWallpaperButton.setEnabled(false);
         Runnable onLoad = new Runnable() {
             public void run() {

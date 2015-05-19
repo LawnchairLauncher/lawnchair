@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
@@ -149,18 +150,15 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
     private static final int GL_SIZE_LIMIT = 2048;
     // This must be no larger than half the size of the GL_SIZE_LIMIT
     // due to decodePreview being allowed to be up to 2x the size of the target
-    public static final int MAX_PREVIEW_SIZE = GL_SIZE_LIMIT / 2;
+    private static final int MAX_PREVIEW_SIZE = GL_SIZE_LIMIT / 2;
 
     public static abstract class BitmapSource {
         private SimpleBitmapRegionDecoder mDecoder;
         private Bitmap mPreview;
-        private final int mPreviewSize;
         private int mRotation;
         public enum State { NOT_LOADED, LOADED, ERROR_LOADING };
         private State mState = State.NOT_LOADED;
-        public BitmapSource(int previewSize) {
-            mPreviewSize = Math.min(previewSize, MAX_PREVIEW_SIZE);
-        }
+
         public boolean loadInBackground(InBitmapProvider bitmapProvider) {
             ExifInterface ei = new ExifInterface();
             if (readExif(ei)) {
@@ -176,36 +174,44 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
             } else {
                 int width = mDecoder.getWidth();
                 int height = mDecoder.getHeight();
-                if (mPreviewSize != 0) {
-                    BitmapFactory.Options opts = new BitmapFactory.Options();
-                    opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                    opts.inPreferQualityOverSpeed = true;
 
-                    float scale = (float) mPreviewSize / Math.max(width, height);
-                    opts.inSampleSize = BitmapUtils.computeSampleSizeLarger(scale);
-                    opts.inJustDecodeBounds = false;
-                    opts.inMutable = true;
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                opts.inPreferQualityOverSpeed = true;
 
-                    if (bitmapProvider != null) {
-                        int expectedPixles = (width / opts.inSampleSize) * (height / opts.inSampleSize);
-                        Bitmap reusableBitmap = bitmapProvider.forPixelCount(expectedPixles);
-                        if (reusableBitmap != null) {
-                            // Try loading with reusable bitmap
-                            opts.inBitmap = reusableBitmap;
-                            try {
-                                mPreview = loadPreviewBitmap(opts);
-                            } catch (IllegalArgumentException e) {
-                                Log.d(TAG, "Unable to reusage bitmap", e);
-                                opts.inBitmap = null;
-                                mPreview = null;
-                            }
+                float scale = (float) MAX_PREVIEW_SIZE / Math.max(width, height);
+                opts.inSampleSize = BitmapUtils.computeSampleSizeLarger(scale);
+                opts.inJustDecodeBounds = false;
+                opts.inMutable = true;
+
+                if (bitmapProvider != null) {
+                    int expectedPixles = (width / opts.inSampleSize) * (height / opts.inSampleSize);
+                    Bitmap reusableBitmap = bitmapProvider.forPixelCount(expectedPixles);
+                    if (reusableBitmap != null) {
+                        // Try loading with reusable bitmap
+                        opts.inBitmap = reusableBitmap;
+                        try {
+                            mPreview = loadPreviewBitmap(opts);
+                        } catch (IllegalArgumentException e) {
+                            Log.d(TAG, "Unable to reusage bitmap", e);
+                            opts.inBitmap = null;
+                            mPreview = null;
                         }
                     }
-                    if (mPreview == null) {
-                        mPreview = loadPreviewBitmap(opts);
-                    }
                 }
-                mState = State.LOADED;
+                if (mPreview == null) {
+                    mPreview = loadPreviewBitmap(opts);
+                }
+
+                // Verify that the bitmap can be used on GL surface
+                try {
+                    GLUtils.getInternalFormat(mPreview);
+                    GLUtils.getType(mPreview);
+                    mState = State.LOADED;
+                } catch (IllegalArgumentException e) {
+                    Log.d(TAG, "Image cannot be rendered on a GL surface", e);
+                    mState = State.ERROR_LOADING;
+                }
                 return true;
             }
         }
@@ -237,8 +243,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
 
     public static class FilePathBitmapSource extends BitmapSource {
         private String mPath;
-        public FilePathBitmapSource(String path, int previewSize) {
-            super(previewSize);
+        public FilePathBitmapSource(String path) {
             mPath = path;
         }
         @Override
@@ -272,8 +277,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
     public static class UriBitmapSource extends BitmapSource {
         private Context mContext;
         private Uri mUri;
-        public UriBitmapSource(Context context, Uri uri, int previewSize) {
-            super(previewSize);
+        public UriBitmapSource(Context context, Uri uri) {
             mContext = context;
             mUri = uri;
         }
@@ -337,8 +341,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
     public static class ResourceBitmapSource extends BitmapSource {
         private Resources mRes;
         private int mResId;
-        public ResourceBitmapSource(Resources res, int resId, int previewSize) {
-            super(previewSize);
+        public ResourceBitmapSource(Resources res, int resId) {
             mRes = res;
             mResId = resId;
         }

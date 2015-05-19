@@ -21,7 +21,6 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.WallpaperManager;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -144,8 +143,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
             final BitmapRegionTileSource.UriBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.UriBitmapSource(
-                            a.getContext(), mUri, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
+                    new BitmapRegionTileSource.UriBitmapSource(a.getContext(), mUri);
             a.setCropViewTileSource(bitmapSource, true, false, null, new Runnable() {
 
                 @Override
@@ -199,8 +197,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
             BitmapRegionTileSource.UriBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.UriBitmapSource(a.getContext(),
-                            Uri.fromFile(mFile), 1024);
+                    new BitmapRegionTileSource.UriBitmapSource(a.getContext(), Uri.fromFile(mFile));
             a.setCropViewTileSource(bitmapSource, false, true, null, new Runnable() {
 
                 @Override
@@ -236,8 +233,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
             BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.ResourceBitmapSource(
-                            mResources, mResId, BitmapRegionTileSource.MAX_PREVIEW_SIZE);
+                    new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId);
             a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleProvider() {
 
                 @Override
