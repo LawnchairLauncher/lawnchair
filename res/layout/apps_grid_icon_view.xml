@@ -25,6 +25,5 @@
     android:paddingBottom="@dimen/apps_icon_top_bottom_padding"
     android:focusable="true"
     android:background="@drawable/focusable_view_bg"
-    launcher:deferShadowGeneration="true"
     launcher:iconDisplay="all_apps" />
 

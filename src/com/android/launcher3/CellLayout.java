@@ -47,6 +47,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
@@ -61,7 +62,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
@@ -409,7 +410,8 @@ public class CellLayout extends ViewGroup {
         invalidate();
     }
 
-    void setPressedIcon(BubbleTextView icon, Bitmap background) {
+    @Override
+    public void setPressedIcon(BubbleTextView icon, Bitmap background) {
         if (icon == null || background == null) {
             mTouchFeedbackView.setBitmap(null);
             mTouchFeedbackView.animate().cancel();

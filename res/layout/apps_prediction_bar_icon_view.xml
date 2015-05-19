@@ -24,6 +24,5 @@
     android:layout_weight="1"
     android:focusable="true"
     android:background="@drawable/focusable_view_bg"
-    launcher:deferShadowGeneration="true"
     launcher:iconDisplay="all_apps" />
 
