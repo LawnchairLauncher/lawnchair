@@ -27,8 +27,6 @@
 
     <color name="focused_background">#80c6c5c5</color>
 
-    <color name="appwidget_error_color">#FCCC</color>
-
     <color name="workspace_icon_text_color">#FFF</color>
 
     <color name="quantum_panel_text_color">#FF666666</color>
