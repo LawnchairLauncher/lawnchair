@@ -66,7 +66,6 @@ import com.android.launcher3.util.Thunk;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -3665,39 +3664,6 @@ public class LauncherModel extends BroadcastReceiver
         return folderInfo;
     }
 
-    public static class WidgetAndShortcutNameComparator implements Comparator<Object> {
-        private final AppWidgetManagerCompat mManager;
-        private final PackageManager mPackageManager;
-        private final HashMap<Object, String> mLabelCache;
-        private final Collator mCollator;
-
-        public WidgetAndShortcutNameComparator(Context context) {
-            mManager = AppWidgetManagerCompat.getInstance(context);
-            mPackageManager = context.getPackageManager();
-            mLabelCache = new HashMap<Object, String>();
-            mCollator = Collator.getInstance();
-        }
-        public final int compare(Object a, Object b) {
-            String labelA, labelB;
-            if (mLabelCache.containsKey(a)) {
-                labelA = mLabelCache.get(a);
-            } else {
-                labelA = (a instanceof LauncherAppWidgetProviderInfo)
-                        ? Utilities.trim(mManager.loadLabel((LauncherAppWidgetProviderInfo) a))
-                        : Utilities.trim(((ResolveInfo) a).loadLabel(mPackageManager));
-                mLabelCache.put(a, labelA);
-            }
-            if (mLabelCache.containsKey(b)) {
-                labelB = mLabelCache.get(b);
-            } else {
-                labelB = (b instanceof LauncherAppWidgetProviderInfo)
-                        ? Utilities.trim(mManager.loadLabel((LauncherAppWidgetProviderInfo) b))
-                        : Utilities.trim(((ResolveInfo) b).loadLabel(mPackageManager));
-                mLabelCache.put(b, labelB);
-            }
-            return mCollator.compare(labelA, labelB);
-        }
-    };
 
     static boolean isValidProvider(AppWidgetProviderInfo provider) {
         return (provider != null) && (provider.provider != null)
