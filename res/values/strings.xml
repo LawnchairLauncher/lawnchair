@@ -186,7 +186,7 @@
     <string name="action_add_to_workspace">Add to Home screen</string>
 
     <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
-    <string name="action_move_here">Move here</string>
+    <string name="action_move_here">Move item here</string>
 
     <!-- Accessibility confirmation for item added to workspace. -->
     <string name="item_added_to_workspace">Item added to home screen</string>
