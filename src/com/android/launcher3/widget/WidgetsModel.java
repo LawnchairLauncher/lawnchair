@@ -10,8 +10,9 @@ import android.util.Log;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.LauncherModel.WidgetAndShortcutNameComparator;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.model.AppNameComparator;
+import com.android.launcher3.model.WidgetsAndShortcutNameComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,12 +41,14 @@ public class WidgetsModel {
     private RecyclerView.Adapter mAdapter;
 
     private Comparator mWidgetAndShortcutNameComparator;
+    private Comparator mAppNameComparator;
 
     private IconCache mIconCache;
 
     public WidgetsModel(Context context, RecyclerView.Adapter adapter) {
         mAdapter = adapter;
-        mWidgetAndShortcutNameComparator = new WidgetAndShortcutNameComparator(context);
+        mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
+        mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = LauncherAppState.getInstance().getIconCache();
     }
 
@@ -108,21 +111,12 @@ public class WidgetsModel {
         }
 
         // sort.
-        sortPackageItemInfos();
+        Collections.sort(mPackageItemInfos, mAppNameComparator);
         for (PackageItemInfo p: mPackageItemInfos) {
             Collections.sort(mWidgetsList.get(p), mWidgetAndShortcutNameComparator);
         }
 
         // notify.
         mAdapter.notifyDataSetChanged();
-    }
-
-    private void sortPackageItemInfos() {
-        Collections.sort(mPackageItemInfos, new Comparator<PackageItemInfo>() {
-            @Override
-            public int compare(PackageItemInfo lhs, PackageItemInfo rhs) {
-                return lhs.title.toString().compareTo(rhs.title.toString());
-            }
-        });
     }
 }
