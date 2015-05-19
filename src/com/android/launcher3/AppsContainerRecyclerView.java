@@ -402,7 +402,6 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         int x;
         int y;
         int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-        boolean isRtl = Utilities.isRtl(getResources());
         int rowCount = getNumRows();
         getCurScrollState(mScrollPosState, items);
         if (mScrollPosState.rowIndex != -1) {
@@ -413,7 +412,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
                         (int) (height / ((float) totalScrollHeight / height)));
 
                 // Calculate the position and size of the scroll bar
-                if (isRtl) {
+                if (Utilities.isRtl(getResources())) {
                     x = mBackgroundPadding.left;
                 } else {
                     x = getWidth() - mBackgroundPadding.right - mScrollbarWidth;
@@ -442,11 +441,10 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         if (mFastScrollAlpha > 0f && !mFastScrollSectionName.isEmpty()) {
             int x;
             int y;
-            boolean isRtl = Utilities.isRtl(getResources());
 
             // Calculate the position for the fast scroller popup
             Rect bgBounds = mFastScrollerBg.getBounds();
-            if (isRtl) {
+            if (Utilities.isRtl(getResources())) {
                 x = mBackgroundPadding.left + getScrollBarSize();
             } else {
                 x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
