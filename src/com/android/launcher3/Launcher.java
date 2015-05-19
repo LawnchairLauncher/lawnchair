@@ -55,6 +55,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -155,6 +156,10 @@ public class Launcher extends Activity
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
     private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
+
+    private static final int WORKSPACE_BACKGROUND_GRADIENT = 0;
+    private static final int WORKSPACE_BACKGROUND_TRANSPARENT = 1;
+    private static final int WORKSPACE_BACKGROUND_BLACK = 2;
 
     /**
      * IntentStarter uses request codes starting with this. This must be greater than all activity
@@ -1040,8 +1045,9 @@ public class Launcher extends Activity
             }
         }
 
-        // Background was set to gradient in onPause(), restore to black if in all apps.
-        setWorkspaceBackground(mState == State.WORKSPACE);
+        // Background was set to gradient in onPause(), restore to transparent if in all apps.
+        setWorkspaceBackground(mState == State.WORKSPACE ? WORKSPACE_BACKGROUND_TRANSPARENT
+                : WORKSPACE_BACKGROUND_GRADIENT);
 
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
@@ -3294,9 +3300,17 @@ public class Launcher extends Activity
         return (mState == State.WIDGETS) || (mOnResumeState == State.WIDGETS);
     }
 
-    private void setWorkspaceBackground(boolean workspace) {
-        mLauncherView.setBackground(workspace ?
-                mWorkspaceBackgroundDrawable : null);
+    private void setWorkspaceBackground(int background) {
+        switch (background) {
+            case WORKSPACE_BACKGROUND_TRANSPARENT:
+                getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                break;
+            case WORKSPACE_BACKGROUND_BLACK:
+                getWindow().setBackgroundDrawable(null);
+                break;
+            default:
+                getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
+        }
     }
 
     protected void changeWallpaperVisiblity(boolean visible) {
@@ -3306,7 +3320,7 @@ public class Launcher extends Activity
         if (wpflags != curflags) {
             getWindow().setFlags(wpflags, WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
         }
-        setWorkspaceBackground(visible);
+        setWorkspaceBackground(visible ? WORKSPACE_BACKGROUND_GRADIENT : WORKSPACE_BACKGROUND_BLACK);
     }
 
     @Override
