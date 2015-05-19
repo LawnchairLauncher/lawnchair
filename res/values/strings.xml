@@ -182,76 +182,76 @@
     </string>
 
 <!-- Strings for accessibility actions -->
-    <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
-    <string name="action_add_to_workspace">Add to home screen</string>
+    <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+    <string name="action_add_to_workspace">Add to Home screen</string>
 
-    <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
     <string name="action_move_here">Move here</string>
 
-    <!-- Accessibility confirmation for item added to workspace [DO NOT TRANSLATE] -->
+    <!-- Accessibility confirmation for item added to workspace. -->
     <string name="item_added_to_workspace">Item added to home screen</string>
 
-    <!-- Accessibility confirmation for item removed [DO NOT TRANSLATE] -->
+    <!-- Accessibility confirmation for item removed. -->
     <string name="item_removed">Item removed</string>
 
-    <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
-    <string name="action_move">Move Item</string>
+    <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+    <string name="action_move">Move item</string>
 
-    <!-- Accessibility description to move item to empty cell. [DO NOT TRANSLATE] -->
+    <!-- Accessibility description to move item to empty cell. -->
     <string name="move_to_empty_cell">Move to row <xliff:g id="number" example="1">%1$s</xliff:g> column <xliff:g id="number" example="1">%2$s</xliff:g></string>
 
-    <!-- Accessibility description to move item inside a folder. [DO NOT TRANSLATE] -->
+    <!-- Accessibility description to move item inside a folder. -->
     <string name="move_to_position">Move to position <xliff:g id="number" example="1">%1$s</xliff:g></string>
 
-    <!-- Accessibility description to move item to the hotseat. [DO NOT TRANSLATE] -->
+    <!-- Accessibility description to move item to the hotseat. -->
     <string name="move_to_hotseat_position">Move to favorites position <xliff:g id="number" example="1">%1$s</xliff:g></string>
 
-    <!-- Accessibility confirmation for item move [DO NOT TRANSLATE]-->
+    <!-- Accessibility confirmation for item move. -->
     <string name="item_moved">Item moved</string>
 
-    <!-- Accessibility description to move item into an existing folder. [DO NOT TRANSLATE]-->
+    <!-- Accessibility description to move item into an existing folder. -->
     <string name="add_to_folder">Add to folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
 
-    <!-- Accessibility description to move item into an existing folder containing an app. [DO NOT TRANSLATE]-->
+    <!-- Accessibility description to move item into an existing folder containing an app. -->
     <string name="add_to_folder_with_app">Add to folder with <xliff:g id="name" example="Messenger">%1$s</xliff:g></string>
 
-    <!-- Accessibility confirmation for item added to folder [DO NOT TRANSLATE] -->
+    <!-- Accessibility confirmation for item added to folder. -->
     <string name="added_to_folder">Item added to folder</string>
 
-    <!-- Accessibility description to create folder with another item. [DO NOT TRANSLATE] -->
+    <!-- Accessibility description to create folder with another item. -->
     <string name="create_folder_with">Create folder with: <xliff:g id="name" example="Game">%1$s</xliff:g></string>
 
-    <!-- Accessibility confirmation for folder created [DO NOT TRANSLATE] -->
+    <!-- Accessibility confirmation for folder created. -->
     <string name="folder_created">Folder created</string>
 
-    <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
-    <string name="action_move_to_workspace">Move to home screen</string>
+    <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
+    <string name="action_move_to_workspace">Move to Home screen</string>
 
-    <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
     <string name="action_move_screen_left">Move screen to left</string>
 
-    <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
     <string name="action_move_screen_right">Move screen to right</string>
 
-    <!-- Accessibility confirmation when a screen was moved [DO NOT TRANSLATE] -->
+    <!-- Accessibility confirmation when a screen was moved. -->
     <string name="screen_moved">Screen moved</string>
 
-    <!-- Accessibility action to resize a widget [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
     <string name="action_resize">Resize</string>
 
-    <!-- Accessibility action to increase width of a widget [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
     <string name="action_increase_width">Increase width</string>
 
-    <!-- Accessibility action to increase height of a widget [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
     <string name="action_increase_height">Increase height</string>
 
-    <!-- Accessibility action to decrease width of a widget [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
     <string name="action_decrease_width">Decrease width</string>
 
-    <!-- Accessibility action to decrease height of a widget [DO NOT TRANSLATE] -->
+    <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
     <string name="action_decrease_height">Decrease height</string>
 
-    <!-- Accessibility confirmation for widget resize [DO NOT TRANSLATE]-->
+    <!-- Accessibility confirmation for widget resize. -->
     <string name="widget_resized">Widget resized to width <xliff:g id="number" example="2">%1$s</xliff:g> height <xliff:g id="number" example="1">%2$s</xliff:g></string>
 
 </resources>
