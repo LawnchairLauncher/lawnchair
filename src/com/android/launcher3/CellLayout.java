@@ -3010,7 +3010,7 @@ public class CellLayout extends ViewGroup {
     // 2. When long clicking on an empty cell in a CellLayout, we save information about the
     //    cellX and cellY coordinates and which page was clicked. We then set this as a tag on
     //    the CellLayout that was long clicked
-    static final class CellInfo {
+    public static final class CellInfo {
         View cell;
         int cellX = -1;
         int cellY = -1;
@@ -3019,7 +3019,7 @@ public class CellLayout extends ViewGroup {
         long screenId;
         long container;
 
-        CellInfo(View v, ItemInfo info) {
+        public CellInfo(View v, ItemInfo info) {
             cell = v;
             cellX = info.cellX;
             cellY = info.cellY;

@@ -57,19 +57,22 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
+
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
-import com.android.launcher3.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -494,7 +497,7 @@ public class Workspace extends SmoothPagedView
     /**
      * @return The open folder on the current screen, or null if there is none
      */
-    Folder getOpenFolder() {
+    public Folder getOpenFolder() {
         DragLayer dragLayer = mLauncher.getDragLayer();
         int count = dragLayer.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -857,7 +860,7 @@ public class Workspace extends SmoothPagedView
         return -1;
     }
 
-    ArrayList<Long> getScreenOrder() {
+    public ArrayList<Long> getScreenOrder() {
         return mScreenOrder;
     }
 

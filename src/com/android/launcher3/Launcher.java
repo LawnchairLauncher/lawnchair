@@ -96,6 +96,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -3184,7 +3185,7 @@ public class Launcher extends Activity
         }
     }
 
-    void closeFolder(Folder folder) {
+    public void closeFolder(Folder folder) {
         folder.getInfo().opened = false;
 
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
@@ -3337,7 +3338,7 @@ public class Launcher extends Activity
                 true);
     }
 
-    protected void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
+    public void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
                 onCompleteRunnable, true);
     }
