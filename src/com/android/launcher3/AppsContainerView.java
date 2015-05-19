@@ -35,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -47,12 +48,97 @@ import java.util.regex.Pattern;
 
 
 /**
+ * Interface for controlling the header elevation in response to RecyclerView scroll.
+ */
+interface HeaderElevationController {
+    void onScroll(int scrollY);
+    void disable();
+}
+
+/**
+ * Implementation of the header elevation mechanism for pre-L devices.  It simulates elevation
+ * by drawing a gradient under the header bar.
+ */
+final class HeaderElevationControllerV16 implements HeaderElevationController {
+
+    private final View mShadow;
+
+    private final float mScrollToElevation;
+
+    public HeaderElevationControllerV16(View header) {
+        Resources res = header.getContext().getResources();
+        mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
+
+        mShadow = new View(header.getContext());
+        mShadow.setBackground(new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, new int[] {0x44000000, 0x00000000}));
+        mShadow.setAlpha(0);
+
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                res.getDimensionPixelSize(R.dimen.all_apps_header_shadow_height));
+        lp.topMargin = ((FrameLayout.LayoutParams) header.getLayoutParams()).height;
+
+        ((ViewGroup) header.getParent()).addView(mShadow, lp);
+    }
+
+    @Override
+    public void onScroll(int scrollY) {
+        float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
+                mScrollToElevation;
+        mShadow.setAlpha(elevationPct);
+    }
+
+    @Override
+    public void disable() {
+        ViewGroup parent = (ViewGroup) mShadow.getParent();
+        if (parent != null) {
+            parent.removeView(mShadow);
+        }
+    }
+}
+
+/**
+ * Implementation of the header elevation mechanism for L+ devices, which makes use of the native
+ * view elevation.
+ */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+final class HeaderElevationControllerVL implements HeaderElevationController {
+
+    private final View mHeader;
+    private final float mMaxElevation;
+    private final float mScrollToElevation;
+
+    public HeaderElevationControllerVL(View header) {
+        mHeader = header;
+
+        Resources res = header.getContext().getResources();
+        mMaxElevation = res.getDimension(R.dimen.all_apps_header_max_elevation);
+        mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
+    }
+
+    @Override
+    public void onScroll(int scrollY) {
+        float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
+                mScrollToElevation;
+        float newElevation = mMaxElevation * elevationPct;
+        if (Float.compare(mHeader.getElevation(), newElevation) != 0) {
+            mHeader.setElevation(newElevation);
+        }
+    }
+
+    @Override
+    public void disable() { }
+}
+
+/**
  * The all apps view container.
  */
 public class AppsContainerView extends BaseContainerView implements DragSource, Insettable,
         TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable,
         AlphabeticalAppsList.FilterChangedCallback, AppsGridAdapter.PredictionBarSpacerCallbacks,
-        View.OnTouchListener, View.OnClickListener, View.OnLongClickListener {
+        View.OnTouchListener, View.OnClickListener, View.OnLongClickListener,
+        ViewTreeObserver.OnPreDrawListener {
 
     public static final boolean GRID_MERGE_SECTIONS = true;
 
@@ -96,8 +182,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     // Normal container insets
     private int mContainerInset;
     private int mPredictionBarHeight;
-    // RecyclerView scroll position
-    @Thunk int mRecyclerViewScrollY;
+    private int mLastRecyclerViewScrollPos = -1;
 
     private CheckLongPressHelper mPredictionIconCheckForLongPress;
     private View mPredictionIconUnderTouch;
@@ -266,14 +351,6 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
-        mAppsRecyclerView.setOnScrollListenerProxy(
-                new BaseContainerRecyclerView.OnScrollToListener() {
-                    @Override
-                    public void onScrolledTo(int x, int y) {
-                        mRecyclerViewScrollY = y;
-                        onRecyclerViewScrolled();
-                    }
-                });
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
@@ -283,9 +360,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     @Override
     public void onBindPredictionBar() {
-        if (!updatePredictionBarVisibility()) {
-            return;
-        }
+        updatePredictionBarVisibility();
 
         List<AppInfo> predictedApps = mApps.getPredictedApps();
         int childCount = mPredictionBarView.getChildCount();
@@ -398,6 +473,12 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mAppsRecyclerView.updateBackgroundPadding(background);
         mAdapter.updateBackgroundPadding(background);
         getRevealView().setBackground(background.getConstantState().newDrawable());
+    }
+
+    @Override
+    public boolean onPreDraw() {
+        synchronizeToRecyclerViewScrollPosition(mAppsRecyclerView.getScrollPosition());
+        return true;
     }
 
     @Override
@@ -600,7 +681,11 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
-        // Do nothing
+        // Register for a pre-draw listener to synchronize the recycler view scroll to other views
+        // in this container
+        if (!toWorkspace) {
+            getViewTreeObserver().addOnPreDrawListener(this);
+        }
     }
 
     @Override
@@ -620,18 +705,26 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                 hideSearchField(false, false);
             }
         }
+        if (toWorkspace) {
+            getViewTreeObserver().removeOnPreDrawListener(this);
+            mLastRecyclerViewScrollPos = -1;
+        }
     }
 
     /**
      * Updates the container when the recycler view is scrolled.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void onRecyclerViewScrolled() {
-        if (DYNAMIC_HEADER_ELEVATION) {
-            mElevationController.onScroll(mRecyclerViewScrollY);
-        }
+    private void synchronizeToRecyclerViewScrollPosition(int scrollY) {
+        if (mLastRecyclerViewScrollPos != scrollY) {
+            mLastRecyclerViewScrollPos = scrollY;
+            if (DYNAMIC_HEADER_ELEVATION) {
+                mElevationController.onScroll(scrollY);
+            }
 
-        mPredictionBarView.setTranslationY(-mRecyclerViewScrollY + mAppsRecyclerView.getPaddingTop());
+            // Scroll the prediction bar with the contents of the recycler view
+            mPredictionBarView.setTranslationY(-scrollY + mAppsRecyclerView.getPaddingTop());
+        }
     }
 
     @Override
@@ -866,80 +959,5 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
      */
     private InputMethodManager getInputMethodManager() {
         return (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-    }
-
-    private static interface HeaderElevationController {
-
-        public void onScroll(int scrollY);
-
-        public void disable();
-    }
-
-    private static final class HeaderElevationControllerV16 implements HeaderElevationController {
-
-        private final View mShadow;
-
-        private final float mScrollToElevation;
-
-        public HeaderElevationControllerV16(View header) {
-            Resources res = header.getContext().getResources();
-            mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
-
-            mShadow = new View(header.getContext());
-            mShadow.setBackground(new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM, new int[] {0x44000000, 0x00000000}));
-            mShadow.setAlpha(0);
-
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                    LayoutParams.MATCH_PARENT,
-                    res.getDimensionPixelSize(R.dimen.all_apps_header_shadow_height));
-            lp.topMargin = ((FrameLayout.LayoutParams) header.getLayoutParams()).height;
-
-            ((ViewGroup) header.getParent()).addView(mShadow, lp);
-        }
-
-        @Override
-        public void onScroll(int scrollY) {
-            float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
-                    mScrollToElevation;
-            mShadow.setAlpha(elevationPct);
-        }
-
-        @Override
-        public void disable() {
-            ViewGroup parent = (ViewGroup) mShadow.getParent();
-            if (parent != null) {
-                parent.removeView(mShadow);
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static final class HeaderElevationControllerVL implements HeaderElevationController {
-
-        private final View mHeader;
-        private final float mMaxElevation;
-        private final float mScrollToElevation;
-
-        public HeaderElevationControllerVL(View header) {
-            mHeader = header;
-
-            Resources res = header.getContext().getResources();
-            mMaxElevation = res.getDimension(R.dimen.all_apps_header_max_elevation);
-            mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
-        }
-
-        @Override
-        public void onScroll(int scrollY) {
-            float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
-                    mScrollToElevation;
-            float newElevation = mMaxElevation * elevationPct;
-            if (Float.compare(mHeader.getElevation(), newElevation) != 0) {
-                mHeader.setElevation(newElevation);
-            }
-        }
-
-        @Override
-        public void disable() { }
     }
 }
