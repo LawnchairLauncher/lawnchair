@@ -15,15 +15,12 @@
 -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dip"
-    android:paddingBottom="10dip"
-    android:paddingLeft="20dip"
-    android:paddingRight="20dip"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@drawable/bg_appwidget_error"
+    android:elevation="2dp"
+    android:background="@drawable/quantum_panel_dark"
     android:textAppearance="?android:attr/textAppearanceMediumInverse"
-    android:textColor="@color/appwidget_error_color"
+    android:textColor="@color/widgets_view_item_text_color"
     android:text="@string/gadget_error_text"
     />
