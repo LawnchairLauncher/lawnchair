@@ -45,11 +45,14 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Toast;
+
+import junit.framework.Assert;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,8 +60,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import junit.framework.Assert;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -649,5 +650,23 @@ public final class Utilities {
         if (LauncherAppState.isDogfoodBuild()) {
             Assert.assertTrue(LauncherModel.sWorkerThread.getThreadId() == Process.myTid());
         }
+    }
+
+    /**
+     * Returns true if the intent is a valid launch intent for a launcher activity of an app.
+     * This is used to identify shortcuts which are different from the ones exposed by the
+     * applications' manifest file.
+     *
+     * @param launchIntent The intent that will be launched when the shortcut is clicked.
+     */
+    public static boolean isLauncherAppTarget(Intent launchIntent) {
+        return launchIntent != null
+                && Intent.ACTION_MAIN.equals(launchIntent.getAction())
+                && launchIntent.getComponent() != null
+                && launchIntent.getCategories() != null
+                && launchIntent.getCategories().size() == 1
+                && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                && launchIntent.getExtras() == null
+                && TextUtils.isEmpty(launchIntent.getDataString());
     }
 }

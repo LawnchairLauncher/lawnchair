@@ -156,6 +156,16 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         queuePendingShortcutInfo(info, context);
     }
 
+    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
+        if (info.launchIntent == null || info.label == null) {
+            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
+            return null;
+        }
+        info = convertToLauncherActivityIfPossible(info);
+        return info.getShortcutInfo();
+    }
+
     static void queueInstallShortcut(LauncherActivityInfoCompat info, Context context) {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
     }
@@ -212,30 +222,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 app.getModel().addAndBindAddedWorkspaceItems(context, addShortcuts);
             }
         }
-    }
-
-    /**
-     * Returns true if the intent is a valid launch intent for a shortcut.
-     * This is used to identify shortcuts which are different from the ones exposed by the
-     * applications' manifest file.
-     *
-     * When DISABLE_ALL_APPS is true, shortcuts exposed via the app's manifest should never be
-     * duplicated or removed(unless the app is un-installed).
-     *
-     * @param launchIntent The intent that will be launched when the shortcut is clicked.
-     */
-    static boolean isValidShortcutLaunchIntent(Intent launchIntent) {
-        if (launchIntent != null
-                && Intent.ACTION_MAIN.equals(launchIntent.getAction())
-                && launchIntent.getComponent() != null
-                && launchIntent.getCategories() != null
-                && launchIntent.getCategories().size() == 1
-                && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                && launchIntent.getExtras() == null
-                && TextUtils.isEmpty(launchIntent.getDataString())) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -428,7 +414,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Already an activity target
             return original;
         }
-        if (isValidShortcutLaunchIntent(original.launchIntent)
+        if (!Utilities.isLauncherAppTarget(original.launchIntent)
                 || !original.user.equals(UserHandleCompat.myUserHandle())) {
             // We can only convert shortcuts which point to a main activity in the current user.
             return original;

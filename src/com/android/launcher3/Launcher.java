@@ -806,7 +806,7 @@ public class Launcher extends Activity
         }
 
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
-                requestCode == REQUEST_CREATE_APPWIDGET || requestCode == REQUEST_CREATE_SHORTCUT);
+                requestCode == REQUEST_CREATE_APPWIDGET);
 
         final boolean workspaceLocked = isWorkspaceLocked();
         // We have special handling for widgets
@@ -1550,14 +1550,13 @@ public class Launcher extends Activity
         int[] touchXY = mPendingAddInfo.dropPos;
         CellLayout layout = getCellLayout(container, screenId);
 
-        boolean foundCellSpan = false;
-
-        ShortcutInfo info = mModel.infoFromShortcutIntent(this, data);
+        ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(this, data);
         if (info == null) {
             return;
         }
         final View view = createShortcut(info);
 
+        boolean foundCellSpan = false;
         // First we check if we already know the exact location where we want to add this item.
         if (cellX >= 0 && cellY >= 0) {
             cellXY[0] = cellX;

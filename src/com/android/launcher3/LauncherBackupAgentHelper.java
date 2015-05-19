@@ -94,6 +94,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
             // TODO: Update the backup set to include rank.
             if (mHelper.restoredBackupVersion <= 2) {
                 LauncherAppState.getLauncherProvider().updateFolderItemsRank();
+                LauncherAppState.getLauncherProvider().convertShortcutsToLauncherActivities();
             }
         } else {
             if (VERBOSE) Log.v(TAG, "Nothing was restored, clearing DB");
