@@ -34,6 +34,7 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
@@ -276,9 +277,10 @@ public class BubbleTextView extends TextView {
         }
 
         // Only show the shadow effect when persistent pressed state is set.
-        if (getParent() instanceof ShortcutAndWidgetContainer) {
-            CellLayout layout = (CellLayout) getParent().getParent();
-            layout.setPressedIcon(this, mPressedBackground);
+        ViewParent parent = getParent();
+        if (parent != null && parent.getParent() instanceof BubbleTextShadowHandler) {
+            ((BubbleTextShadowHandler) parent.getParent()).setPressedIcon(
+                    this, mPressedBackground);
         }
 
         updateIconState();
@@ -519,5 +521,12 @@ public class BubbleTextView extends TextView {
                         .updateIconInBackground(BubbleTextView.this, info);
             }
         }
+    }
+
+    /**
+     * Interface to be implemented by the grand parent to allow click shadow effect.
+     */
+    public static interface BubbleTextShadowHandler {
+        void setPressedIcon(BubbleTextView icon, Bitmap background);
     }
 }
