@@ -39,16 +39,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="start"
-            android:singleLine="true"
             android:ellipsize="end"
             android:fadingEdge="horizontal"
-            android:textColor="@color/widgets_view_item_text_color"
-            android:textSize="14sp"
-            android:textAlignment="viewStart"
             android:fontFamily="sans-serif-condensed"
+            android:gravity="start"
+            android:shadowColor="#B0000000"
             android:shadowRadius="2.0"
-            android:shadowColor="#B0000000" />
+            android:singleLine="true"
+            android:textColor="@color/widgets_view_item_text_color"
+            android:textSize="14sp" />
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
              style. -->
@@ -58,22 +57,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_weight="0"
-            android:gravity="start"
             android:textColor="@color/widgets_view_item_text_color"
             android:textSize="14sp"
-            android:textAlignment="viewStart"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"
             android:shadowColor="#B0000000" />
     </LinearLayout>
 
-    <!-- The image of the widget. -->
+    <!-- The image of the widget. This view does not support padding. Any placement adjustment
+         should be done using margins. -->
     <com.android.launcher3.widget.WidgetImageView
         android:id="@+id/widget_preview"
-        style="@style/WidgetImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:scaleType="matrix" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </com.android.launcher3.widget.WidgetCell>

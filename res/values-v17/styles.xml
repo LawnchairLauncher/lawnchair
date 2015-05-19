@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="WidgetImageView">
-        <item name="android:paddingStart">@dimen/widget_preview_horizontal_padding</item>
-    </style>
-</resources>
