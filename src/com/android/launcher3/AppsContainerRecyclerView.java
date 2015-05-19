@@ -128,6 +128,14 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow) {
         mNumAppsPerRow = numAppsPerRow;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
+
+        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        RecyclerView.RecycledViewPool pool = getRecycledViewPool();
+        int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
+        pool.setMaxRecycledViews(AppsGridAdapter.PREDICTION_BAR_SPACER_TYPE, 1);
+        pool.setMaxRecycledViews(AppsGridAdapter.EMPTY_VIEW_TYPE, 1);
+        pool.setMaxRecycledViews(AppsGridAdapter.ICON_VIEW_TYPE, approxRows * mNumAppsPerRow);
+        pool.setMaxRecycledViews(AppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
     }
 
     public void updateBackgroundPadding(Drawable background) {
