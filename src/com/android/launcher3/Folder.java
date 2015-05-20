@@ -49,13 +49,15 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.android.launcher3.CellLayout.CellInfo;
 import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.FolderInfo.FolderListener;
-import com.android.launcher3.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -352,7 +354,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     /**
      * @return the FolderInfo object associated with this folder
      */
-    FolderInfo getInfo() {
+    public FolderInfo getInfo() {
         return mInfo;
     }
 

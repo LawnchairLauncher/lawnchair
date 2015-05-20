@@ -1,4 +1,4 @@
-package com.android.launcher3;
+package com.android.launcher3.accessibility;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -16,6 +16,24 @@ import android.view.View.AccessibilityDelegate;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.Folder;
+import com.android.launcher3.FolderInfo;
+import com.android.launcher3.InfoDropTarget;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.UninstallDropTarget;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;

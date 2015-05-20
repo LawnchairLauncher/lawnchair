@@ -407,7 +407,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     /**
      * Returns the index of the currently displayed page.
      */
-    int getCurrentPage() {
+    public int getCurrentPage() {
         return mCurrentPage;
     }
 
@@ -422,7 +422,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return getChildCount();
     }
 
-    View getPageAt(int index) {
+    public View getPageAt(int index) {
         return getChildAt(index);
     }
 

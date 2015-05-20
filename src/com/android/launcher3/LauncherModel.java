@@ -792,7 +792,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
-    static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
+    public static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
             final long screenId, final int cellX, final int cellY) {
         item.container = container;
         item.cellX = cellX;
@@ -888,7 +888,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Update an item to the database in a specified container.
      */
-    static void updateItemInDatabase(Context context, final ItemInfo item) {
+    public static void updateItemInDatabase(Context context, final ItemInfo item) {
         final ContentValues values = new ContentValues();
         item.onAddToDatabase(context, values);
         updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");

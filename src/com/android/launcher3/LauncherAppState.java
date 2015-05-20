@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.util.Thunk;
