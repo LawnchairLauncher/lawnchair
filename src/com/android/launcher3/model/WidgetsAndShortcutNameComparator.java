@@ -1,6 +1,5 @@
 package com.android.launcher3.model;
 
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -8,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.UserHandleCompat;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -18,12 +18,14 @@ public class WidgetsAndShortcutNameComparator implements Comparator<Object> {
     private final PackageManager mPackageManager;
     private final HashMap<Object, String> mLabelCache;
     private final Collator mCollator;
+    private final UserHandleCompat mMainHandle;
 
     public WidgetsAndShortcutNameComparator(Context context) {
         mManager = AppWidgetManagerCompat.getInstance(context);
         mPackageManager = context.getPackageManager();
         mLabelCache = new HashMap<Object, String>();
         mCollator = Collator.getInstance();
+        mMainHandle = UserHandleCompat.myUserHandle();
     }
 
     @Override
@@ -45,19 +47,22 @@ public class WidgetsAndShortcutNameComparator implements Comparator<Object> {
                     : Utilities.trim(((ResolveInfo) b).loadLabel(mPackageManager));
             mLabelCache.put(b, labelB);
         }
-        int result = mCollator.compare(labelA, labelB);
-        if (result == 0 && a instanceof AppWidgetProviderInfo &&
-                b instanceof AppWidgetProviderInfo) {
-            AppWidgetProviderInfo aInfo = (AppWidgetProviderInfo) a;
-            AppWidgetProviderInfo bInfo = (AppWidgetProviderInfo) b;
 
-            // prioritize main user's widgets against work profile widgets.
-            if (aInfo.getProfile().equals(android.os.Process.myUserHandle())) {
-                return -1;
-            } else if (bInfo.getProfile().equals(android.os.Process.myUserHandle())) {
-                return 1;
-            }
+        // Currently, there is no work profile shortcuts, hence only considering the widget cases.
+
+        boolean aWorkProfile = (a instanceof LauncherAppWidgetProviderInfo) &&
+                !mMainHandle.equals(mManager.getUser((LauncherAppWidgetProviderInfo) a));
+        boolean bWorkProfile = (b instanceof LauncherAppWidgetProviderInfo) &&
+                !mMainHandle.equals(mManager.getUser((LauncherAppWidgetProviderInfo) b));
+
+        // Independent of how the labels compare, if only one of the two widget info belongs to
+        // work profile, put that one in the back.
+        if (aWorkProfile && !bWorkProfile) {
+            return 1;
         }
-        return result;
+        if (!aWorkProfile && bWorkProfile) {
+            return -1;
+        }
+        return mCollator.compare(labelA, labelB);
     }
 };
