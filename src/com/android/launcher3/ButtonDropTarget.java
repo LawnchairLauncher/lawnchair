@@ -23,7 +23,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -85,21 +84,15 @@ public abstract class ButtonDropTarget extends TextView
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected void setDrawable(int resId) {
-        // Get the hover color
-        mDrawable = (TransitionDrawable) getCurrentDrawable();
+        // We do not set the drawable in the xml as that inflates two drawables corresponding to
+        // drawableLeft and drawableStart.
+        mDrawable = (TransitionDrawable) getResources().getDrawable(resId);
+        mDrawable.setCrossFadeEnabled(true);
 
-        if (mDrawable == null) {
-            // TODO: investigate why this is ever happening. Presently only on one known device.
-            mDrawable = (TransitionDrawable) getResources().getDrawable(resId);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
-            } else {
-                setCompoundDrawablesWithIntrinsicBounds(mDrawable, null, null, null);
-            }
-        }
-
-        if (null != mDrawable) {
-            mDrawable.setCrossFadeEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+        } else {
+            setCompoundDrawablesWithIntrinsicBounds(mDrawable, null, null, null);
         }
     }
 
@@ -109,16 +102,6 @@ public abstract class ButtonDropTarget extends TextView
 
     public void setSearchDropTargetBar(SearchDropTargetBar searchDropTargetBar) {
         mSearchDropTargetBar = searchDropTargetBar;
-    }
-
-    protected Drawable getCurrentDrawable() {
-        Drawable[] drawables = getCompoundDrawables();
-        for (int i = 0; i < drawables.length; ++i) {
-            if (drawables[i] != null) {
-                return drawables[i];
-            }
-        }
-        return null;
     }
 
     @Override
