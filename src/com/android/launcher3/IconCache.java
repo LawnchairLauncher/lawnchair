@@ -46,12 +46,14 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PackageItemInfo;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Stack;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -281,7 +283,7 @@ public class IconCache {
                 itemsToRemove.add(c.getInt(rowIndex));
                 continue;
             }
-            ContentValues values = updateCacheAndGetContentValues(app);
+            ContentValues values = updateCacheAndGetContentValues(app, true);
             mIconDb.getWritableDatabase().update(IconDB.TABLE_NAME, values,
                     IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
                     new String[] {cn, Long.toString(userSerial)});
@@ -296,21 +298,19 @@ public class IconCache {
         }
 
         // Insert remaining apps.
-        for (LauncherActivityInfoCompat app : componentMap.values()) {
-            PackageInfo info = pkgInfoMap.get(app.getComponentName().getPackageName());
-            if (info == null) {
-                continue;
-            }
-            addIconToDBAndMemCache(app, info, userSerial);
+        if (!componentMap.isEmpty()) {
+            mWorkerHandler.post(new SerializedIconAdditionTask(userSerial, pkgInfoMap,
+                    componentMap.values()));
         }
         return updatedPackages;
     }
 
     private void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
             long userSerial) {
-        ContentValues values = updateCacheAndGetContentValues(app);
+        // Reuse the existing entry if it already exists in the DB. This ensures that we do not
+        // create bitmap if it was already created during loader.
+        ContentValues values = updateCacheAndGetContentValues(app, false);
         addIconToDB(values, app.getComponentName(), info, userSerial);
-        values.put(IconDB.COLUMN_COMPONENT, app.getComponentName().flattenToString());
     }
 
     /**
@@ -327,9 +327,21 @@ public class IconCache {
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    private ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app) {
-        CacheEntry entry = new CacheEntry();
-        entry.icon = Utilities.createIconBitmap(app.getBadgedIcon(mIconDpi), mContext);
+    private ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
+            boolean replaceExisting) {
+        final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
+        CacheEntry entry = null;
+        if (!replaceExisting) {
+            entry = mCache.get(key);
+            // We can't reuse the entry if the high-res icon is not present.
+            if (entry == null || entry.isLowResIcon || entry.icon == null) {
+                entry = null;
+            }
+        }
+        if (entry == null) {
+            entry = new CacheEntry();
+            entry.icon = Utilities.createIconBitmap(app.getBadgedIcon(mIconDpi), mContext);
+        }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
@@ -668,6 +680,40 @@ public class IconCache {
 
         public void cancel() {
             mHandler.removeCallbacks(mRunnable);
+        }
+    }
+
+    /**
+     * A runnable that adds icons in the DB for the provided LauncherActivityInfoCompat list.
+     * Items are added one at a time, to that the worker thread does not get blocked.
+     */
+    private class SerializedIconAdditionTask implements Runnable {
+        private final long mUserSerial;
+        private final HashMap<String, PackageInfo> mPkgInfoMap;
+        private final Stack<LauncherActivityInfoCompat> mAppsToAdd;
+
+        private SerializedIconAdditionTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
+                Collection<LauncherActivityInfoCompat> appsToAdd) {
+            mUserSerial = userSerial;
+            mPkgInfoMap = pkgInfoMap;
+            mAppsToAdd = new Stack<LauncherActivityInfoCompat>();
+            mAppsToAdd.addAll(appsToAdd);
+        }
+
+        @Override
+        public void run() {
+            if (!mAppsToAdd.isEmpty()) {
+                LauncherActivityInfoCompat app = mAppsToAdd.pop();
+                PackageInfo info = mPkgInfoMap.get(app.getComponentName().getPackageName());
+                if (info != null) {
+                    synchronized (IconCache.this) {
+                        addIconToDBAndMemCache(app, info, mUserSerial);
+                    }
+                }
+            }
+            if (!mAppsToAdd.isEmpty()) {
+                mWorkerHandler.post(this);
+            }
         }
     }
 
