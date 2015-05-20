@@ -28,7 +28,10 @@
     <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
     <dimen name="dynamic_grid_overview_bar_spacer_width">20dp</dimen>
 
+<!-- App Widget resize frame -->
     <dimen name="default_widget_padding">8dp</dimen>
+    <dimen name="widget_handle_margin">13dp</dimen>
+    <dimen name="resize_frame_background_padding">24dp</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">240dp</dimen>
