@@ -89,10 +89,6 @@ public class Workspace extends SmoothPagedView
         Insettable, UninstallSource, AccessibilityDragSource {
     private static final String TAG = "Launcher.Workspace";
 
-    private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
-    private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
-    private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
-
     protected static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
     protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
 
@@ -100,11 +96,6 @@ public class Workspace extends SmoothPagedView
 
     static final boolean MAP_NO_RECURSE = false;
     static final boolean MAP_RECURSE = true;
-
-    // These animators are used to fade the children's outlines
-    private ObjectAnimator mChildrenOutlineFadeInAnimation;
-    private ObjectAnimator mChildrenOutlineFadeOutAnimation;
-    private float mChildrenOutlineAlpha = 0;
 
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     private long mTouchDownTime = -1;
@@ -388,7 +379,6 @@ public class Workspace extends SmoothPagedView
         updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
-        setChildrenBackgroundAlphaMultipliers(1f);
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
         post(new Runnable() {
@@ -578,7 +568,6 @@ public class Workspace extends SmoothPagedView
     public void createCustomContentContainer() {
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, this, false);
-        customScreen.disableBackground();
         customScreen.disableDragTarget();
 
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
@@ -1533,43 +1522,10 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    void showOutlines() {
-        if (!workspaceInModalState() && !mIsSwitchingState) {
-            if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
-            if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
-            mChildrenOutlineFadeInAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 1.0f);
-            mChildrenOutlineFadeInAnimation.setDuration(CHILDREN_OUTLINE_FADE_IN_DURATION);
-            mChildrenOutlineFadeInAnimation.start();
-        }
-    }
-
-    void hideOutlines() {
-        if (!workspaceInModalState() && !mIsSwitchingState) {
-            if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
-            if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
-            mChildrenOutlineFadeOutAnimation = LauncherAnimUtils.ofFloat(this, "childrenOutlineAlpha", 0.0f);
-            mChildrenOutlineFadeOutAnimation.setDuration(CHILDREN_OUTLINE_FADE_OUT_DURATION);
-            mChildrenOutlineFadeOutAnimation.setStartDelay(CHILDREN_OUTLINE_FADE_OUT_DELAY);
-            mChildrenOutlineFadeOutAnimation.start();
-        }
-    }
-
     public void showOutlinesTemporarily() {
         if (!mIsPageMoving && !isTouchActive()) {
             snapToPage(mCurrentPage);
         }
-    }
-
-    public void setChildrenOutlineAlpha(float alpha) {
-        mChildrenOutlineAlpha = alpha;
-        for (int i = 0; i < getChildCount(); i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            cl.setBackgroundAlpha(alpha);
-        }
-    }
-
-    public float getChildrenOutlineAlpha() {
-        return mChildrenOutlineAlpha;
     }
 
     float backgroundAlphaInterpolator(float r) {
@@ -1598,13 +1554,6 @@ public class Workspace extends SmoothPagedView
                     child.getShortcutsAndWidgets().setAlpha(alpha);
                 }
             }
-        }
-    }
-
-    private void setChildrenBackgroundAlphaMultipliers(float a) {
-        for (int i = 0; i < getChildCount(); i++) {
-            CellLayout child = (CellLayout) getChildAt(i);
-            child.setBackgroundAlphaMultiplier(a);
         }
     }
 
@@ -2004,7 +1953,6 @@ public class Workspace extends SmoothPagedView
 
     public void onStartReordering() {
         super.onStartReordering();
-        showOutlines();
         // Reordering handles its own animations, disable the automatic ones.
         disableLayoutTransitions();
     }
@@ -2017,7 +1965,6 @@ public class Workspace extends SmoothPagedView
             return;
         }
 
-        hideOutlines();
         mScreenOrder.clear();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -2969,9 +2916,6 @@ public class Workspace extends SmoothPagedView
 
         mSpringLoadedDragController.cancel();
 
-        if (!mIsPageMoving) {
-            hideOutlines();
-        }
         mLauncher.getDragLayer().hidePageHints();
     }
 
