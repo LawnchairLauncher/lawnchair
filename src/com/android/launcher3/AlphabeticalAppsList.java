@@ -5,14 +5,10 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.UserHandleCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.AppNameComparator;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -121,10 +117,10 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * A callback to notify of changes to the filter.
+     * Callback to notify when the set of adapter items have changed.
      */
-    public interface FilterChangedCallback {
-        void onFilterChanged();
+    public interface AdapterChangedCallback {
+        void onAdapterItemsChanged();
     }
 
     /**
@@ -178,12 +174,20 @@ public class AlphabeticalAppsList {
     private static final int MAX_NUM_MERGES_PHONE = 2;
 
     private Context mContext;
+
+    // The set of apps from the system not including predictions
     private List<AppInfo> mApps = new ArrayList<>();
+    // The set of filtered apps with the current filter
     private List<AppInfo> mFilteredApps = new ArrayList<>();
-    private List<AdapterItem> mSectionedFilteredApps = new ArrayList<>();
+    // The current set of adapter items
+    private List<AdapterItem> mAdapterItems = new ArrayList<>();
+    // The set of sections for the apps with the current filter
     private List<SectionInfo> mSections = new ArrayList<>();
+    // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
+    // The set of predicted app component names
     private List<ComponentName> mPredictedAppComponents = new ArrayList<>();
+    // The set of predicted apps resolved from the component names and the current set of apps
     private List<AppInfo> mPredictedApps = new ArrayList<>();
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
     private RecyclerView.Adapter mAdapter;
@@ -191,16 +195,16 @@ public class AlphabeticalAppsList {
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
     private MergeAlgorithm mMergeAlgorithm;
-    private FilterChangedCallback mFilterChangedCallback;
+    private AdapterChangedCallback mAdapterChangedCallback;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
-    public AlphabeticalAppsList(Context context, FilterChangedCallback cb, int numAppsPerRow,
+    public AlphabeticalAppsList(Context context, AdapterChangedCallback auCb, int numAppsPerRow,
             int numPredictedAppsPerRow) {
         mContext = context;
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
-        mFilterChangedCallback = cb;
+        mAdapterChangedCallback = auCb;
         setNumAppsPerRow(numAppsPerRow, numPredictedAppsPerRow);
     }
 
@@ -248,7 +252,7 @@ public class AlphabeticalAppsList {
      * Returns the current filtered list of applications broken down into their sections.
      */
     public List<AdapterItem> getAdapterItems() {
-        return mSectionedFilteredApps;
+        return mAdapterItems;
     }
 
     /**
@@ -278,11 +282,7 @@ public class AlphabeticalAppsList {
     public void setFilter(Filter f) {
         if (mFilter != f) {
             mFilter = f;
-            onAppsUpdated();
-            mAdapter.notifyDataSetChanged();
-            if (mFilterChangedCallback != null){
-                mFilterChangedCallback.onFilterChanged();
-            }
+            updateAdapterItems();
         }
     }
 
@@ -294,7 +294,6 @@ public class AlphabeticalAppsList {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
         onAppsUpdated();
-        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -311,7 +310,6 @@ public class AlphabeticalAppsList {
         mApps.clear();
         mApps.addAll(apps);
         onAppsUpdated();
-        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -320,10 +318,9 @@ public class AlphabeticalAppsList {
     public void addApps(List<AppInfo> apps) {
         // We add it in place, in alphabetical order
         for (AppInfo info : apps) {
-            addApp(info);
+            mApps.add(info);
         }
         onAppsUpdated();
-        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -335,11 +332,10 @@ public class AlphabeticalAppsList {
             if (index != -1) {
                 mApps.set(index, info);
             } else {
-                addApp(info);
+                mApps.add(info);
             }
         }
         onAppsUpdated();
-        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -353,7 +349,6 @@ public class AlphabeticalAppsList {
             }
         }
         onAppsUpdated();
-        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -373,34 +368,68 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * Implementation to actually add an app to the alphabetic list, but does not notify.
-     */
-    private void addApp(AppInfo info) {
-        int index = Collections.binarySearch(mApps, info, mAppNameComparator.getAppInfoComparator());
-        if (index < 0) {
-            mApps.add(-(index + 1), info);
-        }
-    }
-
-    /**
      * Updates internals when the set of apps are updated.
      */
     private void onAppsUpdated() {
         // Sort the list of apps
         Collections.sort(mApps, mAppNameComparator.getAppInfoComparator());
 
-        // Prepare to update the list of sections, filtered apps, etc.
-        mFilteredApps.clear();
-        mSections.clear();
-        mSectionedFilteredApps.clear();
-        mFastScrollerSections.clear();
+        // As a special case for some languages (currently only Simplified Chinese), we may need to
+        // coalesce sections
+        Locale curLocale = mContext.getResources().getConfiguration().locale;
+        TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
+        boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
+        if (localeRequiresSectionSorting) {
+            // Compute the section headers.  We use a TreeMap with the section name comparator to
+            // ensure that the sections are ordered when we iterate over it later
+            sectionMap = new TreeMap<>(mAppNameComparator.getSectionNameComparator());
+            for (AppInfo info : mApps) {
+                // Add the section to the cache
+                String sectionName = getAndUpdateCachedSectionName(info.title);
+
+                // Add it to the mapping
+                ArrayList<AppInfo> sectionApps = sectionMap.get(sectionName);
+                if (sectionApps == null) {
+                    sectionApps = new ArrayList<>();
+                    sectionMap.put(sectionName, sectionApps);
+                }
+                sectionApps.add(info);
+            }
+
+            // Add each of the section apps to the list in order
+            List<AppInfo> allApps = new ArrayList<>(mApps.size());
+            for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
+                allApps.addAll(entry.getValue());
+            }
+            mApps = allApps;
+        } else {
+            // Just compute the section headers for use below
+            for (AppInfo info : mApps) {
+                // Add the section to the cache
+                getAndUpdateCachedSectionName(info.title);
+            }
+        }
+
+        // Recompose the set of adapter items from the current set of apps
+        updateAdapterItems();
+    }
+
+    /**
+     * Updates the set of filtered apps with the current filter.  At this point, we expect
+     * mCachedSectionNames to have been calculated for the set of all apps in mApps.
+     */
+    private void updateAdapterItems() {
         SectionInfo lastSectionInfo = null;
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
         int appIndex = 0;
-        List<AppInfo> allApps = new ArrayList<>();
 
+        // Prepare to update the list of sections, filtered apps, etc.
+        mFilteredApps.clear();
+        mFastScrollerSections.clear();
+        mAdapterItems.clear();
+        mSections.clear();
 
         // Process the predicted app components
         mPredictedApps.clear();
@@ -421,61 +450,16 @@ public class AlphabeticalAppsList {
             if (!mPredictedApps.isEmpty()) {
                 // Create a new spacer for the prediction bar
                 AdapterItem sectionItem = AdapterItem.asPredictionBarSpacer(position++);
-                mSectionedFilteredApps.add(sectionItem);
+                mAdapterItems.add(sectionItem);
             }
-        }
-
-        // As a special case for some languages (currently only Simplified Chinese), we may need to
-        // coalesce sections
-        Locale curLocale = mContext.getResources().getConfiguration().locale;
-        TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
-        boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
-        if (localeRequiresSectionSorting) {
-            // Compute the section headers.  We use a TreeMap with the section name comparator to
-            // ensure that the sections are ordered when we iterate over it later
-            sectionMap = new TreeMap<>(mAppNameComparator.getSectionNameComparator());
-            for (AppInfo info : mApps) {
-                // Add the section to the cache
-                String sectionName = mCachedSectionNames.get(info.title);
-                if (sectionName == null) {
-                    sectionName = mIndexer.computeSectionName(info.title);
-                    mCachedSectionNames.put(info.title, sectionName);
-                }
-
-                // Add it to the mapping
-                ArrayList<AppInfo> sectionApps = sectionMap.get(sectionName);
-                if (sectionApps == null) {
-                    sectionApps = new ArrayList<>();
-                    sectionMap.put(sectionName, sectionApps);
-                }
-                sectionApps.add(info);
-            }
-
-            // Add it to the list
-            for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
-                allApps.addAll(entry.getValue());
-            }
-        } else {
-            // Just compute the section headers for use below
-            for (AppInfo info : mApps) {
-                // Add the section to the cache
-                String sectionName = mCachedSectionNames.get(info.title);
-                if (sectionName == null) {
-                    sectionName = mIndexer.computeSectionName(info.title);
-                    mCachedSectionNames.put(info.title, sectionName);
-                }
-            }
-            // Add it to the list
-            allApps.addAll(mApps);
         }
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
-        int numApps = allApps.size();
+        int numApps = mApps.size();
         for (int i = 0; i < numApps; i++) {
-            AppInfo info = allApps.get(i);
-            // The section name was computed above so this should be find
-            String sectionName = mCachedSectionNames.get(info.title);
+            AppInfo info = mApps.get(i);
+            String sectionName = getAndUpdateCachedSectionName(info.title);
 
             // Check if we want to retain this app
             if (mFilter != null && !mFilter.retainApp(info, sectionName)) {
@@ -494,7 +478,7 @@ public class AlphabeticalAppsList {
                 // Create a new section item to break the flow of items in the list
                 if (!hasFilter()) {
                     AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
-                    mSectionedFilteredApps.add(sectionItem);
+                    mAdapterItems.add(sectionItem);
                 }
             }
 
@@ -505,12 +489,21 @@ public class AlphabeticalAppsList {
                 lastSectionInfo.firstAppItem = appItem;
                 lastFastScrollerSectionInfo.appItem = appItem;
             }
-            mSectionedFilteredApps.add(appItem);
+            mAdapterItems.add(appItem);
             mFilteredApps.add(info);
         }
 
         // Merge multiple sections together as requested by the merge strategy for this device
         mergeSections();
+
+        // Refresh the recycler view
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+
+        if (mAdapterChangedCallback != null) {
+            mAdapterChangedCallback.onAdapterItemsChanged();
+        }
     }
 
     /**
@@ -531,20 +524,20 @@ public class AlphabeticalAppsList {
                     SectionInfo nextSection = mSections.remove(i + 1);
 
                     // Remove the next section break
-                    mSectionedFilteredApps.remove(nextSection.sectionBreakItem);
-                    int pos = mSectionedFilteredApps.indexOf(section.firstAppItem);
+                    mAdapterItems.remove(nextSection.sectionBreakItem);
+                    int pos = mAdapterItems.indexOf(section.firstAppItem);
                     // Point the section for these new apps to the merged section
                     int nextPos = pos + section.numApps;
                     for (int j = nextPos; j < (nextPos + nextSection.numApps); j++) {
-                        AdapterItem item = mSectionedFilteredApps.get(j);
+                        AdapterItem item = mAdapterItems.get(j);
                         item.sectionInfo = section;
                         item.sectionAppIndex += section.numApps;
                     }
 
                     // Update the following adapter items of the removed section item
-                    pos = mSectionedFilteredApps.indexOf(nextSection.firstAppItem);
-                    for (int j = pos; j < mSectionedFilteredApps.size(); j++) {
-                        AdapterItem item = mSectionedFilteredApps.get(j);
+                    pos = mAdapterItems.indexOf(nextSection.firstAppItem);
+                    for (int j = pos; j < mAdapterItems.size(); j++) {
+                        AdapterItem item = mAdapterItems.get(j);
                         item.position--;
                     }
                     section.numApps += nextSection.numApps;
@@ -559,5 +552,18 @@ public class AlphabeticalAppsList {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the cached section name for the given title, recomputing and updating the cache if
+     * the title has no cached section name.
+     */
+    private String getAndUpdateCachedSectionName(CharSequence title) {
+        String sectionName = mCachedSectionNames.get(title);
+        if (sectionName == null) {
+            sectionName = mIndexer.computeSectionName(title);
+            mCachedSectionNames.put(title, sectionName);
+        }
+        return sectionName;
     }
 }
