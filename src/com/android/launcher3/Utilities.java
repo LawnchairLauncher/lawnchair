@@ -25,6 +25,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -67,6 +68,7 @@ import java.util.regex.Pattern;
  * Various utilities shared amongst the Launcher's classes.
  */
 public final class Utilities {
+
     private static final String TAG = "Launcher.Utilities";
 
     private static int sIconWidth = -1;
@@ -93,6 +95,8 @@ public final class Utilities {
     static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
     public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
+    public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
+
     /**
      * Returns a FastBitmapDrawable with the icon, accurately sized.
      */
@@ -114,10 +118,15 @@ public final class Utilities {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
-    public static boolean isRotationEnabled(Context c) {
-        boolean enableRotation = sForceEnableRotation ||
-                c.getResources().getBoolean(R.bool.allow_rotation);
-        return enableRotation;
+    public static boolean isAllowRotationPrefEnabled(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LauncherFiles.ROTATION_PREF_FILE,
+                Context.MODE_MULTI_PROCESS);
+        boolean allowRotationPref = sharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
+        return sForceEnableRotation || allowRotationPref;
+    }
+
+    public static boolean isRotationAllowedForDevice(Context context) {
+        return sForceEnableRotation || context.getResources().getBoolean(R.bool.allow_rotation);
     }
 
     /**

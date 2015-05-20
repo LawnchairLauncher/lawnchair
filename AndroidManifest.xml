@@ -148,6 +148,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.android.launcher3.SettingsActivity"
+            android:label="@string/settings_button_text"
+            android:autoRemoveFromRecents="true">
+        </activity>
+
         <!-- Debugging tools -->
         <activity
             android:name="com.android.launcher3.MemoryDumpActivity"
