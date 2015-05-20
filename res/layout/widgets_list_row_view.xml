@@ -19,6 +19,7 @@
     android:id="@+id/widgets_cell_list_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/widgets_cell_color"
     android:orientation="vertical"
     android:focusable="true"
     android:descendantFocusability="afterDescendants">
@@ -52,7 +53,7 @@
         android:id="@+id/widgets_scroll_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scrollbars="none" >
+        android:scrollbars="none">
         <LinearLayout
             android:id="@+id/widgets_cell_list"
             android:layout_width="wrap_content"
@@ -61,7 +62,6 @@
             android:layout_marginLeft="@dimen/widget_row_padding"
             android:orientation="horizontal"
             android:divider="@drawable/widgets_row_divider"
-            android:showDividers="middle"
-            android:background="@color/widgets_cell_color"/>
+            android:showDividers="middle"/>
     </HorizontalScrollView>
 </LinearLayout>
