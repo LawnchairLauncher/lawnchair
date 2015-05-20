@@ -39,6 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/apps_search_bar_height"
         android:orientation="horizontal"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
         android:visibility="invisible" >
     </LinearLayout>
 

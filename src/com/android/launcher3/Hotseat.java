@@ -65,6 +65,13 @@ public class Hotseat extends FrameLayout {
     }
 
     /**
+     * Returns whether there are other icons than the all apps button in the hotseat.
+     */
+    public boolean hasIcons() {
+        return mContent.getShortcutsAndWidgets().getChildCount() > 1;
+    }
+
+    /**
      * Registers the specified listener on the cell layout of the hotseat.
      */
     @Override
@@ -96,25 +103,6 @@ public class Hotseat extends FrameLayout {
 
     public boolean isAllAppsButtonRank(int rank) {
         return rank == mAllAppsButtonRank;
-    }
-
-    /** This returns the coordinates of an app in a given cell, relative to the DragLayer */
-    Rect getCellCoordinates(int cellX, int cellY) {
-        Rect coords = new Rect();
-        mContent.cellToRect(cellX, cellY, 1, 1, coords);
-        int[] hotseatInParent = new int[2];
-        Utilities.getDescendantCoordRelativeToParent(this, mLauncher.getDragLayer(),
-                hotseatInParent, false);
-        coords.offset(hotseatInParent[0], hotseatInParent[1]);
-
-        // Center the icon
-        int cWidth = mContent.getShortcutsAndWidgets().getCellContentWidth();
-        int cHeight = mContent.getShortcutsAndWidgets().getCellContentHeight();
-        int cellPaddingX = (int) Math.max(0, ((coords.width() - cWidth) / 2f));
-        int cellPaddingY = (int) Math.max(0, ((coords.height() - cHeight) / 2f));
-        coords.offset(cellPaddingX, cellPaddingY);
-
-        return coords;
     }
 
     @Override
