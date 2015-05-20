@@ -34,19 +34,12 @@
         android:focusable="false"
         android:visibility="invisible" />
 
-    <LinearLayout
-        android:id="@+id/widgets_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:elevation="15dp"
-        android:visibility="gone"
-        android:orientation="vertical" >
-
         <com.android.launcher3.widget.WidgetsContainerRecyclerView
-                android:id="@+id/widgets_list_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/quantum_panel_dark"/>
-    </LinearLayout>
+            android:id="@+id/widgets_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/quantum_panel_dark"
+            android:elevation="15dp"
+            android:visibility="gone" />
+
 </com.android.launcher3.widget.WidgetsContainerView>

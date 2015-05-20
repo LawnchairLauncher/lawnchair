@@ -135,7 +135,7 @@ public class WidgetsContainerView extends BaseContainerView
     //
 
     public View getContentView() {
-        return findViewById(R.id.widgets_content);
+        return mView;
     }
 
     public View getRevealView() {
