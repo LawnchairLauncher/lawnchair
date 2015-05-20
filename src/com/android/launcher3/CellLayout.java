@@ -103,8 +103,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private float FOREGROUND_ALPHA_DAMPER = 0.65f;
     private int mForegroundAlpha = 0;
     private float mBackgroundAlpha;
-    private float mBackgroundAlphaMultiplier = 1.0f;
-    private boolean mDrawBackground = true;
 
     private Drawable mNormalBackground;
     private Drawable mActiveGlowBackground;
@@ -423,10 +421,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
-    void disableBackground() {
-        mDrawBackground = false;
-    }
-
     void disableDragTarget() {
         mIsDragTarget = false;
     }
@@ -448,12 +442,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (!mIsDragTarget) {
+            return;
+        }
+
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
         // a neighboring page) or with just a normal background (if backgroundAlpha > 0.0f)
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (mDrawBackground && mBackgroundAlpha > 0.0f) {
+        if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
 
             if (mIsDragOverlapping) {
@@ -463,7 +461,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 bg = mNormalBackground;
             }
 
-            bg.setAlpha((int) (mBackgroundAlpha * mBackgroundAlphaMultiplier * 255));
+            bg.setAlpha((int) (mBackgroundAlpha * 255));
             bg.setBounds(mBackgroundRect);
             bg.draw(canvas);
         }
@@ -949,17 +947,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public float getBackgroundAlpha() {
         return mBackgroundAlpha;
-    }
-
-    public void setBackgroundAlphaMultiplier(float multiplier) {
-        if (mBackgroundAlphaMultiplier != multiplier) {
-            mBackgroundAlphaMultiplier = multiplier;
-            invalidate();
-        }
-    }
-
-    public float getBackgroundAlphaMultiplier() {
-        return mBackgroundAlphaMultiplier;
     }
 
     public void setBackgroundAlpha(float alpha) {
