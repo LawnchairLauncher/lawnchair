@@ -157,6 +157,9 @@ public class HolographicOutlineHelper {
 
     Bitmap createMediumDropShadow(BubbleTextView view) {
         Drawable icon = view.getIcon();
+        if (icon == null) {
+            return null;
+        }
         Rect rect = icon.getBounds();
 
         int bitmapWidth = (int) (rect.width() * view.getScaleX());
