@@ -152,7 +152,7 @@ public abstract class SmoothPagedView extends PagedView {
     }
 
     @Override
-    protected void snapToPage(int whichPage) {
+    public void snapToPage(int whichPage) {
        if (mScrollMode == X_LARGE_MODE) {
            super.snapToPage(whichPage);
        } else {

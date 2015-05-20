@@ -26,7 +26,6 @@ import android.view.View.OnClickListener;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.LauncherAccessibilityDelegate;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 
