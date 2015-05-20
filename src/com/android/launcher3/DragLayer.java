@@ -48,34 +48,35 @@ import java.util.ArrayList;
  */
 public class DragLayer extends InsettableFrameLayout {
 
+    public static final int ANIMATION_END_DISAPPEAR = 0;
+    public static final int ANIMATION_END_FADE_OUT = 1;
+    public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
+
     // Scrim color without any alpha component.
     private static final int SCRIM_COLOR = Color.BLACK & 0x00FFFFFF;
 
+    private final int[] mTmpXY = new int[2];
+
     @Thunk DragController mDragController;
-    private int[] mTmpXY = new int[2];
 
     private int mXDown, mYDown;
     private Launcher mLauncher;
 
     // Variables relating to resizing widgets
-    private final ArrayList<AppWidgetResizeFrame> mResizeFrames =
-            new ArrayList<AppWidgetResizeFrame>();
+    private final ArrayList<AppWidgetResizeFrame> mResizeFrames = new ArrayList<>();
     private final boolean mIsRtl;
     private AppWidgetResizeFrame mCurrentResizeFrame;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
     private ValueAnimator mFadeOutAnim = null;
-    private TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
+    private final TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
     @Thunk DragView mDropView = null;
     @Thunk int mAnchorViewInitialScrollX = 0;
     @Thunk View mAnchorView = null;
 
     private boolean mHoverPointClosesFolder = false;
-    private Rect mHitRect = new Rect();
-    public static final int ANIMATION_END_DISAPPEAR = 0;
-    public static final int ANIMATION_END_FADE_OUT = 1;
-    public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
+    private final Rect mHitRect = new Rect();
 
     private TouchCompleteListener mTouchCompleteListener;
 
@@ -87,6 +88,7 @@ public class DragLayer extends InsettableFrameLayout {
     private float mBackgroundAlpha = 0;
 
     // Related to adjacent page hints
+    private final Rect mScrollChildPosition = new Rect();
     private boolean mInScrollArea;
     private boolean mShowPageHints;
     private Drawable mLeftHoverDrawable;
@@ -914,6 +916,9 @@ public class DragLayer extends InsettableFrameLayout {
 
     void showPageHints() {
         mShowPageHints = true;
+        Workspace workspace = mLauncher.getWorkspace();
+        getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.getChildCount() - 1),
+                mScrollChildPosition);
         invalidate();
     }
 
@@ -937,10 +942,6 @@ public class DragLayer extends InsettableFrameLayout {
         if (mShowPageHints) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = getMeasuredWidth();
-            Rect childRect = new Rect();
-            getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.getChildCount() - 1),
-                    childRect);
-
             int page = workspace.getNextPage();
             CellLayout leftPage = (CellLayout) workspace.getChildAt(mIsRtl ? page + 1 : page - 1);
             CellLayout rightPage = (CellLayout) workspace.getChildAt(mIsRtl ? page - 1 : page + 1);
@@ -948,15 +949,15 @@ public class DragLayer extends InsettableFrameLayout {
             if (leftPage != null && leftPage.isDragTarget()) {
                 Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?
                         mLeftHoverDrawableActive : mLeftHoverDrawable;
-                left.setBounds(0, childRect.top,
-                        left.getIntrinsicWidth(), childRect.bottom);
+                left.setBounds(0, mScrollChildPosition.top,
+                        left.getIntrinsicWidth(), mScrollChildPosition.bottom);
                 left.draw(canvas);
             }
             if (rightPage != null && rightPage.isDragTarget()) {
                 Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
                         mRightHoverDrawableActive : mRightHoverDrawable;
                 right.setBounds(width - right.getIntrinsicWidth(),
-                        childRect.top, width, childRect.bottom);
+                        mScrollChildPosition.top, width, mScrollChildPosition.bottom);
                 right.draw(canvas);
             }
         }
