@@ -183,7 +183,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
     }
 
-    @Override
     public boolean onFailedToRecycleView(WidgetsRowViewHolder holder) {
         // If child views are animating, then the RecyclerView may choose not to recycle the view,
         // causing extraneous onCreateViewHolder() calls.  It is safe in this case to continue
