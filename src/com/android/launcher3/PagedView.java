@@ -909,8 +909,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     pageGap = getPaddingRight();
                 }
 
-                childLeft += childWidth + pageGap
-                        + (lp.isFullScreenPage ? 0 : (getPaddingLeft() + getPaddingRight()));
+                childLeft += childWidth + pageGap + getChildGap();
             }
         }
 
@@ -956,6 +955,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (isReordering(true)) {
             updateDragViewTranslationDuringDrag();
         }
+    }
+
+    protected int getChildGap() {
+        return 0;
     }
 
     private void updateMaxScrollX() {
