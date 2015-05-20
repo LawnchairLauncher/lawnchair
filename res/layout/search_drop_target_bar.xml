@@ -36,8 +36,6 @@
             <com.android.launcher3.DeleteDropTarget
                 android:id="@+id/delete_target_text"
                 style="@style/DropTargetButton"
-                android:drawableLeft="@drawable/remove_target_selector"
-                android:drawableStart="@drawable/remove_target_selector"
                 android:text="@string/delete_target_label" />
         </FrameLayout>
 
@@ -50,8 +48,6 @@
             <com.android.launcher3.InfoDropTarget
                 android:id="@+id/info_target_text"
                 style="@style/DropTargetButton"
-                android:drawableLeft="@drawable/info_target_selector"
-                android:drawableStart="@drawable/info_target_selector"
                 android:text="@string/info_target_label" />
         </FrameLayout>
 
@@ -64,8 +60,6 @@
             <com.android.launcher3.UninstallDropTarget
                 android:id="@+id/uninstall_target_text"
                 style="@style/DropTargetButton"
-                android:drawableLeft="@drawable/uninstall_target_selector"
-                android:drawableStart="@drawable/uninstall_target_selector"
                 android:text="@string/delete_target_uninstall_label" />
         </FrameLayout>
     </LinearLayout>
