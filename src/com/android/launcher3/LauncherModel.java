@@ -2754,7 +2754,7 @@ public class LauncherModel extends BroadcastReceiver
                         return;
                     }
                 }
-                updateAllAppsIconsCache();
+                mIconCache.updateDbIcons();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
                         return;
@@ -2880,68 +2880,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        private void updateAllAppsIconsCache() {
-            final ArrayList<AppInfo> updatedApps = new ArrayList<>();
-
-            for (UserHandleCompat user : mUserManager.getUserProfiles()) {
-                // Query for the set of apps
-                final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
-                // Fail if we don't have any apps
-                // TODO: Fix this. Only fail for the current user.
-                if (apps == null || apps.isEmpty()) {
-                    return;
-                }
-
-                // Update icon cache
-                HashSet<String> updatedPackages = mIconCache.updateDBIcons(user, apps);
-
-                // If any package icon has changed (app was updated while launcher was dead),
-                // update the corresponding shortcuts.
-                if (!updatedPackages.isEmpty()) {
-                    final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-                    synchronized (sBgLock) {
-                        for (ItemInfo info : sBgItemsIdMap) {
-                            if (info instanceof ShortcutInfo && user.equals(info.user)
-                                    && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                ShortcutInfo si = (ShortcutInfo) info;
-                                ComponentName cn = si.getTargetComponent();
-                                if (cn != null && updatedPackages.contains(cn.getPackageName())) {
-                                    si.updateIcon(mIconCache);
-                                    updatedShortcuts.add(si);
-                                }
-                            }
-                        }
-                        mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
-                    }
-
-                    if (!updatedShortcuts.isEmpty()) {
-                        final UserHandleCompat userFinal = user;
-                        mHandler.post(new Runnable() {
-
-                            public void run() {
-                                Callbacks cb = getCallback();
-                                if (cb != null) {
-                                    cb.bindShortcutsChanged(updatedShortcuts,
-                                            new ArrayList<ShortcutInfo>(), userFinal);
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-            if (!updatedApps.isEmpty()) {
-                mHandler.post(new Runnable() {
-
-                    public void run() {
-                        Callbacks cb = getCallback();
-                        if (cb != null) {
-                            cb.bindAppsUpdated(updatedApps);
-                        }
-                    }
-                });
-            }
-        }
-
         public void dumpState() {
             synchronized (sBgLock) {
                 Log.d(TAG, "mLoaderTask.mContext=" + mContext);
@@ -2949,6 +2887,58 @@ public class LauncherModel extends BroadcastReceiver
                 Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
                 Log.d(TAG, "mItems size=" + sBgWorkspaceItems.size());
             }
+        }
+    }
+
+    /**
+     * Called when the icons for packages have been updated in the icon cache.
+     */
+    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandleCompat user) {
+        final Callbacks callbacks = getCallback();
+        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
+        final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+
+        // If any package icon has changed (app was updated while launcher was dead),
+        // update the corresponding shortcuts.
+        synchronized (sBgLock) {
+            for (ItemInfo info : sBgItemsIdMap) {
+                if (info instanceof ShortcutInfo && user.equals(info.user)
+                        && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    ShortcutInfo si = (ShortcutInfo) info;
+                    ComponentName cn = si.getTargetComponent();
+                    if (cn != null && updatedPackages.contains(cn.getPackageName())) {
+                        si.updateIcon(mIconCache);
+                        updatedShortcuts.add(si);
+                    }
+                }
+            }
+            mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
+        }
+
+        if (!updatedShortcuts.isEmpty()) {
+            final UserHandleCompat userFinal = user;
+            mHandler.post(new Runnable() {
+
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindShortcutsChanged(updatedShortcuts,
+                                new ArrayList<ShortcutInfo>(), userFinal);
+                    }
+                }
+            });
+        }
+
+        if (!updatedApps.isEmpty()) {
+            mHandler.post(new Runnable() {
+
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindAppsUpdated(updatedApps);
+                    }
+                }
+            });
         }
     }
 
