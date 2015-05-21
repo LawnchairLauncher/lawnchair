@@ -136,7 +136,7 @@ final class HeaderElevationControllerVL implements HeaderElevationController {
  */
 public class AppsContainerView extends BaseContainerView implements DragSource, Insettable,
         TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable,
-        AlphabeticalAppsList.FilterChangedCallback, AppsGridAdapter.PredictionBarSpacerCallbacks,
+        AlphabeticalAppsList.AdapterChangedCallback, AppsGridAdapter.PredictionBarSpacerCallbacks,
         View.OnTouchListener, View.OnClickListener, View.OnLongClickListener,
         ViewTreeObserver.OnPreDrawListener {
 
@@ -686,7 +686,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     }
 
     @Override
-    public void onFilterChanged() {
+    public void onAdapterItemsChanged() {
         updatePredictionBarVisibility();
     }
 
