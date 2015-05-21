@@ -633,6 +633,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             if (mCurrentPage != getNextPage()) {
                 AccessibilityEvent ev =
                         AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+                ev.setScrollable(true);
+                ev.setScrollX(getScrollX());
+                ev.setScrollY(getScrollY());
+                ev.setMaxScrollX(mMaxScrollX);
+                ev.setMaxScrollY(0);
 
                 sendAccessibilityEventUnchecked(ev);
             }
@@ -2360,7 +2365,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Override
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setScrollable(true);
+        event.setScrollable(getPageCount() > 1);
     }
 
     @Override
