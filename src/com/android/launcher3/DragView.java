@@ -38,7 +38,7 @@ import com.android.launcher3.util.Thunk;
 import java.util.Arrays;
 
 public class DragView extends View {
-    public static int COLOR_CHANGE_DURATION = 200;
+    public static int COLOR_CHANGE_DURATION = 120;
 
     @Thunk static float sDragAlpha = 1f;
 
@@ -249,8 +249,7 @@ public class DragView extends View {
             m1.setSaturation(0);
 
             ColorMatrix m2 = new ColorMatrix();
-            m2.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
-                    Color.blue(color) / 255f, Color.alpha(color) / 255f);
+            setColorScale(color, m2);
             m1.postConcat(m2);
 
             if (Utilities.isLmpOrAbove()) {
@@ -354,5 +353,10 @@ public class DragView extends View {
         if (getParent() != null) {
             mDragLayer.removeView(DragView.this);
         }
+    }
+
+    public static void setColorScale(int color, ColorMatrix target) {
+        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 }
