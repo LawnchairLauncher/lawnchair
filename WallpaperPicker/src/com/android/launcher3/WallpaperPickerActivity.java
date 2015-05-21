@@ -196,13 +196,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
-            BitmapRegionTileSource.UriBitmapSource bitmapSource =
+            final BitmapRegionTileSource.UriBitmapSource bitmapSource =
                     new BitmapRegionTileSource.UriBitmapSource(a.getContext(), Uri.fromFile(mFile));
             a.setCropViewTileSource(bitmapSource, false, true, null, new Runnable() {
 
                 @Override
                 public void run() {
-                    a.setWallpaperButtonEnabled(true);
+                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) { 
+                        a.setWallpaperButtonEnabled(true);
+                    }
                 }
             });
         }
@@ -232,7 +234,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
-            BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
+            final BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
                     new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId);
             a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleProvider() {
 
@@ -249,7 +251,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
                 @Override
                 public void run() {
-                    a.setWallpaperButtonEnabled(true);
+                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
+                        a.setWallpaperButtonEnabled(true);
+                    }
                 }
             });
         }
