@@ -38,6 +38,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
+import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.WidgetsModel;
 
 import java.util.List;
 

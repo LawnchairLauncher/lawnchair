@@ -44,6 +44,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
+import android.os.Process;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -56,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import junit.framework.Assert;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -640,5 +643,11 @@ public final class Utilities {
     public static boolean isRtl(Resources res) {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
                 (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+    }
+
+    public static void assertWorkerThread() {
+        if (LauncherAppState.isDogfoodBuild()) {
+            Assert.assertTrue(LauncherModel.sWorkerThread.getThreadId() == Process.myTid());
+        }
     }
 }

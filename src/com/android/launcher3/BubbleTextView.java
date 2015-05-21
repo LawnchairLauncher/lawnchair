@@ -38,7 +38,7 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
-import com.android.launcher3.widget.PackageItemInfo;
+import com.android.launcher3.model.PackageItemInfo;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
