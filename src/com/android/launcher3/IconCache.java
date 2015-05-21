@@ -35,6 +35,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -46,7 +47,6 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -70,6 +70,8 @@ public class IconCache {
     private static final boolean DEBUG = false;
 
     private static final int LOW_RES_SCALE_FACTOR = 8;
+
+    private static final Object ICON_UPDATE_TOKEN = new Object();
 
     @Thunk static class CacheEntry {
         public Bitmap icon;
@@ -223,13 +225,32 @@ public class IconCache {
                 new String[] {packageName + "/%", Long.toString(userSerial)});
     }
 
+    public void updateDbIcons() {
+        // Remove all active icon update tasks.
+        mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
+
+        mIconDb.updateSystemStateString(mContext);
+        for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+            // Query for the set of apps
+            final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
+            // Fail if we don't have any apps
+            // TODO: Fix this. Only fail for the current user.
+            if (apps == null || apps.isEmpty()) {
+                return;
+            }
+
+            // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
+            // is called by the icon cache when the job is complete.
+            updateDBIcons(user, apps);
+        }
+    }
+
     /**
      * Updates the persistent DB, such that only entries corresponding to {@param apps} remain in
      * the DB and are updated.
      * @return The set of packages for which icons have updated.
      */
-    public HashSet<String> updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps) {
-        mIconDb.updateSystemStateString(mContext);
+    private void updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps) {
         long userSerial = mUserManager.getSerialNumberForUser(user);
         PackageManager pm = mContext.getPackageManager();
         HashMap<String, PackageInfo> pkgInfoMap = new HashMap<String, PackageInfo>();
@@ -257,7 +278,7 @@ public class IconCache {
         final int systemStateIndex = c.getColumnIndex(IconDB.COLUMN_SYSTEM_STATE);
 
         HashSet<Integer> itemsToRemove = new HashSet<Integer>();
-        HashSet<String> updatedPackages = new HashSet<String>();
+        Stack<LauncherActivityInfoCompat> appsToUpdate = new Stack<>();
 
         while (c.moveToNext()) {
             String cn = c.getString(indexComponent);
@@ -281,14 +302,9 @@ public class IconCache {
             }
             if (app == null) {
                 itemsToRemove.add(c.getInt(rowIndex));
-                continue;
+            } else {
+                appsToUpdate.add(app);
             }
-            ContentValues values = updateCacheAndGetContentValues(app, true);
-            mIconDb.getWritableDatabase().update(IconDB.TABLE_NAME, values,
-                    IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
-                    new String[] {cn, Long.toString(userSerial)});
-
-            updatedPackages.add(component.getPackageName());
         }
         c.close();
         if (!itemsToRemove.isEmpty()) {
@@ -298,11 +314,12 @@ public class IconCache {
         }
 
         // Insert remaining apps.
-        if (!componentMap.isEmpty()) {
-            mWorkerHandler.post(new SerializedIconAdditionTask(userSerial, pkgInfoMap,
-                    componentMap.values()));
+        if (!componentMap.isEmpty() || !appsToUpdate.isEmpty()) {
+            Stack<LauncherActivityInfoCompat> appsToAdd = new Stack<>();
+            appsToAdd.addAll(componentMap.values());
+            new SerializedIconUpdateTask(userSerial, pkgInfoMap,
+                    appsToAdd, appsToUpdate).scheduleNext();
         }
-        return updatedPackages;
     }
 
     private void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
@@ -684,25 +701,46 @@ public class IconCache {
     }
 
     /**
-     * A runnable that adds icons in the DB for the provided LauncherActivityInfoCompat list.
-     * Items are added one at a time, to that the worker thread does not get blocked.
+     * A runnable that updates invalid icons and adds missing icons in the DB for the provided
+     * LauncherActivityInfoCompat list. Items are updated/added one at a time, so that the
+     * worker thread doesn't get blocked.
      */
-    private class SerializedIconAdditionTask implements Runnable {
+    private class SerializedIconUpdateTask implements Runnable {
         private final long mUserSerial;
         private final HashMap<String, PackageInfo> mPkgInfoMap;
         private final Stack<LauncherActivityInfoCompat> mAppsToAdd;
+        private final Stack<LauncherActivityInfoCompat> mAppsToUpdate;
+        private final HashSet<String> mUpdatedPackages = new HashSet<String>();
 
-        private SerializedIconAdditionTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
-                Collection<LauncherActivityInfoCompat> appsToAdd) {
+        private SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
+                Stack<LauncherActivityInfoCompat> appsToAdd,
+                Stack<LauncherActivityInfoCompat> appsToUpdate) {
             mUserSerial = userSerial;
             mPkgInfoMap = pkgInfoMap;
-            mAppsToAdd = new Stack<LauncherActivityInfoCompat>();
-            mAppsToAdd.addAll(appsToAdd);
+            mAppsToAdd = appsToAdd;
+            mAppsToUpdate = appsToUpdate;
         }
 
         @Override
         public void run() {
-            if (!mAppsToAdd.isEmpty()) {
+            if (!mAppsToUpdate.isEmpty()) {
+                LauncherActivityInfoCompat app = mAppsToUpdate.pop();
+                String cn = app.getComponentName().flattenToString();
+                ContentValues values = updateCacheAndGetContentValues(app, true);
+                mIconDb.getWritableDatabase().update(IconDB.TABLE_NAME, values,
+                        IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
+                        new String[] {cn, Long.toString(mUserSerial)});
+                mUpdatedPackages.add(app.getComponentName().getPackageName());
+
+                if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
+                    // No more app to update. Notify model.
+                    LauncherAppState.getInstance().getModel().onPackageIconsUpdated(
+                            mUpdatedPackages, mUserManager.getUserForSerialNumber(mUserSerial));
+                }
+
+                // Let it run one more time.
+                scheduleNext();
+            } else if (!mAppsToAdd.isEmpty()) {
                 LauncherActivityInfoCompat app = mAppsToAdd.pop();
                 PackageInfo info = mPkgInfoMap.get(app.getComponentName().getPackageName());
                 if (info != null) {
@@ -710,10 +748,15 @@ public class IconCache {
                         addIconToDBAndMemCache(app, info, mUserSerial);
                     }
                 }
+
+                if (!mAppsToAdd.isEmpty()) {
+                    scheduleNext();
+                }
             }
-            if (!mAppsToAdd.isEmpty()) {
-                mWorkerHandler.post(this);
-            }
+        }
+
+        public void scheduleNext() {
+            mWorkerHandler.postAtTime(this, ICON_UPDATE_TOKEN, SystemClock.uptimeMillis() + 1);
         }
     }
 
