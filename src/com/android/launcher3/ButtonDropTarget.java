@@ -16,14 +16,20 @@
 
 package com.android.launcher3;
 
+import android.animation.AnimatorSet;
+import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -55,9 +61,11 @@ public abstract class ButtonDropTarget extends TextView
     protected int mHoverColor = 0;
 
     protected ColorStateList mOriginalTextColor;
-    protected TransitionDrawable mDrawable;
+    protected Drawable mDrawable;
 
-    private ObjectAnimator mCurrentColorAnim;
+    private AnimatorSet mCurrentColorAnim;
+    private ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
+
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -86,8 +94,7 @@ public abstract class ButtonDropTarget extends TextView
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
-        mDrawable = (TransitionDrawable) getResources().getDrawable(resId);
-        mDrawable.setCrossFadeEnabled(true);
+        mDrawable = getResources().getDrawable(resId);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
@@ -111,10 +118,13 @@ public abstract class ButtonDropTarget extends TextView
     public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
         if (Utilities.isLmpOrAbove()) {
-            mDrawable.startTransition(DragView.COLOR_CHANGE_DURATION);
             animateTextColor(mHoverColor);
         } else {
-            mDrawable.startTransition(0);
+            if (mCurrentFilter == null) {
+                mCurrentFilter = new ColorMatrix();
+            }
+            DragView.setColorScale(mHoverColor, mCurrentFilter);
+            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
             setTextColor(mHoverColor);
         }
     }
@@ -124,12 +134,11 @@ public abstract class ButtonDropTarget extends TextView
         // Do nothing
     }
 
-    protected void resetHoverColor() {
+	protected void resetHoverColor() {
         if (Utilities.isLmpOrAbove()) {
-            mDrawable.reverseTransition(DragView.COLOR_CHANGE_DURATION);
             animateTextColor(mOriginalTextColor.getDefaultColor());
         } else {
-            mDrawable.resetTransition();
+            mDrawable.setColorFilter(null);
             setTextColor(mOriginalTextColor);
         }
     }
@@ -139,8 +148,32 @@ public abstract class ButtonDropTarget extends TextView
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
         }
-        mCurrentColorAnim = ObjectAnimator.ofArgb(this, "textColor", targetColor);
+
+        mCurrentColorAnim = new AnimatorSet();
         mCurrentColorAnim.setDuration(DragView.COLOR_CHANGE_DURATION);
+
+        if (mSrcFilter == null) {
+            mSrcFilter = new ColorMatrix();
+            mDstFilter = new ColorMatrix();
+            mCurrentFilter = new ColorMatrix();
+        }
+
+        DragView.setColorScale(getTextColor(), mSrcFilter);
+        DragView.setColorScale(targetColor, mDstFilter);
+        ValueAnimator anim1 = ValueAnimator.ofObject(
+                new FloatArrayEvaluator(mCurrentFilter.getArray()),
+                mSrcFilter.getArray(), mDstFilter.getArray());
+        anim1.addUpdateListener(new AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
+                invalidate();
+            }
+        });
+
+        mCurrentColorAnim.play(anim1);
+        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, "textColor", targetColor));
         mCurrentColorAnim.start();
     }
 
@@ -155,10 +188,10 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-    @Override
+	@Override
     public final void onDragStart(DragSource source, Object info, int dragAction) {
         mActive = supportsDrop(source, info);
-        mDrawable.resetTransition();
+        mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
             mCurrentColorAnim = null;
