@@ -263,6 +263,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         if (req.postExecute != null) {
             req.postExecute.run();
         }
+        mProgressView.setVisibility(View.GONE);
     }
 
     public final void setCropViewTileSource(BitmapSource bitmapSource, boolean touchEnabled,
