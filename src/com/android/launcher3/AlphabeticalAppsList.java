@@ -209,8 +209,8 @@ public class AlphabeticalAppsList {
     /**
      * Sets the apps updated callback.
      */
-    public void setAppsUpdatedCallback(AdapterChangedCallback auCb) {
-        mAdapterChangedCallback = auCb;
+    public void setAdapterChangedCallback(AdapterChangedCallback cb) {
+        mAdapterChangedCallback = cb;
     }
 
     /**
