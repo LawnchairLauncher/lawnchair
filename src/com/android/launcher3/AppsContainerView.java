@@ -211,7 +211,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mNumAppsPerRow = grid.appsViewNumCols;
         mNumPredictedAppsPerRow = grid.appsViewNumPredictiveCols;
         mApps = new AlphabeticalAppsList(context, mNumAppsPerRow, mNumPredictedAppsPerRow);
-        mApps.setAppsUpdatedCallback(this);
+        mApps.setAdapterChangedCallback(this);
         mAdapter = new AppsGridAdapter(context, mApps, mNumAppsPerRow, this, this, mLauncher, this);
         mAdapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
         mAdapter.setNumAppsPerRow(mNumAppsPerRow);
