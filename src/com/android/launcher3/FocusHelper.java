@@ -314,12 +314,14 @@ public class FocusHelper {
         // with the hotseat.
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, true /* horizontal */,
-                    hotseat.getAllAppsButtonRank(), false /* all apps icon is ignored */);
+                    hotseat.getAllAppsButtonRank(),
+                    !hotseat.hasIcons() /* ignore all apps icon, unless there are no other icons */);
             countY = countY + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, false /* horizontal */,
-                    hotseat.getAllAppsButtonRank(), false /* all apps icon is ignored */);
+                    hotseat.getAllAppsButtonRank(),
+                    !hotseat.hasIcons() /* ignore all apps icon, unless there are no other icons */);
             countX = countX + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
             workspace.removeWorkspaceItem(v);

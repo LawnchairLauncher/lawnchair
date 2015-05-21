@@ -183,6 +183,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private int mContainerInset;
     private int mPredictionBarHeight;
     private int mLastRecyclerViewScrollPos = -1;
+    private boolean mFocusPredictionBarOnFirstBind;
 
     private CheckLongPressHelper mPredictionIconCheckForLongPress;
     private View mPredictionIconUnderTouch;
@@ -298,7 +299,17 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (v == mContentView && hasFocus) {
-                    mAppsRecyclerView.requestFocus();
+                    if (!mApps.getPredictedApps().isEmpty()) {
+                        // If the prediction bar is going to be bound, then defer focusing until
+                        // it is first bound
+                        if (mPredictionBarView.getChildCount() == 0) {
+                            mFocusPredictionBarOnFirstBind = true;
+                        } else {
+                            mPredictionBarView.requestFocus();
+                        }
+                    } else {
+                        mAppsRecyclerView.requestFocus();
+                    }
                 }
             }
         });
@@ -386,6 +397,11 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
             } else {
                 icon.setVisibility(View.INVISIBLE);
             }
+        }
+
+        if (mFocusPredictionBarOnFirstBind) {
+            mFocusPredictionBarOnFirstBind = false;
+            mPredictionBarView.requestFocus();
         }
     }
 
