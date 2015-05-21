@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"صفحه اصلی"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"کاری"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"برنامه نصب نشده است."</string>
@@ -50,7 +49,6 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"تنظیم"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"این برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"پوشه بی‌نام"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"‏صفحه اصلی %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏صفحه %1$d از %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏صفحه اصلی %1$d از %2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"خوش آمدید"</string>
@@ -61,7 +59,6 @@
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"کاغذدیواری‌ها، ابزارک‌ها و تنظیمات"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"برای سفارشی کردن، پس‌زمینه را لمس کنید و نگه‌دارید"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"متوجه شدم"</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"تأیید"</string>
     <string name="folder_opened" msgid="94695026776264709">"پوشه باز شده، <xliff:g id="WIDTH">%1$d</xliff:g> در <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"برای بستن پوشه لمس کنید"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"برای ذخیره تغییر نام لمس کنید"</string>
@@ -71,14 +68,34 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ابزارک‌ها"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"کاغذدیواری‌ها"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"تنظیمات"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"در حال انتظار"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"در حال دانلود"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"در حال نصب"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامشخص"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"بازیابی نشد"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"حذف همه"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"حذف"</string>
     <string name="abandoned_search" msgid="891119232568284442">"جستجو"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"این برنامه نصب نشده است."</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"برنامه برای این نماد نصب نشده است. می‌توانید آن را حذف کنید یا سعی کنید برنامه را جستجو کنید و آن را به صورت دستی نصب کنید."</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"افزودن به صفحه اصلی"</string>
+    <!-- no translation found for action_move_here (2170188780612570250) -->
+    <skip />
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"مورد به صفحه اصلی اضافه شد"</string>
+    <string name="item_removed" msgid="851119963877842327">"مورد حذف شد"</string>
+    <string name="action_move" msgid="4339390619886385032">"انتقال مورد"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"انتقال به سطر <xliff:g id="NUMBER_0">%1$s</xliff:g> ستون <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"انتقال به موقعیت <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"انتقال به موقعیت دلخواه <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"مورد منتقل شد"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"افزودن به پوشه: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"افزودن به پوشه حاوی <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"مورد به پوشه اضافه شد"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"ایجاد پوشه با: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"پوشه ایجاد شد"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"انتقال به صفحه اصلی"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"انتقال صفحه به چپ"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"انتقال صفحه به راست"</string>
+    <string name="screen_moved" msgid="266230079505650577">"صفحه منتقل شد"</string>
+    <string name="action_resize" msgid="1802976324781771067">"تغییر اندازه"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"افزایش عرض"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"افزایش ارتفاع"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"کاهش عرض"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"کاهش ارتفاع"</string>
+    <string name="widget_resized" msgid="9130327887929620">"اندازه ابزارک به عرض <xliff:g id="NUMBER_0">%1$s</xliff:g> ارتفاع <xliff:g id="NUMBER_1">%2$s</xliff:g> تغییر کرد"</string>
 </resources>

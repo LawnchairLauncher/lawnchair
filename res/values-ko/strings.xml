@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"홈"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"업무"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"앱이 설치되지 않았습니다."</string>
@@ -50,7 +49,6 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"설정"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"이름이 없는 폴더"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"홈 화면 %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"페이지 %1$d/%2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"홈 화면 %1$d/%2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"환영합니다."</string>
@@ -61,7 +59,6 @@
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"배경화면, 위젯, 설정"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"백그라운드를 길게 터치하여 맞춤설정합니다."</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"확인"</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"확인"</string>
     <string name="folder_opened" msgid="94695026776264709">"폴더 열림(<xliff:g id="WIDTH">%1$d</xliff:g>X<xliff:g id="HEIGHT">%2$d</xliff:g>)"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"터치하여 폴더를 닫음"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"터치하여 바꾼 이름을 저장"</string>
@@ -71,14 +68,52 @@
     <string name="widget_button_text" msgid="2880537293434387943">"위젯"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"배경화면"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"설정"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"대기 중"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"다운로드 중"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"설치 중"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"복원되지 않음"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"모두 삭제"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"삭제"</string>
     <string name="abandoned_search" msgid="891119232568284442">"검색"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"이 앱이 설치되어 있지 않음"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"이 아이콘의 앱이 설치되어 있지 않습니다. 아이콘을 삭제하거나 앱을 검색하여 수동으로 설치하세요."</string>
+    <!-- no translation found for action_add_to_workspace (8902165848117513641) -->
+    <skip />
+    <!-- no translation found for action_move_here (2170188780612570250) -->
+    <skip />
+    <!-- no translation found for item_added_to_workspace (4211073925752213539) -->
+    <skip />
+    <!-- no translation found for item_removed (851119963877842327) -->
+    <skip />
+    <!-- no translation found for action_move (4339390619886385032) -->
+    <skip />
+    <!-- no translation found for move_to_empty_cell (2833711483015685619) -->
+    <skip />
+    <!-- no translation found for move_to_position (6750008980455459790) -->
+    <skip />
+    <!-- no translation found for move_to_hotseat_position (6295412897075147808) -->
+    <skip />
+    <string name="item_moved" msgid="4606538322571412879">"항목을 이동했습니다."</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"폴더에 추가: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <!-- no translation found for add_to_folder_with_app (4534929978967147231) -->
+    <skip />
+    <string name="added_to_folder" msgid="4793259502305558003">"항목이 폴더에 추가되었습니다."</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"다음이 포함된 폴더 만들기: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"폴더를 만들었습니다."</string>
+    <!-- no translation found for action_move_to_workspace (1603837886334246317) -->
+    <skip />
+    <!-- no translation found for action_move_screen_left (8854216831569401665) -->
+    <skip />
+    <!-- no translation found for action_move_screen_right (329334910274311123) -->
+    <skip />
+    <!-- no translation found for screen_moved (266230079505650577) -->
+    <skip />
+    <!-- no translation found for action_resize (1802976324781771067) -->
+    <skip />
+    <!-- no translation found for action_increase_width (8773715375078513326) -->
+    <skip />
+    <!-- no translation found for action_increase_height (459390020612501122) -->
+    <skip />
+    <!-- no translation found for action_decrease_width (1374549771083094654) -->
+    <skip />
+    <!-- no translation found for action_decrease_height (282377193880900022) -->
+    <skip />
+    <!-- no translation found for widget_resized (9130327887929620) -->
+    <skip />
 </resources>

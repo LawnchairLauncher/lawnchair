@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"Inicio"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Traballo"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"A aplicación non está instalada"</string>
@@ -50,7 +49,6 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación é do sistema e non se pode desinstalar."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Cartafol sen nome"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"Pantalla de inicio %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Páxina %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Pantalla de inicio %1$d de %2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Dámosche a benvida"</string>
@@ -61,7 +59,6 @@
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fondos pantalla, widgets e configuración"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Mantén tocado o segundo plano para personalizar"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"DE ACORDO"</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"Aceptar"</string>
     <string name="folder_opened" msgid="94695026776264709">"Abriuse o cartafol, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Toca para pechar o cartafol"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Toca para gardar o cambio de nome"</string>
@@ -71,14 +68,34 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Configuración"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"En espera"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"Descargando"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"Instalando"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Descoñecido"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"Non restaurado"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"Eliminar todas"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminar"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Buscar"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Esta aplicación non está instalada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"A aplicación para esta icona non está instalada. Podes eliminala ou buscar a aplicación e instalala manualmente."</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Engadir á pantalla de inicio"</string>
+    <!-- no translation found for action_move_here (2170188780612570250) -->
+    <skip />
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Engadiuse o elemento á pantalla de inicio"</string>
+    <string name="item_removed" msgid="851119963877842327">"Eliminouse o elemento"</string>
+    <string name="action_move" msgid="4339390619886385032">"Mover elemento"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Mover á fila <xliff:g id="NUMBER_0">%1$s</xliff:g> columna <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Mover á posición <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Mover á posición dos favoritos <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Moveuse o elemento"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Engadir ao cartafol: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Engadir ao cartafol con <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Engadiuse o elemento ao cartafol"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Crear cartafol con: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Creouse o cartafol"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Mover á pantalla de inicio"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Mover pantalla á esquerda"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Mover pantalla á dereita"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Moveuse a pantalla"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Cambiar tamaño"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Aumentar ancho"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Aumentar altura"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Reducir ancho"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Reducir altura"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Cambiouse o tamaño do widget polo ancho <xliff:g id="NUMBER_0">%1$s</xliff:g> e a altura <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>
