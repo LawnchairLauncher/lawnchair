@@ -2027,7 +2027,7 @@ public class LauncherModel extends BroadcastReceiver
                                                 "constructing info for partially restored package",
                                                 true);
                                         info = getRestoredItemInfo(c, titleIndex, intent,
-                                                promiseType, useLowResIcon);
+                                                promiseType);
                                         intent = getRestoredItemIntent(c, context, intent);
                                     } else {
                                         // Don't restore items for other profiles.
@@ -3402,10 +3402,10 @@ public class LauncherModel extends BroadcastReceiver
      * to a package that is not yet installed on the system.
      */
     public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent,
-            int promiseType, boolean useLowResIcon) {
+            int promiseType) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
-        mIconCache.getTitleAndIcon(info, intent, info.user, useLowResIcon);
+        mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
             String title = (cursor != null) ? cursor.getString(titleIndex) : null;
