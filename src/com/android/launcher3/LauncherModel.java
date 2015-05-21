@@ -968,7 +968,8 @@ public class LauncherModel extends BroadcastReceiver
                         break;
                 }
 
-                folderInfo.title = Utilities.trim(c.getString(titleIndex));
+                // Do not trim the folder label, as is was set by the user.
+                folderInfo.title = c.getString(titleIndex);
                 folderInfo.id = id;
                 folderInfo.container = c.getInt(containerIndex);
                 folderInfo.screenId = c.getInt(screenIndex);
@@ -2110,7 +2111,8 @@ public class LauncherModel extends BroadcastReceiver
                                 id = c.getLong(idIndex);
                                 FolderInfo folderInfo = findOrMakeFolder(sBgFolders, id);
 
-                                folderInfo.title = Utilities.trim(c.getString(titleIndex));
+                                // Do not trim the folder label, as is was set by the user.
+                                folderInfo.title = c.getString(titleIndex);
                                 folderInfo.id = id;
                                 container = c.getInt(containerIndex);
                                 folderInfo.container = container;
