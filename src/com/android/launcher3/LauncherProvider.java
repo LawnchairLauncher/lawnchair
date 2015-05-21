@@ -65,7 +65,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 25;
+    private static final int DATABASE_VERSION = 26;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
@@ -378,6 +378,11 @@ public class LauncherProvider extends ContentProvider {
         mOpenHelper.updateFolderItemsRank(mOpenHelper.getWritableDatabase(), false);
     }
 
+    public void convertShortcutsToLauncherActivities() {
+        mOpenHelper.convertShortcutsToLauncherActivities(mOpenHelper.getWritableDatabase());
+    }
+
+
     public void deleteDatabase() {
         // Are you sure? (y/n)
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -623,10 +628,12 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 23:
-                    convertShortcutsToLauncherActivities(db);
+                    // No-op
                 case 24:
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
-                case 25: {
+                case 25:
+                    convertShortcutsToLauncherActivities(db);
+                case 26: {
                     // DB Upgraded successfully
                     return;
                 }
