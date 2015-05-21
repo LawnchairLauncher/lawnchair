@@ -102,6 +102,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -268,8 +269,9 @@ public class Launcher extends Activity
     // Main container view for the all apps screen.
     @Thunk AppsContainerView mAppsView;
 
-    // Main container view for the widget tray screen.
-    private WidgetsContainerView mWidgetsView;
+    // Main container view and the model for the widget tray screen.
+    @Thunk WidgetsContainerView mWidgetsView;
+    @Thunk WidgetsModel mWidgetsModel;
 
     private boolean mAutoAdvanceRunning = false;
     private AppWidgetHostView mQsb;
@@ -4365,23 +4367,22 @@ public class Launcher extends Activity
         }
     }
 
-    @Thunk ArrayList<Object> mWidgetsAndShortcuts;
     private Runnable mBindPackagesUpdatedRunnable = new Runnable() {
             public void run() {
-                bindAllPackages(mWidgetsAndShortcuts);
+                bindAllPackages(mWidgetsModel);
             }
         };
 
     @Override
-    public void bindAllPackages(final ArrayList<Object> widgetsAndShortcuts) {
+    public void bindAllPackages(final WidgetsModel model) {
         if (waitUntilResume(mBindPackagesUpdatedRunnable, true)) {
-            mWidgetsAndShortcuts = widgetsAndShortcuts;
+            mWidgetsModel = model;
             return;
         }
 
-        if (mWidgetsView != null && widgetsAndShortcuts != null) {
-            mWidgetsView.addWidgets(widgetsAndShortcuts, getPackageManager());
-            mWidgetsAndShortcuts = null;
+        if (mWidgetsView != null && model != null) {
+            mWidgetsView.addWidgets(model);
+            mWidgetsModel = null;
         }
     }
 

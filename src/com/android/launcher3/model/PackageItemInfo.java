@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.widget;
+package com.android.launcher3.model;
 
 import android.content.ComponentName;
 import android.graphics.Bitmap;

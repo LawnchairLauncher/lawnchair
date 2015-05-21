@@ -206,8 +206,7 @@ public class WidgetPreviewLoader {
      * This ensures that we remove entries for packages which changed while the launcher was dead.
      */
     public void removeObsoletePreviews(ArrayList<Object> list) {
-        // This method should always be called from the worker thread.
-        Assert.assertTrue(LauncherModel.sWorkerThread.getThreadId() == Process.myTid());
+        Utilities.assertWorkerThread();
 
         LongSparseArray<UserHandleCompat> userIdCache = new LongSparseArray<>();
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();

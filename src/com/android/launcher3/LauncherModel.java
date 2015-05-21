@@ -58,6 +58,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
@@ -203,7 +204,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
-        public void bindAllPackages(ArrayList<Object> widgetsAndShortcuts);
+        public void bindAllPackages(WidgetsModel model);
         public void bindSearchablesChanged();
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
@@ -3344,18 +3345,19 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(new Runnable(){
             @Override
             public void run() {
-                final ArrayList<Object> list = getWidgetsAndShortcuts(context, refresh);
+                final WidgetsModel model = createWidgetsModel(context, refresh);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindAllPackages(list);
+                            callbacks.bindAllPackages(model);
                         }
                     }
                 });
                 // update the Widget entries inside DB on the worker thread.
-                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(list);
+                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
+                        model.getRawList());
             }
         });
     }
@@ -3365,13 +3367,15 @@ public class LauncherModel extends BroadcastReceiver
      *
      *  @see #loadAndBindWidgetsAndShortcuts
      */
-    private ArrayList<Object> getWidgetsAndShortcuts(Context context, boolean refresh) {
+    private WidgetsModel createWidgetsModel(Context context, boolean refresh) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
         widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
-        return widgetsAndShortcuts;
+        WidgetsModel model = new WidgetsModel(context);
+        model.addWidgetsAndShortcuts(widgetsAndShortcuts);
+        return model;
     }
 
     @Thunk static boolean isPackageDisabled(Context context, String packageName,
