@@ -32,11 +32,12 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DynamicGrid;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetsModel;
@@ -56,7 +57,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private static final String TAG = "WidgetsListAdapter";
     private static final boolean DEBUG = true;
 
-    private Context mContext;
     private Launcher mLauncher;
     private LayoutInflater mLayoutInflater;
 
@@ -74,7 +74,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             View.OnLongClickListener iconLongClickListener,
             Launcher launcher) {
         mLayoutInflater = LayoutInflater.from(context);
-        mContext = context;
 
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
@@ -141,7 +140,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
             if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
-                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(info, null);
+                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info, null);
                 widget.setTag(pawi);
                 widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
             } else if (infoList.get(i) instanceof ResolveInfo) {
@@ -206,10 +205,10 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     }
 
     private void setContainerHeight() {
-        Resources r = mContext.getResources();
-        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        Resources r = mLauncher.getResources();
+        DeviceProfile profile = mLauncher.getDeviceProfile();
         if (profile.isLargeTablet || profile.isTablet) {
-            mIndent = DynamicGrid.pxFromDp(PRESET_INDENT_SIZE_TABLET, r.getDisplayMetrics());
+            mIndent = Utilities.pxFromDp(PRESET_INDENT_SIZE_TABLET, r.getDisplayMetrics());
         }
     }
 }

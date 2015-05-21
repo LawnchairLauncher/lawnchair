@@ -57,7 +57,7 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     private static LauncherAppState INSTANCE;
 
-    private DynamicGrid mDynamicGrid;
+    private InvariantDeviceProfile mInvariantDeviceProfile;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
 
     public static LauncherAppState getInstance() {
@@ -96,8 +96,9 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
         mIsScreenLarge = isScreenLarge(sContext.getResources());
         mScreenDensity = sContext.getResources().getDisplayMetrics().density;
-        mIconCache = new IconCache(sContext);
-        mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
+        mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
+        mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
+        mWidgetCache = new WidgetPreviewLoader(sContext, mInvariantDeviceProfile, mIconCache);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
         mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
@@ -172,49 +173,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         return LauncherFiles.SHARED_PREFERENCES_KEY;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    DeviceProfile initDynamicGrid(Context context) {
-        mDynamicGrid = createDynamicGrid(context, mDynamicGrid);
-        mDynamicGrid.getDeviceProfile().addCallback(this);
-        return mDynamicGrid.getDeviceProfile();
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    static DynamicGrid createDynamicGrid(Context context, DynamicGrid dynamicGrid) {
-        // Determine the dynamic grid properties
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-
-        Point realSize = new Point();
-        display.getRealSize(realSize);
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-
-        if (dynamicGrid == null) {
-            Point smallestSize = new Point();
-            Point largestSize = new Point();
-            display.getCurrentSizeRange(smallestSize, largestSize);
-
-            dynamicGrid = new DynamicGrid(context,
-                    context.getResources(),
-                    Math.min(smallestSize.x, smallestSize.y),
-                    Math.min(largestSize.x, largestSize.y),
-                    realSize.x, realSize.y,
-                    dm.widthPixels, dm.heightPixels);
-        }
-
-        // Update the icon size
-        DeviceProfile grid = dynamicGrid.getDeviceProfile();
-        grid.updateFromConfiguration(context, context.getResources(),
-                realSize.x, realSize.y,
-                dm.widthPixels, dm.heightPixels);
-        return dynamicGrid;
-    }
-
-    public DynamicGrid getDynamicGrid() {
-        return mDynamicGrid;
-    }
-
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
     }
@@ -249,6 +207,10 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
         boolean result = mWallpaperChangedSinceLastCheck;
         mWallpaperChangedSinceLastCheck = false;
         return result;
+    }
+
+    public InvariantDeviceProfile getInvariantDeviceProfile() {
+        return mInvariantDeviceProfile;
     }
 
     @Override

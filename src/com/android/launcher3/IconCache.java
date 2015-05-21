@@ -94,7 +94,7 @@ public class IconCache {
 
     private final Handler mWorkerHandler;
 
-    public IconCache(Context context) {
+    public IconCache(Context context, InvariantDeviceProfile inv) {
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
@@ -371,20 +371,6 @@ public class IconCache {
      */
     public synchronized void flush() {
         mCache.clear();
-    }
-
-    /**
-     * Empty out the cache that aren't of the correct grid size
-     */
-    public synchronized void flushInvalidIcons(DeviceProfile grid) {
-        Iterator<Entry<ComponentKey, CacheEntry>> it = mCache.entrySet().iterator();
-        while (it.hasNext()) {
-            final CacheEntry e = it.next().getValue();
-            if ((e.icon != null) && (e.icon.getWidth() < grid.iconSizePx
-                    || e.icon.getHeight() < grid.iconSizePx)) {
-                it.remove();
-            }
-        }
     }
 
     /**

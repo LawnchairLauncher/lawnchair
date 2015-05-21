@@ -29,7 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
@@ -72,6 +74,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private WidgetPreviewLoader mWidgetPreviewLoader;
     private PreviewLoadRequest mActiveRequest;
 
+    private Launcher mLauncher;
+
     public WidgetCell(Context context) {
         this(context, null);
     }
@@ -84,8 +88,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         super(context, attrs, defStyle);
 
         final Resources r = context.getResources();
-        mDimensionsFormatString = r.getString(R.string.widget_dims_format);
+        mLauncher = (Launcher) context;
 
+        mDimensionsFormatString = r.getString(R.string.widget_dims_format);
         setContainerWidth();
         setWillNotDraw(false);
         setClipToPadding(false);
@@ -93,9 +98,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     private void setContainerWidth() {
-        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        DeviceProfile profile = mLauncher.getDeviceProfile();
         cellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
-        mPresetPreviewSize = (int) (profile.cellWidthPx * WIDTH_SCALE * PREVIEW_SCALE);
+        mPresetPreviewSize = (int) (cellSize * PREVIEW_SCALE);
     }
 
     @Override
@@ -130,14 +135,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      */
     public void applyFromAppWidgetProviderInfo(LauncherAppWidgetProviderInfo info,
             WidgetPreviewLoader loader) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
 
+        InvariantDeviceProfile profile =
+                LauncherAppState.getInstance().getInvariantDeviceProfile();
         mInfo = info;
         // TODO(hyunyoungs): setup a cache for these labels.
         mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        int hSpan = Math.min(info.spanX, grid.numColumns);
-        int vSpan = Math.min(info.spanY, grid.numRows);
+        int hSpan = Math.min(info.getSpanX(mLauncher), profile.numColumns);
+        int vSpan = Math.min(info.getSpanY(mLauncher), profile.numRows);
         mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         mWidgetPreviewLoader = loader;
     }
@@ -192,8 +197,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public int getActualItemWidth() {
         ItemInfo info = (ItemInfo) getTag();
         int[] size = getPreviewSize();
-        int cellWidth = LauncherAppState.getInstance()
-                .getDynamicGrid().getDeviceProfile().cellWidthPx;
+        int cellWidth = mLauncher.getDeviceProfile().cellWidthPx;
 
         return Math.min(size[0], info.spanX * cellWidth);
     }

@@ -422,9 +422,9 @@ public class LauncherModel extends BroadcastReceiver
     private static boolean findNextAvailableIconSpaceInScreen(ArrayList<ItemInfo> occupiedPos,
             int[] xy, int spanX, int spanY) {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-        final int xCount = (int) grid.numColumns;
-        final int yCount = (int) grid.numRows;
+        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+        final int xCount = (int) profile.numColumns;
+        final int yCount = (int) profile.numRows;
         boolean[][] occupied = new boolean[xCount][yCount];
         if (occupiedPos != null) {
             for (ItemInfo r : occupiedPos) {
@@ -1663,9 +1663,9 @@ public class LauncherModel extends BroadcastReceiver
         // check & update map of what's occupied; used to discard overlapping/invalid items
         private boolean checkItemPlacement(LongArrayMap<ItemInfo[][]> occupied, ItemInfo item) {
             LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            final int countX = (int) grid.numColumns;
-            final int countY = (int) grid.numRows;
+            InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+            final int countX = (int) profile.numColumns;
+            final int countY = (int) profile.numRows;
 
             long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -1681,10 +1681,10 @@ public class LauncherModel extends BroadcastReceiver
                 final ItemInfo[][] hotseatItems =
                         occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
-                if (item.screenId >= grid.numHotseatIcons) {
+                if (item.screenId >= profile.numHotseatIcons) {
                     Log.e(TAG, "Error loading shortcut " + item
                             + " into hotseat position " + item.screenId
-                            + ", position out of bounds: (0 to " + (grid.numHotseatIcons - 1)
+                            + ", position out of bounds: (0 to " + (profile.numHotseatIcons - 1)
                             + ")");
                     return false;
                 }
@@ -1702,7 +1702,7 @@ public class LauncherModel extends BroadcastReceiver
                         return true;
                     }
                 } else {
-                    final ItemInfo[][] items = new ItemInfo[(int) grid.numHotseatIcons][1];
+                    final ItemInfo[][] items = new ItemInfo[(int) profile.numHotseatIcons][1];
                     items[(int) item.screenId][0] = item;
                     occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
                     return true;
@@ -1776,9 +1776,9 @@ public class LauncherModel extends BroadcastReceiver
                     new IntentFilter(StartupReceiver.SYSTEM_READY)) != null;
 
             LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
-            int countX = (int) grid.numColumns;
-            int countY = (int) grid.numRows;
+            InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+            int countX = (int) profile.numColumns;
+            int countY = (int) profile.numRows;
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
                 Launcher.addDumpLog(TAG, "loadWorkspace: resetting launcher database", true);
@@ -2190,13 +2190,6 @@ public class LauncherModel extends BroadcastReceiver
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 provider.provider);
 
-                                        if (!customWidget) {
-                                            int[] minSpan =
-                                                    Launcher.getMinSpanForWidget(context, provider);
-                                            appWidgetInfo.minSpanX = minSpan[0];
-                                            appWidgetInfo.minSpanY = minSpan[1];
-                                        }
-
                                         int status = restoreStatus;
                                         if (!wasProviderReady) {
                                             // If provider was not previously ready, update the
@@ -2243,12 +2236,6 @@ public class LauncherModel extends BroadcastReceiver
                                     appWidgetInfo.cellY = c.getInt(cellYIndex);
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
                                     appWidgetInfo.spanY = c.getInt(spanYIndex);
-
-                                    if (!customWidget) {
-                                        int[] minSpan = Launcher.getMinSpanForWidget(context, provider);
-                                        appWidgetInfo.minSpanX = minSpan[0];
-                                        appWidgetInfo.minSpanY = minSpan[1];
-                                    }
 
                                     container = c.getInt(containerIndex);
                                     if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
@@ -2512,13 +2499,13 @@ public class LauncherModel extends BroadcastReceiver
          * right) */
         private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
             final LauncherAppState app = LauncherAppState.getInstance();
-            final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            final InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
             // XXX: review this
             Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    int cellCountX = (int) grid.numColumns;
-                    int cellCountY = (int) grid.numRows;
+                    int cellCountX = (int) profile.numColumns;
+                    int cellCountY = (int) profile.numRows;
                     int screenOffset = cellCountX * cellCountY;
                     int containerOffset = screenOffset * (Launcher.SCREEN_COUNT + 1); // +1 hotseat
                     long lr = (lhs.container * containerOffset + lhs.screenId * screenOffset +

@@ -18,10 +18,11 @@ import android.os.Parcel;
 public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public boolean isCustomWidget = false;
-    public int spanX = -1;
-    public int spanY = -1;
-    public int minSpanX = -1;
-    public int minSpanY = -1;
+
+    private int mSpanX = -1;
+    private int mSpanY = -1;
+    private int mMinSpanX = -1;
+    private int mMinSpanY = -1;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
@@ -35,15 +36,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         p.setDataPosition(0);
         LauncherAppWidgetProviderInfo lawpi = new LauncherAppWidgetProviderInfo(p);
         p.recycle();
-
-        int[] minResizeSpan = Launcher.getMinSpanForWidget(context, lawpi);
-        int[] span = Launcher.getSpanForWidget(context, lawpi);
-
-        lawpi.spanX = span[0];
-        lawpi.spanY = span[1];
-        lawpi.minSpanX = minResizeSpan[0];
-        lawpi.minSpanY = minResizeSpan[1];
-
         return lawpi;
     }
 
@@ -60,11 +52,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         previewImage = widget.getPreviewImage();
         initialLayout = widget.getWidgetLayout();
         resizeMode = widget.getResizeMode();
-
-        spanX = widget.getSpanX();
-        spanY = widget.getSpanY();
-        minSpanX = widget.getMinSpanX();
-        minSpanY = widget.getMinSpanY();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -87,7 +74,39 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         if (isCustomWidget) {
             return "WidgetProviderInfo(" + provider + ")";
         }
-        return String.format("WidgetProviderInfo provider:%s package:%s short:%s label:%s span(%d, %d) minSpan(%d, %d)",
-                provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm), spanX, spanY, minSpanX, minSpanY);
+        return String.format("WidgetProviderInfo provider:%s package:%s short:%s label:%s",
+                provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm));
+    }
+
+    public int getSpanX(Launcher launcher) {
+        lazyLoadSpans(launcher);
+        return mSpanX;
+    }
+
+    public int getSpanY(Launcher launcher) {
+        lazyLoadSpans(launcher);
+        return mSpanY;
+    }
+
+    public int getMinSpanX(Launcher launcher) {
+        lazyLoadSpans(launcher);
+        return mMinSpanX;
+    }
+
+    public int getMinSpanY(Launcher launcher) {
+        lazyLoadSpans(launcher);
+        return mMinSpanY;
+    }
+
+    private void lazyLoadSpans(Launcher launcher) {
+        if (mSpanX < 0 || mSpanY < 0 || mMinSpanX < 0 || mMinSpanY < 0) {
+            int[] minResizeSpan = launcher.getMinSpanForWidget(this);
+            int[] span = launcher.getSpanForWidget(this);
+
+            mSpanX = span[0];
+            mSpanY = span[1];
+            mMinSpanX = minResizeSpan[0];
+            mMinSpanY = minResizeSpan[1];
+        }
     }
  }

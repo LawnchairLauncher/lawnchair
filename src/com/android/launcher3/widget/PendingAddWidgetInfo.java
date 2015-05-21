@@ -19,6 +19,7 @@ import android.appwidget.AppWidgetHostView;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
@@ -39,7 +40,7 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public AppWidgetHostView boundWidget;
     public Bundle bindOptions = null;
 
-    public PendingAddWidgetInfo(LauncherAppWidgetProviderInfo i, Parcelable data) {
+    public PendingAddWidgetInfo(Launcher launcher, LauncherAppWidgetProviderInfo i, Parcelable data) {
         if (i.isCustomWidget) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         } else {
@@ -54,10 +55,10 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
         previewImage = i.previewImage;
         icon = i.icon;
 
-        spanX = i.spanX;
-        spanY = i.spanY;
-        minSpanX = i.minSpanX;
-        minSpanY = i.minSpanY;
+        spanX = i.getSpanX(launcher);
+        spanY = i.getSpanY(launcher);
+        minSpanX = i.getMinSpanX(launcher);
+        minSpanY = i.getMinSpanY(launcher);
     }
 
     public boolean isCustomWidget() {

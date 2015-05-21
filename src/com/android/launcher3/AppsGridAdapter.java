@@ -106,6 +106,11 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
 
         private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
         private Rect mTmpBounds = new Rect();
+        private Launcher mLauncher;
+
+        public GridItemDecoration(Context context) {
+            mLauncher = (Launcher) context;
+        }
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
@@ -113,7 +118,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                 return;
             }
 
-            DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+            DeviceProfile grid = mLauncher.getDeviceProfile();
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
             boolean hasDrawnPredictedAppsDivider = false;
             int childCount = parent.getChildCount();
@@ -294,7 +299,6 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
     @Thunk Paint mSectionTextPaint;
     @Thunk Paint mPredictedAppsDividerPaint;
 
-
     public AppsGridAdapter(Context context, AlphabeticalAppsList apps, int appsPerRow,
             PredictionBarSpacerCallbacks pbCb, View.OnTouchListener touchListener,
             View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
@@ -307,7 +311,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mGridLayoutMgr = new GridLayoutManager(context, appsPerRow, GridLayoutManager.VERTICAL,
                 false);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
-        mItemDecoration = new GridItemDecoration();
+        mItemDecoration = new GridItemDecoration(context);
         mLayoutInflater = LayoutInflater.from(context);
         mTouchListener = touchListener;
         mIconClickListener = iconClickListener;
@@ -323,7 +327,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
         mSectionTextPaint.setAntiAlias(true);
 
         mPredictedAppsDividerPaint = new Paint();
-        mPredictedAppsDividerPaint.setStrokeWidth(DynamicGrid.pxFromDp(1f, res.getDisplayMetrics()));
+        mPredictedAppsDividerPaint.setStrokeWidth(Utilities.pxFromDp(1f, res.getDisplayMetrics()));
         mPredictedAppsDividerPaint.setColor(0x1E000000);
         mPredictedAppsDividerPaint.setAntiAlias(true);
     }

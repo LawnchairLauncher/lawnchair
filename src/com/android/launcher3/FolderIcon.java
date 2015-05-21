@@ -147,8 +147,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items " +
                     "is dependent on this");
         }
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
+        DeviceProfile grid = launcher.getDeviceProfile();
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
         icon.setClipToPadding(false);
@@ -217,8 +217,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                             + Thread.currentThread());
                 }
 
-                LauncherAppState app = LauncherAppState.getInstance();
-                DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+                DeviceProfile grid = launcher.getDeviceProfile();
                 sPreviewSize = grid.folderIconSizePx;
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
                 sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
@@ -490,8 +489,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize) {
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            DeviceProfile grid = mLauncher.getDeviceProfile();
 
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;

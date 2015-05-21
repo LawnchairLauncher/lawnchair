@@ -80,6 +80,8 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
     private Rect mBackgroundPadding = new Rect();
     private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
+    private Launcher mLauncher;
+
     public AppsContainerRecyclerView(Context context) {
         this(context, null);
     }
@@ -96,6 +98,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             int defStyleRes) {
         super(context, attrs, defStyleAttr);
 
+        mLauncher = (Launcher) context;
         Resources res = context.getResources();
         int fastScrollerSize = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_popup_size);
         mScrollbar = res.getDrawable(R.drawable.apps_list_scrollbar_thumb);
@@ -129,7 +132,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         mNumAppsPerRow = numAppsPerRow;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
 
-        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AppsGridAdapter.PREDICTION_BAR_SPACER_TYPE, 1);

@@ -92,11 +92,13 @@ public class FocusHelper {
 
             final int pageIndex = pagedView.indexOfChild(cellLayout);
             final int pageCount = pagedView.getPageCount();
+            Launcher launcher  = (Launcher) v.getContext();
 
             int[][] matrix = FocusLogic.createSparseMatrix(cellLayout);
             // Process focus.
-            int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX, countY, matrix,
-                    iconIndex, pageIndex, pageCount);
+            int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
+                    countY, matrix, iconIndex, pageIndex, pageCount,
+                    launcher.getDeviceProfile().isLayoutRtl);
             if (newIconIndex == FocusLogic.NOOP) {
                 handleNoopKey(keyCode, v);
                 return consume;
@@ -184,7 +186,8 @@ public class FocusHelper {
             return consume;
         }
 
-        DeviceProfile profile = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        DeviceProfile profile = ((Launcher) v.getContext()).getDeviceProfile();
+
         if (DEBUG) {
             Log.v(TAG, String.format(
                     "Handle HOTSEAT BUTTONS keyevent=[%s] on hotseat buttons, isVertical=%s",
@@ -248,8 +251,8 @@ public class FocusHelper {
         }
 
         // Process the focus.
-        int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX, countY, matrix,
-                iconIndex, pageIndex, pageCount);
+        int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
+                countY, matrix, iconIndex, pageIndex, pageCount, profile.isLayoutRtl);
 
         View newIcon = null;
         if (newIconIndex == FocusLogic.NEXT_PAGE_FIRST_ITEM) {
@@ -283,8 +286,8 @@ public class FocusHelper {
             return consume;
         }
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile profile = app.getDynamicGrid().getDeviceProfile();
+        Launcher launcher = (Launcher) v.getContext();
+        DeviceProfile profile = launcher.getDeviceProfile();
 
         if (DEBUG) {
             Log.v(TAG, String.format("Handle WORKSPACE ICONS keyevent=[%s] isVerticalBar=%s",
@@ -295,9 +298,9 @@ public class FocusHelper {
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
         CellLayout iconLayout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) iconLayout.getParent();
-        final ViewGroup launcher = (ViewGroup) workspace.getParent();
-        final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.search_drop_target_bar);
-        final Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);
+        final ViewGroup dragLayer = (ViewGroup) workspace.getParent();
+        final ViewGroup tabs = (ViewGroup) dragLayer.findViewById(R.id.search_drop_target_bar);
+        final Hotseat hotseat = (Hotseat) dragLayer.findViewById(R.id.hotseat);
 
         final int iconIndex = parent.indexOfChild(v);
         final int pageIndex = workspace.indexOfChild(iconLayout);
@@ -331,8 +334,8 @@ public class FocusHelper {
         }
 
         // Process the focus.
-        int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX, countY, matrix,
-                iconIndex, pageIndex, pageCount);
+        int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
+                countY, matrix, iconIndex, pageIndex, pageCount, profile.isLayoutRtl);
         View newIcon = null;
         switch (newIconIndex) {
             case FocusLogic.NOOP:
@@ -354,8 +357,8 @@ public class FocusHelper {
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout,
                         iconLayout.getCountX(), row);
-                    newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY, matrix,
-                        FocusLogic.PIVOT, newPageIndex, pageCount);
+                    newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
+                            matrix, FocusLogic.PIVOT, newPageIndex, pageCount, profile.isLayoutRtl);
                     newIcon = parent.getChildAt(newIconIndex);
                 }
                 break;
@@ -387,8 +390,8 @@ public class FocusHelper {
                     workspace.snapToPage(newPageIndex);
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout, -1, row);
-                    newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY, matrix,
-                        FocusLogic.PIVOT, newPageIndex, pageCount);
+                    newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
+                            matrix, FocusLogic.PIVOT, newPageIndex, pageCount, profile.isLayoutRtl);
                     newIcon = parent.getChildAt(newIconIndex);
                 }
                 break;

@@ -78,7 +78,7 @@ public class AutoInstallsLayout {
 
     static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
             AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
-        DeviceProfile grid = LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile();
+        InvariantDeviceProfile grid = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
@@ -165,7 +165,7 @@ public class AutoInstallsLayout {
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
         this(context, appWidgetHost, callback, res, layoutId, rootTag,
-                LauncherAppState.getInstance().getDynamicGrid().getDeviceProfile().hotseatAllAppsRank);
+                LauncherAppState.getInstance().getInvariantDeviceProfile().hotseatAllAppsRank);
     }
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,

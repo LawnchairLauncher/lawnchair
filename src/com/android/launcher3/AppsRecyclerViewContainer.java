@@ -38,8 +38,8 @@ public class AppsRecyclerViewContainer extends FrameLayout implements BubbleText
     public AppsRecyclerViewContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        Launcher launcher = (Launcher) context;
+        DeviceProfile grid = launcher.getDeviceProfile();
 
         mTouchFeedbackView = new ClickShadowView(context);
 
