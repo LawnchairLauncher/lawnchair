@@ -34,6 +34,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
@@ -87,31 +88,27 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
-    private final int[] mTmpXY = new int[2];
     @Thunk final int[] mTmpPoint = new int[2];
-    int[] mTempLocation = new int[2];
+    @Thunk final int[] mTempLocation = new int[2];
 
     boolean[][] mOccupied;
     boolean[][] mTmpOccupied;
-    private boolean mLastDownOnOccupiedCell = false;
 
     private OnTouchListener mInterceptTouchListener;
 
     private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
     private int[] mFolderLeaveBehindCell = {-1, -1};
 
-    private float FOREGROUND_ALPHA_DAMPER = 0.65f;
+    private static final float FOREGROUND_ALPHA_DAMPER = 0.65f;
     private int mForegroundAlpha = 0;
     private float mBackgroundAlpha;
 
-    private Drawable mNormalBackground;
-    private Drawable mActiveGlowBackground;
+    private static final int BACKGROUND_ACTIVATE_DURATION = 120;
+    private final TransitionDrawable mBackground;
+
+    private final Drawable mOverScrollLeft;
+    private final Drawable mOverScrollRight;
     private Drawable mOverScrollForegroundDrawable;
-    private Drawable mOverScrollLeft;
-    private Drawable mOverScrollRight;
-    private Rect mBackgroundRect;
-    private Rect mForegroundRect;
-    private int mForegroundPadding;
 
     // These values allow a fixed measurement to be set on the CellLayout.
     private int mFixedWidth = -1;
@@ -173,7 +170,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private static final int INVALID_DIRECTION = -100;
     private DropTarget.DragEnforcer mDragEnforcer;
 
-    private Rect mTempRect = new Rect();
+    private final Rect mTempRect = new Rect();
 
     private final static Paint sPaint = new Paint();
 
@@ -221,19 +218,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final Resources res = getResources();
         mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
-        mNormalBackground = res.getDrawable(R.drawable.screenpanel);
-        mActiveGlowBackground = res.getDrawable(R.drawable.screenpanel_hover);
+        mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_screenpanel);
+        mBackground.setCallback(this);
 
         mOverScrollLeft = res.getDrawable(R.drawable.overscroll_glow_left);
         mOverScrollRight = res.getDrawable(R.drawable.overscroll_glow_right);
-        mForegroundPadding =
-                res.getDimensionPixelSize(R.dimen.workspace_overscroll_drawable_padding);
 
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE *
                 grid.iconSizePx);
-
-        mNormalBackground.setFilterBitmap(true);
-        mActiveGlowBackground.setFilterBitmap(true);
 
         // Initialize the data structures used for the drag visualization.
         mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
@@ -291,9 +283,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             });
             mDragOutlineAnims[i] = anim;
         }
-
-        mBackgroundRect = new Rect();
-        mForegroundRect = new Rect();
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
@@ -431,6 +420,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
+            if (mIsDragOverlapping) {
+                mBackground.startTransition(BACKGROUND_ACTIVATE_DURATION);
+            } else {
+                mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
+            }
             invalidate();
         }
     }
@@ -451,18 +445,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
         if (mBackgroundAlpha > 0.0f) {
-            Drawable bg;
-
-            if (mIsDragOverlapping) {
-                // In the mini case, we draw the active_glow bg *over* the active background
-                bg = mActiveGlowBackground;
-            } else {
-                bg = mNormalBackground;
-            }
-
-            bg.setAlpha((int) (mBackgroundAlpha * 255));
-            bg.setBounds(mBackgroundRect);
-            bg.draw(canvas);
+            mBackground.draw(canvas);
         }
 
         final Paint paint = mDragOutlinePaint;
@@ -561,7 +544,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         if (mForegroundAlpha > 0) {
-            mOverScrollForegroundDrawable.setBounds(mForegroundRect);
             mOverScrollForegroundDrawable.draw(canvas);
         }
     }
@@ -924,12 +906,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         super.onSizeChanged(w, h, oldw, oldh);
 
         // Expand the background drawing bounds by the padding baked into the background drawable
-        Rect padding = new Rect();
-        mNormalBackground.getPadding(padding);
-        mBackgroundRect.set(-padding.left, -padding.top, w + padding.right, h + padding.bottom);
+        mBackground.getPadding(mTempRect);
+        mBackground.setBounds(-mTempRect.left, -mTempRect.top,
+                w + mTempRect.right, h + mTempRect.bottom);
 
-        mForegroundRect.set(mForegroundPadding, mForegroundPadding,
-                w - mForegroundPadding, h - mForegroundPadding);
+        mOverScrollLeft.setBounds(0, 0, w, h);
+        mOverScrollRight.setBounds(0, 0, w, h);
     }
 
     @Override
@@ -949,8 +931,13 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public void setBackgroundAlpha(float alpha) {
         if (mBackgroundAlpha != alpha) {
             mBackgroundAlpha = alpha;
-            invalidate();
+            mBackground.setAlpha((int) (mBackgroundAlpha * 255));
         }
+    }
+
+    @Override
+    protected boolean verifyDrawable(Drawable who) {
+        return super.verifyDrawable(who) || (mIsDragTarget && who == mBackground);
     }
 
     public void setShortcutAndWidgetAlpha(float alpha) {
@@ -1265,7 +1252,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     hitMaxX = xSize >= spanX;
                     hitMaxY = ySize >= spanY;
                 }
-                final int[] cellXY = mTmpXY;
+                final int[] cellXY = mTmpPoint;
                 cellToCenterPoint(x, y, cellXY);
 
                 // We verify that the current rect is not a sub-rect of any of our previous
@@ -3020,10 +3007,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             return "Cell[view=" + (cell == null ? "null" : cell.getClass())
                     + ", x=" + cellX + ", y=" + cellY + "]";
         }
-    }
-
-    public boolean lastDownOnOccupiedCell() {
-        return mLastDownOnOccupiedCell;
     }
 
     public boolean findVacantCell(int spanX, int spanY, int[] outXY) {

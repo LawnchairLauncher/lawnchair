@@ -43,7 +43,6 @@
 
 <!-- Workspace -->
     <dimen name="workspace_max_gap">16dp</dimen>
-    <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">4dip</dimen>
