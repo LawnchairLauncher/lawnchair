@@ -199,13 +199,18 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
-    public AlphabeticalAppsList(Context context, AdapterChangedCallback auCb, int numAppsPerRow,
-            int numPredictedAppsPerRow) {
+    public AlphabeticalAppsList(Context context, int numAppsPerRow, int numPredictedAppsPerRow) {
         mContext = context;
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
-        mAdapterChangedCallback = auCb;
         setNumAppsPerRow(numAppsPerRow, numPredictedAppsPerRow);
+    }
+
+    /**
+     * Sets the apps updated callback.
+     */
+    public void setAppsUpdatedCallback(AdapterChangedCallback auCb) {
+        mAdapterChangedCallback = auCb;
     }
 
     /**
