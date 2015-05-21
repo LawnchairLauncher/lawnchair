@@ -17,7 +17,6 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -36,6 +35,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragController;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.Folder;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
@@ -46,8 +46,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
-
-import java.util.ArrayList;
 
 /**
  * The widgets list view container.
@@ -67,9 +65,6 @@ public class WidgetsContainerView extends BaseContainerView
     private Launcher mLauncher;
     private DragController mDragController;
     private IconCache mIconCache;
-
-    /* Data model for the widget */
-    private WidgetsModel mWidgets;
 
     /* Recycler view related member variables */
     private RecyclerView mView;
@@ -98,8 +93,6 @@ public class WidgetsContainerView extends BaseContainerView
         mDragController = mLauncher.getDragController();
         mWidgetHostViewLoader = new WidgetHostViewLoader(mLauncher);
         mAdapter = new WidgetsListAdapter(context, this, this, mLauncher);
-        mWidgets = new WidgetsModel(context, mAdapter);
-        mAdapter.setWidgetsModel(mWidgets);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
 
         if (DEBUG) {
@@ -109,10 +102,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     protected void onFinishInflate() {
-        if (DEBUG) {
-            Log.d(TAG, String.format("onFinishInflate [widgets size=%d]",
-                    mWidgets.getPackageSize()));
-        }
         mView = (RecyclerView) findViewById(R.id.widgets_list_view);
         mView.setAdapter(mAdapter);
 
@@ -145,10 +134,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     public void scrollToTop() {
         mView.scrollToPosition(0);
-        if (DEBUG) {
-            Log.d(TAG, String.format("scrollToTop, [widgets size=%d]",
-                    mWidgets.getPackageSize()));
-        }
     }
 
     //
@@ -374,8 +359,9 @@ public class WidgetsContainerView extends BaseContainerView
     /**
      * Initialize the widget data model.
      */
-    public void addWidgets(ArrayList<Object> widgetsShortcuts, PackageManager pm) {
-        mWidgets.addWidgetsAndShortcuts(widgetsShortcuts, pm);
+    public void addWidgets(WidgetsModel model) {
+        mAdapter.setWidgetsModel(model);
+        mAdapter.notifyDataSetChanged();
     }
 
     private WidgetPreviewLoader getWidgetPreviewLoader() {

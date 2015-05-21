@@ -1,18 +1,19 @@
 
-package com.android.launcher3.widget;
+package com.android.launcher3.model;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.support.v7.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
-import com.android.launcher3.model.AppNameComparator;
-import com.android.launcher3.model.WidgetsAndShortcutNameComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,19 +38,19 @@ public class WidgetsModel {
     /* Map of widgets and shortcuts that are tracked per package. */
     private Map<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
 
-    /* Notifies the adapter when data changes. */
-    private RecyclerView.Adapter mAdapter;
+    private ArrayList<Object> mRawList;
 
-    private Comparator mWidgetAndShortcutNameComparator;
-    private Comparator mAppNameComparator;
+    private final Comparator mWidgetAndShortcutNameComparator;
+    private final Comparator mAppNameComparator;
 
-    private IconCache mIconCache;
+    private final IconCache mIconCache;
+    private final Handler mWorkerHandler;
 
-    public WidgetsModel(Context context, RecyclerView.Adapter adapter) {
-        mAdapter = adapter;
+    public WidgetsModel(Context context) {
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = LauncherAppState.getInstance().getIconCache();
+        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
@@ -66,9 +67,15 @@ public class WidgetsModel {
         return mWidgetsList.get(mPackageItemInfos.get(pos));
     }
 
-    public void addWidgetsAndShortcuts(ArrayList<Object> widgetsShortcuts, PackageManager pm) {
+    public ArrayList<Object> getRawList() {
+        return mRawList;
+    }
+
+    public void addWidgetsAndShortcuts(ArrayList<Object> rawWidgetsShortcuts) {
+        Utilities.assertWorkerThread();
+        mRawList = rawWidgetsShortcuts;
         if (DEBUG) {
-            Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + widgetsShortcuts.size());
+            Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
 
         // Temporary list for {@link PackageItemInfos} to avoid having to go through
@@ -80,7 +87,7 @@ public class WidgetsModel {
         mPackageItemInfos.clear();
 
         // add and update.
-        for (Object o: widgetsShortcuts) {
+        for (Object o: rawWidgetsShortcuts) {
             String packageName = "";
             if (o instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo widgetInfo = (LauncherAppWidgetProviderInfo) o;
@@ -100,10 +107,9 @@ public class WidgetsModel {
             } else {
                 widgetsShortcutsList = new ArrayList<Object>();
                 widgetsShortcutsList.add(o);
-
                 pInfo = new PackageItemInfo(packageName);
                 mIconCache.getTitleAndIconForApp(packageName, UserHandleCompat.myUserHandle(),
-                        true /* useLowResIcon */, pInfo);
+                        true /* userLowResIcon */, pInfo);
                 mWidgetsList.put(pInfo, widgetsShortcutsList);
                 tmpPackageItemInfos.put(packageName,  pInfo);
                 mPackageItemInfos.add(pInfo);
@@ -115,8 +121,5 @@ public class WidgetsModel {
         for (PackageItemInfo p: mPackageItemInfos) {
             Collections.sort(mWidgetsList.get(p), mWidgetAndShortcutNameComparator);
         }
-
-        // notify.
-        mAdapter.notifyDataSetChanged();
     }
 }
