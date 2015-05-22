@@ -139,6 +139,8 @@ public class LauncherModel extends BroadcastReceiver
 
     // < only access in worker thread >
     AllAppsList mBgAllAppsList;
+    // Entire list of widgets.
+    WidgetsModel mBgWidgetsModel;
 
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
     // other locks, this one can generally be held long-term because we never expect any of these
@@ -2768,12 +2770,14 @@ public class LauncherModel extends BroadcastReceiver
             @SuppressWarnings("unchecked")
             final ArrayList<AppInfo> list
                     = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
+            final WidgetsModel widgetList = mBgWidgetsModel.clone();
             Runnable r = new Runnable() {
                 public void run() {
                     final long t = SystemClock.uptimeMillis();
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(list);
+                        callbacks.bindAllPackages(widgetList);
                     }
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound all " + list.size() + " apps from cache in "
@@ -2787,8 +2791,6 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 mHandler.post(r);
             }
-            loadAndBindWidgetsAndShortcuts(mApp.getContext(), tryGetCallbacks(oldCallbacks),
-                    false /* refresh */);
         }
 
         private void loadAllApps() {
@@ -3321,6 +3323,7 @@ public class LauncherModel extends BroadcastReceiver
 
     public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks,
             final boolean refresh) {
+
         runOnWorkerThread(new Runnable(){
             @Override
             public void run() {
@@ -3334,6 +3337,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 });
+                mBgWidgetsModel = model;
                 // update the Widget entries inside DB on the worker thread.
                 LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
                         model.getRawList());
@@ -3342,9 +3346,9 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     *  Returns a list of ResolveInfos/AppWidgetInfos.
+     * Returns a list of ResolveInfos/AppWidgetInfos.
      *
-     *  @see #loadAndBindWidgetsAndShortcuts
+     * @see #loadAndBindWidgetsAndShortcuts
      */
     private WidgetsModel createWidgetsModel(Context context, boolean refresh) {
         PackageManager packageManager = context.getPackageManager();

@@ -3,15 +3,12 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 import android.content.pm.ResolveInfo;
-import android.os.Handler;
-import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
 
@@ -20,7 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -33,24 +29,30 @@ public class WidgetsModel {
     private static final boolean DEBUG = false;
 
     /* List of packages that is tracked by this model. */
-    private List<PackageItemInfo> mPackageItemInfos = new ArrayList<>();
+    private ArrayList<PackageItemInfo> mPackageItemInfos = new ArrayList<>();
 
     /* Map of widgets and shortcuts that are tracked per package. */
-    private Map<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
+    private HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
 
     private ArrayList<Object> mRawList;
 
     private final Comparator mWidgetAndShortcutNameComparator;
     private final Comparator mAppNameComparator;
-
     private final IconCache mIconCache;
-    private final Handler mWorkerHandler;
 
     public WidgetsModel(Context context) {
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = LauncherAppState.getInstance().getIconCache();
-        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
+    }
+
+    private WidgetsModel(WidgetsModel model) {
+        mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
+        mWidgetsList = (HashMap<PackageItemInfo, ArrayList<Object>>) model.mWidgetsList.clone();
+        // mRawList is not copied as should not be needed.
+        mWidgetAndShortcutNameComparator = model.mWidgetAndShortcutNameComparator;
+        mAppNameComparator = model.mAppNameComparator;
+        mIconCache = model.mIconCache;
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
@@ -121,5 +123,15 @@ public class WidgetsModel {
         for (PackageItemInfo p: mPackageItemInfos) {
             Collections.sort(mWidgetsList.get(p), mWidgetAndShortcutNameComparator);
         }
+    }
+
+    /**
+     * Create a snapshot of the widgets model.
+     * <p>
+     * Usage case: view binding without being modified from package updates.
+     */
+    @Override
+    public WidgetsModel clone(){
+        return new WidgetsModel(this);
     }
 }
