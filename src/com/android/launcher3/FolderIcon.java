@@ -645,9 +645,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final Runnable onCompleteRunnable) {
         final PreviewItemDrawingParams finalParams = computePreviewItemDrawingParams(0, null);
 
-        final float scale0 = 1.0f;
-        final float transX0 = (mAvailableSpaceInPreview - d.getIntrinsicWidth()) / 2;
-        final float transY0 = (mAvailableSpaceInPreview - d.getIntrinsicHeight()) / 2 + getPaddingTop();
+        float iconSize = mLauncher.getDeviceProfile().iconSizePx;
+        final float scale0 = iconSize / d.getIntrinsicWidth() ;
+        final float transX0 = (mAvailableSpaceInPreview - iconSize) / 2;
+        final float transY0 = (mAvailableSpaceInPreview - iconSize) / 2 + getPaddingTop();
         mAnimParams.drawable = d;
 
         ValueAnimator va = LauncherAnimUtils.ofFloat(this, 0f, 1.0f);

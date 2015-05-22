@@ -453,9 +453,6 @@ public class Launcher extends Activity
                         app.getInvariantDeviceProfile().landscapeProfile
                             : app.getInvariantDeviceProfile().portraitProfile;
 
-        // TODO: Move this to icon cache.
-        Utilities.setIconSize(mDeviceProfile.iconSizePx);
-
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
@@ -4671,6 +4668,23 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPageSwitch(newPage, newPageIndex);
         }
+    }
+
+    /**
+     * Returns a FastBitmapDrawable with the icon, accurately sized.
+     */
+    public FastBitmapDrawable createIconDrawable(Bitmap icon) {
+        FastBitmapDrawable d = new FastBitmapDrawable(icon);
+        d.setFilterBitmap(true);
+        resizeIconDrawable(d);
+        return d;
+    }
+
+    /**
+     * Resizes an icon drawable to the correct icon size.
+     */
+    public void resizeIconDrawable(Drawable icon) {
+        icon.setBounds(0, 0, mDeviceProfile.iconSizePx, mDeviceProfile.iconSizePx);
     }
 
     /**

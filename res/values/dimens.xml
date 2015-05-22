@@ -15,8 +15,6 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">48dp</dimen>
-
 <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">6dp</dimen>
     <dimen name="dynamic_grid_search_bar_max_width">500dp</dimen>

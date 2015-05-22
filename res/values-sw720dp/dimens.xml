@@ -15,8 +15,6 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">72dp</dimen>
-
 <!-- All Apps -->
     <dimen name="all_apps_search_bar_height">54dp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">16dp</dimen>

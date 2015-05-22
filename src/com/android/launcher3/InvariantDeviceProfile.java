@@ -35,6 +35,8 @@ public class InvariantDeviceProfile {
     // This is a static that we use for the default icon size on a 4/5-inch phone
     private static float DEFAULT_ICON_SIZE_DP = 60;
 
+    private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
+
     // Constants that affects the interpolation curve between statically defined device profile
     // buckets.
     private static float KNEARESTNEIGHBOR = 3;
@@ -60,6 +62,8 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     float iconSize;
+    int iconBitmapSize;
+    int fillResIconDpi;
     float iconTextSize;
 
     /**
@@ -135,8 +139,10 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
+        iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -187,6 +193,29 @@ public class InvariantDeviceProfile {
         return predefinedDeviceProfiles;
     }
 
+    private int getLauncherIconDensity(int requiredSize) {
+        // Densities typically defined by an app.
+        int[] densityBuckets = new int[] {
+                DisplayMetrics.DENSITY_LOW,
+                DisplayMetrics.DENSITY_MEDIUM,
+                DisplayMetrics.DENSITY_TV,
+                DisplayMetrics.DENSITY_HIGH,
+                DisplayMetrics.DENSITY_XHIGH,
+                DisplayMetrics.DENSITY_XXHIGH,
+                DisplayMetrics.DENSITY_XXXHIGH
+        };
+
+        int density = DisplayMetrics.DENSITY_XXXHIGH;
+        for (int i = densityBuckets.length - 1; i >= 0; i--) {
+            float expectedSize = ICON_SIZE_DEFINED_IN_APP_DP * densityBuckets[i]
+                    / DisplayMetrics.DENSITY_DEFAULT;
+            if (expectedSize >= requiredSize) {
+                density = densityBuckets[i];
+            }
+        }
+
+        return density;
+    }
 
     /**
      * Apply any Partner customization grid overrides.

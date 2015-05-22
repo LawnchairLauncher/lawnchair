@@ -71,9 +71,6 @@ public final class Utilities {
 
     private static final String TAG = "Launcher.Utilities";
 
-    private static int sIconWidth = -1;
-    private static int sIconHeight = -1;
-
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
 
@@ -87,32 +84,15 @@ public final class Utilities {
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
 
-    static int[] sLoc0 = new int[2];
-    static int[] sLoc1 = new int[2];
+    private static final int[] sLoc0 = new int[2];
+    private static final int[] sLoc1 = new int[2];
 
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
-    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
-    public static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
+    private static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
+    private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
-
-    /**
-     * Returns a FastBitmapDrawable with the icon, accurately sized.
-     */
-    public static FastBitmapDrawable createIconDrawable(Bitmap icon) {
-        FastBitmapDrawable d = new FastBitmapDrawable(icon);
-        d.setFilterBitmap(true);
-        resizeIconDrawable(d);
-        return d;
-    }
-
-    /**
-     * Resizes an icon drawable to the correct icon size.
-     */
-    static void resizeIconDrawable(Drawable icon) {
-        icon.setBounds(0, 0, sIconWidth, sIconHeight);
-    }
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
@@ -141,7 +121,7 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= 22;
     }
 
-    static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
+    public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
         byte[] data = c.getBlob(iconIndex);
         try {
             return createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), context);
@@ -154,7 +134,7 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
      */
-    static Bitmap createIconBitmap(String packageName, String resourceName, IconCache cache,
+    public static Bitmap createIconBitmap(String packageName, String resourceName,
             Context context) {
         PackageManager packageManager = context.getPackageManager();
         // the resource
@@ -163,7 +143,8 @@ public final class Utilities {
             if (resources != null) {
                 final int id = resources.getIdentifier(resourceName, null, null);
                 return createIconBitmap(
-                        resources.getDrawableForDensity(id, cache.getFullResIconDpi()), context);
+                        resources.getDrawableForDensity(id, LauncherAppState.getInstance()
+                                .getInvariantDeviceProfile().fillResIconDpi), context);
             }
         } catch (Exception e) {
             // Icon not found.
@@ -171,16 +152,16 @@ public final class Utilities {
         return null;
     }
 
+    private static int getIconBitmapSize() {
+        return LauncherAppState.getInstance().getInvariantDeviceProfile().iconBitmapSize;
+    }
+
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
-    static Bitmap createIconBitmap(Bitmap icon, Context context) {
-        synchronized (sCanvas) { // we share the statics :-(
-            if (sIconWidth == -1) {
-                initStatics(context);
-            }
-        }
-        if (sIconWidth == icon.getWidth() && sIconHeight == icon.getHeight()) {
+    public static Bitmap createIconBitmap(Bitmap icon, Context context) {
+        final int iconBitmapSize = getIconBitmapSize();
+        if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
         }
         return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context);
@@ -190,13 +171,11 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view.
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context) {
-        synchronized (sCanvas) { // we share the statics :-(
-            if (sIconWidth == -1) {
-                initStatics(context);
-            }
+        synchronized (sCanvas) {
+            final int iconBitmapSize = getIconBitmapSize();
 
-            int width = sIconWidth;
-            int height = sIconHeight;
+            int width = iconBitmapSize;
+            int height = iconBitmapSize;
 
             if (icon instanceof PaintDrawable) {
                 PaintDrawable painter = (PaintDrawable) icon;
@@ -223,8 +202,8 @@ public final class Utilities {
             }
 
             // no intrinsic size --> use default size
-            int textureWidth = sIconWidth;
-            int textureHeight = sIconHeight;
+            int textureWidth = iconBitmapSize;
+            int textureHeight = iconBitmapSize;
 
             final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
@@ -352,15 +331,6 @@ public final class Utilities {
     public static boolean pointInView(View v, float localX, float localY, float slop) {
         return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
                 localY < (v.getHeight() + slop);
-    }
-
-    private static void initStatics(Context context) {
-        final Resources resources = context.getResources();
-        sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
-    }
-
-    public static void setIconSize(int widthPx) {
-        sIconWidth = sIconHeight = widthPx;
     }
 
     public static void scaleRect(Rect r, float scale) {
