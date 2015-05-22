@@ -109,7 +109,7 @@ public class Hotseat extends FrameLayout {
 
         mAllAppsButtonRank = grid.inv.hotseatAllAppsRank;
         mContent = (CellLayout) findViewById(R.id.layout);
-        if (grid.isLandscape && !grid.isLargeTablet()) {
+        if (grid.isLandscape && !grid.isLargeTablet) {
             mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
         } else {
             mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);

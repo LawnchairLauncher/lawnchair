@@ -16,29 +16,25 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
-
 import com.android.launcher3.util.Thunk;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 public class InvariantDeviceProfile {
-    private static final String TAG = "InvariantDeviceProfile";
 
     // This is a static that we use for the default icon size on a 4/5-inch phone
-    static float DEFAULT_ICON_SIZE_DP = 60;
+    private static float DEFAULT_ICON_SIZE_DP = 60;
 
-
-    static ArrayList<InvariantDeviceProfile> sDeviceProfiles =
-            new ArrayList<InvariantDeviceProfile>();
+    private static final ArrayList<InvariantDeviceProfile> sDeviceProfiles = new ArrayList<>();
     static {
         sDeviceProfiles.add(new InvariantDeviceProfile("Super Short Stubby",
                 255, 300,  2, 3, 2, 3, 48, 13, 3, 48, R.xml.default_workspace_4x4));
@@ -67,7 +63,7 @@ public class InvariantDeviceProfile {
                 1527, 2527,  7, 7, 6, 6, 100, 20,  7, 72, R.xml.default_workspace_4x4));
     }
 
-    class DeviceProfileQuery {
+    private class DeviceProfileQuery {
         InvariantDeviceProfile profile;
         float widthDps;
         float heightDps;
@@ -100,6 +96,9 @@ public class InvariantDeviceProfile {
     // Derived invariant properties
     int hotseatAllAppsRank;
 
+    DeviceProfile landscapeProfile;
+    DeviceProfile portraitProfile;
+
     InvariantDeviceProfile() {
     }
 
@@ -124,6 +123,7 @@ public class InvariantDeviceProfile {
         defaultLayoutId = dlId;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -179,6 +179,18 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
+
+        Point realSize = new Point();
+        display.getRealSize(realSize);
+        // The real size never changes. smallSide and largeSize will remain the
+        // same in any orientation.
+        int smallSide = Math.min(realSize.x, realSize.y);
+        int largeSide = Math.max(realSize.x, realSize.y);
+
+        landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
+                largeSide, smallSide, true /* isLandscape */);
+        portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
+                smallSide, largeSide, false /* isLandscape */);
     }
 
     /**

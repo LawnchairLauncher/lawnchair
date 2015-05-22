@@ -453,7 +453,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
 
         // Update the apps recycler view, inset it by the container inset as well
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int startMargin = grid.isPhone() ? mContentMarginStart : 0;
+        int startMargin = grid.isPhone ? mContentMarginStart : 0;
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
         if (isRtl) {
             mAppsRecyclerView.setPadding(inset + mAppsRecyclerView.getScrollbarWidth(), inset,

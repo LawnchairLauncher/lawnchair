@@ -431,8 +431,13 @@ public class Launcher extends Activity
         LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
 
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = new DeviceProfile(this, app.getInvariantDeviceProfile());
-        mDeviceProfile.addCallback(LauncherAppState.getInstance());
+        mDeviceProfile = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE ?
+                        app.getInvariantDeviceProfile().landscapeProfile
+                            : app.getInvariantDeviceProfile().portraitProfile;
+
+        // TODO: Move this to icon cache.
+        Utilities.setIconSize(mDeviceProfile.iconSizePx);
 
         // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
@@ -4199,7 +4204,7 @@ public class Launcher extends Activity
     }
 
     protected Rect getSearchBarBounds() {
-        return mDeviceProfile.getSearchBarBounds();
+        return mDeviceProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
     }
 
     public void bindSearchablesChanged() {

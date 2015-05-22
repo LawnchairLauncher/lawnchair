@@ -139,7 +139,7 @@ class AppsGridAdapter extends RecyclerView.Adapter<AppsGridAdapter.ViewHolder> {
                             mPredictedAppsDividerPaint);
                     hasDrawnPredictedAppsDivider = true;
 
-                } else if (grid.isPhone() && shouldDrawItemSection(holder, i, items)) {
+                } else if (grid.isPhone && shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
                     int viewTopOffset = (2 * child.getPaddingTop());
                     int pos = holder.getPosition();

@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,12 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Point;
-import android.os.Build;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -38,7 +32,7 @@ import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
 
-public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
+public class LauncherAppState {
 
     private final AppFilter mAppFilter;
     private final BuildInfo mBuildInfo;
@@ -211,11 +205,6 @@ public class LauncherAppState implements DeviceProfile.DeviceProfileCallbacks {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
-    }
-
-    @Override
-    public void onAvailableSizeChanged(DeviceProfile grid) {
-        Utilities.setIconSize(grid.iconSizePx);
     }
 
     public static boolean isDogfoodBuild() {

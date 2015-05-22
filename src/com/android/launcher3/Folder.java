@@ -36,7 +36,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -968,7 +967,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 bounds.left + bounds.width() - width);
         int top = Math.min(Math.max(bounds.top, centeredTop),
                 bounds.top + bounds.height() - height);
-        if (grid.isPhone() && (grid.availableWidthPx - width) < grid.iconSizePx) {
+        if (grid.isPhone && (grid.availableWidthPx - width) < grid.iconSizePx) {
             // Center the folder if it is full (on phones only)
             left = (grid.availableWidthPx - width) / 2;
         } else if (width >= bounds.width()) {
@@ -1003,8 +1002,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect workspacePadding = grid.getWorkspacePadding(grid.isLandscape ?
-                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+        Rect workspacePadding = grid.getWorkspacePadding(mContent.mIsRtl);
         int maxContentAreaHeight = grid.availableHeightPx -
                 workspacePadding.top - workspacePadding.bottom -
                 mFooterHeight;

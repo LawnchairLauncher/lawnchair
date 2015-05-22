@@ -161,7 +161,6 @@ public class WorkspaceStateTransitionAnimation {
         mLauncher = launcher;
         mWorkspace = workspace;
 
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Resources res = launcher.getResources();
         mAllAppsTransitionTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
@@ -170,7 +169,7 @@ public class WorkspaceStateTransitionAnimation {
         mSpringLoadedShrinkFactor =
                 res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100f;
         mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha) / 100f;
-        mOverviewModeShrinkFactor = grid.getOverviewModeScale();
+        mOverviewModeShrinkFactor = grid.getOverviewModeScale(Utilities.isRtl(res));
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
     }
 
