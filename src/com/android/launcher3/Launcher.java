@@ -2943,9 +2943,14 @@ public class Launcher extends Activity
             Bundle optsBundle = null;
             if (useLaunchAnimation && !Utilities.isLmpOrAbove()) {
                 // On pre-L devices, we use the scale up transition.
-                // Otherwise we use system default.
                 ActivityOptions opts =
                         ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+                optsBundle = opts.toBundle();
+            } else if (useLaunchAnimation && Utilities.isLmpMr1()) {
+                // On L-MR1 devices, we use custom slide up animation without a delay
+                // On L devices, we use the system default slide up.
+                ActivityOptions opts = ActivityOptions.makeCustomAnimation(this,
+                        R.anim.task_open_enter, R.anim.no_anim);
                 optsBundle = opts.toBundle();
             }
 

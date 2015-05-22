@@ -112,6 +112,10 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public static boolean isLmpMr1() {
+        return Build.VERSION.SDK_INT == 22;
+    }
+
     /**
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
