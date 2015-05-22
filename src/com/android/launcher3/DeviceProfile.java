@@ -70,7 +70,7 @@ public class DeviceProfile {
     public int iconSizePx;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
-    private final int iconDrawablePaddingOriginalPx;
+    public int iconDrawablePaddingOriginalPx;
 
     public int cellWidthPx;
     public int cellHeightPx;
@@ -88,11 +88,8 @@ public class DeviceProfile {
     private int hotseatBarHeightPx;
 
     // All apps
-    private int allAppsCellWidthPx;
-    public int allAppsCellHeightPx;
-    private final int allAppsCellPaddingPx;
-    public int appsViewNumCols;
-    public int appsViewNumPredictiveCols;
+    public int allAppsNumCols;
+    public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
     public final int allAppsIconSizePx;
     public final int allAppsIconTextSizePx;
@@ -129,8 +126,6 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
-        allAppsCellPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_all_apps_cell_padding);
         overviewModeMinIconZoneHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
         overviewModeMaxIconZoneHeightPx =
@@ -143,7 +138,6 @@ public class DeviceProfile {
                 res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
         overviewModeScaleFactor =
                 res.getInteger(R.integer.config_dynamic_grid_overview_scale_percentage) / 100f;
-
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
 
@@ -230,25 +224,22 @@ public class DeviceProfile {
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
 
-        // All Apps
-        allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellHeightPx = allAppsIconSizePx + drawablePadding + allAppsIconTextSizePx;
-
-        int appsContainerViewWidthPx = res.getDimensionPixelSize(R.dimen.apps_container_width);
-        updateAppsViewNumCols(res, appsContainerViewWidthPx);
+        updateAppsViewNumCols(res, 0);
     }
 
     public boolean updateAppsViewNumCols(Resources res, int containerWidth) {
         int appsViewLeftMarginPx =
-                res.getDimensionPixelSize(R.dimen.apps_grid_view_start_margin);
+                res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
+        int allAppsCellPaddingPx =
+                res.getDimensionPixelSize(R.dimen.all_apps_icon_left_right_padding);
         int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;
         int numAppsCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
-                (allAppsCellWidthPx + 2 * allAppsCellPaddingPx);
+                (allAppsIconSizePx + 2 * allAppsCellPaddingPx);
         int numPredictiveAppCols = isPhone ? 4 : numAppsCols;
-        if ((numAppsCols != appsViewNumCols) ||
-                (numPredictiveAppCols != appsViewNumPredictiveCols)) {
-            appsViewNumCols = numAppsCols;
-            appsViewNumPredictiveCols = numPredictiveAppCols;
+        if ((numAppsCols != allAppsNumCols) ||
+                (numPredictiveAppCols != allAppsNumPredictiveCols)) {
+            allAppsNumCols = numAppsCols;
+            allAppsNumPredictiveCols = numPredictiveAppCols;
             return true;
         }
         return false;

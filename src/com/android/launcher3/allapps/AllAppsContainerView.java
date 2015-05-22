@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.android.launcher3.allapps;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
@@ -40,7 +41,24 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.BaseContainerView;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.CellLayout;
+import com.android.launcher3.CheckLongPressHelper;
+import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget;
+import com.android.launcher3.Folder;
+import com.android.launcher3.Insettable;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherTransitionable;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
@@ -52,6 +70,7 @@ import java.util.regex.Pattern;
  */
 interface HeaderElevationController {
     void onScroll(int scrollY);
+    void updateBackgroundPadding(Drawable bg);
     void disable();
 }
 
@@ -62,8 +81,8 @@ interface HeaderElevationController {
 final class HeaderElevationControllerV16 implements HeaderElevationController {
 
     private final View mShadow;
-
     private final float mScrollToElevation;
+    private final Rect mTmpRect = new Rect();
 
     public HeaderElevationControllerV16(View header) {
         Resources res = header.getContext().getResources();
@@ -87,6 +106,15 @@ final class HeaderElevationControllerV16 implements HeaderElevationController {
         float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
                 mScrollToElevation;
         mShadow.setAlpha(elevationPct);
+    }
+
+    @Override
+    public void updateBackgroundPadding(Drawable bg) {
+        bg.getPadding(mTmpRect);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mShadow.getLayoutParams();
+        lp.leftMargin = mTmpRect.left;
+        lp.rightMargin = mTmpRect.right;
+        mShadow.requestLayout();
     }
 
     @Override
@@ -128,15 +156,20 @@ final class HeaderElevationControllerVL implements HeaderElevationController {
     }
 
     @Override
+    public void updateBackgroundPadding(Drawable bg) {
+        // Do nothing, the background padding on the header view is already applied
+    }
+
+    @Override
     public void disable() { }
 }
 
 /**
  * The all apps view container.
  */
-public class AppsContainerView extends BaseContainerView implements DragSource, Insettable,
+public class AllAppsContainerView extends BaseContainerView implements DragSource, Insettable,
         TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable,
-        AlphabeticalAppsList.AdapterChangedCallback, AppsGridAdapter.PredictionBarSpacerCallbacks,
+        AlphabeticalAppsList.AdapterChangedCallback, AllAppsGridAdapter.PredictionBarSpacerCallbacks,
         View.OnTouchListener, View.OnClickListener, View.OnLongClickListener,
         ViewTreeObserver.OnPreDrawListener {
 
@@ -155,18 +188,18 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
     private LayoutInflater mLayoutInflater;
-    private AppsGridAdapter mAdapter;
+    private AllAppsGridAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
 
     private FrameLayout mContentView;
-    @Thunk AppsContainerRecyclerView mAppsRecyclerView;
+    @Thunk AllAppsRecyclerView mAppsRecyclerView;
     private ViewGroup mPredictionBarView;
     private View mHeaderView;
     private View mSearchBarContainerView;
     private View mSearchButtonView;
     private View mDismissSearchButtonView;
-    private AppsContainerSearchEditTextView mSearchBarEditView;
+    private AllAppsSearchEditView mSearchBarEditView;
 
     private HeaderElevationController mElevationController;
 
@@ -188,15 +221,15 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
     private CheckLongPressHelper mPredictionIconCheckForLongPress;
     private View mPredictionIconUnderTouch;
 
-    public AppsContainerView(Context context) {
+    public AllAppsContainerView(Context context) {
         this(context, null);
     }
 
-    public AppsContainerView(Context context, AttributeSet attrs) {
+    public AllAppsContainerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LauncherAppState app = LauncherAppState.getInstance();
         Resources res = context.getResources();
@@ -205,18 +238,19 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         mContainerInset = context.getResources().getDimensionPixelSize(
-                R.dimen.apps_container_inset);
-        mPredictionBarHeight = grid.allAppsCellHeightPx +
-                2 * res.getDimensionPixelSize(R.dimen.apps_prediction_icon_top_bottom_padding);
+                R.dimen.all_apps_container_inset);
+        mPredictionBarHeight = grid.allAppsIconSizePx + grid.iconDrawablePaddingOriginalPx +
+                grid.allAppsIconTextSizePx +
+                2 * res.getDimensionPixelSize(R.dimen.all_apps_prediction_icon_top_bottom_padding);
 
         mLayoutInflater = LayoutInflater.from(context);
 
-        mNumAppsPerRow = grid.appsViewNumCols;
-        mNumPredictedAppsPerRow = grid.appsViewNumPredictiveCols;
+        mNumAppsPerRow = grid.allAppsNumCols;
+        mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
         mApps = new AlphabeticalAppsList(context, mNumAppsPerRow, mNumPredictedAppsPerRow);
         mApps.setAdapterChangedCallback(this);
-        mAdapter = new AppsGridAdapter(context, mApps, mNumAppsPerRow, this, this, mLauncher, this);
-        mAdapter.setEmptySearchText(res.getString(R.string.loading_apps_message));
+        mAdapter = new AllAppsGridAdapter(context, mApps, mNumAppsPerRow, this, this, mLauncher, this);
+        mAdapter.setEmptySearchText(res.getString(R.string.all_apps_loading_message));
         mAdapter.setNumAppsPerRow(mNumAppsPerRow);
         mAdapter.setPredictionRowHeight(mPredictionBarHeight);
         mLayoutManager = mAdapter.getLayoutManager();
@@ -340,13 +374,13 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mSearchBarContainerView = findViewById(R.id.app_search_container);
         mDismissSearchButtonView = mSearchBarContainerView.findViewById(R.id.dismiss_search_button);
         mDismissSearchButtonView.setOnClickListener(this);
-        mSearchBarEditView = (AppsContainerSearchEditTextView) findViewById(R.id.app_search_box);
+        mSearchBarEditView = (AllAppsSearchEditView) findViewById(R.id.apps_search_box);
         if (mSearchBarEditView != null) {
             mSearchBarEditView.addTextChangedListener(this);
             mSearchBarEditView.setOnEditorActionListener(this);
             if (DISMISS_SEARCH_ON_BACK) {
                 mSearchBarEditView.setOnBackKeyListener(
-                        new AppsContainerSearchEditTextView.OnBackKeyListener() {
+                        new AllAppsSearchEditView.OnBackKeyListener() {
                             @Override
                             public void onBackKey() {
                                 // Only hide the search field if there is no query, or if there
@@ -360,7 +394,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
                         });
             }
         }
-        mAppsRecyclerView = (AppsContainerRecyclerView) findViewById(R.id.apps_list_view);
+        mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);
         mAppsRecyclerView.setApps(mApps);
         mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
         mAppsRecyclerView.setPredictionBarHeight(mPredictionBarHeight);
@@ -388,7 +422,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
             } else {
                 // Otherwise, inflate a new icon
                 icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.apps_prediction_bar_icon_view, mPredictionBarView, false);
+                        R.layout.all_apps_prediction_bar_icon, mPredictionBarView, false);
                 icon.setFocusable(true);
                 mPredictionBarView.addView(icon);
             }
@@ -416,8 +450,8 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (grid.updateAppsViewNumCols(getContext().getResources(), mFixedBounds.width())) {
-            mNumAppsPerRow = grid.appsViewNumCols;
-            mNumPredictedAppsPerRow = grid.appsViewNumPredictiveCols;
+            mNumAppsPerRow = grid.allAppsNumCols;
+            mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
             mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
@@ -493,6 +527,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         mContentView.setBackground(background);
         mAppsRecyclerView.updateBackgroundPadding(background);
         mAdapter.updateBackgroundPadding(background);
+        mElevationController.updateBackgroundPadding(background);
         getRevealView().setBackground(background.getConstantState().newDrawable());
     }
 
@@ -632,7 +667,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
         if (queryText.isEmpty()) {
             mApps.setFilter(null);
         } else {
-            String formatStr = getResources().getString(R.string.apps_view_no_search_results);
+            String formatStr = getResources().getString(R.string.all_apps_no_search_results);
             mAdapter.setEmptySearchText(String.format(formatStr, queryText));
 
             // Do an intersection of the words in the query and each title, and filter out all the
@@ -679,7 +714,7 @@ public class AppsContainerView extends BaseContainerView implements DragSource, 
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
             for (int i = 0; i < items.size(); i++) {
                 AlphabeticalAppsList.AdapterItem item = items.get(i);
-                if (item.viewType == AppsGridAdapter.ICON_VIEW_TYPE) {
+                if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
                     mAppsRecyclerView.getChildAt(i).performClick();
                     getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
                     return true;

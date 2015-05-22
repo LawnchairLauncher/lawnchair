@@ -17,11 +17,11 @@
 <resources>
     <dimen name="app_icon_size">64dp</dimen>
 
-<!-- Apps view -->
-    <dimen name="apps_container_inset">18dp</dimen>
-    <dimen name="apps_grid_view_start_margin">0dp</dimen>
-    <dimen name="apps_view_section_text_size">26sp</dimen>
-    <dimen name="apps_icon_top_bottom_padding">12dp</dimen>
+<!-- All Apps -->
+    <dimen name="all_apps_container_inset">18dp</dimen>
+    <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
+    <dimen name="all_apps_grid_section_text_size">26sp</dimen>
+    <dimen name="all_apps_icon_top_bottom_padding">12dp</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">400dp</dimen>

@@ -163,9 +163,9 @@ public class WorkspaceStateTransitionAnimation {
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Resources res = launcher.getResources();
-        mAllAppsTransitionTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
+        mAllAppsTransitionTime = res.getInteger(R.integer.config_allAppsTransitionTime);
         mOverviewTransitionTime = res.getInteger(R.integer.config_overviewTransitionTime);
-        mOverlayTransitionTime = res.getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
+        mOverlayTransitionTime = res.getInteger(R.integer.config_overlayTransitionTime);
         mSpringLoadedShrinkFactor =
                 res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100f;
         mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha) / 100f;

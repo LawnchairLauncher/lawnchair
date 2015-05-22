@@ -18,22 +18,22 @@ package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.android.launcher3.BaseContainerRecyclerView;
+import com.android.launcher3.BaseRecyclerView;
 
 /**
- * The widgets recycler view container.
+ * The widgets recycler view.
  */
-public class WidgetsContainerRecyclerView extends BaseContainerRecyclerView {
+public class WidgetsRecyclerView extends BaseRecyclerView {
 
-    public WidgetsContainerRecyclerView(Context context) {
+    public WidgetsRecyclerView(Context context) {
         this(context, null);
     }
 
-    public WidgetsContainerRecyclerView(Context context, AttributeSet attrs) {
+    public WidgetsRecyclerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetsContainerRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

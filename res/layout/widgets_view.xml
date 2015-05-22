@@ -34,7 +34,7 @@
         android:focusable="false"
         android:visibility="invisible" />
 
-        <com.android.launcher3.widget.WidgetsContainerRecyclerView
+        <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

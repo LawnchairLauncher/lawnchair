@@ -1,8 +1,5 @@
 <resources>
 <!-- Dynamic Grid -->
-    <integer name="config_dynamic_grid_max_long_edge_cell_count">6</integer>
-    <integer name="config_dynamic_grid_max_short_edge_cell_count">5</integer>
-    <integer name="config_dynamic_grid_min_edge_cell_count">3</integer>
     <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
     <integer name="config_dynamic_grid_overview_icon_zone_percentage">20</integer>
     <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
@@ -24,21 +21,20 @@
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
 
-<!-- AllApps/Customize/AppsCustomize -->
+<!-- AllApps & Launcher transitions -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_workspaceScrimAlpha">55</integer>
-    <integer name="config_workspaceUnshrinkTime">100</integer>
+    <integer name="config_allAppsTransitionTime">100</integer>
     <integer name="config_overviewTransitionTime">250</integer>
 
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
 
-    <!-- Fade/zoom in/out duration & scale in the AllApps transition.
-         Note: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_appsCustomizeRevealTime">220</integer>
-    <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
-
-    <integer name="config_appsCustomizeItemsAlphaStagger">60</integer>
+    <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
+         Note: This should be less than the config_overlayTransitionTime as they happen together. -->
+    <integer name="config_overlayRevealTime">220</integer>
+    <integer name="config_overlayTransitionTime">300</integer>
+    <integer name="config_overlayItemsAlphaStagger">60</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which
          is used for internal (baked-in) padding -->

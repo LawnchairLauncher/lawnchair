@@ -38,7 +38,7 @@ public class AppInfo extends ItemInfo {
     /**
      * The intent used to start the application.
      */
-    Intent intent;
+    public Intent intent;
 
     /**
      * A bitmap version of the application icon.

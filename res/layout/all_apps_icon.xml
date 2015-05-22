@@ -21,8 +21,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="left|center_vertical"
-    android:paddingTop="@dimen/apps_icon_top_bottom_padding"
-    android:paddingBottom="@dimen/apps_icon_top_bottom_padding"
+    android:paddingTop="@dimen/all_apps_icon_top_bottom_padding"
+    android:paddingBottom="@dimen/all_apps_icon_top_bottom_padding"
     android:focusable="true"
     android:background="@drawable/focusable_view_bg"
     launcher:iconDisplay="all_apps" />
