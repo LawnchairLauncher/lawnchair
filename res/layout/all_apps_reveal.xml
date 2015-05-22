@@ -19,6 +19,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:elevation="15dp"
+    android:elevation="2dp"
     android:visibility="invisible"
     android:focusable="false" />
