@@ -26,7 +26,7 @@ import com.android.launcher3.util.Thunk;
  * A base {@link RecyclerView}, which will NOT intercept a touch sequence unless the scrolling
  * velocity is below a predefined threshold.
  */
-public class BaseContainerRecyclerView extends RecyclerView
+public class BaseRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
@@ -35,15 +35,15 @@ public class BaseContainerRecyclerView extends RecyclerView
     @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
-    public BaseContainerRecyclerView(Context context) {
+    public BaseRecyclerView(Context context) {
         this(context, null);
     }
 
-    public BaseContainerRecyclerView(Context context, AttributeSet attrs) {
+    public BaseRecyclerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public BaseContainerRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD_DP;
 

@@ -36,9 +36,9 @@
     <color name="outline_color">#FFFFFFFF</color>
     <color name="widget_text_panel">#FF374248</color>
 
-    <!-- Apps view -->
-    <color name="apps_view_scrollbar_thumb_color">#009688</color>
-    <color name="apps_view_section_text_color">#009688</color>
+    <!-- All Apps -->
+    <color name="all_apps_scrollbar_thumb_color">#009688</color>
+    <color name="all_apps_grid_section_text_color">#009688</color>
 
     <!-- Widgets view -->
     <color name="widgets_view_section_text_color">#FFFFFF</color>

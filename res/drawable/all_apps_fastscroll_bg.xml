@@ -16,12 +16,12 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
-    <solid android:color="@color/apps_view_scrollbar_thumb_color" />
+    <solid android:color="@color/all_apps_scrollbar_thumb_color" />
     <size
         android:width="64dp"
         android:height="64dp" />
     <corners
         android:topLeftRadius="64dp"
         android:topRightRadius="64dp"
-        android:bottomRightRadius="64dp" />
+        android:bottomLeftRadius="64dp" />
 </shape>

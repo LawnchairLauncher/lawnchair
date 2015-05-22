@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -24,7 +24,7 @@ import android.widget.EditText;
 /**
  * The edit text for the search container
  */
-public class AppsContainerSearchEditTextView extends EditText {
+public class AllAppsSearchEditView extends EditText {
 
     /**
      * Implemented by listeners of the back key.
@@ -35,15 +35,15 @@ public class AppsContainerSearchEditTextView extends EditText {
 
     private OnBackKeyListener mBackKeyListener;
 
-    public AppsContainerSearchEditTextView(Context context) {
+    public AllAppsSearchEditView(Context context) {
         this(context, null);
     }
 
-    public AppsContainerSearchEditTextView(Context context, AttributeSet attrs) {
+    public AllAppsSearchEditView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppsContainerSearchEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AllAppsSearchEditView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

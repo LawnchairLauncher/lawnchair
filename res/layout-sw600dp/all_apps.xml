@@ -13,23 +13,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- The top and bottom paddings are defined in this container, but since we want
-     the list view to span the full width (for touch interception purposes), we
-     will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.AppsContainerView
+<com.android.launcher3.allapps.AllAppsContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/all_apps_container_inset"
     android:descendantFocusability="afterDescendants">
     <include
-        layout="@layout/apps_reveal_view"
+        layout="@layout/all_apps_reveal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" />
     <include
-        layout="@layout/apps_list_view"
+        layout="@layout/all_apps_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" />
-</com.android.launcher3.AppsContainerView>
+</com.android.launcher3.allapps.AllAppsContainerView>

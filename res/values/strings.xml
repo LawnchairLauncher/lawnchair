@@ -47,20 +47,20 @@
 
     <string name="toggle_weight_watcher">Show Mem</string>
 
-    <!-- AppsCustomize pane -->
+    <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
 
-    <!-- Apps view -->
+    <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-    <string name="apps_view_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">Search Apps</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
-    <string name="loading_apps_message">Loading Apps&#8230;</string>
+    <string name="all_apps_loading_message">Loading Apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
-    <string name="apps_view_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
 
     <!-- Drag and drop -->
     <skip />

@@ -23,14 +23,13 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.res.Resources;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
 import java.util.HashMap;
@@ -129,7 +128,7 @@ public class LauncherStateTransitionAnimation {
      * Starts an animation to the apps view.
      */
     public void startAnimationToAllApps(final boolean animated) {
-        final AppsContainerView toView = mLauncher.getAppsView();
+        final AllAppsContainerView toView = mLauncher.getAppsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             private int[] mAllAppsToPanelDelta;
 
@@ -233,9 +232,9 @@ public class LauncherStateTransitionAnimation {
              final boolean hideSearchBar, final PrivateTransitionCallbacks pCb) {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.isLmpOrAbove();
-        final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
+        final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
         final int itemsAlphaStagger =
-                res.getInteger(R.integer.config_appsCustomizeItemsAlphaStagger);
+                res.getInteger(R.integer.config_overlayItemsAlphaStagger);
 
         final View allAppsButtonView = mLauncher.getAllAppsButton();
         final View fromView = mLauncher.getWorkspace();
@@ -428,7 +427,7 @@ public class LauncherStateTransitionAnimation {
     private void startAnimationToWorkspaceFromAllApps(final Launcher.State fromState,
               final Workspace.State toWorkspaceState, final int toWorkspacePage,
               final boolean animated, final Runnable onCompleteRunnable) {
-        AppsContainerView appsView = mLauncher.getAppsView();
+        AllAppsContainerView appsView = mLauncher.getAppsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             int[] mAllAppsToPanelDelta;
 
@@ -530,9 +529,9 @@ public class LauncherStateTransitionAnimation {
               final PrivateTransitionCallbacks pCb) {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.isLmpOrAbove();
-        final int revealDuration = res.getInteger(R.integer.config_appsCustomizeRevealTime);
+        final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
         final int itemsAlphaStagger =
-                res.getInteger(R.integer.config_appsCustomizeItemsAlphaStagger);
+                res.getInteger(R.integer.config_overlayItemsAlphaStagger);
 
         final View allAppsButtonView = mLauncher.getAllAppsButton();
         final View toView = mLauncher.getWorkspace();

@@ -14,7 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.AppsRecyclerViewContainer
+<com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_list"
     android:layout_width="match_parent"
@@ -23,12 +23,12 @@
     android:focusableInTouchMode="true"
     android:visibility="gone" >
 
-    <com.android.launcher3.AppsContainerRecyclerView
+    <com.android.launcher3.allapps.AllAppsRecyclerView
         android:id="@+id/apps_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="@dimen/apps_search_bar_height"
+        android:layout_marginTop="@dimen/all_apps_search_bar_height"
         android:clipToPadding="false"
         android:descendantFocusability="afterDescendants"
         android:focusable="true" />
@@ -37,7 +37,7 @@
         android:id="@+id/prediction_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/apps_search_bar_height"
+        android:layout_marginTop="@dimen/all_apps_search_bar_height"
         android:orientation="horizontal"
         android:descendantFocusability="afterDescendants"
         android:focusable="true"
@@ -49,8 +49,8 @@
     <FrameLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/apps_search_bar_height"
-        android:background="@drawable/apps_search_bg" >
+        android:layout_height="@dimen/all_apps_search_bar_height"
+        android:background="@drawable/all_apps_search_bg" >
 
         <LinearLayout
             android:id="@+id/app_search_container"
@@ -71,14 +71,14 @@
                 android:paddingTop="13dp"
                 android:src="@drawable/ic_arrow_back_grey" />
 
-            <com.android.launcher3.AppsContainerSearchEditTextView
-                android:id="@+id/app_search_box"
+            <com.android.launcher3.allapps.AllAppsSearchEditView
+                android:id="@+id/apps_search_box"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:focusableInTouchMode="true"
                 android:gravity="fill_horizontal"
-                android:hint="@string/apps_view_search_bar_hint"
+                android:hint="@string/all_apps_search_bar_hint"
                 android:imeOptions="actionDone|flagNoExtractUi"
                 android:maxLines="1"
                 android:paddingBottom="16dp"
@@ -98,10 +98,10 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="6dp"
             android:layout_marginRight="6dp"
-            android:contentDescription="@string/apps_view_search_bar_hint"
+            android:contentDescription="@string/all_apps_search_bar_hint"
             android:paddingBottom="13dp"
             android:paddingTop="13dp"
             android:src="@drawable/ic_search_grey" />
     </FrameLayout>
 
-</com.android.launcher3.AppsRecyclerViewContainer>
+</com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>

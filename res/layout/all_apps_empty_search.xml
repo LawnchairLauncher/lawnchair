@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2015 The Android Open Source Project
+<!-- Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,14 +13,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="rectangle">
-    <solid android:color="@color/apps_view_scrollbar_thumb_color" />
-    <size
-        android:width="64dp"
-        android:height="64dp" />
-    <corners
-        android:topLeftRadius="64dp"
-        android:topRightRadius="64dp"
-        android:bottomLeftRadius="64dp" />
-</shape>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/empty_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="24dp"
+    android:paddingBottom="24dp"
+    android:paddingRight="@dimen/all_apps_grid_view_start_margin"
+    android:textSize="16sp"
+    android:textColor="#4c4c4c"
+    android:focusable="false" />
+

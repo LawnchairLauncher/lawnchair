@@ -98,6 +98,7 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -272,7 +273,7 @@ public class Launcher extends Activity
     private SearchDropTargetBar mSearchDropTargetBar;
 
     // Main container view for the all apps screen.
-    @Thunk AppsContainerView mAppsView;
+    @Thunk AllAppsContainerView mAppsView;
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
@@ -1475,7 +1476,7 @@ public class Launcher extends Activity
                 mDragLayer.findViewById(R.id.search_drop_target_bar);
 
         // Setup Apps
-        mAppsView = (AppsContainerView) findViewById(R.id.apps_view);
+        mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
         if (isAllAppsSearchOverridden()) {
             mAppsView.hideHeaderBar();
         }
@@ -1524,8 +1525,6 @@ public class Launcher extends Activity
      * Creates a view representing a shortcut.
      *
      * @param info The data structure describing the shortcut.
-     *
-     * @return A View inflated from R.layout.application.
      */
     View createShortcut(ShortcutInfo info) {
         return createShortcut((ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
@@ -1540,7 +1539,7 @@ public class Launcher extends Activity
      * @return A View inflated from layoutResId.
      */
     public View createShortcut(ViewGroup parent, ShortcutInfo info) {
-        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(R.layout.application,
+        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(R.layout.app_icon,
                 parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
@@ -1875,7 +1874,7 @@ public class Launcher extends Activity
         return mDragLayer;
     }
 
-    public AppsContainerView getAppsView() {
+    public AllAppsContainerView getAppsView() {
         return mAppsView;
     }
 
@@ -3347,7 +3346,7 @@ public class Launcher extends Activity
         }
     }
 
-    protected void showWorkspace(boolean animated) {
+    public void showWorkspace(boolean animated) {
         showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null,
                 true);
     }
@@ -4811,14 +4810,6 @@ public class Launcher extends Activity
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
     }
-}
-
-interface LauncherTransitionable {
-    View getContent();
-    void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace);
-    void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace);
-    void onLauncherTransitionStep(Launcher l, float t);
-    void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace);
 }
 
 interface DebugIntents {

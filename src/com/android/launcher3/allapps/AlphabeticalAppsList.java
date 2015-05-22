@@ -1,9 +1,12 @@
-package com.android.launcher3;
+package com.android.launcher3.allapps;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.AppNameComparator;
 
@@ -81,7 +84,7 @@ public class AlphabeticalAppsList {
 
         public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AppsGridAdapter.SECTION_BREAK_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE;
             item.position = pos;
             item.sectionInfo = section;
             section.sectionBreakItem = item;
@@ -90,7 +93,7 @@ public class AlphabeticalAppsList {
 
         public static AdapterItem asPredictionBarSpacer(int pos) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AppsGridAdapter.PREDICTION_BAR_SPACER_TYPE;
+            item.viewType = AllAppsGridAdapter.PREDICTION_BAR_SPACER_TYPE;
             item.position = pos;
             return item;
         }
@@ -98,7 +101,7 @@ public class AlphabeticalAppsList {
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
                                         int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AppsGridAdapter.ICON_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.ICON_VIEW_TYPE;
             item.position = pos;
             item.sectionInfo = section;
             item.sectionName = sectionName;
@@ -516,7 +519,7 @@ public class AlphabeticalAppsList {
      */
     private void mergeSections() {
         // Go through each section and try and merge some of the sections
-        if (AppsContainerView.GRID_MERGE_SECTIONS && !hasFilter()) {
+        if (AllAppsContainerView.GRID_MERGE_SECTIONS && !hasFilter()) {
             int sectionAppCount = 0;
             for (int i = 0; i < mSections.size(); i++) {
                 SectionInfo section = mSections.get(i);

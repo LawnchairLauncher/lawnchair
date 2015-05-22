@@ -25,7 +25,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Process;
 import android.util.Log;
 import android.util.LongSparseArray;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -34,7 +33,6 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
-import junit.framework.Assert;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.android.launcher3.allapps;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -29,6 +29,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
 import java.util.List;
 
@@ -36,7 +41,7 @@ import java.util.List;
  * A RecyclerView with custom fastscroll support.  This is the main container for the all apps
  * icons.
  */
-public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
+public class AllAppsRecyclerView extends BaseRecyclerView {
 
     /**
      * The current scroll state of the recycler view.  We use this in updateVerticalScrollbarBounds()
@@ -82,38 +87,38 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
 
     private Launcher mLauncher;
 
-    public AppsContainerRecyclerView(Context context) {
+    public AllAppsRecyclerView(Context context) {
         this(context, null);
     }
 
-    public AppsContainerRecyclerView(Context context, AttributeSet attrs) {
+    public AllAppsRecyclerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AppsContainerRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public AppsContainerRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
+    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr);
 
         mLauncher = (Launcher) context;
         Resources res = context.getResources();
-        int fastScrollerSize = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_popup_size);
-        mScrollbar = res.getDrawable(R.drawable.apps_list_scrollbar_thumb);
-        mFastScrollerBg = res.getDrawable(R.drawable.apps_list_fastscroll_bg);
+        int fastScrollerSize = res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_popup_size);
+        mScrollbar = res.getDrawable(R.drawable.all_apps_scrollbar_thumb);
+        mFastScrollerBg = res.getDrawable(R.drawable.all_apps_fastscroll_bg);
         mFastScrollerBg.setBounds(0, 0, fastScrollerSize, fastScrollerSize);
         mFastScrollTextPaint = new Paint();
         mFastScrollTextPaint.setColor(Color.WHITE);
         mFastScrollTextPaint.setAntiAlias(true);
         mFastScrollTextPaint.setTextSize(res.getDimensionPixelSize(
-                R.dimen.apps_view_fast_scroll_text_size));
-        mScrollbarWidth = res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_bar_width);
+                R.dimen.all_apps_fast_scroll_text_size));
+        mScrollbarWidth = res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_bar_width);
         mScrollbarMinHeight =
-                res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_bar_min_height);
+                res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_bar_min_height);
         mScrollbarInset =
-                res.getDimensionPixelSize(R.dimen.apps_view_fast_scroll_scrubber_touch_inset);
+                res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(getFastScrollerAlpha());
         setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
@@ -135,10 +140,10 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
-        pool.setMaxRecycledViews(AppsGridAdapter.PREDICTION_BAR_SPACER_TYPE, 1);
-        pool.setMaxRecycledViews(AppsGridAdapter.EMPTY_VIEW_TYPE, 1);
-        pool.setMaxRecycledViews(AppsGridAdapter.ICON_VIEW_TYPE, approxRows * mNumAppsPerRow);
-        pool.setMaxRecycledViews(AppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.PREDICTION_BAR_SPACER_TYPE, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.ICON_VIEW_TYPE, approxRows * mNumAppsPerRow);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
     }
 
     public void updateBackgroundPadding(Drawable background) {
@@ -511,7 +516,7 @@ public class AppsContainerRecyclerView extends BaseContainerRecyclerView {
             int position = getChildPosition(child);
             if (position != NO_POSITION) {
                 AlphabeticalAppsList.AdapterItem item = items.get(position);
-                if (item.viewType == AppsGridAdapter.ICON_VIEW_TYPE) {
+                if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
                     stateOut.rowIndex = findRowForAppIndex(item.appIndex);
                     stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
                     stateOut.rowHeight = child.getHeight();
