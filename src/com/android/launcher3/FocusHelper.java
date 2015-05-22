@@ -92,13 +92,12 @@ public class FocusHelper {
 
             final int pageIndex = pagedView.indexOfChild(cellLayout);
             final int pageCount = pagedView.getPageCount();
-            Launcher launcher  = (Launcher) v.getContext();
+            final boolean isLayoutRtl = Utilities.isRtl(v.getResources());
 
             int[][] matrix = FocusLogic.createSparseMatrix(cellLayout);
             // Process focus.
             int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
-                    countY, matrix, iconIndex, pageIndex, pageCount,
-                    launcher.getDeviceProfile().isLayoutRtl);
+                    countY, matrix, iconIndex, pageIndex, pageCount, isLayoutRtl);
             if (newIconIndex == FocusLogic.NOOP) {
                 handleNoopKey(keyCode, v);
                 return consume;
@@ -252,7 +251,7 @@ public class FocusHelper {
 
         // Process the focus.
         int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
-                countY, matrix, iconIndex, pageIndex, pageCount, profile.isLayoutRtl);
+                countY, matrix, iconIndex, pageIndex, pageCount, Utilities.isRtl(v.getResources()));
 
         View newIcon = null;
         if (newIconIndex == FocusLogic.NEXT_PAGE_FIRST_ITEM) {
@@ -335,7 +334,7 @@ public class FocusHelper {
 
         // Process the focus.
         int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
-                countY, matrix, iconIndex, pageIndex, pageCount, profile.isLayoutRtl);
+                countY, matrix, iconIndex, pageIndex, pageCount, Utilities.isRtl(v.getResources()));
         View newIcon = null;
         switch (newIconIndex) {
             case FocusLogic.NOOP:
@@ -358,7 +357,8 @@ public class FocusHelper {
                     matrix = FocusLogic.createSparseMatrix(iconLayout,
                         iconLayout.getCountX(), row);
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
-                            matrix, FocusLogic.PIVOT, newPageIndex, pageCount, profile.isLayoutRtl);
+                            matrix, FocusLogic.PIVOT, newPageIndex, pageCount,
+                            Utilities.isRtl(v.getResources()));
                     newIcon = parent.getChildAt(newIconIndex);
                 }
                 break;
@@ -391,7 +391,8 @@ public class FocusHelper {
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout, -1, row);
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
-                            matrix, FocusLogic.PIVOT, newPageIndex, pageCount, profile.isLayoutRtl);
+                            matrix, FocusLogic.PIVOT, newPageIndex, pageCount,
+                            Utilities.isRtl(v.getResources()));
                     newIcon = parent.getChildAt(newIconIndex);
                 }
                 break;

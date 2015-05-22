@@ -47,8 +47,6 @@ public class Partner {
     public static final String RES_REQUIRE_FIRST_RUN_FLOW = "requires_first_run_flow";
 
     /** These resources are used to override the device profile  */
-    public static final String RES_GRID_AA_SHORT_EDGE_COUNT = "grid_aa_short_edge_count";
-    public static final String RES_GRID_AA_LONG_EDGE_COUNT = "grid_aa_long_edge_count";
     public static final String RES_GRID_NUM_ROWS = "grid_num_rows";
     public static final String RES_GRID_NUM_COLUMNS = "grid_num_columns";
     public static final String RES_GRID_ICON_SIZE_DP = "grid_icon_size_dp";
@@ -152,34 +150,6 @@ public class Partner {
 
         if (iconSize > 0) {
             inv.iconSize = iconSize;
-        }
-    }
-
-    public void applyDeviceProfileOverrides(DeviceProfile dp) {
-        int allAppsShortEdgeCount = -1;
-        int allAppsLongEdgeCount = -1;
-
-        try {
-            int resId = getResources().getIdentifier(RES_GRID_AA_SHORT_EDGE_COUNT,
-                    "integer", getPackageName());
-            if (resId > 0) {
-                allAppsShortEdgeCount = getResources().getInteger(resId);
-            }
-
-            resId = getResources().getIdentifier(RES_GRID_AA_LONG_EDGE_COUNT,
-                    "integer", getPackageName());
-            if (resId > 0) {
-                allAppsLongEdgeCount = getResources().getInteger(resId);
-            }
-
-        } catch (Resources.NotFoundException ex) {
-            Log.e(TAG, "Invalid Partner grid resource!", ex);
-            return;
-        }
-
-        if (allAppsShortEdgeCount > 0 && allAppsLongEdgeCount > 0) {
-            dp.allAppsShortEdgeCount = allAppsShortEdgeCount;
-            dp.allAppsLongEdgeCount = allAppsLongEdgeCount;
         }
     }
 }

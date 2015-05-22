@@ -316,7 +316,7 @@ public class Workspace extends SmoothPagedView
                 R.styleable.Workspace, defStyle, 0);
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        mOverviewModeShrinkFactor = grid.getOverviewModeScale();
+        mOverviewModeShrinkFactor = grid.getOverviewModeScale(mIsRtl);
         mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
@@ -1980,7 +1980,6 @@ public class Workspace extends SmoothPagedView
     }
 
     int getOverviewModeTranslationY() {
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Rect overviewBar = grid.getOverviewModeButtonBarRect();
 
@@ -2338,7 +2337,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void beginExternalDragShared(View child, DragSource source) {
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int iconSize = grid.iconSizePx;
 
@@ -2848,34 +2846,35 @@ public class Workspace extends SmoothPagedView
      * widthGap/heightGap (right, bottom) */
     static Rect getCellLayoutMetrics(Launcher launcher, int orientation) {
         LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = launcher.getDeviceProfile();
+        InvariantDeviceProfile inv = app.getInvariantDeviceProfile();
 
         Display display = launcher.getWindowManager().getDefaultDisplay();
         Point smallestSize = new Point();
         Point largestSize = new Point();
         display.getCurrentSizeRange(smallestSize, largestSize);
-        int countX = (int) grid.inv.numColumns;
-        int countY = (int) grid.inv.numRows;
+        int countX = (int) inv.numColumns;
+        int countY = (int) inv.numRows;
+        boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
         if (orientation == CellLayout.LANDSCAPE) {
             if (mLandscapeCellLayoutMetrics == null) {
-                Rect padding = grid.getWorkspacePadding(CellLayout.LANDSCAPE);
+                Rect padding = inv.landscapeProfile.getWorkspacePadding(isLayoutRtl);
                 int width = largestSize.x - padding.left - padding.right;
                 int height = smallestSize.y - padding.top - padding.bottom;
                 mLandscapeCellLayoutMetrics = new Rect();
                 mLandscapeCellLayoutMetrics.set(
-                        grid.calculateCellWidth(width, countX),
-                        grid.calculateCellHeight(height, countY), 0, 0);
+                        DeviceProfile.calculateCellWidth(width, countX),
+                        DeviceProfile.calculateCellHeight(height, countY), 0, 0);
             }
             return mLandscapeCellLayoutMetrics;
         } else if (orientation == CellLayout.PORTRAIT) {
             if (mPortraitCellLayoutMetrics == null) {
-                Rect padding = grid.getWorkspacePadding(CellLayout.PORTRAIT);
+                Rect padding = inv.portraitProfile.getWorkspacePadding(isLayoutRtl);
                 int width = smallestSize.x - padding.left - padding.right;
                 int height = largestSize.y - padding.top - padding.bottom;
                 mPortraitCellLayoutMetrics = new Rect();
                 mPortraitCellLayoutMetrics.set(
-                        grid.calculateCellWidth(width, countX),
-                        grid.calculateCellHeight(height, countY), 0, 0);
+                        DeviceProfile.calculateCellWidth(width, countX),
+                        DeviceProfile.calculateCellHeight(height, countY), 0, 0);
             }
             return mPortraitCellLayoutMetrics;
         }
@@ -3018,7 +3017,6 @@ public class Workspace extends SmoothPagedView
        mTempPt[1] = y;
        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempPt, true);
 
-       LauncherAppState app = LauncherAppState.getInstance();
        DeviceProfile grid = mLauncher.getDeviceProfile();
        r = grid.getHotseatRect();
        if (r.contains(mTempPt[0], mTempPt[1])) {

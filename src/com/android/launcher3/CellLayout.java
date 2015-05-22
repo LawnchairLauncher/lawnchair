@@ -821,8 +821,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -830,8 +828,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
-            int cw = grid.calculateCellWidth(childWidthSize, mCountX);
-            int ch = grid.calculateCellHeight(childHeightSize, mCountY);
+            int cw = DeviceProfile.calculateCellWidth(childWidthSize, mCountX);
+            int ch = DeviceProfile.calculateCellHeight(childHeightSize, mCountY);
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
@@ -2714,16 +2712,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @param result An array of length 2 in which to store the result (may be null).
      */
     public static int[] rectToCell(Launcher launcher, int width, int height, int[] result) {
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = launcher.getDeviceProfile();
-        Rect padding = grid.getWorkspacePadding(grid.isLandscape ?
-                CellLayout.LANDSCAPE : CellLayout.PORTRAIT);
+        Rect padding = grid.getWorkspacePadding(Utilities.isRtl(launcher.getResources()));
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        int parentWidth = grid.calculateCellWidth(grid.widthPx
+        int parentWidth = DeviceProfile.calculateCellWidth(grid.widthPx
                 - padding.left - padding.right, (int) grid.inv.numColumns);
-        int parentHeight = grid.calculateCellHeight(grid.heightPx
+        int parentHeight = DeviceProfile.calculateCellHeight(grid.heightPx
                 - padding.top - padding.bottom, (int) grid.inv.numRows);
         int smallerSize = Math.min(parentWidth, parentHeight);
 

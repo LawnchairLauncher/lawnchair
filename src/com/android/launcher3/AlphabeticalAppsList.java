@@ -219,7 +219,7 @@ public class AlphabeticalAppsList {
     public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow) {
         // Update the merge algorithm
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (grid.isPhone()) {
+        if (grid.isPhone) {
             mMergeAlgorithm = new PhoneMergeAlgorithm((int) Math.ceil(numAppsPerRow / 2f),
                     MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
         } else {
