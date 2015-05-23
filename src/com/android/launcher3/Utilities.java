@@ -123,6 +123,11 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= 22;
     }
 
+    public static boolean isLmpMR1() {
+        // TODO(adamcohen): update to Build.VERSION_CODES.LOLLIPOP_MR1 once building against 22;
+        return Build.VERSION.SDK_INT == 22;
+    }
+
     public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
         byte[] data = c.getBlob(iconIndex);
         try {
