@@ -29,9 +29,12 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Rādīt atmiņu"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Lai izvēlētos logrīku, pieskarieties un turiet to."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Meklēt lietotnēs"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"Notiek lietotņu ielāde…"</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"Vaicājumam “<xliff:g id="QUERY">%1$s</xliff:g>” neatbilda neviena lietotne."</string>
+    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
+    <skip />
+    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
+    <skip />
+    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Šajā sākuma ekrānā vairs nav vietas."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Izlases joslā vairs nav vietas."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Lietotnes"</string>
@@ -74,8 +77,7 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Šī lietotne nav instalēta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Šai ikonai paredzētā lietotne nav instalēta. Varat noņemt ikonu vai meklēt lietotni un instalēt to manuāli."</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Pievienot sākuma ekrānam"</string>
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
+    <string name="action_move_here" msgid="2170188780612570250">"Pārvietot vienumu šeit"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Vienums pievienots sākuma ekrānam"</string>
     <string name="item_removed" msgid="851119963877842327">"Vienums noņemts"</string>
     <string name="action_move" msgid="4339390619886385032">"Pārvietot vienumu"</string>

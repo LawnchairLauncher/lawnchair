@@ -29,9 +29,12 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Жадты көрсету"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Виджетті таңдау үшін түртіп, мықтап ұстаңыз."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"Apps ішінде іздеу"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"Қолданбалар жүктелуде…"</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"«<xliff:g id="QUERY">%1$s</xliff:g>» сәйкес келетін бағдарламалар табылмады"</string>
+    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
+    <skip />
+    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
+    <skip />
+    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Бұл Негізгі экранда орын қалмады."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Қалаулылар науасында орын қалмады"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Қолданбалар"</string>
@@ -73,47 +76,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"Іздеу"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Бұл қолданба орнатылмаған"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Осы белгіше үшін қолданба орнатылмаған. Оны жоюға болады немесе қолданбаны іздеп, қолмен орнатуға болады."</string>
-    <!-- no translation found for action_add_to_workspace (8902165848117513641) -->
-    <skip />
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
-    <!-- no translation found for item_added_to_workspace (4211073925752213539) -->
-    <skip />
-    <!-- no translation found for item_removed (851119963877842327) -->
-    <skip />
-    <!-- no translation found for action_move (4339390619886385032) -->
-    <skip />
-    <!-- no translation found for move_to_empty_cell (2833711483015685619) -->
-    <skip />
-    <!-- no translation found for move_to_position (6750008980455459790) -->
-    <skip />
-    <!-- no translation found for move_to_hotseat_position (6295412897075147808) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Негізгі экранға қосу"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Элементті мұнда жылжыту"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент негізгі экранға қосылды"</string>
+    <string name="item_removed" msgid="851119963877842327">"Элемент жойылды"</string>
+    <string name="action_move" msgid="4339390619886385032">"Элементті жылжыту"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g>-жол, <xliff:g id="NUMBER_1">%2$s</xliff:g>-бағанға жылжыту"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g>-орынға жылжыту"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"<xliff:g id="NUMBER">%1$s</xliff:g> нөмірлі таңдаулы орынға жылжыту"</string>
     <string name="item_moved" msgid="4606538322571412879">"Элемент жылжытылды"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"Қалтаға қосу: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for add_to_folder_with_app (4534929978967147231) -->
-    <skip />
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> бар қалтаға қосу"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"Элемент қалтаға қосылды"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Мына бар қалтаны жасау: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Қалта жасалды"</string>
-    <!-- no translation found for action_move_to_workspace (1603837886334246317) -->
-    <skip />
-    <!-- no translation found for action_move_screen_left (8854216831569401665) -->
-    <skip />
-    <!-- no translation found for action_move_screen_right (329334910274311123) -->
-    <skip />
-    <!-- no translation found for screen_moved (266230079505650577) -->
-    <skip />
-    <!-- no translation found for action_resize (1802976324781771067) -->
-    <skip />
-    <!-- no translation found for action_increase_width (8773715375078513326) -->
-    <skip />
-    <!-- no translation found for action_increase_height (459390020612501122) -->
-    <skip />
-    <!-- no translation found for action_decrease_width (1374549771083094654) -->
-    <skip />
-    <!-- no translation found for action_decrease_height (282377193880900022) -->
-    <skip />
-    <!-- no translation found for widget_resized (9130327887929620) -->
-    <skip />
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Негізгі экранға жылжыту"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Экранды солға жылжыту"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Экранды оңға жылжыту"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Экран жылжытылды"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Өлшемін өзгерту"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Енін арттыру"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Биіктігін арттыру"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Енін азайту"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Биіктігін азайту"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Виджет өлшемінің ені <xliff:g id="NUMBER_0">%1$s</xliff:g>, биіктігі <xliff:g id="NUMBER_1">%2$s</xliff:g> болып өзгертілді"</string>
 </resources>

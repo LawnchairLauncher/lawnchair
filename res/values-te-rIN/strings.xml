@@ -29,9 +29,12 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"మెమరీ చూపు"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"విడ్జెట్‌ను ఎంచుకోవడానికి తాకి &amp; నొక్కి పెట్టండి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"అనువర్తనాలను శోధించండి"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలు ఏవీ కనుగొనబడలేదు"</string>
+    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
+    <skip />
+    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
+    <skip />
+    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"అనువర్తనాలు"</string>
@@ -74,8 +77,7 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ అనువర్తనం కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"హోమ్ స్క్రీన్‌కు జోడించు"</string>
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
+    <string name="action_move_here" msgid="2170188780612570250">"అంశాన్ని ఇక్కడికి తరలించు"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"అంశం హోమ్‌స్క్రీన్‌కి జోడించబడింది"</string>
     <string name="item_removed" msgid="851119963877842327">"అంశం తీసివేయబడింది"</string>
     <string name="action_move" msgid="4339390619886385032">"అంశాన్ని తరలించు"</string>

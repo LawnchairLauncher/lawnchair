@@ -29,9 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem ကိုပြရန်"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"ရှာဖွေမှု Appများ"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"App များ ရယူနေစဉ်..."</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့် ကိုက်ညီသော App များ မတွေ့ပါ"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ရှာဖွေမှု Appများ"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"App များ ရယူနေစဉ်..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ဖ်များမတွေ့ပါ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ဤပင်မမျက်နှာစာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"အပ်ပလီကေးရှင်းများ"</string>
@@ -74,8 +74,7 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"App မတပ်ဆင်ရသေးပါ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ဤအိုင်ကွန်အတွက် app အားမထည့်သွင်းထားပါ။ You can remove it, or search for the app and install it manually."</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ပင်မမျက်နှာစာသို့ ထည့်ပါ"</string>
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
+    <string name="action_move_here" msgid="2170188780612570250">"၎င်းအား ဤသို့ ရွှေ့ပါ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ပင်မ ဖန်မျက်နှာပြင်သို့ ထည့်ပြီး၏"</string>
     <string name="item_removed" msgid="851119963877842327">"၎င်းအား ဖယ်ရှားပြီး၏"</string>
     <string name="action_move" msgid="4339390619886385032">"၎င်းအား ရွှေ့ပါ"</string>

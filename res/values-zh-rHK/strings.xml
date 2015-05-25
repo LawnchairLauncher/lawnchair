@@ -29,9 +29,12 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"顯示記憶體"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"搜尋應用程式"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"正在載入應用程式…"</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"找不到符合「<xliff:g id="QUERY">%1$s</xliff:g>」的應用程式。"</string>
+    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
+    <skip />
+    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
+    <skip />
+    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"主畫面已無空間。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"我的收藏寄存區沒有足夠空間"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"應用程式"</string>
@@ -73,47 +76,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"尚未安裝這個應用程式"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
-    <!-- no translation found for action_add_to_workspace (8902165848117513641) -->
-    <skip />
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
-    <!-- no translation found for item_added_to_workspace (4211073925752213539) -->
-    <skip />
-    <!-- no translation found for item_removed (851119963877842327) -->
-    <skip />
-    <!-- no translation found for action_move (4339390619886385032) -->
-    <skip />
-    <!-- no translation found for move_to_empty_cell (2833711483015685619) -->
-    <skip />
-    <!-- no translation found for move_to_position (6750008980455459790) -->
-    <skip />
-    <!-- no translation found for move_to_hotseat_position (6295412897075147808) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"新增至主畫面"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"移動項目至這裡"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"已將項目加入至主畫面"</string>
+    <string name="item_removed" msgid="851119963877842327">"項目已移除"</string>
+    <string name="action_move" msgid="4339390619886385032">"移動項目"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"移動至第 <xliff:g id="NUMBER_0">%1$s</xliff:g> 行第 <xliff:g id="NUMBER_1">%2$s</xliff:g> 列"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"移動至位置 <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"移動至喜愛的位置 <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"已移動項目"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"加入資料夾：<xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for add_to_folder_with_app (4534929978967147231) -->
-    <skip />
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"加入至資料夾：<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"項目已加入資料夾"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"使用以下項目建立資料夾：<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"已建立資料夾"</string>
-    <!-- no translation found for action_move_to_workspace (1603837886334246317) -->
-    <skip />
-    <!-- no translation found for action_move_screen_left (8854216831569401665) -->
-    <skip />
-    <!-- no translation found for action_move_screen_right (329334910274311123) -->
-    <skip />
-    <!-- no translation found for screen_moved (266230079505650577) -->
-    <skip />
-    <!-- no translation found for action_resize (1802976324781771067) -->
-    <skip />
-    <!-- no translation found for action_increase_width (8773715375078513326) -->
-    <skip />
-    <!-- no translation found for action_increase_height (459390020612501122) -->
-    <skip />
-    <!-- no translation found for action_decrease_width (1374549771083094654) -->
-    <skip />
-    <!-- no translation found for action_decrease_height (282377193880900022) -->
-    <skip />
-    <!-- no translation found for widget_resized (9130327887929620) -->
-    <skip />
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"移動至主畫面"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"向左移動螢幕"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"向右移動螢幕"</string>
+    <string name="screen_moved" msgid="266230079505650577">"已移動螢幕"</string>
+    <string name="action_resize" msgid="1802976324781771067">"重新調整大小"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"增加闊度"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"增加高度"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"減少闊度"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"減少高度"</string>
+    <string name="widget_resized" msgid="9130327887929620">"已調整小工具的大小至闊 <xliff:g id="NUMBER_0">%1$s</xliff:g> 高 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

@@ -29,9 +29,12 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"メモリーを表示"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ウィジェットを追加するには押し続けます。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"アプリを検索"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"アプリを読み込んでいます…"</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"「<xliff:g id="QUERY">%1$s</xliff:g>」に一致するアプリは見つかりませんでした"</string>
+    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
+    <skip />
+    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
+    <skip />
+    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"このホーム画面に空きスペースがありません。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"お気に入りトレイに空きスペースがありません"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"アプリ"</string>
@@ -73,47 +76,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"検索"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"このアプリはインストールされていません"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"このアイコンのアプリはインストールされていません。このアイコンは削除できます。または、手動でアプリを検索してインストールしください。"</string>
-    <!-- no translation found for action_add_to_workspace (8902165848117513641) -->
-    <skip />
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
-    <!-- no translation found for item_added_to_workspace (4211073925752213539) -->
-    <skip />
-    <!-- no translation found for item_removed (851119963877842327) -->
-    <skip />
-    <!-- no translation found for action_move (4339390619886385032) -->
-    <skip />
-    <!-- no translation found for move_to_empty_cell (2833711483015685619) -->
-    <skip />
-    <!-- no translation found for move_to_position (6750008980455459790) -->
-    <skip />
-    <!-- no translation found for move_to_hotseat_position (6295412897075147808) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"ホーム画面に追加"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"アイテムをここに移動"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"アイテムをホーム画面に追加しました"</string>
+    <string name="item_removed" msgid="851119963877842327">"アイテムを削除しました"</string>
+    <string name="action_move" msgid="4339390619886385032">"アイテムを移動"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"行<xliff:g id="NUMBER_0">%1$s</xliff:g>、列<xliff:g id="NUMBER_1">%2$s</xliff:g>に移動"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"位置<xliff:g id="NUMBER">%1$s</xliff:g>に移動"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"お気に入りの位置<xliff:g id="NUMBER">%1$s</xliff:g>に移動"</string>
     <string name="item_moved" msgid="4606538322571412879">"アイテムを移動しました"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"フォルダ「<xliff:g id="NAME">%1$s</xliff:g>」に追加"</string>
-    <!-- no translation found for add_to_folder_with_app (4534929978967147231) -->
-    <skip />
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g>のあるフォルダに追加"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"アイテムをフォルダに追加しました"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"「<xliff:g id="NAME">%1$s</xliff:g>」フォルダを作成"</string>
     <string name="folder_created" msgid="6409794597405184510">"フォルダを作成しました"</string>
-    <!-- no translation found for action_move_to_workspace (1603837886334246317) -->
-    <skip />
-    <!-- no translation found for action_move_screen_left (8854216831569401665) -->
-    <skip />
-    <!-- no translation found for action_move_screen_right (329334910274311123) -->
-    <skip />
-    <!-- no translation found for screen_moved (266230079505650577) -->
-    <skip />
-    <!-- no translation found for action_resize (1802976324781771067) -->
-    <skip />
-    <!-- no translation found for action_increase_width (8773715375078513326) -->
-    <skip />
-    <!-- no translation found for action_increase_height (459390020612501122) -->
-    <skip />
-    <!-- no translation found for action_decrease_width (1374549771083094654) -->
-    <skip />
-    <!-- no translation found for action_decrease_height (282377193880900022) -->
-    <skip />
-    <!-- no translation found for widget_resized (9130327887929620) -->
-    <skip />
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"ホーム画面に移動"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"画面を左に移動"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"画面を右に移動"</string>
+    <string name="screen_moved" msgid="266230079505650577">"画面を移動しました"</string>
+    <string name="action_resize" msgid="1802976324781771067">"サイズを変更"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"幅を広くする"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"高さを高くする"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"幅を狭くする"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"高さを低くする"</string>
+    <string name="widget_resized" msgid="9130327887929620">"ウィジェットのサイズを幅<xliff:g id="NUMBER_0">%1$s</xliff:g>、高さ<xliff:g id="NUMBER_1">%2$s</xliff:g>に変更しました"</string>
 </resources>

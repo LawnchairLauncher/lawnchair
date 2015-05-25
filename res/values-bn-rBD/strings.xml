@@ -29,9 +29,12 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"মেম দেখান"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"একটি উইজেট তুলতে তা স্পর্শ করে ধরে রাখুন৷"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="apps_view_search_bar_hint" msgid="5257064110425662340">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
-    <string name="loading_apps_message" msgid="5746103323587394548">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
-    <string name="apps_view_no_search_results" msgid="1390726981225924916">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান নেই"</string>
+    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
+    <skip />
+    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
+    <skip />
+    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"অ্যাপ্লিকেশানগুলি"</string>
@@ -74,8 +77,7 @@
     <string name="abandoned_promises_title" msgid="7096178467971716750">"এই অ্যাপ্লিকেশানটি ইন্সটল করা নাই"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি অনুসন্ধান করে এটি নিজে ইন্সটল করতে পারেন।"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"হোম স্ক্রীনে যোগ করুন"</string>
-    <!-- no translation found for action_move_here (2170188780612570250) -->
-    <skip />
+    <string name="action_move_here" msgid="2170188780612570250">"এখানে আইটেম সরান"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"হোম স্ক্রীনে আইটেম যোগ করা হয়েছে"</string>
     <string name="item_removed" msgid="851119963877842327">"আইটেম সরানো হয়েছে"</string>
     <string name="action_move" msgid="4339390619886385032">"আইটেম সরান"</string>
