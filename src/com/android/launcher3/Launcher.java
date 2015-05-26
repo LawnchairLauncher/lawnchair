@@ -111,11 +111,8 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -309,8 +306,6 @@ public class Launcher extends Activity
     private boolean mHasFocus = false;
     private boolean mAttached = false;
 
-    @Thunk static LocaleConfiguration sLocaleConfiguration = null;
-
     private static LongArrayMap<FolderInfo> sFolders = new LongArrayMap<>();
 
     private View.OnTouchListener mHapticFeedbackTouchListener;
@@ -468,7 +463,6 @@ public class Launcher extends Activity
                     Environment.getExternalStorageDirectory() + "/launcher");
         }
 
-        checkForLocaleChange();
         setContentView(R.layout.launcher);
 
         setupViews();
@@ -603,108 +597,6 @@ public class Launcher extends Activity
             populateCustomContentContainer();
         } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
             mWorkspace.removeCustomContentPage();
-        }
-    }
-
-    @Thunk void checkForLocaleChange() {
-        if (sLocaleConfiguration == null) {
-            new AsyncTask<Void, Void, LocaleConfiguration>() {
-                @Override
-                protected LocaleConfiguration doInBackground(Void... unused) {
-                    LocaleConfiguration localeConfiguration = new LocaleConfiguration();
-                    readConfiguration(Launcher.this, localeConfiguration);
-                    return localeConfiguration;
-                }
-
-                @Override
-                protected void onPostExecute(LocaleConfiguration result) {
-                    sLocaleConfiguration = result;
-                    checkForLocaleChange();  // recursive, but now with a locale configuration
-                }
-            }.execute();
-            return;
-        }
-
-        final Configuration configuration = getResources().getConfiguration();
-
-        final String previousLocale = sLocaleConfiguration.locale;
-        final String locale = configuration.locale.toString();
-
-        final int previousMcc = sLocaleConfiguration.mcc;
-        final int mcc = configuration.mcc;
-
-        final int previousMnc = sLocaleConfiguration.mnc;
-        final int mnc = configuration.mnc;
-
-        boolean localeChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
-
-        if (localeChanged) {
-            sLocaleConfiguration.locale = locale;
-            sLocaleConfiguration.mcc = mcc;
-            sLocaleConfiguration.mnc = mnc;
-
-            mIconCache.flush();
-
-            final LocaleConfiguration localeConfiguration = sLocaleConfiguration;
-            new AsyncTask<Void, Void, Void>() {
-                public Void doInBackground(Void ... args) {
-                    writeConfiguration(Launcher.this, localeConfiguration);
-                    return null;
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        }
-    }
-
-    @Thunk static class LocaleConfiguration {
-        public String locale;
-        public int mcc = -1;
-        public int mnc = -1;
-    }
-
-    @Thunk static void readConfiguration(Context context, LocaleConfiguration configuration) {
-        DataInputStream in = null;
-        try {
-            in = new DataInputStream(context.openFileInput(LauncherFiles.LAUNCHER_PREFERENCES));
-            configuration.locale = in.readUTF();
-            configuration.mcc = in.readInt();
-            configuration.mnc = in.readInt();
-        } catch (FileNotFoundException e) {
-            // Ignore
-        } catch (IOException e) {
-            // Ignore
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    // Ignore
-                }
-            }
-        }
-    }
-
-    @Thunk static void writeConfiguration(Context context, LocaleConfiguration configuration) {
-        DataOutputStream out = null;
-        try {
-            out = new DataOutputStream(context.openFileOutput(
-                    LauncherFiles.LAUNCHER_PREFERENCES, MODE_PRIVATE));
-            out.writeUTF(configuration.locale);
-            out.writeInt(configuration.mcc);
-            out.writeInt(configuration.mnc);
-            out.flush();
-        } catch (FileNotFoundException e) {
-            // Ignore
-        } catch (IOException e) {
-            //noinspection ResultOfMethodCallIgnored
-            context.getFileStreamPath(LauncherFiles.LAUNCHER_PREFERENCES).delete();
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    // Ignore
-                }
-            }
         }
     }
 

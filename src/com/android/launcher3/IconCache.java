@@ -49,10 +49,8 @@ import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 import java.util.Stack;
 
 /**
@@ -364,13 +362,6 @@ public class IconCache {
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
         return mIconDb.newContentValues(entry.icon, entry.title.toString());
-    }
-
-    /**
-     * Empty out the cache.
-     */
-    public synchronized void flush() {
-        mCache.clear();
     }
 
     /**
