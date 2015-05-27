@@ -26,12 +26,14 @@ import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
+
 import java.util.HashMap;
 
 /**
@@ -320,7 +322,7 @@ public class LauncherStateTransitionAnimation {
                 float startRadius = pCb.getMaterialRevealViewStartFinalRadius();
                 AnimatorListenerAdapter listener = pCb.getMaterialRevealViewAnimatorListener(
                         revealView, allAppsButtonView);
-                Animator reveal = ViewAnimationUtils.createCircularReveal(revealView, width / 2,
+                Animator reveal = UiThreadCircularReveal.createCircularReveal(revealView, width / 2,
                         height / 2, startRadius, revealRadius);
                 reveal.setDuration(revealDuration);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
@@ -587,14 +589,14 @@ public class LauncherStateTransitionAnimation {
                 TimeInterpolator decelerateInterpolator = material ?
                         new LogDecelerateInterpolator(100, 0) :
                         new DecelerateInterpolator(1f);
-                ObjectAnimator panelDriftY = LauncherAnimUtils.ofFloat(revealView, "translationY",
+                ObjectAnimator panelDriftY = ObjectAnimator.ofFloat(revealView, "translationY",
                         0, revealViewToYDrift);
                 panelDriftY.setDuration(revealDuration - SINGLE_FRAME_DELAY);
                 panelDriftY.setStartDelay(itemsAlphaStagger + SINGLE_FRAME_DELAY);
                 panelDriftY.setInterpolator(decelerateInterpolator);
                 mStateAnimation.play(panelDriftY);
 
-                ObjectAnimator panelDriftX = LauncherAnimUtils.ofFloat(revealView, "translationX",
+                ObjectAnimator panelDriftX = ObjectAnimator.ofFloat(revealView, "translationX",
                         0, revealViewToXDrift);
                 panelDriftX.setDuration(revealDuration - SINGLE_FRAME_DELAY);
                 panelDriftX.setStartDelay(itemsAlphaStagger + SINGLE_FRAME_DELAY);
@@ -605,7 +607,7 @@ public class LauncherStateTransitionAnimation {
                 final float revealViewToAlpha = !material ? 0f :
                         pCb.getMaterialRevealViewFinalAlpha(revealView);
                 if (revealViewToAlpha != 1f) {
-                    ObjectAnimator panelAlpha = LauncherAnimUtils.ofFloat(revealView, "alpha",
+                    ObjectAnimator panelAlpha = ObjectAnimator.ofFloat(revealView, "alpha",
                             1f, revealViewToAlpha);
                     panelAlpha.setDuration(material ? revealDuration : 150);
                     panelAlpha.setStartDelay(material ? 0 : itemsAlphaStagger + SINGLE_FRAME_DELAY);
@@ -617,7 +619,7 @@ public class LauncherStateTransitionAnimation {
                 layerViews.put(contentView, BUILD_AND_SET_LAYER);
 
                 // Create the individual animators
-                ObjectAnimator pageDrift = LauncherAnimUtils.ofFloat(contentView, "translationY",
+                ObjectAnimator pageDrift = ObjectAnimator.ofFloat(contentView, "translationY",
                         0, revealViewToYDrift);
                 contentView.setTranslationY(0);
                 pageDrift.setDuration(revealDuration - SINGLE_FRAME_DELAY);
@@ -626,7 +628,7 @@ public class LauncherStateTransitionAnimation {
                 mStateAnimation.play(pageDrift);
 
                 contentView.setAlpha(1f);
-                ObjectAnimator itemsAlpha = LauncherAnimUtils.ofFloat(contentView, "alpha", 1f, 0f);
+                ObjectAnimator itemsAlpha = ObjectAnimator.ofFloat(contentView, "alpha", 1f, 0f);
                 itemsAlpha.setDuration(100);
                 itemsAlpha.setInterpolator(decelerateInterpolator);
                 mStateAnimation.play(itemsAlpha);
@@ -636,9 +638,8 @@ public class LauncherStateTransitionAnimation {
                     float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
                     AnimatorListenerAdapter listener =
                             pCb.getMaterialRevealViewAnimatorListener(revealView, allAppsButtonView);
-                    Animator reveal =
-                            LauncherAnimUtils.createCircularReveal(revealView, width / 2,
-                                    height / 2, revealRadius, finalRadius);
+                    Animator reveal = UiThreadCircularReveal.createCircularReveal(revealView, width / 2,
+                            height / 2, revealRadius, finalRadius);
                     reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
                     reveal.setDuration(revealDuration);
                     reveal.setStartDelay(itemsAlphaStagger);
