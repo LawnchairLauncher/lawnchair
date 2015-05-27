@@ -146,7 +146,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected OnLongClickListener mLongClickListener;
 
     protected int mTouchSlop;
-    private int mPagingTouchSlop;
     private int mMaximumVelocity;
     protected int mPageLayoutWidthGap;
     protected int mPageLayoutHeightGap;
@@ -171,14 +170,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // If true, modify alpha of neighboring pages as user scrolls left/right
     protected boolean mFadeInAdjacentScreens = false;
-
-    // It true, use a different slop parameter (pagingTouchSlop = 2 * touchSlop) for deciding
-    // to switch to a new page
-    protected boolean mUsePagingTouchSlop = true;
-
-    // If true, the subclass should directly update scrollX itself in its computeScroll method
-    // (SmoothPagedView does this)
-    protected boolean mDeferScrollUpdate = false;
 
     protected boolean mIsPageMoving = false;
 
@@ -264,7 +255,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledPagingTouchSlop();
-        mPagingTouchSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         mDensity = getResources().getDisplayMetrics().density;
 
@@ -1434,25 +1424,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (!isTouchPointInViewportWithBuffer((int) x, (int) y)) return;
 
         final int xDiff = (int) Math.abs(x - mLastMotionX);
-        final int yDiff = (int) Math.abs(y - mLastMotionY);
 
         final int touchSlop = Math.round(touchSlopScale * mTouchSlop);
-        boolean xPaged = xDiff > mPagingTouchSlop;
         boolean xMoved = xDiff > touchSlop;
-        boolean yMoved = yDiff > touchSlop;
 
-        if (xMoved || xPaged || yMoved) {
-            if (mUsePagingTouchSlop ? xPaged : xMoved) {
-                // Scroll if the user moved far enough along the X axis
-                mTouchState = TOUCH_STATE_SCROLLING;
-                mTotalMotionX += Math.abs(mLastMotionX - x);
-                mLastMotionX = x;
-                mLastMotionXRemainder = 0;
-                mTouchX = getViewportOffsetX() + getScrollX();
-                mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-                onScrollInteractionBegin();
-                pageBeginMoving();
-            }
+        if (xMoved) {
+            // Scroll if the user moved far enough along the X axis
+            mTouchState = TOUCH_STATE_SCROLLING;
+            mTotalMotionX += Math.abs(mLastMotionX - x);
+            mLastMotionX = x;
+            mLastMotionXRemainder = 0;
+            mTouchX = getViewportOffsetX() + getScrollX();
+            mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+            onScrollInteractionBegin();
+            pageBeginMoving();
         }
     }
 
@@ -1697,12 +1682,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 if (Math.abs(deltaX) >= 1.0f) {
                     mTouchX += deltaX;
                     mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-                    if (!mDeferScrollUpdate) {
-                        scrollBy((int) deltaX, 0);
-                        if (DEBUG) Log.d(TAG, "onTouchEvent().Scrolling: " + deltaX);
-                    } else {
-                        invalidate();
-                    }
+                    scrollBy((int) deltaX, 0);
                     mLastMotionX = x;
                     mLastMotionXRemainder = deltaX - (int) deltaX;
                 } else {

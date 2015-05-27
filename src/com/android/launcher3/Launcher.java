@@ -88,6 +88,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.FrameLayout;
@@ -163,13 +164,13 @@ public class Launcher extends Activity
     private static final int WORKSPACE_BACKGROUND_TRANSPARENT = 1;
     private static final int WORKSPACE_BACKGROUND_BLACK = 2;
 
+    private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
+
     /**
      * IntentStarter uses request codes starting with this. This must be greater than all activity
      * request codes used internally.
      */
     protected static final int REQUEST_LAST = 100;
-
-    static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
     static final int SCREEN_COUNT = 5;
 
@@ -4235,7 +4236,7 @@ public class Launcher extends Activity
                 PropertyValuesHolder.ofFloat("scaleY", 1f));
         bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
-        bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
+        bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;
     }
 
