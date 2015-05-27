@@ -16,10 +16,8 @@
 
 package com.android.launcher3;
 
-import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 /**
  * Interface defining an object that can receive a drag.
@@ -90,43 +88,6 @@ public interface DropTarget {
             res[1] = top + dragView.getDragRegion().height() / 2;
 
             return res;
-        }
-    }
-
-    public static class DragEnforcer implements DragController.DragListener {
-        int dragParity = 0;
-
-        public DragEnforcer(Context context) {
-            Launcher launcher = (Launcher) context;
-            launcher.getDragController().addDragListener(this);
-        }
-
-        void onDragEnter() {
-            dragParity++;
-            if (dragParity != 1) {
-                Log.e(TAG, "onDragEnter: Drag contract violated: " + dragParity);
-            }
-        }
-
-        void onDragExit() {
-            dragParity--;
-            if (dragParity != 0) {
-                Log.e(TAG, "onDragExit: Drag contract violated: " + dragParity);
-            }
-        }
-
-        @Override
-        public void onDragStart(DragSource source, Object info, int dragAction) {
-            if (dragParity != 0) {
-                Log.e(TAG, "onDragEnter: Drag contract violated: " + dragParity);
-            }
-        }
-
-        @Override
-        public void onDragEnd() {
-            if (dragParity != 0) {
-                Log.e(TAG, "onDragExit: Drag contract violated: " + dragParity);
-            }
         }
     }
 

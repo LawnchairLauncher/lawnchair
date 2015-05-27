@@ -168,7 +168,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private int[] mDirectionVector = new int[2];
     int[] mPreviousReorderDirection = new int[2];
     private static final int INVALID_DIRECTION = -100;
-    private DropTarget.DragEnforcer mDragEnforcer;
 
     private final Rect mTempRect = new Rect();
 
@@ -188,7 +187,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mDragEnforcer = new DropTarget.DragEnforcer(context);
 
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
@@ -2637,7 +2635,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * or it may have begun on another layout.
      */
     void onDragEnter() {
-        mDragEnforcer.onDragEnter();
         mDragging = true;
     }
 
@@ -2645,7 +2642,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * Called when drag has left this CellLayout or has been completed (successfully or not)
      */
     void onDragExit() {
-        mDragEnforcer.onDragExit();
         // This can actually be called when we aren't in a drag, e.g. when adding a new
         // item to this layout via the customize drawer.
         // Guard against that case.

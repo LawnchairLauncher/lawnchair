@@ -20,6 +20,7 @@
 
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
+    <item type="id" name="drag_event_parity" />
 
 <!-- AllApps & Launcher transitions -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->

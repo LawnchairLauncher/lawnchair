@@ -918,7 +918,7 @@ public class DragLayer extends InsettableFrameLayout {
     void showPageHints() {
         mShowPageHints = true;
         Workspace workspace = mLauncher.getWorkspace();
-        getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.getChildCount() - 1),
+        getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.numCustomPages()),
                 mScrollChildPosition);
         invalidate();
     }

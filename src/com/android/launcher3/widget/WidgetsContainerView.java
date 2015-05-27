@@ -35,7 +35,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragController;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.Folder;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
@@ -46,6 +45,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.model.WidgetsModel;
 
 /**
  * The widgets list view container.
@@ -55,8 +55,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     private static final String TAG = "WidgetsContainerView";
     private static final boolean DEBUG = false;
-
-    private static final int SPRING_MODE_DELAY_MS = 150;
 
     /* Coefficient multiplied to the screen height for preloading widgets. */
     private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
@@ -186,18 +184,11 @@ public class WidgetsContainerView extends BaseContainerView
             Log.e(TAG, "Unexpected dragging view: " + v);
         }
 
-        // We delay entering spring-loaded mode slightly to make sure the UI
-        // thread is free of any work.
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // We don't enter spring-loaded mode if the drag has been cancelled
-                if (mLauncher.getDragController().isDragging()) {
-                    // Go into spring loaded mode (must happen before we startDrag())
-                    mLauncher.enterSpringLoadedDragMode();
-                }
-            }
-        }, SPRING_MODE_DELAY_MS);
+        // We don't enter spring-loaded mode if the drag has been cancelled
+        if (mLauncher.getDragController().isDragging()) {
+            // Go into spring loaded mode (must happen before we startDrag())
+            mLauncher.enterSpringLoadedDragMode();
+        }
 
         return true;
     }

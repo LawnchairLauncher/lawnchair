@@ -64,8 +64,8 @@ import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
@@ -88,6 +88,8 @@ public class Workspace extends PagedView
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
         Insettable, UninstallSource, AccessibilityDragSource {
     private static final String TAG = "Launcher.Workspace";
+
+    private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
 
     protected static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
     protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
@@ -215,7 +217,6 @@ public class Workspace extends PagedView
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
-    private DropTarget.DragEnforcer mDragEnforcer;
     private float mMaxDistanceForFolderCreation;
 
     private final Canvas mCanvas = new Canvas();
@@ -301,9 +302,6 @@ public class Workspace extends PagedView
 
         mOutlineHelper = HolographicOutlineHelper.obtain(context);
 
-        mDragEnforcer = new DropTarget.DragEnforcer(context);
-        // With workspace, data is available straight from the get-go
-
         mLauncher = (Launcher) context;
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         final Resources res = getResources();
@@ -372,22 +370,23 @@ public class Workspace extends PagedView
         return r;
     }
 
+    @Override
     public void onDragStart(final DragSource source, Object info, int dragAction) {
+        if (ENFORCE_DRAG_EVENT_ORDER) {
+            enfoceDragParity("onDragStart", 0, 0);
+        }
+
         mIsDragOccuring = true;
         updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (mIsDragOccuring && mAddNewPageOnDrag) {
-                    mDeferRemoveExtraEmptyScreen = false;
-                    addExtraEmptyScreenOnDrag();
-                }
-            }
-        });
+
+        if (mAddNewPageOnDrag) {
+            mDeferRemoveExtraEmptyScreen = false;
+            addExtraEmptyScreenOnDrag();
+        }
     }
 
     public void setAddNewPageOnDrag(boolean addPage) {
@@ -398,7 +397,12 @@ public class Workspace extends PagedView
         mDeferRemoveExtraEmptyScreen = true;
     }
 
+    @Override
     public void onDragEnd() {
+        if (ENFORCE_DRAG_EVENT_ORDER) {
+            enfoceDragParity("onDragEnd", 0, 0);
+        }
+
         if (!mDeferRemoveExtraEmptyScreen) {
             removeExtraEmptyScreen(true, mDragSourceInternal != null);
         }
@@ -2822,8 +2826,12 @@ public class Workspace extends PagedView
         location[1] = vY - y;
     }
 
+    @Override
     public void onDragEnter(DragObject d) {
-        mDragEnforcer.onDragEnter();
+        if (ENFORCE_DRAG_EVENT_ORDER) {
+            enfoceDragParity("onDragEnter", 1, 1);
+        }
+
         mCreateUserFolderOnDrop = false;
         mAddToExistingFolderOnDrop = false;
 
@@ -2876,8 +2884,11 @@ public class Workspace extends PagedView
         return null;
     }
 
+    @Override
     public void onDragExit(DragObject d) {
-        mDragEnforcer.onDragExit();
+        if (ENFORCE_DRAG_EVENT_ORDER) {
+            enfoceDragParity("onDragExit", -1, 0);
+        }
 
         // Here we store the final page that will be dropped to, if the workspace in fact
         // receives the drop
@@ -2907,6 +2918,24 @@ public class Workspace extends PagedView
         mSpringLoadedDragController.cancel();
 
         mLauncher.getDragLayer().hidePageHints();
+    }
+
+    private void enfoceDragParity(String event, int update, int expectedValue) {
+        enfoceDragParity(this, event, update, expectedValue);
+        for (int i = 0; i < getChildCount(); i++) {
+            enfoceDragParity(getChildAt(i), event, update, expectedValue);
+        }
+    }
+
+    private void enfoceDragParity(View v, String event, int update, int expectedValue) {
+        Object tag = v.getTag(R.id.drag_event_parity);
+        int value = tag == null ? 0 : (Integer) tag;
+        value += update;
+        v.setTag(R.id.drag_event_parity, value);
+
+        if (value != expectedValue) {
+            Log.e(TAG, event + ": Drag contract violated: " + value);
+        }
     }
 
     void setCurrentDropLayout(CellLayout layout) {
