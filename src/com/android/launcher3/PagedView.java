@@ -2078,7 +2078,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         snapToPage(whichPage, delta, duration);
     }
 
-    protected void snapToPage(int whichPage) {
+    public void snapToPage(int whichPage) {
         snapToPage(whichPage, getPageSnapDuration());
     }
 
