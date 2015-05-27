@@ -29,12 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Vis Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Tryk på en widget, og hold den nede for at vælge."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Søg i Apps"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Indlæser apps…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Der blev ikke fundet nogen apps, som matcher \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="out_of_space" msgid="4691004494942118364">"Der er ikke mere plads på denne startskærm."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Der er ikke mere plads i bakken Foretrukne"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Apps"</string>
@@ -95,8 +92,8 @@
     <string name="action_move_screen_right" msgid="329334910274311123">"Flyt skærmen til højre"</string>
     <string name="screen_moved" msgid="266230079505650577">"Skærmen er flyttet"</string>
     <string name="action_resize" msgid="1802976324781771067">"Tilpas størrelse"</string>
-    <string name="action_increase_width" msgid="8773715375078513326">"Forlæng bredden"</string>
-    <string name="action_increase_height" msgid="459390020612501122">"Forlæng højden"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Øg bredden"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Øg højden"</string>
     <string name="action_decrease_width" msgid="1374549771083094654">"Reducer bredden"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Reducer højden"</string>
     <string name="widget_resized" msgid="9130327887929620">"Størrelsen for widgetten er ændret til bredde <xliff:g id="NUMBER_0">%1$s</xliff:g> og højde <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>

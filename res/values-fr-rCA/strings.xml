@@ -29,12 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Afficher la mémoire"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Maintenez un doigt sur le widget pour l\'ajouter."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Rechercher des applications"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Chargement des applications en cours..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Aucune application trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur l\'écran d\'accueil."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Il n\'y a plus d\'espace dans la zone des favoris"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Applications"</string>

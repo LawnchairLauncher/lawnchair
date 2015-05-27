@@ -29,12 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem පෙන්වන්න"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"විජට් එක ස්පර්ශ කර අහුලා ගැනීමට අල්ලාගෙන සිටින්න."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"යෙදුම් සෙවීම"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"යෙදුම් පූරණය වෙමින්…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>
     <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"යෙදුම්"</string>
@@ -93,7 +90,7 @@
     <string name="action_move_to_workspace" msgid="1603837886334246317">"මුල් තිරය වෙත ගෙන යන්න"</string>
     <string name="action_move_screen_left" msgid="8854216831569401665">"තිරය වම් පැත්තට ගෙනයන්න"</string>
     <string name="action_move_screen_right" msgid="329334910274311123">"තිරය දකුණු පැත්තට ගෙනයන්න"</string>
-    <string name="screen_moved" msgid="266230079505650577">"තිරය ​​ගෙන යන ලදි"</string>
+    <string name="screen_moved" msgid="266230079505650577">"තිරය ගෙන යන ලදි"</string>
     <string name="action_resize" msgid="1802976324781771067">"නැවත ප්‍රමාණගත කිරීම"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"පළල වැඩි කරන්න"</string>
     <string name="action_increase_height" msgid="459390020612501122">"උස වැඩි කරන්න"</string>

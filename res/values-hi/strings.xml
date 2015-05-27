@@ -29,12 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"मेमोरी दिखाएं"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ऐप्‍स खोजें"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"ऐप्स लोड हो रहे हैं..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलान करने वाला कोई ऐप नहीं मिला"</string>
     <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और स्थान नहीं है"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ऐप्लिकेशन"</string>

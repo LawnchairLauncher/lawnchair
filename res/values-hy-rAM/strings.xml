@@ -29,12 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Ցուցադրել մեմը"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Հպեք և պահեք՝ վիջեթն ընտրելու համար:"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for all_apps_search_bar_hint (7084713969757597256) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (7557140873644765180) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (6332185285860416787) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Հավելվածների որոնում"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Հավելվածների բեռնում…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"«<xliff:g id="QUERY">%1$s</xliff:g>» հարցմանը համապատասխանող հավելվածներ չեն գտնվել"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Այլևս տեղ չկա այս հիմնական էկրանին:"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ընտրյալների ցուցակում այլևս ազատ տեղ չկա"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ծրագրեր"</string>
@@ -86,7 +83,7 @@
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Տեղափոխել նախընտրած դիրք՝ <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Տարրը տեղափոխվեց"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"Ավելացնել թղթապանակում՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Ավելացնել <xliff:g id="NAME">%1$s</xliff:g>-ի պանակին"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Ավելացնել «<xliff:g id="NAME">%1$s</xliff:g>» պանակին"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"Տարրն ավելացվեց թղթապանակում"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Ստեղծել թղթապանակ, օգտագործելով՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Թղթապանակը ստեղծվեց"</string>
