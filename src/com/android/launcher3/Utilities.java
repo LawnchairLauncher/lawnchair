@@ -127,6 +127,11 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public static boolean isLmpMR1OrAbove() {
+        // TODO(adamcohen): update to Build.VERSION_CODES.LOLLIPOP_MR1 once building against 22;
+        return Build.VERSION.SDK_INT >= 22;
+    }
+
     static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
         byte[] data = c.getBlob(iconIndex);
         try {
@@ -588,7 +593,6 @@ public final class Utilities {
     }
 
     public static final Comparator<ItemInfo> RANK_COMPARATOR = new Comparator<ItemInfo>() {
-
         @Override
         public int compare(ItemInfo lhs, ItemInfo rhs) {
             return lhs.rank - rhs.rank;
