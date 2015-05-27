@@ -558,6 +558,35 @@ public class Launcher extends Activity
                 }
             }
         });
+        mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
+            private boolean mImportanceStored = false;
+            private int mWorkspaceImportanceForAccessibility =
+                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+            private int mHotseatImportanceForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+
+            @Override
+            public void onSearchOverlayOpened() {
+                if (mImportanceStored) {
+                    return;
+                }
+                // The underlying workspace and hotseat are temporarily suppressed by the search
+                // overlay. So they sholudn't be accessible.
+                mWorkspaceImportanceForAccessibility = mWorkspace.getImportantForAccessibility();
+                mHotseatImportanceForAccessibility = mHotseat.getImportantForAccessibility();
+                mWorkspace.setImportantForAccessibility(
+                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                mHotseat.setImportantForAccessibility(
+                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                mImportanceStored = true;
+            }
+
+            @Override
+            public void onSearchOverlayClosed() {
+                mWorkspace.setImportantForAccessibility(mWorkspaceImportanceForAccessibility);
+                mHotseat.setImportantForAccessibility(mHotseatImportanceForAccessibility);
+                mImportanceStored = false;
+            }
+        });
         return true;
     }
 
@@ -1205,6 +1234,18 @@ public class Launcher extends Activity
          * Called to dismiss all apps if it is showing.
          */
         public void dismissAllApps();
+    }
+
+    public interface LauncherSearchCallbacks {
+        /**
+         * Called when the search overlay is shown.
+         */
+        public void onSearchOverlayOpened();
+
+        /**
+         * Called when the search overlay is dismissed.
+         */
+        public void onSearchOverlayClosed();
     }
 
     public interface LauncherOverlayCallbacks {
