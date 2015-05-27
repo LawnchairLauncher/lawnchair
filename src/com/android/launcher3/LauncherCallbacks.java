@@ -119,4 +119,11 @@ public interface LauncherCallbacks {
      */
     public void setLauncherAppsCallback(Object callbacks);
 
+    /**
+     * Sets the callbacks to allow reacting the actions of search overlays of the launcher.
+     *
+     * @param callbacks A set of callbacks to the Launcher, is actually a LauncherSearchCallback,
+     *                  but for implementation purposes is passed around as an object.
+     */
+    public void setLauncherSearchCallback(Object callbacks);
 }

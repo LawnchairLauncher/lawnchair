@@ -289,6 +289,11 @@ public class LauncherExtension extends Launcher {
             // Do nothing
         }
 
+        @Override
+        public void setLauncherSearchCallback(Object callbacks) {
+            // Do nothing
+        }
+
         class LauncherExtensionOverlay implements LauncherOverlay {
             LauncherOverlayCallbacks mLauncherOverlayCallbacks;
             ViewGroup mOverlayView;
