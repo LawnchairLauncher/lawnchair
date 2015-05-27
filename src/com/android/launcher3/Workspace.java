@@ -197,7 +197,6 @@ public class Workspace extends PagedView
     private static final Rect sTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int[] mTempVisiblePagesRange = new int[2];
-    private boolean mOverscrollEffectSet;
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -256,8 +255,6 @@ public class Workspace extends PagedView
 
     private float mCurrentScale;
     private float mTransitionProgress;
-
-    float mOverScrollEffect = 0f;
 
     @Thunk Runnable mDeferredAction;
     private boolean mDeferDropAfterUninstall;
@@ -443,6 +440,8 @@ public class Workspace extends PagedView
 
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
+
+        setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
     }
 
     private void setupLayoutTransition() {
@@ -1260,14 +1259,18 @@ public class Workspace extends PagedView
             mLauncherOverlay.onScrollChange(progress, mIsRtl);
         } else if (shouldOverScroll) {
             dampedOverScroll(amount);
-            mOverScrollEffect = acceleratedOverFactor(amount);
-        } else {
-            mOverScrollEffect = 0;
         }
 
         if (shouldZeroOverlay) {
             mLauncherOverlay.onScrollChange(0, mIsRtl);
         }
+    }
+
+    @Override
+    protected void getEdgeVerticalPostion(int[] pos) {
+        View child = getChildAt(getPageCount() - 1);
+        pos[0] = child.getTop();
+        pos[1] = child.getBottom();
     }
 
     @Override
@@ -1540,11 +1543,9 @@ public class Workspace extends PagedView
     }
 
     private void updatePageAlphaValues(int screenCenter) {
-        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
         if (mWorkspaceFadeInAdjacentScreens &&
                 !workspaceInModalState() &&
-                !mIsSwitchingState &&
-                !isInOverscroll) {
+                !mIsSwitchingState) {
             for (int i = numCustomPages(); i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
@@ -1654,34 +1655,9 @@ public class Workspace extends PagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
-        super.screenScrolled(screenCenter);
-
         updatePageAlphaValues(screenCenter);
         updateStateForCustomContent(screenCenter);
         enableHwLayersOnVisiblePages();
-
-        boolean shouldOverScroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
-
-        if (shouldOverScroll) {
-            int index = 0;
-            final int lowerIndex = 0;
-            final int upperIndex = getChildCount() - 1;
-
-            final boolean isLeftPage = mOverScrollX < 0;
-            index = (!mIsRtl && isLeftPage) || (mIsRtl && !isLeftPage) ? lowerIndex : upperIndex;
-
-            CellLayout cl = (CellLayout) getChildAt(index);
-            float effect = Math.abs(mOverScrollEffect);
-            cl.setOverScrollAmount(Math.abs(effect), isLeftPage);
-
-            mOverscrollEffectSet = true;
-        } else {
-            if (mOverscrollEffectSet && getChildCount() > 0) {
-                mOverscrollEffectSet = false;
-                ((CellLayout) getChildAt(0)).setOverScrollAmount(0, false);
-                ((CellLayout) getChildAt(getChildCount() - 1)).setOverScrollAmount(0, false);
-            }
-        }
     }
 
     protected void onAttachedToWindow() {

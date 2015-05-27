@@ -47,7 +47,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
+
+import com.android.launcher3.util.LauncherEdgeEffect;
 import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 
 /**
@@ -63,12 +66,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final int MIN_LENGTH_FOR_FLING = 25;
 
     protected static final int PAGE_SNAP_ANIMATION_DURATION = 750;
-    protected static final int OVER_SCROLL_PAGE_SNAP_ANIMATION_DURATION = 350;
     protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
     protected static final float NANOTIME_DIV = 1000000000.0f;
-
-    private static final float OVERSCROLL_ACCELERATE_FACTOR = 2;
-    private static final float OVERSCROLL_DAMP_FACTOR = 0.07f;
 
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
@@ -81,10 +80,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final int FLING_THRESHOLD_VELOCITY = 500;
     private static final int MIN_SNAP_VELOCITY = 1500;
     private static final int MIN_FLING_VELOCITY = 250;
-
-    // We are disabling touch interaction of the widget region for factory ROM.
-    private static final boolean DISABLE_TOUCH_INTERACTION = false;
-    private static final boolean DISABLE_TOUCH_SIDE_PAGES = true;
 
     public static final int INVALID_RESTORE_PAGE = -1001;
 
@@ -153,14 +148,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int mCellCountY = 0;
     protected boolean mCenterPagesVertically;
     protected boolean mAllowOverScroll = true;
-    protected int mUnboundedScrollX;
     protected int[] mTempVisiblePagesRange = new int[2];
     protected boolean mForceDrawAllChildrenNextFrame;
-
-    // mOverScrollX is equal to getScrollX() when we're within the normal scroll range. Otherwise
-    // it is equal to the scaled overscroll position. We use a separate value so as to prevent
-    // the screens from continuing to translate beyond the normal bounds.
-    protected int mOverScrollX;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -192,7 +181,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private float mMinScale = 1f;
     private boolean mUseMinScale = false;
     protected View mDragView;
-    protected AnimatorSet mZoomInOutAnim;
     private Runnable mSidePageHoverRunnable;
     @Thunk int mSidePageHoverIndex = -1;
     // This variable's scope is only for the duration of startReordering() and endReordering()
@@ -213,6 +201,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected final Rect mInsets = new Rect();
     protected final boolean mIsRtl;
+
+    // Edge effect
+    private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect();
+    private final LauncherEdgeEffect mEdgeGlowRight = new LauncherEdgeEffect();
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -262,6 +254,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * mDensity);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * mDensity);
         setOnHierarchyChangeListener(this);
+        setWillNotDraw(false);
+    }
+
+    protected void setEdgeGlowColor(int color) {
+        mEdgeGlowLeft.setColor(color);
+        mEdgeGlowRight.setColor(color);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {
@@ -560,7 +558,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public void scrollBy(int x, int y) {
-        scrollTo(mUnboundedScrollX + x, getScrollY() + y);
+        scrollTo(getScrollX() + x, getScrollY() + y);
     }
 
     @Override
@@ -578,12 +576,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             x = Math.max(x, mFreeScrollMinScrollX);
         }
 
-        mUnboundedScrollX = x;
-
         boolean isXBeforeFirstPage = mIsRtl ? (x > mMaxScrollX) : (x < 0);
         boolean isXAfterLastPage = mIsRtl ? (x < 0) : (x > mMaxScrollX);
         if (isXBeforeFirstPage) {
-            super.scrollTo(0, y);
+            super.scrollTo(mIsRtl ? mMaxScrollX : 0, y);
             if (mAllowOverScroll) {
                 mWasInOverscroll = true;
                 if (mIsRtl) {
@@ -593,7 +589,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 }
             }
         } else if (isXAfterLastPage) {
-            super.scrollTo(mMaxScrollX, y);
+            super.scrollTo(mIsRtl ? 0 : mMaxScrollX, y);
             if (mAllowOverScroll) {
                 mWasInOverscroll = true;
                 if (mIsRtl) {
@@ -607,7 +603,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 overScroll(0);
                 mWasInOverscroll = false;
             }
-            mOverScrollX = x;
             super.scrollTo(x, y);
         }
 
@@ -646,8 +641,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
             if (getScrollX() != mScroller.getCurrX()
-                || getScrollY() != mScroller.getCurrY()
-                || mOverScrollX != mScroller.getCurrX()) {
+                || getScrollY() != mScroller.getCurrY()) {
                 float scaleX = mFreeScroll ? getScaleX() : 1f;
                 int scrollX = (int) (mScroller.getCurrX() * (1 / scaleX));
                 scrollTo(scrollX, mScroller.getCurrY());
@@ -978,21 +972,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         requestLayout();
     }
 
-    protected void screenScrolled(int screenCenter) {
-        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
-
-        if (mFadeInAdjacentScreens && !isInOverscroll) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (child != null) {
-                    float scrollProgress = getScrollProgress(screenCenter, child, i);
-                    float alpha = 1 - Math.abs(scrollProgress);
-                    child.setAlpha(alpha);
-                }
-            }
-            invalidate();
-        }
-    }
+    /**
+     * Called when the center screen changes during scrolling.
+     */
+    protected void screenScrolled(int screenCenter) { }
 
     @Override
     public void onChildViewAdded(View parent, View child) {
@@ -1129,9 +1112,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         final int pageCount = getChildCount();
         if (pageCount > 0) {
             int halfScreenSize = getViewportWidth() / 2;
-            // mOverScrollX is equal to getScrollX() when we're within the normal scroll range.
-            // Otherwise it is equal to the scaled overscroll position.
-            int screenCenter = mOverScrollX + halfScreenSize;
+            int screenCenter = getScrollX() + halfScreenSize;
 
             if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
                 // set mForceScreenScrolled before calling screenScrolled so that screenScrolled can
@@ -1170,6 +1151,47 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
         }
     }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        if (getPageCount() > 0) {
+            if (!mEdgeGlowLeft.isFinished()) {
+                final int restoreCount = canvas.save();
+                Rect display = mViewport;
+                canvas.translate(display.left, display.top);
+                canvas.rotate(270);
+
+                getEdgeVerticalPostion(sTmpIntPoint);
+                canvas.translate(display.top - sTmpIntPoint[1], 0);
+                mEdgeGlowLeft.setSize(sTmpIntPoint[1] - sTmpIntPoint[0], display.width());
+                if (mEdgeGlowLeft.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(restoreCount);
+            }
+            if (!mEdgeGlowRight.isFinished()) {
+                final int restoreCount = canvas.save();
+                Rect display = mViewport;
+                canvas.translate(display.left +
+                        display.width() * (getChildCount() - 1), display.top);
+                canvas.rotate(90);
+
+                getEdgeVerticalPostion(sTmpIntPoint);
+                canvas.translate(sTmpIntPoint[0] - display.top, -display.width());
+                mEdgeGlowRight.setSize(sTmpIntPoint[1] - sTmpIntPoint[0], display.width());
+                if (mEdgeGlowRight.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(restoreCount);
+            }
+        }
+    }
+
+    /**
+     * Returns the top and bottom position for the edge effect.
+     */
+    protected abstract void getEdgeVerticalPostion(int[] pos);
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
@@ -1303,10 +1325,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (DISABLE_TOUCH_INTERACTION) {
-            return false;
-        }
-
         /*
          * This method JUST determines whether we want to intercept the motion.
          * If we return true, onTouchEvent will be called and we do the actual
@@ -1383,19 +1401,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     }
                 }
 
-                // check if this can be the beginning of a tap on the side of the pages
-                // to scroll the current page
-                if (!DISABLE_TOUCH_SIDE_PAGES) {
-                    if (mTouchState != TOUCH_STATE_PREV_PAGE && mTouchState != TOUCH_STATE_NEXT_PAGE) {
-                        if (getChildCount() > 0) {
-                            if (hitsPreviousPage(x, y)) {
-                                mTouchState = TOUCH_STATE_PREV_PAGE;
-                            } else if (hitsNextPage(x, y)) {
-                                mTouchState = TOUCH_STATE_NEXT_PAGE;
-                            }
-                        }
-                    }
-                }
                 break;
             }
 
@@ -1515,63 +1520,21 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    // This curve determines how the effect of scrolling over the limits of the page dimishes
-    // as the user pulls further and further from the bounds
-    private float overScrollInfluenceCurve(float f) {
-        f -= 1.0f;
-        return f * f * f + 1.0f;
-    }
-
-    protected float acceleratedOverFactor(float amount) {
-        int screenSize = getViewportWidth();
-
-        // We want to reach the max over scroll effect when the user has
-        // over scrolled half the size of the screen
-        float f = OVERSCROLL_ACCELERATE_FACTOR * (amount / screenSize);
-
-        if (f == 0) return 0;
-
-        // Clamp this factor, f, to -1 < f < 1
-        if (Math.abs(f) >= 1) {
-            f /= Math.abs(f);
-        }
-        return f;
-    }
-
     protected void dampedOverScroll(float amount) {
         int screenSize = getViewportWidth();
-
         float f = (amount / screenSize);
-
-        if (f == 0) return;
-        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
-
-        // Clamp this factor, f, to -1 < f < 1
-        if (Math.abs(f) >= 1) {
-            f /= Math.abs(f);
-        }
-
-        int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
-        if (amount < 0) {
-            mOverScrollX = overScrollAmount;
-            super.scrollTo(mOverScrollX, getScrollY());
+        if (f < 0) {
+            mEdgeGlowLeft.onPull(-f);
+        } else if (f > 0) {
+            mEdgeGlowRight.onPull(f);
         } else {
-            mOverScrollX = mMaxScrollX + overScrollAmount;
-            super.scrollTo(mOverScrollX, getScrollY());
+            return;
         }
         invalidate();
     }
 
     protected void overScroll(float amount) {
         dampedOverScroll(amount);
-    }
-
-    protected float maxOverScroll() {
-        // Using the formula in overScroll, assuming that f = 1.0 (which it should generally not
-        // exceed). Used to find out how much extra wallpaper we need for the over scroll effect
-        float f = 1.0f;
-        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
-        return OVERSCROLL_DAMP_FACTOR * f;
     }
 
     public void enableFreeScroll() {
@@ -1636,10 +1599,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (DISABLE_TOUCH_INTERACTION) {
-            return false;
-        }
-
         super.onTouchEvent(ev);
 
         // Skip touch handling if there are no pages to swipe
@@ -1912,6 +1871,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mCancelTap = false;
         mTouchState = TOUCH_STATE_REST;
         mActivePointerId = INVALID_POINTER;
+        mEdgeGlowLeft.onRelease();
+        mEdgeGlowRight.onRelease();
     }
 
     /**
@@ -2020,20 +1981,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return minDistanceFromScreenCenterIndex;
     }
 
-    protected boolean isInOverScroll() {
-        return (mOverScrollX > mMaxScrollX || mOverScrollX < 0);
-    }
-
-    protected int getPageSnapDuration() {
-        if (isInOverScroll()) {
-            return OVER_SCROLL_PAGE_SNAP_ANIMATION_DURATION;
-        }
-        return PAGE_SNAP_ANIMATION_DURATION;
-
-    }
-
     protected void snapToDestination() {
-        snapToPage(getPageNearestToCenterOfScreen(), getPageSnapDuration());
+        snapToPage(getPageNearestToCenterOfScreen(), PAGE_SNAP_ANIMATION_DURATION);
     }
 
     private static class ScrollInterpolator implements Interpolator {
@@ -2050,7 +1999,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // the screen has to travel, however, we don't want this duration to be effected in a
     // purely linear fashion. Instead, we use this method to moderate the effect that the distance
     // of travel has on the overall snap duration.
-    float distanceInfluenceForSnapDuration(float f) {
+    private float distanceInfluenceForSnapDuration(float f) {
         f -= 0.5f; // center the values about 0.
         f *= 0.3f * Math.PI / 2.0f;
         return (float) Math.sin(f);
@@ -2061,13 +2010,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int halfScreenSize = getViewportWidth() / 2;
 
         final int newX = getScrollForPage(whichPage);
-        int delta = newX - mUnboundedScrollX;
+        int delta = newX - getScrollX();
         int duration = 0;
 
-        if (Math.abs(velocity) < mMinFlingVelocity || isInOverScroll()) {
+        if (Math.abs(velocity) < mMinFlingVelocity) {
             // If the velocity is low enough, then treat this more as an automatic page advance
             // as opposed to an apparent physical response to flinging
-            snapToPage(whichPage, getPageSnapDuration());
+            snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
             return;
         }
 
@@ -2091,11 +2040,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     public void snapToPage(int whichPage) {
-        snapToPage(whichPage, getPageSnapDuration());
+        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
     }
 
     protected void snapToPageImmediately(int whichPage) {
-        snapToPage(whichPage, getPageSnapDuration(), true, null);
+        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION, true, null);
     }
 
     protected void snapToPage(int whichPage, int duration) {
@@ -2111,8 +2060,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         whichPage = validateNewPage(whichPage);
 
         int newX = getScrollForPage(whichPage);
-        final int sX = mUnboundedScrollX;
-        final int delta = newX - sX;
+        final int delta = newX - getScrollX();
         snapToPage(whichPage, delta, duration, immediate, interpolator);
     }
 
@@ -2149,7 +2097,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mScroller.setInterpolator(mDefaultInterpolator);
         }
 
-        mScroller.startScroll(mUnboundedScrollX, 0, delta, 0, duration);
+        mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
 
         updatePageIndicator();
 
@@ -2221,7 +2169,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     // Animate the drag view back to the original position
-    void animateDragViewToOriginalPosition() {
+    private void animateDragViewToOriginalPosition() {
         if (mDragView != null) {
             AnimatorSet anim = new AnimatorSet();
             anim.setDuration(REORDERING_DROP_REPOSITION_DURATION);
