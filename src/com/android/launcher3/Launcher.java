@@ -1055,8 +1055,8 @@ public class Launcher extends Activity
         }
 
         // Background was set to gradient in onPause(), restore to transparent if in all apps.
-        setWorkspaceBackground(mState == State.WORKSPACE ? WORKSPACE_BACKGROUND_TRANSPARENT
-                : WORKSPACE_BACKGROUND_GRADIENT);
+        setWorkspaceBackground(mState == State.WORKSPACE ? WORKSPACE_BACKGROUND_GRADIENT
+                : WORKSPACE_BACKGROUND_TRANSPARENT);
 
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
