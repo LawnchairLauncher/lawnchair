@@ -447,7 +447,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     protected void onFixedBoundsUpdated() {
         // Update the number of items in the grid
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (grid.updateAppsViewNumCols(getContext().getResources(), mFixedBounds.width())) {
             mNumAppsPerRow = grid.allAppsNumCols;
