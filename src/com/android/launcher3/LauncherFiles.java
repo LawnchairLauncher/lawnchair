@@ -17,7 +17,6 @@ public class LauncherFiles {
     public static final String DEFAULT_WALLPAPER_THUMBNAIL = "default_thumb2.jpg";
     public static final String DEFAULT_WALLPAPER_THUMBNAIL_OLD = "default_thumb.jpg";
     public static final String LAUNCHER_DB = "launcher.db";
-    public static final String LAUNCHER_PREFERENCES = "launcher.preferences";
     public static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
     public static final String WALLPAPER_CROP_PREFERENCES_KEY =
             "com.android.launcher3.WallpaperCropActivity";
@@ -31,7 +30,6 @@ public class LauncherFiles {
             DEFAULT_WALLPAPER_THUMBNAIL,
             DEFAULT_WALLPAPER_THUMBNAIL_OLD,
             LAUNCHER_DB,
-            LAUNCHER_PREFERENCES,
             SHARED_PREFERENCES_KEY + XML,
             WALLPAPER_CROP_PREFERENCES_KEY + XML,
             WALLPAPER_IMAGES_DB,
@@ -43,5 +41,6 @@ public class LauncherFiles {
     public static final List<String> OBSOLETE_FILES = Collections.unmodifiableList(Arrays.asList(
             "launches.log",
             "stats.log",
+            "launcher.preferences",
             "com.android.launcher3.compat.PackageInstallerCompatV16.queue"));
 }
