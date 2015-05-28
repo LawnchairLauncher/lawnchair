@@ -284,6 +284,12 @@ public class FocusHelper {
                     if (workspace != null) {
                         int pageIndex = workspace.getCurrentPage();
                         CellLayout topLayout = (CellLayout) workspace.getChildAt(pageIndex);
+                        if (topLayout == null) {
+                            // This is to guard against monkey actor test where the cell layout
+                            // of the new pageIndex is null monkey issuing commands while
+                            // animations happen.
+                            return wasHandled;
+                        }
                         ShortcutAndWidgetContainer children = topLayout.getShortcutsAndWidgets();
                         final View newIcon = getIconInDirection(layout, children, -1, 1);
                         // Select the first bubble text view in the current page of the workspace
