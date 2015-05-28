@@ -843,7 +843,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int offsetY = getViewportOffsetY();
 
         // Update the viewport offsets
-        mViewport.offset(offsetX,  offsetY);
+        mViewport.offset(offsetX, offsetY);
 
         final int startIndex = mIsRtl ? childCount - 1 : 0;
         final int endIndex = mIsRtl ? -1 : childCount;
@@ -2326,6 +2326,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
         if (getCurrentPage() > 0) {
             info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        }
+        info.setClassName(getClass().getName());
+
+        // Accessibility-wise, PagedView doesn't support long click, so disabling it.
+        // Besides disabling the accessibility long-click, this also prevents this view from getting
+        // accessibility focus.
+        info.setLongClickable(false);
+        if (Utilities.isLmpOrAbove()) {
+            info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK);
         }
     }
 
