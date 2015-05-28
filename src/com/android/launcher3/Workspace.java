@@ -325,7 +325,6 @@ public class Workspace extends PagedView
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
-        setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
     }
 
     @Override
@@ -2018,14 +2017,9 @@ public class Workspace extends PagedView
             for (int i = numCustomPages(); i < total; i++) {
                 updateAccessibilityFlags((CellLayout) getPageAt(i), i);
             }
-            if (mState == State.NORMAL) {
-                setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            } else {
-                setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-            }
         } else {
             int accessible = mState == State.NORMAL ?
-                    IMPORTANT_FOR_ACCESSIBILITY_NO :
+                    IMPORTANT_FOR_ACCESSIBILITY_AUTO :
                         IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
             setImportantForAccessibility(accessible);
         }
@@ -2044,7 +2038,7 @@ public class Workspace extends PagedView
             page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
         } else {
             int accessible = mState == State.NORMAL ?
-                    IMPORTANT_FOR_ACCESSIBILITY_NO :
+                    IMPORTANT_FOR_ACCESSIBILITY_AUTO :
                         IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
             page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
             page.getShortcutsAndWidgets().setImportantForAccessibility(accessible);
