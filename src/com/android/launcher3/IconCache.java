@@ -49,10 +49,8 @@ import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 import java.util.Stack;
 
 /**
@@ -75,8 +73,8 @@ public class IconCache {
 
     @Thunk static class CacheEntry {
         public Bitmap icon;
-        public CharSequence title;
-        public CharSequence contentDescription;
+        public CharSequence title = "";
+        public CharSequence contentDescription = "";
         public boolean isLowResIcon;
     }
 
@@ -584,7 +582,7 @@ public class IconCache {
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
             entry = new CacheEntry();
-            mCache.put(cacheKey, entry);
+            boolean entryUpdated = true;
 
             // Check the DB first.
             if (!getEntryFromDB(cn, user, entry, useLowResIcon)) {
@@ -609,7 +607,13 @@ public class IconCache {
 
                 } catch (NameNotFoundException e) {
                     if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
+                    entryUpdated = false;
                 }
+            }
+
+            // Only add a filled-out entry to the cache
+            if (entryUpdated) {
+                mCache.put(cacheKey, entry);
             }
         }
         return entry;
