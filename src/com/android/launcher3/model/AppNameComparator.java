@@ -1,14 +1,27 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3.model;
 
 import android.content.Context;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.compat.UserHandleCompat;
-import com.android.launcher3.compat.UserManagerCompat;
+
 import java.text.Collator;
 import java.util.Comparator;
-import java.util.HashMap;
 
 /**
  * Class to manage access to an app name comparator.
@@ -16,17 +29,15 @@ import java.util.HashMap;
  * Used to sort application name in all apps view and widget tray view.
  */
 public class AppNameComparator {
-    private final UserManagerCompat mUserManager;
     private final Collator mCollator;
-    private final Comparator<ItemInfo> mAppInfoComparator;
+    private final AbstractUserComparator<ItemInfo> mAppInfoComparator;
     private final Comparator<String> mSectionNameComparator;
-    private HashMap<UserHandleCompat, Long> mUserSerialCache = new HashMap<>();
 
     public AppNameComparator(Context context) {
         mCollator = Collator.getInstance();
-        mUserManager = UserManagerCompat.getInstance(context);
-        mAppInfoComparator = new Comparator<ItemInfo>() {
+        mAppInfoComparator = new AbstractUserComparator<ItemInfo>(context) {
 
+            @Override
             public final int compare(ItemInfo a, ItemInfo b) {
                 // Order by the title in the current locale
                 int result = compareTitles(a.title.toString(), b.title.toString());
@@ -38,13 +49,7 @@ public class AppNameComparator {
                     if (result == 0) {
                         // If the two apps are the same component, then prioritize by the order that
                         // the app user was created (prioritizing the main user's apps)
-                        if (UserHandleCompat.myUserHandle().equals(a.user)) {
-                            return -1;
-                        } else {
-                            Long aUserSerial = getAndCacheUserSerial(a.user);
-                            Long bUserSerial = getAndCacheUserSerial(b.user);
-                            return aUserSerial.compareTo(bUserSerial);
-                        }
+                        return super.compare(a, b);
                     }
                 }
                 return result;
@@ -63,7 +68,7 @@ public class AppNameComparator {
      */
     public Comparator<ItemInfo> getAppInfoComparator() {
         // Clear the user serial cache so that we get serials as needed in the comparator
-        mUserSerialCache.clear();
+        mAppInfoComparator.clearUserCache();
         return mAppInfoComparator;
     }
 
@@ -89,17 +94,5 @@ public class AppNameComparator {
 
         // Order by the title in the current locale
         return mCollator.compare(titleA, titleB);
-    }
-
-    /**
-     * Returns the user serial for this user, using a cached serial if possible.
-     */
-    private Long getAndCacheUserSerial(UserHandleCompat user) {
-        Long userSerial = mUserSerialCache.get(user);
-        if (userSerial == null) {
-            userSerial = mUserManager.getSerialNumberForUser(user);
-            mUserSerialCache.put(user, userSerial);
-        }
-        return userSerial;
     }
 }

@@ -100,6 +100,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AppSearchManager;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -582,6 +583,11 @@ public class Launcher extends Activity
                                 null /* onCompleteRunnable */, false /* notifyLauncherCallbacks */);
                     }
                 }
+            }
+
+            @Override
+            public void setSearchManager(AppSearchManager manager) {
+                mAppsView.setSearchManager(manager);
             }
         });
         mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
@@ -1158,6 +1164,11 @@ public class Launcher extends Activity
          * Called to dismiss all apps if it is showing.
          */
         public void dismissAllApps();
+
+        /**
+         * Sets the search manager to be used for app search.
+         */
+        public void setSearchManager(AppSearchManager manager);
     }
 
     public interface LauncherSearchCallbacks {

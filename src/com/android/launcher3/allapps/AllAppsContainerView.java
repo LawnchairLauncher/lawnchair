@@ -41,6 +41,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.BubbleTextView;
@@ -54,15 +55,15 @@ import com.android.launcher3.Folder;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.AppSearchManager.AppSearchResultCallback;
 import com.android.launcher3.util.Thunk;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 
 /**
@@ -171,7 +172,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable,
         AlphabeticalAppsList.AdapterChangedCallback, AllAppsGridAdapter.PredictionBarSpacerCallbacks,
         View.OnTouchListener, View.OnClickListener, View.OnLongClickListener,
-        ViewTreeObserver.OnPreDrawListener {
+        ViewTreeObserver.OnPreDrawListener, AppSearchResultCallback {
 
     public static final boolean GRID_MERGE_SECTIONS = true;
 
@@ -182,8 +183,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private static final int FADE_IN_DURATION = 175;
     private static final int FADE_OUT_DURATION = 100;
     private static final int SEARCH_TRANSLATION_X_DP = 18;
-
-    private static final Pattern SPLIT_PATTERN = Pattern.compile("[\\s|\\p{javaSpaceChar}]+");
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
@@ -221,6 +220,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private CheckLongPressHelper mPredictionIconCheckForLongPress;
     private View mPredictionIconUnderTouch;
 
+    private AppSearchManager mSearchManager;
+
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -231,7 +232,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        LauncherAppState app = LauncherAppState.getInstance();
         Resources res = context.getResources();
 
         mLauncher = (Launcher) context;
@@ -258,6 +258,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mContentMarginStart = mAdapter.getContentMarginStart();
 
         mApps.setAdapter(mAdapter);
+        mSearchManager = mApps.newSimpleAppSearchManager();
     }
 
     /**
@@ -279,6 +280,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void addApps(List<AppInfo> apps) {
         mApps.addApps(apps);
+    }
+
+    public void setSearchManager(AppSearchManager searchManager) {
+        mSearchManager.cancel(true);
+        mSearchManager = searchManager;
     }
 
     /**
@@ -664,42 +670,23 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public void afterTextChanged(final Editable s) {
         String queryText = s.toString();
         if (queryText.isEmpty()) {
-            mApps.setFilter(null);
+            mSearchManager.cancel(true);
+            mApps.setOrderedFilter(null);
         } else {
             String formatStr = getResources().getString(R.string.all_apps_no_search_results);
             mAdapter.setEmptySearchText(String.format(formatStr, queryText));
 
-            // Do an intersection of the words in the query and each title, and filter out all the
-            // apps that don't match all of the words in the query.
-            final String queryTextLower = queryText.toLowerCase();
-            final String[] queryWords = SPLIT_PATTERN.split(queryTextLower);
-            mApps.setFilter(new AlphabeticalAppsList.Filter() {
-                @Override
-                public boolean retainApp(AppInfo info, String sectionName) {
-                    if (sectionName.toLowerCase().contains(queryTextLower)) {
-                        return true;
-                    }
-                    String title = info.title.toString();
-                    String[] words = SPLIT_PATTERN.split(title.toLowerCase());
-                    for (int qi = 0; qi < queryWords.length; qi++) {
-                        boolean foundMatch = false;
-                        for (int i = 0; i < words.length; i++) {
-                            if (words[i].startsWith(queryWords[qi])) {
-                                foundMatch = true;
-                                break;
-                            }
-                        }
-                        if (!foundMatch) {
-                            // If there is a word in the query that does not match any words in this
-                            // title, so skip it.
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            });
+            mSearchManager.cancel(false);
+            mSearchManager.doSearch(queryText, this);
         }
         scrollToTop();
+    }
+
+    @Override
+    public void onSearchResult(ArrayList<ComponentName> apps) {
+        if (apps != null) {
+            mApps.setOrderedFilter(apps);
+        }
     }
 
     @Override
@@ -796,7 +783,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * recycler view.
      */
     private boolean handleTouchEvent(MotionEvent ev) {
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
@@ -919,6 +905,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * Shows the search field.
      */
     private void showSearchField() {
+        mSearchManager.connect();
+
         // Show the search bar and focus the search
         final int translationX = Utilities.pxFromDp(SEARCH_TRANSLATION_X_DP,
                 getContext().getResources().getDisplayMetrics());
@@ -949,6 +937,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * Hides the search field.
      */
     private void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
+        mSearchManager.cancel(true);
+
         final boolean resetTextField = mSearchBarEditView.getText().toString().length() > 0;
         final int translationX = Utilities.pxFromDp(SEARCH_TRANSLATION_X_DP,
                 getContext().getResources().getDisplayMetrics());
@@ -966,7 +956,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                             if (resetTextField) {
                                 mSearchBarEditView.setText("");
                             }
-                            mApps.setFilter(null);
+                            mApps.setOrderedFilter(null);
                             if (returnFocusToRecyclerView) {
                                 mAppsRecyclerView.requestFocus();
                             }
@@ -983,7 +973,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             if (resetTextField) {
                 mSearchBarEditView.setText("");
             }
-            mApps.setFilter(null);
+            mApps.setOrderedFilter(null);
             mSearchButtonView.setAlpha(1f);
             mSearchButtonView.setTranslationX(0f);
             if (returnFocusToRecyclerView) {
