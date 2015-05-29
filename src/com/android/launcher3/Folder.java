@@ -29,6 +29,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
@@ -66,7 +67,8 @@ import java.util.Collections;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, UninstallSource, AccessibilityDragSource {
+        View.OnFocusChangeListener, DragListener, UninstallSource, AccessibilityDragSource,
+        Stats.LaunchSourceProvider {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -923,7 +925,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
             LauncherModel.addItemToDatabase(mLauncher, info, mInfo.id, 0,
-                        info.cellX, info.cellY);
+                    info.cellX, info.cellY);
         }
     }
 
@@ -1336,6 +1338,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         getHitRect(outRect);
         outRect.left -= mScrollAreaOffset;
         outRect.right += mScrollAreaOffset;
+    }
+
+    @Override
+    public void fillInLaunchSourceData(Bundle sourceData) {
+        // Fill in from the folder icon's launch source provider first
+        Stats.LaunchSourceUtils.populateSourceDataFromAncestorProvider(mFolderIcon, sourceData);
+        sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER, Stats.SUB_CONTAINER_FOLDER);
+        sourceData.putInt(Stats.SOURCE_EXTRA_SUB_CONTAINER_PAGE, mContent.getCurrentPage());
     }
 
     private class OnScrollHintListener implements OnAlarmListener {

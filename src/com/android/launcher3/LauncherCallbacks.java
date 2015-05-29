@@ -56,6 +56,8 @@ public interface LauncherCallbacks {
     public void bindAllApplications(ArrayList<AppInfo> apps);
     public void onClickFolderIcon(View v);
     public void onClickAppShortcut(View v);
+
+    @Deprecated
     public void onClickPagedViewIcon(View v);
     public void onClickWallpaperPicker(View v);
     public void onClickSettingsButton(View v);

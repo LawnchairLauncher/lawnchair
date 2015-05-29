@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -57,6 +58,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
+import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AppSearchManager.AppSearchResultCallback;
@@ -172,7 +174,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable,
         AlphabeticalAppsList.AdapterChangedCallback, AllAppsGridAdapter.PredictionBarSpacerCallbacks,
         View.OnTouchListener, View.OnClickListener, View.OnLongClickListener,
-        ViewTreeObserver.OnPreDrawListener, AppSearchResultCallback {
+        ViewTreeObserver.OnPreDrawListener, AppSearchResultCallback, Stats.LaunchSourceProvider {
 
     public static final boolean GRID_MERGE_SECTIONS = true;
 
@@ -868,6 +870,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void fillInLaunchSourceData(Bundle sourceData) {
+        // Since the other cases are caught by the AllAppsRecyclerView LaunchSourceProvider, we just
+        // handle the prediction bar icons here
+        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_ALL_APPS);
+        sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
+                Stats.SUB_CONTAINER_ALL_APPS_PREDICTION);
     }
 
     /**
