@@ -734,6 +734,7 @@ public class Workspace extends PagedView
                 fadeAndRemoveEmptyScreen(SNAP_OFF_EMPTY_SCREEN_DURATION, FADE_EMPTY_SCREEN_DURATION,
                         onComplete, stripEmptyScreens);
             } else {
+                snapToPage(getNextPage(), 0);
                 fadeAndRemoveEmptyScreen(0, FADE_EMPTY_SCREEN_DURATION,
                         onComplete, stripEmptyScreens);
             }
