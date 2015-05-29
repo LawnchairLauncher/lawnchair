@@ -17,13 +17,22 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.model.WidgetsModel;
 
 /**
  * The widgets recycler view.
  */
 public class WidgetsRecyclerView extends BaseRecyclerView {
+
+    private WidgetsModel mWidgets;
+    private Rect mBackgroundPadding = new Rect();
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -37,4 +46,67 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        addOnItemTouchListener(this);
+    }
+
+    public void updateBackgroundPadding(Drawable background) {
+        background.getPadding(mBackgroundPadding);
+    }
+
+    /**
+     * Sets the widget model in this view, used to determine the fast scroll position.
+     */
+    public void setWidgets(WidgetsModel widgets) {
+        mWidgets = widgets;
+    }
+
+    /**
+     * Maps the touch (from 0..1) to the adapter position that should be visible.
+     */
+    @Override
+    public String scrollToPositionAtProgress(float touchFraction) {
+        // Ensure that we have any sections
+        return "";
+    }
+
+    /**
+     * Updates the bounds for the scrollbar.
+     */
+    @Override
+    public void updateVerticalScrollbarBounds() {
+        int rowCount = mWidgets.getPackageSize();
+
+        // Skip early if there are no items.
+        if (rowCount == 0) {
+            verticalScrollbarBounds.setEmpty();
+            return;
+        }
+
+        int x, y;
+        getCurScrollState(scrollPosState);
+        if (scrollPosState.rowIndex < 0) {
+            verticalScrollbarBounds.setEmpty();
+        }
+        // TODO
+    }
+
+    /**
+     * Returns the current scroll state.
+     */
+    private void getCurScrollState(ScrollPositionState stateOut) {
+        stateOut.rowIndex = -1;
+        stateOut.rowTopOffset = -1;
+        stateOut.rowHeight = -1;
+
+        int rowCount = mWidgets.getPackageSize();
+
+        // Return early if there are no items
+        if (rowCount == 0) {
+            return;
+        }
+        // TODO
+    }
 }

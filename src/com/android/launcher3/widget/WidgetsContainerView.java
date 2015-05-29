@@ -65,7 +65,7 @@ public class WidgetsContainerView extends BaseContainerView
     private IconCache mIconCache;
 
     /* Recycler view related member variables */
-    private RecyclerView mView;
+    private WidgetsRecyclerView mView;
     private WidgetsListAdapter mAdapter;
 
     /* Touch handling related member variables. */
@@ -100,7 +100,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     protected void onFinishInflate() {
-        mView = (RecyclerView) findViewById(R.id.widgets_list_view);
+        mView = (WidgetsRecyclerView) findViewById(R.id.widgets_list_view);
         mView.setAdapter(mAdapter);
 
         // This extends the layout space so that preloading happen for the {@link RecyclerView}
@@ -351,6 +351,7 @@ public class WidgetsContainerView extends BaseContainerView
      * Initialize the widget data model.
      */
     public void addWidgets(WidgetsModel model) {
+        mView.setWidgets(model);
         mAdapter.setWidgetsModel(model);
         mAdapter.notifyDataSetChanged();
     }
