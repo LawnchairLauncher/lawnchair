@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_instructions" msgid="3524143401182707094">"Артқы фонды орнату"</string>
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"Тұсқағаз орнату"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"Суретті жүктей алмады"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"Суретті артқы фон ретінде жүктей алмады"</string>
   <plurals name="number_of_items_selected">
