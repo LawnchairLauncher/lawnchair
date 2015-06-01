@@ -26,6 +26,8 @@ public class LauncherFiles {
     public static final String WIDGET_PREVIEWS_DB = "widgetpreviews.db";
     public static final String APP_ICONS_DB = "app_icons.db";
 
+    public static final String ROTATION_PREF_FILE = "com.android.launcher3.rotation.prefs";
+
     public static final List<String> ALL_FILES = Collections.unmodifiableList(Arrays.asList(
             DEFAULT_WALLPAPER_THUMBNAIL,
             DEFAULT_WALLPAPER_THUMBNAIL_OLD,
@@ -35,7 +37,8 @@ public class LauncherFiles {
             WALLPAPER_IMAGES_DB,
             WIDGET_PREVIEWS_DB,
             MANAGED_USER_PREFERENCES_KEY,
-            APP_ICONS_DB));
+            APP_ICONS_DB,
+            ROTATION_PREF_FILE));
 
     // TODO: Delete these files on upgrade
     public static final List<String> OBSOLETE_FILES = Collections.unmodifiableList(Arrays.asList(
