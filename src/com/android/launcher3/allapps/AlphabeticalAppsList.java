@@ -1,13 +1,31 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3.allapps;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.model.AbstractUserComparator;
 import com.android.launcher3.model.AppNameComparator;
 
 import java.nio.charset.CharsetEncoder;
@@ -115,13 +133,6 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * A filter interface to limit the set of applications in the apps list.
-     */
-    public interface Filter {
-        boolean retainApp(AppInfo info, String sectionName);
-    }
-
-    /**
      * Callback to notify when the set of adapter items have changed.
      */
     public interface AdapterChangedCallback {
@@ -198,7 +209,7 @@ public class AlphabeticalAppsList {
     private Launcher mLauncher;
 
     // The set of apps from the system not including predictions
-    private List<AppInfo> mApps = new ArrayList<>();
+    private final List<AppInfo> mApps = new ArrayList<>();
     // The set of filtered apps with the current filter
     private List<AppInfo> mFilteredApps = new ArrayList<>();
     // The current set of adapter items
@@ -211,9 +222,10 @@ public class AlphabeticalAppsList {
     private List<ComponentName> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private List<AppInfo> mPredictedApps = new ArrayList<>();
+    // The of ordered component names as a result of a search query
+    private ArrayList<ComponentName> mSearchResults;
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
     private RecyclerView.Adapter mAdapter;
-    private Filter mFilter;
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
     private MergeAlgorithm mMergeAlgorithm;
@@ -233,6 +245,10 @@ public class AlphabeticalAppsList {
      */
     public void setAdapterChangedCallback(AdapterChangedCallback cb) {
         mAdapterChangedCallback = cb;
+    }
+
+    public SimpleAppSearchManagerImpl newSimpleAppSearchManager() {
+        return new SimpleAppSearchManagerImpl(mApps);
     }
 
     /**
@@ -293,22 +309,22 @@ public class AlphabeticalAppsList {
      * Returns whether there are is a filter set.
      */
     public boolean hasFilter() {
-        return (mFilter != null);
+        return (mSearchResults != null);
     }
 
     /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return (mFilter != null) && mFilteredApps.isEmpty();
+        return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
     /**
-     * Sets the current filter for this list of apps.
+     * Sets the sorted list of filtered components.
      */
-    public void setFilter(Filter f) {
-        if (mFilter != f) {
-            mFilter = f;
+    public void setOrderedFilter(ArrayList<ComponentName> f) {
+        if (mSearchResults != f) {
+            mSearchResults = f;
             updateAdapterItems();
         }
     }
@@ -428,7 +444,9 @@ public class AlphabeticalAppsList {
             for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
                 allApps.addAll(entry.getValue());
             }
-            mApps = allApps;
+
+            mApps.clear();
+            mApps.addAll(allApps);
         } else {
             // Just compute the section headers for use below
             for (AppInfo info : mApps) {
@@ -483,15 +501,11 @@ public class AlphabeticalAppsList {
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
-        int numApps = mApps.size();
+        List<AppInfo> apps = getFiltersAppInfos();
+        int numApps = apps.size();
         for (int i = 0; i < numApps; i++) {
-            AppInfo info = mApps.get(i);
+            AppInfo info = apps.get(i);
             String sectionName = getAndUpdateCachedSectionName(info.title);
-
-            // Check if we want to retain this app
-            if (mFilter != null && !mFilter.retainApp(info, sectionName)) {
-                continue;
-            }
 
             // Create a new section if the section names do not match
             if (lastSectionInfo == null || !sectionName.equals(lastSectionName)) {
@@ -531,6 +545,41 @@ public class AlphabeticalAppsList {
         if (mAdapterChangedCallback != null) {
             mAdapterChangedCallback.onAdapterItemsChanged();
         }
+    }
+
+    private List<AppInfo> getFiltersAppInfos() {
+        if (mSearchResults == null) {
+            return mApps;
+        }
+
+        int total = mSearchResults.size();
+        final HashMap<ComponentName, Integer> sortOrder = new HashMap<>(total);
+        for (int i = 0; i < total; i++) {
+            sortOrder.put(mSearchResults.get(i), i);
+        }
+
+        ArrayList<AppInfo> result = new ArrayList<>();
+        for (AppInfo info : mApps) {
+            if (sortOrder.containsKey(info.componentName)) {
+                result.add(info);
+            }
+        }
+
+        Collections.sort(result, new AbstractUserComparator<AppInfo>(
+                LauncherAppState.getInstance().getContext()) {
+
+            @Override
+            public int compare(AppInfo lhs, AppInfo rhs) {
+                Integer indexA = sortOrder.get(lhs.componentName);
+                int result = indexA.compareTo(sortOrder.get(rhs.componentName));
+                if (result == 0) {
+                    return super.compare(lhs, rhs);
+                } else {
+                    return result;
+                }
+            }
+        });
+        return result;
     }
 
     /**
