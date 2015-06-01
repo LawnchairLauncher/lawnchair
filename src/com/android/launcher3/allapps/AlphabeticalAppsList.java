@@ -10,6 +10,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.AppNameComparator;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -130,46 +132,63 @@ public class AlphabeticalAppsList {
      * Common interface for different merging strategies.
      */
     private interface MergeAlgorithm {
-        boolean continueMerging(int sectionAppCount, int numAppsPerRow, int mergeCount);
+        boolean continueMerging(SectionInfo section, SectionInfo withSection,
+                int sectionAppCount, int numAppsPerRow, int mergeCount);
     }
 
     /**
-     * The logic we use to merge sections on tablets.
+     * The logic we use to merge sections on tablets.  Currently, we don't show section names on
+     * tablet layouts, so just merge all the sections indiscriminately.
      */
     private static class TabletMergeAlgorithm implements MergeAlgorithm {
 
         @Override
-        public boolean continueMerging(int sectionAppCount, int numAppsPerRow, int mergeCount) {
+        public boolean continueMerging(SectionInfo section, SectionInfo withSection,
+                int sectionAppCount, int numAppsPerRow, int mergeCount) {
             // Merge EVERYTHING
             return true;
         }
     }
 
     /**
-     * The logic we use to merge sections on phones.
+     * The logic we use to merge sections on phones.  We only merge sections when their final row
+     * contains less than a certain number of icons, and stop at a specified max number of merges.
+     * In addition, we will try and not merge sections that identify apps from different scripts.
      */
     private static class PhoneMergeAlgorithm implements MergeAlgorithm {
 
         private int mMinAppsPerRow;
         private int mMinRowsInMergedSection;
         private int mMaxAllowableMerges;
+        private CharsetEncoder mAsciiEncoder;
 
         public PhoneMergeAlgorithm(int minAppsPerRow, int minRowsInMergedSection, int maxNumMerges) {
             mMinAppsPerRow = minAppsPerRow;
             mMinRowsInMergedSection = minRowsInMergedSection;
             mMaxAllowableMerges = maxNumMerges;
+            mAsciiEncoder = StandardCharsets.US_ASCII.newEncoder();
         }
 
         @Override
-        public boolean continueMerging(int sectionAppCount, int numAppsPerRow, int mergeCount) {
+        public boolean continueMerging(SectionInfo section, SectionInfo withSection,
+                int sectionAppCount, int numAppsPerRow, int mergeCount) {
             // Continue merging if the number of hanging apps on the final row is less than some
             // fixed number (ragged), the merged rows has yet to exceed some minimum row count,
             // and while the number of merged sections is less than some fixed number of merges
             int rows = sectionAppCount / numAppsPerRow;
             int cols = sectionAppCount % numAppsPerRow;
+
+            // Ensure that we do not merge across scripts, currently we only allow for english and
+            // native scripts so we can test if both can just be ascii encoded
+            boolean isCrossScript = false;
+            if (section.firstAppItem != null && withSection.firstAppItem != null) {
+                isCrossScript = mAsciiEncoder.canEncode(section.firstAppItem.sectionName) !=
+                        mAsciiEncoder.canEncode(withSection.firstAppItem.sectionName);
+            }
             return (0 < cols && cols < mMinAppsPerRow) &&
                     rows < mMinRowsInMergedSection &&
-                    mergeCount < mMaxAllowableMerges;
+                    mergeCount < mMaxAllowableMerges &&
+                    !isCrossScript;
         }
     }
 
@@ -521,15 +540,16 @@ public class AlphabeticalAppsList {
         // Go through each section and try and merge some of the sections
         if (AllAppsContainerView.GRID_MERGE_SECTIONS && !hasFilter()) {
             int sectionAppCount = 0;
-            for (int i = 0; i < mSections.size(); i++) {
+            for (int i = 0; i < mSections.size() - 1; i++) {
                 SectionInfo section = mSections.get(i);
+                SectionInfo nextSection = mSections.get(i + 1);
                 sectionAppCount = section.numApps;
                 int mergeCount = 1;
 
                 // Merge rows based on the current strategy
-                while (mMergeAlgorithm.continueMerging(sectionAppCount, mNumAppsPerRow, mergeCount) &&
-                        (i + 1) < mSections.size()) {
-                    SectionInfo nextSection = mSections.remove(i + 1);
+                while (mMergeAlgorithm.continueMerging(section, nextSection, sectionAppCount,
+                        mNumAppsPerRow, mergeCount)) {
+                    nextSection = mSections.remove(i + 1);
 
                     // Remove the next section break
                     mAdapterItems.remove(nextSection.sectionBreakItem);
