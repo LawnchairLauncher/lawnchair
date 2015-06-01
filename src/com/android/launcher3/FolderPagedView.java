@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
@@ -46,7 +47,12 @@ public class FolderPagedView extends PagedView {
     private static final int START_VIEW_REORDER_DELAY = 30;
     private static final float VIEW_REORDER_DELAY_FACTOR = 0.9f;
 
-    private static final int PAGE_INDICATOR_ANIMATION_DELAY = 150;
+    private static final int PAGE_INDICATOR_ANIMATION_START_DELAY = 300;
+    private static final int PAGE_INDICATOR_ANIMATION_STAGGERED_DELAY = 150;
+    private static final int PAGE_INDICATOR_ANIMATION_DURATION = 400;
+
+    // This value approximately overshoots to 1.5 times the original size.
+    private static final float PAGE_INDICATOR_OVERSHOOT_TENSION = 4.9f;
 
     /**
      * Fraction of the width to scroll when showing the next page hint.
@@ -274,6 +280,7 @@ public class FolderPagedView extends PagedView {
         arrangeChildren(list, itemCount, true);
     }
 
+    @SuppressLint("RtlHardcoded")
     private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
         ArrayList<CellLayout> pages = new ArrayList<CellLayout>();
         for (int i = 0; i < getChildCount(); i++) {
@@ -340,7 +347,9 @@ public class FolderPagedView extends PagedView {
 
         // Update footer
         mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
-        mFolder.mFolderName.setGravity(getPageCount() > 1 ? Gravity.START : Gravity.CENTER_HORIZONTAL);
+        // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
+        mFolder.mFolderName.setGravity(getPageCount() > 1 ?
+                (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
     }
 
     public int getDesiredWidth() {
@@ -645,12 +654,13 @@ public class FolderPagedView extends PagedView {
 
     public void animateMarkers() {
         int count  = mPageIndicator.getChildCount();
-        OvershootInterpolator interpolator = new OvershootInterpolator(4);
+        Interpolator interpolator = new OvershootInterpolator(PAGE_INDICATOR_OVERSHOOT_TENSION);
         for (int i = 0; i < count; i++) {
             mPageIndicator.getChildAt(i).animate().scaleX(1).scaleY(1)
                 .setInterpolator(interpolator)
-                .setDuration(Folder.FOOTER_ANIMATION_DURATION)
-                .setStartDelay(PAGE_INDICATOR_ANIMATION_DELAY * i);
+                .setDuration(PAGE_INDICATOR_ANIMATION_DURATION)
+                .setStartDelay(PAGE_INDICATOR_ANIMATION_STAGGERED_DELAY * i
+                        + PAGE_INDICATOR_ANIMATION_START_DELAY);
         }
     }
 
