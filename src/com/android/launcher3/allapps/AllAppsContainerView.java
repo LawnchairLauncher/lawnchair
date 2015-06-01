@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -239,11 +240,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mLauncher = (Launcher) context;
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
-        mContainerInset = context.getResources().getDimensionPixelSize(
-                R.dimen.all_apps_container_inset);
-        mPredictionBarHeight = grid.allAppsIconSizePx + grid.iconDrawablePaddingOriginalPx +
-                grid.allAppsIconTextSizePx +
-                2 * res.getDimensionPixelSize(R.dimen.all_apps_prediction_icon_top_bottom_padding);
+        mContainerInset = res.getDimensionPixelSize(R.dimen.all_apps_container_inset);
+        mPredictionBarHeight = (int) (grid.allAppsIconSizePx + grid.iconDrawablePaddingOriginalPx +
+                Utilities.calculateTextHeight(grid.allAppsIconTextSizePx) +
+                2 * res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding) +
+                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding));
 
         mLayoutInflater = LayoutInflater.from(context);
 
@@ -497,11 +498,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         int startMargin = grid.isPhone ? mContentMarginStart : 0;
         int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
         if (isRtl) {
-            mAppsRecyclerView.setPadding(inset + mAppsRecyclerView.getScrollbarWidth(), inset,
-                    inset + startMargin, inset);
+            mAppsRecyclerView.setPadding(inset + mAppsRecyclerView.getScrollbarWidth(), 0,
+                    inset + startMargin, 0);
         } else {
-            mAppsRecyclerView.setPadding(inset + startMargin, inset,
-                    inset + mAppsRecyclerView.getScrollbarWidth(), inset);
+            mAppsRecyclerView.setPadding(inset + startMargin, 0,
+                    inset + mAppsRecyclerView.getScrollbarWidth(), 0);
         }
 
         // Update the header bar

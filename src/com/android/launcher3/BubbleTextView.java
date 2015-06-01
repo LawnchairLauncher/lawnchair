@@ -52,7 +52,6 @@ public class BubbleTextView extends TextView {
     private static final float SHADOW_Y_OFFSET = 2.0f;
     private static final int SHADOW_LARGE_COLOUR = 0xDD000000;
     private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
-    static final float PADDING_V = 3.0f;
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;

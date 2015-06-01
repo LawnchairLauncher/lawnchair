@@ -54,7 +54,6 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
-
 import junit.framework.Assert;
 
 import java.io.ByteArrayOutputStream;
@@ -623,6 +622,16 @@ public final class Utilities {
         // Just strip any sequence of whitespace or java space characters from the beginning and end
         Matcher m = sTrimPattern.matcher(s);
         return m.replaceAll("$1");
+    }
+
+    /**
+     * Calculates the height of a given string at a specific text size.
+     */
+    public static float calculateTextHeight(float textSizePx) {
+        Paint p = new Paint();
+        p.setTextSize(textSizePx);
+        Paint.FontMetrics fm = p.getFontMetrics();
+        return -fm.top + fm.bottom;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)

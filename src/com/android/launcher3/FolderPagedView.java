@@ -87,8 +87,8 @@ public class FolderPagedView extends PagedView {
         LauncherAppState app = LauncherAppState.getInstance();
 
         InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-        mMaxCountX = (int) profile.numFolderColumns;
-        mMaxCountY = (int) profile.numFolderRows;
+        mMaxCountX = profile.numFolderColumns;
+        mMaxCountY = profile.numFolderRows;
 
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
