@@ -218,7 +218,8 @@ public class Launcher extends Activity
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
     /** The different states that Launcher can be in. */
-    enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED };
+    enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED }
+
     @Thunk State mState = State.WORKSPACE;
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
 
@@ -400,6 +401,24 @@ public class Launcher extends Activity
 
     FocusIndicatorView mFocusHandler;
 
+    private boolean mRotationEnabled = false;
+    private boolean mPreferenceObserverRegistered = false;
+
+    final private SharedPreferences.OnSharedPreferenceChangeListener mSettingsObserver =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
+                if (mRotationEnabled = sharedPreferences.getBoolean(
+                        Utilities.ALLOW_ROTATION_PREFERENCE_KEY, false)) {
+                    unlockScreenOrientation(true);
+                } else {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
@@ -499,7 +518,19 @@ public class Launcher extends Activity
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
-        // On large interfaces, we want the screen to auto-rotate based on the current orientation
+        mRotationEnabled = Utilities.isRotationAllowedForDevice(getApplicationContext());
+        // In case we are on a device with locked rotation, we should look at preferences to check
+        // if the user has specifically allowed rotation.
+        if (!mRotationEnabled) {
+            getSharedPreferences(LauncherFiles.ROTATION_PREF_FILE,
+                    Context.MODE_MULTI_PROCESS).registerOnSharedPreferenceChangeListener(
+                    mSettingsObserver);
+            mPreferenceObserverRegistered = true;
+            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
+        }
+
+        // On large interfaces, or on devices that a user has specifically enabled screen rotation,
+        // we want the screen to auto-rotate based on the current orientation
         unlockScreenOrientation(true);
 
         if (mLauncherCallbacks != null) {
@@ -1192,8 +1223,11 @@ public class Launcher extends Activity
     protected boolean hasSettings() {
         if (mLauncherCallbacks != null) {
             return mLauncherCallbacks.hasSettings();
+        } else {
+            // On devices with a locked orientation, we will at least have the allow rotation
+            // setting.
+            return !Utilities.isRotationAllowedForDevice(this);
         }
-        return false;
     }
 
     public void addToCustomContentPage(View customContent,
@@ -1974,6 +2008,13 @@ public class Launcher extends Activity
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (mPreferenceObserverRegistered) {
+            getSharedPreferences(LauncherFiles.ROTATION_PREF_FILE,
+                    Context.MODE_MULTI_PROCESS).unregisterOnSharedPreferenceChangeListener(
+                    mSettingsObserver);
+            mPreferenceObserverRegistered = false;
+        }
 
         // Remove all pending runnables
         mHandler.removeMessages(ADVANCE_MSG);
@@ -2757,6 +2798,8 @@ public class Launcher extends Activity
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onClickSettingsButton(v);
+        } else {
+            showSettingsActivity();
         }
     }
 
@@ -4364,7 +4407,7 @@ public class Launcher extends Activity
     }
 
     public void lockScreenOrientation() {
-        if (Utilities.isRotationEnabled(this)) {
+        if (mRotationEnabled) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
                         .getConfiguration().orientation));
@@ -4373,8 +4416,9 @@ public class Launcher extends Activity
             }
         }
     }
+
     public void unlockScreenOrientation(boolean immediate) {
-        if (Utilities.isRotationEnabled(this)) {
+        if (mRotationEnabled) {
             if (immediate) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             } else {
@@ -4477,6 +4521,10 @@ public class Launcher extends Activity
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
         editor.apply();
+    }
+
+    private void showSettingsActivity() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     /**
