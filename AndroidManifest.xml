@@ -83,6 +83,7 @@
             android:theme="@style/Theme"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="nosensor"
+            android:resumeWhilePausing="true"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
