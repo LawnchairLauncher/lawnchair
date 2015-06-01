@@ -29,10 +29,12 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.AttributeSet;
+import android.util.LayoutDirection;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -89,7 +91,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     private static final float ICON_OVERSCROLL_WIDTH_FACTOR = 0.45f;
 
-    public static final int FOOTER_ANIMATION_DURATION = 200;
+    private static final int FOLDER_NAME_ANIMATION_DURATION = 633;
 
     private static final int REORDER_DELAY = 250;
     private static final int ON_EXIT_CLOSE_DELAY = 400;
@@ -502,7 +504,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             textAlpha.setStartDelay(mMaterialExpandStagger);
             textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
 
-
             anim.play(drift);
             anim.play(iconsAlpha);
             anim.play(textAlpha);
@@ -545,7 +546,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                     - mFooter.getPaddingLeft() - mFooter.getPaddingRight();
 
             float textWidth =  mFolderName.getPaint().measureText(mFolderName.getText().toString());
-            mFolderName.setTranslationX((footerWidth - textWidth) / 2);
+            float translation = (footerWidth - textWidth) / 2;
+            mFolderName.setTranslationX(mContent.mIsRtl ? -translation : translation);
             mContent.setMarkerScale(0);
 
             // Do not update the flag if we are in drag mode. The flag will be updated, when we
@@ -555,7 +557,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mFolderName.animate().setDuration(FOOTER_ANIMATION_DURATION).translationX(0);
+                    mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
+                        .translationX(0)
+                        .setInterpolator(new FastOutSlowInInterpolator());
                     mContent.animateMarkers();
 
                     if (updateAnimationFlag) {
@@ -1032,6 +1036,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         mContent.setFixedSize(contentWidth, contentHeight);
         mContentWrapper.measure(contentAreaWidthSpec, contentAreaHeightSpec);
+
+        if (mContent.getChildCount() > 0) {
+            int cellIconGap = (mContent.getPageAt(0).getCellWidth()
+                    - mLauncher.getDeviceProfile().iconSizePx) / 2;
+            mFooter.setPadding(mContent.getPaddingLeft() + cellIconGap,
+                    mFooter.getPaddingTop(),
+                    mContent.getPaddingRight() + cellIconGap,
+                    mFooter.getPaddingBottom());
+        }
         mFooter.measure(contentAreaWidthSpec,
                 MeasureSpec.makeMeasureSpec(mFooterHeight, MeasureSpec.EXACTLY));
 
