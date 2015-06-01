@@ -219,8 +219,12 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
     }
 
     private ArrayList<Integer> getSupportedResizeActions(View host, LauncherAppWidgetInfo info) {
-        AppWidgetProviderInfo providerInfo = ((LauncherAppWidgetHostView) host).getAppWidgetInfo();
         ArrayList<Integer> actions = new ArrayList<>();
+
+        AppWidgetProviderInfo providerInfo = ((LauncherAppWidgetHostView) host).getAppWidgetInfo();
+        if (providerInfo == null) {
+            return actions;
+        }
 
         CellLayout layout = (CellLayout) host.getParent().getParent();
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0) {
