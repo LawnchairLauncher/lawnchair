@@ -542,14 +542,14 @@ public class AlphabeticalAppsList {
             int sectionAppCount = 0;
             for (int i = 0; i < mSections.size() - 1; i++) {
                 SectionInfo section = mSections.get(i);
-                SectionInfo nextSection = mSections.get(i + 1);
                 sectionAppCount = section.numApps;
                 int mergeCount = 1;
 
                 // Merge rows based on the current strategy
-                while (mMergeAlgorithm.continueMerging(section, nextSection, sectionAppCount,
-                        mNumAppsPerRow, mergeCount)) {
-                    nextSection = mSections.remove(i + 1);
+                while (i < (mSections.size() - 1) &&
+                        mMergeAlgorithm.continueMerging(section, mSections.get(i + 1),
+                                sectionAppCount, mNumAppsPerRow, mergeCount)) {
+                    SectionInfo nextSection = mSections.remove(i + 1);
 
                     // Remove the next section break
                     mAdapterItems.remove(nextSection.sectionBreakItem);
