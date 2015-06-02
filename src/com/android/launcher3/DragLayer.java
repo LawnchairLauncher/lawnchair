@@ -50,7 +50,6 @@ import java.util.ArrayList;
 public class DragLayer extends InsettableFrameLayout {
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
-    public static final int ANIMATION_END_FADE_OUT = 1;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
     // Scrim color without any alpha component.
@@ -70,7 +69,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private ValueAnimator mFadeOutAnim = null;
     private final TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
     @Thunk DragView mDropView = null;
     @Thunk int mAnchorViewInitialScrollX = 0;
@@ -762,7 +760,6 @@ public class DragLayer extends InsettableFrameLayout {
             final int animationEndStyle, View anchorView) {
         // Clean up the previous animations
         if (mDropAnim != null) mDropAnim.cancel();
-        if (mFadeOutAnim != null) mFadeOutAnim.cancel();
 
         // Show the drop view if it was previously hidden
         mDropView = view;
@@ -790,9 +787,6 @@ public class DragLayer extends InsettableFrameLayout {
                 case ANIMATION_END_DISAPPEAR:
                     clearAnimatedView();
                     break;
-                case ANIMATION_END_FADE_OUT:
-                    fadeOutDragView();
-                    break;
                 case ANIMATION_END_REMAIN_VISIBLE:
                     break;
                 }
@@ -814,31 +808,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     public View getAnimatedView() {
         return mDropView;
-    }
-
-    @Thunk void fadeOutDragView() {
-        mFadeOutAnim = new ValueAnimator();
-        mFadeOutAnim.setDuration(150);
-        mFadeOutAnim.setFloatValues(0f, 1f);
-        mFadeOutAnim.removeAllUpdateListeners();
-        mFadeOutAnim.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-
-                float alpha = 1 - percent;
-                mDropView.setAlpha(alpha);
-            }
-        });
-        mFadeOutAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationEnd(Animator animation) {
-                if (mDropView != null) {
-                    mDragController.onDeferredEndDrag(mDropView);
-                }
-                mDropView = null;
-                invalidate();
-            }
-        });
-        mFadeOutAnim.start();
     }
 
     @Override
