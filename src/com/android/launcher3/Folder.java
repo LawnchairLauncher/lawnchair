@@ -29,12 +29,10 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
 import android.util.AttributeSet;
-import android.util.LayoutDirection;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -46,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
@@ -559,7 +558,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 public void onAnimationEnd(Animator animation) {
                     mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
                         .translationX(0)
-                        .setInterpolator(new FastOutSlowInInterpolator());
+                        .setInterpolator(Utilities.isLmpOrAbove() ?
+                                AnimationUtils.loadInterpolator(mLauncher,
+                                        android.R.interpolator.fast_out_slow_in)
+                                : new LogDecelerateInterpolator(100, 0));
                     mContent.animateMarkers();
 
                     if (updateAnimationFlag) {
