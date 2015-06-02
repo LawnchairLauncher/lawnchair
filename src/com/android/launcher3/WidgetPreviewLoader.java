@@ -56,7 +56,7 @@ public class WidgetPreviewLoader {
      * Weak reference objects, do not prevent their referents from being made finalizable,
      * finalized, and then reclaimed.
      */
-    private Set<Bitmap> mUnusedBitmaps =
+    @Thunk Set<Bitmap> mUnusedBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     private final Context mContext;
@@ -67,7 +67,7 @@ public class WidgetPreviewLoader {
     private final InvariantDeviceProfile mDeviceProfile;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-    private final Handler mWorkerHandler;
+    @Thunk final Handler mWorkerHandler;
 
     public WidgetPreviewLoader(Context context, InvariantDeviceProfile inv, IconCache iconCache) {
         mContext = context;
@@ -290,7 +290,7 @@ public class WidgetPreviewLoader {
     /**
      * Reads the preview bitmap from the DB or null if the preview is not in the DB.
      */
-    private Bitmap readFromDb(WidgetCacheKey key, Bitmap recycle, PreviewLoadTask loadTask) {
+    @Thunk Bitmap readFromDb(WidgetCacheKey key, Bitmap recycle, PreviewLoadTask loadTask) {
         Cursor cursor = null;
         try {
             cursor = mDb.getReadableDatabase().query(
@@ -329,7 +329,7 @@ public class WidgetPreviewLoader {
         return null;
     }
 
-    private Bitmap generatePreview(Launcher launcher, Object info, Bitmap recycle,
+    @Thunk Bitmap generatePreview(Launcher launcher, Object info, Bitmap recycle,
             int previewWidth, int previewHeight) {
         if (info instanceof LauncherAppWidgetProviderInfo) {
             return generateWidgetPreview(launcher, (LauncherAppWidgetProviderInfo) info,
@@ -512,7 +512,7 @@ public class WidgetPreviewLoader {
     /**
      * @return an array of containing versionCode and lastUpdatedTime for the package.
      */
-    private long[] getPackageVersion(String packageName) {
+    @Thunk long[] getPackageVersion(String packageName) {
         synchronized (mPackageVersions) {
             long[] versions = mPackageVersions.get(packageName);
             if (versions == null) {
@@ -561,14 +561,13 @@ public class WidgetPreviewLoader {
     }
 
     public class PreviewLoadTask extends AsyncTask<Void, Void, Bitmap> {
-
-        private final WidgetCacheKey mKey;
+        @Thunk final WidgetCacheKey mKey;
         private final Object mInfo;
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
-        private long[] mVersions;
-        private Bitmap mBitmapToRecycle;
+        @Thunk long[] mVersions;
+        @Thunk Bitmap mBitmapToRecycle;
 
         PreviewLoadTask(WidgetCacheKey key, Object info, int previewWidth,
                 int previewHeight, WidgetCell caller) {
@@ -674,7 +673,7 @@ public class WidgetPreviewLoader {
     private static final class WidgetCacheKey extends ComponentKey {
 
         // TODO: remove dependency on size
-        private final String size;
+        @Thunk final String size;
 
         public WidgetCacheKey(ComponentName componentName, UserHandleCompat user, String size) {
             super(componentName, user);

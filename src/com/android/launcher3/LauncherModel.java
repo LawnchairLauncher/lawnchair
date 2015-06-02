@@ -275,7 +275,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Runs the specified runnable after the loader is complete
      */
-    private void runAfterBindCompletes(Runnable r) {
+    @Thunk void runAfterBindCompletes(Runnable r) {
         if (isLoadingWorkspace() || !mHasLoaderCompletedOnce) {
             synchronized (mBindCompleteRunnables) {
                 mBindCompleteRunnables.add(r);
@@ -3350,7 +3350,7 @@ public class LauncherModel extends BroadcastReceiver
      *
      * @see #loadAndBindWidgetsAndShortcuts
      */
-    private WidgetsModel createWidgetsModel(Context context, boolean refresh) {
+    @Thunk WidgetsModel createWidgetsModel(Context context, boolean refresh) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
         widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));

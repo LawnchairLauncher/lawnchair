@@ -44,7 +44,7 @@ public class DragView extends View {
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
-    private Paint mPaint;
+    @Thunk Paint mPaint;
     private int mRegistrationX;
     private int mRegistrationY;
 
@@ -62,7 +62,7 @@ public class DragView extends View {
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
 
-    private float[] mCurrentFilter;
+    @Thunk float[] mCurrentFilter;
     private ValueAnimator mFilterAnimator;
 
     /**

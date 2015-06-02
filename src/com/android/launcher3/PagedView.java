@@ -22,11 +22,13 @@ import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -45,9 +47,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
-
 import com.android.launcher3.util.Thunk;
-
 import java.util.ArrayList;
 
 /**
@@ -186,7 +186,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // We use the min scale to determine how much to expand the actually PagedView measured
     // dimensions such that when we are zoomed out, the view is not clipped
     private static int REORDERING_DROP_REPOSITION_DURATION = 200;
-    private static int REORDERING_REORDER_REPOSITION_DURATION = 300;
+    @Thunk static int REORDERING_REORDER_REPOSITION_DURATION = 300;
     private static int REORDERING_SIDE_PAGE_HOVER_TIMEOUT = 80;
 
     private float mMinScale = 1f;
@@ -956,7 +956,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return 0;
     }
 
-    private void updateMaxScrollX() {
+    @Thunk void updateMaxScrollX() {
         int childCount = getChildCount();
         if (childCount > 0) {
             final int index = mIsRtl ? 0 : childCount - 1;
@@ -2322,6 +2322,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final int ANIM_TAG_KEY = 100;
 
     /* Accessibility */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);

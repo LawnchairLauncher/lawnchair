@@ -64,7 +64,7 @@ public abstract class ButtonDropTarget extends TextView
     protected Drawable mDrawable;
 
     private AnimatorSet mCurrentColorAnim;
-    private ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
+    @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {

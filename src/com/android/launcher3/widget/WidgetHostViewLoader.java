@@ -15,6 +15,7 @@ import com.android.launcher3.DragLayer;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.util.Thunk;
 
 public class WidgetHostViewLoader {
 
@@ -38,7 +39,7 @@ public class WidgetHostViewLoader {
     PendingAddWidgetInfo mCreateWidgetInfo = null;
 
     // TODO: technically, this class should not have to know the existence of the launcher.
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private Handler mHandler;
 
     public WidgetHostViewLoader(Launcher launcher) {
@@ -188,7 +189,7 @@ public class WidgetHostViewLoader {
         return options;
     }
 
-    private void setState(int state) {
+    @Thunk void setState(int state) {
         if (DEBUG) {
             Log.d(TAG, String.format("     state [%d -> %d]", mState, state));
         }

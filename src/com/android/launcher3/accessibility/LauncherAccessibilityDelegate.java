@@ -251,7 +251,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         return actions;
     }
 
-    private void performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
+    @Thunk void performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) host.getLayoutParams();
         CellLayout layout = (CellLayout) host.getParent().getParent();
         layout.markCellsAsUnoccupiedForView(host);

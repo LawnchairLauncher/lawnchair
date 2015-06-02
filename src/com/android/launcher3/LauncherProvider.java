@@ -88,7 +88,7 @@ public class LauncherProvider extends ContentProvider {
     static final Uri CONTENT_APPWIDGET_RESET_URI =
             Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
 
-    private DatabaseHelper mOpenHelper;
+    @Thunk DatabaseHelper mOpenHelper;
 
     @Override
     public boolean onCreate() {
@@ -665,7 +665,7 @@ public class LauncherProvider extends ContentProvider {
          * Replaces all shortcuts of type {@link Favorites#ITEM_TYPE_SHORTCUT} which have a valid
          * launcher activity target with {@link Favorites#ITEM_TYPE_APPLICATION}.
          */
-        private void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
+        @Thunk void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
             db.beginTransaction();
             Cursor c = null;
             SQLiteStatement updateStmt = null;

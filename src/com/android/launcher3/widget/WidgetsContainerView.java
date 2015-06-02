@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.util.Thunk;
 
 /**
  * The widgets list view container.
@@ -60,7 +61,7 @@ public class WidgetsContainerView extends BaseContainerView
     private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
 
     /* Global instances that are used inside this container. */
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private DragController mDragController;
     private IconCache mIconCache;
 

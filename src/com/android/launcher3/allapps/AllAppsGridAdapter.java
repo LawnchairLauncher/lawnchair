@@ -288,7 +288,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
     private GridLayoutManager mGridLayoutMgr;
     private GridSpanSizer mGridSizer;
     private GridItemDecoration mItemDecoration;
-    private PredictionBarSpacerCallbacks mPredictionBarCb;
+    @Thunk PredictionBarSpacerCallbacks mPredictionBarCb;
     private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;

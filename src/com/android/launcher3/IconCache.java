@@ -69,7 +69,7 @@ public class IconCache {
 
     private static final int LOW_RES_SCALE_FACTOR = 8;
 
-    private static final Object ICON_UPDATE_TOKEN = new Object();
+    @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
 
     @Thunk static class CacheEntry {
         public Bitmap icon;
@@ -79,18 +79,18 @@ public class IconCache {
     }
 
     private final HashMap<UserHandleCompat, Bitmap> mDefaultIcons = new HashMap<>();
-    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    @Thunk final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
 
     private final Context mContext;
     private final PackageManager mPackageManager;
-    private final UserManagerCompat mUserManager;
+    @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<ComponentKey, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
     private final int mIconDpi;
-    private final IconDB mIconDb;
+    @Thunk final IconDB mIconDb;
 
-    private final Handler mWorkerHandler;
+    @Thunk final Handler mWorkerHandler;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
         ActivityManager activityManager =
@@ -320,7 +320,7 @@ public class IconCache {
         }
     }
 
-    private void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
+    @Thunk void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
             long userSerial) {
         // Reuse the existing entry if it already exists in the DB. This ensures that we do not
         // create bitmap if it was already created during loader.
@@ -342,7 +342,7 @@ public class IconCache {
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    private ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
+    @Thunk ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
             boolean replaceExisting) {
         final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
         CacheEntry entry = null;
@@ -688,14 +688,14 @@ public class IconCache {
      * LauncherActivityInfoCompat list. Items are updated/added one at a time, so that the
      * worker thread doesn't get blocked.
      */
-    private class SerializedIconUpdateTask implements Runnable {
+    @Thunk class SerializedIconUpdateTask implements Runnable {
         private final long mUserSerial;
         private final HashMap<String, PackageInfo> mPkgInfoMap;
         private final Stack<LauncherActivityInfoCompat> mAppsToAdd;
         private final Stack<LauncherActivityInfoCompat> mAppsToUpdate;
         private final HashSet<String> mUpdatedPackages = new HashSet<String>();
 
-        private SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
+        @Thunk SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
                 Stack<LauncherActivityInfoCompat> appsToAdd,
                 Stack<LauncherActivityInfoCompat> appsToUpdate) {
             mUserSerial = userSerial;

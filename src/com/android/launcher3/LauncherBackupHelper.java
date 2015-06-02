@@ -51,13 +51,13 @@ import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.Thunk;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -135,7 +135,7 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private static final int SCREEN_RANK_INDEX = 2;
 
-    private final Context mContext;
+    @Thunk final Context mContext;
     private final HashSet<String> mExistingKeys;
     private final ArrayList<Key> mKeys;
     private final ItemTypeMatcher[] mItemTypeMatchers;
@@ -1157,15 +1157,15 @@ public class LauncherBackupHelper implements BackupHelper {
                 .getSerialNumberForUser(UserHandleCompat.myUserHandle());
     }
 
-    private class InvalidBackupException extends IOException {
+    @Thunk class InvalidBackupException extends IOException {
 
         private static final long serialVersionUID = 8931456637211665082L;
 
-        private InvalidBackupException(Throwable cause) {
+        @Thunk InvalidBackupException(Throwable cause) {
             super(cause);
         }
 
-        public InvalidBackupException(String reason) {
+        @Thunk InvalidBackupException(String reason) {
             super(reason);
         }
     }

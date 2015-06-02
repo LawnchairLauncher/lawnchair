@@ -19,6 +19,7 @@ import android.content.Context;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.util.Thunk;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -82,7 +83,7 @@ public class AppNameComparator {
     /**
      * Compares two titles with the same return value semantics as Comparator.
      */
-    private int compareTitles(String titleA, String titleB) {
+    @Thunk int compareTitles(String titleA, String titleB) {
         // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
         boolean aStartsWithLetter = Character.isLetterOrDigit(titleA.codePointAt(0));
         boolean bStartsWithLetter = Character.isLetterOrDigit(titleB.codePointAt(0));
