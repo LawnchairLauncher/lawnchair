@@ -93,6 +93,9 @@ public final class Utilities {
     private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
+    public static final String SCREEN_ROTATION_SETTING_INTENT =
+            "come.android.launcher3.SCREEN_ORIENTATION_PREF_CHANGED";
+    public static final String SCREEN_ROTATION_SETTING_EXTRA = "screenRotationPref";
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
