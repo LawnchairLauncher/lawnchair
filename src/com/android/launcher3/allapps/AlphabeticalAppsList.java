@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.AbstractUserComparator;
 import com.android.launcher3.model.AppNameComparator;
+import com.android.launcher3.util.Thunk;
 
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
@@ -151,7 +152,7 @@ public class AlphabeticalAppsList {
      * The logic we use to merge sections on tablets.  Currently, we don't show section names on
      * tablet layouts, so just merge all the sections indiscriminately.
      */
-    private static class TabletMergeAlgorithm implements MergeAlgorithm {
+    @Thunk static class TabletMergeAlgorithm implements MergeAlgorithm {
 
         @Override
         public boolean continueMerging(SectionInfo section, SectionInfo withSection,

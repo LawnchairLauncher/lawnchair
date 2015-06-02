@@ -265,7 +265,7 @@ public class Launcher extends Activity
 
     private int[] mTmpAddItemCellCoordinates = new int[2];
 
-    private Hotseat mHotseat;
+    @Thunk Hotseat mHotseat;
     private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
@@ -402,7 +402,7 @@ public class Launcher extends Activity
 
     FocusIndicatorView mFocusHandler;
 
-    private boolean mRotationEnabled = false;
+    @Thunk boolean mRotationEnabled = false;
     private boolean mPreferenceObserverRegistered = false;
 
     final private SharedPreferences.OnSharedPreferenceChangeListener mSettingsObserver =

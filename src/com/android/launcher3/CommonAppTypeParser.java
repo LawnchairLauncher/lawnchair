@@ -26,6 +26,7 @@ import android.util.Log;
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.backup.BackupProtos.Favorite;
+import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -44,8 +45,8 @@ public class CommonAppTypeParser implements LayoutParserCallback {
 
 
     private final long mItemId;
-    private final int mResId;
-    private final Context mContext;
+    @Thunk final int mResId;
+    @Thunk final Context mContext;
 
     ContentValues parsedValues;
     Intent parsedIntent;

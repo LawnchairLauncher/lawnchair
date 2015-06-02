@@ -43,7 +43,7 @@ public class LongArrayMap<E> extends LongSparseArray<E> implements Iterable<E> {
         return new ValueIterator();
     }
 
-    private class ValueIterator implements Iterator<E> {
+    @Thunk class ValueIterator implements Iterator<E> {
 
         private int mNextIndex = 0;
 

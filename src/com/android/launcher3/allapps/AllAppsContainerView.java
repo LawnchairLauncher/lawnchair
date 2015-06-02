@@ -191,14 +191,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
 
-    private FrameLayout mContentView;
+    @Thunk FrameLayout mContentView;
     @Thunk AllAppsRecyclerView mAppsRecyclerView;
-    private ViewGroup mPredictionBarView;
+    @Thunk ViewGroup mPredictionBarView;
     private View mHeaderView;
-    private View mSearchBarContainerView;
+    @Thunk View mSearchBarContainerView;
     private View mSearchButtonView;
     private View mDismissSearchButtonView;
-    private AllAppsSearchEditView mSearchBarEditView;
+    @Thunk AllAppsSearchEditView mSearchBarEditView;
 
     private HeaderElevationController mElevationController;
 
@@ -215,7 +215,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mContainerInset;
     private int mPredictionBarHeight;
     private int mLastRecyclerViewScrollPos = -1;
-    private boolean mFocusPredictionBarOnFirstBind;
+    @Thunk boolean mFocusPredictionBarOnFirstBind;
 
     private CheckLongPressHelper mPredictionIconCheckForLongPress;
     private View mPredictionIconUnderTouch;
@@ -936,7 +936,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     /**
      * Hides the search field.
      */
-    private void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
+    @Thunk void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
         mSearchManager.cancel(true);
 
         final boolean resetTextField = mSearchBarEditView.getText().toString().length() > 0;
@@ -1001,7 +1001,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     /**
      * Returns an input method manager.
      */
-    private InputMethodManager getInputMethodManager() {
+    @Thunk InputMethodManager getInputMethodManager() {
         return (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }
