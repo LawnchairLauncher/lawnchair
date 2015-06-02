@@ -2370,6 +2370,9 @@ public class Launcher extends Activity
         if (hostView != null) {
             appWidgetId = hostView.getAppWidgetId();
             addAppWidgetImpl(appWidgetId, info, hostView, info.info);
+
+            // Clear the boundWidget so that it doesn't get destroyed.
+            info.boundWidget = null;
         } else {
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
