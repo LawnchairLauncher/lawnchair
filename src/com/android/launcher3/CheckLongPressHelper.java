@@ -21,9 +21,11 @@ import android.view.View;
 import com.android.launcher3.util.Thunk;
 
 public class CheckLongPressHelper {
+
     @Thunk View mView;
     @Thunk View.OnLongClickListener mListener;
     @Thunk boolean mHasPerformedLongPress;
+    private int mLongPressTimeout = 300;
     private CheckForLongPress mPendingCheckForLongPress;
 
     class CheckForLongPress implements Runnable {
@@ -53,14 +55,20 @@ public class CheckLongPressHelper {
         mListener = listener;
     }
 
+    /**
+     * Overrides the default long press timeout.
+     */
+    public void setLongPressTimeout(int longPressTimeout) {
+        mLongPressTimeout = longPressTimeout;
+    }
+
     public void postCheckForLongPress() {
         mHasPerformedLongPress = false;
 
         if (mPendingCheckForLongPress == null) {
             mPendingCheckForLongPress = new CheckForLongPress();
         }
-        mView.postDelayed(mPendingCheckForLongPress,
-                LauncherAppState.getInstance().getLongPressTimeout());
+        mView.postDelayed(mPendingCheckForLongPress, mLongPressTimeout);
     }
 
     public void cancelLongPress() {
