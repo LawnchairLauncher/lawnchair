@@ -29,8 +29,8 @@ import com.android.launcher3.model.AbstractUserComparator;
 import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.util.Thunk;
 
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -178,7 +178,7 @@ public class AlphabeticalAppsList {
             mMinAppsPerRow = minAppsPerRow;
             mMinRowsInMergedSection = minRowsInMergedSection;
             mMaxAllowableMerges = maxNumMerges;
-            mAsciiEncoder = StandardCharsets.US_ASCII.newEncoder();
+            mAsciiEncoder = Charset.forName("US-ASCII").newEncoder();
         }
 
         @Override
