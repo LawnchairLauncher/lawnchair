@@ -1531,7 +1531,6 @@ public class Launcher extends Activity
      * Add a shortcut to the workspace.
      *
      * @param data The intent describing the shortcut.
-     * @param cellInfo The position on screen where to create the shortcut.
      */
     private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
             int cellY) {
@@ -2549,13 +2548,6 @@ public class Launcher extends Activity
         }
     }
 
-    public void onClickPagedViewIcon(View v) {
-        startAppShortcutOrInfoActivity(v);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickPagedViewIcon(v);
-        }
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouch(View v, MotionEvent event) {
         return false;
@@ -2714,7 +2706,7 @@ public class Launcher extends Activity
         }
 
         boolean success = startActivitySafely(v, intent, tag);
-        mStats.recordLaunch(intent, shortcut);
+        mStats.recordLaunch(v, intent, shortcut);
 
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
@@ -2936,7 +2928,7 @@ public class Launcher extends Activity
         }
     }
 
-    boolean startActivity(View v, Intent intent, Object tag) {
+    private boolean startActivity(View v, Intent intent, Object tag) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             // Only launch using the new animation if the shortcut has not opted out (this is a
@@ -3007,7 +2999,7 @@ public class Launcher extends Activity
         return false;
     }
 
-    boolean startActivitySafely(View v, Intent intent, Object tag) {
+    private boolean startActivitySafely(View v, Intent intent, Object tag) {
         boolean success = false;
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
