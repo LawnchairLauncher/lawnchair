@@ -63,6 +63,7 @@ public class BubbleTextView extends TextView {
     private final Drawable mBackground;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
+    private final StylusEventHelper mStylusEventHelper;
 
     private boolean mBackgroundSizeChanged;
 
@@ -125,6 +126,7 @@ public class BubbleTextView extends TextView {
         }
 
         mLongPressHelper = new CheckLongPressHelper(this);
+        mStylusEventHelper = new StylusEventHelper(this);
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
         if (mCustomShadowsEnabled) {
@@ -236,6 +238,12 @@ public class BubbleTextView extends TextView {
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
 
+        // Check for a stylus button press, if it occurs cancel any long press checks.
+        if (mStylusEventHelper.checkAndPerformStylusEvent(event)) {
+            mLongPressHelper.cancelLongPress();
+            result = true;
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // So that the pressed outline is visible immediately on setStayPressed(),
@@ -245,7 +253,10 @@ public class BubbleTextView extends TextView {
                     mPressedBackground = mOutlineHelper.createMediumDropShadow(this);
                 }
 
-                mLongPressHelper.postCheckForLongPress();
+                // If we're in a stylus button press, don't check for long press.
+                if (!mStylusEventHelper.inStylusButtonPressed()) {
+                    mLongPressHelper.postCheckForLongPress();
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:

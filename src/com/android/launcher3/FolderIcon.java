@@ -57,6 +57,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Thunk static boolean sStaticValuesDirty = true;
 
     private CheckLongPressHelper mLongPressHelper;
+    private StylusEventHelper mStylusEventHelper;
 
     // The number of icons to display in the
     public static final int NUM_ITEMS_IN_PREVIEW = 3;
@@ -128,6 +129,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
+        mStylusEventHelper = new StylusEventHelper(this);
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
@@ -718,6 +720,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
+
+        // Check for a stylus button press, if it occurs cancel any long press checks.
+        if (mStylusEventHelper.checkAndPerformStylusEvent(event)) {
+            mLongPressHelper.cancelLongPress();
+            return true;
+        }
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
