@@ -49,6 +49,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
@@ -891,6 +892,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     private void addLongPressHandler(View v) {
         v.setOnLongClickListener(mLongClickListener);
+
+        // Enable stylus button to also trigger long click.
+        final StylusEventHelper stylusEventHelper = new StylusEventHelper(v);
+        v.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                return stylusEventHelper.checkAndPerformStylusEvent(event);
+            }
+        });
     }
 
     private ArrayList<WallpaperTileInfo> findBundledWallpapers() {

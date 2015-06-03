@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.widget.LinearLayout;
@@ -35,6 +36,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -73,6 +75,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private WidgetPreviewLoader mWidgetPreviewLoader;
     private PreviewLoadRequest mActiveRequest;
+    private StylusEventHelper mStylusEventHelper;
 
     private Launcher mLauncher;
 
@@ -89,6 +92,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         final Resources r = context.getResources();
         mLauncher = (Launcher) context;
+        mStylusEventHelper = new StylusEventHelper(this);
 
         mDimensionsFormatString = r.getString(R.string.widget_dims_format);
         setContainerWidth();
@@ -200,6 +204,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         int cellWidth = mLauncher.getDeviceProfile().cellWidthPx;
 
         return Math.min(size[0], info.spanX * cellWidth);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean handled = super.onTouchEvent(ev);
+        if (mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+            return true;
+        }
+        return handled;
     }
 
     /**

@@ -95,6 +95,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     boolean[][] mTmpOccupied;
 
     private OnTouchListener mInterceptTouchListener;
+    private StylusEventHelper mStylusEventHelper;
 
     private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
     private int[] mFolderLeaveBehindCell = {-1, -1};
@@ -284,6 +285,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                 mCountX, mCountY);
 
+        mStylusEventHelper = new StylusEventHelper(this);
+
         mTouchFeedbackView = new ClickShadowView(context);
         addView(mTouchFeedbackView);
         addView(mShortcutsAndWidgets);
@@ -334,6 +337,20 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean handled = super.onTouchEvent(ev);
+        // Stylus button press on a home screen should not switch between overview mode and
+        // the home screen mode, however, once in overview mode stylus button press should be
+        // enabled to allow rearranging the different home screens. So check what mode
+        // the workspace is in, and only perform stylus button presses while in overview mode.
+        if (mLauncher.mWorkspace.isInOverviewMode()
+                && mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+            return true;
+        }
+        return handled;
     }
 
     public void enableHardwareLayer(boolean hasLayer) {
