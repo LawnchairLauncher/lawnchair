@@ -405,7 +405,8 @@ public class DeviceProfile {
         View searchBar = launcher.getSearchBar();
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         if (hasVerticalBarLayout) {
-            // Vertical search bar space
+            // Vertical search bar space -- The search bar is fixed in the layout to be on the left
+            //                              of the screen regardless of RTL
             lp.gravity = Gravity.LEFT;
             lp.width = searchBarSpaceHeightPx;
 
@@ -438,8 +439,9 @@ public class DeviceProfile {
         View hotseat = launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
         if (hasVerticalBarLayout) {
-            // Vertical hotseat
-            lp.gravity = Gravity.END;
+            // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
+            //                     screen regardless of RTL
+            lp.gravity = Gravity.RIGHT;
             lp.width = hotseatBarHeightPx;
             lp.height = LayoutParams.MATCH_PARENT;
             hotseat.findViewById(R.id.layout).setPadding(0, 2 * edgeMarginPx, 0, 2 * edgeMarginPx);
