@@ -57,7 +57,7 @@
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Odinštalovať"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Odstrániť"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Odinštalovať"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"Informácie o aplikácii"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"O aplikácii"</string>
     <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Aplikácie"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"Odstrániť"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Odinštalovať aktualizáciu"</string>
