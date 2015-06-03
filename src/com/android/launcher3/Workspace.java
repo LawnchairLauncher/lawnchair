@@ -28,6 +28,7 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -42,6 +43,7 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -86,7 +88,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, UninstallSource, AccessibilityDragSource {
+        Insettable, UninstallSource, AccessibilityDragSource, Stats.LaunchSourceProvider {
     private static final String TAG = "Launcher.Workspace";
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
@@ -4459,6 +4461,12 @@ public class Workspace extends PagedView
 
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
+    }
+
+    @Override
+    public void fillInLaunchSourceData(Bundle sourceData) {
+        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOMESCREEN);
+        sourceData.putInt(Stats.SOURCE_EXTRA_CONTAINER_PAGE, getCurrentPage());
     }
 
     /**

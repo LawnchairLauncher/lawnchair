@@ -19,15 +19,16 @@ package com.android.launcher3;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class Hotseat extends FrameLayout {
+public class Hotseat extends FrameLayout
+        implements Stats.LaunchSourceProvider{
 
     private CellLayout mContent;
 
@@ -159,5 +160,10 @@ public class Hotseat extends FrameLayout {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void fillInLaunchSourceData(Bundle sourceData) {
+        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOTSEAT);
     }
 }

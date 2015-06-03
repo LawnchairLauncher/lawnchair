@@ -18,14 +18,15 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
 
 import java.util.List;
@@ -33,7 +34,8 @@ import java.util.List;
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView {
+public class AllAppsRecyclerView extends BaseRecyclerView
+        implements Stats.LaunchSourceProvider {
 
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
@@ -123,6 +125,18 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         addOnItemTouchListener(this);
+    }
+
+    @Override
+    public void fillInLaunchSourceData(Bundle sourceData) {
+        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_ALL_APPS);
+        if (mApps.hasFilter()) {
+            sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
+                    Stats.SUB_CONTAINER_ALL_APPS_SEARCH);
+        } else {
+            sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
+                    Stats.SUB_CONTAINER_ALL_APPS_A_Z);
+        }
     }
 
     /**

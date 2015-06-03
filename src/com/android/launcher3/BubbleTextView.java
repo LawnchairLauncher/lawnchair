@@ -28,7 +28,6 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -36,7 +35,6 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.widget.TextView;
-
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.model.PackageItemInfo;
 

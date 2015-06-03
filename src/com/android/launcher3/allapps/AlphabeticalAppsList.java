@@ -46,6 +46,7 @@ public class AlphabeticalAppsList {
 
     public static final String TAG = "AlphabeticalAppsList";
     private static final boolean DEBUG = false;
+    private static final boolean DEBUG_PREDICTIONS = false;
 
     /**
      * Info about a section in the alphabetic list
@@ -476,6 +477,15 @@ public class AlphabeticalAppsList {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
         mSections.clear();
+
+        if (DEBUG_PREDICTIONS) {
+            if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
+                mPredictedAppComponents.add(mApps.get(0).componentName);
+                mPredictedAppComponents.add(mApps.get(0).componentName);
+                mPredictedAppComponents.add(mApps.get(0).componentName);
+                mPredictedAppComponents.add(mApps.get(0).componentName);
+            }
+        }
 
         // Process the predicted app components
         mPredictedApps.clear();
