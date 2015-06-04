@@ -10,6 +10,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
@@ -39,11 +40,13 @@ public class WidgetsModel {
     private final Comparator mWidgetAndShortcutNameComparator;
     private final Comparator mAppNameComparator;
     private final IconCache mIconCache;
+    private AlphabeticIndexCompat mIndexer;
 
     public WidgetsModel(Context context) {
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = LauncherAppState.getInstance().getIconCache();
+        mIndexer = new AlphabeticIndexCompat(context);
     }
 
     private WidgetsModel(WidgetsModel model) {
@@ -62,6 +65,9 @@ public class WidgetsModel {
 
     // Access methods that may be deleted if the private fields are made package-private.
     public PackageItemInfo getPackageItemInfo(int pos) {
+        if (pos >= mPackageItemInfos.size() || pos < 0) {
+            return null;
+        }
         return mPackageItemInfos.get(pos);
     }
 
@@ -112,6 +118,7 @@ public class WidgetsModel {
                 pInfo = new PackageItemInfo(packageName);
                 mIconCache.getTitleAndIconForApp(packageName, UserHandleCompat.myUserHandle(),
                         true /* userLowResIcon */, pInfo);
+                pInfo.titleSectionName = mIndexer.computeSectionName(pInfo.title);
                 mWidgetsList.put(pInfo, widgetsShortcutsList);
                 tmpPackageItemInfos.put(packageName,  pInfo);
                 mPackageItemInfos.add(pInfo);

@@ -63,7 +63,6 @@
     <dimen name="all_apps_prediction_icon_top_bottom_padding">12dp</dimen>
 
     <dimen name="all_apps_fast_scroll_bar_width">4dp</dimen>
-    <dimen name="all_apps_fast_scroll_bar_min_height">64dp</dimen>
     <dimen name="all_apps_fast_scroll_scrubber_touch_inset">-16dp</dimen>
     <dimen name="all_apps_fast_scroll_popup_size">72dp</dimen>
     <dimen name="all_apps_fast_scroll_text_size">48dp</dimen>

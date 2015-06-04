@@ -39,7 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/quantum_panel_dark"
-            android:scrollbars="vertical"
             android:elevation="15dp"
             android:visibility="gone" />
 
