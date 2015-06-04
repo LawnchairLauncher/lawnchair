@@ -19,20 +19,25 @@ package com.android.launcher3.widget;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.PackageItemInfo;
 
 /**
  * The widgets recycler view.
  */
 public class WidgetsRecyclerView extends BaseRecyclerView {
 
+    private static final String TAG = "WidgetsRecyclerView";
     private WidgetsModel mWidgets;
     private Rect mBackgroundPadding = new Rect();
+    private PackageItemInfo mLastPackageItemInfo;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -68,8 +73,17 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      */
     @Override
     public String scrollToPositionAtProgress(float touchFraction) {
-        // Ensure that we have any sections
-        return "";
+        float pos = mWidgets.getPackageSize() * touchFraction;
+
+        int posInt = (int) pos;
+        LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
+        getCurScrollState(scrollPosState);
+        layoutManager.scrollToPositionWithOffset((int) pos,
+                (int) (scrollPosState.rowHeight * ((float) posInt - pos)));
+
+        posInt = (int) ((touchFraction == 1)? pos -1 : pos);
+        PackageItemInfo p = mWidgets.getPackageItemInfo(posInt);
+        return p.titleSectionName;
     }
 
     /**
@@ -78,19 +92,41 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     @Override
     public void updateVerticalScrollbarBounds() {
         int rowCount = mWidgets.getPackageSize();
+        verticalScrollbarBounds.setEmpty();
 
-        // Skip early if there are no items.
+        // Skip early if, there are no items.
         if (rowCount == 0) {
+            return;
+        }
+
+        // Skip early if, there no child laid out in the container.
+        getCurScrollState(scrollPosState);
+        if (scrollPosState.rowIndex < 0) {
+            return;
+        }
+
+        int actualHeight = getHeight() - getPaddingTop() - getPaddingBottom();
+        int totalScrollHeight = rowCount * scrollPosState.rowHeight;
+        // Skip early if the height of all the rows are actually less than the container height.
+        if (totalScrollHeight < actualHeight) {
             verticalScrollbarBounds.setEmpty();
             return;
         }
 
-        int x, y;
-        getCurScrollState(scrollPosState);
-        if (scrollPosState.rowIndex < 0) {
-            verticalScrollbarBounds.setEmpty();
+        int scrollbarHeight = (int) (actualHeight / ((float) totalScrollHeight / actualHeight));
+        int availableY = totalScrollHeight - actualHeight;
+        int availableScrollY = actualHeight - scrollbarHeight;
+        int y = (scrollPosState.rowIndex * scrollPosState.rowHeight)
+                - scrollPosState.rowTopOffset;
+        y = getPaddingTop() +
+                (int) (((float) (getPaddingTop() + y) / availableY) * availableScrollY);
+
+        // Calculate the position and size of the scroll bar.
+        int x = getWidth() - getScrollbarWidth() - mBackgroundPadding.right;
+        if (Utilities.isRtl(getResources())) {
+            x = mBackgroundPadding.left;
         }
-        // TODO
+        verticalScrollbarBounds.set(x, y, x + getScrollbarWidth(), y + scrollbarHeight);
     }
 
     /**
@@ -107,6 +143,11 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         if (rowCount == 0) {
             return;
         }
-        // TODO
+        View child = getChildAt(0);
+        int position = getChildPosition(child);
+
+        stateOut.rowIndex = position;
+        stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
+        stateOut.rowHeight = child.getHeight();
     }
 }
