@@ -1620,7 +1620,7 @@ public class Workspace extends PagedView
         // We should only update the drag layer background alpha if we are not in all apps or the
         // widgets tray
         if (mState == State.NORMAL) {
-            mLauncher.getDragLayer().setBackgroundAlpha(progress * 0.8f);
+            mLauncher.getDragLayer().setBackgroundAlpha(progress == 1 ? 0 : progress * 0.8f);
         }
 
         if (mLauncher.getHotseat() != null) {
