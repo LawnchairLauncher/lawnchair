@@ -275,6 +275,7 @@ public class IconCache {
             ComponentName component = ComponentName.unflattenFromString(cn);
             PackageInfo info = pkgInfoMap.get(component.getPackageName());
             if (info == null) {
+                remove(component, user);
                 itemsToRemove.add(c.getInt(rowIndex));
                 continue;
             }
@@ -291,6 +292,7 @@ public class IconCache {
                 continue;
             }
             if (app == null) {
+                remove(component, user);
                 itemsToRemove.add(c.getInt(rowIndex));
             } else {
                 appsToUpdate.add(app);
@@ -562,9 +564,10 @@ public class IconCache {
      */
     private CacheEntry getEntryForPackageLocked(String packageName, UserHandleCompat user,
             boolean useLowResIcon) {
-        ComponentName cn = new ComponentName(packageName, EMPTY_CLASS_NAME);
+        ComponentName cn = new ComponentName(packageName, packageName + EMPTY_CLASS_NAME);
         ComponentKey cacheKey = new ComponentKey(cn, user);
         CacheEntry entry = mCache.get(cacheKey);
+
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
             entry = new CacheEntry();
             boolean entryUpdated = true;
