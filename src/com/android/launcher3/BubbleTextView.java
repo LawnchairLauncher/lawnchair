@@ -57,6 +57,7 @@ public class BubbleTextView extends TextView {
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
 
+    private final Launcher mLauncher;
     private Drawable mIcon;
     private final Drawable mBackground;
     private final CheckLongPressHelper mLongPressHelper;
@@ -91,8 +92,8 @@ public class BubbleTextView extends TextView {
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = ((Launcher) context).getDeviceProfile();
+        mLauncher = (Launcher) context;
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
@@ -142,7 +143,7 @@ public class BubbleTextView extends TextView {
             boolean promiseStateChanged) {
         Bitmap b = info.getIcon(iconCache);
 
-        FastBitmapDrawable iconDrawable = Utilities.createIconDrawable(b);
+        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(b);
         iconDrawable.setGhostModeEnabled(info.isDisabled != 0);
 
         setIcon(iconDrawable, mIconSize);
@@ -158,7 +159,7 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        setIcon(Utilities.createIconDrawable(info.iconBitmap), mIconSize);
+        setIcon(mLauncher.createIconDrawable(info.iconBitmap), mIconSize);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
@@ -171,7 +172,7 @@ public class BubbleTextView extends TextView {
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
-        setIcon(Utilities.createIconDrawable(info.iconBitmap), mIconSize);
+        setIcon(mLauncher.createIconDrawable(info.iconBitmap), mIconSize);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);

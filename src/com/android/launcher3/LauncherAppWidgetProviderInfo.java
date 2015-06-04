@@ -67,7 +67,8 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         if (isCustomWidget) {
             return cache.getFullResIcon(provider.getPackageName(), icon);
         }
-        return super.loadIcon(context, cache.getFullResIconDpi());
+        return super.loadIcon(context,
+                LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi);
     }
 
     public String toString(PackageManager pm) {

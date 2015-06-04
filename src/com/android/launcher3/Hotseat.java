@@ -131,7 +131,7 @@ public class Hotseat extends FrameLayout
                 inflater.inflate(R.layout.all_apps_button, mContent, false);
         Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
 
-        Utilities.resizeIconDrawable(d);
+        mLauncher.resizeIconDrawable(d);
         allAppsButton.setCompoundDrawables(null, d, null, null);
 
         allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));

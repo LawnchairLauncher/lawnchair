@@ -3114,8 +3114,9 @@ public class LauncherModel extends BroadcastReceiver
                             // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
                                     && packageSet.contains(si.iconResource.packageName)) {
-                                Bitmap icon = Utilities.createIconBitmap(si.iconResource.packageName,
-                                        si.iconResource.resourceName, mIconCache, context);
+                                Bitmap icon = Utilities.createIconBitmap(
+                                        si.iconResource.packageName,
+                                        si.iconResource.resourceName, context);
                                 if (icon != null) {
                                     si.setIcon(icon);
                                     si.usingFallbackIcon = false;
@@ -3558,7 +3559,7 @@ public class LauncherModel extends BroadcastReceiver
             String resourceName = c.getString(iconResourceIndex);
             info.customIcon = false;
             // the resource
-            icon = Utilities.createIconBitmap(packageName, resourceName, mIconCache, context);
+            icon = Utilities.createIconBitmap(packageName, resourceName, context);
             // the db
             if (icon == null) {
                 icon = Utilities.createIconBitmap(c, iconIndex, context);
@@ -3612,7 +3613,7 @@ public class LauncherModel extends BroadcastReceiver
             if (extra instanceof ShortcutIconResource) {
                 iconResource = (ShortcutIconResource) extra;
                 icon = Utilities.createIconBitmap(iconResource.packageName,
-                        iconResource.resourceName, mIconCache, context);
+                        iconResource.resourceName, context);
             }
         }
 

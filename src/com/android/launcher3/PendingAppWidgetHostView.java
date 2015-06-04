@@ -121,7 +121,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = Utilities.createIconDrawable(mIcon);
+                FastBitmapDrawable disabledIcon = mLauncher.createIconDrawable(mIcon);
                 disabledIcon.setGhostModeEnabled(true);
                 mCenterDrawable = disabledIcon;
                 mTopCornerDrawable = null;
@@ -134,7 +134,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                     sPreloaderTheme.applyStyle(R.style.PreloadIcon, true);
                 }
 
-                FastBitmapDrawable drawable = Utilities.createIconDrawable(mIcon);
+                FastBitmapDrawable drawable = mLauncher.createIconDrawable(mIcon);
                 mCenterDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
                 mCenterDrawable.setCallback(this);
                 mTopCornerDrawable = null;

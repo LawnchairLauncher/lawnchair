@@ -15,8 +15,6 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">64dp</dimen>
-
 <!-- All Apps -->
     <dimen name="all_apps_container_inset">18dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>

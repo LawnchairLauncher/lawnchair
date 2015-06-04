@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -93,14 +92,11 @@ public class IconCache {
     @Thunk final Handler mWorkerHandler;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
-        ActivityManager activityManager =
-                (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-
         mContext = context;
         mPackageManager = context.getPackageManager();
         mUserManager = UserManagerCompat.getInstance(mContext);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
-        mIconDpi = activityManager.getLauncherLargeIconDensity();
+        mIconDpi = inv.fillResIconDpi;
         mIconDb = new IconDB(context);
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -134,10 +130,6 @@ public class IconCache {
             }
         }
         return getFullResDefaultActivityIcon();
-    }
-
-    public int getFullResIconDpi() {
-        return mIconDpi;
     }
 
     public Drawable getFullResIcon(ActivityInfo info) {
@@ -744,7 +736,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 4;
+        private final static int DB_VERSION = 5;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";

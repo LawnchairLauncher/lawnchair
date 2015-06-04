@@ -241,6 +241,7 @@ public class WidgetsContainerView extends BaseContainerView
             Drawable icon = mIconCache.getFullResIcon(createShortcutInfo.activityInfo);
             preview = Utilities.createIconBitmap(icon, mLauncher);
             createItemInfo.spanX = createItemInfo.spanY = 1;
+            scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / preview.getWidth();
         }
 
         // Don't clip alpha values for the drag outline if we're using the default widget preview
